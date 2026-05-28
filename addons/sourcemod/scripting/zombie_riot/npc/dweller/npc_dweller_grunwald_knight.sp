@@ -49,7 +49,7 @@ void GrunwaldKnight_OnMapStart_NPC()
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Armorless Union Knight");
+	strcopy(data.Name, sizeof(data.Name), "Abyss Grunwald Warrior");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_grunwald_knight");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_knight");
 	data.IconCustom = true;
@@ -124,7 +124,7 @@ methodmap GrunwaldKnight < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_DWELLER_WALK_TOOL_1");
+		int iActivity = npc.LookupActivity("ACT_SEABORN_WALK_TOOL_1");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
@@ -328,7 +328,7 @@ public void GrunwaldKnight_ClotThink(int iNPC)
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
 					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_DWELLER_WALK_TOOL_1");
+					npc.SetActivity("ACT_SEABORN_WALK_TOOL_1");
 				}
 			}
 			case 1:
@@ -341,7 +341,7 @@ public void GrunwaldKnight_ClotThink(int iNPC)
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
 					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_DWELLER_WALK_TOOL_1");
+					npc.SetActivity("ACT_SEABORN_WALK_TOOL_1");
 				}	
 
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
@@ -351,7 +351,7 @@ public void GrunwaldKnight_ClotThink(int iNPC)
 				{
 					npc.m_iTarget = Enemy_I_See;
 
-					npc.AddGesture("ACT_DWELLER_ATTACK_TOOL_1");
+					npc.AddGesture("ACT_SEABORN_ATTACK_TOOL_1");
 					
 
 					npc.PlayMeleeSound();
@@ -366,8 +366,8 @@ public void GrunwaldKnight_ClotThink(int iNPC)
 			case 2:
 			{		
 				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-				npc.RemoveGesture("ACT_DWELLER_ATTACK_TOOL_1");
-				npc.AddGesture("ACT_DWELLER_DEFEND_TOOL_1");
+				npc.RemoveGesture("ACT_SEABORN_ATTACK_TOOL_1");
+				npc.AddGesture("ACT_SEABORN_DEFEND_TOOL_1");
 				npc.m_flAttackHappens = 0.0;
 					
 				npc.m_fbRangedSpecialOn = false;

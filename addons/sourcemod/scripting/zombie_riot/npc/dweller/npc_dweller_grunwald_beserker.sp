@@ -49,7 +49,7 @@ void GrunwaldBeserker_OnMapStart_NPC()
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Bloodboil Knightclub Trainee");
+	strcopy(data.Name, sizeof(data.Name), "Abyss Grunwald Revenger");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_grunwald_beserker");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_berserker");
 	data.IconCustom = true;
@@ -138,7 +138,7 @@ methodmap GrunwaldBeserker < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_DWELLER_WALK_BESERK");
+		int iActivity = npc.LookupActivity("ACT_SEABORN_WALK_BESERK");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		npc.m_flNextMeleeAttack = 0.0;
@@ -338,7 +338,7 @@ public void GrunwaldBeserker_ClotThink(int iNPC)
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
 					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_DWELLER_WALK_BESERK");
+					npc.SetActivity("ACT_SEABORN_WALK_BESERK");
 				}
 			}
 			case 1:
@@ -351,7 +351,7 @@ public void GrunwaldBeserker_ClotThink(int iNPC)
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
 					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_DWELLER_WALK_BESERK");
+					npc.SetActivity("ACT_SEABORN_WALK_BESERK");
 				}	
 
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
@@ -361,7 +361,7 @@ public void GrunwaldBeserker_ClotThink(int iNPC)
 				{
 					npc.m_iTarget = Enemy_I_See;
 
-					npc.AddGesture("ACT_DWELLER_ATTACK_BESERK_1");
+					npc.AddGesture("ACT_SEABORN_ATTACK_BESERK_1");
 					
 
 					npc.PlayMeleeSound();

@@ -1572,6 +1572,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 }
 
 //BASES FOR ENEMIES
+#include "npc/dweller/npc_remains.sp"
 #include "npc/expidonsa/npc_expidonsa_base.sp" //ALSO IN RPG!
 #include "npc/dweller/npc_abyss_shared.sp"
 #include "npc/ruina/ruina_npc_enchanced_ai_core.sp"	//this controls almost every ruina npc's behaviors.
@@ -2041,6 +2042,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/raidmode_bosses/xeno/npc_nemesis.sp"
 #include "npc/raidmode_bosses/xeno/npc_mrx.sp"
 
+#include "npc/dweller/npc_herald_shared.sp"
 #include "npc/dweller/npc_dwellerhybrid.sp"
 #include "npc/dweller/npc_seacrawler.sp"
 #include "npc/dweller/npc_seapiercer.sp"
@@ -2053,8 +2055,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/dweller/npc_dweller_grunwald_archer.sp"
 #include "npc/dweller/npc_dweller_grunwald_beserker.sp"
 #include "npc/dweller/npc_dweller_grunwald_longrange.sp"
-#include "npc/dweller/npc_remains.sp"
-#include "npc/dweller/npc_herald_shared.sp"
 #include "npc/dweller/npc_herald_1.sp"
 #include "npc/dweller/npc_herald_2.sp"
 #include "npc/dweller/npc_herald_3.sp"

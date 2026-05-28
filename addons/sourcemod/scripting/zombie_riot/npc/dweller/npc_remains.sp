@@ -2,6 +2,7 @@
 #pragma newdecls required
 
 #define DEEP_SEA_VORE_RANGE 250.0
+
 enum
 {
 	Buff_Founder = 0,

@@ -36,7 +36,7 @@ void GrunwaldKnightArcher_OnMapStart_NPC()
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Roar Knightclub Trainee");
+	strcopy(data.Name, sizeof(data.Name), "Abyss Grunwald Archer");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_grunwald_archer");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_archer");
 	data.IconCustom = true;
@@ -105,7 +105,7 @@ methodmap GrunwaldKnightArcher < CClotBody
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
-		int iActivity = npc.LookupActivity("ACT_DWELLER_WALK_RANGED");
+		int iActivity = npc.LookupActivity("ACT_SEABORN_WALK_RANGED");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		
@@ -252,7 +252,7 @@ public void GrunwaldKnightArcher_ClotThink(int iNPC)
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
 					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_DWELLER_WALK_RANGED");
+					npc.SetActivity("ACT_SEABORN_WALK_RANGED");
 				}
 			}
 			case 1:
@@ -265,7 +265,7 @@ public void GrunwaldKnightArcher_ClotThink(int iNPC)
 				if(npc.m_iChanged_WalkCycle != 4) 	
 				{
 					npc.m_iChanged_WalkCycle = 4;
-					npc.SetActivity("ACT_DWELLER_WALK_RANGED");
+					npc.SetActivity("ACT_SEABORN_WALK_RANGED");
 				}	
 
 				int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
@@ -276,7 +276,7 @@ public void GrunwaldKnightArcher_ClotThink(int iNPC)
 					npc.m_iTarget = Enemy_I_See;
 
 					npc.m_flSpeed = 0.0;
-					npc.AddGesture("ACT_DWELLER_ATTACK_RANGED_1");
+					npc.AddGesture("ACT_SEABORN_ATTACK_RANGED_1");
 
 
 					npc.m_flAttackHappens = gameTime + 0.35;

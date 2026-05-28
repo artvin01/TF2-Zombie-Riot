@@ -38,7 +38,7 @@ static const char g_MeleeAttackSounds[][] =
 void SaintAdrian_Precache()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Saint Adrian");
+	strcopy(data.Name, sizeof(data.Name), "Abyss Saint Adrian");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_saintadrian");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_saint");
 	data.IconCustom = true;
@@ -91,7 +91,7 @@ methodmap SaintAdrian < CClotBody
 		i_NpcWeight[npc.index] = 4;
 		npc.SetActivity("ACT_DARIO_WALK");
 		
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
+		npc.m_iBleedType = BLEEDTYPE_DWELLER;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		b_NpcIsTeamkiller[npc.index] = ally != TFTeam_Red;

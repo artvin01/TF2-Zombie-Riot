@@ -42,7 +42,7 @@ void CorruptedKnight_Precache()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "The Corrupted Knight");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_corruptedknight");
-	strcopy(data.Icon, sizeof(data.Icon), "ds_corruptedknight");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_lastknight");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Dweller;
@@ -208,6 +208,9 @@ public void CorruptedKnight_ClotThink(int iNPC)
 		npc.m_flNextThinkTime = gameTime + 0.4;
 		b_NpcIgnoresbuildings[npc.index] = true;
 		npc.m_iTarget = 0;
+		ApplyStatusEffect(npc.index, npc.index, "Shielding", 5.0);
+
+		Shielding_Add(npc.index, ReturnEntityMaxHealth(npc.index) / 2);
 		
 		if(!IsValidEntity(npc.m_iWearable6))
 		{

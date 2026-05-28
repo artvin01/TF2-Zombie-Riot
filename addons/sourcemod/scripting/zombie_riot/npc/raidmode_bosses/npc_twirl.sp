@@ -82,7 +82,7 @@ static int i_current_Text;
 static char gGlow1;	//blue
 #define TWIRL_THUMP_SOUND				"ambient/machines/thumper_hit.wav"
 #define TWIRL_COSMIC_GAZE_LOOP_SOUND1 	"weapons/physcannon/energy_sing_loop4.wav"
-#define TWIRL_LASER_SOUND 				"zombiesurvival/dweller/loop_laser.mp3"
+#define TWIRL_LASER_SOUND 				"zombiesurvival/seaborn/loop_laser.mp3"
 #define TWIRL_COSMIC_GAZE_END_SOUND1 	"weapons/physcannon/physcannon_drop.wav"
 #define TWIRL_COSMIC_GAZE_END_SOUND2 	"ambient/energy/whiteflash.wav"
 

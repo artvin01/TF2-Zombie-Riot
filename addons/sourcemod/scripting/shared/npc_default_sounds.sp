@@ -24,7 +24,7 @@ char g_DefaultMeleeMissSounds[][] = {
 	"weapons/cbar_miss1.wav",
 };
 char g_RuinaLaserLoop[][] = {
-	"zombiesurvival/dweller/loop_laser.mp3"
+	"zombiesurvival/seaborn/loop_laser.mp3"
 };
 
 	//NPC VOICE SOUNDS//

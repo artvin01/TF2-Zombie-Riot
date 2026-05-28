@@ -1297,11 +1297,9 @@
 		"it"		"Indossa l'armatura leggera e ad alte prestazioni fornita dalle Roar Guards.\n- Utilizza un attacco a distanza\n- Nasce con uno scudo che fornisce una riduzione piatta dei danni, che dura per un certo periodo di tempo"
 		"ko"		"로어에서 제공한 고성능 경량 갑옷을 입고 있다.\n-원거리 공격 사용\n-스폰된 직후, 일정 시간 동안 지속되는 매우 높은 고정 피해량 감소 쉴드를 보유."
 	}
-	"Bloodboil Knightclub Trainee Desc"
+	"Grunwald Revenger"
 	{
-		"en"		"The Bloodboil Knights have long been known for their ferocity and aggression.\n- Gains stacking increased damage and attack speed when their ally has died within range"
-		"it"		"I Cavalieri di Bloodboil sono noti da tempo per la loro ferocia e aggressività.\n- Guadagna danni e velocità d'attacco aumentati in modo impilabile quando un loro alleato muore nel raggio d'azione"
-		"ko"		"블러드보일 기사단은 와일드한 공격성으로 줄곧 유명했다.\n-이 적 주변의 적이 죽을 때마다, 피해량, 피해 저항력, 이동 속도가 증가. 이 효과는 중첩됨."
+		"en"		"The Grunwald Revenger have long been known for their ferocity and aggression.\n- Gains stacking increased damage and attack speed when their ally has died within range"
 	}
 	"Armorless Union Cleanup Squad Desc"
 	{
@@ -1496,27 +1494,19 @@
 	}
 	"The Corrupted Knight Desc"
 	{
-		"en"		"The basis of a well-known folk tale in Grunwald.\nThe past died on the land, and neither the present nor the future have any meaning.\nOnly the ocean, kill the ocean.\n- Targets enemy and allies\n- Taking damage inflicts a debuff to the attacker, reducing attack speed\n- Deals increased damage to targets with enough debuff stacks\n- Changes form when below 1/5 of health, increased speed, attacks now deal contact damage, ignores buildings"
-		"it"		"Il passato è morto sulla terra, e né il presente né il futuro hanno alcun significato.\nSolo l'oceano, uccidi l'oceano.\n- Prende di mira il nemico e gli alleati.\n- Subire danni infligge un debuff all'attaccante, riducendo la velocità d'attacco.\n- Infligge danni maggiori ai bersagli con un numero sufficiente di stack di debuff.\n- Cambia forma quando è al di sotto di 1/5 della salute, aumenta la velocità, gli attacchi ora infliggono danni da contatto, ignora gli edifici"
-		"ko"		"카시미어에서 회자되는 동화의 원형.\n그 과거는 육지에서 사라졌고, 현재와 미래 또한 아무런 의미도 없다.\n오직 바다만 남았고, 오직 바다만 죽인다.\n-피아구분 없이 모든 것을 공격\n-피격 시 대상의 공격 속도를 감소시키는 디버프 부여\n-충분한 디버프가 누적된 대상에 대해 피해량 증가\n-체력이 1/5 이하일 시 형태 전환: 구조물을 완전히 무시하며 속도 대폭 증가, 접촉 시 피해를 줌."
+		"en"		"From grunwald, Seeking soemthing but losing himself.\nThe past died on the land, and neither the present nor the future have any meaning.\nOnly the ocean, kill the ocean.\n- Targets enemy and allies\n- Taking damage inflicts a debuff to the attacker, reducing attack speed\n- Deals increased damage to targets with enough debuff stacks\n- Changes form when below 1/5 of health, gains shield tempomarily, increased speed, attacks now deal contact damage, ignores buildings"
 	}
-	"Saint Adrian  Desc"
+	"Abyss Saint Adrian Desc"
 	{
-		"en"		"The last surviving Saint of Almina, living well past mortal life expectancy.\nHis longevity came at a price, but he remembers his duty and his enemies, despite having lost his reason.\n- Targets enemy and allies\n- Attacks levitate the target and deals extra hit of True damage"
-		"it"		"La sua longevità ha avuto un prezzo, ma ricorda il suo dovere e i suoi nemici, nonostante abbia perso la ragione.\n- Bersaglia il nemico e gli alleati\n- Gli attacchi fanno levitare il bersaglio e infliggono un colpo extra di danno Vero"
-		"ko"		"이베리아에 남은 유일한 성도로 일반 사람보다 훨씬 나이가 많다.\n이베리아의 생명 연장 시술은 대가가 따르지만, 그는 정신을 잃더라도 본인의 사명과 적을 분명하게 기억하고 있다.\n-피아구분 없이 모든 것을 공격\n-적중 시, 대상을 공중으로 띄우고 추가 트루 대미지를 입힘"
+		"en"		"An inquistor, now an abyssal.\n- Targets enemy and allies\n- Attacks levitate the target and deals extra hit of True damage"
 	}
-	"Mirroring Desc"
+	"Mirroring Abyssal Desc"
 	{
-		"en"		"Dweller tasked with exploring evolutionary pathways, its fractals mapping out dead ends so that we many can stay on the right path.\n- Spawns a Mirroring Fractal after several attacks and damage taken\n- On death, kills all Mirroring Fractals."
-		"it"		"Dweller ha il compito di esplorare i percorsi evolutivi, i suoi frattali mappano i vicoli ciechi in modo che noi tutti possiamo rimanere sulla strada giusta.\n- Genera un Frattale Mirroring dopo diversi attacchi e danni subiti\n- Alla morte, uccide tutti i Frattali Mirroring."
-		"ko"		"위매니를 위해 살길을 찾는 시본. 수많은 분신으로 잘못된 진화의 경로를 거쳐, 위매니가 정확한 길을 가도록 확보한다.\n-여러 번 공격하거나 피해를 받을 때마다, 패스셰이퍼 분신을 하나 생성합니다.\n-사망 시, 패스셰이퍼 분신을 전부 처치합니다."
+		"en"		"It mirrors itself and everything else.\n- Spawns a Mirroring Fractal after several attacks and damage taken\n- On death, kills all Mirroring Fractals."
 	}
 	"Mirroring Fractal Desc"
 	{
-		"en"		"Fractals left behind by the Dweller Mirroring.\nIllusions must eventually vanish.\nThe path is not clear.\nSearch on, search on.\n- Spawns a Mirroring Fractal after several attacks\n- Loses health over time"
-		"it"		"I frattali lasciati dal Mirroring Dweller.\nLe illusioni alla fine devono svanire.\nIl percorso non è chiaro.\nCercare, cercare.\n- Genera un frattale Mirroring dopo diversi attacchi.\n- Perde salute con il tempo"
-		"ko"		"패스셰이퍼 시본이 남긴 분신. 환영은 필시 사라질 것이고,\n길에는 온통 오류투성이다. 탐색, 계속 탐색해야 한다.\n-여러 번 공격할 때마다, 패스셰이퍼 분신을 하나 생성합니다.\n-체력이 지속적으로 감소합니다."
+		"en"		"Fractals left behind by the Mirroring.\nIllusions must eventually vanish.\nThe path is not clear.\nSearch on, search on.\n- Spawns a Mirroring Fractal after several attacks\n- Loses health over time"
 	}
 	"Barracks Teutonic Knight Desc"
 	{

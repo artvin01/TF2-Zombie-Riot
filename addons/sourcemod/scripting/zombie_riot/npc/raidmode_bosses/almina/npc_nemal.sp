@@ -138,8 +138,8 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_AngellicaShootingHit));   i++) { PrecacheSound(g_AngellicaShootingHit[i]);   }
 	for (int i = 0; i < (sizeof(g_MineLayed));   i++) { PrecacheSound(g_MineLayed[i]);   }
 	PrecacheModel("models/player/soldier.mdl");
-	PrecacheSoundCustom("#zombiesurvival/almina/nemal_raid.mp3");
-	PrecacheSoundCustom("#zombiesurvival/almina/expidonsa_training_montage.mp3");
+	PrecacheSoundCustom("#zombiesurvival/iberia/nemal_raid.mp3");
+	PrecacheSoundCustom("#zombiesurvival/iberia/expidonsa_training_montage.mp3");
 	PrecacheSound(NEMAL_AIRSLICE_HIT);
 	NPC_GetByPlugin("npc_raid_silvester");
 }
@@ -616,7 +616,7 @@ methodmap Nemal < CClotBody
 		{
 			func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Nemal_Win);
 			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/almina/nemal_raid.mp3");
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/iberia/nemal_raid.mp3");
 			music.Time = 158;
 			music.Volume = 2.0;
 			music.Custom = true;
@@ -2144,7 +2144,7 @@ bool NemalSummonSilvester(Nemal npc)
 		if(i_RaidGrantExtra[npc.index] >= 3 && !TripleLol)
 		{
 			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/almina/expidonsa_training_montage.mp3");
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/iberia/expidonsa_training_montage.mp3");
 			music.Time = 300;
 			music.Volume = 2.0;
 			music.Custom = true;

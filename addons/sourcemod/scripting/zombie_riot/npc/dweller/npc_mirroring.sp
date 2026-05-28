@@ -36,9 +36,9 @@ static const char g_MeleeAttackSounds[][] =
 void Mirroring_Precache()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Mirroring");
+	strcopy(data.Name, sizeof(data.Name), "Mirroring Abyssal");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_mirroring");
-	strcopy(data.Icon, sizeof(data.Icon), "ds_mirroring");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_pathshaper");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Dweller;

@@ -39,7 +39,7 @@ void Almina_DwellerAnnihilator_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Almina-Expidonsan Dweller Eradicator");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_eradicator");
-	strcopy(data.Icon, sizeof(data.Icon), "dweller_annihilator");
+	strcopy(data.Icon, sizeof(data.Icon), "seaborn_annihilator");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_AlminaExpiAlliance;

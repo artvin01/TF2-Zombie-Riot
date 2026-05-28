@@ -17,9 +17,9 @@ static const char g_MeleeAttackSounds[][] =
 void AbyssLeviathan_Precache()
 {
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Ishar'mla, Heart of Corruption");
+	strcopy(data.Name, sizeof(data.Name), "Leavtheen, Tribe of the Deep");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_abyss_leviathan");
-	strcopy(data.Icon, sizeof(data.Icon), "ds_abyss_leviathan");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_isharmla");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Dweller;

@@ -114,7 +114,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_DefaultMeleeMissSounds));        i++) { PrecacheSound(g_DefaultMeleeMissSounds[i]);        }
 	for (int i = 0; i < (sizeof(g_SlamSounds));        i++) { PrecacheSound(g_SlamSounds[i]);        }
 	for (int i = 0; i < (sizeof(g_SummonSounds));        i++) { PrecacheSound(g_SummonSounds[i]);        }
-	PrecacheSoundCustom("#zombiesurvival/medieval_raid/grunwald_boss.mp3");
+	PrecacheSoundCustom("#zombiesurvival/medieval_raid/kazimierz_boss.mp3");
 	PrecacheSoundCustom("zombiesurvival/medieval_raid/arkantos_scream_buff.mp3");
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
 	
@@ -130,7 +130,7 @@ static void ClotPrecache_SeaAlaxios()
 	for (int i = 0; i < (sizeof(g_DefaultMeleeMissSounds));        i++) { PrecacheSound(g_DefaultMeleeMissSounds[i]);        }
 	for (int i = 0; i < (sizeof(g_SlamSounds));        i++) { PrecacheSound(g_SlamSounds[i]);        }
 	for (int i = 0; i < (sizeof(g_SummonSounds));        i++) { PrecacheSound(g_SummonSounds[i]);        }
-	PrecacheSoundCustom("#zombiesurvival/medieval_raid/special_mutation/grunwald_boss.mp3");
+	PrecacheSoundCustom("#zombiesurvival/medieval_raid/special_mutation/kazimierz_boss.mp3");
 	PrecacheSoundCustom("zombiesurvival/medieval_raid/special_mutation/arkantos_scream_buff.mp3");
 	for (int i = 0; i < (sizeof(g_PullSounds));   i++) { PrecacheSound(g_PullSounds[i]);   }
 	for (int i = 0; i < (sizeof(g_RandomGroupScreamSea));   i++) { PrecacheSoundCustom(g_RandomGroupScreamSea[i]);   }
@@ -474,7 +474,7 @@ methodmap GodAlaxios < CClotBody
 			SetEntityRenderColor(npc.m_iWearable1, 100, 100, 255, 255);
 			SetEntityRenderColor(npc.m_iWearable2, 100, 100, 255, 255);
 			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/medieval_raid/special_mutation/grunwald_boss.mp3");
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/medieval_raid/special_mutation/kazimierz_boss.mp3");
 			music.Time = 189;
 			music.Volume = 2.0;
 			music.Custom = true;
@@ -486,7 +486,7 @@ methodmap GodAlaxios < CClotBody
 		{
 			
 			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/medieval_raid/grunwald_boss.mp3");
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/medieval_raid/kazimierz_boss.mp3");
 			music.Time = 189;
 			music.Volume = 2.0;
 			music.Custom = true;
@@ -1960,7 +1960,7 @@ void GodAlaxiosHurricane(GodAlaxios npc, float gameTime)
 		
 		if(npc.m_flNextRangedAttackHappening < GetGameTime(npc.index))
 		{
-			npc.AddGesture("ACT_DWELLER_ATTACK_BESERK_1");
+			npc.AddGesture("ACT_SEABORN_ATTACK_BESERK_1");
 			npc.m_flDoingAnimation = gameTime + 0.5;
 			npc.m_flNextRangedAttackHappening = 0.0;
 			static float flPos[3]; 

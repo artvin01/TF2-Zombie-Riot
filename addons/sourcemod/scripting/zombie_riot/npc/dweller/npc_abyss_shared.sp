@@ -73,7 +73,7 @@ void Herald_MapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Herald of the Abyss");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_herald_1");
-	strcopy(data.Icon, sizeof(data.Icon), "ds_herald");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_endspeaker");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_NORMAL;
 	data.Category = Type_Dweller;

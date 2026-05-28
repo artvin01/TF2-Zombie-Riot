@@ -86,7 +86,7 @@ methodmap SeaSpewer < CSeaBody
 		
 		npc.SetElite(elite, carrier);
 		i_NpcWeight[npc.index] = 1;
-		npc.SetActivity("ACT_DWELLER_WALK_TOOL_3");
+		npc.SetActivity("ACT_SEABORN_WALK_TOOL_3");
 		KillFeed_SetKillIcon(npc.index, "huntsman_flyingburn");
 		
 		npc.m_iBleedType = BLEEDTYPE_DWELLER;

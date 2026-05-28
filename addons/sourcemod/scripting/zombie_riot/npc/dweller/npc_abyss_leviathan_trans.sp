@@ -43,9 +43,9 @@ void AbyssLeviathanTrans_MapStart()
 	gLaser1 = PrecacheModel("materials/sprites/laser.vmt");
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Ishar'mla, Heart of Corruption");
+	strcopy(data.Name, sizeof(data.Name), "Leavtheen, Tribe of the Deep");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_abyss_leviathan_trans");
-	strcopy(data.Icon, sizeof(data.Icon), "ds_abyss_leviathan");
+	strcopy(data.Icon, sizeof(data.Icon), "ds_isharmla");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MISSION|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Hidden;

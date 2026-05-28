@@ -651,19 +651,19 @@ bool Amphi_AbilityAir(Alminainqusitor_amphi npc)
 				{
 					case 0:
 					{
-						NPCTalkMessage(npc.index, "My blade will cleave the tides!");
+						NPCTalkMessage(npc.index, "I will clean all that is Sea!");
 					}
 					case 1:
 					{
-						NPCTalkMessage(npc.index, "My light will purge the vice!");
+						NPCTalkMessage(npc.index, "For all Of Almina'n kind!");
 					}
 					case 2:
 					{
-						NPCTalkMessage(npc.index, "My eyes will find the truth!");
+						NPCTalkMessage(npc.index, "Your eyes match my blade!");
 					}
 					case 3:
 					{
-						NPCTalkMessage(npc.index, "My heart will be the judge!");
+						NPCTalkMessage(npc.index, "Even if my weapon fails, i will go on with my heart!");
 					}
 				}
 				npc.m_flAirTimeAbilityHappening = GetGameTime(npc.index) + 2.0;
@@ -744,7 +744,7 @@ static void Amphi_Weapon_Lines(Alminainqusitor_amphi npc, int client)
 				case 2:
 					Format(Text_Lines, sizeof(Text_Lines), "{crimson}Liran's{default} legacy will move on with us {gold}%N{default}!",client);
 				case 3:
-					Format(Text_Lines, sizeof(Text_Lines), "We both can finish what {crimson}Liran{default} failed, eradicade the dweller {gold}%N{default}!",client);
+					Format(Text_Lines, sizeof(Text_Lines), "We both can finish what {crimson}Liran{default} failed, eradicade the dweller's {gold}%N{default}!",client);
 			}
 		}
 

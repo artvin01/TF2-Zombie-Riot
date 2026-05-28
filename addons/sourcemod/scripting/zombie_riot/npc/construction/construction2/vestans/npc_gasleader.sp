@@ -518,7 +518,7 @@ static int GasleaderSelfDefense(Gasleader npc, float gameTime, float distance)
 				}
 				else
 				{
-					npc.AddGesture("ACT_DWELLER_ATTACK_TOOL_1");
+					npc.AddGesture("ACT_SEABORN_ATTACK_TOOL_1");
 				}
 				npc.PlayMeleeSound();
 				npc.m_flAttackHappens = gameTime +0.25;

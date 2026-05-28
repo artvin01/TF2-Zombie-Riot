@@ -35,7 +35,7 @@ void GrunwaldLongArcher_OnMapStart_NPC()
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Armorless Union Cleanup Squad");
+	strcopy(data.Name, sizeof(data.Name), "Abyss Grunwald Sniper Assasin");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dweller_grunwald_longrange");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_cleanup");
 	data.IconCustom = true;

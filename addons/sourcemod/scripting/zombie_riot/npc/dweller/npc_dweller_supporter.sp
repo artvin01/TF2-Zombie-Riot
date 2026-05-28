@@ -202,7 +202,7 @@ public void DwellerSupporter_ClotThink(int iNPC)
 				npc.m_iTarget = target;
 				npc.m_flNextMeleeAttack = gameTime + 1.05;
 
-				npc.AddGesture("ACT_DWELLER_ATTACK_TOOL_2");
+				npc.AddGesture("ACT_SEABORN_ATTACK_TOOL_2");
 				npc.m_flAttackHappens = gameTime + 0.25;
 				//npc.m_flDoingAnimation = gameTime + 1.2;
 				npc.m_flHeadshotCooldown = gameTime + 0.55;

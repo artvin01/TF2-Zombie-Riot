@@ -4829,9 +4829,9 @@
 		"it"	"Ordine Lore: (5) L'agente del gruppo di esplorazione, hai danneggiato silvester e waldch, ma non sono stati in grado di dire a sensal che si trattava di un falso allarme, tieniti forte."
 		"ko"	"설정 순서: (5) 당신은 정찰 부대 요원인 실베스터와 왈츠를 공격했지만, 그들은 센살에게 이것이 허위 경보란 사실을 알리지 못했습니다. 대비하세요."
 	}
-	"Deep Sea Desc"
+	"Dwellers Desc"
 	{
-		"en"	"You head to W.F.'s Outpost, after seeing his elite soldiers infected by Xeno, to see if there are any remaining soldiers there. Turns out there was, but they're infected by the Dweller. And the sea has an army ready to attack the mainland."
+		"en"	"You head to W.F.'s Outpost, after seeing his elite soldiers infected by Xeno, to see if there are any remaining soldiers there. Turns out there was, but they're infected by the Dwellers. And the sea has an army ready to attack the mainland."
 		"fr"	"L'infection Dweller attaque avec la Corrosion d'Armure. Guérissez-la avec vos tables d'armure!"
 		"chi"	"海嗣感染将会侵蚀你的盾。"
 		"it"	"L'infezione Dweller è arrivata, gli attacchi di Corrosione dell'Armatura infetteranno la tua armatura, curala con le tabelle dell'armatura!"

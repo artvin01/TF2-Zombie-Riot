@@ -77,7 +77,7 @@ methodmap SeaSwarmcaller < CSeaBody
 		
 		npc.SetElite(elite, carrier);
 		i_NpcWeight[npc.index] = 3;
-		npc.SetActivity("ACT_DWELLER_WALK_TOOL_3");
+		npc.SetActivity("ACT_SEABORN_WALK_TOOL_3");
 		KillFeed_SetKillIcon(npc.index, "saw_kill");
 		
 		npc.m_iBleedType = BLEEDTYPE_DWELLER;

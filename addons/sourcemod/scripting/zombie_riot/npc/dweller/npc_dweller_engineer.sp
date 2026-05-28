@@ -140,78 +140,82 @@ public void DwellerEngineer_ClotThink(int iNPC)
 	if(npc.m_flNextThinkTime > gameTime)
 		return;
 
-	if(npc.m_fbRangedSpecialOn)
+	if(i_npcspawnprotection[npc.index] != NPC_SPAWNPROT_ON)
 	{
-		if(IsValidEntity(npc.m_iTargetAlly) && i_IsABuilding[npc.m_iTargetAlly])
+		if(npc.m_fbRangedSpecialOn)
 		{
-			if(!npc.m_iTarget)
+			if(IsValidEntity(npc.m_iTargetAlly) && i_IsABuilding[npc.m_iTargetAlly])
 			{
-				KillFeed_SetKillIcon(npc.index, "obj_attachment_sapper");
-
-				float trg_vec[3]; WorldSpaceCenter(npc.m_iTargetAlly, trg_vec );
-				float self_vec[3]; WorldSpaceCenter(npc.index, self_vec);
-
-				ParticleEffectAt(self_vec, "water_bulletsplash01", 3.0);
-				ParticleEffectAt(trg_vec, "water_bulletsplash01", 3.0);
-
-				int repair = GetEntProp(npc.m_iTargetAlly, Prop_Data, "m_iRepair");
-				if(repair < 1)
+				if(!npc.m_iTarget)
 				{
-					Elemental_AddNervousDamage(npc.m_iTargetAlly, npc.index, 75);
+					KillFeed_SetKillIcon(npc.index, "obj_attachment_sapper");
+
+					float trg_vec[3]; WorldSpaceCenter(npc.m_iTargetAlly, trg_vec );
+					float self_vec[3]; WorldSpaceCenter(npc.index, self_vec);
+
+					ParticleEffectAt(self_vec, "water_bulletsplash01", 3.0);
+					ParticleEffectAt(trg_vec, "water_bulletsplash01", 3.0);
+
+					int repair = GetEntProp(npc.m_iTargetAlly, Prop_Data, "m_iRepair");
+					if(repair < 1)
+					{
+						Elemental_AddNervousDamage(npc.m_iTargetAlly, npc.index, 75);
+					}
+					else
+					{
+						SetEntProp(npc.m_iTargetAlly, Prop_Data, "m_iRepair", repair - 3);
+					}
+
+					npc.m_flNextThinkTime = gameTime + 0.4;
+					return;
 				}
 				else
 				{
-					SetEntProp(npc.m_iTargetAlly, Prop_Data, "m_iRepair", repair - 3);
+					b_ThisEntityIgnored[npc.m_iTargetAlly] = false;
 				}
+			}
+			
+			
+			b_thisNpcHasAnOutline[npc.index] = false;
+			npc.m_fbRangedSpecialOn = false;
+			npc.m_flNextRangedAttack = FAR_FUTURE;
+			npc.SetActivity("ACT_MP_RUN_MELEE");
 
-				npc.m_flNextThinkTime = gameTime + 0.4;
-				return;
-			}
-			else
-			{
-				b_ThisEntityIgnored[npc.m_iTargetAlly] = false;
-			}
+			AcceptEntityInput(npc.m_iWearable1, "Enable");
+			AcceptEntityInput(npc.m_iWearable2, "Disable");
 		}
-		
-		
-		b_thisNpcHasAnOutline[npc.index] = false;
-		npc.m_fbRangedSpecialOn = false;
-		npc.m_flNextRangedAttack = FAR_FUTURE;
-		npc.SetActivity("ACT_MP_RUN_MELEE");
-
-		AcceptEntityInput(npc.m_iWearable1, "Enable");
-		AcceptEntityInput(npc.m_iWearable2, "Disable");
-	}
-	else if(npc.m_flNextRangedAttack < gameTime && !NpcStats_IsEnemySilenced(npc.index))
-	{
-		for(int i; i < i_MaxcountBuilding; i++)
+		else if(npc.m_flNextRangedAttack < gameTime && !NpcStats_IsEnemySilenced(npc.index))
 		{
-			int entity = EntRefToEntIndexFast(i_ObjectsBuilding[i]);
-			if(entity != INVALID_ENT_REFERENCE)
+			for(int i; i < i_MaxcountBuilding; i++)
 			{
-				//CClotBody building = view_as<CClotBody>(entity);
-				if(!b_ThisEntityIgnored[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity])
+				int entity = EntRefToEntIndexFast(i_ObjectsBuilding[i]);
+				if(entity != INVALID_ENT_REFERENCE)
 				{
-					b_ThisEntityIgnored[entity] = true;
+					//CClotBody building = view_as<CClotBody>(entity);
+					if(!b_ThisEntityIgnored[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity])
+					{
+						b_ThisEntityIgnored[entity] = true;
 
-					b_thisNpcHasAnOutline[npc.index] = true;
-					
-					npc.m_iTarget = 0;
-					npc.m_iTargetAlly = entity;
-					npc.m_fbRangedSpecialOn = true;
-					npc.m_flNextThinkTime = gameTime + 1.5;
-					npc.StopPathing();
-					npc.SetActivity("ACT_MP_CYOA_PDA_IDLE");
-					npc.AddGesture("ACT_MP_CYOA_PDA_INTRO");
+						b_thisNpcHasAnOutline[npc.index] = true;
+						
+						npc.m_iTarget = 0;
+						npc.m_iTargetAlly = entity;
+						npc.m_fbRangedSpecialOn = true;
+						npc.m_flNextThinkTime = gameTime + 1.5;
+						npc.StopPathing();
+						npc.SetActivity("ACT_MP_CYOA_PDA_IDLE");
+						npc.AddGesture("ACT_MP_CYOA_PDA_INTRO");
 
-					AcceptEntityInput(npc.m_iWearable1, "Disable");
-					AcceptEntityInput(npc.m_iWearable2, "Enable");
-					return;
+						AcceptEntityInput(npc.m_iWearable1, "Disable");
+						AcceptEntityInput(npc.m_iWearable2, "Enable");
+						return;
+					}
 				}
 			}
-		}
 
-		npc.m_flNextRangedAttack = gameTime + 10.0;
+			npc.m_flNextRangedAttack = gameTime + 10.0;
+		}
+		
 	}
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
