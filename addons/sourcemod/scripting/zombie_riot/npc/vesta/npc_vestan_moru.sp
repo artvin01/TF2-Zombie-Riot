@@ -11,7 +11,7 @@ void VestanDroneAnvil_MapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Vesta Anvil");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vesta_anvil");
-	strcopy(data.Icon, sizeof(data.Icon), "vesta_anvil");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_anvil");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Vesta;

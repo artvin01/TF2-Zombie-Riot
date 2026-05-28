@@ -25,7 +25,7 @@ void VestanIgniter_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Vestan Igniter");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_igniter");
-	strcopy(data.Icon, sizeof(data.Icon), "vesta_igniter");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_igniter");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Vesta;

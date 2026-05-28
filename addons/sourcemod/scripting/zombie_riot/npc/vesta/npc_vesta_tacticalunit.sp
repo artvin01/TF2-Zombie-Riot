@@ -41,7 +41,7 @@ void Vestan_Tacticalunit_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Vesta Tacticalunit");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vesta_tacticalunit");
-	strcopy(data.Icon, sizeof(data.Icon), "vesta_tacticalunits"); 
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_tacticalunits"); 
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Vesta;

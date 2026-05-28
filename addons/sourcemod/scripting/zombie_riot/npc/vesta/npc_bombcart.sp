@@ -10,7 +10,7 @@ void VestaBombcart_Precache()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Bomb Cart");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_bombcart");
-	strcopy(data.Icon, sizeof(data.Icon), "vesta_bombcart");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_bombcart");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Vesta;

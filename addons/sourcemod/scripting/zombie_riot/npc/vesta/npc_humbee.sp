@@ -9,7 +9,7 @@ void VestanHumbee_MapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Humbee");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_humbee");
-	strcopy(data.Icon, sizeof(data.Icon), "vesta_humbee");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_humbee");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Vesta;

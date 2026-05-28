@@ -105,7 +105,7 @@ void Castellan_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Vesta Castellan");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_castellan");
-	strcopy(data.Icon, sizeof(data.Icon), "vesta_castellan_raid");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_castellan_raid");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Raid;
@@ -134,7 +134,7 @@ static void ClotPrecache()
 	PrecacheSound("weapons/airstrike_fire_crit.wav", true);
 	PrecacheSound("weapons/cow_mangler_explode.wav", true);
 	
-	PrecacheSoundCustom("#zombiesurvival/vesta_1/raid_castellan.mp3");
+	PrecacheSoundCustom("#zombiesurvival/victoria_1/raid_castellan.mp3");
 	
 	PrecacheModel("models/player/soldier.mdl");
 	g_BluePoint = PrecacheModel("sprites/blueglow1.vmt");
@@ -479,7 +479,7 @@ methodmap Castellan < CClotBody
 		if(StrContains(data, "nomusic") == -1)
 		{
 			MusicEnum music;
-			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/vesta_1/raid_castellan.mp3");
+			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria_1/raid_castellan.mp3");
 			music.Time = 154;
 			music.Volume = 2.0;
 			music.Custom = true;

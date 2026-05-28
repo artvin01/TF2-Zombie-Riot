@@ -13,7 +13,7 @@ void VestanDroneFragments_MapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Vesta Fragments");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vesta_fragments");
-	strcopy(data.Icon, sizeof(data.Icon), "vesta_fragments");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_fragments");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Vesta;

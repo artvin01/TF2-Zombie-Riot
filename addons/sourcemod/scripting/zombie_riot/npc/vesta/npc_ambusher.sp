@@ -32,7 +32,7 @@ void VestanAmbusher_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Brassbunker Ambusher");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_ambusher");
-	strcopy(data.Icon, sizeof(data.Icon), "vesta_ambusher");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_ambusher");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Vesta;

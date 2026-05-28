@@ -23,7 +23,7 @@ void VestanOfflineAvangard_MapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Avangard");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_avangard");
-	strcopy(data.Icon, sizeof(data.Icon), "vesta_avangard");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_avangard");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Vesta;

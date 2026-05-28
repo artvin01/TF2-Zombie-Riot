@@ -15,7 +15,7 @@ void VestaTank_MapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Vesta Tank");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vestan_tank");
-	strcopy(data.Icon, sizeof(data.Icon), "vesta_tank");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_tank");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Vesta;

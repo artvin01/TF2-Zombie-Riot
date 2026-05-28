@@ -19,7 +19,7 @@ void VestanAssaultVehicle_OnMapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Vestan Assault Vehicle");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vestan_assault_vehicle");
-	strcopy(data.Icon, sizeof(data.Icon), "vesta_assault_vehicle");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_assault_vehicle");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Vesta;

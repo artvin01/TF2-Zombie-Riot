@@ -34,7 +34,7 @@ void VestanPayback_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Payback");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_payback");
-	strcopy(data.Icon, sizeof(data.Icon), "vesta_payback_v2");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_payback_v2");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Vesta;

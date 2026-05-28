@@ -22,7 +22,7 @@ void VestaArtillerist_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Vestan Artillerist");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vestan_artillerist");
-	strcopy(data.Icon, sizeof(data.Icon), "vesta_mortar");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_mortar");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Vesta;

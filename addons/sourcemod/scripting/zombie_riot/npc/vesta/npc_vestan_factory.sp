@@ -14,7 +14,7 @@ void VestanFactory_MapStart()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Vesta Factory");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vesta_factory");
-	strcopy(data.Icon, sizeof(data.Icon), "vesta_factory");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_factory");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Vesta;

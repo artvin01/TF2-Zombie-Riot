@@ -38,7 +38,7 @@ void VestanHardener_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Hardender");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_hardener");
-	strcopy(data.Icon, sizeof(data.Icon), "vesta_hardener");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_hardener");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Vesta;

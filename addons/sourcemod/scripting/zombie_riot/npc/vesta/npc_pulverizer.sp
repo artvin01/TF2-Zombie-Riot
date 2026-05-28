@@ -21,7 +21,7 @@ void VestanPulverizer_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Pulverizer");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_pulverizer");
-	strcopy(data.Icon, sizeof(data.Icon), "vesta_pulverizer");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_pulverizer");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Vesta;

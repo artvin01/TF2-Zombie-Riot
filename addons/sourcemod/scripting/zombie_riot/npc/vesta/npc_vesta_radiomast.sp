@@ -22,7 +22,7 @@ void VestaRadiomast_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Vesta Radiomast");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vesta_radiomast");
-	strcopy(data.Icon, sizeof(data.Icon), "vesta_radiomast");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_radiomast");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Vesta;

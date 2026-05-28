@@ -28,7 +28,7 @@ void VestaDestructor_Precache()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Vesta Destructor");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_destructor");
-	strcopy(data.Icon, sizeof(data.Icon), "vesta_destructor");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_destructor");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Vesta;

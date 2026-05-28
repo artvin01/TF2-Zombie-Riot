@@ -55,7 +55,7 @@ void Zapmarker_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Zapmarker");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_zapmarker");
-	strcopy(data.Icon, sizeof(data.Icon), "vesta_zapper"); 	//leaderboard_class_(insert the name)
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_zapper"); 	//leaderboard_class_(insert the name)
 	data.IconCustom = false;								//download needed?
 	data.Flags = 0;											//example: MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;, forces these flags.	
 	data.Category = Type_Vesta;

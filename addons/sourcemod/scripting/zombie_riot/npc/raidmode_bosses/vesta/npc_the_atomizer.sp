@@ -130,7 +130,7 @@ void Atomizer_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Vesta Atomizer");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_atomizer");
-	strcopy(data.Icon, sizeof(data.Icon), "vesta_atomizer_raid");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_atomizer_raid");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS|MVM_CLASS_FLAG_ALWAYSCRIT;
 	data.Category = Type_Raid;
@@ -158,7 +158,7 @@ static void ClotPrecache()
 	PrecacheSound(g_BoomSounds);
 	PrecacheSound(g_IncomingBoomSounds);
 	PrecacheSound("weapons/bumper_car_spawn.wav");
-	PrecacheSoundCustom("#zombiesurvival/vesta_1/raid_atomizer.mp3");
+	PrecacheSoundCustom("#zombiesurvival/victoria_1/raid_atomizer.mp3");
 	
 	g_Laser = PrecacheModel(LASERBEAM);
 	g_RedPoint = PrecacheModel("sprites/redglow1.vmt");
@@ -404,7 +404,7 @@ methodmap Atomizer < CClotBody
 			if(StrContains(data, "nomusic") == -1)
 			{
 				MusicEnum music;
-				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/vesta_1/raid_atomizer.mp3");
+				strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/victoria_1/raid_atomizer.mp3");
 				music.Time = 128;
 				music.Volume = 2.0;
 				music.Custom = true;

@@ -26,7 +26,7 @@ void Vestan_TacticalProtector_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Vesta Tactical Protector");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vesta_protector");
-	strcopy(data.Icon, sizeof(data.Icon), "vesta_tacticalprotectors"); 
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_tacticalprotectors"); 
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Vesta;

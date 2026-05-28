@@ -43,7 +43,7 @@ void FreeplaySigmaller_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "SIGMALLER");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_freeplay_sigmaller");
-	strcopy(data.Icon, sizeof(data.Icon), "vesta_signaller");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_signaller");
 	Laser = PrecacheModel("materials/sprites/laserbeam.vmt");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_SUPPORT;
