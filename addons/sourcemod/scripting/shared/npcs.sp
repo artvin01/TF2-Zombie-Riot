@@ -415,7 +415,7 @@ bool NPC_SpawnNext(bool panzer,
 						GiveNpcOutLineLastOrBoss(entity_Spawner, false);
 					}
 
-					if(!DisableSpawnProtection &&
+					if(!i_NpcIsABuilding[entity_Spawner] && !DisableSpawnProtection &&
 					 zr_spawnprotectiontime.FloatValue > 0.0 &&
 					  SpawnSettingsSee != 1 &&
 					  SpawnSettingsSee != 3 &&
