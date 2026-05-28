@@ -415,16 +415,19 @@ int Vestan_HeadhunterSelfDefense(Vestan_Headhunter npc, float gameTime)
 				int elementaldamage = 50;
 				if(ShouldNpcDealBonusDamage(target))
 					damageDealt *= 5.0;
-
-				int weapon = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
-				if(IsValidEntity(weapon))
+				
+				if(IsValidClient(target))
 				{
-					switch(i_CustomWeaponEquipLogic[weapon])
+					int weapon = GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon");
+					if(IsValidEntity(weapon))
 					{
-						case WEAPON_BATTILONS,WEAPON_OCEAN,WEAPON_ANCIENT_BANNER,WEAPON_DWELLER_MISC,WEAPON_BUFF_BANNER,WEAPON_OCEAN_PAP,WEAPON_ZEALOT_POTION,WEAPON_BUFFPOTION,WEAPON_KRITZKRIEG:
+						switch(i_CustomWeaponEquipLogic[weapon])
 						{
-							damageDealt *= 2.0;
-							elementaldamage *= 2;
+							case WEAPON_BATTILONS,WEAPON_OCEAN,WEAPON_ANCIENT_BANNER,WEAPON_DWELLER_MISC,WEAPON_BUFF_BANNER,WEAPON_OCEAN_PAP,WEAPON_ZEALOT_POTION,WEAPON_BUFFPOTION,WEAPON_KRITZKRIEG:
+							{
+								damageDealt *= 2.0;
+								elementaldamage *= 2;
+							}
 						}
 					}
 				}
