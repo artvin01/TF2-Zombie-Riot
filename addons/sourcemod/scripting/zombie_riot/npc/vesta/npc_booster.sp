@@ -173,7 +173,7 @@ methodmap VestanBooster < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
-		npc.m_iWearable2	= npc.EquipItem("head", "models/workshop/player/items/medic/hwn2022_vestan_villainy/hwn2022_vestan_villainy.mdl");
+		npc.m_iWearable2	= npc.EquipItem("head", "models/workshop/player/items/medic/hwn2022_victorian_villainy/hwn2022_victorian_villainy.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 

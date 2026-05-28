@@ -154,7 +154,7 @@ methodmap ApertureSupporterPerfected < CClotBody
 
 		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/medic/hwn2022_lavish_labwear/hwn2022_lavish_labwear.mdl");
 
-		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/medic/hwn2022_vestan_villainy/hwn2022_vestan_villainy.mdl");
+		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/medic/hwn2022_victorian_villainy/hwn2022_victorian_villainy.mdl");
 
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
