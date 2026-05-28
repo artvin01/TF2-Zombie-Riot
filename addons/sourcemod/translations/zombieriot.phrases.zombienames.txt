@@ -2694,7 +2694,7 @@
 		"ru" 		"Создатель пути"
 		"chi"		"塑路者"
 		"it"		"Modellatore di sentieri"
-		"ko"		"반사되는 자"
+		"ko"		"반영자"
 	}
 	"Mirroring Fractal"
 	{
@@ -2702,7 +2702,7 @@
 		"ru" 		"Фрактал Создателя Пути"
 		"chi"		"塑路者分形"
 		"it"		"Frattale sagomatore di percorsi"
-		"ko"		"반사되는 자의 분신"
+		"ko"		"반영자의 분신"
 	}
 	"Barracks Teutonic Knight"
 	{

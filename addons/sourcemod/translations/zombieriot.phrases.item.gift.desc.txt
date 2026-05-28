@@ -1506,12 +1506,12 @@
 	"Mirroring Abyssal Desc"
 	{
 		"en"		"It mirrors itself and everything else.\n- Spawns a Mirroring Fractal after several attacks and damage taken\n- On death, kills all Mirroring Fractals."
-		"ko"		"자신과 다른 모든 것들을 비추고 반사한다.\n-여러 번 공격하거나 피해를 받을 때마다, 반사되는 자의 분신을 하나 생성합니다.\n-사망 시, 반사되는 자의 분신을 전부 처치합니다."
+		"ko"		"자신과 다른 모든 것들을 비추고 반사한다.\n-여러 번 공격하거나 피해를 받을 때마다, 반영자의 분신을 하나 생성합니다.\n-사망 시, 반영자의 분신을 전부 처치합니다."
 	}
 	"Mirroring Fractal Desc"
 	{
 		"en"		"Fractals left behind by the Mirroring.\nIllusions must eventually vanish.\nThe path is not clear.\nSearch on, search on.\n- Spawns a Mirroring Fractal after several attacks\n- Loses health over time"
-		"ko"		"반사되는 자가 남긴 분신. 환영은 필시 사라질 것이고,\n길에는 온통 오류투성이다. 탐색, 계속 탐색해야 한다.\n-여러 번 공격할 때마다, 반사되는 자의 분신을 하나 생성합니다.\n-체력이 지속적으로 감소합니다."
+		"ko"		"반영자가 남긴 분신. 환영은 필시 사라질 것이고,\n길에는 온통 오류투성이다. 탐색, 계속 탐색해야 한다.\n-여러 번 공격할 때마다, 반영자의 분신을 하나 생성합니다.\n-체력이 지속적으로 감소합니다."
 	}
 	"Barracks Teutonic Knight Desc"
 	{
