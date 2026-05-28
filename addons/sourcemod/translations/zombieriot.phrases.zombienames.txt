@@ -2270,7 +2270,7 @@
 		"it"		"Piercer nutrito"
 		"ko"		"부영양의 랜서"
 	}
-	"Dweller Hybird"
+	"Dweller Hybrid"
 	{
 		"en"		"Dweller Hybrid"
 		"ko"		"드웰러 이종"
