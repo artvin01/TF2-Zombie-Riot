@@ -9671,7 +9671,7 @@ void TakeDamagePostAtttacker_CoffinsReturn(int attacker, int victim, float damag
 	if(HasSpecificBuff(attacker, "Call of the Heartbroken Weakened"))
 		return;
 #if defined ZR
-	GiveCoffinOnDamage(OwnerAttach,victim, damage);
+	GiveCoffinOnDamage(OwnerAttach,victim, damage * 2);
 #endif
 }
 static float TiantuiDamageDeal(int attacker, int victim, float basedamage, float bonus, float multi)
@@ -9763,7 +9763,7 @@ int StaggerTypeTarget(int victim)
 		
 	return 0;
 }
-#define MAX_RANGE_HEARTBROKEN 600.0
+#define MAX_RANGE_HEARTBROKEN 900.0
 static void CallOfHeartBroken_Timer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 #if defined ZR
@@ -9816,10 +9816,11 @@ static void CallOfHeartBroken_Timer(int entity, StatusEffect Apply_MasterStatusE
 			SetEntityRenderColor(EntRefToEntIndex(Apply_StatusEffect.WearableUse), 65, 0, 125, 255);
 		}
 	}
+	ApplyLastmanOrDyingOverlay(entity);
 	
 	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
 
-	spawnRing_Vectors(flPos, MAX_RANGE_HEARTBROKEN * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 0, 255, 200, 1, 0.45, 12.0, 6.1, 1, _, entity);
+	spawnRing_Vectors(flPos, MAX_RANGE_HEARTBROKEN * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 0, 255, 200, 1, 0.45, 10.0, 0.0, 1, _, entity);
 #endif
 }
 
