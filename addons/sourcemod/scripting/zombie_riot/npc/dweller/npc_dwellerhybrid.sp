@@ -37,7 +37,7 @@ void FirstToTalk_MapStart()
 	LaserSprite = PrecacheModel(SPRITE_SPRITE);
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Dweller Hybird");
+	strcopy(data.Name, sizeof(data.Name), "Dweller Hybrid");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_dwellerhybrid");
 	strcopy(data.Icon, sizeof(data.Icon), "ds_firsttotalk");
 	data.IconCustom = true;
