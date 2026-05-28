@@ -1467,7 +1467,7 @@
 	
 	"Ranged Spike Layer Desc"
 	{
-		"en"	"-Spikes that stay forever until its stepped on\n-Scales with builder upgrades.\n-Press M2 Twice while looking up to pick up all spikes\n-Press m2 on a spike to pick that one up."
+		"en"	"-Spikes that stay forever until its stepped on\n-Scales with builder upgrades.\n-Press M2 Twice while looking up to pick up all spikes\n-Press m2 on a spike to pick that one up.\n-Generates barrack resources on hit (scales with repair upgrades)."
 		"fr"	"Les dégats des piques s'améliorent en fonction des dégats infligés par votre Mitrailleuse.\nPas affecté par les améliorations dégats de la boutique.\nRegardez vers le haut et appuyez sur M2 pour ramasser tous vos piques."
 		"chi"	"与布哨伤害同步升级，不受武器升级影响。\n向上看时双击M2回收所有地刺。"
 		"it"	"Più danni alla sentinella si hanno, più danni fa quest'arma.\nI potenziamenti dell'arma, come i danni, non influiscono su questo aspetto.\nPremere due volte m2 mentre si guarda in alto per raccogliere tutti gli spuntoni in una volta sola."
@@ -1476,7 +1476,7 @@
 	
 	"Aresenal's Tripmine Layer Desc"
 	{
-		"en"	"-Tripmines that when enemy trips on them, explodes\n-Hafe armtime, take 1 second to ramp up to full damage once placed.\n-Scales with builder upgrades.\n-Press M2 Twice while looking up to pick up all spikes\n-Press m2 on a spike to pick that one up."
+		"en"	"-Tripmines that when enemy trips on them, explodes\n-Have armtime, deal full damage after 1 second.\n-Scales with builder upgrades, generates barrack resources on hit\n-Press M2 Twice while looking up to pick up all spikes\n-Press m2 on a spike to pick it up."
 		"fr"	"Les dégats des mines s'améliorent en fonction des dégats infligés par votre Mitrailleuse.\nPas affecté par les améliorations dégats de la boutique.\nRegardez vers le haut et appuyez sur M2 pour ramasser tous vos mines.\nLes mines s'arment après 0.5 secondes, et prennent 1 seconde pour infliger le maximum de dégats."
 		"it"	"Più danni da sentinella si hanno, più danni fa quest'arma.\nI potenziamenti dell'arma, come i danni, non influiscono su questo aspetto.\nPremere due volte m2 mentre si guarda in alto per raccogliere tutti gli spuntoni in una volta sola.\nArma dopo 0,5 secondi e si scalda fino a raggiungere il massimo dei danni dopo 1 secondo."
 		"ko"	"-적이 건드리면 폭발하는 지뢰 설치\n-지뢰는 설치되고 0.5초 후에 작동하며, 1초가 지나야 온전한 피해를 줄 수 있음\n-위쪽을 보면서 우클릭을 2번 누르면 모든 지뢰를 전부 회수\n-건축가 개선에 따라서 피해량 증가"
@@ -1532,7 +1532,7 @@
 	
 	"Builders Axe Desc"
 	{
-		"en"	"-melee axe that scales with builder damage.\n-M2 to Lunge (must look at enemy) and for the next attack to deal 12x the damage.\nYou need to have enough builder upgrades for this to work."
+		"en"	"-melee axe that scales with builder damage.\n-M2 to Lunge (must look at enemy) and for the next attack to deal 12x the damage.\nYou need to have enough builder upgrades for this to work.\n-Generates barrack resources on hit (scales with repair upgrades)."
 		"es"	"Un hacha que escala con el daño de constructor.\nM2: Embiste hacia adelante, el siguiente golpe hara un +1200％ de daño extra.\nNecesitas suficientes mejoras de constructor para que funcione."
 		"fr"	"Dégats corps-à-corps s'améliorent avec vos Améliorations Constructeur.\nAppuyez M2 pour vous lancer et améliorer les dégats de cet arme 12x.\nAméliorations Construction requis."
 		"chi"   "一个近战扳手，随建造者伤害缩放。\nM2为突刺，下一次攻击将造成12倍伤害。你需要足够的金属才能让它工作。"
