@@ -1670,7 +1670,7 @@
 	"Phantom Knight"
 	{
 		"en"		"Phantom Knight"
-		"ko"		"환영의 기사"
+		"ko"		"환영 기사"
 	}
 	"Medic Constructor"
 	{
