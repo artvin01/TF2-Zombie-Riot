@@ -747,7 +747,7 @@ public Action TimerPassangerAbility(Handle timer, DataPack pack)
 			RandomTargetLocation_Elevated = RandomTargetLocation;
 			RandomTargetLocation_Elevated[2] += 1000.0;// We wantthe big laser to come from the holy skies.
 
-		//	EmitSoundToAll(IRENE_KICKUP_1, target, _, 75, _, 0.60);
+		//	EmitSoundToAll(AMPHI_KICKUP_1, target, _, 75, _, 0.60);
 			
 			DataPack pack_boom = new DataPack();
 			pack_boom.WriteFloat(RandomTargetLocation[0]);

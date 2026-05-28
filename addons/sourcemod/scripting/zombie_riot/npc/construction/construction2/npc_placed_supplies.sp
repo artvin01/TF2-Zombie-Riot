@@ -30,7 +30,7 @@ void PlacedSupplies_OnMapStart_NPC()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_placed_supplies");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.Flags = -1;
-	data.Category = Type_IberiaExpiAlliance;
+	data.Category = Type_AlminaExpiAlliance;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 	PrecacheModel(SUPPLIES_MODEL);

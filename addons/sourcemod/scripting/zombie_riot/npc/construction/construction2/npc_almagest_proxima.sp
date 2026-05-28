@@ -336,7 +336,7 @@ int AlmagestProxima_SelfDefense(AlmagestProxima npc, float distance, float vecTa
 					if(!ShouldNpcDealBonusDamage(target))
 					{
 						//not to buildings
-						ApplyStatusEffect(target, target, "Pikeman's Slashes", 7.5);
+						ApplyStatusEffect(target, target, "Pikeman's Stabs", 7.5);
 						StatusEffects_PikemanDebuffAdd(target, 2);
 					}
 

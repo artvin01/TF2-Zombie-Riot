@@ -340,7 +340,7 @@ int TheHunterSelfDefense(TheHunter npc, float gameTime)
 			npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY");
 			if(IsValidEnemy(npc.index, target))
 			{
-				if(Rogue_Paradox_RedMoon() || NpcStats_IberiaIsEnemyMarked(target))
+				if(Rogue_Paradox_RedMoon() || NpcStats_AlminaIsEnemyMarked(target))
 				{
 					SDKHooks_TakeDamage(target, npc.index, npc.index, 100000.0, DMG_BULLET, -1, _, ThrowPos[npc.index]);
 					RemoveSpecificBuff(target, "Marked");

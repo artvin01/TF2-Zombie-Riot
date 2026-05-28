@@ -348,7 +348,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 			}
 			case 8:
 			{
-				CPrintToChatAll("{black}Zilius{default}: Iberians are the only ones I respect, Mazeat is an amalgam of failures.");
+				CPrintToChatAll("{black}Zilius{default}: Alminans are the only ones I respect, Mazeat is an amalgam of failures.");
 			}
 			case 9:
 			{
@@ -520,7 +520,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
 
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/medic/hwn2022_victorian_villainy_style3/hwn2022_victorian_villainy_style3.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/medic/hwn2022_vestan_villainy_style3/hwn2022_vestan_villainy_style3.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);

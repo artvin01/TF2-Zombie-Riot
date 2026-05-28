@@ -2620,7 +2620,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		Building_Mounted[entity] = -1;
 		EntitySpawnToDefaultSiccerino(entity);
 		b_NpcIsTeamkiller[entity] = false;
-		IberiaEntityCreated(entity);
+		AlminaEntityCreated(entity);
 		f_HealDelayParticle[entity] = 0.0;
 		f_DelayAttackspeedPreivous[entity] = 1.0;
 		f_DelayAttackspeedPanicAttack[entity] = -1.0;

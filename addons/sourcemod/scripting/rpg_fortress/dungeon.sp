@@ -2192,7 +2192,7 @@ public void Dungeon_Spawn_TempMegaBuff(int entity)
 }
 
 
-public void Dungeon_Spawn_AntiIberianTank(int entity)
+public void Dungeon_Spawn_AntiAlminanTank(int entity)
 {
 	char npc_classname[60];
 	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));

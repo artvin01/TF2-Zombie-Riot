@@ -19,7 +19,7 @@ stock void Ulpianus_Enable(int client, int weapon)
 				Elited = true;
 		}
 	}
-	else if(Elited && Store_IsWeaponFaction(client, weapon, Faction_Seaborn))
+	else if(Elited && Store_IsWeaponFaction(client, weapon, Faction_Dweller))
 	{
 		ApplyStatusEffect(weapon, weapon, "Ulpianus' Seriousness", 9999999.0);
 		Attributes_SetMulti(weapon, 6, 0.8);

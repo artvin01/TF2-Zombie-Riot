@@ -115,12 +115,12 @@ methodmap Whiteflower_selected_few < CClotBody
 			{
 				static Race race;
 				Races_GetClientInfo(target, race);
-				if(StrEqual(race.Name, "Iberian"))
+				if(StrEqual(race.Name, "Alminan"))
 				{
 					switch(GetRandomInt(0,2))
 					{
 						case 0:
-							NpcSpeechBubble(this.index, "Iberians...", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
+							NpcSpeechBubble(this.index, "Alminans...", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
 						case 1:
 							NpcSpeechBubble(this.index, "Here comes payday.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 						case 2:

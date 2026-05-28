@@ -4,7 +4,7 @@ static Handle h_TimerCastleBreakerWeaponManagement[MAXPLAYERS] = {null, ...};
 static bool b_AbilityActivated[MAXPLAYERS];
 static bool b_AbilityDone[MAXPLAYERS];
 static bool Change[MAXPLAYERS];
-static int i_VictoriaParticle[MAXPLAYERS];
+static int i_VestaParticle[MAXPLAYERS];
 static int CastleBreaker_WeaponPap[MAXPLAYERS];
 static float CastleBreaker_HUDDelay[MAXPLAYERS];
 
@@ -277,7 +277,7 @@ public void Enable_CastleBreakerWeapon(int client, int weapon) // Enable managem
 		}
 		
 	}
-	if(Store_IsWeaponFaction(client, weapon, Faction_Victoria))	// Victoria
+	if(Store_IsWeaponFaction(client, weapon, Faction_Vesta))	// Vesta
 	{
 		for(int i = 1; i <= MaxClients; i++)
 		{
@@ -393,7 +393,7 @@ static void CreateCastleBreakerEffect(int client)
 	}
 	if(b_AbilityActivated[client])
 	{
-		int entity = EntRefToEntIndex(i_VictoriaParticle[client]);
+		int entity = EntRefToEntIndex(i_VestaParticle[client]);
 		if(!IsValidEntity(entity))
 		{
 			entity = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
@@ -405,7 +405,7 @@ static void CreateCastleBreakerEffect(int client)
 				int particle = ParticleEffectAt(flPos, "eye_powerup_blue_lvl_3", 0.0);
 				AddEntityToThirdPersonTransitMode(entity, particle);
 				SetParent(entity, particle, "eyeglow_l");
-				i_VictoriaParticle[client] = EntIndexToEntRef(particle);
+				i_VestaParticle[client] = EntIndexToEntRef(particle);
 			}
 		}
 	}
@@ -414,10 +414,10 @@ static void CreateCastleBreakerEffect(int client)
 }
 static void DestroyCastleBreakerEffect(int client)
 {
-	int entity = EntRefToEntIndex(i_VictoriaParticle[client]);
+	int entity = EntRefToEntIndex(i_VestaParticle[client]);
 	if(IsValidEntity(entity))
 		RemoveEntity(entity);
-	i_VictoriaParticle[client] = INVALID_ENT_REFERENCE;
+	i_VestaParticle[client] = INVALID_ENT_REFERENCE;
 }
 
 static Action Timer_ChangeSound(Handle timer, DataPack pack)
