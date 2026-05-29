@@ -28,8 +28,8 @@ def read(filename):
         return None
 
 paths = {
-    "./TF2-Zombie-Riot/addons/sourcemod/translations/": "**/*.txt",
-    "./TF2-Zombie-Riot/": "**/*.cfg",
+    "./addons/sourcemod/translations/": "**/*.txt",
+    "./": "**/*.cfg",
 }
 had_errors = False
 for path,filter_ in paths.items():
