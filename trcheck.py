@@ -33,14 +33,15 @@ paths = {
 }
 had_errors = False
 for path,filter_ in paths.items():
-    for CFG in pathlib.Path(path).glob(filter_):
-        try:
-            pre,c = "✓","OKGREEN"
-            vdf.loads(read(CFG))
-            ex = ""
-        except:
-            pre,c = "✗","FAIL"
-            ex = "\n"+traceback.format_exc()
-            had_errors = True
-        log(f"{pre} {CFG}{ex}",c)
+    if not path.startswith("venv"):
+        for CFG in pathlib.Path(path).glob(filter_):
+            try:
+                pre,c = "✓","OKGREEN"
+                vdf.loads(read(CFG))
+                ex = ""
+            except:
+                pre,c = "✗","FAIL"
+                ex = "\n"+traceback.format_exc()
+                had_errors = True
+            log(f"{pre} {CFG}{ex}",c)
 sys.exit(int(had_errors))
