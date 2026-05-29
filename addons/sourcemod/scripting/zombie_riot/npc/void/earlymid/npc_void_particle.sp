@@ -237,7 +237,7 @@ public void VoidParticle_NPCDeath(int entity)
 		float ProjectileLoc[3];
 		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 		ProjectileLoc[2] += 5.0;
-		VoidArea_SpawnNethersea(ProjectileLoc);
+		VoidArea_SpawnAbyss(ProjectileLoc);
 	}
 		
 	if(IsValidEntity(npc.m_iWearable7))

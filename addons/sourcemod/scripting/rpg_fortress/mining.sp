@@ -129,9 +129,9 @@ enum struct MineEnum
 				DispatchKeyValue(entity, "model", this.Model);
 				DispatchKeyValue(entity, "solid", "6");
 				SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", MIN_FADE_DISTANCE);
-				SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", MAX_FADE_DISTANCE);				
+				SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", MAX_FADE_DISTANCE);		
+				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", this.Scale);		
 				DispatchSpawn(entity);
-				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", this.Scale);
 				TeleportEntity(entity, this.Pos, this.Ang, NULL_VECTOR, true);
 
 				b_is_a_brush[entity] = true;

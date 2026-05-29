@@ -1135,7 +1135,7 @@ public void Rogue_IncorruptableLeaf_TakeDamage(int victim, int &attacker, int &i
 	}
 	if(GiveRes)
 		if(!(damagetype & DMG_TRUEDAMAGE))
-			damage *= 0.85;
+			damage *= 0.75;
 }
 
 stock float Rogue_Rift_OptionalBonusBattle()

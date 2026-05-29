@@ -7,18 +7,18 @@ static CNavArea NervousLastTouch[MAXENTITIES + 1];
 static int SpreadTicks;
 static float RenderToAll;
 
-bool VoidArea_TouchingNethersea(int entity)
+bool VoidArea_TouchingAbyss(int entity)
 {
 	return NervousTouching[entity] > GetGameTime();
 }
 
-void VoidArea_ClearnNethersea()
+void VoidArea_ClearnAbyss()
 {
 	RenderToAll = 0.0;
 	delete NavList;
 }
 
-void VoidArea_SpawnNethersea(const float pos[3], bool WasWeapon = false)
+void VoidArea_SpawnAbyss(const float pos[3], bool WasWeapon = false)
 {
 	if(!WasWeapon)
 	{
@@ -484,7 +484,7 @@ public Action Timer_VoidSpawnPoint(Handle timer, DataPack pack)
 			SpreadVoidCooldown = GetGameTime() + 3.0;
 			pack.Position--;
 			pack.WriteFloat(SpreadVoidCooldown, false);
-			VoidArea_SpawnNethersea(SpawnPos);
+			VoidArea_SpawnAbyss(SpawnPos);
 		}
 	}
 

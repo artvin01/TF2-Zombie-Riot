@@ -1451,7 +1451,7 @@ public void OnPostThink(int client)
 					green = 55 + abs(200 - (RoundFloat(GetGameTime()) % 400));
 					blue = 55 + abs(200 - (RoundFloat(GetEngineTime()) % 400));
 				}
-				//seaborn
+				//dweller
 				default:
 				{
 					red = 150;
@@ -2905,17 +2905,25 @@ public void OnWeaponSwitchPre(int client, int weapon)
 
 void ApplyLastmanOrDyingOverlay(int client)
 {
-	if(HasSpecificBuff(client, "Call of the Heartbroken Weakened"))
+	if(HasSpecificBuff(client, "Call of the Heartbroken"))
 	{
-		DoOverlay(client, "zombie_riot/filmgrain/filmgrain_4", 1);
-		DoOverlay(client, "debug/yuv");
+		if(!HasSpecificBuff(client, "Call of the Heartbroken Weakened"))
+		{
+			DoOverlay(client, "", 1);
+			DoOverlay(client, "");
+		}
+		else
+		{
+			DoOverlay(client, "zombie_riot/filmgrain/filmgrain_4", 1);
+			DoOverlay(client, "debug/yuv");
+		}
 		return;
 	}
 	if(LastMann)
 	{
 		switch(Yakuza_Lastman())
 		{
-			case 1,2,3,4,7,9:
+			case 1,2,3,4,7,9, 15:
 			{
 				return;
 			}
@@ -3813,7 +3821,6 @@ void SdkHooks_SetAndUpdateArmorClientText(int client)
 	DispatchKeyValue(ArmorText,	 "color", sColor);
 	DispatchKeyValue(ArmorText, "message", ch_ArmorText);
 }
-#endif
 
 
 bool PlayersLeftAlive(int victim)
@@ -3831,3 +3838,4 @@ bool PlayersLeftAlive(int victim)
 	}
 	return Any_Left;
 }
+#endif

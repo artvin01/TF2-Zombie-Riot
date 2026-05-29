@@ -312,12 +312,12 @@ public void Rogue_Vote_BrokenCrest_Vote(const Vote vote, int index)
 		{
 			CPrintToChatAll("%t", "Broken Crest Accept Conlusion");
 			Rogue_GiveNamedArtifact("Lelouch's Broken Crest");
-			Rogue_AddUmbral(-15, false);
+			Rogue_AddUmbral(-10, false);
 		}
 		case 1:
 		{
 			CPrintToChatAll("%t", "Broken Crest Decline Conlusion");
-			GiveCash(5500);
+			GiveCash(4500);
 			Rogue_AddUmbral(5, false);
 		}
 	}

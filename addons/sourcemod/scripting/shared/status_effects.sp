@@ -215,7 +215,7 @@ void InitStatusEffects()
 	StatusEffects_DebuffMarked();
 	StatusEffects_Silence();
 	StatusEffects_LogosDebuff();
-	StatusEffects_Victoria();
+	StatusEffects_Vesta();
 	StatusEffects_Pernell();
 	StatusEffects_Medieval();
 	StatusEffects_MERLT0N_BUFF();
@@ -2098,7 +2098,7 @@ void StatusEffects_BuildingAntiRaid()
 {
 	//dont display as its a direct cause of elemental
 	StatusEffect data;
-	strcopy(data.BuffName, sizeof(data.BuffName), "Iberia's Anti Raid");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Almina's Anti Raid");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "R");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
@@ -2801,7 +2801,7 @@ void StatusEffects_DebuffMarked()
 	DebuffMarkedIndex = StatusEffect_AddGlobal(data);
 }
 
-stock bool NpcStats_IberiaIsEnemyMarked(int victim)
+stock bool NpcStats_AlminaIsEnemyMarked(int victim)
 {
 	return CheckBuffIndex(victim, DebuffMarkedIndex);
 }
@@ -2972,8 +2972,8 @@ void StatusEffects_CombineCommander()
 	StatusEffect_AddGlobal(data);
 }
 
-int VictoriaCallToArmsIndex;
-void StatusEffects_Victoria()
+int VestaCallToArmsIndex;
+void StatusEffects_Vesta()
 {
 	StatusEffect data;
 	strcopy(data.BuffName, sizeof(data.BuffName), "Squad Leader");
@@ -3018,7 +3018,7 @@ void StatusEffects_Victoria()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 
-	strcopy(data.BuffName, sizeof(data.BuffName), "Call To Victoria");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Call To Vesta");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "@");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "@"); //dont display above head, so empty
 	//Takes 20% less damage, and deals 20% more damage
@@ -3031,7 +3031,7 @@ void StatusEffects_Victoria()
 	data.ShouldScaleWithPlayerCount = true;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
-	VictoriaCallToArmsIndex = StatusEffect_AddGlobal(data);
+	VestaCallToArmsIndex = StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Taurine");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "T");
@@ -3046,7 +3046,7 @@ void StatusEffects_Victoria()
 	data.SlotPriority				= 0;
 	StatusEffect_AddGlobal(data);
 	
-	strcopy(data.BuffName, sizeof(data.BuffName), "Victorian Launcher Overdrive");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Vestan Launcher Overdrive");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
 	data.DamageTakenMulti 			= -1.0;
@@ -3111,9 +3111,9 @@ void StatusEffects_Victoria()
 	StatusEffect_AddGlobal(data);
 }
 
-stock bool NpcStats_VictorianCallToArms(int victim)
+stock bool NpcStats_VestanCallToArms(int victim)
 {
-	return CheckBuffIndex(victim, VictoriaCallToArmsIndex);
+	return CheckBuffIndex(victim, VestaCallToArmsIndex);
 }
 
 void AmmoTM_Visual_Hud_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
@@ -3225,7 +3225,7 @@ void StatusEffects_Medieval()
 	
 	data.AttackspeedBuff			= -1.0;
 	
-	strcopy(data.BuffName, sizeof(data.BuffName), "Pikeman's Slashes");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Pikeman's Stabs");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "PI");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
@@ -4601,7 +4601,7 @@ float Ruinas_DamageFunc(int attacker, int victim, StatusEffect Apply_MasterStatu
 #endif	// ZR
 
 
-int KazimierzDodgeIndex;
+int GrunwaldDodgeIndex;
 int OsmosisDebuffIndex;
 void StatusEffects_WeaponSpecific_VisualiseOnly()
 {
@@ -4697,7 +4697,7 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 
-	strcopy(data.BuffName, sizeof(data.BuffName), "Victorian Launcher's Call");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Vestan Launcher's Call");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "㎾");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
@@ -4776,7 +4776,7 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.HudDisplay_Func			= INVALID_FUNCTION;
-	KazimierzDodgeIndex = StatusEffect_AddGlobal(data);
+	GrunwaldDodgeIndex = StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Tonic Affliction Hide");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
@@ -4924,9 +4924,9 @@ void HandOfSparkHud_Func(int attacker, int victim, StatusEffect Apply_MasterStat
 #endif
 }
 
-stock bool NpcStats_KazimierzDodge(int victim)
+stock bool NpcStats_GrunwaldDodge(int victim)
 {
-	return CheckBuffIndex(victim, KazimierzDodgeIndex);
+	return CheckBuffIndex(victim, GrunwaldDodgeIndex);
 }
 stock bool NpcStats_InOsmosis(int victim)
 {
@@ -4985,7 +4985,7 @@ void StatusEffects_StatusEffectListOnly()
 	data.SlotPriority				= 2;
 	StatusEffect_AddGlobal(data);
 	
-	strcopy(data.BuffName, sizeof(data.BuffName), "Nethersea Antidote");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Abyss Antidote");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "Ξ");
 	data.Positive 					= true;
 	data.Slot						= 0;
@@ -5037,7 +5037,7 @@ void StatusEffects_StatusEffectListOnly()
 	data.Slot						= 0;
 	data.SlotPriority				= 0;
 
-	strcopy(data.BuffName, sizeof(data.BuffName), "Iberia Light");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Almina Light");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "i");
 	data.Positive 					= true;
 	data.AttackspeedBuff			= (1.0 / 1.1);
@@ -5047,7 +5047,7 @@ void StatusEffects_StatusEffectListOnly()
 
 	data.AttackspeedBuff			= 0.0;
 
-	strcopy(data.BuffName, sizeof(data.BuffName), "Victoria Nuke");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Vesta Nuke");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "◈");
 	data.Positive 					= false;
 	StatusEffect_AddGlobal(data);
@@ -5078,7 +5078,7 @@ void StatusEffects_StatusEffectListOnly()
 	data.Positive 					= false;
 	StatusEffect_AddGlobal(data);
 
-	strcopy(data.BuffName, sizeof(data.BuffName), "Iberia Morale Boost");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Almina Morale Boost");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "W");
 	data.Positive 					= true;
 	StatusEffect_AddGlobal(data);
@@ -8136,7 +8136,7 @@ static void Const2_Gravitational_Timer(int entity, StatusEffect Apply_MasterStat
 		return;
 	}
 	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
-	Apply_StatusEffect.DataForUse = GetGameTime() + 3.0;
+	Apply_StatusEffect.DataForUse = GetGameTime() + 5.0;
 	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
 	static float victimPos[3];
 	static float partnerPos[3];
@@ -8156,8 +8156,8 @@ static void Const2_Gravitational_Timer(int entity, StatusEffect Apply_MasterStat
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", victimPos); 
 
 			float Distance = GetVectorDistance(victimPos, partnerPos);
-			if(Distance < 1250.0)
-			{				
+			if(Distance < 500.0)
+			{
 				static float angles[3];
 				GetVectorAnglesTwoPoints(victimPos, partnerPos, angles);
 
@@ -8646,12 +8646,16 @@ float Glug_TakeDamage_Spread(int attacker, int victim, StatusEffect Apply_Master
 	int summon = NPC_CreateByName("npc_glug", -1, pos, ang, GetTeam(victim), "");
 	if(summon > MaxClients)
 	{
-		float wave = float(Waves_GetRoundScale()+1);
+		float wave = 10.0
+		int Health = 10000;
+#if defined ZR
+		wave = float(Waves_GetRoundScale()+1);
 		wave *= 0.133333;
 		wave *= MinibossScalingReturn();
 		wave *= 0.75;
 
-		int Health = StringToInt(MinibossHealthScaling(70.0, true));
+		Health = StringToInt(MinibossHealthScaling(70.0, true));
+#endif
 
 		fl_Extra_Damage[summon] *= wave;
 		fl_Extra_Speed[summon] = fl_Extra_Speed[victim];
@@ -9666,8 +9670,9 @@ void TakeDamagePostAtttacker_CoffinsReturn(int attacker, int victim, float damag
 		
 	if(HasSpecificBuff(attacker, "Call of the Heartbroken Weakened"))
 		return;
-	GiveCoffinOnDamage(OwnerAttach,victim, damage);
-
+#if defined ZR
+	GiveCoffinOnDamage(OwnerAttach,victim, damage * 2);
+#endif
 }
 static float TiantuiDamageDeal(int attacker, int victim, float basedamage, float bonus, float multi)
 {
@@ -9707,7 +9712,9 @@ static void TiantuiStart(int victim, StatusEffect Apply_MasterStatusEffect, E_St
 {
 	if(victim <= MaxClients)
 	{
+#if defined ZR
 		MakeBladeBloddy(victim, true);
+#endif
 		if(IsValidEntity(Apply_StatusEffect.WearableUse))
 			return;
 	
@@ -9724,8 +9731,10 @@ static void TiantuiStart(int victim, StatusEffect Apply_MasterStatusEffect, E_St
 }
 static void TiantuiEnd(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
+#if defined ZR
 	if(victim <= MaxClients)
 		MakeBladeBloddy(victim, false);
+#endif
 
 	if(!IsValidEntity(Apply_StatusEffect.WearableUse))
 		return;
@@ -9754,9 +9763,10 @@ int StaggerTypeTarget(int victim)
 		
 	return 0;
 }
-#define MAX_RANGE_HEARTBROKEN 600.0
+#define MAX_RANGE_HEARTBROKEN 900.0
 static void CallOfHeartBroken_Timer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
+#if defined ZR
 	int OwnerAttach = -1;
 	for (int i = 1; i <= MaxClients; i++)
 	{
@@ -9806,16 +9816,18 @@ static void CallOfHeartBroken_Timer(int entity, StatusEffect Apply_MasterStatusE
 			SetEntityRenderColor(EntRefToEntIndex(Apply_StatusEffect.WearableUse), 65, 0, 125, 255);
 		}
 	}
+	ApplyLastmanOrDyingOverlay(entity);
 	
 	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
 
-	spawnRing_Vectors(flPos, MAX_RANGE_HEARTBROKEN * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 0, 255, 200, 1, 0.45, 12.0, 6.1, 1, _, entity);
-		
+	spawnRing_Vectors(flPos, MAX_RANGE_HEARTBROKEN * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 125, 0, 255, 200, 1, 0.45, 10.0, 0.0, 1, _, entity);
+#endif
 }
 
 #define MAXMEMORIAL_HITS 2
 void CallOfHeartBroken_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
+#if defined ZR
 	if(!IsValidEntity(victim))
 		return;
 		
@@ -9859,7 +9871,7 @@ void CallOfHeartBroken_Start(int victim, StatusEffect Apply_MasterStatusEffect, 
 	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
 	Apply_StatusEffect.WearableUse = EntIndexToEntRef(laser);
 	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
-		
+#endif	
 }
 
 
@@ -9871,6 +9883,7 @@ void Func_HeartBrokenHud(int attacker, int victim, StatusEffect Apply_MasterStat
 
 void CallOfHeartBroken_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
+#if defined ZR
 	if(!IsValidEntity(Apply_StatusEffect.WearableUse))
 		return;
 
@@ -9903,6 +9916,7 @@ void CallOfHeartBroken_End(int victim, StatusEffect Apply_MasterStatusEffect, E_
 	pack.WriteFloat(PosMe[0]);
 	pack.WriteFloat(PosMe[1]);
 	pack.WriteFloat(PosMe[2]);
+#endif
 }
 
 

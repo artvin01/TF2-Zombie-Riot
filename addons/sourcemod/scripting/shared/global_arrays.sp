@@ -93,20 +93,20 @@ enum
 enum
 {
 	Faction_Expidonsa = 1,
-	Faction_Kazimierz,
-	Faction_Victoria,
+	Faction_Grunwald,
+	Faction_Vesta,
 	Faction_PsychicWarlord,
-	Faction_Seaborn
+	Faction_Dweller
 }
 public const char ItemFaction[][] =
 {
 	"",
 
 	"Expidonsa",
-	"Kazimierz",
-	"Victoria",
+	"Grunwald",
+	"Vesta",
 	"Psychic Warlord",
-	"Seaborn"
+	"Dweller"
 }
 
 enum
@@ -668,6 +668,7 @@ Function EntityFuncAttack2[MAXENTITIES];
 Function EntityFuncAttack3[MAXENTITIES];
 Function EntityFuncReload4[MAXENTITIES];
 Function EntityFuncPlayerRunCmd[MAXENTITIES];
+Function EntityFuncOnKill[MAXENTITIES];
 Function EntityFuncTakeDamage[MAXENTITIES][2];
 //Function EntityFuncReloadSingular5[MAXENTITIES];
 
@@ -836,7 +837,7 @@ enum
 	STEPTYPE_COMBINE_METRO = 4,
 	STEPTYPE_TANK = 5,
 	STEPTYPE_ROBOT = 6,
-	STEPTYPE_SEABORN = 7
+	STEPTYPE_DWELLER = 7
 }
 
 enum
@@ -852,7 +853,7 @@ enum
 	BLEEDTYPE_RUBBER = 3,
 	BLEEDTYPE_XENO = 4,
 	BLEEDTYPE_SKELETON = 5,
-	BLEEDTYPE_SEABORN = 6,
+	BLEEDTYPE_DWELLER = 6,
 	BLEEDTYPE_VOID = 7,
 	BLEEDTYPE_UMBRAL = 8,
 	BLEEDTYPE_PORTAL = 9

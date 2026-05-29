@@ -137,7 +137,7 @@ public void Rogue_HandCaster_Weapon(int entity)
 	}
 }
 
-public void Rogue_HandKazimierz_Weapon(int entity)
+public void Rogue_HandGrunwald_Weapon(int entity)
 {
 	if(i_WeaponArchetype[entity] == Archetype_Lord || i_WeaponArchetype[entity] == Archetype_Defender)
 	{

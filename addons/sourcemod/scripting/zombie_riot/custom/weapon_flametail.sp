@@ -57,7 +57,7 @@ void Flametail_Enable(int client, int weapon)
 			}
 		}
 	}
-	if(Store_IsWeaponFaction(client, weapon, Faction_Kazimierz))
+	if(Store_IsWeaponFaction(client, weapon, Faction_Grunwald))
 	{
 		if(KaziBuffed)
 		{
@@ -219,14 +219,14 @@ void Flametail_SelfTakeDamage(int victim, float &damage, int damagetype, int wea
 		}
 	}
 
-	if(!dodged && NpcStats_KazimierzDodge(weaponinhand))
+	if(!dodged && NpcStats_GrunwaldDodge(weaponinhand))
 	{
 		if(!KaziBuffed)
 		{
 			RemoveSpecificBuff(weaponinhand, "Flaming Agility");
 			return;
 		}
-		// Kazimierz Global Buff
+		// Grunwald Global Buff
 		if(damagetype & DMG_CLUB)
 		{
 			bool found;

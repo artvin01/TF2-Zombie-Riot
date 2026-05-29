@@ -763,16 +763,18 @@ stock int SpawnWeapon(int client, char[] name, int index, int level, int qual, c
 		custom_classSetting = 0;
 	}
 	int weapon = SpawnWeaponBase(client, name, index, level, qual, custom_classSetting);
+	
 	if(weapon != -1)
 	{
 		HandleAttributes(weapon, attrib, value, count); //Thanks suza! i love my min models
 	}
+	
 	return weapon;
 }
 
 static int SpawnWeaponBase(int client, char[] name, int index, int level, int qual, int custom_classSetting = 0)
 {
-	Handle weapon = TF2Items_CreateItem(OVERRIDE_ALL|FORCE_GENERATION|PRESERVE_ATTRIBUTES);
+	Handle weapon = TF2Items_CreateItem(OVERRIDE_ALL|FORCE_GENERATION);
 	if(weapon == INVALID_HANDLE)
 		return -1;
 	
@@ -839,7 +841,7 @@ static int SpawnWeaponBase(int client, char[] name, int index, int level, int qu
 //										 info.Attribs, info.Value, info.Attribs);
 public void HandleAttributes(int weapon, const int[] attributes, const float[] values, int count)
 {
-	RemoveAllDefaultAttribsExceptStrings(weapon);
+//	RemoveAllDefaultAttribsExceptStrings(weapon);
 	
 	for(int i = 0; i < count; i++) 
 	{
@@ -847,7 +849,7 @@ public void HandleAttributes(int weapon, const int[] attributes, const float[] v
 	}
 }
 
-void RemoveAllDefaultAttribsExceptStrings(int entity)
+stock void RemoveAllDefaultAttribsExceptStrings(int entity)
 {
 	Attributes_RemoveAll(entity);
 	
@@ -5057,7 +5059,7 @@ stock void MakePlayerGiveResponseVoice(int client, int status)
 
 	switch(status)
 	{	
-		case 1: //Irene cocky talk
+		case 1: //Amphi cocky talk
 		{
 			switch(ClassShown)
 			{

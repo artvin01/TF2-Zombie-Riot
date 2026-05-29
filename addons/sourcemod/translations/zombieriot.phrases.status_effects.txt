@@ -177,13 +177,13 @@
 		"it"	"Diminuisce i danni inflitti di 25％, che si riducono nel tempo a 0％"
 		"ko"	"적에게 입히는 공격 피해량이 10％ 감소하고, 시간이 지날수록 점점 감소하여 최종적으로 공격 피해량 감소량이 0％까지 떨어집니다."
 	}
-	"Iberia's Anti Raid"
+	"Almina's Anti Raid"
 	{
-		"en"	"Iberia's Anti Raid"
-		"it"	"Anti Raid di Iberia"
+		"en"	"Almina's Anti Raid"
+		"it"	"Anti Raid di Almina"
 		"ko"	"이베리아의 레이드 대항마"
 	}
-	"Iberia's Anti Raid Desc"
+	"Almina's Anti Raid Desc"
 	{
 		"en"	"Increases Damage Taken by 10％"
 		"it"	"Aumenta i danni subiti del 10"
@@ -751,15 +751,15 @@
 		"ko"	"받는 피해량이 25％ 증가합니다."
 		"it"	"Aumenta i danni subiti di 25％"
 	}
-	"Call To Victoria"
+	"Call To Vesta"
 	{
-		"en"	"Call To Victoria"
+		"en"	"Call To Vesta"
 		"ko"	"빅토리아의 부름"
 		"it"	"Chiamata a Vittoria"
 	}
-	"Call To Victoria Desc"
+	"Call To Vesta Desc"
 	{
-		"en"	"Reduces damage taken by 20％\nBoosts damage dealt by 20％\nBoosts NPC'S Movementspeed by 15％\nAll Victorian enemeies gain extra abilities upon reciving this buff."
+		"en"	"Reduces damage taken by 20％\nBoosts damage dealt by 20％\nBoosts NPC'S Movementspeed by 15％\nAll Vestan enemeies gain extra abilities upon reciving this buff."
 		"ko"	"받는 피해량 20％ 감소\n공격 피해량 20％ 증가\nNPC의 이동 속도 15％ 증가\n해당 버프를 보유한 빅토리아 계열 적들은 추가 능력을 얻습니다."
 		"it"	"Riduce i danni subiti del 20％\nAumenta i danni inflitti del 20％\nAumenta la velocità di movimento degli NPC del 15％\nTutti i nemici vittoriani ottengono abilità extra quando ricevono questo buff."
 	}
@@ -829,12 +829,12 @@
 		"it"	"Aumenta i danni inflitti di 12,5％\nDiminuisce i danni subiti di 25％\nAumenta la velocità di movimento degli NPC di 50％\nAumenta la velocità di attacco/ricarica e la velocità di guarigione di 25％"
 		"ko"	"공격 피해량이 12.5％ 증가합니다.\n받는 피해량이 25％ 감소합니다.\nNPC의 이동 속도가 50％ 증가합니다.\n공격 속도, 재장전 속도, 치유 속도가 25％ 증가합니다."
 	}
-	"Pikeman's Slashes"
+	"Pikeman's Stabs"
 	{
-		"en"	"Pikeman's Slashes"
+		"en"	"Pikeman's Stabs"
 		"ko"	"장창병의 참격"
 	}
-	"Pikeman's Slashes Desc"
+	"Pikeman's Stabs Desc"
 	{
 		"en"	"Count increases by 1 for each spearmen hit taken\nAt Max hits taken, all spearmen enemies will deal 300％ more damage to you."
 		"ko"	"창병에게 피해를 받을 때마다 1회 누적\n최대까지 누적 시, 모든 창병 계열 적이 보유자에게 가하는 피해가 300％ 증가"
@@ -862,10 +862,12 @@
 	"Coffin's Return"
 	{
 		"en"	"Coffin's Return"
+		"ko"	"관의 귀환"
 	}
 	"Coffin's Return Desc"
 	{
 		"en"	"You have been summoned with Coffins.\nWhile in the circle of your summoner, you generate coffins for them on damage."
+		"ko"	"관 소모를 통해 소환되었습니다.\n소환자 근처의 원 안에 있을 때, 피해를 가하여 소환자에게 관을 제공할 수 있습니다."
 	}
 	"Call of the Heartbroken Weakened"
 	{
@@ -1347,19 +1349,19 @@
 	}
 	"Castle Breaking Power Desc"
 	{
-		"en"	"Increases Victorian weapons damage by 10％"
+		"en"	"Increases Vestan weapons damage by 10％"
 		"it"	"Aumenta i danni delle armi vittoriane del 10％"
 		"ko"	"''빅토리아'' 진영 무기들의 피해량이 10％ 증가합니다."
 	}
-	"Victorian Launcher's Call"
+	"Vestan Launcher's Call"
 	{
-		"en"	"Victorian Launcher's Call"
+		"en"	"Vestan Launcher's Call"
 		"it"	"Il richiamo del lanciatore vittoriano"
 		"ko"	"빅토리아 런처의 부름"
 	}
-	"Victorian Launcher's Call Desc"
+	"Vestan Launcher's Call Desc"
 	{
-		"en"	"Increases Victorian Weapons Explosive Radius by 10％"
+		"en"	"Increases Vestan Weapons Explosive Radius by 10％"
 		"it"	"Aumenta il raggio di esplosione delle armi vittoriane del 10％"
 		"ko"	"''빅토리아'' 진영 무기들의 폭발 범위가 10％ 증가합니다."
 	}
@@ -1370,7 +1372,7 @@
 	}
 	"Explosault Rifle Buff Desc"
 	{
-		"en"	"''Victoria'' faction will have 10％ less blast damage reduce per target"
+		"en"	"''Vesta'' faction will have 10％ less blast damage reduce per target"
 		"ko"	"''빅토리아'' 진영 무기들의 폭발 타겟당 피해량 감소가 10％ 완화됩니다."
 	}
 	"Tinkering Curiosity"
@@ -1444,13 +1446,13 @@
 		"it"	"Ignora."
 		"ko"	"이 텍스트는 무시하십시오."
 	}
-	"Victorian Launcher Overdrive"
+	"Vestan Launcher Overdrive"
 	{
 		"en"	"Ignore"
 		"it"	"Ignora"
 		"ko"	"이 텍스트는 무시하십시오."
 	}
-	"Victorian Launcher Overdrive Desc"
+	"Vestan Launcher Overdrive Desc"
 	{
 		"en"	"Ignore"
 		"it"	"Ignora"
@@ -1604,13 +1606,13 @@
 		"it"	"Aumenta la velocità di attacco/ricarica e la velocità di guarigione del 12％"
 		"ko"	"공격 속도, 재장전 속도, 치유 속도가 12％ 증가합니다."
 	}
-	"Iberia Light"
+	"Almina Light"
 	{
-		"en"	"Iberia Light"
-		"it"	"Luce Iberia"
+		"en"	"Almina Light"
+		"it"	"Luce Almina"
 		"ko"	"이베리아의 빛"
 	}
-	"Iberia Light Desc"
+	"Almina Light Desc"
 	{
 		"en"	"Increases attack/reload speed & healrate by 10％"
 		"it"	"Aumenta la velocità di attacco/ricarica e la velocità di guarigione del 10％"
@@ -1640,28 +1642,28 @@
 		"it"	"Rigenera lentamente l'armatura di 1％ al secondo, fino a metà dell'armatura stessa"
 		"ko"	"매 초마다 아머를 1％씩 회복합니다. 최대 아머의 50％까지 회복할 수 있습니다.\n{yellow}최근에 피해를 받았다면, 이 효과가 0.25％로 감소합니다."
 	}
-	"Nethersea Antidote"
+	"Abyss Antidote"
 	{
-		"en"	"Nethersea Antidote"
-		"it"	"Antidoto di Nethersea"
+		"en"	"Abyss Antidote"
+		"it"	"Antidoto di Abyss"
 		"ko"	"명흔 항독제"
 	}
-	"Nethersea Antidote Desc"
+	"Abyss Antidote Desc"
 	{
-		"en"	"Reduces the damage caused by nethersea brands by 80％"
-		"it"	"Riduce i danni causati dai marchi nethersea dell'80％"
+		"en"	"Reduces the damage caused by abyssal weeds by 80％"
+		"it"	"Riduce i danni causati dai marchi abyss dell'80％"
 		"ko"	"명흔으로 받는 피해가 80％ 감소합니다."
 	}
-	"Victoria Nuke"
+	"Vesta Nuke"
 	{
-		"en"	"Victoria Nuke"
+		"en"	"Vesta Nuke"
 		"it"	"Bomba Atomica Vittoria"
 		"ko"	"빅토리아 핵"
 	}
-	"Victoria Nuke Desc"
+	"Vesta Nuke Desc"
 	{
-		"en"	"Launches a Victoria Nuke when full.\nRemoves Locked On from all enemies when at a certain amount."
-		"it"	"Lancia una Victoria Nuke quando è piena.\nRimuove Locked On da tutti i nemici quando raggiunge una certa quantità."
+		"en"	"Launches a Vesta Nuke when full.\nRemoves Locked On from all enemies when at a certain amount."
+		"it"	"Lancia una Vesta Nuke quando è piena.\nRimuove Locked On da tutti i nemici quando raggiunge una certa quantità."
 		"ko"	"이것이 꽉 차면 빅토리아 핵이 발사됩니다.\n일정 수치 이상이 되면, 모든 적에게 부여된 목표 고정 효과를 제거합니다."
 	}
 	"Locked On"
@@ -1672,8 +1674,8 @@
 	}
 	"Locked On Desc"
 	{
-		"en"	"The Victoria Nuke will always target the victim."
-		"it"	"La Victoria Nuke si rivolge sempre alla vittima."
+		"en"	"The Vesta Nuke will always target the victim."
+		"it"	"La Vesta Nuke si rivolge sempre alla vittima."
 		"ko"	"빅토리아 핵은 항상 이 효과가 부여된 대상을 타겟으로 삼습니다."
 	}
 	"Shield"
@@ -1700,13 +1702,13 @@
 		"it"	"Cambia casualmente i danni e gli elementi dell'HUD a seconda del livello."
 		"ko"	"보유한 혼돈 침식도에 비례하여 피해량과 허드 요소가 무작위로 변경됩니다."
 	}
-	"Iberia Morale Boost"
+	"Almina Morale Boost"
 	{
-		"en" 	"Iberia Morale Boost"
-		"it"	"Aumento del morale di Iberia"
+		"en" 	"Almina Morale Boost"
+		"it"	"Aumento del morale di Almina"
 		"ko"	"이베리아 사기 증진"
 	}
-	"Iberia Morale Boost Desc"
+	"Almina Morale Boost Desc"
 	{
 		"en"	"Increases damage, speed and resistances.\nThis dependant on how high the motivation is, 1 being the lowest, 4 being the highest.\nWith each tier giving much more."
 		"it"	"Aumenta i danni, la velocità e le resistenze.\nQuesto dipende da quanto è alta la motivazione, 1 è la più bassa, 4 è la più alta.\nCon ogni livello che dà molto di più."

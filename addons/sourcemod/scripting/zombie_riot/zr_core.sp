@@ -175,7 +175,7 @@ enum
 	WEAPON_BOUNCING = 3,
 	WEAPON_MAIMMOAB = 4,
 	WEAPON_CRIPPLEMOAB = 5,
-	WEAPON_IRENE = 6,
+	WEAPON_AMPHI = 6,
 	WEAPON_7 = 7,
 	WEAPON_COSMIC_TERROR = 8,
 	WEAPON_9 = 9,
@@ -226,12 +226,12 @@ enum
 	WEAPON_FIRE_WAND = 54,
 	WEAPON_CASINO = 55,
 	WEAPON_ION_BEAM = 56,
-	WEAPON_SEABORNMELEE = 57,
+	WEAPON_DWELLERMELEE = 57,
 	WEAPON_LEPER_MELEE = 58,
 	WEAPON_LEPER_MELEE_PAP = 59,
 	WEAPON_FLAGELLANT_MELEE = 60,
 	WEAPON_FLAGELLANT_HEAL = 61,
-	WEAPON_SEABORN_MISC = 62,
+	WEAPON_DWELLER_MISC = 62,
 	WEAPON_TEXAN_BUISNESS = 63,
 	WEAPON_FLAGELLANT_DAMAGE = 64,
 	WEAPON_FUSION_PAP1 = 65,
@@ -270,7 +270,7 @@ enum
 	WEAPON_GRENADEHUD = 98,
 	WEAPON_WEST_REVOLVER = 99,
 	WEAPON_OBUCH = 100,
-	WEAPON_VICTORIAN_LAUNCHER = 101,
+	WEAPON_VESTAN_LAUNCHER = 101,
 	WEAPON_BOOM_HAMMER = 102,
 	WEAPON_MERCHANT = 103,
 	WEAPON_MERCHANTGUN = 104,
@@ -351,15 +351,15 @@ enum
 	Type_BTD,
 	Type_Medieval,
 	Type_COF,
-	Type_Seaborn,
+	Type_Dweller,
 	Type_Expidonsa,
 	Type_Interitus,
 	Type_BlueParadox,
 	Type_Void,
 	Type_Ruina,
-	Type_IberiaExpiAlliance,
+	Type_AlminaExpiAlliance,
 	Type_WhiteflowerSpecial,
-	Type_Victoria,
+	Type_Vesta,
 	Type_Matrix,
 	Type_Aperture,
 	Type_Mutation,
@@ -663,7 +663,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/weapon_health_hose.sp"
 #include "custom/weapon_superubersaw.sp"
 #include "../shared/custom/joke_medigun_mod_drain_health.sp"
-#include "../shared/custom/weapon_judgement_of_iberia.sp"
+#include "../shared/custom/weapon_judgement_of_almina.sp"
 #include "../shared/custom/weapon_phlog_replacement.sp"
 #include "custom/weapon_cosmic_terror.sp"
 #include "custom/wand/weapon_wand_potions.sp"
@@ -687,7 +687,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/weapon_hazard.sp"
 #include "custom/weapon_casino.sp"
 #include "custom/wand/weapon_ion_beam_wand.sp"
-#include "custom/kit_seaborn.sp"
+#include "custom/kit_dweller.sp"
 #include "custom/weapon_class_leper.sp"
 #include "custom/kit_flagellant.sp"
 #include "custom/kit_zealot.sp"
@@ -715,7 +715,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/weapon_messenger.sp"
 #include "custom/kit_blacksmith.sp"
 #include "custom/weapon_deagle_west.sp"
-#include "custom/weapon_victorian.sp"
+#include "custom/weapon_vestan.sp"
 #include "custom/weapon_obuch.sp"
 #include "custom/kit_merchant.sp"
 #include "custom/weapon_mg42.sp"
@@ -895,7 +895,7 @@ void ZR_MapStart()
 	Zero(i_NormalBarracks_HexBarracksUpgrades_2);
 	Ammo_Count_Ready = 0;
 	ZombieMusicPlayed = false;
-	Seaborn_OnMapStart();
+	Dweller_OnMapStart();
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	WavesUpdateDifficultyName();
@@ -957,9 +957,9 @@ void ZR_MapStart()
 	Zero(f_TimeAfterSpawn);
 	Zero2(f_ArmorCurrosionImmunity);
 	Zero(fl_MatrixReflect);
-	Reset_stats_Irene_Global();
+	Reset_stats_Amphi_Global();
 	Reset_stats_PHLOG_Global();
-	Irene_Map_Precache();
+	Amphi_Map_Precache();
 	PHLOG_Map_Precache();
 	Cosmic_Map_Precache();
 	Weapon_lantean_Wand_Map_Precache();
@@ -1057,7 +1057,7 @@ void ZR_MapStart()
 	ResetMapStartMessengerWeapon();
 	ResetMapStartWest();
 	Object_MapStart();
-	ResetMapStartVictoria();
+	ResetMapStartVesta();
 	Obuch_Mapstart();
 	Ulpianus_MapStart();
 	Magnesis_Precache();
@@ -1263,7 +1263,7 @@ void ZR_ClientDisconnect(int client)
 	Building_ClientDisconnect(client);
 	Queue_ClientDisconnect(client);
 	Vehicle_Exit(client, true, false);
-	Reset_stats_Irene_Singular(client);
+	Reset_stats_Amphi_Singular(client);
 	Reset_stats_PHLOG_Singular(client);
 	Reset_stats_Passanger_Singular(client);
 	Reset_stats_Survival_Singular(client);
@@ -2356,7 +2356,7 @@ void TriggerLastmanLogic(int killed, int Hurtviasdkhook)
 					}
 					Yakuza_Lastman(8);
 				}
-				if(SeaMelee_IsSeaborn(client))
+				if(SeaMelee_IsDweller(client))
 				{
 					CPrintToChatAll("{crimson}The sea entirely corrupts %N.",client);
 					Yakuza_Lastman(9);
@@ -3403,7 +3403,7 @@ void ZR_FastDownloadForce()
 	PrecacheHeartbrokenMusic();
 	PrecacheSharedDarkestMusic();
 	PrecacheTwirlMusic();
-	SeaBornMusicDo();
+	DwellerMusicDo();
 	PurnellMusicOst();
 	PrecacheBlitzMusic();
 	SoldineKitDownload();

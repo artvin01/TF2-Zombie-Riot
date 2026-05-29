@@ -18,15 +18,15 @@ static const char Categories[][] =
 	"Bloons",
 	"Medieval Empire",
 	"Cry of Fear",
-	"Seaborn Infection",
+	"Dweller Infection",
 	"Expidonsa",
 	"Interitus Alliances",
 	"Chaos Allience",
 	"Voided Subjects",
 	"Ruina",
-	"Iberia Expidonsa Alliance",
+	"Almina Expidonsa Alliance",
 	"Whiteflower Specials",
-	"Victoria",
+	"Vesta",
 	"Matrix",
 	"Aperture",
 	"Mutations",
@@ -84,7 +84,7 @@ void Items_SetupConfig()
 	kv.GotoFirstSubKey();
 	
 	GiftItem item;
-	do	// TODO: Replace ArrayList with IntMap
+	do
 	{
 		kv.GetSectionName(item.Name, sizeof(item.Name));
 		int index = StringToInt(item.Name);

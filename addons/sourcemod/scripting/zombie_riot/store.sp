@@ -93,6 +93,7 @@ enum struct ItemInfo
 	Function Func_OnPlayerRunCmd;
 	Function Func_WeaponCreated;
 	Function Func_MapStart;
+	Function Func_OnKill;
 	Function Func_TakeDamage_Take;
 	Function Func_TakeDamage_Deal;
 	Function Func_TakeDamagePost;
@@ -371,6 +372,10 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sfunc_ontakedamage_take", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.Func_TakeDamage_Take = GetFunctionByName(null, buffer);
+
+		Format(buffer, sizeof(buffer), "%sfunc_onkill", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.Func_OnKill = GetFunctionByName(null, buffer);
 
 		Format(buffer, sizeof(buffer), "%sfunc_ontakedamage_deal", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
@@ -6226,6 +6231,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					EntityFuncPlayerRunCmd[entity]  = info.Func_OnPlayerRunCmd;
 					EntityFuncTakeDamage[entity][0]  = info.Func_TakeDamage_Deal;
 					EntityFuncTakeDamage[entity][1]  = info.Func_TakeDamage_Take;
+					EntityFuncOnKill[entity]  = info.Func_OnKill;
 					
 					b_Do_Not_Compensate[entity] 				= info.NoLagComp;
 					b_Only_Compensate_CollisionBox[entity] 		= info.OnlyLagCompCollision;
@@ -6591,13 +6597,13 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_StarShooter(client, entity);
 		Enable_Passanger(client, entity);
 		Enable_MG42(client, entity);
-		Reset_stats_Irene_Singular_Weapon(entity);
+		Reset_stats_Amphi_Singular_Weapon(entity);
 		Reset_stats_MG42_Singular_Weapon(entity);
 		Activate_Beam_Wand_Pap(client, entity);
 		Activate_Yamato(client, entity);
 		Activate_Fantasy_Blade(client, entity);
 		Activate_Quincy_Bow(client, entity);
-		Enable_Irene(client, entity);
+		Enable_Amphi(client, entity);
 		Enable_LappLand(client, entity);
 		Enable_PHLOG(client, entity);
 		Enable_OceanSong(client, entity);
@@ -6646,7 +6652,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		WeaponNailgun_Enable(client, entity);
 		Blacksmith_Enable(client, entity);
 		Enable_West_Weapon(client, entity);
-		Enable_Victorian_Launcher(client, entity);
+		Enable_Vestan_Launcher(client, entity);
 		Enable_Chainsaw(client, entity);
 		//Activate_Cosmic_Weapons(client, entity);
 		Merchant_Enable(client, entity);

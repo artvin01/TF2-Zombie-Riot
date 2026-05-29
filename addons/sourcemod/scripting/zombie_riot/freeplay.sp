@@ -30,7 +30,7 @@ static bool IsExplodeWave; // to prevent the message from popping up twice
 static int ExplodeNPCDamage;
 static int EnemyShields;
 static int VoidBuff;
-static bool VictoriaBuff;
+static bool VestaBuff;
 static bool SquadBuff;
 static bool Coffee;
 static int StrangleDebuff;
@@ -169,7 +169,7 @@ void Freeplay_ResetAll()
 	IsExplodeWave = false;
 	EnemyShields = 0;
 	VoidBuff = 0;
-	VictoriaBuff = false;
+	VestaBuff = false;
 	SquadBuff = false;
 	Coffee = false;
 	StrangleDebuff = 0;
@@ -484,7 +484,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 22:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_atomizer");
-				enemy.Health = RoundToFloor((500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 			}
 			case 23:
 			{
@@ -589,7 +589,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Health = RoundToFloor((750000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "wave_40";
 				enemy.ExtraThinkSpeed = 1.15;
-				enemy.ExtraDamage = 0.8;
+				enemy.ExtraDamage = 0.6;
 				enemy.ExtraSpeed = 0.9;
 			}
 			case 38:
@@ -598,7 +598,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Health = RoundToFloor((4000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "wave_40";
 				enemy.ExtraThinkSpeed = 1.15;
-				enemy.ExtraDamage = 0.8;
+				enemy.ExtraDamage = 0.7;
 				enemy.ExtraSpeed = 0.9;
 			}
 			case 39:
@@ -679,7 +679,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	else if(moremen)
 	{
 		enemy.Is_Immune_To_Nuke = true;
-		enemy.Index = NPC_GetByPlugin("npc_seaborn_heavy");
+		enemy.Index = NPC_GetByPlugin("npc_dweller_heavy");
 		enemy.Health = RoundToCeil(((80000.0 + HealthBonus) / 70.0 * float(Waves_GetRound())) * HealthMulti);
 		enemy.ExtraSpeed = 1.5;
 		enemy.ExtraSize = 1.25;
@@ -721,7 +721,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 	{
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Is_Boss = 1;
-		enemy.Index = NPC_GetByPlugin("npc_netherseaspewer");
+		enemy.Index = NPC_GetByPlugin("npc_abyssspewer");
 		enemy.Health = RoundToFloor(((1100000.0 + HealthBonus) / 65.0 * float(Waves_GetRound())) * HealthMulti);
 		enemy.ExtraMeleeRes = 0.75;
 		enemy.ExtraRangedRes = 0.75;
@@ -1124,7 +1124,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 25:	
 		{
-			CPrintToChatAll("{steelblue}CASTELLAN! {gold}- {red}In the name of victoria, he won't allow you further in!");
+			CPrintToChatAll("{steelblue}CASTELLAN! {gold}- {red}In the name of vesta, he won't allow you further in!");
 		}
 		case 26:
 		{
@@ -1360,8 +1360,8 @@ void Freeplay_SpawnEnemy(int entity)
 		if(VoidBuff > 0)
 			Freeplay_ApplyStatusEffect(entity, "Void Strength I", 6.0);
 	
-		if(VictoriaBuff)
-			Freeplay_ApplyStatusEffect(entity, "Call To Victoria", 10.0);
+		if(VestaBuff)
+			Freeplay_ApplyStatusEffect(entity, "Call To Vesta", 10.0);
 	
 		if(SquadBuff)
 			Freeplay_ApplyStatusEffect(entity, "Squad Leader", 20.0);	
@@ -1969,15 +1969,15 @@ void Freeplay_SetupStart(bool extra = false)
 			VoidBuff++;
 		}
 
-		if(VictoriaBuff)
+		if(VestaBuff)
 		{
-			CPrintToChatAll("{green}All enemies have lost the Call to Victoria buff.");
-			VictoriaBuff = false;
+			CPrintToChatAll("{green}All enemies have lost the Call to Vesta buff.");
+			VestaBuff = false;
 		}
 		else
 		{
-			CPrintToChatAll("{red}All enemies now gain the Call to Victoria buff!");
-			VictoriaBuff = true;
+			CPrintToChatAll("{red}All enemies now gain the Call to Vesta buff!");
+			VestaBuff = true;
 		}
 
 		if(SquadBuff)
@@ -2836,15 +2836,15 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 59:
 			{
-				if(VictoriaBuff)
+				if(VestaBuff)
 				{
-					strcopy(message, sizeof(message), "{green}All enemies have lost the Call to Victoria buff.");
-					VictoriaBuff = false;
+					strcopy(message, sizeof(message), "{green}All enemies have lost the Call to Vesta buff.");
+					VestaBuff = false;
 				}
 				else
 				{
-					strcopy(message, sizeof(message), "{red}All enemies now gain the Call to Victoria buff!");
-					VictoriaBuff = true;
+					strcopy(message, sizeof(message), "{red}All enemies now gain the Call to Vesta buff!");
+					VestaBuff = true;
 				}
 			}
 			case 60:

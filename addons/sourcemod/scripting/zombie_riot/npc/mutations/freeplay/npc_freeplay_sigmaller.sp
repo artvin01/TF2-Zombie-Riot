@@ -268,7 +268,7 @@ public void FreeplaySigmaller_ClotThink(int iNPC)
 			{
 				if(GetTeam(entity) == GetTeam(npc.index))
 				{
-					ApplyStatusEffect(npc.index, entity, "Call To Victoria", 60.0);
+					ApplyStatusEffect(npc.index, entity, "Call To Vesta", 60.0);
 					fl_Extra_Speed[entity] *= 1.02;
 					fl_Extra_MeleeArmor[entity] *= 0.98;
 					fl_Extra_RangedArmor[entity] *= 0.98;

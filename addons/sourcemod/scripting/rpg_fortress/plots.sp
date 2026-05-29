@@ -49,8 +49,8 @@ enum struct BlockEnum
 			DispatchKeyValue(entity, "rendercolor", this.Color);
 			SetEntPropFloat(entity, Prop_Send, "m_fadeMinDist", MIN_FADE_DISTANCE);
 			SetEntPropFloat(entity, Prop_Send, "m_fadeMaxDist", MAX_FADE_DISTANCE);
-			DispatchSpawn(entity);
 			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", this.Scale);
+			DispatchSpawn(entity);
 
 			for(int i; i < 3; i++)
 			{
@@ -163,7 +163,7 @@ enum
 
 static KeyValues PlotKv;
 static ArrayList BlockList;
-static IntMap PlotOwner;
+static StringMap PlotOwner;
 static ArrayList BuildList;
 static char BlockZone[32];
 static int MaxBlocks;
@@ -194,7 +194,7 @@ void Plots_ConfigSetup()
 	PlotKv.ImportFromFile(buffer);
 
 	delete PlotOwner;
-	PlotOwner = new IntMap();
+	PlotOwner = new StringMap();
 
 	MaxBlocks = kv.GetNum("maxblocks", 50);
 	kv.GetString("zoneprefix", BlockZone, sizeof(BlockZone));
@@ -259,8 +259,8 @@ void Plots_ZoneCached()
 				DispatchKeyValue(prop, "targetname", "rpg_fortress");
 				DispatchKeyValue(prop, "model", PlatformModel);
 				DispatchKeyValue(prop, "solid", "2");
-				DispatchSpawn(prop);
 				SetEntPropFloat(prop, Prop_Send, "m_flModelScale", PlatformScale);
+				DispatchSpawn(prop);
 				
 				for(int i; i < 3; i++)
 				{
@@ -284,8 +284,10 @@ void Plots_ClientEnter(int client, int ref, const char[] name)
 	{
 		InPlot[client] = ref;
 
+		char IntMapReplace[16];
+		IntToString(ref, IntMapReplace, sizeof(IntMapReplace));
 		int owner;
-		if(PlotOwner.GetValue(ref, owner) && (owner = GetClientOfUserId(owner)))
+		if(PlotOwner.GetValue(IntMapReplace, owner) && (owner = GetClientOfUserId(owner)))
 		{
 			if(owner == client)
 			{
@@ -319,8 +321,10 @@ void Plots_ClientLeave(int client, int ref)
 
 void Plots_DisableZone(int ref)
 {
+	char IntMapReplace[16];
+	IntToString(ref, IntMapReplace, sizeof(IntMapReplace));
 	int userid;
-	if(PlotOwner.GetValue(ref, userid))
+	if(PlotOwner.GetValue(IntMapReplace, userid))
 		UnloadPlot(userid, ref);
 }
 
@@ -329,7 +333,9 @@ int Plots_ZoneOwner(int client)
 	int owner;
 	if(InPlot[client])
 	{
-		if(PlotOwner.GetValue(InPlot[client], owner))
+		char IntMapReplace[16];
+		IntToString(InPlot[client], IntMapReplace, sizeof(IntMapReplace));
+		if(PlotOwner.GetValue(IntMapReplace, owner))
 			owner = GetClientOfUserId(owner);
 	}
 
@@ -352,7 +358,9 @@ bool Plots_CanShowMenu(int client, int &owner = 0)
 {
 	if(InPlot[client])
 	{
-		if(!PlotOwner.GetValue(InPlot[client], owner) || !(owner = GetClientOfUserId(owner)))
+		char IntMapReplace[16];
+		IntToString(InPlot[client], IntMapReplace, sizeof(IntMapReplace));
+		if(!PlotOwner.GetValue(IntMapReplace, owner) || !(owner = GetClientOfUserId(owner)))
 			return true;
 		
 		if(owner == client || (Party_IsClientMember(client, owner) && PartyMode[owner] == Build_All))
@@ -477,8 +485,10 @@ public int Plots_MainMenu(Menu menu, MenuAction action, int client, int choice)
 			{
 				InMenu[client] = 0;
 				
+				char IntMapReplace[16];
+				IntToString(InPlot[client], IntMapReplace, sizeof(IntMapReplace));
 				int owner;
-				if(PlotOwner.GetValue(InPlot[client], owner))
+				if(PlotOwner.GetValue(IntMapReplace, owner))
 				{
 					if(choice)
 					{
@@ -562,8 +572,10 @@ bool Plots_PlayerRunCmd(int client, int &buttons)
 		{
 			altfireFor[client] = gameTime;
 
+			char IntMapReplace[16];
+			IntToString(InPlot[client], IntMapReplace, sizeof(IntMapReplace));
 			int userid;
-			if(PlotOwner.GetValue(InPlot[client], userid))
+			if(PlotOwner.GetValue(IntMapReplace, userid))
 			{
 				float pos[3], ang[3];
 				FireBlockTrace(client, pos, ang);
@@ -752,12 +764,14 @@ static void LoadPlot(int client, int zone)
 	if(GetClientAuthId(client, AuthId_Steam3, steamid, sizeof(steamid)) && strlen(steamid) > 9)
 	{
 		// Check for existing owner
+		char IntMapReplace[16];
+		IntToString(zone, IntMapReplace, sizeof(IntMapReplace));
 		int length;
-		if(PlotOwner.GetValue(zone, length))
+		if(PlotOwner.GetValue(IntMapReplace, length))
 			UnloadPlot(length, zone);
 		
 		int userid = GetClientUserId(client);
-		PlotOwner.SetValue(zone, userid);
+		PlotOwner.SetValue(IntMapReplace, userid);
 		
 		PlotKv.Rewind();
 		if(PlotKv.JumpToKey(steamid))
@@ -808,7 +822,9 @@ static void LoadPlot(int client, int zone)
 
 static void UnloadPlot(int userid, int zone)
 {
-	PlotOwner.Remove(zone);
+	char IntMapReplace[16];
+	IntToString(zone, IntMapReplace, sizeof(IntMapReplace));
+	PlotOwner.Remove(IntMapReplace);
 	
 	int client = GetClientOfUserId(userid);
 	if(client)
@@ -955,8 +971,10 @@ bool Plots_CanInteractHere(int client)
 {
 	if(InPlot[client])
 	{
+		char IntMapReplace[16];
+		IntToString(InPlot[client], IntMapReplace, sizeof(IntMapReplace));
 		int owner;
-		if(PlotOwner.GetValue(InPlot[client], owner) && (owner = GetClientOfUserId(owner)))
+		if(PlotOwner.GetValue(IntMapReplace, owner) && (owner = GetClientOfUserId(owner)))
 		{
 			if(owner == client || (Party_IsClientMember(client, owner) && PartyMode[owner] >= Build_Interact))
 				return true;
@@ -969,7 +987,9 @@ static bool CanBuildHere(int client, int &owner = 0)
 {
 	if(InPlot[client])
 	{
-		if(PlotOwner.GetValue(InPlot[client], owner) && (owner = GetClientOfUserId(owner)))
+		char IntMapReplace[16];
+		IntToString(InPlot[client], IntMapReplace, sizeof(IntMapReplace));
+		if(PlotOwner.GetValue(IntMapReplace, owner) && (owner = GetClientOfUserId(owner)))
 		{
 			if(owner == client || (Party_IsClientMember(client, owner) && PartyMode[owner] == Build_All))
 				return true;
@@ -982,8 +1002,10 @@ static bool CanClaimHere(int client)
 {
 	if(InPlot[client])
 	{
+		char IntMapReplace[16];
+		IntToString(InPlot[client], IntMapReplace, sizeof(IntMapReplace));
 		int owner;
-		if(!PlotOwner.GetValue(InPlot[client], owner) || !GetClientOfUserId(owner))
+		if(!PlotOwner.GetValue(IntMapReplace, owner) || !GetClientOfUserId(owner))
 			return true;
 	}
 	return false;

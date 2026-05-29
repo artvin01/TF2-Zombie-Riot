@@ -1974,7 +1974,7 @@ methodmap CClotBody < CBaseCombatCharacter
 #endif
 
 #if defined ZR
-		SeabornVanguard_SpeedBuff(this, speed_for_return);	
+		DwellerVanguard_SpeedBuff(this, speed_for_return);	
 #endif
 
 #if defined RPG
@@ -4458,7 +4458,7 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 				npc.PlayStepSound(g_RobotStepSound[GetRandomInt(0, sizeof(g_RobotStepSound) - 1)], 0.65, npc.m_iStepNoiseType);
 			}
 		}
-		case STEPTYPE_SEABORN:
+		case STEPTYPE_DWELLER:
 		{
 			if(IsWalkEvent(event))
 			{
@@ -7559,7 +7559,7 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0, bool forcesilentMode = fal
 			{
 				Skeletons don't bleed, so I'm leaving this blank.
 			}*/
-			case BLEEDTYPE_SEABORN:
+			case BLEEDTYPE_DWELLER:
 			{
 				if(!EnableSilentMode || !AtEdictLimit(EDICT_EFFECT))
 					ParticleSet = ParticleEffectAt(TempPosition, "flamethrower_rainbow_bubbles02", Random_time); 

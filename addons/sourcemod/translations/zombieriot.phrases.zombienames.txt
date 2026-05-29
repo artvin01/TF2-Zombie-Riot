@@ -1067,88 +1067,88 @@
 		"it"		"Caserma Collos"
 		"ko" 		"배럭 콤바인 황금 거인"
 	}
-	"Barracks Iberian Runner"
+	"Barracks Alminan Runner"
 	{
-		"en"		"Iberian Runner"
+		"en"		"Alminan Runner"
 		"ru" 		"Бегун Иберии"
 		"it"		"Corridore iberico"
 		"ko" 		"배럭 이베리아 러너"
 	}
-	"Barracks Iberian Gunner"
+	"Barracks Alminan Gunner"
 	{
-		"en"		"Iberian Gunner"
+		"en"		"Alminan Gunner"
 		"ru" 		"Стрелок Иберии"
 		"it"		"Artigliere iberico"
 		"ko" 		"배럭 이베리아 총잡이"
 	}
-	"Barracks Iberian Tanker"
+	"Barracks Alminan Tanker"
 	{
-		"en"		"Iberian Tanker"
+		"en"		"Alminan Tanker"
 		"it"		"Nave cisterna iberica"
 		"ko" 		"배럭 이베리아 탱커"
 	}	
-	"Barracks Iberian Rocketeer"
+	"Barracks Alminan Rocketeer"
 	{
-		"en"		"Iberian Rocketeer"
+		"en"		"Alminan Rocketeer"
 		"ru" 		"Ракетомётчик Иберии"
 		"it"		"Razziatore iberico"
 		"ko" 		"배럭 이베리아 로켓사수"
 	}	
-	"Barracks Iberian Healer"
+	"Barracks Alminan Healer"
 	{
-		"en"		"Iberian Healer"
+		"en"		"Alminan Healer"
 		"ru" 		"Медик Иберии"
 		"it"		"Guaritore iberico"
 		"ko" 		"배럭 이베리아 의무병"
 	}
-	"Barracks Iberian Healtanker"
+	"Barracks Alminan Healtanker"
 	{
-		"en"		"Iberian Healtanker"
+		"en"		"Alminan Healtanker"
 		"ru" 		"Лечащий танк иберии"
 		"it"		"Healtanker iberico"
 		"ko" 		"배럭 이베리아 회복 탱커"
 	}	
-	"Barracks Iberia Boomstick"
+	"Barracks Almina Boomstick"
 	{
-		"en"		"Iberian Boomsticker"
+		"en"		"Alminan Boomsticker"
 		"ru" 		"Бумстикер Иберии"
 		"it"		"Boomsticker iberico"
 		"ko" 		"배럭 이베리아 붐스틱병"
 	}
-	"Barracks Iberian Guards"
+	"Barracks Alminan Guards"
 	{
-		"en"		"Iberian Guards"
+		"en"		"Alminan Guards"
 		"ru" 		"Стражи Иберии"
 		"it"		"Guardie iberiche"
 		"ko" 		"배럭 이베리아 경비병"
 	}
-	"Barracks Iberian Commando"
+	"Barracks Alminan Commando"
 	{
-		"en"		"Iberian Commando"
+		"en"		"Alminan Commando"
 		"it"		"Commando iberico"
 		"ko" 		"배럭 이베리아 코만도"
 	}
-	"Barracks Iberian Elite Gunner"
+	"Barracks Alminan Elite Gunner"
 	{
-		"en"		"Iberian Elite Gunner"
+		"en"		"Alminan Elite Gunner"
 		"ru" 		"Элитный Стрелок Иберии"
 		"it"		"Artigliere d'élite iberico"
 		"ko" 		"배럭 이베리아 정예 총잡이"
 	}	
-	"Barracks Iberia Headhunter"
+	"Barracks Almina Headhunter"
 	{
-		"en"		"Iberian Headhunter"
+		"en"		"Alminan Headhunter"
 		"ru" 		"Охотник за головами Иберии"
 		"it"		"Cacciatore di teste iberico"
 		"ko" 		"배럭 이베리아 헤드헌터"
 	}	
-	"Barracks Iberia Inquisitor Lynsen"
+	"Barracks Almina Inquisitor Lynsen"
 	{
 		"en"		"Inquisitor Lynsen"
 		"it"		"Inquisitore Lynsen"
 		"ko" 		"재판관 린슨"
 	}
-	"Barracks Iberian Lighthouse Guardian"
+	"Barracks Alminan Lighthouse Guardian"
 	{
 		"en"		"Guardian of the Lighthouse"
 		"ru" 		"Хранитель Маяка"
@@ -1669,11 +1669,7 @@
 	}
 	"Phantom Knight"
 	{
-		"en"		"Lucian, ''Blood Diamond''"
-		"pt"		"Lucian, ''Diamante de Sangue''"
-		"ru"		"Люциан, «Кровавый алмаз»"
-		"it"		"Lucian, ''Diamante di Sangue''"
-		"ko"		"루시안, ''블러드 다이아몬드''"
+		"en"		"Phantom Knight"
 	}
 	"Medic Constructor"
 	{
@@ -2273,59 +2269,34 @@
 		"it"		"Piercer nutrito"
 		"ko"		"부영양의 랜서"
 	}
-	"The First To Talk"
+	"Dweller Hybrid"
 	{
-		"en"		"The First To Talk"
-		"pt"		"Primeiro a Falar"
-		"ru"		"Первый говорящий"
-		"chi"		"首言者"
-		"it"		"Il primo a parlare"
-		"ko"		"첫 발언자"
+		"en"		"Dweller Hybrid"
 	}
-	"Sal Viento Bishop Quintus"
+	"Sea Dweller's Nest"
 	{
-		"en"		"Sal Viento Bishop Quintus"
+		"en"		"Sea Dweller's Nest"
 		"pt"		"Sal Viento Quinto Bispo"
 		"ru"		"Сал Вьенто Епископ Квинт"
 		"chi"		"盐风主教昆图斯"
 		"it"		"Sal Viento Vescovo Quinto"
 		"ko"		"살비엔토 주교 퀸투스"
 	}
-	"Armorless Union Knight"
+	"Abyss Grunwald Warrior"
 	{
-		"en"		"Armorless Union Knight"
-		"pt"		"Cavaleiro da União dos Sem Armadura"
-		"ru"		"Рыцарь из «Союза без брони»"
-		"chi"		"无名独立骑士"
-		"it"		"Cavaliere dell'Unione senza armatura"
-		"ko"		"아머레스 유니온 기사"
+		"en"		"Abyss Grunwald Warrior"
 	}
-	"Roar Knightclub Trainee"
+	"Abyss Grunwald Archer"
 	{
-		"en"		"Roar Knightclub Trainee"
-		"pt"		"Estagiário Roar do Knightclub"
-		"ru"		"Ученик из «Рыцарского клуба \'Рев\'»"
-		"chi"		"呼啸骑士团学徒"
-		"it"		"Apprendista del Roar Knightclub"
-		"ko"		"로어 견습 기사단원"
+		"en"		"Abyss Grunwald Archer"
 	}
-	"Bloodboil Knightclub Trainee"
+	"Abyss Grunwald Revenger"
 	{
-		"en"		"Bloodboil Knightclub Trainee"
-		"pt"		"Estagiário Bloodboil do Knightclub"
-		"ru"		"Ученик из «Рыцарского клуба \"Кровавый котёл\"»"
-		"chi"		"沸血骑士团学徒"
-		"it"		"Apprendista del Bloodboil Knightclub"
-		"ko"		"블러드보일 견습 기사단원"
+		"en"		"Abyss Grunwald Revenger"
 	}
-	"Armorless Union Cleanup Squad"
+	"Abyss Grunwald Sniper Assasin"
 	{
-		"en"		"Armorless Union Cleanup Squad"
-		"pt"		"Esquadrão de Limpeza da União dos Sem Armadura"
-		"ru"		"Отряд зачистки из «Союза без брони»"
-		"chi"		"无胄盟清扫小队"
-		"it"		"Squadra di pulizia dell'Unione senza armatura"
-		"ko"		"아머레스 유니온 숙청소대"
+		"en"		"Abyss Grunwald Assasin"
 	}
 	"Consumable Remains"
 	{
@@ -2335,22 +2306,22 @@
 		"it"		"Resti consumabili"
 		"ko"		"남겨진 유해들"
 	}
-	"The Endspeaker, Will of We Many"
+	"Herald of the Abyss"
 	{
-		"en"		"The Endspeaker, Will of We Many"
+		"en"		"Herald of the Abyss"
 		"pt"		"O Último Falante, A Vontade de Muitos"
 		"ru"		"Говорящий с концом, воля многих из нас"
 		"chi"		"屠谕者，大群意志"
-		"it"		"L'Endspeaker, Volontà di Noi Molti"
+		"it"		"L'Herald, Volontà di Noi Molti"
 		"ko"		"신탁 도살자, 위매니의 의지"
 	}
-	"Nethersea Founder"
+	"Abyss Founder"
 	{
-		"en"		"Nethersea Founder"
-		"pt"		"Fundador do Nethersea"
+		"en"		"Abyss Founder"
+		"pt"		"Fundador do Abyss"
 		"ru"		"Основатель низинного моря"
 		"chi"		"深溟奠基者"
-		"it"		"Fondatore di Nethersea"
+		"it"		"Fondatore di Abyss"
 		"ko"		"심해의 정초자"
 	}
 	"Nourished Founder"
@@ -2371,12 +2342,12 @@
 		"it"		"Fondatore regredito"
 		"ko"		"퇴행의 정초자"
 	}
-	"Nethersea Predator"
+	"Abyss Predator"
 	{
-		"en"		"Nethersea Predator"
+		"en"		"Abyss Predator"
 		"ru"		"Хищник низинного моря"
 		"chi"		"深溟猎食者"
-		"it"		"Predatore di Nethersea"
+		"it"		"Predatore di Abyss"
 		"ko"		"심해의 포식자"
 	}
 	"Nourished Predator"
@@ -2395,12 +2366,12 @@
 		"it"		"Predatore regredito"
 		"ko"		"퇴행의 포식자"
 	}
-	"Nethersea Brandguider"
+	"Abyss Brandguider"
 	{
-		"en"		"Nethersea Brandguider"
+		"en"		"Abyss Brandguider"
 		"ru"		"Наводчик головёшек низинного моря"
 		"chi"		"深溟引痕者"
-		"it"		"Nethersea Brandguider"
+		"it"		"Abyss Brandguider"
 		"ko"		"심해의 인도자"
 	}
 	"Nourished Brandguider"
@@ -2419,20 +2390,16 @@
 		"it"		"Brandguider regredito"
 		"ko"		"퇴행의 인도자"
 	}
-	"Armorless Union Assassin"
+	"Abyss Grunwald Assasin"
 	{
-		"en"		"Armorless Union Assassin"
-		"ru"		"Убийца из «Союза без брони»"
-		"chi"		"无胄盟刺客"
-		"it"		"Assassino dell'Unione senza armatura"
-		"ko"		"아머레스 유니온 암살자"
+		"en"		"Abyss Grunwald Assasin"
 	}
-	"Nethersea Spewer"
+	"Abyss Spewer"
 	{
-		"en"		"Nethersea Spewer"
+		"en"		"Abyss Spewer"
 		"ru"		"Изрыгатель низинного моря"
 		"chi"		"深溟喷溅者"
-		"it"		"Vomito di Nethersea"
+		"it"		"Vomito di Abyss"
 		"ko"		"심해의 분출자"
 	}
 	"Nourished Spewer"
@@ -2451,12 +2418,12 @@
 		"it"		"Vomito regresso"
 		"ko"		"퇴행의 분출자"
 	}
-	"Nethersea Swarmcaller"
+	"Abyss Swarmcaller"
 	{
-		"en"		"Nethersea Swarmcaller"
+		"en"		"Abyss Swarmcaller"
 		"ru"		"Вызыватель роя низинного моря"
 		"chi"		"深溟巢涌者"
-		"it"		"Sciamano di Nethersea"
+		"it"		"Sciamano di Abyss"
 		"ko"		"심해의 소용자"
 	}
 	"Nourished Swarmcaller"
@@ -2475,12 +2442,12 @@
 		"it"		"Chiamatore di sciami regredito"
 		"ko"		"퇴행의 소용자"
 	}
-	"Nethersea Reefbreaker"
+	"Abyss Reefbreaker"
 	{
-		"en"		"Nethersea Reefbreaker"
+		"en"		"Abyss Reefbreaker"
 		"ru"		"Рифоразрушитель низинного моря"
 		"chi"		"深溟裂礁者"
-		"it"		"Rompiscatole Nethersea"
+		"it"		"Rompiscatole Abyss"
 		"ko"		"심해의 열초자"
 	}
 	"Nourished Reefbreaker"
@@ -2521,67 +2488,67 @@
 		"it"		"Dio infetto dal mare Alaxios"
 		"ko"		"시테러 감염체 갓 알락시오스"
 	}
-	"Seaborn Scout"
+	"Dweller Scout"
 	{
-		"en"		"Seaborn Scout"
-		"ru"		"Разведчик Seaborn"
-		"it"		"Scout Seaborn"
+		"en"		"Dweller Scout"
+		"ru"		"Разведчик Dweller"
+		"it"		"Scout Dweller"
 		"ko"		"시본 스카웃"
 	}
-	"Seaborn Soldier"
+	"Dweller Soldier"
 	{
-		"en"		"Seaborn Soldier"
-		"ru"		"Солдат Seaborn"
-		"it"		"Soldato Seaborn"
+		"en"		"Dweller Soldier"
+		"ru"		"Солдат Dweller"
+		"it"		"Soldato Dweller"
 		"ko"		"시본 솔저"
 	}
-	"Seaborn Pyro"
+	"Dweller Pyro"
 	{
-		"en"		"Seaborn Pyro"
-		"ru"		"Поджигатель Seaborn"
-		"it"		"Seaborn Pyro"
+		"en"		"Dweller Pyro"
+		"ru"		"Поджигатель Dweller"
+		"it"		"Dweller Pyro"
 		"ko"		"시본 파이로"
 	}
-	"Seaborn Demoman"
+	"Dweller Demoman"
 	{
-		"en"		"Seaborn Demoman"
-		"ru"		"Подрывник Seaborn"
-		"it"		"Seaborn Demoman"
+		"en"		"Dweller Demoman"
+		"ru"		"Подрывник Dweller"
+		"it"		"Dweller Demoman"
 		"ko"		"시본 데모맨"
 	}
-	"Seaborn Heavy"
+	"Dweller Heavy"
 	{
-		"en"		"Seaborn Heavy"
-		"ru"		"Пулемётчик Seaborn"
-		"it"		"Seaborn Heavy"
+		"en"		"Dweller Heavy"
+		"ru"		"Пулемётчик Dweller"
+		"it"		"Dweller Heavy"
 		"ko"		"시본 헤비"
 	}
-	"Seaborn Engineer"
+	"Dweller Engineer"
 	{
-		"en"		"Seaborn Engineer"
-		"ru"		"Инженер Seaborn"
-		"it"		"Ingegnere Seaborn"
+		"en"		"Dweller Engineer"
+		"ru"		"Инженер Dweller"
+		"it"		"Ingegnere Dweller"
 		"ko"		"시본 엔지니어"
 	}
-	"Seaborn Medic"
+	"Dweller Medic"
 	{
-		"en"		"Seaborn Medic"
-		"ru"		"Медик Seaborn"
-		"it"		"Medico Seaborn"
+		"en"		"Dweller Medic"
+		"ru"		"Медик Dweller"
+		"it"		"Medico Dweller"
 		"ko"		"시본 메딕"
 	}
-	"Seaborn Sniper"
+	"Dweller Sniper"
 	{
-		"en"		"Seaborn Sniper"
-		"ru"		"Снайпер Seaborn"
-		"it"		"Cecchino Seaborn"
+		"en"		"Dweller Sniper"
+		"ru"		"Снайпер Dweller"
+		"it"		"Cecchino Dweller"
 		"ko"		"시본 스나이퍼"
 	}
-	"Seaborn Spy"
+	"Dweller Spy"
 	{
-		"en"		"Seaborn Spy"
-		"ru"		"Шпион Seaborn"
-		"it"		"Spia Seaborn"
+		"en"		"Dweller Spy"
+		"ru"		"Шпион Dweller"
+		"it"		"Spia Dweller"
 		"ko"		"시본 스파이"
 	}
 	"Citizen"
@@ -2679,9 +2646,9 @@
 		"it"		"Medico Balestriere"
 		"ko"		"배럭 석궁병 메딕"
 	}
-	"The Last Knight"
+	"The Corrupted Knight"
 	{
-		"en"		"The Last Knight"
+		"en"		"The Corrupted Knight"
 		"ru"		"Последний рыцарь"
 		"chi"		"最后的骑士"
 		"it"		"L'ultimo cavaliere"
@@ -2695,19 +2662,17 @@
 		"it"		"Cavaliere a caccia di maree"
 		"ko"		"파도 사냥의 기사"
 	}
-	"Saint Carmen"
+	"Abyss Saint Adrian"
 	{
-		"en"		"Saint Carmen"
+		"en"		"Abyss Saint Adrian"
 		"ru"		"Святая Кармен"
 		"chi"		"圣徒卡门"
 		"it"		"Santa Carmen"
 		"ko"		"성도 카르멘"
 	}
-	"Iberian Inqusitors"
+	"Alminan Inqusitors"
 	{
-		"en"		"Iberian Inqusitors"
-		"it"		"Inquisitori iberici"
-		"ko"		"이베리아 재판관"
+		"en"		"Alminan Inqusitors"
 	}
 	"Half Voided Erirasus"
 	{
@@ -2715,25 +2680,17 @@
 		"it"		"Mezzo Vuoto Erirasus"
 		"ko"		"공허 반침식 에리라수스"
 	}
-	"Pathshaper"
+	"Mirroring Abyssal"
 	{
-		"en"		"Pathshaper"
+		"en"		"Mirroring"
 		"ru" 		"Создатель пути"
 		"chi"		"塑路者"
 		"it"		"Modellatore di sentieri"
 		"ko"		"패스셰이퍼"
 	}
-	"Pathshaper"
+	"Mirroring Fractal"
 	{
-		"en"		"Pathshaper"
-		"ru" 		"Создатель Пути"
-		"chi"		"塑路者"
-		"it"		"Modellatore di sentieri"
-		"ko"		"패스셰이퍼"
-	}
-	"Pathshaper Fractal"
-	{
-		"en"		"Pathshaper Fractal"
+		"en"		"Mirroring Fractal"
 		"ru" 		"Фрактал Создателя Пути"
 		"chi"		"塑路者分形"
 		"it"		"Frattale sagomatore di percorsi"
@@ -2760,16 +2717,16 @@
 		"it"		"Torre"
 		"ko"		"배럭 망루"
 	}
-	"Tidelinked Bishop"
+	"Dweller Bishop"
 	{
-		"en"		"Tidelinked Bishop"
+		"en"		"Dweller Bishop"
 		"chi"		"接潮主教"
 		"it"		"Vescovo collegato a Tidelink"
 		"ko"		"파도의 주교"
 	}
-	"Tidelinked Archon"
+	"Dweller Archon"
 	{
-		"en"		"Tidelinked Archon"
+		"en"		"Dweller Archon"
 		"chi"		"接潮蔑死体"
 		"it"		"Arconte collegato a Tidelink"
 		"ko"		"파도의 멸사체"
@@ -2781,19 +2738,15 @@
 		"it"		"Stregoneria scientifica"
 		"ko"	"과학적 요술"
 	}
-	"Ishar'mla, Heart of Corruption"
+	"Leavtheen, Tribe of the Deep"
 	{
-		"en"		"Ishar'mla, Heart of Corruption"
-		"ru" 		"Ишармла, Сердце инфекции"
-		"chi"		"伊莎玛拉，腐化之心"
-		"it"		"Ishar'mla, Cuore della Corruzione"
-		"ko"		"이샤믈라, 부식의 마음"
+		"en"		"Leavtheen, Tribe of the Deep"
 	}
-	"Seaborn Guard"
+	"Dweller Guard"
 	{
-		"en"		"Seaborn Guard"
+		"en"		"Dweller Guard"
 		"ru" 		"Морерождённый страж"
-		"it"		"Guardia Seaborn"
+		"it"		"Guardia Dweller"
 		"ko"		"시본 가드"
 	}
 	"Guard"
@@ -2803,11 +2756,11 @@
 		"it"		"Guardia"
 		"ko"		"가드"
 	}
-	"Seaborn Defender"
+	"Dweller Defender"
 	{
-		"en"		"Seaborn Defender"
+		"en"		"Dweller Defender"
 		"ru" 		"Морерождённый Защитник"
-		"it"		"Difensore Seaborn"
+		"it"		"Difensore Dweller"
 		"ko"		"시본 디펜더"
 	}
 	"Defender"
@@ -2817,11 +2770,11 @@
 		"it"		"Difensore"
 		"ko"		"디펜더"
 	}
-	"Seaborn Vanguard"
+	"Dweller Vanguard"
 	{
-		"en"		"Seaborn Vanguard"
+		"en"		"Dweller Vanguard"
 		"ru" 		"Морерождённый Авангард"
-		"it"		"Avanguardia Seaborn"
+		"it"		"Avanguardia Dweller"
 		"ko"		"시본 뱅가드"
 	}
 	"Vanguard"
@@ -2831,11 +2784,11 @@
 		"it"		"Avanguardia"
 		"ko"		"뱅가드"
 	}
-	"Seaborn Caster"
+	"Dweller Caster"
 	{
-		"en"		"Seaborn Caster"
+		"en"		"Dweller Caster"
 		"ru" 		"Морерождённый Маг"
-		"it"		"Castigatore Seaborn"
+		"it"		"Castigatore Dweller"
 		"ko"		"시본 캐스터"
 	}
 	"Caster"
@@ -2845,11 +2798,11 @@
 		"it"		"Caster"
 		"ko"		"캐스터"
 	}
-	"Seaborn Specialist"
+	"Dweller Specialist"
 	{
-		"en"		"Seaborn Specialist"
+		"en"		"Dweller Specialist"
 		"ru" 		"Морерождённый Специалист"
-		"it"		"Specialista Seaborn"
+		"it"		"Specialista Dweller"
 		"ko"		"시본 스페셜리스트"
 	}
 	"Specialist"
@@ -2859,11 +2812,11 @@
 		"it"		"Specialista"
 		"ko"		"스페셜리스트"
 	}
-	"Seaborn Supporter"
+	"Dweller Supporter"
 	{
-		"en"		"Seaborn Supporter"
+		"en"		"Dweller Supporter"
 		"ru" 		"Морерождённый Поддерживающий"
-		"it"		"Sostenitore di Seaborn"
+		"it"		"Sostenitore di Dweller"
 		"ko"		"시본 서포터"
 	}
 	"Supporter"
@@ -4586,13 +4539,13 @@
 		"en"	"Whiteflower’s most prestigious swordman, now afflicted by chaos. \n-Performs a barrage of pulse attacks, gaining resistance during usage, and teleporting behind any player hit."
 		"ko"	"배풍등이 가장 자랑스러워하는 검객이었지만, 이제 혼돈에 침식되고 말았습니다. \n-펄스 공격을 연속으로 사용하며, 사용 중에는 저항력이 증가하고 펄스 공격에 피격당한 플레이어 뒤쪽으로 순간이동."
 	}
-	"Xeno Seaborn W.F. Chaos Voided Acclaimed Swordsman The First"
+	"Xeno Dweller W.F. Chaos Voided Acclaimed Swordsman The First"
 	{
-		"en" "Xeno Seaborn W.F. Chaos Voided Acclaimed Swordsman The First"
-		"it" "Xeno Seaborn W.F. Chaos Voided Acclamato Spadaccino Il Primo"
+		"en" "Xeno Dweller W.F. Chaos Voided Acclaimed Swordsman The First"
+		"it" "Xeno Dweller W.F. Chaos Voided Acclamato Spadaccino Il Primo"
 		"ko" "제노 시본 W.F. 혼돈 공허화된 갈채의 검객 1세"
 	}
-	"Xeno Seaborn W.F. Chaos Voided Acclaimed Swordsman The First esc"
+	"Xeno Dweller W.F. Chaos Voided Acclaimed Swordsman The First esc"
 	{
 		"en" "The merc's worst n1ghtmare. \n-Very fast. \n-Pulse attack one shots. \n-Melee attacks one shot. \n-The nightmare won't last forever."
 		"ko" "용병들의 최악의 악몽. \n-매우 빠름. \n-펄스 공격이 대상을 즉사시킵니다. \n-근접 공격이 대상을 즉사시킵니다. \n-악몽은 그리 오래 가지 않을것입니다..."
@@ -4965,13 +4918,13 @@
 		"it"		"Fissa gli strutture e infligge loro ingenti danni."
 		"ko"		"구조물을 집중적으로 노리며, 구조물을 대상으로 매우 높은 피해를 줍니다."
 	}
-	"Iberia Beacon"
+	"Almina Beacon"
 	{
-		"en"		"Iberia Beacon"
-		"it"		"Faro di Iberia"
+		"en"		"Almina Beacon"
+		"it"		"Faro di Almina"
 		"ko"		"이베리아 신호소"
 	}
-	"Iberia Beacon Desc"
+	"Almina Beacon Desc"
 	{
 		"en"		"after 4 seconds, each 2 seconds it gives armor and morale to nearby enemies.\nMorale:\nW buff, Each number means its stronger upto 4.\nIt buffs movementspeed, damage and resistance Exponentially the higher the morale.\nAt morale 4, they scream."
 		"it"		"dopo 4 secondi, ogni 2 secondi dà armatura e morale ai nemici vicini.\nMorale:\nW buff, ogni numero significa che è più forte fino a 4.\nBuffa la velocità di movimento, i danni e la resistenza in modo esponenziale più alto è il morale.\nAl morale 4, urlano."
@@ -4989,13 +4942,13 @@
 		"it"		"Posiziona i fari se abbastanza vicini, ha una resistenza di 50％ e una velocità ridotta quando ne trasporta uno."
 		"ko"		"충분히 근접하면 신호소를 설치합니다. 신호소를 들고 있는 동안에는 피해 저항력이 50％ 증가하지만, 이동 속도도 감소합니다."
 	}
-	"Iberia Lighthouse"
+	"Almina Lighthouse"
 	{
-		"en"		"Iberia Lighthouse"
-		"it"		"Faro di Iberia"
+		"en"		"Almina Lighthouse"
+		"it"		"Faro di Almina"
 		"ko"		"이베리아 등대"
 	}
-	"Iberia Lighthouse Desc"
+	"Almina Lighthouse Desc"
 	{
 		"en"		"Gives morale to any NPC in its line of sight, snipes enemies from afar, has a secondary shortrange gun.\nIf low enough or enough time passes, Huirgrajo appears."
 		"it"		"Dà morale a qualsiasi PNG nella sua linea di vista, coglie i nemici da lontano, ha un'arma secondaria a corto raggio.\nSe è abbastanza basso o passa abbastanza tempo, Huirgrajo appare."
@@ -5104,13 +5057,13 @@
 		"it"		"-Dà morale ai nemici vicini quando urla il suo corno."
 		"ko"		"-나팔을 불 때마다 주변의 모든 적의 사기를 증가시킵니다."
 	}
-	"Victorian"
+	"Vestan"
 	{
-		"en"		"Victorian"
+		"en"		"Vestan"
 		"it"		"Vittoriano"
 		"ko"		"빅토리안"
 	}
-	"Victorian Desc"
+	"Vestan Desc"
 	{
 		"en"		"-If the ceiling is high enough, shoots a high damage arcing mortar shot.\n-If ceiling is low, then shoots a lower damage slow rocket."
 		"it"		"-Se il soffitto è abbastanza alto, spara un colpo di mortaio ad arco ad alto danno.\n-Se il soffitto è basso, spara un razzo lento a basso danno."
@@ -5235,13 +5188,13 @@
 		"it"		"-Elimina 1 proiettile dall'aria con il suo proiettile, se un giocatore è troppo vicino, gli spara invece, ha 2 proiettili al suo posto.\n-Se il nemico è marcato, guadagna proiettile su colpo in mischia."
 		"ko"		"-공중의 투사체 1개를 탄환으로 적중시켜 파괴합니다. 대상 플레이어가 너무 근접했다면, 대신 대상을 사격합니다. 초기에 탄환을 2발 보유합니다.\n-대상이 표적 상태라면, 근접 공격 적중시 탄약을 1 얻습니다."
 	}
-	"Iberia-Expidonsan Seaborn Eradicator"
+	"Almina-Expidonsan Dweller Eradicator"
 	{
-		"en"		"Iberia-Expidonsan Seaborn Eradicator"
-		"it"		"Sradicatore di corna marittime Iberia-Expidonsan"
+		"en"		"Almina-Expidonsan Dweller Eradicator"
+		"it"		"Sradicatore di corna marittime Almina-Expidonsan"
 		"ko"		"이베리아-엑스피돈사 연합 시본 섬멸자"
 	}
-	"Iberia-Expidonsan Seaborn Eradicator Desc"
+	"Almina-Expidonsan Dweller Eradicator Desc"
 	{
 		"en"		"-Acts as a spawnpoint, unkillable and oneshots anything.\n-Once most allies died, it enrages, loses all its resistance and 99％ hp and gets very fast, loses alot of damage too."
 		"it"		"-Agisce come punto di spawn, non è uccidibile e spara a qualsiasi cosa.\n-Una volta morti la maggior parte degli alleati, si infuria, perde tutte le resistenze e il 99％ di hp e diventa molto veloce, perdendo anche molti danni."
@@ -5318,16 +5271,16 @@
 		"it"		"-Dà armatura a tutti gli alleati vicini se colpisce qualcosa, ridotta se si tratta di un nemico uberizzato o di una struttura."
 		"ko"		"-적중시 주변의 모든 아군에게 아머를 부여합니다. 대상이 우버차지 상태이거나 구조물이라면 아머 부여량이 감소합니다."
 	}
-	"Inquisitor Irene"
+	"Inquisitor Amphi"
 	{
-		"en"		"Inquisitor Irene"
-		"it"		"Inquisitore Irene"
+		"en"		"Inquisitor Amphi"
+		"it"		"Inquisitore Amphi"
 		"ko"		"재판관 아이린"
 	}
-	"Inquisitor Irene Desc"
+	"Inquisitor Amphi Desc"
 	{
-		"en"		"-If its knife is burning, next melee hit launches you up and marks you.\n-If enemy is marked, gains more ammo aswell.\n-If enemy is marked, shoots 3x faster.\n-Can activate judgement of iberia if close to enemies with a cooldown."
-		"it"		"-Se il suo coltello è in fiamme, il prossimo colpo in mischia ti lancia in alto e ti marchia.\n-Se il nemico è marcato, guadagna anche più munizioni.\n-Se il nemico è marcato, spara 3 volte più velocemente.\n-Può attivare il giudizio di iberia se vicino a nemici con un cooldown."
+		"en"		"-If its knife is burning, next melee hit launches you up and marks you.\n-If enemy is marked, gains more ammo aswell.\n-If enemy is marked, shoots 3x faster.\n-Can activate judgement of almina if close to enemies with a cooldown."
+		"it"		"-Se il suo coltello è in fiamme, il prossimo colpo in mischia ti lancia in alto e ti marchia.\n-Se il nemico è marcato, guadagna anche più munizioni.\n-Se il nemico è marcato, spara 3 volte più velocemente.\n-Può attivare il giudizio di almina se vicino a nemici con un cooldown."
 		"ko"		"-칼이 불타고 있을시, 다음 근접 공격이 적중한 대상을 위로 날려보내고 표적을 부여합니다.\n-대상이 표적 상태라면, 탄약을 더 많이 얻습니다.\n-또한 표적 상태인 대상을 상대로 사격 공격의 속도가 3배 더 빨라집니다.\n-적과 근접하면 이베리아의 심판 능력을 발동합니다. (쿨타임 있음)"
 	}
 	"Death Marker"
@@ -5463,7 +5416,7 @@
 		"ko"	"가죽부츠 정찰대 타자"
 		"it"	"Pastella per stivali in pelle"
 	}
-	"Victoria Charger"
+	"Vesta Charger"
 	{
 		"en"	"Leatherboots Charger"
 		"ko"	"가죽부츠 정찰대 돌격병"
@@ -5475,13 +5428,13 @@
 		"ko"	"가죽부츠 정찰대 테슬라"
 		"it"	"Stivali in pelle Teslar"
 	}
-	"Victorian Vanguard"
+	"Vestan Vanguard"
 	{
 		"en"	"Leatherboots Vanguard"
 		"ko"	"가죽부츠 정찰대 뱅가드"
 		"it"	"Stivali di pelle Vanguard"
 	}
-	"Victorian Igniter"
+	"Vestan Igniter"
 	{
 		"en"	"Leatherboots Igniter"
 		"ko"	"가죽부츠 정찰대 점화병"
@@ -5493,7 +5446,7 @@
 		"ko"	"가죽부츠 정찰대 투척병"
 		"it"	"Granatiere con stivali di pelle"
 	}
-	"Victorian ScoutSquad Leader"
+	"Vestan ScoutSquad Leader"
 	{
 		"en"	"Leatherboots Leader"
 		"ko"	"가죽부츠 정찰대 리더"
@@ -5531,7 +5484,7 @@
 	}
 	"Signaller"
 	{
-		"en"	"Victorian Signaller"
+		"en"	"Vestan Signaller"
 		"ko"	"빅토리아 전령병"
 		"it"	"Segnalatore vittoriano"
 	}
@@ -5595,19 +5548,19 @@
 		"ko"	"강철게이트 블로커"
 		"it"	"Bloccatore di Irongate"
 	}
-	"Victoria Destructor"
+	"Vesta Destructor"
 	{
 		"en"	"Irongate Destructor"
 		"ko"	"강철게이트 파괴자"
 		"it"	"Distruttore di Irongate"
 	}
-	"Victoria Tactical Protector"
+	"Vesta Tactical Protector"
 	{
 		"en"	"Irongate Tactical Protector"
 		"ko"	"강철게이트 전술 프로텍터"
 		"it"	"Protezione tattica Irongate"
 	}
-	"Victoria Aviator"
+	"Vesta Aviator"
 	{
 		"en"	"Irongate Aviator"
 		"ko"	"강철게이트 조종사"
@@ -5667,13 +5620,13 @@
 		"ko"	"트루퍼 대전차 보병"
 		"it"	"Soldato Fanteria Anti-Armatura"
 	}
-	"Victorian Mortar"
+	"Vestan Mortar"
 	{
 		"en"	"Trooper Mortar"
 		"ko"	"트루퍼 박격포병"
 		"it"	"Mortaio Trooper"
 	}
-	"Victorian Artillerist"
+	"Vestan Artillerist"
 	{
 		"en"	"Trooper Artillerist"
 		"ko"	"트루퍼 자주포병"
@@ -5700,7 +5653,7 @@
 		"ko"	"트루퍼 브리칭 전차"
 		"it"	"Soldato Breachcart"
 	}
-	"Victoria Tacticalunit"
+	"Vesta Tacticalunit"
 	{
 		"en"	"Trooper Tactical Operator"
 		"ko"	"트루퍼 전술 오퍼레이터"
@@ -5753,32 +5706,32 @@
 		"ko"	"브라스벙커 파쇄자"
 		"it"	"Polverizzatore Brassbunker"
 	}
-	"Victoria Taser"
+	"Vesta Taser"
 	{
 		"en"	"Brassbunker Taser"
 		"ko"	"브라스벙커 테이저"
 		"it"	"Brassbunker Taser"
 	}
-	"Victoria Tank"
+	"Vesta Tank"
 	{
 		"en"	"Brassbunker Tank"
 		"ko"	"브라스벙커 탱크"
 		"it"	"Serbatoio Brassbunker"
 	}
-	"Victorian Assault Vehicle"
+	"Vestan Assault Vehicle"
 	{
 		"en"	"Brassbunker Assault Vehicle"
 		"ko"	"브라스벙커 돌격 차량"
 	}
-	"Victoria Factory"
+	"Vesta Factory"
 	{
-		"en"	"Victorian Factory"
+		"en"	"Vestan Factory"
 		"ko"	"빅토리아 군수공장"
 		"it"	"Fabbrica vittoriana"
 	}
-	"Victoria Radiomast"
+	"Vesta Radiomast"
 	{
-		"en"	"Victorian Radiomast"
+		"en"	"Vestan Radiomast"
 		"ko"	"빅토리아 방송탑"
 		"it"	"Radiomatica vittoriana"
 	}
@@ -5794,49 +5747,49 @@
 		"ko"	"방송탑 수리병"
 		"it"	"Riparazione radio"
 	}
-	"Victoria Anvil"
+	"Vesta Anvil"
 	{
 		"en"	"''Anvil''"
 		"ko"	"''모루''"
 		"it"	"''Incudine''"
 	}
-	"Victoria Anvil MK2"
+	"Vesta Anvil MK2"
 	{
 		"en"	"''Anvil'' Mk2"
 		"ko"	"''모루'' Mk2"
 		"it"	"''Incudine'' Mk2"
 	}
-	"Victoria Fragments"
+	"Vesta Fragments"
 	{
 		"en"	"''Fragments''"
 		"ko"	"''파편''"
 		"it"	"''Frammenti''"
 	}
-	"Victoria Fragments MK2"
+	"Vesta Fragments MK2"
 	{
 		"en"	"''Fragments'' Mk2"
 		"ko"	"''파편'' Mk2"
 		"it"	"''Frammenti'' Mk2"
 	}
-	"Victoria Atomizer"
+	"Vesta Atomizer"
 	{
 		"en"	"Atomizer"
 		"ko"	"인수분해"
 		"it"	"Atomizzatore"
 	}
-	"Victoria Huscarls"
+	"Vesta Huscarls"
 	{
 		"en"	"Huscarls"
 		"ko"	"허스칼"
 		"it"	"Huscarls"
 	}
-	"Victoria Harrison"
+	"Vesta Harrison"
 	{
 		"en"	"Harrison"
 		"ko"	"해리슨"
 		"it"	"Harrison"
 	}
-	"Victoria Castellan"
+	"Vesta Castellan"
 	{
 		"en"	"Castellan"
 		"ko"	"카스텔란"
@@ -5855,25 +5808,25 @@
 	{
 		"en"	"Resource Collector"
 	}
-	"Victoria Gasleader"
+	"Vesta Gasleader"
 	{
-		"en"	"Victorian Chemical Squad Leader"
+		"en"	"Vestan Chemical Squad Leader"
 	}
 	"Demolitionist"
 	{
 		"en"	"Demolitionist"
 	}
-	"Victorian Protector"
+	"Vestan Protector"
 	{
-		"en"	"Victorian Protector"
+		"en"	"Vestan Protector"
 	}
 	"Airraider"
 	{
 		"en"	"Airraider"
 	}
-	"Victorian Headhunter"
+	"Vestan Headhunter"
 	{
-		"en"	"Victorian Headhunter"
+		"en"	"Vestan Headhunter"
 	}
 	"Chemical Specialist"
 	{
@@ -6148,34 +6101,34 @@
 		"it"		"Pillola rossa dirottata"
 		"ko"		"탈취당한 빨간 약"
 	}
-	"Seaborn Metro Cop"
+	"Dweller Metro Cop"
 	{
-		"en"		"Seaborn Metro Cop"
-		"it"		"Poliziotto della metropolitana di Seaborn"
+		"en"		"Dweller Metro Cop"
+		"it"		"Poliziotto della metropolitana di Dweller"
 		"ko"		"시본 시민 보호 기동대"
 	}
-	"Seaborn Metro Raider"
+	"Dweller Metro Raider"
 	{
-		"en"		"Seaborn Metro Raider"
-		"it"		"Seaborn Metro Raider"
+		"en"		"Dweller Metro Raider"
+		"it"		"Dweller Metro Raider"
 		"ko"		"시본 시민 보호 특공대"
 	}
-	"Seaborn W.F. Rifler"
+	"Dweller W.F. Rifler"
 	{
-		"en"		"Seaborn W.F. Rifler"
-		"it"		"Seaborn W.F. Rifler"
+		"en"		"Dweller W.F. Rifler"
+		"it"		"Dweller W.F. Rifler"
 		"ko"		"시본 W.F. 소총수"
 	}
-	"Seaborn W.F. Elite"
+	"Dweller W.F. Elite"
 	{
-		"en"		"Seaborn W.F. Elite"
-		"it"		"Seaborn W.F. Elite"
+		"en"		"Dweller W.F. Elite"
+		"it"		"Dweller W.F. Elite"
 		"ko"		"시본 W.F. 콤바인 엘리트"
 	}
-	"Seaborn W.F. Shotgunner"
+	"Dweller W.F. Shotgunner"
 	{
-		"en"		"Seaborn W.F. Shotgunner"
-		"it"		"Seaborn W.F. Tiratore"
+		"en"		"Dweller W.F. Shotgunner"
+		"it"		"Dweller W.F. Tiratore"
 		"ko"		"시본 W.F. 산탄총병"
 	}
 	"Voided Metro Cop"
@@ -6243,9 +6196,9 @@
 		"it"		"Omega"
 		"ko"		"오메가"
 	}
-	"Victoria"
+	"Vesta"
 	{
-		"en"		"Victoria"
+		"en"		"Vesta"
 		"it"		"Vittoria"
 		"ko"		"빅토리아"
 	}
