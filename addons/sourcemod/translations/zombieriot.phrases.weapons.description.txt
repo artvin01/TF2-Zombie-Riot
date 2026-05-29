@@ -5440,7 +5440,7 @@
 	"Tiantui Star Blade Desc"
 	{
 		"en"	"-Abilities uses ammo and refills on wave end\n-M2 to charge forward, consuming ammo\n-Combos reset charge cooldown\n-R and crouch to reload special ammo and gain a buff (use enough ammo for stronger version, once per wave, revives if downed)"
-		"ko"	"-능력이 탄환을 소모하며 웨이브 종료 시 재보급\n-우클릭으로 돌진하며 탄환을 소모\n-연속 적중(콤보) 시 돌진 쿨다운 초기화\n-웅크리기+R로 특수 탄환을 장전, 버프를 얻음(탄환을 일정량 사용 시 버프 강화, 다운 중 사용 시 1회 부활)"
+		"ko"	"-능력이 탄환을 소모하며 웨이브 종료 시 재보급\n-우클릭으로 돌진하며 탄환을 소모\n-콤보 적중 시 돌진 쿨다운 초기화\n-웅크리기+R로 특수 탄환 장전, 버프 획득(탄환 일정량 사용 시 버프 강화, 다운 중 사용 시 1회 부활)"
 	}
 	"Tiantui Star Blade Extra"
 	{
