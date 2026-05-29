@@ -171,7 +171,7 @@ function iter_item(parent_element, item, sw_opt) {
         item_by_id[item.wid] = item
         contents = [
             item.name,
-            item.description
+        //    item.description
         ]
         if (item.tags!==undefined) {
             contents.push(item.tags.join(" "));
@@ -188,6 +188,27 @@ function iter_item(parent_element, item, sw_opt) {
                         let bounds = swr_canvas.getBoundingClientRect();
                         mousepos[0] = event.clientX-bounds.left;
                         mousepos[1] = event.clientY-bounds.top;
+                    });
+
+                    function _swexplore(parentsubwep,swpath) {
+                        if (parentsubwep.name !== item.name) { // no "duplicates" as in you can just search for the main wep and check paps
+                            contents = [
+                                parentsubwep.name,
+                            //    parentsubwep.description
+                            ]
+                            parentsubwep.id = item.wid;
+                            parentsubwep.swid = swpath;
+                            parentsubwep.parent_is_kit = item.type === "weaponkit" && swpath.length===2;
+                            item_by_contents[contents.join(" ")] = parentsubwep
+                        }
+                        let arr = parentsubwep.subweapons.items || [];
+                        arr.forEach((childsubwep, idx) => {
+                            _swexplore(childsubwep, swpath + "abcd".slice(idx,idx+1));
+                        });
+                    }
+
+                    item.subweapons.items.forEach((subwep, idx) => {
+                        _swexplore(subwep,"a"+"abcd".slice(idx,idx+1));
                     });
                 }
             }
@@ -265,6 +286,7 @@ async function setup_filters() {
 // INTERFACE ===================================================
 async function interface_goto(wid,swid) {
     if (wid===null) {return}; // no params given
+    console.log("goto",wid,swid)
     const query = `[data-id='${wid}']`;
     const search = document.querySelectorAll(query)
     if (search.length===1) {
@@ -278,12 +300,12 @@ async function interface_goto(wid,swid) {
         // highlight/open sw modal
         const welement = search[0];
         welement.scrollIntoView({"behavior": "smooth", "block": "center"});
-        if (swid===null) { // No swid: Scroll weapon into view and highlight for 3s 
+        if (swid===null) { // No swid: Scroll item into view and highlight for 3s 
             welement.classList.add("highlight");
             welement.dataset.timeout_id = setTimeout(function(welement){
                 welement.classList.remove("highlight");
-            }, 3000, welement)
-        } else { // Swid: Scroll to weapon, open swmodal and highlight
+            }, 3000, welement);
+        } else { // Swid: Scroll to item, open swmodal and highlight
             open_subweapon_modal(item_by_id[wid]);
             swr_highlight = {"id":swid,"time":Date.now()+3000,"valid":false};
         }
@@ -294,14 +316,14 @@ async function interface_goto(wid,swid) {
         setTimeout(function(notification){
             notification.remove();
         }, 2000, notif_container)
-        console.warn("[interface_goto] Found multiple matches for weapon id!")
+        console.warn("[interface_goto] Found multiple matches for wid!");
     } else {
         notif_container = document.body.appendChild(create_element("div","notify_container"));
         notification = notif_container.appendChild(create_element("div","notify_notfound","Item not found!"));
         notification.style.padding = "4px"; // no red dot before load
         setTimeout(function(notification){
             notification.remove();
-        }, 2000, notif_container)
+        }, 2000, notif_container);
     }
 }
 async function open_subweapon_modal(item) {
@@ -410,13 +432,20 @@ async function search(event) {
             let idx = info.idx[element];
             let item = item_by_contents[haystack[idx]];
             const item_el = iter_item(results_container, item, false);
+            if (item.type==="weaponpap" || item.parent_is_kit) {
+                item_el.dataset.id=item.id;
+                item_el.dataset.swid=item.swid;
+            };
+            if (item.parent_is_kit) {
+                item_el.getElementsByClassName("item_price")[0].remove();
+            }
             // tooltip text
             item_el.style["cursor"] = "pointer";
             const item_tooltip = item_el.getElementsByClassName("item_tooltip")[0]
-            item_tooltip.appendChild(create_element("div", "secondary item_notice", `Click to go to weapon`));
+            item_tooltip.appendChild(create_element("div", "secondary item_notice", `Click to go to ${item.type}`));
             item_el.addEventListener("click", (event) => {
                 document.getElementById("search_modal").remove();
-                interface_goto(event.target.dataset.id,null);
+                interface_goto(event.target.dataset.id,event.target.dataset.swid || null);
             });
         });
     }
@@ -438,7 +467,6 @@ async function fetch_items() {
 
     console.log(`[fetch_items] Fetched ${data_file}`);
     parse_items();
-    //window.requestAnimationFrame(draw);
 }
 
 // LIB ===================================================
