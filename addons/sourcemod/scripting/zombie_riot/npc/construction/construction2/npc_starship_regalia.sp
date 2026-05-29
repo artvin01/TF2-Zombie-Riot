@@ -3099,7 +3099,7 @@ static float ModifyDamage(float dmg)
 }
 static float fl_PrimaryLanceDuration_Base 		= 20.0;
 static float fl_PrimaryLanceRecharge_Base 		= 120.0;
-static float fl_PrimaryLancesTravelSpeed		= 35.0;
+static float fl_PrimaryLancesTravelSpeed		= 25.0;
 static float fl_PrimaryLancesTurnSpeed			= 2.5;
 static float fl_primaryLanceDistanceRegulation	= 3000.0;
 static float fl_PrimaryLanceTravelDetectionSize = 25.0;
@@ -3127,7 +3127,7 @@ static void LanceeWeaponTurnControl(int iNPC)
 
 		float Origin[3]; GetAbsOrigin(npc.index, Origin);
 
-		float BeamSpeed = (fl_PrimaryLancesTravelSpeed * 0.1515 * (npc.Anger ? 1.5 : 1.0)) / TickrateModify;
+		float BeamSpeed = (fl_PrimaryLancesTravelSpeed * 0.1515 * (npc.Anger ? 1.25 : 1.0)) / TickrateModify;
 		float TurnSpeed = (fl_PrimaryLancesTurnSpeed * (npc.Anger ? 1.5 : 1.0)) / TickrateModify;
 
 		float TargetLoc[3]; WorldSpaceCenter(npc.m_iTarget, TargetLoc);
