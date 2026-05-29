@@ -2,15 +2,9 @@
 import traceback, vdf, pathlib, sys, datetime
 
 bcolors = {
-    "HEADER": '\033[95m',
-    "OKBLUE": '\033[94m',
-    "OKCYAN": '\033[96m',
     "OKGREEN": '\033[92m',
-    "WARNING": '\033[93m',
     "FAIL": '\033[91m',
     "ENDC": '\033[0m',
-    "BOLD": '\033[1m',
-    "UNDERLINE": '\033[4m',
     "FAINT": '\033[2m',
 }
 def log(message, color="OKGREEN"):
@@ -28,13 +22,21 @@ def read(filename):
         return None
 
 paths = {
-    "./addons/sourcemod/translations/": "**/*.txt",
+    ".": "**/*.txt",
     "./": "**/*.cfg",
 }
+exclude = [
+    "venv",
+    "LICENSE",
+    "Developer Commentary - Laboratories.txt",
+    "vehicles", # temp
+    # Local testing
+    "gh-pages"
+]
 had_errors = False
 for path,filter_ in paths.items():
-    if not path.startswith("venv"):
-        for CFG in pathlib.Path(path).glob(filter_):
+    for CFG in pathlib.Path(path).glob(filter_):
+        if not any(x in str(CFG) for x in exclude) and "/" in str(CFG):
             try:
                 pre,c = "✓","OKGREEN"
                 vdf.loads(read(CFG))
