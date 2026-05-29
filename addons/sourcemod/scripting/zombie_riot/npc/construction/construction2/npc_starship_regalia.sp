@@ -1492,7 +1492,7 @@ static void ClotThink(int iNPC)
 
 	HandleUnderSlungWeapons(npc);
 	HandleMainWeapons(npc);
-	HandleDroneSystem(npc);
+	//HandleDroneSystem(npc);
 	HandleSpiralGlaive(npc);
 	HandleBeacons(npc);
 	HandleConstructor(npc);
@@ -2967,6 +2967,7 @@ static void RegaliaIOC_Tick(DataPack Data)
 	RequestFrames(RegaliaIOC_Tick, 1, Pack);
 
 }
+/*
 static void HandleDroneSystem(RegaliaClass npc)
 {
 	if(!npc.bDoesSectionExist(StarShip_BG_CoreDeco))
@@ -3088,6 +3089,7 @@ static void FireDrones(CClotBody npc, float Loc[3], float Angles[3], int target 
 		Dungeon_SetEntityZone(Drone, Zone_HomeBase);
 	}
 }
+*/
 static float ModifyDamage(float dmg)
 {
 	if(bShipRaidModeScaling)
