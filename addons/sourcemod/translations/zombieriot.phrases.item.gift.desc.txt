@@ -1273,7 +1273,7 @@
 		"it"		"Un Terrore del Mare a cui è cresciuto un organo solido.Le altre parti del suo corpo sembrano formare spuntoni esterni inespugnabili.Gli attacchi infliggono danni reali.La variante Elite guadagna salute e danni aumentati"
 		"ko"		"고체 기관이 달린 시테러.\n몸의 다른 부위도 점점 견고한 가시가 생겨나고 있는 것 같다.\n-공격이 트루 대미지를 가함\n-정예 개체는 체력, 피해량 증가"
 	}
-	"The First To Talk Desc"
+	"Dweller Hybrid Desc"
 	{
 		"en"		"Fires projectiles with armor erosion, can fire rapid amounts in AOE area.\nThe first beautiful living being to speak human language before civilized man.\nDweller.\n- Uses a ranged attack\n- Attacks inflict Nervous Impairment\n- Periodically locks onto target location, after a delay hits serveral times to a random enemy within range"
 		"it"		"Spara proiettili con erosione dell'armatura, può sparare rapidamente in un'area AOE.\nIl primo bell'essere vivente a parlare il linguaggio umano prima dell'uomo civilizzato.\nDweller.\n- Utilizza un attacco a distanza.\n- Gli attacchi infliggono menomazioni nervose.\n- Si blocca periodicamente sulla posizione del bersaglio, dopo un ritardo colpisce più volte un nemico a caso nel raggio d'azione"
