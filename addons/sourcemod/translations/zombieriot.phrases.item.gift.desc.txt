@@ -1289,7 +1289,7 @@
 	{
 		"en"		"An infected from Grunwald.\n- Periodically resists melee damage"
 		"it"		"Un infetto di Grunwald.\n- Resiste periodicamente ai danni in mischia"
-		"ko"		"감염된 그룬발트인, \n-주기적으로 근접 피해 저항력 증가"
+		"ko"		"감염된 그룬발트인.\n-주기적으로 근접 피해 저항력 증가"
 	}
 	"Abyss Grunwald Archer Desc"
 	{
@@ -1531,17 +1531,17 @@
 		"it"		"Una torre al vostro fianco."
 		"ko"		"당신의 팀에 소속된 망루입니다."
 	}
-	"Dweller bishop Desc"
+	"Dweller Bishop Desc"
 	{
 		"en"		"A bishop that has partially mutated.\nIt is part human, partly—\nUses a ranged attack\n- When its 'Other Half' is alive and not in coma, enters a coma when HP reaches 0 and begins regenerating revives when HP reaches max"
 		"it"		"Quando la sua ''altra metà'' è viva e non è in coma, entra in coma quando gli HP raggiungono lo 0 e inizia a rigenerarsi quando gli HP raggiungono il massimo"
-		"ko"		"이 주교의 생명 형태는 이미 변화되어 있다.\n한 쪽은 인간으로 보이고, 다른 한 쪽은...\n-원거리 공격을 사용\n-임사 형태가 아닌 '파도의 멸사체' 가 살아있다면, 체력이 0이 됐을때 죽지 않고 '임사 형태'가 된 뒤, 체력을 천천히 회복합니다.\n-이 상태에서 체력이 전부 회복되면 다시 부활합니다."
+		"ko"		"이 주교의 생명 형태는 이미 변화되어 있다.\n한 쪽은 인간으로 보이고, 다른 한 쪽은...\n-원거리 공격을 사용\n-임사 형태가 아닌 '드웰러 멸사체' 가 살아있다면, 체력이 0이 됐을때 죽지 않고 '임사 형태'가 된 뒤, 체력을 천천히 회복합니다.\n-이 상태에서 체력이 전부 회복되면 다시 부활합니다."
 	}
 	"Dweller Archon Desc"
 	{
 		"en"		"Sea Horror. Even Alaxios's technology has a role to play in the evolution of we many.\n- Attacks inflict Nervous Impairment\n- When its 'Other Half' is alive and not in coma, enters a coma when HP reaches 0 and begins regenerating revives when HP reaches max"
 		"it"		"Terrore marino. Persino la tecnologia di Alaxios ha un ruolo da svolgere nell'evoluzione di noi tutti.\n- Gli attacchi infliggono menomazioni nervose.\n- Quando la sua altra metà è viva e non è in coma, entra in coma quando gli HP raggiungono lo 0 e inizia a rigenerarsi quando gli HP raggiungono il massimo"
-		"ko"		"...시테러처럼 보인다. 알락시오스의 과학기술은 위매니가 진화하는 길에서 아무런 쓸모도 없는 건 아니다.\n-임사 형태가 아닌 '파도의 주교' 가 살아있다면, 체력이 0이 됐을때 죽지 않고 '임사 형태'가 된 뒤, 체력을 천천히 회복합니다.\n-이 상태에서 체력이 전부 회복되면 다시 부활합니다."
+		"ko"		"...시테러처럼 보인다. 알락시오스의 과학기술은 위매니가 진화하는 길에서 아무런 쓸모도 없는 건 아니다.\n-임사 형태가 아닌 '드웰러 주교' 가 살아있다면, 체력이 0이 됐을때 죽지 않고 '임사 형태'가 된 뒤, 체력을 천천히 회복합니다.\n-이 상태에서 체력이 전부 회복되면 다시 부활합니다."
 	}
 	"Scientific Witchery Desc"
 	{
@@ -1549,11 +1549,11 @@
 		"it"	"Esperienziale, creato da donner e schwert per assistervi."
 		"ko"	"실험형 생명체. 도너크리그와 슈베르트크리그가 당신을 위해 제작했습니다."
 	}
-	"Ishar'mla, Heart of Corruption Desc"
+	"Leavtheen, Tribe of the Deep Desc"
 	{
 		"en"		"It speaks for we many.\n- Starts in Healer form\n- When in Healer form, follows it's allies and attacks heal up to 2 targets\n- Gains power over time and enters Leviathan form when full, increased while on Abyssal Weeds\n- Gains power rapidly when falling below half health for the first time\n- When in Leviathan form, attacks targets 6 locations, dealing AOE True damage, and destorys blocking buildings\n- Reverts forms when Leviathan form, spawns Nethesea Brands and heals self"
 		"it"		"Parla a nome di tutti noi.\n- Inizia in forma di Guaritore \n- Quando è in forma di Guaritore, segue gli alleati e i suoi attacchi curano fino a 2 bersagli \n- Guadagna energia nel tempo ed entra in forma di Leviatano quando è pieno, aumentata quando si trova nelle Marche di Abyss \n- Guadagna energia rapidamente quando scende sotto la metà della salute per la prima volta \n- Quando è in forma di Leviatano, attacca 6 bersagli, infliggendo danni veri AOE e distruggendo gli edifici che bloccano \n- Ritorna in forma di Leviatano, genera le Marche di Nethesea e si cura da solo \n- Si trasforma in forma di Leviatano, genera le Marche di Nethesea e si cura da solo"
-		"ko"		"더 이상 노래 부르지 않고, 위매니를 위해 목소리를 낸다.\n-스폰 시, 치유자 형태로 시작\n-이 상태에서는 아군을 따라다니며 주변의 최대 2명의 아군에게 버프를 부여하고 체력을 회복\n-시간이 지날수록 점차 힘을 충전, 심연 해초 위에 있다면 충전 속도가 가속됩니다.\n-체력이 처음으로 절반 이하가 될 경우 힘을 급격히 충전합니다.\n-힘이 최대치가 되면, 변신 형태가 됩니다.\n-변신 형태일때는 최대 6개의 위치에 트루 대미지 광역 공격을 사용하며 가로막는 구조물을 파괴합니다.\n-변신 형태에서 사망 시 치유자 형태로 복귀, 명흔을 생성하고 스스로를 치유합니다."
+		"ko"		"더 이상 노래 부르지 않고, 위매니를 위해 목소리를 낸다.\n-스폰 시, 치유자 형태로 시작\n-이 상태에서는 아군을 따라다니며 주변의 최대 2명의 아군에게 버프를 부여, 체력을 회복\n-시간이 지날수록 점차 힘을 충전, 심연 해초 위에 있다면 충전 속도가 가속됩니다.\n-체력이 처음으로 절반 이하가 될 경우 힘을 급격히 충전합니다.\n-힘이 최대치가 되면, 변신 형태가 됩니다.\n-변신 형태일때는 최대 6개의 위치에 트루 대미지 광역 공격을 사용하며 가로막는 구조물을 파괴합니다.\n-변신 형태에서 사망 시 치유자 형태로 복귀, 명흔을 생성하고 스스로를 치유합니다."
 	}
 	"Dweller Guard Desc"
 	{
