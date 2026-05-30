@@ -119,14 +119,6 @@ void Purnell_MapStart()
 	Zero(fl_Push_Knockback);
 	Zero(i_Pap_Level);
 	Zero(fl_HudDelay);
-	
-	for (int client = 0; client < MAXPLAYERS; client++)
-	{
-		i_NextDebuff[client] = -1;
-		
-		for (int i = 0; i < 2; i++)
-			i_NextBuffs[client][i] = -1;
-	}
 }
 
 bool Purnell_Lastman(int client)
@@ -173,12 +165,6 @@ void Purnell_Enable(int client, int weapon)
 			i_Pap_Level[client] = level;
 			i_SaveWeapon_Revolv[client] = EntIndexToEntRef(weapon);
 			
-			if (level == 0)
-			{
-				Purnell_Configure_Buffs(client);
-				Purnell_Configure_Debuffs(client);
-			}
-			
 			DataPack pack;
 			Timer_Purnell_Management[client] = CreateDataTimer(0.1, Purnell_Timer_Management, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
@@ -187,6 +173,12 @@ void Purnell_Enable(int client, int weapon)
 			PurnellMusicOst();
 		}
 	}
+}
+
+public void Purnell_OnBuy(int client)
+{
+	Purnell_Configure_Buffs(client);
+	Purnell_Configure_Debuffs(client);
 }
 
 void PurnellMusicOst()
@@ -950,17 +942,19 @@ static void Purnell_Hud_Logic(int client)
 	else if (level >= 1)
 		buffAmount = 1;
 	
-	Format(text, sizeof(text), "Next %s:", buffAmount == 1 ? "therapy" : "therapies");
-	for (int i = 0; i < buffAmount; i++)
-	{
-		int buffId = i_NextBuffs[client][i];
-		strcopy(buff, sizeof(buff), PurnellBuffs[buffId].buffName);
-		ReplaceString(buff, sizeof(buff), " Therapy", "");
-		Format(text, sizeof(text), "%s\n- %s (%s)", text, buff, PurnellBuffs[buffId].shortBuffDesc);
-	}
-	
 	if (buffAmount > 0)
+	{
+		Format(text, sizeof(text), "Next %s:", buffAmount == 1 ? "therapy" : "therapies");
+		for (int i = 0; i < buffAmount; i++)
+		{
+			int buffId = i_NextBuffs[client][i];
+			strcopy(buff, sizeof(buff), PurnellBuffs[buffId].buffName);
+			ReplaceString(buff, sizeof(buff), " Therapy", "");
+			Format(text, sizeof(text), "%s\n- %s (%s)", text, buff, PurnellBuffs[buffId].shortBuffDesc);
+		}
+		
 		Format(text, sizeof(text), "%s\n \n", text);
+	}
 	
 	Format(text, sizeof(text), "%sNext debuff:", text);
 	
