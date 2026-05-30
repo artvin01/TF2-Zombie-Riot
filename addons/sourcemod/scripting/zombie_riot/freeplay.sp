@@ -549,7 +549,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Index = NPC_GetByPlugin("npc_boss_reila");
 				enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "force_final_battle";
-				enemy.ExtraDamage = 0.75;
+				enemy.ExtraDamage = 0.45;
 				enemy.ExtraSpeed = 1.05;
 			}
 			case 33:
