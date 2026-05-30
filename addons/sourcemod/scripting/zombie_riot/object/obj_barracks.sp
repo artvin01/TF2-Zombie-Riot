@@ -389,8 +389,8 @@ enum
 	Thorns = 1,
 	Alternative = 2,
 	Combine = 3,
-	Iberia_Thorns = 4,
-	Iberia_Thornless = 5,
+	Almina_Thorns = 4,
+	Almina_Thornless = 5,
 	Civ_number_2
 }
 
@@ -541,7 +541,7 @@ static int SummonerCombine[][] =
 	// NPC Index, Wood, Food, Gold, Time, Level, Supply, Requirement
 	
 	{ 0, 5, 20, 0, 5, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
-	{ 0, 20, 5, 0, 7, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },		// Construction Novice
+	{ 0, 30, 5, 0, 7, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },		// Construction Novice
 	
 	{ 0, 10, 35, 0, 5, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
 	{ 0, 50, 10, 0, 8, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
@@ -550,7 +550,7 @@ static int SummonerCombine[][] =
 	{ 0, 100, 20, 0, 9, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
 	
 	{ 0, 50, 150, 0, 7, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
-	{ 0, 200, 75, 0, 10, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
+	{ 0, 200, 50, 0, 10, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
 	
 	{ 0, 750, 750, 	0, 	25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  },	// Construction Expert
 	{ 0, 600, 600, 	30, 30, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
@@ -563,7 +563,7 @@ static int SummonerCombine[][] =
 	
 };
 
-static const char SummonerIberiaNPC[][] =
+static const char SummonerAlminaNPC[][] =
 {
 	"npc_barrack_runner",
 	"npc_barrack_gunner",
@@ -587,7 +587,7 @@ static const char SummonerIberiaNPC[][] =
 	"npc_barrack_guards",
 };
 
-static int SummonerIberiaComplete[][] =
+static int SummonerAlminaComplete[][] =
 {
 	// NPC Index, Wood, Food, Gold, Time, Level
 	{ 0, 5, 20, 0, 5, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
@@ -613,7 +613,7 @@ static int SummonerIberiaComplete[][] =
 };
 
 
-static const char SummonerIberiaIncompleteNPC[][] =
+static const char SummonerAlminaIncompleteNPC[][] =
 {
 	"npc_barrack_runner",
 	
@@ -635,7 +635,7 @@ static const char SummonerIberiaIncompleteNPC[][] =
 	"npc_barrack_villager"
 };
 
-static int SummonerIberiaInComplete[][] =
+static int SummonerAlminaInComplete[][] =
 {
 	// NPC Index, Wood, Food, Gold, Time, Level
 	{ 0, 5, 15, 0, 5, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
@@ -685,10 +685,10 @@ static const char SummonerAlternativeNPC[][] =
 static int SummonerAlternative[][] =
 {
 	// NPC Index, 	Wood, 	Food, 	Gold, 	Time, Level, Supply
-	{ 0 , 			10, 	20, 	0, 		5, 		 1,	 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },		// None
-	{ 0, 			30, 	10, 	0, 		7, 		 2,		1, 	0,ZR_BARRACKS_TROOP_CLASSES },		// Construction Novice
+	{ 0, 			5, 		20, 	0, 		5, 		 1,	 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },		// None
+	{ 0, 			30, 	5,	 	0, 		7, 		 2,		1, 	0,ZR_BARRACKS_TROOP_CLASSES },		// Construction Novice
 	
-	{ 0 ,			10, 	35, 	0, 		7, 		 4, 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
+	{ 0,			10, 	35, 	0, 		7, 		 4, 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
 	{ 0, 			50, 	10, 	0, 		9, 		 4, 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
 
 	{ 0,			20,		60, 	0, 		7, 		 7, 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
@@ -703,7 +703,7 @@ static int SummonerAlternative[][] =
 	{ 0, 			600, 	200, 	25, 	12,		 16,	1,	 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 	{ 0 , 			200, 	600, 	25, 	13,		 16,	1,	 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 
-	{ 0, 			300, 	100, 	0, 		10, 		 16, 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 			300, 	100, 	0, 		10, 	 16, 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 	{ 0 , 			100,	300,	0,		9, 		 16, 	1, 	0,ZR_BARRACKS_TROOP_CLASSES }	// Construction Master
 };
 
@@ -763,8 +763,8 @@ static const char CivName[][] =
 	"Thorns Assitance",
 	"Blitzkrieg's Army",
 	"Guln's Companions",
-	"Iberia and Expidonsan's",
-	"Iberia and Expidonsan's",
+	"Almina and Expidonsan's",
+	"Almina and Expidonsan's",
 };
 
 static void SetupNPCIndexes()
@@ -789,14 +789,14 @@ static void SetupNPCIndexes()
 		SummonerAlternative[i][NPCIndex] = NPC_GetByPlugin(SummonerAlternativeNPC[i]);
 	}
 	
-	for(int i; i < sizeof(SummonerIberiaComplete); i++)
+	for(int i; i < sizeof(SummonerAlminaComplete); i++)
 	{
-		SummonerIberiaComplete[i][NPCIndex] = NPC_GetByPlugin(SummonerIberiaNPC[i]);
+		SummonerAlminaComplete[i][NPCIndex] = NPC_GetByPlugin(SummonerAlminaNPC[i]);
 	}
 	
-	for(int i; i < sizeof(SummonerIberiaInComplete); i++)
+	for(int i; i < sizeof(SummonerAlminaInComplete); i++)
 	{
-		SummonerIberiaInComplete[i][NPCIndex] = NPC_GetByPlugin(SummonerIberiaIncompleteNPC[i]);
+		SummonerAlminaInComplete[i][NPCIndex] = NPC_GetByPlugin(SummonerAlminaIncompleteNPC[i]);
 	}
 }
 
@@ -804,11 +804,11 @@ static int GetUnitCount(int civ)
 {
 	switch(civ)
 	{
-		case Iberia_Thornless:
-			return sizeof(SummonerIberiaInComplete);
+		case Almina_Thornless:
+			return sizeof(SummonerAlminaInComplete);
 			
-		case Iberia_Thorns:
-			return sizeof(SummonerIberiaComplete);
+		case Almina_Thorns:
+			return sizeof(SummonerAlminaComplete);
 
 		case Thorns:
 			return sizeof(SummonerThorns);
@@ -828,11 +828,11 @@ static int GetSData(int civ, int unit, int index)
 {
 	switch(civ)
 	{
-		case Iberia_Thornless:
-			return SummonerIberiaInComplete[unit][index];
+		case Almina_Thornless:
+			return SummonerAlminaInComplete[unit][index];
 			
-		case Iberia_Thorns:
-			return SummonerIberiaComplete[unit][index];
+		case Almina_Thorns:
+			return SummonerAlminaComplete[unit][index];
 
 		case Thorns:
 			return SummonerThorns[unit][index];
@@ -893,17 +893,17 @@ public void Building_Summoner(int client, int entity)
 	ResearchIn[client] = 0.0;
 	CommandMode[client] = 0;
 	TrainingQueue[client] = -1;
-	CivType[client] = Store_HasNamedItem(client, "Iberia's Last Hope") ? Thorns : Default;
+	CivType[client] = Store_HasNamedItem(client, "Almina's Last Hope") ? Thorns : Default;
 
 	if(CivType[client] == Default)
 	{
-		CivType[client] = Store_HasNamedItem(client, "Iberia and Expidonsan's Help") ? Iberia_Thornless : Default;
+		CivType[client] = Store_HasNamedItem(client, "Almina and Expidonsan's Help") ? Almina_Thornless : Default;
 		if(CivType[client] != Default)
 		{
-			//looks like they have last hope equipped! Do they also possess iberia?
-			if(Items_HasNamedItem(client, "Iberia's Last Hope"))
+			//looks like they have last hope equipped! Do they also possess almina?
+			if(Items_HasNamedItem(client, "Almina's Last Hope"))
 			{
-				CivType[client] = Iberia_Thorns;
+				CivType[client] = Almina_Thorns;
 			}
 		}
 	}
