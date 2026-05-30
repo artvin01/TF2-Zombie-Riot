@@ -3445,7 +3445,7 @@ public Action Command_SetTeamCustom(int client, int args)
 	
 	for(int target; target<matches; target++)
 	{
-		PrintToChatAll("target %i, TeamSet %i",targets[target], teamset);
+		PrintToChat(targets[target], "You are on team: %i",teamset);
 		SetTeam(targets[target], teamset);
 	}
 	

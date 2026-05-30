@@ -107,7 +107,7 @@ stock void Weapon_BubbleProctectionInit(int client, int weapon, int level)
 		vel_2[2] = Sine(DegToRad(ang[0]))*speed;
 		vel_2[2] *= -1;
 		
-		int team = GetClientTeam(client);
+		int team = GetTeam(client);
 			
 		SetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity", client);
 		SetEntProp(entity, Prop_Send, "m_iTeamNum", team, 1);

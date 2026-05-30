@@ -2981,6 +2981,7 @@ stock int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 		else
 			return -1;
 #else
+		if(GetTeam(owner_projectile) == GetTeam(other_entity))
 			return -1;
 #endif	
 	}
