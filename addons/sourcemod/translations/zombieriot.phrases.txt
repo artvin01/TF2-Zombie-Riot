@@ -4835,7 +4835,7 @@
 		"fr"	"L'infection Dweller attaque avec la Corrosion d'Armure. Guérissez-la avec vos tables d'armure!"
 		"chi"	"海嗣感染将会侵蚀你的盾。"
 		"it"	"L'infezione Dweller è arrivata, gli attacchi di Corrosione dell'Armatura infetteranno la tua armatura, curala con le tabelle dell'armatura!"
-		"ko"	"제노에 감염된 배풍등의 정예병들을 본 후, 그의 전초기지에 남은 병사가 있는지 확인을 하러 갑니다. 그곳엔 시본이 된 병사들이 있었고... 본토를 공격할 준비를 마친 상태였습니다."
+		"ko"	"제노에 감염된 배풍등의 정예병들을 본 후, 그의 전초기지에 남은 병사가 있는지 확인을 하러 갑니다. 그곳엔 드웰러가 된 병사들이 있었고... 본토를 공격할 준비를 마친 상태였습니다."
 	}
 	"Interitus Desc"
 	{
@@ -4849,7 +4849,7 @@
 	{
 		"en"	"Lore order: (6) Invade the dweller and kill them off while Alaxios distracts them... however, it seems another party missunderstands this temporary alliance."
 		"it"	"Ordine Lore: (6) Invadi i dweller e ucciderli mentre alaxios li distrae... tuttavia, sembra che un'altra parte non capisca questa alleanza temporanea."
-		"ko"	"설정 순서: (6) 알락시오스가 그들을 유인하는 동안 시본을 침공해 처치하세요…\n그러나 다른 세력이 이 일시적인 동맹을 오해한 것 같습니다."
+		"ko"	"설정 순서: (6) 알락시오스가 그들을 유인하는 동안 드웰러를 침공해 처치하세요…\n그러나 다른 세력이 이 일시적인 동맹을 오해한 것 같습니다."
 	}
 	"Schwert Donner Alt Desc"
 	{
@@ -5334,7 +5334,7 @@
 	"Almina Expi Desc"
 	{
 	  "en" "After the main mercs are done with their training, Almina comes to us, the secondary mercs, for some more training. Nemal and Silvester won't be here this time since they're on vacation with Sensal."
-	  "ko" "주요 용병들이 훈련을 마친 후, 이베리아가 더 많은 훈련을 위해 보조 용병들을 방문합니다. 이번엔 네말과 실베스터가 센살과 휴가 중이기에 없을 겁니다."
+	  "ko" "주요 용병들이 훈련을 마친 후, 알미나가 더 많은 훈련을 위해 보조 용병들을 방문합니다. 이번엔 네말과 실베스터가 센살과 휴가 중이기에 없을 겁니다."
 	}
 	"Almina & Nemal"
 	{
@@ -5343,14 +5343,14 @@
 		"fr" "Almina & Nemal"
 		"chi"	"伊比利亚 & 尼莫尔"
 		"it"	"Almina e Nemal"
-		"ko" "이베리아 & 네말"
+		"ko" "알미나 & 네말"
 	}
 	"Almina Nemal Desc"
 	{
 		"en" "(10) Almina and Expidonsa offer training to help against the true final battle against the void... Although alminans seem to take it extremly seriously."
 		"fr" "Almina et Expidonsa vous offrent un entraînement qui vous aiderait pour le combat final contre le Void... Il semblerait que les Alminans prennent ceci extrêmement sérieusement, pourtant."
 		"it"	"(10) Almina e expidonsa offrono addestramento per aiutare contro la vera battaglia finale contro il vuoto... Anche se gli iberici sembrano prenderla estremamente sul serio."
-		"ko" "설정 순서: (10) 이베리아와 엑스피돈사가 공허와의 최후의 전투를 돕기 위한 대비 훈련을 제공하려고 합니다... 비록 이베리아인들은 이를 매우 심각하게 받아들이는 것 같지만요."
+		"ko" "설정 순서: (10) 알미나와 엑스피돈사가 공허와의 최후의 전투를 돕기 위한 대비 훈련을 제공하려고 합니다... 비록 알미나인들은 이를 매우 심각하게 받아들이는 것 같지만요."
 	}
 	"Revenant's Shadow"
 	{
@@ -5626,13 +5626,13 @@
 	"Vesta Survival Desc"
 	{
 		"en" 	"Before Bob the First comes to us for help in Rogue 2, we come across a Vesta outpost. They decide to attack us. Guess they're pissed off about beating them before."
-		"ko" 	"로그2에서 밥 1세가 도움을 위해 찾아오기 전, 빅토리아 전초기지를 지나가게 되고... 그들이 당신을 공격해옵니다?! 아무래도 이전에 그들을 패퇴시킨 것에 화가 난 것 같군요."
+		"ko" 	"로그2에서 밥 1세가 도움을 위해 찾아오기 전, 베스타 전초기지를 지나가게 되고... 그들이 당신을 공격해옵니다?! 아무래도 이전에 그들을 패퇴시킨 것에 화가 난 것 같군요."
 	}
 	"Vesta Raid Desc"
 	{
 		"en" 	"Lore order: (11) You are asked by Sensal to visit Ziberia where it is currently under attack by Vesta."
 		"it"	"Ordine Lore: (11) Sensal vi chiede di visitare Ziberia, attualmente attaccata da Vesta."
-		"ko"	"설정 순서: (11) 센살은 당신에게 현재 빅토리아에게 공격받고 있는 지베리아를 방문해달라고 부탁했습니다."
+		"ko"	"설정 순서: (11) 센살은 당신에게 현재 베스타에게 공격받고 있는 지베리아를 방문해달라고 부탁했습니다."
 	}
 	"Ability already Active"
 	{
@@ -5903,7 +5903,7 @@
 	"Dweller Escape Desc"
 	{
 		"en"	"Escape from the dweller's spreading mass!"
-		"ko"	"퍼져나가는 시본의 물결에서 탈출하세요!"
+		"ko"	"퍼져나가는 드웰러의 물결에서 탈출하세요!"
 	}
 	"Medieval Empires"
 	{

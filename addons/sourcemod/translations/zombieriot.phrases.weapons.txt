@@ -2683,7 +2683,7 @@
 	"Alminan and Expidonsan Training"
 	{
 		"en"		"Alminan and Expidonsan Training"
-		"ko"		"이베리아-엑스피돈사 연합 훈련"
+		"ko"		"알미나-엑스피돈사 연합 훈련"
 	}
 	"Expidonsan Research Card"
 	{
@@ -3224,13 +3224,13 @@
 	{
 		"en"		"Almina and Expidonsan's Help"
 		"ru"		"Помощь Иберии и Экспидонса"
-		"ko"		"이베리아와 엑스피돈사인들의 도움"
+		"ko"		"알미나와 엑스피돈사인들의 도움"
 	}
 	"Almina's Last Hope..."
 	{
 		"en"		"Almina's Last Hope"
 		"ru"		"Последняя Надежда Иберии"
-		"ko"		"이베리아의 마지막 희망"
+		"ko"		"알미나의 마지막 희망"
 	}
 	"Blitzkrieg's destroyed Core"
 	{
@@ -3618,7 +3618,7 @@
 		"ru"       "Суд Иберии"
 		"chi"      "伊比利亚之判"
 		"it"		"Giudizio di Almina"
-		"ko"		"이베리아의 심판"
+		"ko"		"알미나의 심판"
 	}
 	"Tornado-Blitz"
 	{
@@ -4913,7 +4913,7 @@
 		"fr"	"Infection Dweller"
 		"chi"	"海嗣感染"
 		"it"	"Infezione di Dweller"
-		"ko"	"시본 감염원"
+		"ko"	"드웰러 감염원"
 	}
 	"Dweller Claws"
 	{
@@ -4922,7 +4922,7 @@
 		"fr"	"Griffes Dweller"
 		"chi"	"海嗣利爪"
 		"it"	"Artigli di Dweller"
-		"ko"	"시본 발톱"
+		"ko"	"드웰러 발톱"
 	}
 	"Dweller Spines"
 	{
@@ -4931,7 +4931,7 @@
 		"fr"	"Épines Dweller"
 		"chi"	"海嗣颈骨"
 		"it"	"Spine di Dweller"
-		"ko"	"시본 가시뼈"
+		"ko"	"드웰러 가시뼈"
 	}
 	"Dweller Salve"
 	{
@@ -4940,7 +4940,7 @@
 		"fr"	"Baume Dweller"
 		"chi"	"海嗣药膏"
 		"it"	"Salvezza Dweller"
-		"ko"	"시본 연고"
+		"ko"	"드웰러 연고"
 	}
 	"The Flagellant"
 	{
@@ -5324,7 +5324,7 @@
 	{
 		"en"	"Vestan Launcher"
 		"ru"	"Викторианская Пушка"
-		"ko"	"빅토리아 런처"
+		"ko"	"베스타 런처"
 		"it"	"Lanciatore vittoriano"
 	}
 	"Castle Breaker"
@@ -5963,7 +5963,7 @@
 	{
 		"en"	"Take less damage from Dweller floor creep"
 		"it"	"Subisce meno danni da Dweller floor creep"
-		"ko"	"명흔으로 받는 피해 감소"
+		"ko"	"심연 해초로 받는 피해 감소"
 	}
 	"Flask of Freedom"
 	{
@@ -6011,19 +6011,19 @@
 	{
 		"en"	"Adds the Dweller faction"
 		"it"	"Aggiunge la fazione Dweller"
-		"ko"	"무기에 시본 진영을 추가"
+		"ko"	"무기에 드웰러 진영을 추가"
 	}
 	"Flask of Grunwald"
 	{
 		"en"	"Flask of Grunwald"
 		"it"	"Fiaschetta di Grunwald"
-		"ko"	"카시미어의 플라스크"
+		"ko"	"그룬발트의 플라스크"
 	}
 	"Flask of Grunwald Desc"
 	{
 		"en"	"Adds the Grunwald faction"
 		"it"	"Aggiunge la fazione Grunwald"
-		"ko"	"무기에 카시미어 진영을 추가"
+		"ko"	"무기에 그룬발트 진영을 추가"
 	}
 	"Crystal Shard"
 	{

@@ -181,7 +181,7 @@
 	{
 		"en"	"Almina's Anti Raid"
 		"it"	"Anti Raid di Almina"
-		"ko"	"이베리아의 레이드 대항마"
+		"ko"	"알미나의 레이드 대항마"
 	}
 	"Almina's Anti Raid Desc"
 	{
@@ -639,9 +639,9 @@
 	}
 	"Sea Presence Desc"
 	{
-		"en"	"Shows that youre standing in sea creep, you take continuous damage, get out.\n{green}If you are apart or one with the sea, you instead benefit from it..."
+		"en"	"Shows that youre standing in Abyssal Weed, you take continuous damage, get out.\n{green}If you are apart or one with the sea, you instead benefit from it..."
 		"it"	"Mostra che sei in mezzo al mare, subisci danni continui, esci.\n{green}Se sei separato o un tutt'uno con il mare, invece ne trai beneficio..."
-		"ko"	"현재 당신은 명흔 위에 있습니다. 영역 내에 있으면 계속해서 피해를 받게 됩니다. 당장 빠져나오세요.\n{green}만약 당신이 바다의 일원이라면, 대신 힘을 얻게 될 것입니다..."
+		"ko"	"현재 당신은 심연 해초 위에 있습니다. 영역 내에 있으면 계속해서 피해를 받습니다. 빠져나오세요.\n{green}만약 당신이 바다의 일원이라면, 대신 힘을 얻게 될 것입니다..."
 	}
 	"Sea Strength"
 	{
@@ -651,9 +651,9 @@
 	}
 	"Sea Strength Desc"
 	{
-		"en"	"Shows that youre standing in sea creep, you benefit from it\nIncreases damage dealt by 10％, Decreases damage taken by 10％."
+		"en"	"Shows that youre standing in Abyssal Weed, you benefit from it\nIncreases damage dealt by 10％, Decreases damage taken by 10％."
 		"it"	"Mostra che si è in presenza di mare agitato, se ne trae beneficio. \nAumenta i danni inflitti di 10％, diminuisce i danni subiti di 10％."
-		"ko"	"현재 당신은 명흔 위에 있습니다. 영역 내에 있으면 능력치가 증가합니다.\n공격 피해량이 10％ 증가하고, 받는 피해량이 10％ 감소합니다."
+		"ko"	"현재 당신은 심연 해초 위에 있습니다. 영역 내에 있으면 능력치가 증가합니다.\n공격 피해량이 10％ 증가하고, 받는 피해량이 10％ 감소합니다."
 	}
 	"Void Strength I"
 	{
@@ -754,13 +754,13 @@
 	"Call To Vesta"
 	{
 		"en"	"Call To Vesta"
-		"ko"	"빅토리아의 부름"
+		"ko"	"베스타의 부름"
 		"it"	"Chiamata a Vittoria"
 	}
 	"Call To Vesta Desc"
 	{
 		"en"	"Reduces damage taken by 20％\nBoosts damage dealt by 20％\nBoosts NPC'S Movementspeed by 15％\nAll Vestan enemeies gain extra abilities upon reciving this buff."
-		"ko"	"받는 피해량 20％ 감소\n공격 피해량 20％ 증가\nNPC의 이동 속도 15％ 증가\n해당 버프를 보유한 빅토리아 계열 적들은 추가 능력을 얻습니다."
+		"ko"	"받는 피해량 20％ 감소\n공격 피해량 20％ 증가\nNPC의 이동 속도 15％ 증가\n해당 버프를 보유한 베스타 계열 적들은 추가 능력을 얻습니다."
 		"it"	"Riduce i danni subiti del 20％\nAumenta i danni inflitti del 20％\nAumenta la velocità di movimento degli NPC del 15％\nTutti i nemici vittoriani ottengono abilità extra quando ricevono questo buff."
 	}
 	"Taurine"
@@ -832,7 +832,7 @@
 	"Pikeman's Stabs"
 	{
 		"en"	"Pikeman's Stabs"
-		"ko"	"장창병의 참격"
+		"ko"	"장창병의 찌르기"
 	}
 	"Pikeman's Stabs Desc"
 	{
@@ -1351,19 +1351,19 @@
 	{
 		"en"	"Increases Vestan weapons damage by 10％"
 		"it"	"Aumenta i danni delle armi vittoriane del 10％"
-		"ko"	"''빅토리아'' 진영 무기들의 피해량이 10％ 증가합니다."
+		"ko"	"''베스타'' 진영 무기들의 피해량이 10％ 증가합니다."
 	}
 	"Vestan Launcher's Call"
 	{
 		"en"	"Vestan Launcher's Call"
 		"it"	"Il richiamo del lanciatore vittoriano"
-		"ko"	"빅토리아 런처의 부름"
+		"ko"	"베스타 런처의 부름"
 	}
 	"Vestan Launcher's Call Desc"
 	{
 		"en"	"Increases Vestan Weapons Explosive Radius by 10％"
 		"it"	"Aumenta il raggio di esplosione delle armi vittoriane del 10％"
-		"ko"	"''빅토리아'' 진영 무기들의 폭발 범위가 10％ 증가합니다."
+		"ko"	"''베스타'' 진영 무기들의 폭발 범위가 10％ 증가합니다."
 	}
 	"Explosault Rifle Buff"
 	{
@@ -1373,7 +1373,7 @@
 	"Explosault Rifle Buff Desc"
 	{
 		"en"	"''Vesta'' faction will have 10％ less blast damage reduce per target"
-		"ko"	"''빅토리아'' 진영 무기들의 폭발 타겟당 피해량 감소가 10％ 완화됩니다."
+		"ko"	"''베스타'' 진영 무기들의 폭발 타겟당 피해량 감소가 10％ 완화됩니다."
 	}
 	"Tinkering Curiosity"
 	{
@@ -1610,7 +1610,7 @@
 	{
 		"en"	"Almina Light"
 		"it"	"Luce Almina"
-		"ko"	"이베리아의 빛"
+		"ko"	"알미나의 빛"
 	}
 	"Almina Light Desc"
 	{
@@ -1646,25 +1646,25 @@
 	{
 		"en"	"Abyss Antidote"
 		"it"	"Antidoto di Abyss"
-		"ko"	"명흔 항독제"
+		"ko"	"심연 해초 항독제"
 	}
 	"Abyss Antidote Desc"
 	{
 		"en"	"Reduces the damage caused by abyssal weeds by 80％"
 		"it"	"Riduce i danni causati dai marchi abyss dell'80％"
-		"ko"	"명흔으로 받는 피해가 80％ 감소합니다."
+		"ko"	"심연 해초로 받는 피해가 80％ 감소합니다."
 	}
 	"Vesta Nuke"
 	{
 		"en"	"Vesta Nuke"
 		"it"	"Bomba Atomica Vittoria"
-		"ko"	"빅토리아 핵"
+		"ko"	"베스타 핵"
 	}
 	"Vesta Nuke Desc"
 	{
 		"en"	"Launches a Vesta Nuke when full.\nRemoves Locked On from all enemies when at a certain amount."
 		"it"	"Lancia una Vesta Nuke quando è piena.\nRimuove Locked On da tutti i nemici quando raggiunge una certa quantità."
-		"ko"	"이것이 꽉 차면 빅토리아 핵이 발사됩니다.\n일정 수치 이상이 되면, 모든 적에게 부여된 목표 고정 효과를 제거합니다."
+		"ko"	"이것이 꽉 차면 베스타 핵이 발사됩니다.\n일정 수치 이상이 되면, 모든 적에게 부여된 목표 고정 효과를 제거합니다."
 	}
 	"Locked On"
 	{
@@ -1676,7 +1676,7 @@
 	{
 		"en"	"The Vesta Nuke will always target the victim."
 		"it"	"La Vesta Nuke si rivolge sempre alla vittima."
-		"ko"	"빅토리아 핵은 항상 이 효과가 부여된 대상을 타겟으로 삼습니다."
+		"ko"	"베스타 핵은 항상 이 효과가 부여된 대상을 타겟으로 삼습니다."
 	}
 	"Shield"
 	{
@@ -1706,7 +1706,7 @@
 	{
 		"en" 	"Almina Morale Boost"
 		"it"	"Aumento del morale di Almina"
-		"ko"	"이베리아 사기 증진"
+		"ko"	"알미나 사기 증진"
 	}
 	"Almina Morale Boost Desc"
 	{

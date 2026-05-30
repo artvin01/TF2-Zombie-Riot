@@ -82,7 +82,7 @@
 		"ru" 		"Иберец/Экспидонец Немал прибыла."
 		"fr" 		"Le Alminain/Expidonsian Nemal est ici."
 		"it"		"L'Almina/Expidonsan Nemal è arrivato."
-		"ko" 		"이베리아/엑스피돈사 출신, 네말이 등장했습니다."
+		"ko" 		"알미나/엑스피돈사 출신, 네말이 등장했습니다."
 	}
 	"Vhxis arrived"
 	{
@@ -423,7 +423,7 @@
 		"ru" 	"Маяк Иберии Телепортировался!"
 		"fr"	"Une phare Alminain s'est téléporté ici!"
 		"it"	"Faro iberico teletrasportato!"
-		"ko"	"이베리아 등대가 나타났습니다!"
+		"ko"	"알미나 등대가 나타났습니다!"
 	}
 	"Snipers Appear"
 	{
@@ -681,7 +681,7 @@
 	{
 		"en"	"Vestan Radiomast Is Here! Break this to end the infinite wave"
 		"it"	"Il Radiomast vittoriano è arrivato! Rompilo per porre fine all'onda infinita."
-		"ko"	"빅토리아 방송탑이 여기에 있습니다! 파괴하여 무한 웨이브를 중단시키세요!"
+		"ko"	"베스타 방송탑이 여기에 있습니다! 파괴하여 무한 웨이브를 중단시키세요!"
 	}
 	"Atomizer Arrived"
 	{
@@ -699,7 +699,7 @@
 	{
 		"en" 		 "The Pilot of Vestan Artillery, Harrison Arrived."
 		"it"		 "Il pilota dell'artiglieria vittoriana, Harrison, è arrivato."
-		"ko" 		 "빅토리아 포병대의 조종사, 해리슨이 도착했습니다."
+		"ko" 		 "베스타 포병대의 조종사, 해리슨이 도착했습니다."
 	}
 	"Castellan Arrived"
 	{

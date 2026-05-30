@@ -76,7 +76,7 @@
 		"fr" 		"Infectés par Dweller"
 		"pt"		"Infecção do Mar"
 		"it"		"Infezione di Dweller"
-		"ko" 		"시본 감염체들"
+		"ko" 		"드웰러 감염체들"
 	}
 	"Bloons"
 	{
@@ -111,7 +111,7 @@
 	{
 		"en" 		"Almina Expidonsa Alliance"
 		"it"		"Alleanza Almina Expidonsa"
-		"ko" 		"이베리아 - 엑스피돈사 연합"
+		"ko" 		"알미나 - 엑스피돈사 연합"
 	}
 	"Whiteflower Specials"
 	{
@@ -1273,87 +1273,88 @@
 		"it"		"Un Terrore del Mare a cui è cresciuto un organo solido.Le altre parti del suo corpo sembrano formare spuntoni esterni inespugnabili.Gli attacchi infliggono danni reali.La variante Elite guadagna salute e danni aumentati"
 		"ko"		"고체 기관이 달린 시테러.\n몸의 다른 부위도 점점 견고한 가시가 생겨나고 있는 것 같다.\n-공격이 트루 대미지를 가함\n-정예 개체는 체력, 피해량 증가"
 	}
-	"The First To Talk Desc"
+	"Dweller Hybrid Desc"
 	{
 		"en"		"Fires projectiles with armor erosion, can fire rapid amounts in AOE area.\nThe first beautiful living being to speak human language before civilized man.\nDweller.\n- Uses a ranged attack\n- Attacks inflict Nervous Impairment\n- Periodically locks onto target location, after a delay hits serveral times to a random enemy within range"
 		"it"		"Spara proiettili con erosione dell'armatura, può sparare rapidamente in un'area AOE.\nIl primo bell'essere vivente a parlare il linguaggio umano prima dell'uomo civilizzato.\nDweller.\n- Utilizza un attacco a distanza.\n- Gli attacchi infliggono menomazioni nervose.\n- Si blocca periodicamente sulla posizione del bersaglio, dopo un ritardo colpisce più volte un nemico a caso nel raggio d'azione"
-		"ko"		"처음으로 문명의 앞에서 인간의 말을 쓴 아름다운 생물.\n시본.\n-원거리 공격을 사용하며, 신경 손상 원소 피해를 부여함\n-표적의 위치에 지점을 표시한뒤, 짧은 지연 후 범위 내에 있는 무작위 적에게 다중 타격을 함."
+		"ko"		"처음으로 문명의 앞에서 인간의 말을 쓴 아름다운 생물.\n드웰러.\n-원거리 공격을 사용하며, 신경 손상 원소 피해를 부여함\n-표적의 위치에 지점을 표시한뒤, 짧은 지연 후 범위 내에 있는 무작위 적에게 다중 타격을 함."
 	}
 	"Sea Dweller's Nest Desc"
 	{
 		"en"		"A member of the Church of the Deep who snuck into disaster-ravaged Almina.\nHe changed the law of the land through his sincere beliefs, in pursuit of the perfect form, yet he was unable to fathom the will of the ocean.\nThen again, who could?\n- Spawns at a random position, does not move, and becomes a spawn point\n- Uses a ranged attack, up to 2 targets with the highest ranged resistance in range\n- Attacks inflict Nervous Impairment\n- Periodically attacks up to 8 targets\n- Periodically deals damage to all targets in line-of-sight"
 		"it"		"Un membro della Chiesa degli Abissi che si è intrufolato nell'Almina devastata dal disastro.\nHa cambiato la legge della terra grazie alle sue sincere convinzioni, alla ricerca della forma perfetta, ma non è riuscito a comprendere la volontà dell'oceano.\nD'altronde, chi potrebbe farlo?\n- Si riproduce in una posizione casuale, non si muove e diventa un punto di spawn \n- Utilizza un attacco a distanza, fino a 2 bersagli con la resistenza a distanza più alta nel raggio d'azione \n- Gli attacchi infliggono menomazioni nervose \n- Attacca periodicamente fino a 8 bersagli \n- Infligge periodicamente danni a tutti i bersagli in linea visiva"
-		"ko"		"참사가 벌어진 후 이베리아에 잠입한 심해 교회의 일원 중 하나.\n자신의 이념으로 율법을 왜곡하고, 개인의 완벽함을 추구했으나 바다의 뜻에는 전혀 침투할 수 없었다.\n그런 게 가능한 사람이 있기는 할까?\n-무작위 위치에 생성, 움직이지 않지만 다른 적들을 생성하는 임시 스폰 지점이 됨.\n-원거리 공격을 사용하며, 피해 저항력이 가장 높은 대상 2명만을 노림\n-주기적으로 최대 8명까지 공격하며, 시야 내 모든 목표물에게 피해를 가하는 공격 보유"
+		"ko"		"참사가 벌어진 후 알미나에 잠입한 심해 교회의 일원 중 하나.\n자신의 이념으로 율법을 왜곡하고, 개인의 완벽함을 추구했으나 바다의 뜻에는 전혀 침투할 수 없었다.\n그런 게 가능한 사람이 있기는 할까?\n-무작위 위치에 생성, 움직이지 않지만 다른 적들을 생성하는 임시 스폰 지점이 됨.\n-원거리 공격을 사용하며, 피해 저항력이 가장 높은 대상 2명만을 노림\n-주기적으로 최대 8명까지 공격하며, 시야 내 모든 목표물에게 피해를 가하는 공격 보유"
 	}
-	"Armorless Union Knight Desc"
+	"Abyss Grunwald Warrior Desc"
 	{
 		"en"		"An infected from Grunwald.\n- Periodically resists melee damage"
 		"it"		"Un infetto di Grunwald.\n- Resiste periodicamente ai danni in mischia"
-		"ko"		"감염된 카시미어인, \n-주기적으로 근접 피해 저항력 증가"
+		"ko"		"감염된 그룬발트인, \n-주기적으로 근접 피해 저항력 증가"
 	}
-	"Roar Knightclub Trainee Desc"
+	"Abyss Grunwald Archer Desc"
 	{
 		"en"		"Wearing the high-performance, lightweight armor provided by Roar Guards.\n- Uses a ranged attack\n- Spawns with a shield provides flat damage reduction, lasting for a duration"
 		"it"		"Indossa l'armatura leggera e ad alte prestazioni fornita dalle Roar Guards.\n- Utilizza un attacco a distanza\n- Nasce con uno scudo che fornisce una riduzione piatta dei danni, che dura per un certo periodo di tempo"
 		"ko"		"로어에서 제공한 고성능 경량 갑옷을 입고 있다.\n-원거리 공격 사용\n-스폰된 직후, 일정 시간 동안 지속되는 매우 높은 고정 피해량 감소 쉴드를 보유."
 	}
-	"Grunwald Revenger"
+	"Abyss Grunwald Revenger Desc"
 	{
 		"en"		"The Grunwald Revenger have long been known for their ferocity and aggression.\n- Gains stacking increased damage and attack speed when their ally has died within range"
+		"ko"		"그룬발트 복수자는 와일드한 공격성으로 줄곧 유명했다.\n-이 적 주변의 적이 죽을 때마다, 피해량, 피해 저항력, 이동 속도가 증가. 이 효과는 중첩됨."
 	}
-	"Armorless Union Cleanup Squad Desc"
+	"Abyss Grunwald Sniper Assasin Desc"
 	{
 		"en"		"Invis from afar and deal immensive damage."
 		"it"		"Invis da lontano e infligge danni immensi."
 		"ko"		"멀리있을 때 투명화 상태가 되며, 매우 높은 피해를 주는 공격을 합니다."
 	}
-	"Armorless Union Assassin Desc"
+	"Abyss Grunwald Assasin Desc"
 	{
 		"en"		"They have adopted some kind of bounty system and are often very thorough in their tasks.\n- Uses a ranged attack\n- Has camouflage\n- Deals increased damage when no targets in close range"
 		"it"		"Hanno adottato una sorta di sistema di taglie e sono spesso molto scrupolosi nei loro compiti.\n- Utilizza un attacco a distanza\n- Ha una mimetizzazione\n- Infligge danni maggiori quando non ci sono bersagli a distanza ravvicinata"
-		"ko"		"아머레스 유니온이 고용한 암살자로, 실력은 평범하지만 매우 교활하다.\n-원거리 공격 사용\n-위장 버프를 보유\n-자신의 주변에 적이 없으면 피해량이 크게 증가"
+		"ko"		"실력은 평범하지만 매우 교활하다.\n-원거리 공격 사용\n-위장 버프를 보유\n-자신의 주변에 적이 없으면 피해량이 크게 증가"
 	}
 	"Herald of the Abyss Desc"
 	{
 		"en"		"The tiny Dweller that haunted the mighty Stultifera, the blood of its parents once strewn across the ocean's waters.\nThe revelation reaches not the ears of the children, their kind's destiny quietly continuing to flow.\n- Uses attacks based on current form\n- When changing form, consumes the closest remain, killing targets and consumes nearby remains\n- Elite variant gains increased health, damage, and consumes an addtional remain"
 		"it"		"Il piccolo Dweller che perseguitava la potente Stultifera, il sangue dei suoi genitori un tempo sparso sulle acque dell'oceano.\nLa rivelazione non giunge alle orecchie dei bambini, il destino della loro specie continua silenziosamente a scorrere.\n- Utilizza attacchi basati sulla forma attuale.\n- Quando cambia forma, consuma il resto più vicino, uccidendo i bersagli e consumando i resti vicini.\n- La variante Elite guadagna salute e danni maggiori e consuma un resto aggiuntivo"
-		"ko"		"스툴티페라 나비스 근처에 출몰하는 소형 시본으로, 부모 세대의 피가 이 바다를 가득 채운 적이 있다.\n귓가에 신탁이 전달되지 않아도, 종족의 운명은 여전히 소리 없이 흘러간다.\n-현재 형태에 따라 다른 공격을 가함.\n형태 변경시, 남겨진 유해를 포식, 해당 위치의 모든 적을 즉사시키고 근처의 유해 역시 포식\n-정예 개체는 체력, 피해량이 증가하며 유해를 추가로 포식"
+		"ko"		"스툴티페라 나비스 근처에 출몰하는 소형 드웰러로, 부모 세대의 피가 이 바다를 가득 채운 적이 있다.\n귓가에 신탁이 전달되지 않아도, 종족의 운명은 여전히 소리 없이 흘러간다.\n-현재 형태에 따라 다른 공격을 가함.\n형태 변경시, 남겨진 유해를 포식, 해당 위치의 모든 적을 즉사시키고 근처의 유해 역시 포식\n-정예 개체는 체력, 피해량이 증가하며 유해를 추가로 포식"
 	}
 	"Abyss Founder Desc"
 	{
 		"en"		"A Sea Terror that has inexplicably grown a chitinous skull.\nThere is no corresponding organ to be found beneath it.\n- Attacks inflict Nervous Impairment\n- Resists ranged damage\n- On death, spawns Abyssal Weeds when touching the ground\n- Elite variant gains increased health and damage\n- When consumed by Herald, provides ranged damage resistance"
 		"it"		"Un Terrore del Mare a cui è inspiegabilmente cresciuto un cranio chitinoso.\nNon c'è nessun organo corrispondente sotto di esso.\n- Gli attacchi infliggono menomazioni nervose\n- Resiste ai danni a distanza\n- Alla morte, genera Marchi di Abyss quando tocca il terreno\n- La variante Elite guadagna salute e danni aumentati\n- Quando viene consumato da Herald, fornisce resistenza ai danni a distanza"
-		"ko"		"무슨 영문인지 갑자기 갑각 머리가 자란 시테러.\n하지만, 머리 안에 별다른 기관은 없다.\n-신경 손상 원소 피해를 부여하며, 원거리 피해 저항력 보유\n-사망시, 시체가 땅에 닿으면 명흔을 생성\n-정예 개체는 체력, 피해량 증가\n-신탁 도살자에게 포식당하면, 원거리 피해 저항력 부여"
+		"ko"		"무슨 영문인지 갑자기 갑각 머리가 자란 시테러.\n하지만, 머리 안에 별다른 기관은 없다.\n-신경 손상 원소 피해를 부여하며, 원거리 피해 저항력 보유\n-사망시, 시체가 땅에 닿으면 심연 해초를 생성\n-정예 개체는 체력, 피해량 증가\n-전령에게 포식당하면, 원거리 피해 저항력 부여"
 	}
 	"Abyss Predator Desc"
 	{
 		"en"		"A Sea Terror that has learned to use its chitinous skull to deal physical attacks, storing scraps of food in its body comprised of countless tiny creatures.\n- Attacks inflict Nervous Impairment\n- While on Abyssal Weeds, has a chance to dodge attacks when not stunned\n- While on Abyssal Weeds, ignores and bypasses buildings\n- Elite variant gains increased health, damage, and dodge chance\n- When consumed by Herald, provides a chance to dodge attacks"
 		"it"		"Un Terrore del Mare che ha imparato a usare il suo cranio chitinoso per sferrare attacchi fisici, immagazzinando nel suo corpo frammenti di cibo composti da innumerevoli minuscole creature.\n- Gli attacchi infliggono menomazioni nervose.\n- Mentre si trova sui Marchi di Abyss, ha una possibilità di schivare gli attacchi quando non è stordito.\n- Mentre si trova sui Marchi di Abyss, ignora e aggira gli edifici.\n- La variante Elite guadagna un aumento della salute, dei danni e della possibilità di schivare.\n- Quando viene consumato dall'Herald, fornisce una possibilità di schivare gli attacchi"
-		"ko"		"갑각 머리로 물리 공격을 할 줄 아는 시테러. 음식물 찌꺼기는 수많은 미세한 생물로 구성된 몸에 저장한다.\n-적중 시 신경 손상 원소 피해를 부여.\n명흔 위에 있다면 기절 상태가 아닐 시 확률적으로 공격을 회피하며 구조물을 무시하고 지나감.\n-정예 개체는 체력, 피해량, 회피 확률 증가\n-신탁 도살자에게 포식당하면, 공격 회피 확률을 부여"
+		"ko"		"갑각 머리로 물리 공격을 할 줄 아는 시테러. 음식물 찌꺼기는 수많은 미세한 생물로 구성된 몸에 저장한다.\n-적중 시 신경 손상 원소 피해를 부여.\n심연 해초 위에 있다면 기절 상태가 아닐 시 확률적으로 공격을 회피하며 구조물을 무시하고 지나감.\n-정예 개체는 체력, 피해량, 회피 확률 증가\n-전령에게 포식당하면, 공격 회피 확률을 부여"
 	}
 	"Abyss Brandguider Desc"
 	{
 		"en"		"A new type of Sea Terror formed from a colony that was about to decay and die.\nIn order to effectively utilize the last bit of nutrients in their bodies, all they need to do is smear themselves across the ground.\n- When below half health, spawns Abyssal Weeds and gains melee damage resistance\n- Elite variant gains increased health and damage\n- When consumed by Herald, provides melee damage resistance when below half health"
 		"it"		"Un nuovo tipo di Terrore marino formatosi da una colonia che stava per decadere e morire.\n- Per utilizzare efficacemente l'ultima parte di nutrimento nei loro corpi, tutto ciò che devono fare è spalmarsi sul terreno.\n- Quando la salute è inferiore a metà, genera Marchi di Abyss e guadagna resistenza ai danni in mischia.\n- La variante Elite guadagna salute e danni aumentati.\n- Quando viene consumato da Herald, fornisce resistenza ai danni in mischia quando la salute è inferiore a metà"
-		"ko"		"곧 죽어 문드러져 갈 무리에서 파생된 새로운 형태의 시테러.\n몸 안의 마지막 양분마저 효과적으로 활용하기 위해, 녀석들은 자기 몸을 대지에 발라버린다.\n-체력이 절반 이하가 되면, 즉시 명흔을 생성하고 근접 피해 저항력을 얻음.\n-정예 개체는 체력, 피해량 증가\n-신탁 도살자에게 포식당하면, 체력이 절반 이하일 시 근접 피해 저항력을 부여"
+		"ko"		"곧 죽어 문드러져 갈 무리에서 파생된 새로운 형태의 시테러.\n몸 안의 마지막 양분마저 효과적으로 활용하기 위해, 녀석들은 자기 몸을 대지에 발라버린다.\n-체력이 절반 이하가 되면, 즉시 심연 해초를 생성하고 근접 피해 저항력을 얻음.\n-정예 개체는 체력, 피해량 증가\n-전령에게 포식당하면, 체력이 절반 이하일 시 근접 피해 저항력을 부여"
 	}
 	"Abyss Spewer Desc"
 	{
 		"en"		"Possesses a hard, chitinous shell that it uses to protect itself, possibly capable of sporulation or a similar function.\nA commonly seen Sea Terror where the abyssal weed proliferates.\n- Uses a ranged attack, up to 3 targets\n- Attacks inflict Nervous Impairment\n- Can attack targets on Abyssal Weeds at any range\n- Elite variant gains increased health and damage\n- When consumed by Herald, provides AOE to ranged attacks"
 		"it"		"Possiede un guscio duro e chitinoso che usa per proteggersi, forse in grado di sporulare o di svolgere una funzione simile.\nUn terrore marino comunemente visto dove il marchio abyss prolifera.\n- Utilizza un attacco a distanza, fino a 3 bersagli\n- Gli attacchi infliggono menomazioni nervose\n- Può attaccare bersagli su marchi abyss a qualsiasi distanza\n- La variante Elite guadagna salute e danni maggiori\n- Quando viene consumato dall'Herald, fornisce AOE agli attacchi a distanza"
-		"ko"		"단단한 갑각으로 자신을 보호하며, 포자를 뿌리거나 유사한 기능이 있는 것으로 보인다.\n명흔이 나타난 지역에서 흔히 볼 수 있는 시테러.\n-원거리 공격을 사용하며, 한 번에 3명의 대상을 공격하지만 사거리가 매우 짧음.\n-적중 시 신경 손상 원소 피해를 부여\n-명흔 위에 있는 대상으로는 사거리 제한이 사라짐.\n-정예 개체는 체력, 피해량 증가\n-신탁 도살자에게 포식당하면, 원거리 광역 공격을 부여."
+		"ko"		"단단한 갑각으로 자신을 보호하며, 포자를 뿌리거나 유사한 기능이 있는 것으로 보인다.\n심연 해초가 나타난 지역에서 흔히 볼 수 있는 시테러.\n-원거리 공격을 사용하며, 한 번에 3명의 대상을 공격하지만 사거리가 매우 짧음.\n-적중 시 신경 손상 원소 피해를 부여\n-심연 해초 위에 있는 대상으로는 사거리 제한이 사라짐.\n-정예 개체는 체력, 피해량 증가\n-전령에게 포식당하면, 원거리 광역 공격을 부여."
 	}
 	"Abyss Swarmcaller Desc"
 	{
 		"en"		"A rare Sea Terror, able to manipulate the tiny creatures in the air and on the ground to eat away at their surroundings even in the absence of the abyssal weeds.\nThey seem to call the weeds itself to life, hence their name.\n- Does not attack\n- Deals damage and inflicts Nervous Impairment in an AOE\n- Immune to slow effects\n- Elite variant gains increased health and damage\n- When consumed by Herald, provides immunity to slow effects and resistance to debuffs"
 		"it"		"Un raro Terrore del Mare, in grado di manipolare le minuscole creature nell'aria e sul terreno per divorare l'ambiente circostante anche in assenza del marchio del abyss.\nSembrano richiamare in vita il marchio stesso, da cui il loro nome.\n- Non attacca\n- Infligge danni e infligge Menomazione Nervosa in un AOE\n- Immune agli effetti di rallentamento\n- La variante d'élite ottiene un aumento della salute e dei danni\n- Quando viene consumato dall'Herald, conferisce immunità agli effetti di rallentamento e resistenza ai debuff"
-		"ko"		"희귀한 시테러. 명흔이 없는 지역에서도 공기 중과 지상의 미생물을 조종하여 주변을 침식한다.\n마치 명흔 그 자체를 휘젓는 것 같다.\n-공격하지 않지만, 주변 범위 내의 모든 적에게 피해 및 신경 손상 원소 피해를 부여.\n-둔화 계열 효과에 면역.\n-정예 개체는 체력, 피해량 증가\n-신탁 도살자에게 포식당하면, 둔화 면역과 디버프 저항력을 부여."
+		"ko"		"희귀한 시테러. 심연 해초가 없는 지역에서도 공기 중과 지상의 미생물을 조종하여 주변을 침식한다.\n마치 심연 해초 그 자체를 휘젓는 것 같다.\n-공격하지 않지만, 주변 범위 내의 모든 적에게 피해 및 신경 손상 원소 피해를 부여.\n-둔화 계열 효과에 면역.\n-정예 개체는 체력, 피해량 증가\n-전령에게 포식당하면, 둔화 면역과 디버프 저항력을 부여."
 	}
 	"Abyss Reefbreaker Desc"
 	{
 		"en"		"An extremely aggressive individual born from the abysssal weeds, capable of inflicting tremendous damage to its surrounding environment for its kin to transform.\nLifeforms not considered kin fall under this category.\n- Uses melee and ranged attacks\n- Gains increased damage, stacking every attack, effect decays over time\n- While on Abyssal Weeds, gains camouflage\n- Elite variant gains increased health and damage\n- When consumed by Herald, provides increased damage for every attack, decays over time"
 		"it"		"Un individuo estremamente aggressivo nato dal marchio Abyss, in grado di infliggere danni enormi all'ambiente circostante per la trasformazione dei suoi parenti.\nLe forme di vita non considerate parenti rientrano in questa categoria.\n- Utilizza attacchi in mischia e a distanza.\n- Guadagna danni aumentati, impilabili ad ogni attacco, l'effetto decade nel tempo.\n- Mentre si trova sui marchi Abyss, guadagna mimetizzazione.\n- La variante Elite guadagna salute e danni aumentati.\n- Quando viene consumato dall'Herald, fornisce danni aumentati ad ogni attacco, che decadono nel tempo"
-		"ko"		"명흔에서 태어난 아주 공격적인 개체. 주변 자연환경을 크게 훼손하고, 동족에 의해 개조된다. \n-종족의 생명체는 아니지만, 이 범주에 속한다.\n-근접 공격과 원거리 공격 사용\n-공격할 때마다, 피해량이 점점 더 증가하지만 비전투 상태라면 이 증가치가 점점 감소합니다.\n-명흔 위에 있다면 위장 버프를 획득.\n-신탁 도살자에게 포식당하면, 공격할 때마다 피해량 증가(시간이 지나면 감소)."
+		"ko"		"심연 해초에서 태어난 아주 공격적인 개체. 주변 자연환경을 크게 훼손하고, 동족에 의해 개조된다. \n-종족의 생명체는 아니지만, 이 범주에 속한다.\n-근접 공격과 원거리 공격 사용\n-공격할 때마다, 피해량이 점점 더 증가하지만 비전투 상태라면 이 증가치가 점점 감소합니다.\n-심연 해초 위에 있다면 위장 버프를 획득.\n-전령에게 포식당하면, 공격할 때마다 피해량 증가(시간이 지나면 감소)."
 	}
 	"Thorns Desc"
 	{
@@ -1370,7 +1371,7 @@
 	{
 		"en"		"Dweller infects those, they may still appear human.\n- Attacks inflict Nervous Impairment"
 		"it"		"Dweller infetta queste persone, che possono ancora apparire umane.\nGli attacchi di Dweller infliggono danni nervosi"
-		"ko"		"''시본이 이들을 감염시켰어도, 여전히 그들은 인간처럼 보인다.''\n-매우 빠른 이동 속도를 보유\n-적중 시 신경 손상 원소 피해를 부여"
+		"ko"		"''드웰러가 이들을 감염시켰어도, 여전히 그들은 인간처럼 보인다.''\n-매우 빠른 이동 속도를 보유\n-적중 시 신경 손상 원소 피해를 부여"
 	}
 	"Dweller Soldier Desc"
 	{
@@ -1424,7 +1425,7 @@
 	{
 		"en"		"Helpless.\n- Allied, does not attack, follows an allied player\n- On death, spawns Abyss Brands and a random enemy\n- Retreats during a setup period"
 		"it"		"Impotente.\n- Alleato, non attacca, segue un giocatore alleato\n- Alla morte, genera Marchi di Abyss e un nemico casuale\n- Si ritira durante un periodo di configurazione"
-		"ko"		"의지할 데 없는 이.\n-아군이며, 공격하지 않고 가장 근접한 아군 플레이어를 따라다닙니다.\n-사망 시, 명흔을 생성하고 무작위 적으로 변합니다.\n-준비 시간 동안 후퇴합니다."
+		"ko"		"의지할 데 없는 이.\n-아군이며, 공격하지 않고 가장 근접한 아군 플레이어를 따라다닙니다.\n-사망 시, 심연 해초를 생성하고 무작위 적으로 변합니다.\n-준비 시간 동안 후퇴합니다."
 	}
 	"Barracks Railgunner Desc"
 	{
@@ -1494,19 +1495,23 @@
 	}
 	"The Corrupted Knight Desc"
 	{
-		"en"		"From grunwald, Seeking soemthing but losing himself.\nThe past died on the land, and neither the present nor the future have any meaning.\nOnly the ocean, kill the ocean.\n- Targets enemy and allies\n- Taking damage inflicts a debuff to the attacker, reducing attack speed\n- Deals increased damage to targets with enough debuff stacks\n- Changes form when below 1/5 of health, gains shield tempomarily, increased speed, attacks now deal contact damage, ignores buildings"
+		"en"		"From grunwald, Seeking something but losing himself.\nThe past died on the land, and neither the present nor the future have any meaning.\nOnly the ocean, kill the ocean.\n- Targets enemy and allies\n- Taking damage inflicts a debuff to the attacker, reducing attack speed\n- Deals increased damage to targets with enough debuff stacks\n- Changes form when below 1/5 of health, gains shield tempomarily, increased speed, attacks now deal contact damage, ignores buildings"
+		"ko"		"그룬발트에서 넘어와 무언가를 찾고 있지만 자아를 잃어가고 있는 자.\n그 과거는 육지에서 사라졌고, 현재와 미래 또한 아무런 의미도 없다.\n오직 바다만 남았고, 오직 바다만 죽인다.\n-피아구분 없이 모든 것을 공격\n-피격 시 대상의 공격 속도를 감소시키는 디버프 부여\n-충분한 디버프가 누적된 대상에 대해 피해량 증가\n-체력이 1/5 이하일 시 형태 전환: 구조물을 완전히 무시하며 속도 대폭 증가, 일시적으로 보호막 획득 및 접촉 시 피해를 줌."
 	}
 	"Abyss Saint Adrian Desc"
 	{
 		"en"		"An inquistor, now an abyssal.\n- Targets enemy and allies\n- Attacks levitate the target and deals extra hit of True damage"
+		"ko"		"심연에 굴복한 재판관.\n-피아구분 없이 모든 것을 공격\n-적중 시, 대상을 공중으로 띄우고 추가 트루 대미지를 입힘"
 	}
 	"Mirroring Abyssal Desc"
 	{
 		"en"		"It mirrors itself and everything else.\n- Spawns a Mirroring Fractal after several attacks and damage taken\n- On death, kills all Mirroring Fractals."
+		"ko"		"자신과 다른 모든 것들을 비추고 반사한다.\n-여러 번 공격하거나 피해를 받을 때마다, 반영자의 분신을 하나 생성합니다.\n-사망 시, 반영자의 분신을 전부 처치합니다."
 	}
 	"Mirroring Fractal Desc"
 	{
 		"en"		"Fractals left behind by the Mirroring.\nIllusions must eventually vanish.\nThe path is not clear.\nSearch on, search on.\n- Spawns a Mirroring Fractal after several attacks\n- Loses health over time"
+		"ko"		"반영자가 남긴 분신. 환영은 필시 사라질 것이고,\n길에는 온통 오류투성이다. 탐색, 계속 탐색해야 한다.\n-여러 번 공격할 때마다, 반영자의 분신을 하나 생성합니다.\n-체력이 지속적으로 감소합니다."
 	}
 	"Barracks Teutonic Knight Desc"
 	{
@@ -1548,7 +1553,7 @@
 	{
 		"en"		"It speaks for we many.\n- Starts in Healer form\n- When in Healer form, follows it's allies and attacks heal up to 2 targets\n- Gains power over time and enters Leviathan form when full, increased while on Abyssal Weeds\n- Gains power rapidly when falling below half health for the first time\n- When in Leviathan form, attacks targets 6 locations, dealing AOE True damage, and destorys blocking buildings\n- Reverts forms when Leviathan form, spawns Nethesea Brands and heals self"
 		"it"		"Parla a nome di tutti noi.\n- Inizia in forma di Guaritore \n- Quando è in forma di Guaritore, segue gli alleati e i suoi attacchi curano fino a 2 bersagli \n- Guadagna energia nel tempo ed entra in forma di Leviatano quando è pieno, aumentata quando si trova nelle Marche di Abyss \n- Guadagna energia rapidamente quando scende sotto la metà della salute per la prima volta \n- Quando è in forma di Leviatano, attacca 6 bersagli, infliggendo danni veri AOE e distruggendo gli edifici che bloccano \n- Ritorna in forma di Leviatano, genera le Marche di Nethesea e si cura da solo \n- Si trasforma in forma di Leviatano, genera le Marche di Nethesea e si cura da solo"
-		"ko"		"더 이상 노래 부르지 않고, 위매니를 위해 목소리를 낸다.\n-스폰 시, 치유자 형태로 시작\n-이 상태에서는 아군을 따라다니며 주변의 최대 2명의 아군에게 버프를 부여하고 체력을 회복\n-시간이 지날수록 점차 힘을 충전, 명흔 위에 있다면 충전 속도가 가속됩니다.\n-체력이 처음으로 절반 이하가 될 경우 힘을 급격히 충전합니다.\n-힘이 최대치가 되면, 변신 형태가 됩니다.\n-변신 형태일때는 최대 6개의 위치에 트루 대미지 광역 공격을 사용하며 가로막는 구조물을 파괴합니다.\n-변신 형태에서 사망 시 치유자 형태로 복귀, 명흔을 생성하고 스스로를 치유합니다."
+		"ko"		"더 이상 노래 부르지 않고, 위매니를 위해 목소리를 낸다.\n-스폰 시, 치유자 형태로 시작\n-이 상태에서는 아군을 따라다니며 주변의 최대 2명의 아군에게 버프를 부여하고 체력을 회복\n-시간이 지날수록 점차 힘을 충전, 심연 해초 위에 있다면 충전 속도가 가속됩니다.\n-체력이 처음으로 절반 이하가 될 경우 힘을 급격히 충전합니다.\n-힘이 최대치가 되면, 변신 형태가 됩니다.\n-변신 형태일때는 최대 6개의 위치에 트루 대미지 광역 공격을 사용하며 가로막는 구조물을 파괴합니다.\n-변신 형태에서 사망 시 치유자 형태로 복귀, 명흔을 생성하고 스스로를 치유합니다."
 	}
 	"Dweller Guard Desc"
 	{
@@ -1578,7 +1583,7 @@
 	{
 		"en"		"I'm not infected, I'm not dweller! Please god!\n- Spawns at it's ally with the lowest health ratio, if successful, grants self buff"
 		"it"		"Non sono infetto, non sono un Dweller! Per favore, Dio!\n- Spawna sull'alleato con il rapporto di salute più basso, se ha successo, concede un auto-buffo"
-		"ko"		"''난 감염되지 않았어! 난 시본이 아니라고! 제발!!''\n-이 적은 현재 가장 체력 비율이 낮은 시본 적군의 위치에서 생성됩니다.\n-성공적으로 생성되면, 자가 버프를 얻습니다."
+		"ko"		"''난 감염되지 않았어! 난 드웰러가 아니라고! 제발!!''\n-이 적은 현재 가장 체력 비율이 낮은 시본 적군의 위치에서 생성됩니다.\n-성공적으로 생성되면, 자가 버프를 얻습니다."
 	}
 	"Dweller Supporter Desc"
 	{
@@ -2532,7 +2537,7 @@
 	{
 		"en"		"One of the best inquisitors trained by Amphi, able to mark enemies and rain death upon them, works well with other inquisitors."
 		"it"		"Uno dei migliori inquisitori addestrati da Amphi, in grado di marcare i nemici e di far piovere morte su di loro, lavora bene con gli altri inquisitori"
-		"ko"		"아이린이 훈련시킨 최고의 재판관 중 한 명으로, 적을 표적으로 지정하고 죽음의 세례를 선사합니다. 다른 재판관들과 시너지가 좋습니다."
+		"ko"		"암피가 훈련시킨 최고의 재판관 중 한 명으로, 적을 표적으로 지정하고 죽음의 세례를 선사합니다. 다른 재판관들과 시너지가 좋습니다."
 	}	
 	"Barracks Alminan Lighthouse Guardian Desc"
 	{
@@ -2988,7 +2993,7 @@
 	{
 		"en"		"Their combat has been enhanced by the Dweller infection.\nFires bullets extremely fast."
 		"it"		"Il loro combattimento è stato potenziato dall'infezione dei Dweller."
-		"ko"		"시본 감염으로 인하여 전투 능력이 더욱 증가했습니다.\n-매우 높은 공격 속도를 보유"
+		"ko"		"드웰러 감염으로 인하여 전투 능력이 더욱 증가했습니다.\n-매우 높은 공격 속도를 보유"
 	}
 	"Dweller Metro Raider Desc"
 	{
@@ -3047,22 +3052,22 @@
 	"Dweller Metro Raider Desc"
 	{
 		"en"		"A Metro Raider corrupted by the sea. \nMelee resistances will not help against this enemy.\n-Has a ranged attack. \n-Throws a gernade when close enough."
-		"ko"		"시본에 감염된 시민 보호 특공대입니다. \n근접 저항은 이 적을 상대로 도움이 되지 않습니다.\n-원거리 공격을 보유\n-근접시 수류탄 투척"
+		"ko"		"드웰러에 감염된 시민 보호 특공대입니다. \n근접 저항은 이 적을 상대로 도움이 되지 않습니다.\n-원거리 공격을 보유\n-근접시 수류탄 투척"
 	}
 	"Dweller W.F. Rifler Desc"
 	{
 		"en"		"A W.F. Rifler corrupted by the sea. \n-Has a ranged attack and reloads. \n-Throws a gernade when close enough."
-		"ko"		"시본에 감염된 W.F. 소총수입니다. \n-원거리 공격을 사용하며 재장전함\n-근접시 수류탄 투척."
+		"ko"		"드웰러에 감염된 W.F. 소총수입니다. \n-원거리 공격을 사용하며 재장전함\n-근접시 수류탄 투척."
 	}
 	"Dweller W.F. Elite Desc"
 	{
 		"en"		"A W.F. Elite corrupted by the sea. \n-Has a ranged attack and reloads.\n-Shoots explosive projectiles."
-		"ko"		"시본에 감염된 W.F. 엘리트입니다. \n-원거리 공격을 사용하며 재장전함\n-폭발성 투사체를 발사."
+		"ko"		"드웰러에 감염된 W.F. 엘리트입니다. \n-원거리 공격을 사용하며 재장전함\n-폭발성 투사체를 발사."
 	}
 	"Dweller W.F. Shotgunner Desc"
 	{
 		"en"		"A W.F. Shotgunner corrupted by the sea. Deals Ranged damage \n-Shoves you away if your to close. \n-Very Fast"
-		"ko"		"시본에 감염된 W.F. 산탄총병입니다. 원거리 피해 공격을 가합니다.\n-너무 근접할 경우 대상을 밀쳐서 날려버림\n-매우 빠름"
+		"ko"		"드웰러에 감염된 W.F. 산탄총병입니다. 원거리 피해 공격을 가합니다.\n-너무 근접할 경우 대상을 밀쳐서 날려버림\n-매우 빠름"
 	}
 	"Voided Metro Cop Desc"
 	{
@@ -3099,7 +3104,7 @@
 	{
 		"en"		"A robot that gained powers from the Dweller infection. Seemingly hasn't been corrupted by it though.\nApplies 'MERLT0N-BUFF' on enemies.\nSummons copies of itself, although in a smaller form.\nWill become enraged if it has no one left to look after."
 		"it"		"Un robot che ha acquisito i poteri dell'infezione Dweller. Sembra che non ne sia stato corrotto.\nApplica il ''MERLT0N-BUFF'' ai nemici.\n Evoca copie di se stesso, anche se in forma più piccola.\n Diventa furioso se non ha più nessuno da accudire."
-		"ko"		"시본 감염으로 인하여 더욱 강력해진 로봇입니다. 그런데 겉보기에는 딱히 감염된 것처럼 보이지는 않는군요.\n-주변의 적들에게 '멀톤-버프' 를 부여합니다.\n-자가 복제로 자신을 하나 더 생성합니다. 복제된 개체는 크기가 작습니다.\n-이 적이 혼자 남았을 경우, 격분하여 능력치가 증가합니다."
+		"ko"		"드웰러 감염으로 인하여 더욱 강력해진 로봇입니다. 그런데 겉보기에는 딱히 감염된 것처럼 보이지는 않는군요.\n-주변의 적들에게 '멀톤-버프' 를 부여합니다.\n-자가 복제로 자신을 하나 더 생성합니다. 복제된 개체는 크기가 작습니다.\n-이 적이 혼자 남았을 경우, 격분하여 능력치가 증가합니다."
 	}
 	"Lost Knight Desc"
 	{
@@ -3465,7 +3470,7 @@
 	"Avangard's Processing Core-B Desc"
 	{
 		"en"	"After destroying the Radiomast at the Vestan outpost, along with the soldiers there, you find this on the ground. drop by one of the Avanguards we killed."
-		"ko"	"빅토리아 전초기지의 방송탑을 파괴한 후, 땅에 널부러진 병사들 사이에서 발견했습니다.\n쓰러뜨린 아방가르드 중 하나에게서 떨어져 나온 것 같습니다."
+		"ko"	"베스타 전초기지의 방송탑을 파괴한 후, 땅에 널부러진 병사들 사이에서 발견했습니다.\n쓰러뜨린 아방가르드 중 하나에게서 떨어져 나온 것 같습니다."
 	}
 	"Copycat Truthful Evidence"
 	{
@@ -3475,7 +3480,7 @@
 	"Copycat Truthful Evidence Desc"
 	{
 		"en"	"This is a Copy of the evidence received from Sensal.\nSee some incomprehensible words, but think there's a hidden meaning\nThis seems to be why Vesta invaded Ziberia.\nYou became the primary target of Vestans due to this…"
-		"ko"	"센살에게 받은 진실된 증거자료[사본] 입니다.\n이해못할 단어들이 보이지만 숨겨진 뜻이 있는거 같습니다. 이것이 빅토리아가 지베리아를 침공한 이유 같습니다.\n하지만 이것이 빅토리아인들과의 트러블을 만들었습니다."
+		"ko"	"센살에게 받은 진실된 증거자료[사본] 입니다.\n이해못할 단어들이 보이지만 숨겨진 뜻이 있는거 같습니다. 이것이 베스타가 지베리아를 침공한 이유 같습니다.\n하지만 이것이 베스타인들과의 트러블을 만들었습니다."
 	}
 	"Dropped Secret Letter"
 	{
@@ -3530,12 +3535,12 @@
 	"Alminan Badge of Honor"
 	{
 		"en"	"Alminan Badge of Honor"
-		"ko"	"이베리아의 영광의 배지"
+		"ko"	"알미나의 영광의 배지"
 	}
 	"Alminan Badge of Honor Desc"
 	{
 		"en"	"Amphi gives you this for all you have done for Almina, \ndating back to before you were employed by Bob the Second."
-		"ko"	"아이린이 당신이 이베리아를 위해 행한 모든 것에 대한 감사로 이것을 주었습니다.\n당신이 밥 2세에게 고용되기 전의 날짜까지 거슬러 올라가네요."
+		"ko"	"암피가 당신이 알미나를 위해 행한 모든 것에 대한 감사로 이것을 주었습니다.\n당신이 밥 2세에게 고용되기 전의 날짜까지 거슬러 올라가네요."
 	}
 	"Collector’s Backpack"
 	{
