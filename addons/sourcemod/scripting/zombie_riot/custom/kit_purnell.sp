@@ -814,7 +814,7 @@ static void Purnell_AllyBuffApply(int client, int target)
 	if (targetIsSelf)
 		Format(textSelf, sizeof(textSelf), "You have buffed yourself with:\n");
 	else
-		Format(textSelf, sizeof(textSelf), "You have shared buffs with %s:\n", name, client);
+		Format(textSelf, sizeof(textSelf), "You have shared buffs with %s:\n", name);
 	
 	if (targetIsOtherClient)
 		Format(textOther, sizeof(textOther), "You have received Therapy buffs from %N:", client);
