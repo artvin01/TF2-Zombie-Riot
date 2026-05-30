@@ -4973,7 +4973,7 @@
 	{
 		"en"		"Protects the lighthouse, If the lighthouse dies, gets stronger, eliminate him before the lighthouse.\nHas bad predictive aiming and summons holy lights like grigori."
 		"it"		"Protegge il faro, se il faro muore, diventa più forte, eliminatelo prima del faro.\nHa una pessima mira predittiva ed evoca luci sacre come Grigori."
-		"ko"		"이베리아 등대를 지킵니다. 등대가 파괴될 시 강화됩니다. 등대를 파괴하기 전에 이 적을 처치하세요.\n미약한 예측 조준 능력을 가졌으며 그리고리 신부처럼 이온 캐논을 발사할 수 있습니다."
+		"ko"		"알미나 등대를 지킵니다. 등대가 파괴될 시 강화됩니다. 등대를 파괴하기 전에 이 적을 처치하세요.\n미약한 예측 조준 능력을 가졌으며 그리고리 신부처럼 이온 캐논을 발사할 수 있습니다."
 	}
 	"Dr Dam Clone"
 	{
