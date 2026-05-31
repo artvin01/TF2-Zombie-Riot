@@ -5738,6 +5738,7 @@ void Store_ApplyAttribs(int client)
 	//Get the previous count to get back all their stats.
 	int clientid = GetSteamAccountID(client);
 	WeaponSpawn_Reapply(client, client, clientid);
+	StatusEffect_ApplySpeedPlayer(client);
 }
 
 void Store_GiveAll(int client, int health, bool removeWeapons = false)

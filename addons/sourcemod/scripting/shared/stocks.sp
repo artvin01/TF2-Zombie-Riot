@@ -753,6 +753,7 @@ stock void SetAmmo(int client, int type, int ammo)
 		SetEntProp(client, Prop_Data, "m_iAmmo", ammo, _, Ammo_Metal_Sub);
 	}
 	SetEntProp(client, Prop_Data, "m_iAmmo", ammo, _, type);
+	AutobuyMetal(client);
 }
 
 #if defined _tf2items_included
@@ -841,7 +842,7 @@ static int SpawnWeaponBase(int client, char[] name, int index, int level, int qu
 //										 info.Attribs, info.Value, info.Attribs);
 public void HandleAttributes(int weapon, const int[] attributes, const float[] values, int count)
 {
-//	RemoveAllDefaultAttribsExceptStrings(weapon);
+	RemoveAllDefaultAttribsExceptStrings(weapon);
 	
 	for(int i = 0; i < count; i++) 
 	{
