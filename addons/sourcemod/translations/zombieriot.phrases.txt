@@ -5772,7 +5772,7 @@
 	{
 		"en"		"In rogue2 You also get chaos for getting downed too much (see top during peace phases)"
 		"it"		"In rogue2 si ottiene anche il caos per essere stati abbattuti troppo spesso (vedi top durante le fasi di pace)"
-		"ko"		"로그라이크2에서는 너무 많이 다운될 경우 혼돈 침식도를 얻습니다.(준비 상태에서 확인 가능)"
+		"ko"		"로그라이크2에서는 너무 많이 다운될 경우 혼돈 침식도를 얻습니다.(비전투 상태에서 확인 가능)"
 	}
 	"Explain Rogue2 2"
 	{
@@ -5796,11 +5796,13 @@
 	{
 		"#format"	"{1:d}"
 		"en"		"Scrap Metal Auto Buy Toggle: [{1}]"
+		"ko"		"폐기 금속 자동 구매 토글: [{1}]"
 	}
 	"Just Bought Ammo Automatically"
 	{
 		"#format"	"{1:d},{2:d}"
 		"en"		"{yellow}{1} Metal {snow}was automatically bought for you, for a cost of {yellow}{2}${snow}."
+		"ko"		"자금을 {yellow}{2}${snow} 지불하여 {yellow}금속 {1}{snow}을 자동으로 구매했습니다."
 	}
 	"Plasma Kit Insufficient Charge"
 	{
