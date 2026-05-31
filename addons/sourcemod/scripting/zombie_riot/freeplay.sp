@@ -806,7 +806,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			}
 			else if(roll == 8)
 			{
-				enemy.Index = NPC_GetByPlugin("npc_umbral_whiteflowers");
+				enemy.Index = NPC_GetByPlugin("npc_vanishingmatter");
 				enemy.Health = RoundToFloor(((250000.0 + HealthBonus) / 70.0 * (float(Waves_GetRound()) * 1.11)) * HealthMulti);
 				count = 10;
 			}
@@ -847,7 +847,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			}
 			else if(roll == 14)
 			{
-				enemy.Index = NPC_GetByPlugin("npc_umbral_whiteflowers");
+				enemy.Index = NPC_GetByPlugin("npc_vanishingmatter");
 				enemy.Health = RoundToFloor(((250000.0 + HealthBonus) / 70.0 * (float(Waves_GetRound()) * 1.11)) * HealthMulti);
 				count = 10;
 			}
