@@ -462,7 +462,7 @@ public void Trip_TrackPlanted(int client)
 									if ((StrContains(other_classname, "zr_base_npc") != -1) && (GetTeam(client) != GetTeam(targ)))
 									{
 										SDKHooks_TakeDamage(targ, client, client, Trip_DMG[client] * (Ratio2 * Ratio1), DMG_BLAST, -1);
-										SummonerRenerateResources(client, 2.0, 0.0, true);
+										SummonerRenerateResources(client, 2.6, 0.0, true);
 										EmitSoundToAll(TRIP_ACTIVATED, targ, _, 70);
 										TriggerExplosion = true;
 									}
