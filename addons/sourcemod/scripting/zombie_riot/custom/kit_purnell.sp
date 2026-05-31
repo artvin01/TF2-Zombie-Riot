@@ -885,7 +885,7 @@ static void Purnell_Configure_Debuffs(int client)
 			maxDebuffId = 9;
 	}
 	
-	i_NextDebuff[client] = GetURandomInt() % maxDebuffId;
+	i_NextDebuff[client] = GetURandomInt() % (maxDebuffId + 1);
 }
 
 static void Purnell_DebuffApply(int client, int target)
