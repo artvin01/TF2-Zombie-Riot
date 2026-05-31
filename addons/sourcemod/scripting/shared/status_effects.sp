@@ -5423,7 +5423,7 @@ void StatusEffects_PurnellKitBuffs()
 	StatusEffect_AddGlobal(data);
 	
 	//25% resistance, 25% damage , and 20% speed for npcs
-	strcopy(data.BuffName, sizeof(data.BuffName), "Caffinated Therapy");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Caffeinated Therapy");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ꟼ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
@@ -5530,7 +5530,7 @@ void StatusEffects_PurnellKitDeBuffs()
 	StatusEffect_AddGlobal(data);
 	
 	//Same as Golden Curse
-	strcopy(data.BuffName, sizeof(data.BuffName), "Debt Causing Dereliction");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Debt-Causing Dereliction");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
@@ -5544,7 +5544,7 @@ void StatusEffects_PurnellKitDeBuffs()
 	StatusEffect_AddGlobal(data);
 	
 	//Same as cudgelled
-	strcopy(data.BuffName, sizeof(data.BuffName), "Headache Incuding Dereliction");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Headache-Inducing Dereliction");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
@@ -5572,7 +5572,7 @@ void StatusEffects_PurnellKitDeBuffs()
 	StatusEffect_AddGlobal(data);
 	
 	//Same as Specter Aura
-	strcopy(data.BuffName, sizeof(data.BuffName), "Therapists Aura");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Therapist's Aura");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
@@ -5600,7 +5600,7 @@ void StatusEffects_PurnellKitDeBuffs()
 	StatusEffect_AddGlobal(data);
 	
 	//Same as Caffinated Drain
-	strcopy(data.BuffName, sizeof(data.BuffName), "Caffinated Dereliction");
+	strcopy(data.BuffName, sizeof(data.BuffName), "Caffeinated Dereliction");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
