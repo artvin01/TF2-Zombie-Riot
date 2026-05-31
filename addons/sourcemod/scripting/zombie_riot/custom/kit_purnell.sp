@@ -43,7 +43,7 @@ static PurnellBuff PurnellBuffs[] =
 	{ "Overall Therapy", "+dmg, +res" },
 	{ "Powering Therapy", "+dmg, +res" },
 	{ "Calling Therapy", "+dmg, +res" },
-	{ "Caffinated Therapy", "+dmg, +res" },
+	{ "Caffeinated Therapy", "+dmg, +res" },
 	{ "Regenerating Therapy", "+dmg, +res, +hp regen" },
 	{ "False Therapy", "++dmg, ++res" },
 	{ "Squad Leader", "+dmg, +res" },
@@ -55,12 +55,12 @@ static PurnellBuff PurnellDebuffs[] =
 	{ "Raiding Dereliction", "-res" },
 	{ "Degrading Dereliction", "-dmg" },
 	{ "Zero Therapy", "-res, -spd" },
-	{ "Debt Causing Dereliction", "-res" },
-	{ "Headache Incuding Dereliction", "-res" },
+	{ "Debt-Causing Dereliction", "-res" },
+	{ "Headache-Inducing Dereliction", "-res" },
 	{ "Shocking Dereliction", "-res, -spd" },
-	{ "Therapists Aura", "--spd" },
+	{ "Therapist's Aura", "--spd" },
 	{ "Electric Dereliction", "-res, -spd" },
-	{ "Caffinated Dereliction", "-res" },
+	{ "Caffeinated Dereliction", "-res" },
 };
 
 static int LaserIndex;
