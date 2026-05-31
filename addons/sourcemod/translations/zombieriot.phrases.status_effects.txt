@@ -724,7 +724,7 @@
 	"Squad Leader Desc"
 	{
 		"en"	"Deal 10％ more damage, take 10％ less damage and NPCs gain 33％ speed."
-		"ko"	"받는 피해량이 10％ 감소합니다.\n공격 피해량이 10％ 증가합니다.\nNPC의 이동 속도가 33％ 증가합니다."
+		"ko"	"공격 피해량이 10％ 증가합니다.\n받는 피해량이 10％ 감소합니다.\nNPC의 이동 속도가 33％ 증가합니다."
 		"it"	"Riduce i danni subiti del 10％\nAumenta i danni inflitti del 10％\nAumenta la velocità di movimento degli NPC del 33％"
 	}
 	"Caffinated"
@@ -803,7 +803,7 @@
 	{
 		"en"	"Deal 50％ more damage, take 40％ less damage and NPCs gain 25％ speed."
 		"it"	"Riduce i danni subiti del 40％\nAumenta i danni inflitti del 50％\nAumenta la velocità di movimento degli NPC del 25％"
-		"ko"	"받는 피해량이 40％ 감소합니다.\n공격 피해량이 50％ 증가합니다.\nNPC의 이동 속도가 25％ 증가합니다."
+		"ko"	"공격 피해량이 50％ 증가합니다.\n받는 피해량이 40％ 감소합니다.\nNPC의 이동 속도가 25％ 증가합니다."
 	}
 	"Expert's Mind"
 	{
@@ -2146,7 +2146,7 @@
 	{
 		"en" 	"Deal 15％ more damage and take 5％ less damage."
 		"it"	"5％ di resistenza e 15％ di danni inflitti"
-		"ko" 	"피해 저항력이 5％ 증가하고 공격 피해량이 15％ 증가합니다."
+		"ko" 	"공격 피해량이 15％ 증가합니다.\n받는 피해량이 5％ 감소합니다."
 	}
 	"Calling Therapy"
 	{
@@ -2158,7 +2158,7 @@
 	{
 		"en" 	"Deal 15％ more damage, take 5％ less damage and NPCs gain 10％ speed."
 		"it"	"15％ resistenza e 5％ danni inflitti, 10％ velocità in più per i gli NPC"
-		"ko" 	"피해 저항력이 15％ 증가하고 공격 피해량이 5％ 증가합니다. NPC의 이동 속도가 10％ 증가합니다."
+		"ko" 	"공격 피해량이 15％ 증가합니다.\n받는 피해량이 5％ 감소합니다.\nNPC의 이동 속도가 10％ 증가합니다."
 	}
 	"Caffeinated Therapy"
 	{
@@ -2170,7 +2170,7 @@
 	{
 		"en" 	"Deal 25％ more damage, take 25％ less damage and NPCs gain 20％ speed."
 		"it"	"25％ Resistenza, 25％ danni inflitti in più e guadagno di 20％ Velocità per gli NPC"
-		"ko" 	"피해 저항력이 25％ 증가하고 공격 피해량이 25％ 증가합니다. NPC의 이동 속도가 20％ 증가합니다."
+		"ko" 	"공격 피해량이 25％ 증가합니다.\n받는 피해량이 25％ 감소합니다.\nNPC의 이동 속도가 20％ 증가합니다."
 	}
 	"Regenerating Therapy"
 	{
@@ -2182,7 +2182,7 @@
 	{
 		"en" 	"Deal 10％ more damage, take 10％ less damage and gain slow HP regen."
 		"it"	"10％ Resistenza e infliggere 10％ danni in più, guadagnare una lenta rigenerazione di HP."
-		"ko" 	"피해 저항력이 10％ 증가하고 공격 피해량이 10％ 증가합니다. 초당 체력이 천천히 회복됩니다."
+		"ko" 	"공격 피해량이 10％ 증가합니다.\n받는 피해량이 10％ 감소합니다.\n초당 체력이 천천히 회복됩니다."
 	}
 	"Weapon Overclock"
 	{
