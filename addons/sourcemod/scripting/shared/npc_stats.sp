@@ -4681,7 +4681,7 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 		return false;
 	}
 
-	if(b_ThisEntityIsAProjectileForUpdateContraints[other_entidx])
+	if(b_ThisEntityIgnored[other_entidx] || b_ThisEntityIsAProjectileForUpdateContraints[other_entidx])
 	{
 		return true;
 	}
@@ -5007,10 +5007,11 @@ bool PluginBot_Jump(int bot_entidx, float vecPos[3], float flMaxSpeed = 1250.0, 
 }
 
 
-stock void ArcToLocationViaSpeedProjectile(float VecStart[3], float VecEnd[3], float SpeedReturn[3], float TimeUntillReachDest = 1.0, float GravityChange = 1.0)
+stock void ArcToLocationViaSpeedProjectile(int projectile, float VecEnd[3], float SpeedReturn[3], float TimeUntillReachDest = 1.0, float GravityChange = 1.0)
 {
 	float vecJumpVel[3];
-	
+	float VecStart[3];
+	GetEntPropVector( projectile, Prop_Data, "m_vecAbsOrigin", VecStart ); 
 	float gravity;
 	if(gravity <= 0.0)
 		gravity = FindConVar("sv_gravity").FloatValue;
@@ -5026,7 +5027,6 @@ stock void ArcToLocationViaSpeedProjectile(float VecStart[3], float VecEnd[3], f
 		if(height >= -20.0)
 		{
 			height = -20.0;
-
 		}
 	}
 	else

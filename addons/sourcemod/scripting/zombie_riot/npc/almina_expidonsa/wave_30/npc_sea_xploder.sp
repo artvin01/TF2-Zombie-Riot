@@ -133,6 +133,7 @@ methodmap AlminaSeaXploder < CClotBody
 			SetEntPropFloat(entity, Prop_Send, "m_flModelScale", 0.4);
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, vecForward);
 			b_StickyIsSticking[entity] = true;
+			fl_Extra_Damage[entity] = fl_Extra_Damage[this.index];
 			
 	//		SetEntProp(entity, Prop_Send, "m_bTouched", true);
 			SetEntityCollisionGroup(entity, 1);
@@ -311,18 +312,20 @@ int AlminaSeaXploderSelfDefense(AlminaSeaXploder npc, float gameTime, float dist
 			{
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
-				float RocketDamage = 125.0;
+				float RocketDamage = 150.0;
 				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
 				float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
 				npc.AddGesture("ACT_MP_ATTACK_STAND_PRIMARY",_,_,_,0.75);
 				float SpeedReturn[3];
 
 				int RocketGet = npc.FireGrenade(vecTarget);
-				AlminaSeaXploder_ShootRollingMineToEnemy(npc.index, RocketGet, RocketDamage, 65.0, 3.0);
+				AlminaSeaXploder_ShootRollingMineToEnemy(npc.index, RocketGet, RocketDamage, 65.0, 2.0);
 				//Reducing gravity, reduces speed, lol.
 				SetEntityGravity(RocketGet, 1.0); 	
+				vecTarget[0] += GetRandomFloat(-30.0, 30.0);
+				vecTarget[1] += GetRandomFloat(-30.0, 30.0);
 				//I dont care if its not too accurate, ig they suck with the weapon idk lol, lore.
-				ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 1.75, 1.0);
+				ArcToLocationViaSpeedProjectile(RocketGet, vecTarget, SpeedReturn, 1.75, 1.0);
 				TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
 
 				//This will return vecTarget as the speed we need.
@@ -376,23 +379,29 @@ public Action Timer_SeaXploderC4(Handle timer, DataPack pack)
 	int Projectile = EntRefToEntIndex(pack.ReadCell());
 	if(!IsValidEntity(OwnerNpc))
 	{
+		OwnerNpc = Projectile;
+		/*
 		if(IsValidEntity(Projectile))
 		{
 			//Cancel.
 			RemoveEntity(Projectile);
 		}
 		return Plugin_Stop;
+		*/
 	}
 	else
 	{
 		if(!IsEntityAlive(OwnerNpc))
 		{
+			OwnerNpc = Projectile;
+			/*
 			if(IsValidEntity(Projectile))
 			{
 				//Cancel.
 				RemoveEntity(Projectile);
 			}
 			return Plugin_Stop;
+			*/
 		}
 	}
 
@@ -429,7 +438,7 @@ public Action Timer_SeaXploderC4(Handle timer, DataPack pack)
 	pack.Position++;
 	float C4_Damage = pack.ReadFloat();
 	float C4_Radius = pack.ReadFloat();
-	spawnRing_Vectors(pos, C4_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 125, 125, 200, 1, DurationOfBlink, 2.0, 2.0, 2, 1.0);
+	spawnRing_Vectors(pos, C4_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 125, 125, 150, 1, DurationOfBlink, 2.0, 2.0, 2, 1.0);
 
 
 	if(C4_TimeUntillBoom < GetGameTime())
@@ -442,7 +451,7 @@ public Action Timer_SeaXploderC4(Handle timer, DataPack pack)
 		pack_boom.WriteCell(0);
 		RequestFrame(MakeExplosionFrameLater, pack_boom);
 		EmitAmbientSound("ambient/explosions/explode_3.wav", pos, _, 80, _,0.6, GetRandomInt(75, 110));
-		Explode_Logic_Custom(C4_Damage , OwnerNpc , OwnerNpc , -1 , pos , C4_Radius);	//acts like a rocket
+		Explode_Logic_Custom(C4_Damage , OwnerNpc , OwnerNpc , -1 , pos , C4_Radius, .dmg_against_entity_multiplier = 10.0);	//acts like a rocket
 		RemoveEntity(Projectile);
 		return Plugin_Stop;
 	}

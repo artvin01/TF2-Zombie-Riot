@@ -799,7 +799,7 @@ void OmegaThrowGrenadeHappening(OmegaRaid npc)
 			float HealDo = 1.0;
 			Omega_GrenadeSupportDo(npc.index, Grenade, damage, GrenadeRangeSupport, HealDo);
 			float SpeedReturn[3];
-			ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 1.75, 1.0);
+			ArcToLocationViaSpeedProjectile(Grenade, vecTarget, SpeedReturn, 1.75, 1.0);
 			TeleportEntity(Grenade, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
 			//Throw a grenade towards the target!
 		}

@@ -751,7 +751,7 @@ static int Support_Work(Atomizer npc, float gameTime, float distance)
 									//max duration of 3 seconds
 									CreateTimer(3.0, Timer_RemoveEntity, EntIndexToEntRef(RocketGet), TIMER_FLAG_NO_MAPCHANGE);
 								}
-								ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.0, 1.0);
+								ArcToLocationViaSpeedProjectile(RocketGet, vecDest, SpeedReturn, 1.0, 1.0);
 								SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
 								//Better_Gravity_Rocket(RocketGet, 55.0);
 								TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
@@ -1571,7 +1571,7 @@ static int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float d
 									SetEntityGravity(RocketGet, 1.0);
 									vecDest[0] += GetRandomFloat(-30.0, 30.0);
 									vecDest[1] += GetRandomFloat(-30.0, 30.0);
-									ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.0, 1.0);
+									ArcToLocationViaSpeedProjectile(RocketGet, vecDest, SpeedReturn, 1.0, 1.0);
 									SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
 									TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
 									/*SDKUnhook(RocketGet, SDKHook_StartTouch, Rocket_Particle_StartTouch);
@@ -1833,8 +1833,8 @@ static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 					PredictSubjectPositionForProjectiles(view_as<Atomizer>(entity), E_Target, 400.0,_,vecDest);
 					vecDest[0] += GetRandomFloat(-30.0, 30.0);
 					vecDest[1] += GetRandomFloat(-30.0, 30.0);
-					ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.25, 1.0);
-			//   TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
+					ArcToLocationViaSpeedProjectile(entity, vecDest, SpeedReturn, 1.25, 1.0);
+				//   TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
 						
 					DataPack pack = new DataPack();
 					pack.WriteCell(EntIndexToEntRef(entity));

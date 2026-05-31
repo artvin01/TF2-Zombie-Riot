@@ -304,7 +304,7 @@ public void DwellerCombinePoliceSmg_ClotThink(int iNPC)
 				float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 				float vecTarget2[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget2 );
 				float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
-				ArcToLocationViaSpeedProjectile(VecStart, vecTarget2, SpeedReturn, 1.75, 1.0);
+				ArcToLocationViaSpeedProjectile(RocketGet, vecTarget2, SpeedReturn, 1.75, 1.0);
 				SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
 				TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
 				npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 9.0;

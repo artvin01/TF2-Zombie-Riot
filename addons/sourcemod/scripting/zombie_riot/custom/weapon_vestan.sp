@@ -493,7 +493,7 @@ public void Weapon_Vesta_Main(int client, int weapon, bool crit)
 			FinishLagCompensation_Base_boss();
 			delete swingTrace;
 			Vesta_TmepSpeed[client]=RocketSpeed;
-			ArcToLocationViaSpeedProjectile(VecStart, vec, SpeedReturn, 1.0, 1.0);
+			ArcToLocationViaSpeedProjectile(entity, vec, SpeedReturn, 1.0, 1.0);
 			TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
 		}
 		else

@@ -310,7 +310,7 @@ int AlminaMoratoSelfDefense(AlminaMorato npc, float gameTime, float distance)
 					//Reducing gravity, reduces speed, lol.
 					SetEntityGravity(RocketGet, 1.0); 	
 					//I dont care if its not too accurate, ig they suck with the weapon idk lol, lore.
-					ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 1.75, 1.0);
+					ArcToLocationViaSpeedProjectile(RocketGet, vecTarget, SpeedReturn, 1.75, 1.0);
 					SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
 					TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
 
