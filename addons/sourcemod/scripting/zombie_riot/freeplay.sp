@@ -1027,11 +1027,19 @@ static Action Freeplay_RouletteMessage(Handle timer)
 	{
 		case 2:
 		{
-			switch(GetRandomInt(1, 5))
+			switch(GetRandomInt(1, 4))
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}THE BLITZKRIEG! {gold}- {red}Prepare to fight against the rogue machine!");
+					CPrintToChatAll("{crimson}THE BLITZKRIEG! {gold}- {red}How was Vivithorn smart enough to hack Blitzkreig?");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{crimson}THE BLITZKRIEG! {gold}- {snow}That mission to send Blitz that abandoned lab was an huge mistake sadly...");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{crimson}THE BLITZKRIEG! {gold}- {snow}I remember Blitz before he was hacked. he was nice to us expidonsans.");
 				}
 				default:
 				{
@@ -1049,7 +1057,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 				}
 				case 2:
 				{
-					CPrintToChatAll("{darkblue}WALDCH {white}& {yellow}SILVESTER ! {gold}- {red}Enjoy getting sniped from across the map");
+					CPrintToChatAll("{darkblue}WALDCH {white}& {yellow}SILVESTER! {gold}- {red}Enjoy getting sniped from across the map");
 				}
 				case 3:
 				{
@@ -1058,6 +1066,10 @@ static Action Freeplay_RouletteMessage(Handle timer)
 				case 4:
 				{
 					CPrintToChatAll("{darkblue}WALDCH! {gold}- {red}and silvester, of course!");
+				}
+				case 5:
+				{
+					CPrintToChatAll("{yellow}SILVESTER {white}& {darkblue}WALDCH! {gold}- {yellow}Hey thanks again for saving me from the Xeno infection");
 				}
 				default:
 				{
@@ -1081,7 +1093,17 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 5:
 		{
-			CPrintToChatAll("{blue}SENSAL! {gold}- {red}He shall reap you, and your resistances!");
+			switch(GetRandomInt(1, 2))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{blue}SENSAL! {gold}- {blue}Lets see how good you guys do against me.");
+				}
+				default:
+				{
+					CPrintToChatAll("{blue}SENSAL! {gold}- {red}He shall reap you, and your resistances!");
+				}
+			}
 		}
 		case 6:
 		{
@@ -1229,6 +1251,10 @@ static Action Freeplay_RouletteMessage(Handle timer)
 				case 3:
 				{
 					CPrintToChatAll("{yellow}SILVESTER {white}& {lightblue}NEMAL! {gold}- {red}The better silv duo fight!");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{lightblue}NEMAL! {gold}- {lightblue}Aah you guys are fighting me!!! Yay!");
 				}
 				default:
 				{
