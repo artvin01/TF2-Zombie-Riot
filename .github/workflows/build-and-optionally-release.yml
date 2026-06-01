@@ -12,7 +12,7 @@ jobs:
     permissions: write-all
     strategy:
       matrix:
-        sm-version: [ '1.13.7299' ]
+        sm-version: [ '1.12' ]
     
     steps:
       - name: Checkout Code
