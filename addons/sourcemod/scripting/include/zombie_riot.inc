@@ -229,6 +229,17 @@ forward Action ZR_OnGivenCash(int client, int &cash);
 forward Action ZR_OnWinTeam(TFTeam Team);
 
 /**
+ * Sends information when RED wins.
+ * 
+ * @param playerList	List of players (as entindices) in RED.
+ * @param waveset		The internal name of the waveset beaten.
+ * @param modifier		The name of the current modifier.
+ * 
+ * @noreturn
+ */
+forward void ZR_OnWinInfo(ArrayList playerList, const char[] waveset, const char[] modifier);
+
+/**
  * Whenever any client gets XP, this is spammed! Be Warned!
  * 
  * @param client	Client index
