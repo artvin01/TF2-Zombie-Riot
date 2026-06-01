@@ -2396,6 +2396,19 @@ void TriggerLastmanLogic(int killed, int Hurtviasdkhook)
 					HeartBrokenMassRevive(client);
 					Yakuza_Lastman(15);
 				}
+				if(IsDistorted(client))
+				{
+					if(Abno_Pages[client] & ABNORMPAGE_MOSB)//special lms text
+					{
+						CPrintToChatAll("{maroon}The mountain of dead bodies resonates with {darkgrey}%N...",client);
+					}
+					else//normal lms
+					{
+						CPrintToChatAll("{darkgrey}Even with all this strength {fullred}%N {darkgrey}still failed to protect everyone",client);
+					}
+					Yakuza_Lastman(16);
+				}
+				
 				
 				for(int i=1; i<=MaxClients; i++)
 				{

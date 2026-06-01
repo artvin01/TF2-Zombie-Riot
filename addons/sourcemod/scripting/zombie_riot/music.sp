@@ -579,6 +579,8 @@ void Music_EndLastmann(bool Reinforce=false)
 							StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/internius/chaos_engineered_cyborg.mp3", 2.0);
 						case 15:
 							StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/heatbroken_lastman.mp3", 2.0);
+						case 16:
+							StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/red_mist_lastman.mp3", 2.0);
 					}
 					SetMusicTimer(client, 0);
 					MusicLastmann.StopMusic(client);
@@ -1056,6 +1058,18 @@ void Music_Update(int client)
 				{
 					EmitCustomToClient(client, "#zombiesurvival/heatbroken_lastman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.3);
 					SetMusicTimer(client, GetTime() + 90);
+				}
+				case 16:
+				{
+					if(DoesClientHaveMOSB(client))//"distorted" music
+					{
+						EmitCustomToClient(client, "#zombiesurvival/red_mist_lastman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.3, 68);//1.3 is volume, after that is pitch
+					}
+					else
+					{
+						EmitCustomToClient(client, "#zombiesurvival/red_mist_lastman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.3);//1.3 is volume, after that is pitch
+					}
+					SetMusicTimer(client, GetTime() + 90);//uhhh idk what this does
 				}
 				default:
 				{	

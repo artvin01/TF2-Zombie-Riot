@@ -3,18 +3,20 @@
 
 static Handle h_Red_Mist_Timer[MAXPLAYERS] = {null, ...};
 static Handle RM_Lastman_Timer[MAXPLAYERS] = {null, ...};
+static Handle h_Red_Mist_Ego_Timer[MAXPLAYERS] = {null, ...};
 static bool counter_timer_exists[MAXPLAYERS];
 static bool savagery_timer_exists[MAXPLAYERS];
 static bool Ego_Active[MAXPLAYERS];
 static bool Special_Active[MAXPLAYERS];
-static bool strength_active_1[MAXPLAYERS] = false;
-static bool strength_active_2[MAXPLAYERS] = false;
-static bool strength_active_3[MAXPLAYERS] = false;
-static bool lms_buffs_given[MAXPLAYERS] = false;
+static bool strength_active_1[MAXPLAYERS] = {false};
+static bool strength_active_2[MAXPLAYERS] = {false};
+static bool strength_active_3[MAXPLAYERS] = {false};
+static bool lms_buffs_given[MAXPLAYERS] = {false};
 static bool Prey_Mark_Cooldown[MAXPLAYERS];
 static bool Ego_Cooldown_given[MAXPLAYERS];
 static bool Onrush_Is_In_Dash[MAXPLAYERS];
-static bool RM_Lastman_Buffs_applied[MAXPLAYERS] = false;
+static bool RM_Lastman_Buffs_applied[MAXPLAYERS] = {false};
+static bool Special_Damage_Boost[MAXPLAYERS] = {false};
 static int WeaponLevel[MAXPLAYERS];
 static int ref_MeleeWeapon[MAXPLAYERS];
 static int last_recorded_pap[MAXPLAYERS] = {0, ...};
@@ -24,10 +26,11 @@ static int counter_dice_amount[MAXPLAYERS] = {15, ...};
 static int absorption_counter[MAXPLAYERS] = {0, ...};
 static int Strenght_Amount[MAXPLAYERS];
 //static int Endurance_Amount[MAXPLAYERS]; only a single card gives this, not worth it making it its own thing
-static int Abno_Pages[MAXPLAYERS];
+public int Abno_Pages[MAXPLAYERS];
 static int Deep_Wound_Counter[MAXPLAYERS];
 static int Ego_Energy[MAXPLAYERS];
 static int redashes[MAXPLAYERS];
+static int swing_type[MAXPLAYERS];
 static float redash_cooldown[MAXPLAYERS];
 static float Special_Cooldowns[MAXPLAYERS][4]; //IT WORKS :D, who needs premade cooldowns when you can make your own
 // Note from artvin: this will not work with any cooldown reductions or any "on hit" cooldown reductions unless its specifically coded in.
@@ -47,6 +50,16 @@ static float Onrush_Redash_Window[MAXPLAYERS];
 
 #define ABNORM_ENTER_SOUND "replay/enterperformancemode.wav"
 #define ABNORM_EXIT_SOUND	"replay/exitperformancemode.wav"
+#define PAGE_SELECT_SOUND	"passtime/scroll_open.wav"
+#define PAGE_DESELECT_SOUND	"passtime/scroll_close.wav"
+#define ONRUSH_START_SOUND	"player/taunt_yeti_standee_equipment_jingle4.wav"
+#define PREY_MARKED_SOUND "weapons/samurai/tf_marked_for_death_impact_03.wav"
+#define VERTICAL_SLASH_SOUND "items/pumpkin_explode1.wav"
+#define HORIZONTAL_SLASH_SOUND
+
+#define SWING_TYPE_NORMAL 0
+#define SWING_TYPE_SPECIAL 1
+#define MAX_EGO_CHARGE 1000
 
 public void Enable_Red_Mist(int client, int weapon)
 {
@@ -57,9 +70,16 @@ public void Enable_Red_Mist(int client, int weapon)
 			delete h_Red_Mist_Timer[client];
 		h_Red_Mist_Timer[client] = null;
 	}
+	if(h_Red_Mist_Ego_Timer[client] != null)
+	{
+		if(IsValidHandle(h_Red_Mist_Ego_Timer[client]))
+			delete h_Red_Mist_Ego_Timer[client];
+		h_Red_Mist_Ego_Timer[client] = null;
+	}
 	WeaponLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
 	ref_MeleeWeapon[client] = EntIndexToEntRef(weapon);
 	h_Red_Mist_Timer[client] = CreateDataTimer(0.1, Timer_Red_Mist, pack, TIMER_REPEAT);
+	h_Red_Mist_Ego_Timer[client] = CreateTimer(0.4, Timer_Red_Mist_Ego, client, TIMER_REPEAT);
 	pack.WriteCell(client);
 	pack.WriteCell(EntIndexToEntRef(weapon));
 	pack.WriteCell(EntIndexToEntRef(client));
@@ -69,6 +89,25 @@ public void Enable_Red_Mist(int client, int weapon)
 	Prey_Mark_Cooldown[client] = true;
 	Ego_Cooldown_given[client] = false;
 	//Heartbroken_ApplyCoffinBack(client, false);
+}
+
+bool IsDistorted(int client)//idk how this works
+{
+	if(h_Red_Mist_Timer[client] != null)
+		return true;
+
+	return false;
+}
+bool DoesClientHaveMOSB(int client)
+{
+	if(Abno_Pages[client] & ABNORMPAGE_MOSB)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 static Action Timer_Red_Mist(Handle timer, DataPack pack)
@@ -86,11 +125,6 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 		//Heartbroken_ApplyCoffinBack(clientindx, true);
 		h_Red_Mist_Timer[clientindx] = null;
 		return Plugin_Stop;
-	}
-	if(Ego_Active[client])
-	{
-		PrintToChatAll("ego energy [%d]", Ego_Energy[client]);
-		Ego_Energy[client] -= 10;
 	}
 	if(Ego_Energy[client] <= 0)//if ego isnt active
 	{
@@ -116,19 +150,26 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 	}
 	if(LastMann)
 	{
-		if(!RM_Lastman_Buffs_applied[client])
+		if(!RM_Lastman_Buffs_applied[client])//give buffs once
 		{
-			Strenght_Amount[client] += 10;
-			RM_Lastman_Timer[client] = CreateTimer(15.0, MOSB_Lastman_Execution, client);
+			if(Abno_Pages[client] & ABNORMPAGE_MOSB)//give bonus buffs if MOSB is picked
+			{
+				Strenght_Amount[client] += 10;
+				RM_Lastman_Timer[client] = CreateTimer(15.0, MOSB_Lastman_Execution, client);
+				EmitCustomToAll("zombiesurvival/medieval_raid/special_mutation/arkantos_scream_buff.mp3", client, SNDCHAN_STATIC, 120, _, 1.0, 75);
+			}
 			RM_Lastman_Buffs_applied[client] = true;
 		}
 	}
 	if(!LastMann)
 	{
-		if(RM_Lastman_Buffs_applied[client])
+		if(RM_Lastman_Buffs_applied[client])//take away buffs once
 		{
-			Strenght_Amount[client] -= 10; //if it isnt lms but buffs were applied. aka lms ended, remove buffs and kill death timer
-			delete RM_Lastman_Timer[client];
+			if(Abno_Pages[client] & ABNORMPAGE_MOSB)//give bonus buffs if MOSB is picked
+			{
+				Strenght_Amount[client] -= 10; //if it isnt lms but buffs were applied. aka lms ended, remove buffs and kill death timer
+				delete RM_Lastman_Timer[client];
+			}
 			RM_Lastman_Buffs_applied[client] = false;
 		}
 	}
@@ -150,30 +191,52 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 	return Plugin_Continue;
 
 }
+static Action Timer_Red_Mist_Ego(Handle timer, int client)
+{
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client))
+	{
+		return Plugin_Stop;
+	}
+	if(Ego_Active[client] && !LastMann)//only lose charge if ego is active and it ISNT lms
+	{
+		//PrintToChatAll("ego energy [%d]", Ego_Energy[client]);
+		if(!LastMann)
+			Ego_Energy[client] -= 40;
+		PrintHintText(client,"Ego Active(Charge: [%i/%i]", Ego_Energy[client], MAX_EGO_CHARGE, ")");
+	}
+	return Plugin_Continue;
+}
 
 void Red_Mist_Horizontal_Slash_DoSwingTrace(int client, float &CustomMeleeRange, float &CustomMeleeWide, bool &ignore_walls, int &enemies_hit_aoe)
 {
-	if(Special_Active[client] && current_card_selection[client] == 3)
+	switch(swing_type[client])
 	{
-		CustomMeleeRange = MELEE_RANGE * 1.8;
-		CustomMeleeWide = MELEE_BOUNDS * 5.0;
-		enemies_hit_aoe = 25; //lol
-		ignore_walls = false;
+		case SWING_TYPE_NORMAL:
+		{
+			CustomMeleeRange = MELEE_RANGE;
+			CustomMeleeWide = MELEE_BOUNDS;
+			enemies_hit_aoe = 1;
+			ignore_walls = false;
+		}
+		case SWING_TYPE_SPECIAL:
+		{
+			CustomMeleeRange = MELEE_RANGE * 1.8;
+			CustomMeleeWide = MELEE_BOUNDS * 5.0;
+			enemies_hit_aoe = 25; //lol
+			ignore_walls = false;
+			Special_Active[client] = false;
+		}	
 	}
-	else
-	{
-		CustomMeleeRange = MELEE_RANGE;
-		CustomMeleeWide = MELEE_BOUNDS;
-		enemies_hit_aoe = 1;
-		ignore_walls = false;
-	}
-	
 }
-
+bool RM_Precached = false;
 public void Red_Mist_OnMapStart()
 {
 	PrecacheSound(ABNORM_ENTER_SOUND);
 	PrecacheSound(ABNORM_EXIT_SOUND);
+	PrecacheSound(PAGE_SELECT_SOUND);
+	PrecacheSound(PAGE_DESELECT_SOUND);
+	PrecacheSound(ONRUSH_START_SOUND);
+	PrecacheSound(PREY_MARKED_SOUND);
     //precache stuff
 	Zero(Abno_Pages);
 	Zero2(Special_Cooldowns);
@@ -196,6 +259,10 @@ public void Red_Mist_OnMapStart()
 	Zero(redashes);
 	Zero(Onrush_Is_In_Dash);
 	Zero(Onrush_Redash_Window);
+	Zero(swing_type);
+	Zero(Special_Damage_Boost);
+	Zero(b_WeaponAttackSpeedModified);
+	RM_Precached = false;
 }
 
 public void Vengeance_Logic(int client)
@@ -241,11 +308,12 @@ public void Vengeance_Logic(int client)
 
 void PrecacheRedMistMusic()
 {
-	if(!Precached)
+	if(!RM_Precached)
 	{
         //TODO
-		PrecacheSoundCustom("#zombiesurvival/red_mist.mp3",_,1);
-		Precached = true;
+		PrecacheSoundCustom("#zombiesurvival/red_mist_lastman.mp3",_,1);
+		PrecacheSoundCustom("zombiesurvival/medieval_raid/special_mutation/arkantos_scream_buff.mp3");
+		RM_Precached = true;
 	}
 }
 
@@ -386,6 +454,7 @@ public Action UnFreeze_Onrush(Handle timer, int client)
 public Action MOSB_Lastman_Execution(Handle timer, int client)
 {
 	//kill client
+	CPrintToChatAll("{maroon}The bodies fully consumed {FFFAFA}%N...",client);
 	return Plugin_Handled;
 }
 
@@ -395,17 +464,15 @@ public void Red_Mist_OnTakeDamage_Deal(int victim, int &attacker, int &inflictor
 		return;
 	if(zr_custom_damage & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
 		return;
+	Strenght_boost[attacker] = 1.0 + (0.05 * Strenght_Amount[attacker]);
+	damage *= Strenght_boost[attacker];
 	if(Onrush_Is_In_Dash[attacker])
 	{
 		Onrush_Is_In_Dash[attacker] = false;
 		SetEntityMoveType(attacker, MOVETYPE_NONE);
-		CreateTimer(0.5, UnFreeze_Onrush, attacker);
-		ApplyTempAttrib(attacker, 206, 0.5, 0.5);
-		ApplyTempAttrib(attacker, 205, 0.5, 0.5);
+		CreateTimer(0.25, UnFreeze_Onrush, attacker);
+		ApplyStatusEffect(attacker, attacker, "Red Mist Onrush", 0.5);
 	}
-	Strenght_boost[attacker] = 1.0 + (0.05 * Strenght_Amount[attacker]);
-	damage *= Strenght_boost[attacker];
-
 	if(Abno_Pages[attacker] & ABNORMPAGE_DEEP_WOUND)
 	{
 		Deep_Wound_Counter[attacker] += 1;
@@ -434,8 +501,7 @@ public void Red_Mist_OnTakeDamage_Deal(int victim, int &attacker, int &inflictor
 		}
 		if(HasSpecificBuff(victim, "Mark Of Prey"))
 		{
-			EmitSoundToClient(attacker, "playgamesound weapons/samurai/tf_marked_for_death_impact_03.wav", attacker, _, 70, _, 1.0, 60);
-			//ClientCommand(attacker, "playgamesound weapons/samurai/tf_marked_for_death_impact_03.wav");
+			EmitSoundToClient(attacker, PREY_MARKED_SOUND, attacker, _, 70, _, 1.0, 60);
 			PrintToChatAll("enemy debuffed");
 			if(b_thisNpcIsABoss[victim])
 			{
@@ -456,24 +522,15 @@ public void Red_Mist_OnTakeDamage_Deal(int victim, int &attacker, int &inflictor
 	{
 		if(current_card_selection[attacker] == 1)//vertical slash
 		{
+			EmitSoundToClient(client, VERTICAL_SLASH_SOUND, client, _, 70, _, 1.0, 50);
 			damage *= 25.0;
 			Special_Active[attacker] = false;
 			Special_Cooldowns[attacker][1] = GetGameTime() + 5.00;
-			return;
 		}
-		if(current_card_selection[attacker] == 3)//horizontal slash
-		{
-			damage *= 5.0;
-			//just temp stuff so compiler doesn't bitch, actual values are in the void above
-			//float RangeDo;
-			//float RangeDo2;
-			//bool invalid1;
-			//int invalid2;
-			//Red_Mist_Horizontal_Slash_DoSwingTrace(attacker, RangeDo, RangeDo2, invalid1, invalid2);
-			//Special_Active[attacker] = false;
-			//Special_Cooldowns[attacker][3] = GetGameTime() + 10.00;
-			return;
-		}
+	}
+	if(Special_Damage_Boost[attacker])//we do this cuz "special_active" gets disabled before this function gets called, so this is a small workaround
+	{
+		damage *= 15.0;
 	}
 	if(Ego_Active[attacker])
 	{
@@ -538,10 +595,13 @@ public void Red_Mist_Main_Attack(int client, int weapon)
 		}
 		if(current_card_selection[client] == 3)//horizontal
 		{
-			
-			Special_Active[client] = false;
+			swing_type[client] = SWING_TYPE_SPECIAL;
+			Special_Damage_Boost[client] = true;
 			Special_Cooldowns[client][3] = GetGameTime() + 10.00;
+			EmitSoundToClient(client, HORIZONTAL_SLASH_SOUND, client, _, 70, _, 1.0, 90);
+			return;
 		}
+		
 	}
 	else
 	{
@@ -560,11 +620,11 @@ public void Red_Mist_Main_Attack(int client, int weapon)
 		}
 		PrintToChatAll("Strength Amount [%d]", Strenght_Amount[client]);
 	}
-	float RangeDo;
-	float RangeDo2;
-	bool invalid1;
-	int invalid2;
-	Red_Mist_Horizontal_Slash_DoSwingTrace(client, RangeDo, RangeDo2, invalid1, invalid2);//here so it checks the attack type each attack, so after using 3rd special attack it resets back to base attacks
+	if(Special_Damage_Boost[client])//we do this cuz "special_active" gets disabled before this function gets called, so this is a small workaround
+	{
+		Special_Damage_Boost[client] = false;
+	}
+	swing_type[client] = SWING_TYPE_NORMAL;
 }
 
 public void Red_Mist_Onrush(int client, int weapon)
@@ -616,12 +676,13 @@ public void Red_Mist_Onrush(int client, int weapon)
 	{
 		redashes[client] += 1;
 	}
+	EmitSoundToClient(client, ONRUSH_START_SOUND, client, _, 70, _, 1.0, 90);
 	Onrush_Is_In_Dash[client] = true;
 	Onrush_Redash_Window[client] = GetGameTime() + 2.5;
 	SetEntityMoveType(client, MOVETYPE_WALK);
 	TF2_AddCondition(client, TFCond_LostFooting, 0.35);
 	TF2_AddCondition(client, TFCond_AirCurrent, 0.35);
-	ApplyStatusEffect(client, client, "Intangible", 0.3);
+	ApplyStatusEffect(client, client, "Intangible", 0.5);
 	//ApplyStatusEffect(client, client, "Touch Ingored", 0.3);
 
 	float MePos[3];
@@ -639,103 +700,7 @@ public void Red_Mist_Onrush(int client, int weapon)
 
 	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
 }
-
-public void Red_Mist_Special_Cycle(int client, int weapon)//for cycling through all the special attacks
-{
-	//for pap buffs, only trigger once a pap and then never again until new pap
-	if(last_recorded_pap[client] < WeaponLevel[client])
-    {
-		if(current_abno_card_selection[client] == 0 || current_abno_card_selection[client] == 2 )
-		{
-			if(last_recorded_pap[client] == 1)
-			{
-				PrintToChat(client, "%t", "Prey");
-			}
-			if(last_recorded_pap[client] == 2)
-			{
-				PrintToChat(client, "%t", "Claws of Savagery");
-			}
-			if(last_recorded_pap[client] == 3)
-			{
-				PrintToChat(client, "%t", "Absorption");
-			}
-			if(last_recorded_pap[client] == 4)
-			{
-				PrintToChat(client, "%t", "Vampirism");
-			}
-			current_abno_card_selection[client] = 1;
-
-		}
-		else if(current_abno_card_selection[client] == 1)
-		{
-			current_abno_card_selection[client] = 2;
-			if(last_recorded_pap[client] == 1)
-			{
-				PrintToChat(client, "%t", "Vengeance");
-			}
-			if(last_recorded_pap[client] == 2)
-			{
-				PrintToChat(client, "%t", "The Role of the Wolf");
-			}
-			if(last_recorded_pap[client] == 3)
-			{
-				PrintToChat(client, "%t", "Mountain of Corpses");
-			}
-			if(last_recorded_pap[client] == 4)
-			{
-				PrintToChat(client, "%t", "Deep Wound");
-			}
-		}
-		PrintToChat(client, "Current abno Card [%d]", current_abno_card_selection[client]);
-			
-	}
-	else //normal function
-	{
-		if(Special_Active[client])
-		{
-			return;
-		}
-		else
-		{
-			if(current_card_selection[client] == 0) //could be done better but there is only gonna be 3 options so it should be fine
-			{
-				current_card_selection[client] = 1;// vertical slash
-			}
-			else if(current_card_selection[client] == 1) //if ego active skip 2 and go to 3, else stay go to 2
-			{
-				if(!Ego_Active[client] && WeaponLevel[client] >= 3)
-				{
-					current_card_selection[client] = 2;//ego
-				}
-				else if(Ego_Active[client] && WeaponLevel[client] >= 3)
-				{
-					current_card_selection[client] = 3;//horizontal slash
-				}
-			}
-			else if(current_card_selection[client] == 2) // if ego active go to 3, otherwise skip it and go back to 1
-			{
-				if(Ego_Active[client] && WeaponLevel[client] >= 3)
-				{
-					current_card_selection[client] = 3;
-				}
-				else
-				{
-					current_card_selection[client] = 1;
-				}
-			}
-			else if(current_card_selection[client] == 3)
-			{
-				current_card_selection[client] = 1;
-			}	
-			PrintToChat(client, "Current Card [%d]", current_card_selection[client]);
-		}
-		
-	}
-	
-	//PrintToChatAll("sub weapon usage m2");
-}
-
-public void Red_Mist_Special(int client, int weapon)//for activating currently selected special
+public void Red_Mist_Special_M1(int client, int weapon)//for activating currently selected special
 {
     if(last_recorded_pap[client] < WeaponLevel[client]) //abno page picking
     {
@@ -743,134 +708,122 @@ public void Red_Mist_Special(int client, int weapon)//for activating currently s
 		{
 			case 0://abno pages for 1st pap
 			{
-				if(current_abno_card_selection[client] == 1)
-				{
-					Abno_Pages[client] |= ABNORMPAGE_PREY;
-					PrintToChatAll("pray 1");
-				}
-				else if(current_abno_card_selection[client] == 2)
-				{
-					Abno_Pages[client] |= ABNORMPAGE_VENGEANCE;
-					PrintToChatAll("vengeance 2");
-				}
-				if(current_abno_card_selection[client] != 0)
-				{
-					last_recorded_pap[client] += 1; //add +1 so you cant skip upgrades if you mass pap
-					current_abno_card_selection[client] = 0; //reset to 0 so you have to cycle atleast once before picking a card
-				}
+				Abno_Pages[client] |= ABNORMPAGE_PREY;
+				EmitSoundToClient(client, PAGE_SELECT_SOUND, client, _, 70, _, 1.0, 90);
+				PrintToChatAll("pray 1");
+				last_recorded_pap[client] += 1; //add +1 so you cant skip upgrades if you mass pap
 			}
 			case 1://abno pages for 2nd pap
 			{
-				if(current_abno_card_selection[client] == 1)
-				{
-					Abno_Pages[client] |= ABNORMPAGE_SAVAGERY;
-					PrintToChatAll("savagery 1");
-				}
-				else if(current_abno_card_selection[client] == 2)
-				{
-					Abno_Pages[client] |= ABNORMPAGE_ROLE_OF_WOLF;
-					PrintToChatAll("wolf 2");
-				}
-				if(current_abno_card_selection[client] != 0)
-				{
-					last_recorded_pap[client] += 1; //add +1 so you cant skip upgrades if you mass pap
-					current_abno_card_selection[client] = 0; //reset to 0 so you have to cycle atleast once before picking a card
-				}
+				Abno_Pages[client] |= ABNORMPAGE_SAVAGERY;
+				EmitSoundToClient(client, PAGE_SELECT_SOUND, client, _, 70, _, 1.0, 90);
+				PrintToChatAll("savagery 1");
+				last_recorded_pap[client] += 1; //add +1 so you cant skip upgrades if you mass pap
 			}
 			case 2://abno pages for 3rd pap
 			{
-				if(current_abno_card_selection[client] == 1)
-				{
-					Abno_Pages[client] |= ABNORMPAGE_ABSORPTION;
-					PrintToChatAll("absorption 1");
-				}
-				else if(current_abno_card_selection[client] == 2)
-				{
-					Abno_Pages[client] |= ABNORMPAGE_MOSB;
-					PrintToChatAll("mosb 2");
-				}
-				if(current_abno_card_selection[client] != 0)
-				{
-					last_recorded_pap[client] += 1; //add +1 so you cant skip upgrades if you mass pap
-					current_abno_card_selection[client] = 0; //reset to 0 so you have to cycle atleast once before picking a card
-				}
+				Abno_Pages[client] |= ABNORMPAGE_ABSORPTION;
+				EmitSoundToClient(client, PAGE_SELECT_SOUND, client, _, 70, _, 1.0, 90);
+				PrintToChatAll("absorption 1");
+				last_recorded_pap[client] += 1; //add +1 so you cant skip upgrades if you mass pap
 			}
 			case 3://abno pages for 4th pap
 			{
-				if(current_abno_card_selection[client] == 1)
-				{
-					Abno_Pages[client] |= ABNORMPAGE_VAMPIRISM;
-					PrintToChatAll("vampirism 1");
-				}
-				else if(current_abno_card_selection[client] == 2)
-				{
-					Abno_Pages[client] |= ABNORMPAGE_DEEP_WOUND;
-					PrintToChatAll("deep wound 2");
-				}
-				if(current_abno_card_selection[client] != 0)
-				{
-					last_recorded_pap[client] += 1; //add +1 so you cant skip upgrades if you mass pap
-					current_abno_card_selection[client] = 0; //reset to 0 so you have to cycle atleast once before picking a card
-				}
+				Abno_Pages[client] |= ABNORMPAGE_VAMPIRISM;
+				EmitSoundToClient(client, PAGE_SELECT_SOUND, client, _, 70, _, 1.0, 90);
+				PrintToChatAll("vampirism 1");
+				last_recorded_pap[client] += 1; //add +1 so you cant skip upgrades if you mass pap
 			}
 		}
-		PrintToChat(client, "Current abno Card [%d]", current_abno_card_selection[client]);
-        //do card picking code here
-        //ABNORMPAGE[entity] |= ABNORMPAGE_PREY;
-        //ABNORMPAGE[entity] |= ABNORM_PAGE_2;
-        
-        //last_recorded_pap[client] = WeaponLevel[client];
     }
+	else //normal function
+	{
+		if(Special_Active[client])//dont allow selection if special is already selected
+		{
+			Special_Active[client] = false; //disable special attack
+			EmitSoundToClient(client, PAGE_DESELECT_SOUND, client, _, 70, _, 1.0, 90);
+			PrintToChatAll("Special off");
+		}
+		else
+		{
+			if(Special_Cooldowns[client][1] < GetGameTime())
+			{
+				Special_Active[client] = true;
+				current_card_selection[client] = 1;
+				EmitSoundToClient(client, PAGE_SELECT_SOUND, client, _, 70, _, 1.0, 90);
+				PrintToChatAll("Special 1 on");
+			}
+		}
+		PrintToChat(client, "Current Card [%d]", current_card_selection[client]);
+	}
+}
+public void Red_Mist_Special_M2(int client, int weapon)
+{
+	if(last_recorded_pap[client] < WeaponLevel[client]) //abno page picking
+    {
+		switch (last_recorded_pap[client])//checks current pap
+		{
+			case 0:
+			{
+				Abno_Pages[client] |= ABNORMPAGE_VENGEANCE;
+				EmitSoundToClient(client, PAGE_SELECT_SOUND, client, _, 70, _, 1.0, 90);
+				last_recorded_pap[client] += 1; //add +1 so you cant skip upgrades if you mass pap
+			}
+			case 1:
+			{
+				Abno_Pages[client] |= ABNORMPAGE_ROLE_OF_WOLF;
+				EmitSoundToClient(client, PAGE_SELECT_SOUND, client, _, 70, _, 1.0, 90);
+				last_recorded_pap[client] += 1; //add +1 so you cant skip upgrades if you mass pap
+			}
+			case 2:
+			{
+				Abno_Pages[client] |= ABNORMPAGE_MOSB;
+				EmitSoundToClient(client, PAGE_SELECT_SOUND, client, _, 70, _, 1.0, 90);
+				last_recorded_pap[client] += 1; //add +1 so you cant skip upgrades if you mass pap
+			}
+			case 3:
+			{
+				Abno_Pages[client] |= ABNORMPAGE_DEEP_WOUND;
+				EmitSoundToClient(client, PAGE_SELECT_SOUND, client, _, 70, _, 1.0, 90);
+				last_recorded_pap[client] += 1; //add +1 so you cant skip upgrades if you mass pap
+			}
+			
+		}
+	}
 	else //normal function
 	{
 		if(Special_Active[client])
 		{
 			Special_Active[client] = false; //disable special attack
+			EmitSoundToClient(client, PAGE_DESELECT_SOUND, client, _, 70, _, 1.0, 90);
 			PrintToChatAll("Special off");
 		}
 		else
 		{
-			if(current_card_selection[client] == 1 && Special_Cooldowns[client][1] < GetGameTime())
+			if(WeaponLevel[client] >= 3)//only unlock those 2 after 5th pap
 			{
-				Special_Active[client] = true;
-				PrintToChatAll("Special 1 on");
+				if(Special_Cooldowns[client][2] < GetGameTime())//ego manifestation
+				{
+					if(!Ego_Active[client])
+					{
+						Special_Active[client] = true;
+						current_card_selection[client] = 2;
+						EmitSoundToClient(client, PAGE_SELECT_SOUND, client, _, 70, _, 1.0, 90);
+						PrintToChatAll("Special 2 on");
+					}
+				}
+				if(Special_Cooldowns[client][3] < GetGameTime())//horizontal slash
+				{
+					if(Ego_Active[client])
+					{
+						Special_Active[client] = true;
+						current_card_selection[client] = 3;
+						EmitSoundToClient(client, PAGE_SELECT_SOUND, client, _, 70, _, 1.0, 90);
+						PrintToChatAll("Special 3 on");
+					}
+				}
 			}
-			else
-			{
-				float Ability_CD = Special_Cooldowns[client][1] - GetGameTime();
-				if(Ability_CD < 0.0)
-					Ability_CD = 0.0;
-				ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
-			}
-			if(current_card_selection[client] == 2 && Special_Cooldowns[client][2] < GetGameTime())
-			{
-				Special_Active[client] = true;
-				PrintToChatAll("Special 2 on");
-			}
-			else
-			{
-				float Ability_CD = Special_Cooldowns[client][2] - GetGameTime();
-				if(Ability_CD < 0.0)
-					Ability_CD = 0.0;
-				ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
-			}
-			if(current_card_selection[client] == 3 && Special_Cooldowns[client][3] < GetGameTime())
-			{
-				Special_Active[client] = true;
-				PrintToChatAll("Special 3 on");
-			}
-			else
-			{
-				float Ability_CD = Special_Cooldowns[client][3] - GetGameTime();
-				if(Ability_CD < 0.0)
-					Ability_CD = 0.0;
-				ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
-			}
-			
-			
 		}
-		
-
 		PrintToChat(client, "Current Card [%d]", current_card_selection[client]);
 	}
 }
@@ -894,12 +847,115 @@ void Abornmality_Page_Display(int client)
 	int blue = 50;
 	//For each abnorm page, each side.
 	SetHudTextParams(0.15 + GetRandomFloat(-0.01, 0.01), 0.5 + GetRandomFloat(-0.01, 0.01), 0.25, red, green, blue, 255);
-//	ShowSyncHudText(client, SyncHud_WandMana, "%T\n [M1]","Ability has cooldown", client, 5.0);
-	ShowSyncHudText(client, SyncHud_WandMana, "The big kill\nHoly shit is that the red mist?\n [M1]");
+	//ShowSyncHudText(client, SyncHud_WandMana, "%T\n [M1]","Ability has cooldown", client, 5.0);
+	if(last_recorded_pap[client] < WeaponLevel[client])
+	{
+		if(last_recorded_pap[client] == 0)
+		{
+			ShowSyncHudText(client, SyncHud_WandMana, "%t", "Prey", "\n [M1]");
+		}
+		if(last_recorded_pap[client] == 1)
+		{
+			ShowSyncHudText(client, SyncHud_WandMana, "%t", "Claws of Savagery", "\n [M1]");
+		}
+		if(last_recorded_pap[client] == 2)
+		{
+			ShowSyncHudText(client, SyncHud_WandMana, "%t", "Absorption", "\n [M1]");
+		}
+		if(last_recorded_pap[client] == 3)
+		{
+			ShowSyncHudText(client, SyncHud_WandMana, "%t", "Vampirism", "\n [M1]");
+		}
+	}
+	else//show normal pages
+	{
+		if(Special_Cooldowns[client][1] > GetGameTime())//cooldown not finished
+		{
+			float Ability_CD = Special_Cooldowns[client][1] - GetGameTime();
+			if(Ability_CD < 0.0)
+				Ability_CD = 0.0;
+			ShowSyncHudText(client, SyncHud_WandMana, "%t", "Ability has cooldown", Ability_CD);
+		}
+		else if(Special_Active[client] && current_card_selection[client] == 1)
+		{
+			ShowSyncHudText(client, SyncHud_WandMana, "%t", "Red Mist Card Selected");
+		}
+		else
+		{
+			ShowSyncHudText(client, SyncHud_WandMana, "%t", "Greater Slash Vertical", "\n [M1]");
+		}
+	}
+	
+	//ShowSyncHudText(client, SyncHud_WandMana, "The big kill\nHoly shit is that the red mist?\n [M1]");
 
 	SetHudTextParams(0.65 + GetRandomFloat(-0.01, 0.01), 0.5 + GetRandomFloat(-0.01, 0.01), 0.25, red, green, blue, 255);
-//	ShowSyncHudText(client, SyncHud_ArmorCounter, "%T\n [M2]", "Ability has cooldown", client, 5.0);
-	ShowSyncHudText(client, SyncHud_ArmorCounter, "Absorbtion\nGain health on kill\n [M2]");
+	//ShowSyncHudText(client, SyncHud_ArmorCounter, "%T\n [M2]", "Ability has cooldown", client, 5.0);
+	if(last_recorded_pap[client] < WeaponLevel[client])
+	{
+		if(last_recorded_pap[client] == 0)
+		{
+			ShowSyncHudText(client, SyncHud_ArmorCounter, "%t", "Vengeance", "\n [M2]");
+		}
+		if(last_recorded_pap[client] == 1)
+		{
+			ShowSyncHudText(client, SyncHud_ArmorCounter, "%t", "The Role of the Wolf", "\n [M2]");
+		}
+		if(last_recorded_pap[client] == 2)
+		{
+			ShowSyncHudText(client, SyncHud_ArmorCounter, "%t", "Mountain of Corpses", "\n [M2]");
+		}
+		if(last_recorded_pap[client] == 3)
+		{
+			ShowSyncHudText(client, SyncHud_ArmorCounter, "%t", "Deep Wound", "\n [M2]");
+		}
+	}
+	else//show normal pages
+	{
+		if(WeaponLevel[client] < 3)
+		{
+			ShowSyncHudText(client, SyncHud_ArmorCounter, "%t", "Red Mist Card Locked");
+		}
+		else
+		{
+			if(Ego_Active[client])
+			{
+				if(Special_Cooldowns[client][3] > GetGameTime())//cooldown not finished
+				{
+					float Ability_CD = Special_Cooldowns[client][3] - GetGameTime();
+					if(Ability_CD < 0.0)
+						Ability_CD = 0.0;
+					ShowSyncHudText(client, SyncHud_ArmorCounter, "%t", "Ability has cooldown", Ability_CD);
+				}
+				else if(Special_Active[client] && current_card_selection[client] == 3)
+				{
+					ShowSyncHudText(client, SyncHud_ArmorCounter, "%t", "Red Mist Card Selected");
+				}
+				else
+				{
+					ShowSyncHudText(client, SyncHud_ArmorCounter, "%t", "Greater Slash Horizontal", "\n [M2]");
+				}
+			}
+			else
+			{
+				if(Special_Cooldowns[client][2] > GetGameTime())//cooldown not finished
+				{
+					float Ability_CD = Special_Cooldowns[client][2] - GetGameTime();
+					if(Ability_CD < 0.0)
+						Ability_CD = 0.0;
+					ShowSyncHudText(client, SyncHud_ArmorCounter, "%t", "Ability has cooldown", Ability_CD);
+				}
+				else if(Special_Active[client] && current_card_selection[client] == 2)
+				{
+					ShowSyncHudText(client, SyncHud_ArmorCounter, "%t", "Red Mist Card Selected");
+				}
+				else
+				{
+					ShowSyncHudText(client, SyncHud_ArmorCounter, "%t", "Red Mist Ego", "\n [M2]");
+				}
+			}
+		}
+	}
+	//ShowSyncHudText(client, SyncHud_ArmorCounter, "Absorbtion\nGain health on kill\n [M2]");
 	//hide the huds used for this
 	delay_hud[client] = GetGameTime() + 0.4;
 	Mana_Hud_Delay[client] = GetGameTime() + 0.4;
