@@ -9,6 +9,7 @@ static GlobalForward OnKilledNPC;
 static GlobalForward OnRevivingPlayer;
 static GlobalForward OnGivenCash;
 static GlobalForward OnTeamWin;
+static GlobalForward OnWinInfo;
 static GlobalForward OnXpChanged;
 static GlobalForward CanRenameNpc;
 static GlobalForward OnWaveEnd;
@@ -35,6 +36,7 @@ void Natives_PluginLoad()
 	OnRevivingPlayer = new GlobalForward("ZR_OnRevivingPlayer", ET_Ignore, Param_Cell, Param_Cell);
 	OnGivenCash = new GlobalForward("ZR_OnGivenCash", ET_Event, Param_Cell, Param_CellByRef);
 	OnTeamWin = new GlobalForward("ZR_OnWinTeam", ET_Event, Param_Cell);
+	OnWinInfo = new GlobalForward("ZR_OnWinInfo", ET_Ignore, Param_Cell, Param_String, Param_String);
 	OnGiftCollected = new GlobalForward("ZR_OnGiftCollected", ET_Ignore, Param_Cell, Param_Cell);
 	OnXpChanged = new GlobalForward("ZR_OnGetXP", ET_Ignore, Param_Cell, Param_Cell, Param_Cell);
 	CanRenameNpc = new GlobalForward("ZR_CanRenameNPCs", ET_Single, Param_Cell);
@@ -64,6 +66,15 @@ void Native_ZR_OnWinTeam(int team)
 {
 	Call_StartForward(OnTeamWin);
 	Call_PushCell(view_as<TFTeam>(team));
+	Call_Finish();
+}
+
+void Native_ZR_OnWinInfo(ArrayList playerList, const char[] waveset, const char[] modifier)
+{
+	Call_StartForward(OnWinInfo);
+	Call_PushCell(playerList);
+	Call_PushString(waveset);
+	Call_PushString(modifier);
 	Call_Finish();
 }
 

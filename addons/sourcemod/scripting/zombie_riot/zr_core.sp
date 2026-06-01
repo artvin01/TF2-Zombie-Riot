@@ -441,6 +441,7 @@ int StartCash;
 float RoundStartTime;
 char WhatDifficultySetting_Internal[32];
 char WhatDifficultySetting[32];
+char WhatModifierSetting[32];
 float healing_cooldown[MAXPLAYERS];
 float f_TimeAfterSpawn[MAXPLAYERS];
 float WoodAmount[MAXPLAYERS];
@@ -898,6 +899,7 @@ void ZR_MapStart()
 	Dweller_OnMapStart();
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
+	Format(WhatModifierSetting, sizeof(WhatModifierSetting), "");
 	WavesUpdateDifficultyName();
 	cvarTimeScale.SetFloat(1.0);
 	GlobalCheckDelayAntiLagPlayerScale = 0.0;
@@ -3334,6 +3336,21 @@ void ForcePlayerWin(bool fakeout = false)
 		AcceptEntityInput(entity, "RoundWin");
 		RemoveAllCustomMusic();
 		Native_ZR_OnWinTeam(TFTeam_Red);
+		
+		// Send info through a forward
+		ArrayList playerList = new ArrayList();
+		for (int client = 1; client <= MaxClients; client++)
+		{
+			if (!b_IsPlayerABot[client] && IsClientInGame(client) && !IsFakeClient(client) && GetTeam(client) == 2)
+				playerList.Push(client);
+		}
+		
+		char waveset[64], modifier[64];
+		strcopy(waveset, sizeof(waveset), WhatDifficultySetting_Internal);
+		strcopy(modifier, sizeof(modifier), WhatModifierSetting);
+		
+		Native_ZR_OnWinInfo(playerList, waveset, modifier);
+		delete playerList;
 	}
 }
 
