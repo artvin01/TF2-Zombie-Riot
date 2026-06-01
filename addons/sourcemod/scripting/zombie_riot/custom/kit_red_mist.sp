@@ -379,7 +379,7 @@ public void Red_Mist_OnTakeDamage_Take(int victim, int &attacker, int &inflictor
 	
 
 	float RMC_damage_cap = 0.0;
-	float current = GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack");
+	float current = GetEntPropFloat(equipped_weapon, Prop_Send, "m_flNextPrimaryAttack");
 	if(current < GetGameTime()) //only counter if not attacking
 	{
 		float VecMe[3];
