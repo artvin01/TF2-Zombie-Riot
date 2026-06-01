@@ -1027,7 +1027,17 @@ static Action Freeplay_RouletteMessage(Handle timer)
 	{
 		case 2:
 		{
-			CPrintToChatAll("{crimson}THE BLITZKRIEG! {gold}- {red}Prepare to fight against the rogue machine!");
+			switch(GetRandomInt(1, 5))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{crimson}THE BLITZKRIEG! {gold}- {red}Prepare to fight against the rogue machine!");
+				}
+				default:
+				{
+					CPrintToChatAll("{crimson}THE BLITZKRIEG! {gold}- {red}Prepare to fight against the rogue machine!");
+				}
+			}
 		}
 		case 3:
 		{
@@ -1322,7 +1332,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 				}
 				default:
 				{
-					CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.! {gold}- {red}Remember to be careful your surrounding, there may be a mine next to you, or a sniper aiming right at you");
+					CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.! {gold}- {red}Remember to be careful your surrounding, there may be a mine next to you, or a sniper aiming right at you.");
 				}
 			}
 		}
