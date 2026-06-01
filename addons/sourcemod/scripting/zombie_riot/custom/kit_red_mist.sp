@@ -257,6 +257,10 @@ void Red_Mist_Horizontal_Slash_DoSwingTrace(int client, float &CustomMeleeRange,
 }
 bool RM_Precached = false;
 
+public void RedMist_ResetAbnorms()
+{
+	Zero(Abno_Pages);
+}
 public void Red_Mist_OnMapStart()
 {
 	PrecacheSound(ABNORM_ENTER_SOUND);
@@ -374,64 +378,72 @@ public void Red_Mist_OnTakeDamage_Take(int victim, int &attacker, int &inflictor
 	}
 	
 
-	int buttons = GetClientButtons(victim);
 	float RMC_damage_cap = 0.0;
-	if(!(buttons & IN_ATTACK)) //only counter if not attacking
+	float current = GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack");
+	if(current < GetGameTime()) //only counter if not attacking
 	{
-		if(!Special_Active[victim])
+		float VecMe[3];
+		WorldSpaceCenter(victim, VecMe);
+		float VecAttacker[3];
+		WorldSpaceCenter(attacker, VecAttacker);
+		float dist = GetVectorDistance(VecMe, VecAttacker, true);
+		if(dist < (300.0 * 300.0))
 		{
-			if(Abno_Pages[victim] & ABNORMPAGE_ROLE_OF_WOLF)
+			if(!Special_Active[victim])
 			{
-				RMC_damage_cap = 100.0 * (WeaponLevel[victim] + 1);
-			}
-			else
-			{
-				RMC_damage_cap = 50.0 * (WeaponLevel[victim] + 1);
-			}
-			
-			if(damage > RMC_damage_cap || counter_dice_amount[victim] <= 0)
-			{
-				if(!counter_timer_exists[victim])
+				if(Abno_Pages[victim] & ABNORMPAGE_ROLE_OF_WOLF)
 				{
-					CreateTimer(10.0, Timer_RM_CD_Restore, victim);
-					counter_dice_amount[victim] = 0;
-					PrintToChat(victim, "damage taken: [%.1f]", damage);
-					PrintToChatAll("dice broke");
-					counter_timer_exists[victim] = true;
-					EmitSoundToClient(victim, "physics/glass/glass_cup_break2.wav", victim, _, 70, _, 1.0, 100);
+					RMC_damage_cap = 100.0 * (WeaponLevel[victim] + 1);
 				}
+				else
+				{
+					RMC_damage_cap = 50.0 * (WeaponLevel[victim] + 1);
+				}
+				
+				if(damage > RMC_damage_cap || counter_dice_amount[victim] <= 0)
+				{
+					if(!counter_timer_exists[victim])
+					{
+						CreateTimer(10.0, Timer_RM_CD_Restore, victim);
+						counter_dice_amount[victim] = 0;
+						PrintToChat(victim, "damage taken: [%.1f]", damage);
+						PrintToChatAll("dice broke");
+						counter_timer_exists[victim] = true;
+						EmitSoundToClient(victim, "physics/glass/glass_cup_break2.wav", victim, _, 70, _, 1.0, 100);
+					}
+				}
+				else //counter normally
+				{
+					float CounterDamage = 65.0;
+					CounterDamage *= WeaponDamageAttributeMultipliers(equipped_weapon,_,victim);
+					CounterDamage *= 0.5; //1-1 swing damage is too strong
+					static float angles[3];
+					GetEntPropVector(victim, Prop_Send, "m_angRotation", angles);
+					float vecForward[3];
+					GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
+					static float Entity_Position[3];
+					WorldSpaceCenter(attacker, Entity_Position );
+					float ReflectPosVec[3]; CalculateDamageForce(vecForward, 10000.0, ReflectPosVec);
+					DataPack pack = new DataPack();
+					pack.WriteCell(EntIndexToEntRef(attacker));
+					pack.WriteCell(EntIndexToEntRef(victim));
+					pack.WriteCell(EntIndexToEntRef(victim));
+					pack.WriteFloat(CounterDamage);
+					pack.WriteCell(DMG_CLUB);
+					pack.WriteCell(EntIndexToEntRef(equipped_weapon));
+					pack.WriteFloat(ReflectPosVec[0]);
+					pack.WriteFloat(ReflectPosVec[1]);
+					pack.WriteFloat(ReflectPosVec[2]);
+					pack.WriteFloat(Entity_Position[0]);
+					pack.WriteFloat(Entity_Position[1]);
+					pack.WriteFloat(Entity_Position[2]);
+					pack.WriteCell(ZR_DAMAGE_REFLECT_LOGIC);
+					RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
+					damage *= 0.5;
+					PrintToChatAll("countered");
+					counter_dice_amount[victim] -= 1;
+				}	
 			}
-			else //counter normally
-			{
-				float CounterDamage = 65.0;
-				CounterDamage *= WeaponDamageAttributeMultipliers(equipped_weapon,_,victim);
-				CounterDamage *= 0.5; //1-1 swing damage is too strong
-				static float angles[3];
-				GetEntPropVector(victim, Prop_Send, "m_angRotation", angles);
-				float vecForward[3];
-				GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
-				static float Entity_Position[3];
-				WorldSpaceCenter(attacker, Entity_Position );
-				float ReflectPosVec[3]; CalculateDamageForce(vecForward, 10000.0, ReflectPosVec);
-				DataPack pack = new DataPack();
-				pack.WriteCell(EntIndexToEntRef(attacker));
-				pack.WriteCell(EntIndexToEntRef(victim));
-				pack.WriteCell(EntIndexToEntRef(victim));
-				pack.WriteFloat(CounterDamage);
-				pack.WriteCell(DMG_CLUB);
-				pack.WriteCell(EntIndexToEntRef(equipped_weapon));
-				pack.WriteFloat(ReflectPosVec[0]);
-				pack.WriteFloat(ReflectPosVec[1]);
-				pack.WriteFloat(ReflectPosVec[2]);
-				pack.WriteFloat(Entity_Position[0]);
-				pack.WriteFloat(Entity_Position[1]);
-				pack.WriteFloat(Entity_Position[2]);
-				pack.WriteCell(ZR_DAMAGE_REFLECT_LOGIC);
-				RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
-				damage *= 0.5;
-				PrintToChatAll("countered");
-				counter_dice_amount[victim] -= 1;
-			}	
 		}
 		
 	}
@@ -699,6 +711,7 @@ public void Red_Mist_Onrush(int client, int weapon)
 		Onrush_Is_In_Dash[client] = false;
 		return;
 	}
+
 	if(redash_cooldown[client] > GetGameTime())
 	//if(Ability_Check_Cooldown(client, 2) > 0.0)
 	{
@@ -746,6 +759,12 @@ public void Red_Mist_Onrush(int client, int weapon)
 	TF2_AddCondition(client, TFCond_AirCurrent, 0.35);
 	ApplyStatusEffect(client, client, "Intangible", 0.5);
 	//ApplyStatusEffect(client, client, "Touch Ingored", 0.3);
+
+	int trail = Trail_Attach(client, ARROW_TRAIL_RED, 255, 0.45, 60.0, 3.0, 5);
+	SetEntityRenderColor(trail, 255, 200, 200, 255);
+	SDKCall_SetLocalOrigin(trail, {0.0,0.0,50.0});
+	CreateTimer(0.45, Timer_RemoveEntityParent, EntIndexToEntRef(trail), TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(trail), TIMER_FLAG_NO_MAPCHANGE);
 
 	float MePos[3];
 	WorldSpaceCenter(client, MePos);

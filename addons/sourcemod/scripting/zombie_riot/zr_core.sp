@@ -3349,6 +3349,8 @@ void ForcePlayerWin(bool fakeout = false)
 		AcceptEntityInput(entity, "RoundWin");
 		RemoveAllCustomMusic();
 		Native_ZR_OnWinTeam(TFTeam_Red);
+
+		WeaponUpdateDo();
 	}
 }
 
@@ -3389,6 +3391,7 @@ void ForcePlayerLoss(bool WasRaid = true)
 	MusicWin.Clear();
 	MusicLoss.Clear();
 	RaidMusicSpecial1.Clear();
+	WeaponUpdateDo();
 }
 
 
@@ -3654,4 +3657,9 @@ bool ZR_AllowLastman()
 		return true;
 		
 	return false;
+}
+
+void WeaponUpdateDo()
+{
+	RedMist_ResetAbnorms();
 }
