@@ -79,7 +79,7 @@ public void NightmareSwordsman_OnMapStart_NPC()
 	PrecacheSound("player/flow.wav");
 	PrecacheModel("models/effects/combineball.mdl", true);
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Xeno Seaborn W.F. Chaos Voided Acclaimed Swordsman The First");
+	strcopy(data.Name, sizeof(data.Name), "Xeno Dweller W.F. Chaos Voided Acclaimed Swordsman The First");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_nightmare_swordsman");
 	strcopy(data.Icon, sizeof(data.Icon), "");
 	data.IconCustom = false;

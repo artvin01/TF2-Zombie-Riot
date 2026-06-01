@@ -877,7 +877,7 @@ bool VoidVhxis_VoidSummoning(Vhxis npc, float gameTime)
 			
 			//remove particle, spawn creep, deal aoe damage
 			ProjectileLoc[2] += 5.0;
-			VoidArea_SpawnNethersea(ProjectileLoc);
+			VoidArea_SpawnAbyss(ProjectileLoc);
 			ProjectileLoc[2] += 60.0;
 			Explode_Logic_Custom(VOID_SUMMON_DAMAGE, 0, npc.index, -1, ProjectileLoc, VOID_SUMMON_RANGE_BOOM * 0.95, 1.0, _, true, 20);
 			ProjectileLoc[2] -= 60.0;
@@ -1208,7 +1208,7 @@ bool VoidVhxis_VoidMagic(Vhxis npc, float gameTime)
 			maxhealth *= 0.02;
 			for (int DoSpawns = 0; DoSpawns < 2; DoSpawns++)
 			{
-				int spawn_index = NPC_CreateByName("npc_seaborn_vanguard", -1, ProjectileLoc, ang, GetTeam(npc.index));
+				int spawn_index = NPC_CreateByName("npc_dweller_vanguard", -1, ProjectileLoc, ang, GetTeam(npc.index));
 				if(spawn_index > MaxClients)
 				{
 					NpcStats_CopyStats(npc.index, spawn_index);

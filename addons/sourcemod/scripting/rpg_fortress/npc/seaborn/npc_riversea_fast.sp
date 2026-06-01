@@ -94,9 +94,9 @@ methodmap RiverSeaFast < CClotBody
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		
-		npc.m_iBleedType = BLEEDTYPE_SEABORN;
+		npc.m_iBleedType = BLEEDTYPE_DWELLER;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
-		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
+		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 
 		f3_SpawnPosition[npc.index] = vecPos;
 

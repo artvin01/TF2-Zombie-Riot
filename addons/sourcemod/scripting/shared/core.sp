@@ -2620,7 +2620,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 		Building_Mounted[entity] = -1;
 		EntitySpawnToDefaultSiccerino(entity);
 		b_NpcIsTeamkiller[entity] = false;
-		IberiaEntityCreated(entity);
+		AlminaEntityCreated(entity);
 		f_HealDelayParticle[entity] = 0.0;
 		f_DelayAttackspeedPreivous[entity] = 1.0;
 		f_DelayAttackspeedPanicAttack[entity] = -1.0;
@@ -3023,8 +3023,8 @@ public void OnEntityCreated(int entity, const char[] classname)
 			OnManglerCreated(entity);
 		}
 #endif
-		else if(!StrContains(classname, "obj_dispenser") && 
-		!StrContains(classname, "obj_sentrygun") && 
+		else if(!StrContains(classname, "obj_dispenser") || 
+		!StrContains(classname, "obj_sentrygun") || 
 		!StrContains(classname, "obj_teleporter"))
 		{
 			//base tf2 buildings arent really supported for now
@@ -3281,10 +3281,10 @@ void CheckIfAloneOnServer(bool CountOnly = false)
 	for(int client=1; client<=MaxClients; client++)
 	{
 #if defined ZR 
-		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
+		if(IsClientInGame(client) && GetTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
 #endif
 #if defined RPG 
-		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client))
+		if(IsClientInGame(client) && GetTeam(client)==2 && !IsFakeClient(client))
 #endif
 		{
 			if(!b_AntiLateSpawn_Allow[client])
@@ -3326,7 +3326,7 @@ void CheckIfAloneOnServer(bool CountOnly = false)
 	}
 	for(int client=1; client<=MaxClients; client++)
 	{
-		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] == TEUTON_NONE)
+		if(IsClientInGame(client) && GetTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] == TEUTON_NONE)
 		{
 			//update clients
 			Store_ApplyAttribs(client);

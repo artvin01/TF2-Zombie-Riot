@@ -276,7 +276,7 @@ void PackaPunch_NPCDeath(int entity)
 		{
 			for(int i; i < 1; i++)
 			{
-				int other = NPC_CreateByName("npc_netherseaspewer", -1, pos, ang, team);
+				int other = NPC_CreateByName("npc_abyssspewer", -1, pos, ang, team);
 				if(other > MaxClients)
 				{
 					if(team != TFTeam_Red)

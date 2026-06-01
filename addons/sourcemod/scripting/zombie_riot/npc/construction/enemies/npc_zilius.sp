@@ -348,7 +348,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 			}
 			case 8:
 			{
-				CPrintToChatAll("{black}Zilius{default}: Iberians are the only ones I respect, Mazeat is an amalgam of failures.");
+				CPrintToChatAll("{black}Zilius{default}: Alminans are the only ones I respect, Mazeat is an amalgam of failures.");
 			}
 			case 9:
 			{

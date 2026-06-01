@@ -266,7 +266,7 @@ methodmap ToddHoward < CClotBody
 		}
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		if(StrContains(data, "seainfection") != -1)
-			npc.m_iBleedType = BLEEDTYPE_SEABORN;
+			npc.m_iBleedType = BLEEDTYPE_DWELLER;
 
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPSOUND_NORMAL;		
@@ -443,7 +443,7 @@ public void ToddHoward_ClotThink(int iNPC)
 			GetEntPropVector(Spawner_entity, Prop_Data, "m_vecOrigin", pos);
 			GetEntPropVector(Spawner_entity, Prop_Data, "m_angRotation", ang);
 		}
-		int spawn_index = NPC_CreateByName("npc_isharmla", -1, pos, ang, TFTeam_Blue);
+		int spawn_index = NPC_CreateByName("npc_abyss_leviathan", -1, pos, ang, TFTeam_Blue);
 		if(spawn_index > MaxClients)
 		{
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
@@ -1795,7 +1795,7 @@ bool ToddHowardForceTalk()
 			}
 			case 1:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: You have to understand, WE have a {blue}common enemy{default}, and that is {blue}Seaborn{default}.");
+				CPrintToChatAll("{lightblue}Todd Howard{default}: You have to understand, WE have a {blue}common enemy{default}, and that is {blue}Dweller{default}.");
 				i_TalkDelayCheck += 1;
 			}
 			case 2:
@@ -1815,7 +1815,7 @@ bool ToddHowardForceTalk()
 			}
 			case 5:
 			{
-				CPrintToChatAll("{lightblue}Todd Howard{default}: You can wield {blue}Seaborn's{default} weapons without succumbing to their corruption, from what i can see atleast...");
+				CPrintToChatAll("{lightblue}Todd Howard{default}: You can wield {blue}Dweller's{default} weapons without succumbing to their corruption, from what i can see atleast...");
 				i_TalkDelayCheck += 1;
 			}
 			case 6:

@@ -572,6 +572,7 @@ enum struct DungeonEnum
 				
 				
 				TeleportEntity(entity, this.Pos, this.Ang, NULL_VECTOR);
+				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", this.Scale);
 				
 				DispatchSpawn(entity);
 				SetEntityCollisionGroup(entity, 2);
@@ -590,7 +591,6 @@ enum struct DungeonEnum
 				if(this.Wear3[0])
 					GivePropAttachment(entity, this.Wear3);
 				
-				SetEntPropFloat(entity, Prop_Send, "m_flModelScale", this.Scale);
 				
 				SetVariantString(this.Idle);
 				AcceptEntityInput(entity, "SetDefaultAnimation", entity, entity);
@@ -2192,7 +2192,7 @@ public void Dungeon_Spawn_TempMegaBuff(int entity)
 }
 
 
-public void Dungeon_Spawn_AntiIberianTank(int entity)
+public void Dungeon_Spawn_AntiAlminanTank(int entity)
 {
 	char npc_classname[60];
 	NPC_GetPluginById(i_NpcInternalId[entity], npc_classname, sizeof(npc_classname));

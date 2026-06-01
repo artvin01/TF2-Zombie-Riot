@@ -256,6 +256,11 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			enemy.ExtraDamage *= 1.1;
 			//he doesnt really scale? i dont know what to do.
 			enemy.Health = RoundToNearest(float(enemy.Health) * 1.0); 
+			if(CurrentModifOn() == 4) // TURBOLENCES
+			{
+				enemy.ExtraDamage *= 0.90;
+				enemy.ExtraThinkSpeed *= 1.20;
+			}
 		}
 		case 10:
 		{

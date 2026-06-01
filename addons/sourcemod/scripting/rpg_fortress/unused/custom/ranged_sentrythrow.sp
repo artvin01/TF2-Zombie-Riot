@@ -91,7 +91,7 @@ public void Ability_SentryThrow(int client, int level, int weapon)
 	GetEntPropVector(client, Prop_Send, "m_vecOrigin", pos);
 	GetClientEyeAngles(client, ang);
 	pos[2] += 63;
-	int team = GetClientTeam(client);
+	int team = GetTeam(client);
 
 	vel[0] = Cosine(DegToRad(ang[0]))*Cosine(DegToRad(ang[1]))*1000.0;
 	vel[1] = Cosine(DegToRad(ang[0]))*Sine(DegToRad(ang[1]))*1000.0;
@@ -150,7 +150,7 @@ public Action _abilitysentrygrenade(Handle timer, int client)
 				SetEntProp(entity, Prop_Send, "m_iObjectType", view_as<int>(TFObject_Sentry));
 				SetEntProp(entity, Prop_Send, "m_iState", 1);
 
-				SetEntProp(entity, Prop_Send, "m_iTeamNum", GetClientTeam(client));
+				SetEntProp(entity, Prop_Send, "m_iTeamNum", GetTeam(client));
 				SetEntProp(entity, Prop_Send, "m_nSkin", 2);
 				SetEntProp(entity, Prop_Send, "m_iUpgradeLevel", 1);
 				SetEntProp(entity, Prop_Send, "m_bMiniBuilding", true);

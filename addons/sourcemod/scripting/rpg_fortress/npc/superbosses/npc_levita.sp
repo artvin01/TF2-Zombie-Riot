@@ -49,7 +49,7 @@ static const char g_RangedAttackSoundsSecondary[][] = {
 };
 
 
-//#define RUINA_LASER_LOOP_SOUND		"zombiesurvival/seaborn/loop_laser.mp3"
+//#define RUINA_LASER_LOOP_SOUND		"zombiesurvival/dweller/loop_laser.mp3"
 
 public void Levita_OnMapStart_NPC()
 {	

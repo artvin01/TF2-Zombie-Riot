@@ -756,7 +756,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 		damage *= Attributes_Get(weapon, 2, 1.0);
 		float EnemyVecPos[3]; WorldSpaceCenter(target, EnemyVecPos);
 		SDKHooks_TakeDamage(target, client, client, damage, DMG_CLUB, -1, damage_force, EnemyVecPos);
-		EmitSoundToAll(IRENE_KICKUP_1, client, _, 75, _, 0.60);
+		EmitSoundToAll(AMPHI_KICKUP_1, client, _, 75, _, 0.60);
 		float DistanceCheck[3];
 		GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", DistanceCheck);
 		spawnRing_Vectors(DistanceCheck, 50.0 * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 12.0, 6.1, 1);	

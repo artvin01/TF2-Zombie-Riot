@@ -248,7 +248,7 @@ static void ClotThink(int iNPC)
 		npc.m_flHealCooldownDo = GetGameTime(npc.index) + 0.5;
 		Almagest_DidHealDo = false;
 		int maxhealth = ReturnEntityMaxHealth(npc.index);
-		ExpidonsaGroupHeal(npc.index, 150.0, 99, float(maxhealth) / 20.0, 1.0, false,Expidonsa_OnlyHealSameIndex, AlmagestProximaBuff);
+		ExpidonsaGroupHeal(npc.index, 150.0, 99, float(maxhealth) / 40.0, 1.0, false,Expidonsa_OnlyHealSameIndex, AlmagestProximaBuff);
 		if(Almagest_DidHealDo)
 			DesertYadeamDoHealEffect(npc.index, 150.0);
 	}
@@ -336,7 +336,7 @@ int AlmagestProxima_SelfDefense(AlmagestProxima npc, float distance, float vecTa
 					if(!ShouldNpcDealBonusDamage(target))
 					{
 						//not to buildings
-						ApplyStatusEffect(target, target, "Pikeman's Slashes", 7.5);
+						ApplyStatusEffect(target, target, "Pikeman's Stabs", 7.5);
 						StatusEffects_PikemanDebuffAdd(target, 2);
 					}
 

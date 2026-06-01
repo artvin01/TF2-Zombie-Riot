@@ -78,7 +78,7 @@ void Gladiia_Enable(int client, int weapon)
 		}
 		default:
 		{
-			if(Store_IsWeaponFaction(client, weapon, Faction_Seaborn))
+			if(Store_IsWeaponFaction(client, weapon, Faction_Dweller))
 			{
 				if (HealingTimer[client] != null)
 				{
@@ -114,7 +114,7 @@ public Action Gladiia_TimerHealing(Handle timer, int client)
 			int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 			if(weapon != INVALID_ENT_REFERENCE)
 			{
-				if(Store_IsWeaponFaction(client, weapon, Faction_Seaborn))
+				if(Store_IsWeaponFaction(client, weapon, Faction_Dweller))
 				{
 					float amount = 0.0;
 					int elite = EliteLevel[GetHighestGladiiaClient()];
@@ -317,12 +317,12 @@ float Gladiia_OnTakeDamageSelf(int victim, int attacker, float damage, int damag
 	{
 		case 1:
 		{
-			if(i_BleedType[attacker] == BLEEDTYPE_SEABORN)
+			if(i_BleedType[attacker] == BLEEDTYPE_DWELLER)
 				return damage * 0.925;//0.85;
 		}
 		case 2:
 		{
-			if(i_BleedType[attacker] == BLEEDTYPE_SEABORN)
+			if(i_BleedType[attacker] == BLEEDTYPE_DWELLER)
 				return damage * 0.875;//0.75;
 		}
 		case 3:

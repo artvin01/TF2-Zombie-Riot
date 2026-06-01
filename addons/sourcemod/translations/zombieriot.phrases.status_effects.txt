@@ -177,13 +177,13 @@
 		"it"	"Diminuisce i danni inflitti di 25％, che si riducono nel tempo a 0％"
 		"ko"	"적에게 입히는 공격 피해량이 10％ 감소하고, 시간이 지날수록 점점 감소하여 최종적으로 공격 피해량 감소량이 0％까지 떨어집니다."
 	}
-	"Iberia's Anti Raid"
+	"Almina's Anti Raid"
 	{
-		"en"	"Iberia's Anti Raid"
-		"it"	"Anti Raid di Iberia"
-		"ko"	"이베리아의 레이드 대항마"
+		"en"	"Almina's Anti Raid"
+		"it"	"Anti Raid di Almina"
+		"ko"	"알미나의 레이드 대항마"
 	}
-	"Iberia's Anti Raid Desc"
+	"Almina's Anti Raid Desc"
 	{
 		"en"	"Increases Damage Taken by 10％"
 		"it"	"Aumenta i danni subiti del 10"
@@ -639,9 +639,9 @@
 	}
 	"Sea Presence Desc"
 	{
-		"en"	"Shows that youre standing in sea creep, you take continuous damage, get out.\n{green}If you are apart or one with the sea, you instead benefit from it..."
+		"en"	"Shows that youre standing in Abyssal Weed, you take continuous damage, get out.\n{green}If you are apart or one with the sea, you instead benefit from it..."
 		"it"	"Mostra che sei in mezzo al mare, subisci danni continui, esci.\n{green}Se sei separato o un tutt'uno con il mare, invece ne trai beneficio..."
-		"ko"	"현재 당신은 명흔 위에 있습니다. 영역 내에 있으면 계속해서 피해를 받게 됩니다. 당장 빠져나오세요.\n{green}만약 당신이 바다의 일원이라면, 대신 힘을 얻게 될 것입니다..."
+		"ko"	"현재 당신은 심연 해초 위에 있습니다. 영역 내에 있으면 계속해서 피해를 받습니다. 빠져나오세요.\n{green}만약 당신이 바다의 일원이라면, 대신 힘을 얻게 될 것입니다..."
 	}
 	"Sea Strength"
 	{
@@ -651,9 +651,9 @@
 	}
 	"Sea Strength Desc"
 	{
-		"en"	"Shows that youre standing in sea creep, you benefit from it\nIncreases damage dealt by 10％, Decreases damage taken by 10％."
+		"en"	"Shows that youre standing in Abyssal Weed, you benefit from it\nIncreases damage dealt by 10％, Decreases damage taken by 10％."
 		"it"	"Mostra che si è in presenza di mare agitato, se ne trae beneficio. \nAumenta i danni inflitti di 10％, diminuisce i danni subiti di 10％."
-		"ko"	"현재 당신은 명흔 위에 있습니다. 영역 내에 있으면 능력치가 증가합니다.\n공격 피해량이 10％ 증가하고, 받는 피해량이 10％ 감소합니다."
+		"ko"	"현재 당신은 심연 해초 위에 있습니다. 영역 내에 있으면 능력치가 증가합니다.\n공격 피해량이 10％ 증가하고, 받는 피해량이 10％ 감소합니다."
 	}
 	"Void Strength I"
 	{
@@ -723,7 +723,7 @@
 	}
 	"Squad Leader Desc"
 	{
-		"en"	"Reduces damage taken by 10％\nBoosts damage dealt by 10％\nBoosts NPC'S Movementspeed by 33％"
+		"en"	"Deal 10％ more damage, take 10％ less damage and NPCs gain 33％ speed."
 		"ko"	"받는 피해량이 10％ 감소합니다.\n공격 피해량이 10％ 증가합니다.\nNPC의 이동 속도가 33％ 증가합니다."
 		"it"	"Riduce i danni subiti del 10％\nAumenta i danni inflitti del 10％\nAumenta la velocità di movimento degli NPC del 33％"
 	}
@@ -751,16 +751,16 @@
 		"ko"	"받는 피해량이 25％ 증가합니다."
 		"it"	"Aumenta i danni subiti di 25％"
 	}
-	"Call To Victoria"
+	"Call To Vesta"
 	{
-		"en"	"Call To Victoria"
-		"ko"	"빅토리아의 부름"
+		"en"	"Call To Vesta"
+		"ko"	"베스타의 부름"
 		"it"	"Chiamata a Vittoria"
 	}
-	"Call To Victoria Desc"
+	"Call To Vesta Desc"
 	{
-		"en"	"Reduces damage taken by 20％\nBoosts damage dealt by 20％\nBoosts NPC'S Movementspeed by 15％\nAll Victorian enemeies gain extra abilities upon reciving this buff."
-		"ko"	"받는 피해량 20％ 감소\n공격 피해량 20％ 증가\nNPC의 이동 속도 15％ 증가\n해당 버프를 보유한 빅토리아 계열 적들은 추가 능력을 얻습니다."
+		"en"	"Reduces damage taken by 20％\nBoosts damage dealt by 20％\nBoosts NPC'S Movementspeed by 15％\nAll Vestan enemeies gain extra abilities upon reciving this buff."
+		"ko"	"받는 피해량 20％ 감소\n공격 피해량 20％ 증가\nNPC의 이동 속도 15％ 증가\n해당 버프를 보유한 베스타 계열 적들은 추가 능력을 얻습니다."
 		"it"	"Riduce i danni subiti del 20％\nAumenta i danni inflitti del 20％\nAumenta la velocità di movimento degli NPC del 15％\nTutti i nemici vittoriani ottengono abilità extra quando ricevono questo buff."
 	}
 	"Taurine"
@@ -801,7 +801,7 @@
 	}
 	"False Therapy Desc"
 	{
-		"en"	"Reduces damage taken by 40％\nBoosts damage dealt by 50％\nBoosts NPC'S Movementspeed by 25％"
+		"en"	"Deal 50％ more damage, take 40％ less damage and NPCs gain 25％ speed."
 		"it"	"Riduce i danni subiti del 40％\nAumenta i danni inflitti del 50％\nAumenta la velocità di movimento degli NPC del 25％"
 		"ko"	"받는 피해량이 40％ 감소합니다.\n공격 피해량이 50％ 증가합니다.\nNPC의 이동 속도가 25％ 증가합니다."
 	}
@@ -829,12 +829,12 @@
 		"it"	"Aumenta i danni inflitti di 12,5％\nDiminuisce i danni subiti di 25％\nAumenta la velocità di movimento degli NPC di 50％\nAumenta la velocità di attacco/ricarica e la velocità di guarigione di 25％"
 		"ko"	"공격 피해량이 12.5％ 증가합니다.\n받는 피해량이 25％ 감소합니다.\nNPC의 이동 속도가 50％ 증가합니다.\n공격 속도, 재장전 속도, 치유 속도가 25％ 증가합니다."
 	}
-	"Pikeman's Slashes"
+	"Pikeman's Stabs"
 	{
-		"en"	"Pikeman's Slashes"
-		"ko"	"장창병의 참격"
+		"en"	"Pikeman's Stabs"
+		"ko"	"장창병의 찌르기"
 	}
-	"Pikeman's Slashes Desc"
+	"Pikeman's Stabs Desc"
 	{
 		"en"	"Count increases by 1 for each spearmen hit taken\nAt Max hits taken, all spearmen enemies will deal 300％ more damage to you."
 		"ko"	"창병에게 피해를 받을 때마다 1회 누적\n최대까지 누적 시, 모든 창병 계열 적이 보유자에게 가하는 피해가 300％ 증가"
@@ -1349,21 +1349,21 @@
 	}
 	"Castle Breaking Power Desc"
 	{
-		"en"	"Increases Victorian weapons damage by 10％"
+		"en"	"Increases Vestan weapons damage by 10％"
 		"it"	"Aumenta i danni delle armi vittoriane del 10％"
-		"ko"	"''빅토리아'' 진영 무기들의 피해량이 10％ 증가합니다."
+		"ko"	"''베스타'' 진영 무기들의 피해량이 10％ 증가합니다."
 	}
-	"Victorian Launcher's Call"
+	"Vestan Launcher's Call"
 	{
-		"en"	"Victorian Launcher's Call"
+		"en"	"Vestan Launcher's Call"
 		"it"	"Il richiamo del lanciatore vittoriano"
-		"ko"	"빅토리아 런처의 부름"
+		"ko"	"베스타 런처의 부름"
 	}
-	"Victorian Launcher's Call Desc"
+	"Vestan Launcher's Call Desc"
 	{
-		"en"	"Increases Victorian Weapons Explosive Radius by 10％"
+		"en"	"Increases Vestan Weapons Explosive Radius by 10％"
 		"it"	"Aumenta il raggio di esplosione delle armi vittoriane del 10％"
-		"ko"	"''빅토리아'' 진영 무기들의 폭발 범위가 10％ 증가합니다."
+		"ko"	"''베스타'' 진영 무기들의 폭발 범위가 10％ 증가합니다."
 	}
 	"Explosault Rifle Buff"
 	{
@@ -1372,8 +1372,8 @@
 	}
 	"Explosault Rifle Buff Desc"
 	{
-		"en"	"''Victoria'' faction will have 10％ less blast damage reduce per target"
-		"ko"	"''빅토리아'' 진영 무기들의 폭발 타겟당 피해량 감소가 10％ 완화됩니다."
+		"en"	"''Vesta'' faction will have 10％ less blast damage reduce per target"
+		"ko"	"''베스타'' 진영 무기들의 폭발 타겟당 피해량 감소가 10％ 완화됩니다."
 	}
 	"Tinkering Curiosity"
 	{
@@ -1446,13 +1446,13 @@
 		"it"	"Ignora."
 		"ko"	"이 텍스트는 무시하십시오."
 	}
-	"Victorian Launcher Overdrive"
+	"Vestan Launcher Overdrive"
 	{
 		"en"	"Ignore"
 		"it"	"Ignora"
 		"ko"	"이 텍스트는 무시하십시오."
 	}
-	"Victorian Launcher Overdrive Desc"
+	"Vestan Launcher Overdrive Desc"
 	{
 		"en"	"Ignore"
 		"it"	"Ignora"
@@ -1606,13 +1606,13 @@
 		"it"	"Aumenta la velocità di attacco/ricarica e la velocità di guarigione del 12％"
 		"ko"	"공격 속도, 재장전 속도, 치유 속도가 12％ 증가합니다."
 	}
-	"Iberia Light"
+	"Almina Light"
 	{
-		"en"	"Iberia Light"
-		"it"	"Luce Iberia"
-		"ko"	"이베리아의 빛"
+		"en"	"Almina Light"
+		"it"	"Luce Almina"
+		"ko"	"알미나의 빛"
 	}
-	"Iberia Light Desc"
+	"Almina Light Desc"
 	{
 		"en"	"Increases attack/reload speed & healrate by 10％"
 		"it"	"Aumenta la velocità di attacco/ricarica e la velocità di guarigione del 10％"
@@ -1642,29 +1642,29 @@
 		"it"	"Rigenera lentamente l'armatura di 1％ al secondo, fino a metà dell'armatura stessa"
 		"ko"	"매 초마다 아머를 1％씩 회복합니다. 최대 아머의 50％까지 회복할 수 있습니다.\n{yellow}최근에 피해를 받았다면, 이 효과가 0.25％로 감소합니다."
 	}
-	"Nethersea Antidote"
+	"Abyss Antidote"
 	{
-		"en"	"Nethersea Antidote"
-		"it"	"Antidoto di Nethersea"
-		"ko"	"명흔 항독제"
+		"en"	"Abyss Antidote"
+		"it"	"Antidoto di Abyss"
+		"ko"	"심연 해초 항독제"
 	}
-	"Nethersea Antidote Desc"
+	"Abyss Antidote Desc"
 	{
-		"en"	"Reduces the damage caused by nethersea brands by 80％"
-		"it"	"Riduce i danni causati dai marchi nethersea dell'80％"
-		"ko"	"명흔으로 받는 피해가 80％ 감소합니다."
+		"en"	"Reduces the damage caused by abyssal weeds by 80％"
+		"it"	"Riduce i danni causati dai marchi abyss dell'80％"
+		"ko"	"심연 해초로 받는 피해가 80％ 감소합니다."
 	}
-	"Victoria Nuke"
+	"Vesta Nuke"
 	{
-		"en"	"Victoria Nuke"
+		"en"	"Vesta Nuke"
 		"it"	"Bomba Atomica Vittoria"
-		"ko"	"빅토리아 핵"
+		"ko"	"베스타 핵"
 	}
-	"Victoria Nuke Desc"
+	"Vesta Nuke Desc"
 	{
-		"en"	"Launches a Victoria Nuke when full.\nRemoves Locked On from all enemies when at a certain amount."
-		"it"	"Lancia una Victoria Nuke quando è piena.\nRimuove Locked On da tutti i nemici quando raggiunge una certa quantità."
-		"ko"	"이것이 꽉 차면 빅토리아 핵이 발사됩니다.\n일정 수치 이상이 되면, 모든 적에게 부여된 목표 고정 효과를 제거합니다."
+		"en"	"Launches a Vesta Nuke when full.\nRemoves Locked On from all enemies when at a certain amount."
+		"it"	"Lancia una Vesta Nuke quando è piena.\nRimuove Locked On da tutti i nemici quando raggiunge una certa quantità."
+		"ko"	"이것이 꽉 차면 베스타 핵이 발사됩니다.\n일정 수치 이상이 되면, 모든 적에게 부여된 목표 고정 효과를 제거합니다."
 	}
 	"Locked On"
 	{
@@ -1674,9 +1674,9 @@
 	}
 	"Locked On Desc"
 	{
-		"en"	"The Victoria Nuke will always target the victim."
-		"it"	"La Victoria Nuke si rivolge sempre alla vittima."
-		"ko"	"빅토리아 핵은 항상 이 효과가 부여된 대상을 타겟으로 삼습니다."
+		"en"	"The Vesta Nuke will always target the victim."
+		"it"	"La Vesta Nuke si rivolge sempre alla vittima."
+		"ko"	"베스타 핵은 항상 이 효과가 부여된 대상을 타겟으로 삼습니다."
 	}
 	"Shield"
 	{
@@ -1702,13 +1702,13 @@
 		"it"	"Cambia casualmente i danni e gli elementi dell'HUD a seconda del livello."
 		"ko"	"보유한 혼돈 침식도에 비례하여 피해량과 허드 요소가 무작위로 변경됩니다."
 	}
-	"Iberia Morale Boost"
+	"Almina Morale Boost"
 	{
-		"en" 	"Iberia Morale Boost"
-		"it"	"Aumento del morale di Iberia"
-		"ko"	"이베리아 사기 증진"
+		"en" 	"Almina Morale Boost"
+		"it"	"Aumento del morale di Almina"
+		"ko"	"알미나 사기 증진"
 	}
-	"Iberia Morale Boost Desc"
+	"Almina Morale Boost Desc"
 	{
 		"en"	"Increases damage, speed and resistances.\nThis dependant on how high the motivation is, 1 being the lowest, 4 being the highest.\nWith each tier giving much more."
 		"it"	"Aumenta i danni, la velocità e le resistenze.\nQuesto dipende da quanto è alta la motivazione, 1 è la più bassa, 4 è la più alta.\nCon ogni livello che dà molto di più."
@@ -1829,25 +1829,25 @@
 		"it"	"Aumenta i danni subiti del 15％\nRallenta i gli NPC del 15％"
 		"ko"	"받는 피해량이 15％ 증가합니다.\nNPC의 이동 속도를 15％ 감소시킵니다."
 	}
-	"Debt Causing Dereliction"
+	"Debt-Causing Dereliction"
 	{
-		"en" 	"Debt Causing Dereliction"
+		"en" 	"Debt-Causing Dereliction"
 		"it"	"Debito che provoca inadempienza"
 		"ko" 	"빚쟁이의 퇴락"
 	}
-	"Debt Causing Dereliction Desc"
+	"Debt-Causing Dereliction Desc"
 	{
 		"en" 	"Increases Damage Taken by 20％"
 		"it"	"Aumenta i danni subiti di 20％"
 		"ko" 	"받는 피해량이 20％ 증가합니다."
 	}
-	"Headache Incuding Dereliction"
+	"Headache-Inducing Dereliction"
 	{
-		"en" "Headache Incuding Dereliction"
+		"en" "Headache-Inducing Dereliction"
 		"it"	"Mal di testa da deresponsabilizzazione"
 		"ko" 	"퇴락의 두통"
 	}
-	"Headache Incuding Dereliction Desc"
+	"Headache-Inducing Dereliction Desc"
 	{
 		"en"	"Increases Damage Taken by 30％"
 		"it"	"Aumenta i danni subiti del 30％"
@@ -1865,13 +1865,13 @@
 		"it"	"Aumenta i danni subiti del 20％\nRallenta gli NPC del 25％"
 		"ko"	"받는 피해량이 20％ 증가합니다.\nNPC의 이동 속도를 25％ 감소시킵니다."
 	}
-	"Therapists Aura"
+	"Therapist's Aura"
 	{
-		"en" 	"Therapists Aura"
+		"en" 	"Therapist's Aura"
 		"it"	"Aura dei terapeuti"
 		"ko" 	"심리치료사의 오라"
 	}
-	"Therapists Aura Desc"
+	"Therapist's Aura Desc"
 	{
 		"en"	"Slows NPC'S by 60％"
 		"it"	"Rallenta gli NPC del 60"
@@ -1889,13 +1889,13 @@
 		"it"	"Aumenta i danni subiti del 25％\nRallenta i gli NPC del 35％"
 		"ko"	"받는 피해량이 25％ 증가합니다.\nNPC의 이동 속도를 35％ 감소시킵니다."
 	}
-	"Caffinated Dereliction"
+	"Caffeinated Dereliction"
 	{
-		"en" 	"Caffinated Dereliction"
+		"en" 	"Caffeinated Dereliction"
 		"it"	"Derelitto caffinato"
 		"ko" 	"카페인의 퇴락"
 	}
-	"Caffinated Dereliction Desc"
+	"Caffeinated Dereliction Desc"
 	{
 		"en"	"Increas damage taken by 25％"
 		"it"	"Aumenta i danni subiti di 25％"
@@ -2096,7 +2096,7 @@
 	}
 	"Hectic Therapy Desc"
 	{
-		"en" 	"Increases attack/reload speed & healrate and reloadspeed by 20％"
+		"en" 	"Increases attack/reload speed and heal rate by 20％."
 		"it"	"Aumenta la velocità di attacco/ricarica e la velocità di guarigione e ricarica del 20％"
 		"ko" 	"공격 속도, 재장전 속도, 치유 속도가 20％ 증가합니다."
 	}
@@ -2108,7 +2108,7 @@
 	}
 	"Physical Therapy Desc"
 	{
-		"en" 	"Deal 20％ More damage."
+		"en" 	"Deal 20％ more damage."
 		"it"	"Infliggere 20％ danni in più."
 		"ko" 	"공격 피해량이 20％ 증가합니다."
 	}
@@ -2132,7 +2132,7 @@
 	}
 	"Overall Therapy Desc"
 	{
-		"en" 	"Deal 10％ more damage, and take 10％ less damage, NPCS gain 20％ Speed"
+		"en" 	"Deal 10％ more damage, take 10％ less damage and NPCs gain 20％ speed."
 		"it"	"Infligge 10％ danni in più e subisce 10％ danni in meno, i gli NPC guadagnano 20％ velocità"
 		"ko" 	"공격 피해량이 10％ 증가하고, 받는 피해량이 10％ 감소합니다. NPC의 이동 속도가 20％ 증가합니다."
 	}
@@ -2144,7 +2144,7 @@
 	}
 	"Powering Therapy Desc"
 	{
-		"en" 	"5％ resistance and 15％ damage dealt"
+		"en" 	"Deal 15％ more damage and take 5％ less damage."
 		"it"	"5％ di resistenza e 15％ di danni inflitti"
 		"ko" 	"피해 저항력이 5％ 증가하고 공격 피해량이 15％ 증가합니다."
 	}
@@ -2156,19 +2156,19 @@
 	}
 	"Calling Therapy Desc"
 	{
-		"en" 	"15％ resistance and 5％ damage dealt, 10％ more speed for NPCS"
+		"en" 	"Deal 15％ more damage, take 5％ less damage and NPCs gain 10％ speed."
 		"it"	"15％ resistenza e 5％ danni inflitti, 10％ velocità in più per i gli NPC"
 		"ko" 	"피해 저항력이 15％ 증가하고 공격 피해량이 5％ 증가합니다. NPC의 이동 속도가 10％ 증가합니다."
 	}
-	"Caffinated Therapy"
+	"Caffeinated Therapy"
 	{
-		"en" 	"Caffinated Therapy"
+		"en" 	"Caffeinated Therapy"
 		"it"	"Terapia con caffeina"
 		"ko" 	"카페인 치료술"
 	}
-	"Caffinated Therapy Desc"
+	"Caffeinated Therapy Desc"
 	{
-		"en" 	"25％ Resistance, 25％ more damage dealt, and gain 20％ Speed for NPCS"
+		"en" 	"Deal 25％ more damage, take 25％ less damage and NPCs gain 20％ speed."
 		"it"	"25％ Resistenza, 25％ danni inflitti in più e guadagno di 20％ Velocità per gli NPC"
 		"ko" 	"피해 저항력이 25％ 증가하고 공격 피해량이 25％ 증가합니다. NPC의 이동 속도가 20％ 증가합니다."
 	}
@@ -2180,7 +2180,7 @@
 	}
 	"Regenerating Therapy Desc"
 	{
-		"en" 	"10％ Resistance, and deal 10％ more damage, gain slow HP regen."
+		"en" 	"Deal 10％ more damage, take 10％ less damage and gain slow HP regen."
 		"it"	"10％ Resistenza e infliggere 10％ danni in più, guadagnare una lenta rigenerazione di HP."
 		"ko" 	"피해 저항력이 10％ 증가하고 공격 피해량이 10％ 증가합니다. 초당 체력이 천천히 회복됩니다."
 	}

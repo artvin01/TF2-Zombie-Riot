@@ -5738,6 +5738,7 @@ void Store_ApplyAttribs(int client)
 	//Get the previous count to get back all their stats.
 	int clientid = GetSteamAccountID(client);
 	WeaponSpawn_Reapply(client, client, clientid);
+	StatusEffect_ApplySpeedPlayer(client);
 }
 
 void Store_GiveAll(int client, int health, bool removeWeapons = false)
@@ -6597,13 +6598,13 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_StarShooter(client, entity);
 		Enable_Passanger(client, entity);
 		Enable_MG42(client, entity);
-		Reset_stats_Irene_Singular_Weapon(entity);
+		Reset_stats_Amphi_Singular_Weapon(entity);
 		Reset_stats_MG42_Singular_Weapon(entity);
 		Activate_Beam_Wand_Pap(client, entity);
 		Activate_Yamato(client, entity);
 		Activate_Fantasy_Blade(client, entity);
 		Activate_Quincy_Bow(client, entity);
-		Enable_Irene(client, entity);
+		Enable_Amphi(client, entity);
 		Enable_LappLand(client, entity);
 		Enable_PHLOG(client, entity);
 		Enable_OceanSong(client, entity);
@@ -6652,7 +6653,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		WeaponNailgun_Enable(client, entity);
 		Blacksmith_Enable(client, entity);
 		Enable_West_Weapon(client, entity);
-		Enable_Victorian_Launcher(client, entity);
+		Enable_Vestan_Launcher(client, entity);
 		Enable_Chainsaw(client, entity);
 		//Activate_Cosmic_Weapons(client, entity);
 		Merchant_Enable(client, entity);

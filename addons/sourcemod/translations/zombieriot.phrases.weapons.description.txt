@@ -138,17 +138,17 @@
 		"ko"	"엑스피돈사"
 		"it"	"Expidonsa"
 	}
-	"Kazimierz"
+	"Grunwald"
 	{
-		"en"	"Kazimierz"
-		"ko"	"카시미어"
-		"it"	"Kazimierz"
+		"en"	"Grunwald"
+		"ko"	"그룬발트"
+		"it"	"Grunwald"
 	}
-	"Victoria"
+	"Vesta"
 	{
-		"en"	"Victoria"
-		"ko"	"빅토리아"
-		"it"	"Victoria"
+		"en"	"Vesta"
+		"ko"	"베스타"
+		"it"	"Vesta"
 	}
 	"Psychic Warlord"
 	{
@@ -156,11 +156,11 @@
 		"ko"	"사이킥 워로드"
 		"it"	"Signore della guerra psichico"
 	}
-	"Seaborn"
+	"Dweller"
 	{
-		"en"	"Seaborn"
-		"ko"	"시본"
-		"it"	"Seaborn"
+		"en"	"Dweller"
+		"ko"	"드웰러"
+		"it"	"Dweller"
 	}
 	
 
@@ -1074,25 +1074,25 @@
 	}
 	"Fractured Ark Pap 4"
 	{
-		"en"	"-Increased damage\n-reduced attackspeed\n-Abilities change:\n-always fire ranged projectile if no melee hit is done\n-abilties change:\n-M2 pulls enemies to you with damage\n-Faction changes to ''seaborn''"
-		"it"	"Aumento del danno.\nAttacco a distanza e velocità di fuoco più bassa.\nL'abilità cambia in tirare, infliggendo un alto numero di danni.\nFazione cambiata in Seaborn.\nIl proiettile a distanza infligge meno danni del corpo a corpo e infligge danni a distanza."
-		"ko"	"-피해량 증가\n-공격 속도 감소\n-능력 변경: 근접 공격이 적중하지 않으면 원거리 투사체 발사\n-능력 변경:\n우클릭이 피해를 주고 대상을 플레이어에게 끌어당김\n-''시본'' 진영이 추가됨"
+		"en"	"-Increased damage\n-reduced attackspeed\n-Abilities change:\n-always fire ranged projectile if no melee hit is done\n-abilties change:\n-M2 pulls enemies to you with damage\n-Faction changes to ''dweller''"
+		"it"	"Aumento del danno.\nAttacco a distanza e velocità di fuoco più bassa.\nL'abilità cambia in tirare, infliggendo un alto numero di danni.\nFazione cambiata in Dweller.\nIl proiettile a distanza infligge meno danni del corpo a corpo e infligge danni a distanza."
+		"ko"	"-피해량 증가\n-공격 속도 감소\n-능력 변경: 근접 공격이 적중하지 않으면 원거리 투사체 발사\n-능력 변경:\n우클릭이 피해를 주고 대상을 플레이어에게 끌어당김\n-''드웰러'' 진영이 추가됨"
 	}
 	"Fractured Ark Pap 5"
 	{
-		"en"	"-Increased damage\n-all ''Seaborn'' faction weapons gain 7.5％ damage resistance from Seaborn enemies and gain 1.5％ max health per second\n-Abiltiy charges faster and deals more damage.\n-More projectile range."
-		"fr"	"Tout arme «Chasseur des Abîmes» reçoivent une résistance de 7.5％ contre les ennemis Seaborn et reçoivent des soins de 1.5％ max santé par seconde.\nAbilité se recharge plus rapidement et inflige 180％ des dégats.\nVos projectiles durent plus longtemps."
+		"en"	"-Increased damage\n-all ''Dweller'' faction weapons gain 7.5％ damage resistance from Dweller enemies and gain 1.5％ max health per second\n-Abiltiy charges faster and deals more damage.\n-More projectile range."
+		"fr"	"Tout arme «Chasseur des Abîmes» reçoivent une résistance de 7.5％ contre les ennemis Dweller et reçoivent des soins de 1.5％ max santé par seconde.\nAbilité se recharge plus rapidement et inflige 180％ des dégats.\nVos projectiles durent plus longtemps."
 		"chi"	"所有''深海猎人''武器对所有海嗣获得7.5％伤害抗性，每秒恢复1.5％最高血上限。\n技能冷却降低，造成180％伤害。\n正常攻击的投射物有更长的生命期。"
-		"it"	"Tutte le armi della fazione Seaborn ottengono una resistenza ai danni dei nemici Seaborn pari a 7,5％ e guadagnano 1,5％ di salute massima al secondo.\nL'abilità ora si carica più velocemente e infligge 180％ di danni.\nL'attacco principale ha una durata maggiore del proiettile."
-		"ko"	"-피해량 증가\n-모든 ''시본'' 진영 무기가 시본 계열 적에게서 받는 피해 7.5％ 감소 및 초당 최대 체력의 1.5％ 만큼 체력 회복.\n-능력이 더 빠르게 충전되며 피해량 증가.\n-투사체 사거리 증가"
+		"it"	"Tutte le armi della fazione Dweller ottengono una resistenza ai danni dei nemici Dweller pari a 7,5％ e guadagnano 1,5％ di salute massima al secondo.\nL'abilità ora si carica più velocemente e infligge 180％ di danni.\nL'attacco principale ha una durata maggiore del proiettile."
+		"ko"	"-피해량 증가\n-모든 ''드웰러'' 진영 무기가 드웰러 계열 적에게서 받는 피해 7.5％ 감소 및 초당 최대 체력의 1.5％ 만큼 체력 회복.\n-능력이 더 빠르게 충전되며 피해량 증가.\n-투사체 사거리 증가"
 	}
 	"Fractured Ark Pap 6"
 	{
-		"en"	"-Increased damage\n-all ''Seaborn'' faction weapons gain 12.5％ damage resistance from Seaborn enemies and gain 2.5％ max health per second\n-Abiltiy charges faster and holds 3 charges and deals more damage.\n-bonus damage to light enemies with pull."
-		"fr"	"Tout arme «Chasseur des Abîmes» reçoivent une résistance de 12.5％ contre les ennemis Seaborn et reçoivent des soins de 2.5％ max santé par seconde.\nAbilité à une troisième charge et inflige 190％ des dégats.\nDégats améliorés contre les ennemis légers."
+		"en"	"-Increased damage\n-all ''Dweller'' faction weapons gain 12.5％ damage resistance from Dweller enemies and gain 2.5％ max health per second\n-Abiltiy charges faster and holds 3 charges and deals more damage.\n-bonus damage to light enemies with pull."
+		"fr"	"Tout arme «Chasseur des Abîmes» reçoivent une résistance de 12.5％ contre les ennemis Dweller et reçoivent des soins de 2.5％ max santé par seconde.\nAbilité à une troisième charge et inflige 190％ des dégats.\nDégats améliorés contre les ennemis légers."
 		"chi"	"所有''深海猎人''武器对所有海嗣获得12.5％伤害抗性，每秒恢复2.5％最高血上限。\n技能现有三次充能，造成190％伤害。\n所有攻击对轻型敌人造成更多伤害。"
-		"it"	"Tutte le armi della fazione Seaborn ora ottengono una resistenza ai danni dei nemici Seaborn pari a 12,5％ e guadagnano 2,5％ di salute massima al secondo.\nL'abilità ora ha una terza carica e infligge 190％ di danni.\nGli attacchi infliggono danni bonus ai nemici leggeri."
-		"ko"	"-피해량 증가\n-모든 ''시본'' 진영 무기가 시본 계열 적에게서 받는 피해 12.5％ 감소 및 초당 최대 체력의 2.5％ 만큼 체력 회복.\n-능력이 더 빠르게 충전되며 최대 3회까지 저장 가능, 능력 피해량 증가\n- 끌어당기기가 무게가 가벼운 대상에게 추가 피해를 가함"
+		"it"	"Tutte le armi della fazione Dweller ora ottengono una resistenza ai danni dei nemici Dweller pari a 12,5％ e guadagnano 2,5％ di salute massima al secondo.\nL'abilità ora ha una terza carica e infligge 190％ di danni.\nGli attacchi infliggono danni bonus ai nemici leggeri."
+		"ko"	"-피해량 증가\n-모든 ''드웰러'' 진영 무기가 드웰러 계열 적에게서 받는 피해 12.5％ 감소 및 초당 최대 체력의 2.5％ 만큼 체력 회복.\n-능력이 더 빠르게 충전되며 최대 3회까지 저장 가능, 능력 피해량 증가\n- 끌어당기기가 무게가 가벼운 대상에게 추가 피해를 가함"
 	}
 	"Fractured Ark Pap 7"
 	{
@@ -1104,11 +1104,11 @@
 	}
 	"Fractured Ark Pap 8"
 	{
-		"en"	"-Increased damage\n-all ''Seaborn'' faction weapons gain 15.0％ damage resistance from Seaborn enemies and gain 3.5％ max health per second\n-Ability deals more damage the further the enemy is pulled."
-		"fr"	"Tout arme «Chasseur des Abîmes» reçoivent une résistance de 15％ contre les ennemis Seaborn et reçoivent des soins de 3.5％ max santé par seconde.\nDégats contre les ennemis attirés s'améliorent en fonction de la distance de laquelle ils sont attirés."
+		"en"	"-Increased damage\n-all ''Dweller'' faction weapons gain 15.0％ damage resistance from Dweller enemies and gain 3.5％ max health per second\n-Ability deals more damage the further the enemy is pulled."
+		"fr"	"Tout arme «Chasseur des Abîmes» reçoivent une résistance de 15％ contre les ennemis Dweller et reçoivent des soins de 3.5％ max santé par seconde.\nDégats contre les ennemis attirés s'améliorent en fonction de la distance de laquelle ils sont attirés."
 		"chi"	"所有''深渊猎人''武器对所有海嗣获得15.0％伤害抗性，每秒恢复3.5％最高血上限。\n技能现有三次充能，造成190％伤害。\n技能伤害根据距离增加。"
-		"it"	"Tutte le armi della fazione Seaborn ora ottengono una resistenza ai danni di 15％ da tutti i nemici e guadagnano 3,5％ di salute massima al secondo.\nAbilità ora infligge danni a distanza proporzionali alla distanza a cui è stato tirato il nemico."
-		"ko"	"-피해량 증가\n-모든 ''시본'' 진영 무기가 시본 계열 적에게서 받는 피해 15％ 감소 및 초당 최대 체력의 3.5％ 만큼 체력을 회복.\n이제 능력이 적이 끌려온 거리에 비례하여 더 높은 피해를 입힘"
+		"it"	"Tutte le armi della fazione Dweller ora ottengono una resistenza ai danni di 15％ da tutti i nemici e guadagnano 3,5％ di salute massima al secondo.\nAbilità ora infligge danni a distanza proporzionali alla distanza a cui è stato tirato il nemico."
+		"ko"	"-피해량 증가\n-모든 ''드웰러'' 진영 무기가 드웰러 계열 적에게서 받는 피해 15％ 감소 및 초당 최대 체력의 3.5％ 만큼 체력을 회복.\n이제 능력이 적이 끌려온 거리에 비례하여 더 높은 피해를 입힘"
 	}
 	"Fractured Ark Pap 9"
 	{
@@ -1467,19 +1467,19 @@
 	
 	"Ranged Spike Layer Desc"
 	{
-		"en"	"-Spikes that stay forever until its stepped on\n-Scales with builder upgrades.\n-Press M2 Twice while looking up to pick up all spikes\n-Press m2 on a spike to pick that one up."
+		"en"	"-Spikes that stay forever until its stepped on\n-Scales with builder upgrades.\n-Press M2 Twice while looking up to pick up all spikes\n-Press m2 on a spike to pick that one up.\n-Generates barrack resources on hit (scales with repair upgrades)."
 		"fr"	"Les dégats des piques s'améliorent en fonction des dégats infligés par votre Mitrailleuse.\nPas affecté par les améliorations dégats de la boutique.\nRegardez vers le haut et appuyez sur M2 pour ramasser tous vos piques."
 		"chi"	"与布哨伤害同步升级，不受武器升级影响。\n向上看时双击M2回收所有地刺。"
 		"it"	"Più danni alla sentinella si hanno, più danni fa quest'arma.\nI potenziamenti dell'arma, come i danni, non influiscono su questo aspetto.\nPremere due volte m2 mentre si guarda in alto per raccogliere tutti gli spuntoni in una volta sola."
-		"ko"	"-누군가가 밟기 전까지 영구적으로 지속되는 가시를 설치\n-건축가 개선에 따라서 피해량 증가\n가시를 보며 M2를 누르면 그 가시를 회수\n위쪽을 보면서 M2를 2번 누르면 모든 가시를 전부 회수함."
+		"ko"	"-누군가가 밟기 전까지 영구적으로 지속되는 가시를 설치\n-건축가 개선에 따라서 피해량 증가\n가시를 보며 M2를 누르면 그 가시를 회수\n위쪽을 보면서 M2를 2번 누르면 모든 가시를 전부 회수함.\n-적중 시 배럭 자원을 생성(수리 개선에 따라서 증가)"
 	}
 	
 	"Aresenal's Tripmine Layer Desc"
 	{
-		"en"	"-Tripmines that when enemy trips on them, explodes\n-Hafe armtime, take 1 second to ramp up to full damage once placed.\n-Scales with builder upgrades.\n-Press M2 Twice while looking up to pick up all spikes\n-Press m2 on a spike to pick that one up."
+		"en"	"-Tripmines that when enemy trips on them, explodes\n-Have armtime, deal full damage after 1 second.\n-Scales with builder upgrades, generates barrack resources on hit\n-Press M2 Twice while looking up to pick up all spikes\n-Press m2 on a spike to pick it up."
 		"fr"	"Les dégats des mines s'améliorent en fonction des dégats infligés par votre Mitrailleuse.\nPas affecté par les améliorations dégats de la boutique.\nRegardez vers le haut et appuyez sur M2 pour ramasser tous vos mines.\nLes mines s'arment après 0.5 secondes, et prennent 1 seconde pour infliger le maximum de dégats."
 		"it"	"Più danni da sentinella si hanno, più danni fa quest'arma.\nI potenziamenti dell'arma, come i danni, non influiscono su questo aspetto.\nPremere due volte m2 mentre si guarda in alto per raccogliere tutti gli spuntoni in una volta sola.\nArma dopo 0,5 secondi e si scalda fino a raggiungere il massimo dei danni dopo 1 secondo."
-		"ko"	"-적이 건드리면 폭발하는 지뢰 설치\n-지뢰는 설치되고 0.5초 후에 작동하며, 1초가 지나야 온전한 피해를 줄 수 있음\n-위쪽을 보면서 우클릭을 2번 누르면 모든 지뢰를 전부 회수\n-건축가 개선에 따라서 피해량 증가"
+		"ko"	"-적이 건드리면 폭발하는 지뢰 설치\n-지뢰는 설치되고 0.5초 후에 작동하며, 1초가 지나야 온전한 피해를 줄 수 있음\n-지뢰를 보면서 우클릭 시 지뢰를 회수\n-위쪽을 보면서 우클릭을 2번 누르면 모든 지뢰를 전부 회수\n-건축가 개선에 따라서 피해량이 증가하며, 적중 시 배럭 자원을 생성"
 	}
 	"Aresenal's Tripmine Layer Pap Desc"
 	{
@@ -1532,12 +1532,12 @@
 	
 	"Builders Axe Desc"
 	{
-		"en"	"-melee axe that scales with builder damage.\n-M2 to Lunge (must look at enemy) and for the next attack to deal 12x the damage.\nYou need to have enough builder upgrades for this to work."
+		"en"	"-melee axe that scales with builder damage.\n-M2 to Lunge (must look at enemy) and for the next attack to deal 12x the damage.\nYou need to have enough builder upgrades for this to work.\n-Generates barrack resources on hit (scales with repair upgrades)."
 		"es"	"Un hacha que escala con el daño de constructor.\nM2: Embiste hacia adelante, el siguiente golpe hara un +1200％ de daño extra.\nNecesitas suficientes mejoras de constructor para que funcione."
 		"fr"	"Dégats corps-à-corps s'améliorent avec vos Améliorations Constructeur.\nAppuyez M2 pour vous lancer et améliorer les dégats de cet arme 12x.\nAméliorations Construction requis."
 		"chi"   "一个近战扳手，随建造者伤害缩放。\nM2为突刺，下一次攻击将造成12倍伤害。你需要足够的金属才能让它工作。"
 		"it"	"Un'ascia da mischia che scala con i danni del costruttore.\nM2 per affondare e per far sì che l'attacco successivo infligga 12 volte i danni.\nBisogna avere abbastanza potenziamenti perché funzioni."
-		"ko"	"-건축가의 피해량에 영향을 받는 근접 무기입니다.\n-적을 보면서 우클릭 사용시 돌진하며 다음 공격이 12배의 추가 피해를 입힘.\n-충분한 건축가 개선을 보유해야 제 위력이 납니다."
+		"ko"	"-건축가의 피해량에 영향을 받는 근접 무기입니다.\n-적을 보면서 우클릭 사용시 돌진하며 다음 공격이 12배의 추가 피해를 입힘.\n-충분한 건축가 개선을 보유해야 제 위력이 납니다.\n-적중 시 배럭 자원을 생성(수리 개선에 따라서 증가)"
 	}
 	"There Can Be Only One Desc"
 	{
@@ -2231,9 +2231,9 @@
 	}
 	"Fusion Blade Pap 3"
 	{
-		"en"	"-M2 ability changes:\nPlace a sword infront of you, doing damage.\nStun enemies in range.\nGet Major buffs.\n-Hurting enemies focusing the sword gives you 2x dmg.\n-Faction ''Kazimierz'' is added.\n-Gain 10％ Melee resistance."
-		"it"	"M2 cambia abilità.\nPosiziona una spada davanti a te, facendo danni.\nStordisci i nemici nel raggio d'azione.\nOttieni maggiori buff.\nFerire i nemici mettendo a fuoco la spada ti dà 2x dmg.\nFazione ''Kazimierz'' è aggiunta.\nSilvester deve essere stato lì..."
-		"ko"	"-우클릭 능력 변경: 전방에 검을 생성하여 피해를 가함.\n범위 내의 적을 기절시킴.\n상당한 버프 획득.\n-검을 표적으로 하는 적에게 주는 피해량 2배\n-''카시미어'' 진영 추가\n-근접 피해 저항력 +10％"
+		"en"	"-M2 ability changes:\nPlace a sword infront of you, doing damage.\nStun enemies in range.\nGet Major buffs.\n-Hurting enemies focusing the sword gives you 2x dmg.\n-Faction ''Grunwald'' is added.\n-Gain 10％ Melee resistance."
+		"it"	"M2 cambia abilità.\nPosiziona una spada davanti a te, facendo danni.\nStordisci i nemici nel raggio d'azione.\nOttieni maggiori buff.\nFerire i nemici mettendo a fuoco la spada ti dà 2x dmg.\nFazione ''Grunwald'' è aggiunta.\nSilvester deve essere stato lì..."
+		"ko"	"-우클릭 능력 변경: 전방에 검을 생성하여 피해를 가함.\n범위 내의 적을 기절시킴.\n상당한 버프 획득.\n-검을 표적으로 하는 적에게 주는 피해량 2배\n-''그룬발트'' 진영 추가\n-근접 피해 저항력 +10％"
 	}
 
 	
@@ -2266,13 +2266,13 @@
 		"lt"	"-Daugiau Žalos\n-Greičiau šaundo"
 	}
 	
-	"Irene Weapon Desc"
+	"Amphi Weapon Desc"
 	{
-		"en"	"-Double strikes with m1\n-Charge ability on hit\n-Ability causes enemies to levitate near you, and automatically are shot by you with AOE explosives\n-deal more damage to airborn targets with your gun\n-If ''Seaborn'' exist, gain gain 15％ bonus attackspeed."
-		"fr"	"Chaque attaque frappe deux fois.\nObtenez une abilité après 42 coups.\nAbilité lance les ennemis dans l'air et les bombarde aves des tirs explosifs.\n+15％ cadence des attaques si des Seaborns existe."
+		"en"	"-Double strikes with m1\n-Charge ability on hit\n-Ability causes enemies to levitate near you, and automatically are shot by you with AOE explosives\n-deal more damage to airborn targets with your gun\n-If ''Dweller'' exist, gain gain 15％ bonus attackspeed."
+		"fr"	"Chaque attaque frappe deux fois.\nObtenez une abilité après 42 coups.\nAbilité lance les ennemis dans l'air et les bombarde aves des tirs explosifs.\n+15％ cadence des attaques si des Dwellers existe."
 		"chi"	"每次攻击造成两次伤害。\n击中敌人42次后可激活技能。\n此技能会将你附近所有敌人击飞，并造成大量aoe伤害。\n如有海嗣，获得+15％攻击速度。"
 		"it"	"Ad ogni attacco si raddoppia l'attacco.\nColpendo un nemico qualsiasi 42 volte si ottiene un'abilità.\nQuesta abilità fa volare i nemici e li bombarda con attacchi AOE.\nSe esistono le marine, si guadagna un bonus di 15％ alla velocità d'attacco."
-		"ko"	"-M1이 빠른 2연타 공격을 가함\n-적중시 능력 충전\n-능력 사용시 근처의 적들을 공중으로 띄우고 광역 피해를 주는 폭격을 가함\n-공중에 떠있는 적에게 총으로 입히는 피해 증가\n-근처에 ''시본'' 진영을 가진 대상이 있다면 공격 속도 +15％"
+		"ko"	"-M1이 빠른 2연타 공격을 가함\n-적중시 능력 충전\n-능력 사용시 근처의 적들을 공중으로 띄우고 광역 피해를 주는 폭격을 가함\n-공중에 떠있는 적에게 총으로 입히는 피해 증가\n-근처에 ''드웰러'' 진영을 가진 대상이 있다면 공격 속도 +15％"
 	}
 	
 
@@ -2563,8 +2563,8 @@
 	"Song Of The Ocean Desc 2"
 	{
 		"en" 	"-Attacks 15％ faster\n-heals 25％ more.\n-Gain 10％ ranged resistance and an extra 5％ melee resistance."
-		"fr"	"+15％ cadence des attaques plus rapides, +25％ soins,\n+10％ résistance contre les dégats à distance, +5％ résistance contre les dégats corps-à-corps.\nIl semble que les Expidonsans et les Seaborns étaient alliés avant que ces derniers ont attaqué tout le monde..."
-		"it"	"Sembra che prima che i seaborn attaccassero tutti, loro e gli expidonsan fossero alleati...\nAttacca 15％ più velocemente, guarisce 25％ in più...\nGuadagni anche 10％ di resistenza a distanza e 5％ in più di resistenza in mischia."
+		"fr"	"+15％ cadence des attaques plus rapides, +25％ soins,\n+10％ résistance contre les dégats à distance, +5％ résistance contre les dégats corps-à-corps.\nIl semble que les Expidonsans et les Dwellers étaient alliés avant que ces derniers ont attaqué tout le monde..."
+		"it"	"Sembra che prima che i dweller attaccassero tutti, loro e gli expidonsan fossero alleati...\nAttacca 15％ più velocemente, guarisce 25％ in più...\nGuadagni anche 10％ di resistenza a distanza e 5％ in più di resistenza in mischia."
 		"ko"	"-공격 속도 15％ 증가\n-치유량 25％ 증가\n-원거리 피해 저항력 +10％ 및 근접 피해 저항력 +5％"
 	}
 	"Lantean Staff Desc"
@@ -2587,9 +2587,9 @@
 	}
 	"Specter Pap 1"
 	{
-		"en"	"-Reduced Attackspeed\n-Hits two targets at once.\n-Damage Increased.\n-Faction changed to ''Seaborn''.\n-Ability is removed in exchange for multi target."
-		"it"	"Attacca più lentamente ma colpisce due bersagli alla volta.\nDanno aumentato.\nFazione cambiata in Seaborn."
-		"ko"	"-피해량 증가\n-공격 속도 감소\n-한 번에 두 대상을 공격\n-''시본'' 진영 추가\n-기존의 능력이 제거됩니다."
+		"en"	"-Reduced Attackspeed\n-Hits two targets at once.\n-Damage Increased.\n-Faction changed to ''Dweller''.\n-Ability is removed in exchange for multi target."
+		"it"	"Attacca più lentamente ma colpisce due bersagli alla volta.\nDanno aumentato.\nFazione cambiata in Dweller."
+		"ko"	"-피해량 증가\n-공격 속도 감소\n-한 번에 두 대상을 공격\n-''드웰러'' 진영 추가\n-기존의 능력이 제거됩니다."
 	}
 	"Specter Pap 2a"
 	{
@@ -2617,12 +2617,12 @@
 	}
 	"Specter Pap 4"
 	{
-		"en"	"-Increased damage and gains the ability to self revive if enough damage is dealt\n-All ''Seaborn'' faction weapons gain +200 max health."
+		"en"	"-Increased damage and gains the ability to self revive if enough damage is dealt\n-All ''Dweller'' faction weapons gain +200 max health."
 		"fr"	"Dégats améliorés. Vous vous ressuscitera vous-même si vous avez infligé assez de dégats.\nTout porteur d'arme Chasseur des Abîmes reçoivent +200 santé maximum."
 		///"ru"	"Увеличение урона и способность к самовозрождению при получении достаточного урона."
 		"chi"   "增加伤害，造成足够伤害后可复活自己。\n所有''深海猎人''武器+200血量上限"
-		"it"	"Aumenta i danni e acquisisce la capacità di auto-rianimarsi se vengono inflitti danni sufficienti.\nTutte le armi della fazione Seaborn guadagnano +200 di salute massima."
-		"ko"	"-피해량 증가\n-충분한 피해를 가한 후 자가 부활이 가능해지는 신규 능력 획득.\n-모든 ''시본'' 진영 무기들에 최대 체력 +200 속성 부여"
+		"it"	"Aumenta i danni e acquisisce la capacità di auto-rianimarsi se vengono inflitti danni sufficienti.\nTutte le armi della fazione Dweller guadagnano +200 di salute massima."
+		"ko"	"-피해량 증가\n-충분한 피해를 가한 후 자가 부활이 가능해지는 신규 능력 획득.\n-모든 ''드웰러'' 진영 무기들에 최대 체력 +200 속성 부여"
 	}
 	"Specter Pap 5"
 	{
@@ -3174,15 +3174,15 @@
 		"it"	"Tieni premuto il MOUSE2 mentre premete RELOAD su un pap per accedere a un sistema di assegnazione dei punti abilità"
 		"ko"	"-팩 어 펀치 구조물을 바라보며 재장전 키를 누른채로 M2을 누르면 스킬 포인트 할당 시스템에 접근 가능."
 	}
-	"Seaborn Infection Desc"
+	"Dweller Infection Desc"
 	{
-		"en"	"Becoming a seaborn, yet resisting We Many.\nProvides an AOE long-range melee, an high-damage crossbow, and a stronger Medi-Kit."
-		"fr"	"Donne des griffes à longue portée, un arbalète lanceur d'épines, et un Medikit.\nDevient un Seaborn, pourtant résistant We Many."
+		"en"	"Becoming a dweller, yet resisting We Many.\nProvides an AOE long-range melee, an high-damage crossbow, and a stronger Medi-Kit."
+		"fr"	"Donne des griffes à longue portée, un arbalète lanceur d'épines, et un Medikit.\nDevient un Dweller, pourtant résistant We Many."
 		"chi"	"成为海嗣，但反对大群意志。\nAOE高距离进展，高伤害十字弩，以及大医疗包。"
-		"it"	"Diventa un seaborn, ma resiste a Noi Molti.\nFornisce una mischia a lungo raggio AOE, una balestra ad alto danno e un Medi-Kit più forte."
-		"ko"	"시본으로 변해가고 있지만, 아직은 위매니에게 저항 중입니다...\n-사거리가 길고 광역 피해를 주는 근접 무기와, 높은 피해를 주는 석궁, 더 강한 의료 키트를 보유하게 됨."
+		"it"	"Diventa un dweller, ma resiste a Noi Molti.\nFornisce una mischia a lungo raggio AOE, una balestra ad alto danno e un Medi-Kit più forte."
+		"ko"	"드웰러로 변해가고 있지만, 아직은 위매니에게 저항 중입니다...\n-사거리가 길고 광역 피해를 주는 근접 무기와, 높은 피해를 주는 석궁, 더 강한 의료 키트를 보유하게 됨."
 	}
-	"Seaborn Claws Desc"
+	"Dweller Claws Desc"
 	{
 		"en"	"/Hits up to 2 targets."
 		"it"	"Colpisce fino a 2 bersagli."
@@ -3242,7 +3242,7 @@
 		"it"	"Aumenta le statistiche."
 		"ko"	"-전반적인 능력치 증가"
 	}
-	"Seaborn Spines Desc"
+	"Dweller Spines Desc"
 	{
 		"en"	"A crossbow that does more damage the further the target is."
 		"fr"	"Dégats des épines s'améliorent en fonction de la distance."
@@ -3250,7 +3250,7 @@
 		"it"	"Una balestra che fa più danni quanto più lontano è il bersaglio."
 		"ko"	"대상이 멀리 떨어져있을수록 더 많은 피해를 주는 석궁입니다."
 	}
-	"Seaborn Salve Desc"
+	"Dweller Salve Desc"
 	{
 		"en"	"Heals allies up to 100 health and self up to 30 health."
 		"fr"	"Soigne les alliés pour 100 santé, soignez-vous pour 30 santé."
@@ -3258,13 +3258,13 @@
 		"it"	"Cura gli alleati fino a 100 salute e se stesso fino a 30 salute."
 		"ko"	"아군의 체력을 100 회복시키고 자신은 체력을 30 회복하는 의료 키트입니다."
 	}
-	"Seaborn Infection Pap 0"
+	"Dweller Infection Pap 0"
 	{
 		"en"	"Claws now hits up to 3 targets and increased melee range.\nSpines reload faster and gain a Salve that can heal allies and self."
 		"it"	"Gli artigli ora colpiscono fino a 3 bersagli e hanno aumentato la gittata in mischia.\nGli spini si ricaricano più velocemente e guadagnano una pomata che può curare gli alleati e se stessi."
 		"ko"	"-발톱이 최대 3명의 적을 타격할 수 있게 되며 근접 공격 사거리 증가\n-가시뼈의 재장전 속도 증가\n-아군과 자신을 치유할 수 있는 연고를 얻습니다."
 	}
-	"Seaborn Infection Pap 1"
+	"Dweller Infection Pap 1"
 	{
 		"en"	"Claws now hits up to 4 targets, further increased melee range, and ignores walls.\nSpines gains an ability to spawn a Shell Sea Runner.\nSalve heals allies up to 200 health and self up to 50 health."
 		"fr"	"Dégats des griffes améliorés. Griffes peuvent frapper 4 ennemis. Griffes peuvent frapper à travers les murs.\nL'abilité des épines peut convoquer une Coquilles Coureur de Mer.\nBaume soigne les alliés pour 200 santé, soignez-vous pour 50 santé."
@@ -3272,7 +3272,7 @@
 		"it"	"Gli Artigli ora colpiscono fino a 4 bersagli, hanno aumentato la portata in mischia e ignorano i muri.\nSpine guadagna l'abilità di generare una Conchiglia Corridore del Mare.\nSalvia cura gli alleati fino a 200 salute e se stessa fino a 50 salute."
 		"ko"	"-발톱이 최대 4명의 적을 타격할 수 있게 되며 근접 공격 사거리 증가, 지형을 무시함\n-가시뼈로 이제 해안의 폭주자를 아군으로 소환 가능.\n-연고의 아군 치유량이 200으로 증가 및 자가 치유량이 50으로 증가"
 	}
-	"Seaborn Infection Pap 2"
+	"Dweller Infection Pap 2"
 	{
 		"en"	"Claws now hits up to 5 targets.\nSpines ability now spawns 2 Shell Sea Runners."
 		"fr"	"Griffes peuvent frapper 5 ennemis.\nAbilité des épines convoque 2 Coquilles Coureur de Mer"
@@ -3280,7 +3280,7 @@
 		"it"	"Gli artigli ora colpiscono fino a 5 bersagli.\nL'abilità Spine ora genera 2 corridori del mare conchiglia."
 		"ko"	"-발톱이 최대 5명의 적을 타격할 수 있게 됨\n-가시뼈로 소환되는 해안의 폭주자가 2마리로 늘어남."
 	}
-	"Seaborn Infection Pap 3"
+	"Dweller Infection Pap 3"
 	{
 		"en"	"Claws ability grants increased speed but less damage for a few seconds.\nSpines ability grants increased damage but less speed for a few seconds and spawns 3 Shell Sea Runners."
 		"fr"	"Abilité des griffes améliore votre vitesse, mais réduit vos dégats, pour quelques secondes.\nAbilité des épines améliore vos dégats, mais réduit votre vitesse, pour quelques secondes.\nAbilité des épines convoque 3 Coquilles Coureur de Mer"
@@ -4060,15 +4060,15 @@
 		"it"	"Addestrare il proprio esercito e potenziarlo."
 		"ko"	"당신만의 유닛을 생산하고 개선함."
 	}
-	"Victorian 1 Desc"
+	"Vestan 1 Desc"
 	{
-		"en"	"The pride of Victoria.\nMortar that deals more damage the longer it travels, upto 1 second. \n-Slow attack speed and grants heavy ranged resistance."
-		"fr"	"Un mortier qui fais plus de dégats avec le temps pris pour frapper une cible.\nCadence de tir lente.\nRésistance contre les attaques à distance, mais donne une vulnérabilité contre les attaques corps-à-corps.\nLa fierté de Victoria."
+		"en"	"The pride of Vesta.\nMortar that deals more damage the longer it travels, upto 1 second. \n-Slow attack speed and grants heavy ranged resistance."
+		"fr"	"Un mortier qui fais plus de dégats avec le temps pris pour frapper une cible.\nCadence de tir lente.\nRésistance contre les attaques à distance, mais donne une vulnérabilité contre les attaques corps-à-corps.\nLa fierté de Vesta."
 		"chi"	"维多利亚的骄傲。\n随着距离增加伤害的迫击炮。上限为1秒。\n装备时大幅度增加远程抗性，减少近战抗性。\n低射速。"
-		"ko"	"빅토리아의 자랑.\n-투사체가 비행한 시간에 따라 피해량이 증가하는 박격포. 최대 1초까지 계산.\n-공격 속도가 느리며 원거리 피해 저항력이 크게 증가."
-		"it"	"L'orgoglio di Victoria. Un mortaio che infligge più danni quanto più a lungo viaggia, fino a 1 secondo. \nLa velocità d'attacco è bassa e garantisce una forte resistenza a distanza."
+		"ko"	"베스타의 자랑.\n-투사체가 비행한 시간에 따라 피해량이 증가하는 박격포. 최대 1초까지 계산.\n-공격 속도가 느리며 원거리 피해 저항력이 크게 증가."
+		"it"	"L'orgoglio di Vesta. Un mortaio che infligge più danni quanto più a lungo viaggia, fino a 1 secondo. \nLa velocità d'attacco è bassa e garantisce una forte resistenza a distanza."
 	}
-	"Victorian 2 Desc"
+	"Vestan 2 Desc"
 	{
 		"en"	"-Increased Damage\n-Increased Ranged Resistance\n-Increased attackspeed\n-New ability - Charged Shot: Press M2 to load up 10 powerful shells. \n-When reaching 5, you will be able to fire all remaining shells.\n-Warning! You will lose health and your weapon will be overheated and cannot shoot rocket for short period"
 		"fr"	"Dégats, cadence de tir et résistance contre les dégats à distance améliorés.\nAppuyez M2 pour tirer jusqu'a 10 tirs.\nCeci vous infligera des dégats et vous empêchera d'utiliser votre arme pour quelques secondes!"
@@ -4076,70 +4076,70 @@
 		"ko"	"-피해량, 원거리 피해 저항력, 공격 속도 증가\n-신규 우클릭 능력 - 충전 사격: 강력한 포탄을 10개까지 장전합니다.\n-잔여 포탄이 5발이 될 경우 전탄 발사 사용가능.\n-경고! 전탄 발사시, 자가 피해를 입고 짧은 시간 동안 포탄 발사 불가."
 		"it"	"Aumenta i danni, le res a distanza e la velocità di fuoco. \nNuova funzionalità - Colpo a raffica: Premere M2 per caricare 10 potenti proiettili. \nUna volta raggiunti i 5, sarà possibile sparare tutti i proiettili rimanenti.\nAttenzione! Perderete salute e l'arma si surriscalderà e non potrà sparare razzi per un breve periodo"
 	}
-	"Victorian 3 Desc"
+	"Vestan 3 Desc"
 	{
-		"en"	"The Glorious Spear of Victoria.\n-Increased Damage\n-Increased Ranged Resistance\n-New ability - Barrage: For 30 seconds, your attack speed will be shortened immensively and after 15 seconds, the damage will be increased too.\n-Warning! Your health will start to drain after 15 seconds"
+		"en"	"The Glorious Spear of Vesta.\n-Increased Damage\n-Increased Ranged Resistance\n-New ability - Barrage: For 30 seconds, your attack speed will be shortened immensively and after 15 seconds, the damage will be increased too.\n-Warning! Your health will start to drain after 15 seconds"
 		"fr"	"Dégats et résistance contre les dégats à distance améliorés.\nAppuyez M2 pour tirer un barrage, qui accélère votre cadence de tir et améliora ensuite les dégats après 15 secondes.\nCeci va drainer votre santé après 15 secondes!"
 		"chi"	"维多利亚的光荣之矛。\n增加伤害以及远程抗性。\n新技能：弹幕。30秒内，大幅度提升发射速度。15秒后增加伤害。\n[警告]15秒后会同时开始扣除血量。"
-		"ko"	"빅토리아의 영광스러운 창.\n-피해량, 원거리 피해 저항력 증가\n-신규 R키 능력 - 폭격: 30초 동안 공격 속도가 크게 증가하고, 15초 후 피해량 역시 대폭 증가.\n-경고! 15초 후에 체력이 감소하기 시작합니다."
+		"ko"	"베스타의 영광스러운 창.\n-피해량, 원거리 피해 저항력 증가\n-신규 R키 능력 - 폭격: 30초 동안 공격 속도가 크게 증가하고, 15초 후 피해량 역시 대폭 증가.\n-경고! 15초 후에 체력이 감소하기 시작합니다."
 		"it"	"La Gloriosa Lancia di Vittoria. \nAumento dei danni e della resistenza a distanza. \nNuova abilità - Sbarramento: Per 30 secondi, la velocità d'attacco si riduce immensamente e dopo 15 secondi aumenta anche il danno. \nAttenzione! La salute inizierà a scarseggiare dopo 15 secondi"
 	}
-	"VictorianLauncher Desc Extra"
+	"VestanLauncher Desc Extra"
 	{
-		"en"	"Increases the Explosion Radius of 'Victoria' faction by +10％."
-		"it"	"Aumenta il raggio di esplosione della fazione 'Victoria' di +10％."
-		"ko"	"''빅토리아'' 진영 무기의 폭발 반경이 10％ 증가."
+		"en"	"Increases the Explosion Radius of 'Vesta' faction by +10％."
+		"it"	"Aumenta il raggio di esplosione della fazione 'Vesta' di +10％."
+		"ko"	"''베스타'' 진영 무기의 폭발 반경이 10％ 증가."
 	}
-	"VictorianLauncher 5 Perk Desc"
+	"VestanLauncher 5 Perk Desc"
 	{
 		"en"	"Extra Projectile speed +200Hu\nAim Assist Activate"
 		"ko"	"-추가 투사체 속도 +200Hu\n-조준 지원 활성화"
 		"it"	"Velocità extra del proiettile +200Hu\nAttivazione dell'assistenza alla mira"
 	}
-	"VictorianLauncher 5 Perk On"
+	"VestanLauncher 5 Perk On"
 	{
 		"en"	"[Aim Assist Online]"
 		"ko"	"[조준 지원 활성화]"
 		"it"	"[Assistenza Mira Online]"
 	}
-	"VictorianLauncher OverHeated"
+	"VestanLauncher OverHeated"
 	{
 		"en"	"!OVERHEATED! [DMG X0.5]"
 		"ko"	"!과열됨! [피해량 X0.5]"
 		"it"	"SURRISCALDATO! [DANNO X0.5]"
 	}
-	"VictorianLauncher OverDrive"
+	"VestanLauncher OverDrive"
 	{
 		"en"	"!OVERDRIVE! [Gradually lose HP]"
 		"ko"	"!과부하! [체력 지속 감소]"
 		"it"	"OVERDRIVE! [Perde gradualmente HP]"
 	}
-	"VictorianLauncher RapidFire"
+	"VestanLauncher RapidFire"
 	{
 		"en"	"Rapid Fire"
 		"ko"	"연사 모드"
 		"it"	"Fuoco rapido"
 	}
-	"VictorianLauncher ManuallyR"
+	"VestanLauncher ManuallyR"
 	{
 		"en"	"Press R Again to Manually Deactivate"
 		"ko"	"R키를 눌러 수동으로 비활성화"
 		"it"	"Premi nuovamente R per disattivare manualmente"
 	}
-	"VictorianLauncher CRockets"
+	"VestanLauncher CRockets"
 	{
 		"en"	"Charged Rockets"
 		"ko"	"고폭성 로켓"
 		"it"	"Razzi caricati"
 	}
-	"VictorianLauncher SuperShot"
+	"VestanLauncher SuperShot"
 	{
 		"#format"	"{1:i}"
 		"en"	"SUPER SHOT READY! [Next shot: X {1} DMG]"
 		"ko"	"전탄 발사 준비! [다음 공격 피해량 X {1}]"
 		"it"	"SUPER COLPO PRONTO! [Prossimo colpo: X {1} DMG]"
 	}
-	"VictorianLauncher ManuallyM2"
+	"VestanLauncher ManuallyM2"
 	{
 		"en"	"Press M2 Again to Fire all at once"
 		"ko"	"M2를 다시 눌러 전탄 발사"
@@ -4239,9 +4239,9 @@
 	}
 	"Pinus Knight Pap 3"
 	{
-		"en"	"-Increased damage.\n-Allied Kazimierz weapons gain a 11％ (x0.5 vs Raids) (x2.0 for Yourself) chance to dodge melee attacks while youre alive.\n-Ability instead grants 60％ (x0.5 vs Raids) chance to dodge any attack.\n-Dodging an attack makes the next melee hit deal AOE damage."
-		"it"	"Danno aumentato\nLe armi alleate di Kazimierz hanno una probabilità di schivare gli attacchi in mischia dell'11％ (x0,5 contro le incursioni) (x2,0 per te stesso) finché sei vivo.\nL'abilità garantisce invece una probabilità di schivare qualsiasi attacco del 60％ (x0,5 contro le incursioni).\nSchivare un attacco fa sì che il prossimo colpo in mischia infligga danni AOE."
-		"ko"	"-피해량 증가\n-사용자가 살아있는 동안, 모든 ''카시미어'' 진영 무기 사용자들은 11％ 확률로 근접 공격을 회피(사용자 본인은 회피 확률이 2배로 증가,레이드 모드일시 0.5배로 감소)\n-능력 사용시, 60％ 확률로 모든 공격을 회피(레이드 모드일시 0.5배로 감소)\n-공격을 회피한 후, 다음 근접 공격이 광역 피해를 가함"
+		"en"	"-Increased damage.\n-Allied Grunwald weapons gain a 11％ (x0.5 vs Raids) (x2.0 for Yourself) chance to dodge melee attacks while youre alive.\n-Ability instead grants 60％ (x0.5 vs Raids) chance to dodge any attack.\n-Dodging an attack makes the next melee hit deal AOE damage."
+		"it"	"Danno aumentato\nLe armi alleate di Grunwald hanno una probabilità di schivare gli attacchi in mischia dell'11％ (x0,5 contro le incursioni) (x2,0 per te stesso) finché sei vivo.\nL'abilità garantisce invece una probabilità di schivare qualsiasi attacco del 60％ (x0,5 contro le incursioni).\nSchivare un attacco fa sì che il prossimo colpo in mischia infligga danni AOE."
+		"ko"	"-피해량 증가\n-사용자가 살아있는 동안, 모든 ''그룬발트'' 진영 무기 사용자들은 11％ 확률로 근접 공격을 회피(사용자 본인은 회피 확률이 2배로 증가,레이드 모드일시 0.5배로 감소)\n-능력 사용시, 60％ 확률로 모든 공격을 회피(레이드 모드일시 0.5배로 감소)\n-공격을 회피한 후, 다음 근접 공격이 광역 피해를 가함"
 	}
 	"Pinus Knight Pap 4"
 	{
@@ -4348,19 +4348,19 @@
 	}
 	"Vows of the Sea Desc"
 	{
-		"en"	"Hits two targets at once, grants massive amount of health, and heal on taking damage.\nIberia will fall, but let it shine for others, The Profound Silence."
+		"en"	"Hits two targets at once, grants massive amount of health, and heal on taking damage.\nAlmina will fall, but let it shine for others, The Profound Silence."
 		"fr"	"Santé améliorée. Vous soigne quand vous prenez des dégats. Frappe deux ennemis à la fois."
 		"chi"	"同时击中两个目标，大量治疗。受击后回血。\n伊比利亚虽将沦陷，但它依会闪耀。"
-		"it"	"Colpisce due bersagli alla volta, garantisce un'enorme quantità di salute e guarisce quando subisce danni.\nIberia cadrà, ma lascia che risplenda per gli altri, Il Profondo Silenzio."
-		"ko"	"한 번에 2명의 대상을 타격할 수 있으며, 최대 체력이 크게 증가하고, 피해를 받을시 체력을 회복합니다.\n이베리아는 멸망하겠지만, 다른 이들을 위해 빛나게 하리라."
+		"it"	"Colpisce due bersagli alla volta, garantisce un'enorme quantità di salute e guarisce quando subisce danni.\nAlmina cadrà, ma lascia che risplenda per gli altri, Il Profondo Silenzio."
+		"ko"	"한 번에 2명의 대상을 타격할 수 있으며, 최대 체력이 크게 증가하고, 피해를 받을시 체력을 회복합니다.\n알미나는 멸망하겠지만, 다른 이들을 위해 빛나게 하리라."
 	}
 	"Vows of the Sea Pap"
 	{
-		"en"	"Hits three targets at once, increases healing and health.\nAll Seaborn faction weapons gain massive health and damage increase."
+		"en"	"Hits three targets at once, increases healing and health.\nAll Dweller faction weapons gain massive health and damage increase."
 		"fr"	"Santé et soins améliorée. Frappe trois ennemis à la fois.\nTout arme «Chasseur des Abîmes» reçoivent des dégats et santé améliorés."
 		"chi"	"同时击中三个目标，增加治疗量和血量。\n所有''深渊猎人''武器获得大量血量/伤害提升。"
-		"it"	"Colpisce tre bersagli alla volta, aumenta la guarigione e la salute.\nTutte le armi della fazione Seaborn ottengono un massiccio aumento della salute e dei danni."
-		"ko"	"-한 번에 3명의 대상을 타격할 수 있으며, 최대 체력과 체력 회복량 증가\n-모든 ''시본'' 진영 무기들에 막대한 최대 체력 증가와 피해량 증가 효과를 부여"
+		"it"	"Colpisce tre bersagli alla volta, aumenta la guarigione e la salute.\nTutte le armi della fazione Dweller ottengono un massiccio aumento della salute e dei danni."
+		"ko"	"-한 번에 3명의 대상을 타격할 수 있으며, 최대 체력과 체력 회복량 증가\n-모든 ''드웰러'' 진영 무기들에 막대한 최대 체력 증가와 피해량 증가 효과를 부여"
 	}
 	"Wrathful Blade Desc"
 	{
@@ -4593,9 +4593,9 @@
 	}
 	"Abyssal Greatsword desc"
 	{
-		"en"	"Verys slow attacking weapon, has resistances and high damage.\nAll ''Seaborn'' faction weapons will receive 10％ damage bonus"
-		"it"	"Arma con attacco lento\nTutte le armi della fazione Seaborn riceveranno un bonus di 10％ danni"
-		"ko"	"공격 속도는 매우 느리지만 높은 피해량과 저항력을 가짐.\n-모든 ''시본'' 진영 무기의 피해량 10％ 증가"
+		"en"	"Verys slow attacking weapon, has resistances and high damage.\nAll ''Dweller'' faction weapons will receive 10％ damage bonus"
+		"it"	"Arma con attacco lento\nTutte le armi della fazione Dweller riceveranno un bonus di 10％ danni"
+		"ko"	"공격 속도는 매우 느리지만 높은 피해량과 저항력을 가짐.\n-모든 ''드웰러'' 진영 무기의 피해량 10％ 증가"
 	}
 	"Abyssal Greatsword Pap 1 desc"
 	{
@@ -4635,9 +4635,9 @@
 	}
 	"CastleBreaker Desc"
 	{
-		"en"	"A Spear that Victoria's trained vanguards use.\n-This weapon has long reach but short width.\n-Can gain cost per kill\n-Deals extra damage to building enemies"
-		"ko"	"훈련된 빅토리아의 선봉대가 사용하는 창입니다.\n이 무기는 근접 공격 사거리가 길지만, 근접 공격 범위가 좁습니다.\n-처치시 자금을 획득\n구조물 계열의 적에게 추가 피해를 입힘"
-		"it"	"Una lancia utilizzata dalle avanguardie addestrate da Victoria.\nQuesta arma ha una lunga gittata ma una larghezza ridotta.\nPuò ottenere un costo per ogni uccisione.\nInfligge danni aggiuntivi ai nemici che costruiscono."
+		"en"	"A Spear that Vesta's trained vanguards use.\n-This weapon has long reach but short width.\n-Can gain cost per kill\n-Deals extra damage to building enemies"
+		"ko"	"훈련된 베스타의 선봉대가 사용하는 창입니다.\n이 무기는 근접 공격 사거리가 길지만, 근접 공격 범위가 좁습니다.\n-처치시 자금을 획득\n구조물 계열의 적에게 추가 피해를 입힘"
+		"it"	"Una lancia utilizzata dalle avanguardie addestrate da Vesta.\nQuesta arma ha una lunga gittata ma una larghezza ridotta.\nPuò ottenere un costo per ogni uccisione.\nInfligge danni aggiuntivi ai nemici che costruiscono."
 	}
 	"CastleBreaker Pap 1"
 	{
@@ -4653,20 +4653,20 @@
 	}
 	"CastleBreaker Pap 3"
 	{
-		"en"	"\nA giant spear used by Giant Victorian Elite robots. They are both powerful and heavy.\n-Increased damage\n-Increased attackspeed\n-Unlocks new ability(M2)\n-Attack 2 targets at once and attack twice."
-		"it"	"Statistiche potenziate.\nUna lancia gigante utilizzata dai robot Giant Victorian Elite. \nSono potenti e pesanti.\nSblocca una nuova abilità (M2).\nAttacca 2 bersagli contemporaneamente e attacca due volte."
-		"ko"	"거대 빅토리아 정예 로봇이 사용하는 거대한 창입니다. 강력하면서 무겁습니다.\n-피해량, 공격 속도 증가\n-신규 우클릭 능력: 공격이 빠른 2연속 공격이 되며 한 번에 2명의 적을 타격합니다."
+		"en"	"\nA giant spear used by Giant Vestan Elite robots. They are both powerful and heavy.\n-Increased damage\n-Increased attackspeed\n-Unlocks new ability(M2)\n-Attack 2 targets at once and attack twice."
+		"it"	"Statistiche potenziate.\nUna lancia gigante utilizzata dai robot Giant Vestan Elite. \nSono potenti e pesanti.\nSblocca una nuova abilità (M2).\nAttacca 2 bersagli contemporaneamente e attacca due volte."
+		"ko"	"거대 베스타 정예 로봇이 사용하는 거대한 창입니다. 강력하면서 무겁습니다.\n-피해량, 공격 속도 증가\n-신규 우클릭 능력: 공격이 빠른 2연속 공격이 되며 한 번에 2명의 적을 타격합니다."
 	}
 	"CastleBreaker Desc Extra"
 	{
-		"en"	"Increases the Damage of ''Victoria'' faction by +10％."
-		"it"	"Aumenta il danno della fazione ''Victoria'' del +10％."
-		"ko"	"''빅토리아'' 진영 무기의 피해량 +10％"
+		"en"	"Increases the Damage of ''Vesta'' faction by +10％."
+		"it"	"Aumenta il danno della fazione ''Vesta'' del +10％."
+		"ko"	"''베스타'' 진영 무기의 피해량 +10％"
 	}
 	"Explosault Rifle Desc"
 	{
-		"en"	"Heavily modified AR that some victorian civilians managed to come up with.\nFire fast projectiles that plant bomb on its target and detonate on reload\nFiring this weapon constantly will build up overheat which will result in damage loss"
-		"ko"	"빅토리아 시민들이 손수 제작한 마개조된 돌격소총입니다.\n적중 시 폭탄 설치, 재장전으로 기폭\n계속 사용할수록 과열이 쌓여 피해량 감소"
+		"en"	"Heavily modified AR that some vestan civilians managed to come up with.\nFire fast projectiles that plant bomb on its target and detonate on reload\nFiring this weapon constantly will build up overheat which will result in damage loss"
+		"ko"	"베스타 시민들이 손수 제작한 마개조된 돌격소총입니다.\n적중 시 폭탄 설치, 재장전으로 기폭\n계속 사용할수록 과열이 쌓여 피해량 감소"
 	}
 	"Explosault Rifle HSD 1 Desc"
 	{
@@ -4690,8 +4690,8 @@
 	}
 	"Explosault Rifle Desc Extra"
 	{
-		"en"	"''Victoria'' faction will have 10％ less blast damage reduce per target"
-		"ko"	"''빅토리아'' 진영 무기의 폭발 타겟당 피해량 감소를 10％ 완화시킵니다!"
+		"en"	"''Vesta'' faction will have 10％ less blast damage reduce per target"
+		"ko"	"''베스타'' 진영 무기의 폭발 타겟당 피해량 감소를 10％ 완화시킵니다!"
 	}
 	"Zealot Dash Denie Spam"
 	{
@@ -5440,7 +5440,7 @@
 	"Tiantui Star Blade Desc"
 	{
 		"en"	"-Abilities uses ammo and refills on wave end\n-M2 to charge forward, consuming ammo\n-Combos reset charge cooldown\n-R and crouch to reload special ammo and gain a buff (use enough ammo for stronger version, once per wave, revives if downed)"
-		"ko"	"-능력이 탄환을 소모하며 웨이브 종료 시 재보급\n-우클릭으로 돌진하며 탄환을 소모\n-연속 적중(콤보) 시 돌진 쿨다운 초기화\n-웅크리기+R로 특수 탄환을 장전, 버프를 얻음(탄환을 일정량 사용 시 버프 강화, 다운 중 사용 시 1회 부활)"
+		"ko"	"-능력이 탄환을 소모하며 웨이브 종료 시 재보급\n-우클릭으로 돌진하며 탄환을 소모\n-콤보 적중 시 돌진 쿨다운 초기화\n-웅크리기+R로 특수 탄환 장전, 버프 획득(탄환 일정량 사용 시 버프 강화, 다운 중 사용 시 1회 부활)"
 	}
 	"Tiantui Star Blade Extra"
 	{

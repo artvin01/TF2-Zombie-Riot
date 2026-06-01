@@ -93,7 +93,7 @@ public void Whiteflower_Boss_OnMapStart_NPC()
 static void ClotPrecache()
 {
 	PrecacheSoundCustom("rpg_fortress/enemy/whiteflower_dash.mp3");
-	PrecacheSoundCustom("#rpg_fortress/music/combine_elite_iberia_grandpabard.mp3");
+	PrecacheSoundCustom("#rpg_fortress/music/combine_elite_almina_grandpabard.mp3");
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
@@ -310,11 +310,11 @@ methodmap Whiteflower_Boss < CClotBody
 		}
 		RaidModeTime = GetGameTime() + ((200.0) * (1.0 + (MultiGlobalEnemy * 0.4)));
 		MusicEnum music;
-		strcopy(music.Path, sizeof(music.Path), "#rpg_fortress/music/combine_elite_iberia_grandpabard.mp3");
+		strcopy(music.Path, sizeof(music.Path), "#rpg_fortress/music/combine_elite_almina_grandpabard.mp3");
 		music.Time = 187;
 		music.Volume = 1.0;
 		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "Iberia's Last Stand");
+		strcopy(music.Name, sizeof(music.Name), "Almina's Last Stand");
 		strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 		Music_SetRaidMusic(music);
 
@@ -1029,7 +1029,7 @@ void WF_ThrowGrenadeHappening(Whiteflower_Boss npc)
 			HealDo *= RaidModeScaling;
 			WF_GrenadeSupportDo(npc.index, Grenade, damage, GrenadeRangeSupport, HealDo);
 			float SpeedReturn[3];
-			ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 1.75, 1.0);
+			ArcToLocationViaSpeedProjectile(Grenade, vecTarget, SpeedReturn, 1.75, 1.0);
 			TeleportEntity(Grenade, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
 			//Throw a grenade towards the target!
 		}

@@ -1974,7 +1974,7 @@ methodmap CClotBody < CBaseCombatCharacter
 #endif
 
 #if defined ZR
-		SeabornVanguard_SpeedBuff(this, speed_for_return);	
+		DwellerVanguard_SpeedBuff(this, speed_for_return);	
 #endif
 
 #if defined RPG
@@ -4458,7 +4458,7 @@ public MRESReturn CBaseAnimating_HandleAnimEvent(int pThis, Handle hParams)
 				npc.PlayStepSound(g_RobotStepSound[GetRandomInt(0, sizeof(g_RobotStepSound) - 1)], 0.65, npc.m_iStepNoiseType);
 			}
 		}
-		case STEPTYPE_SEABORN:
+		case STEPTYPE_DWELLER:
 		{
 			if(IsWalkEvent(event))
 			{
@@ -4681,7 +4681,7 @@ public bool IsEntityTraversable(CBaseNPC_Locomotion loco, int other_entidx, Trav
 		return false;
 	}
 
-	if(b_ThisEntityIsAProjectileForUpdateContraints[other_entidx])
+	if(b_ThisEntityIgnored[other_entidx] || b_ThisEntityIsAProjectileForUpdateContraints[other_entidx])
 	{
 		return true;
 	}
@@ -5007,10 +5007,11 @@ bool PluginBot_Jump(int bot_entidx, float vecPos[3], float flMaxSpeed = 1250.0, 
 }
 
 
-stock void ArcToLocationViaSpeedProjectile(float VecStart[3], float VecEnd[3], float SpeedReturn[3], float TimeUntillReachDest = 1.0, float GravityChange = 1.0)
+stock void ArcToLocationViaSpeedProjectile(int projectile, float VecEnd[3], float SpeedReturn[3], float TimeUntillReachDest = 1.0, float GravityChange = 1.0)
 {
 	float vecJumpVel[3];
-	
+	float VecStart[3];
+	GetEntPropVector( projectile, Prop_Data, "m_vecAbsOrigin", VecStart ); 
 	float gravity;
 	if(gravity <= 0.0)
 		gravity = FindConVar("sv_gravity").FloatValue;
@@ -5026,7 +5027,6 @@ stock void ArcToLocationViaSpeedProjectile(float VecStart[3], float VecEnd[3], f
 		if(height >= -20.0)
 		{
 			height = -20.0;
-
 		}
 	}
 	else
@@ -7559,7 +7559,7 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0, bool forcesilentMode = fal
 			{
 				Skeletons don't bleed, so I'm leaving this blank.
 			}*/
-			case BLEEDTYPE_SEABORN:
+			case BLEEDTYPE_DWELLER:
 			{
 				if(!EnableSilentMode || !AtEdictLimit(EDICT_EFFECT))
 					ParticleSet = ParticleEffectAt(TempPosition, "flamethrower_rainbow_bubbles02", Random_time); 

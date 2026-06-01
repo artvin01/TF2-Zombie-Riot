@@ -342,8 +342,8 @@
 	}
 	"Atomizer_Talk_TimeUp-1"
 	{
-		"en"	"Victoria will be in peace. Once and for all."
-		"ko"	"빅토리아는 영원할 것이다. 너희따위가 망칠 평화가 아니야."
+		"en"	"Vesta will be in peace. Once and for all."
+		"ko"	"베스타는 영원할 것이다. 너희따위가 망칠 평화가 아니야."
 	}
 	"Atomizer_Talk_TimeUp-2"
 	{
@@ -382,8 +382,8 @@
 	}
 	"Atomizer_Talk_EscapePlan-2"
 	{
-		"en"	"I will never let you trample over the glory of {gold}Victoria{default} Again!"
-		"ko"	"네 놈들이 {gold}빅토리아{default}의 평화를 망치게 둘 수는 없는데..!"
+		"en"	"I will never let you trample over the glory of {gold}Vesta{default} Again!"
+		"ko"	"네 놈들이 {gold}베스타{default}의 평화를 망치게 둘 수는 없는데..!"
 	}
 	"Atomizer_Talk_EscapePlan-3"
 	{
@@ -413,8 +413,8 @@
 	}
 	"Huscarls_Talk_Support-4"
 	{
-		"en"	"Who said all victorians use explosive in battle Ha!"
-		"ko"	"누가 빅토리안들이 전투에 폭발물만 쓴다고 했지? 하!"
+		"en"	"Who said all vestans use explosive in battle Ha!"
+		"ko"	"누가 베스탄들이 전투에 폭발물만 쓴다고 했지? 하!"
 	}
 	"Huscarls_Talk_Support-5"
 	{
@@ -438,8 +438,8 @@
 	}
 	"Huscarls_Talk_Support-9"
 	{
-		"en"	"You are now facing Victoria's Elite forces."
-		"ko"	"이제 우리 빅토리아 정예 부대와 맞설 시간이다."
+		"en"	"You are now facing Vesta's Elite forces."
+		"ko"	"이제 우리 베스타 정예 부대와 맞설 시간이다."
 	}
 	"Huscarls_Talk_Support-10"
 	{
@@ -478,8 +478,8 @@
 	}
 	"Huscarls_Talk_Lastman-3"
 	{
-		"en"	"You'll never see {gold}Victoria{default} again."
-		"ko"	"넌 {gold}빅토리아{default}에 발조차 들이지 못 할 것이다."
+		"en"	"You'll never see {gold}Vesta{default} again."
+		"ko"	"넌 {gold}베스타{default}에 발조차 들이지 못 할 것이다."
 	}
 	"Huscarls_Talk_GameEnd"
 	{
@@ -533,8 +533,8 @@
 	}
 	"Huscarls_Talk_BlastArmor"
 	{
-		"en"	"Do you call that {darkgray}explosives{default}? Ha! You are far away from understanding {gold}Victorian{default}’s nature"
-		"ko"	"지금 그딴걸 {darkgray}폭발물{default}이라고 부르나? 하! {gold}빅토리아{default}를 이해하긴 멀었군!"
+		"en"	"Do you call that {darkgray}explosives{default}? Ha! You are far away from understanding {gold}Vestan{default}’s nature"
+		"ko"	"지금 그딴걸 {darkgray}폭발물{default}이라고 부르나? 하! {gold}베스타{default}를 이해하긴 멀었군!"
 	}
 	"Huscarls_Talk_EscapePlan-1"
 	{
@@ -543,8 +543,8 @@
 	}
 	"Huscarls_Talk_EscapePlan-2"
 	{
-		"en"	"{gold}Victoria{default} is in trouble."
-		"ko"	"여기 {gold}빅토리아{default}에 문제가 발생했다! 지원을 더 요청한다!"
+		"en"	"{gold}Vesta{default} is in trouble."
+		"ko"	"여기 {gold}베스타{default}에 문제가 발생했다! 지원을 더 요청한다!"
 	}
 	"Huscarls_Talk_EscapePlan-3"
 	{
@@ -604,8 +604,8 @@
 	}
 	"Harrison_Talk_Support-11"
 	{
-		"en"	"Victoria Cannon is Ready, Fire Support is coming in"
-		"ko"	"빅토리아 캐논 준비 완료, 화력 지원 전개."
+		"en"	"Vesta Cannon is Ready, Fire Support is coming in"
+		"ko"	"베스타 캐논 준비 완료, 화력 지원 전개."
 	}
 	"Harrison_Talk_Support-12"
 	{
@@ -864,13 +864,13 @@
 	}
 	"Castellan_Talk_LifeLost-2"
 	{
-		"en"	"Show no fear or dread! Our soldiers of Victoria will never fall!"
-		"ko"	"물러서지 마라! 우리 빅토리아 병사들은 쓰러지지 않으리라!"
+		"en"	"Show no fear or dread! Our soldiers of Vesta will never fall!"
+		"ko"	"물러서지 마라! 우리 베스타 병사들은 쓰러지지 않으리라!"
 	}
 	"Castellan_Talk_LifeLost-3"
 	{
-		"en"	"Arm gears, {crimson}Raise voices to the sky{default}, {collectors}Roar our Battle cry! {default}FOR {gold}VICTORIA!!"
-		"ko"	"장비를 재정비해라, {crimson}목소리를 높여라{default}, {collectors}전투 함성을 내질러라! {gold}빅토리아{default}를 위하여!!"
+		"en"	"Arm gears, {crimson}Raise voices to the sky{default}, {collectors}Roar our Battle cry! {default}FOR {gold}VESTA!!"
+		"ko"	"장비를 재정비해라, {crimson}목소리를 높여라{default}, {collectors}전투 함성을 내질러라! {gold}베스타{default}를 위하여!!"
 	}
 	"Castellan_Talk_EscapePlan"
 	{
@@ -909,8 +909,8 @@
 	}
 	"Castellan_And_Sensal_Talk-7"
 	{
-		"en"	"Correct. The country itself isnt at fault. Now leave, I also believe {gold}Victoria{default} has to deal with {darkblue}chaos{default}."
-		"ko"	"그래. 그 나라 자체에는 잘못이 없어. 이제 이 곳을 떠나라. {gold}빅토리아{default}도 {darkblue}혼돈{default}에 대처해야한다."
+		"en"	"Correct. The country itself isnt at fault. Now leave, I also believe {gold}Vesta{default} has to deal with {darkblue}chaos{default}."
+		"ko"	"그래. 그 나라 자체에는 잘못이 없어. 이제 이 곳을 떠나라. {gold}베스타{default}도 {darkblue}혼돈{default}에 대처해야한다."
 	}
 	"Castellan_And_Sensal_Talk-8"
 	{
@@ -924,13 +924,13 @@
 	}
 	"Castellan_And_Sensal_Talk-10"
 	{
-		"en"	"We will return to Victoria now."
-		"ko"	"이제 빅토리아로 돌아가겠습니다."
+		"en"	"We will return to Vesta now."
+		"ko"	"이제 베스타로 돌아가겠습니다."
 	}
 	"Castellan_And_Sensal_Talk-11"
 	{
-		"en"	"{default}Before Sensal left, he asked Captino Menius to share the evidence he collected to you.\nCaptino Menius hands you the classified document with Victoria and Expidonsan logo printed on it: {unique}''A copy of Truthful Evidence''{default}!"
-		"ko"	"{default}센살이 떠나기전, 메니우스에게 부탁하여\n당신에게 빅토리아와 엑스피돈사의 로고가 박힌 서류폴더 하나를 건냅니다: {unique}''진실된 증거자료 [사본]''{default}!"
+		"en"	"{default}Before Sensal left, he asked Captino Menius to share the evidence he collected to you.\nCaptino Menius hands you the classified document with Vesta and Expidonsan logo printed on it: {unique}''A copy of Truthful Evidence''{default}!"
+		"ko"	"{default}센살이 떠나기전, 메니우스에게 부탁하여\n당신에게 베스타와 엑스피돈사의 로고가 박힌 서류폴더 하나를 건냅니다: {unique}''진실된 증거자료 [사본]''{default}!"
 	}
 	"Castellan_And_Sensal_Talk-12"
 	{

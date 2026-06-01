@@ -415,7 +415,7 @@ bool NPC_SpawnNext(bool panzer,
 						GiveNpcOutLineLastOrBoss(entity_Spawner, false);
 					}
 
-					if(!DisableSpawnProtection &&
+					if(!i_NpcIsABuilding[entity_Spawner] && !DisableSpawnProtection &&
 					 zr_spawnprotectiontime.FloatValue > 0.0 &&
 					  SpawnSettingsSee != 1 &&
 					  SpawnSettingsSee != 3 &&
@@ -1604,7 +1604,7 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 125, 255, 125, 255, 32);
 					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
 				}
-				else if (npcBase.m_iBleedType == BLEEDTYPE_SEABORN)
+				else if (npcBase.m_iBleedType == BLEEDTYPE_DWELLER)
 				{
 					//If you cant find any good blood effect, use this one and just recolour it.
 					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 65, 65, 255, 255, 32);
