@@ -899,7 +899,7 @@ void ZR_MapStart()
 	Dweller_OnMapStart();
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
-	Format(WhatModifierSetting, sizeof(WhatModifierSetting), "%s", "");
+	Format(WhatModifierSetting, sizeof(WhatModifierSetting), "");
 	WavesUpdateDifficultyName();
 	cvarTimeScale.SetFloat(1.0);
 	GlobalCheckDelayAntiLagPlayerScale = 0.0;
