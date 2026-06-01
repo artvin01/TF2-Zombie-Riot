@@ -1178,15 +1178,15 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{purple}UNSPEAKABLE! {gold}- {red}Thankfully he's should be dead after the incident at the palace");
+					CPrintToChatAll("{purple}UNSPEAKABLE! {gold}- {red}Thankfully it's should be dead after the incident at the palace");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{purple}UNSPEAKABLE! {gold}- {red}Hopefully he's gone after Kahmlsteins sacrafice.");
+					CPrintToChatAll("{purple}UNSPEAKABLE! {gold}- {red}Hopefully it's gone after Kahmlsteins sacrafice.");
 				}
 				default:
 				{
-					CPrintToChatAll("{purple}UNSPEAKABLE! {gold}- {red}Does he actually speak though?");
+					CPrintToChatAll("{purple}UNSPEAKABLE! {gold}- {red}Does it actually speak though?");
 				}
 			}
 		}
