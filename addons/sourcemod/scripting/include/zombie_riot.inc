@@ -13,6 +13,9 @@ enum ZRSpecialMode
 	Mode_Rogue3,
 	Mode_BetWars,
 	Mode_Construction,
+	Mode_Survival,
+	Mode_Construction2,
+	Mode_Freeplay,
 }
 
 enum ZRLifeState
@@ -234,10 +237,12 @@ forward Action ZR_OnWinTeam(TFTeam Team);
  * @param playerList	List of players (as entindices) in RED.
  * @param waveset		The internal name of the waveset beaten.
  * @param modifier		The name of the current modifier.
+ * @param time			How long it took to beat, in seconds.
+ * @param wave			What wave at the time of beating.
  * 
  * @noreturn
  */
-forward void ZR_OnWinInfo(ArrayList playerList, const char[] waveset, const char[] modifier);
+forward void ZR_OnWinInfo(ArrayList playerList, const char[] waveset, const char[] modifier, int time, int wave, ArrayList RogueItemNames)
 
 /**
  * Whenever any client gets XP, this is spammed! Be Warned!
