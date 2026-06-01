@@ -1180,7 +1180,17 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 12:
 		{
-			CPrintToChatAll("{midnightblue}CO0R0RR9R'R4R0#(##()#F92 B '11 A =)$ R 49I N 2G4 E 2#f Y =4,93RW9FW0LRSMUW320$");
+			switch(GetRandomInt(1, 2))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{midnightblue}CO0R0RR9R'R4R0#(##()#F92 B '11 A =)$ R 49I N 2G4 E 2#f Y =4,93RW9FW0LRSMUW320$");
+				}
+				default:
+				{
+					CPrintToChatAll("{midnightblue}CO0R0RR9R'R4R0#(##()#F92 B '11 A =)$ R 49I N 2G4 E 2#f Y =4,93RW9FW0LRSMUW320$");
+				}
+			}
 		}
 		case 13:
 		{
@@ -1278,35 +1288,115 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 18:
 		{
-			CPrintToChatAll("{community}Agent... thompson. {crimson}ew.");
+			switch(GetRandomInt(1, 2))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{community}Agent... thompson. {crimson}ew.");
+				}
+				default:
+				{
+					CPrintToChatAll("{community}Agent... thompson. {crimson}ew.");
+				}
+			}
 		}
 		case 19:
 		{
-			CPrintToChatAll("{forestgreen}The.... twins. {crimson}eew.");
+			switch(GetRandomInt(1, 2))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{forestgreen}The.... twins. {crimson}eew.");
+				}
+				default:
+				{
+					CPrintToChatAll("{forestgreen}The.... twins. {crimson}eew.");
+				}
+			}
 		}
 		case 20:
 		{
-			CPrintToChatAll("{community}Agent... johnson. {crimson}ew. Had to juice him up a bit cause how bad he is");
+			switch(GetRandomInt(1, 2))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{community}Agent... johnson. {crimson}ew. Had to juice him up a bit cause how bad he is");
+				}
+				default:
+				{
+					CPrintToChatAll("{community}Agent... johnson. {crimson}ew. Had to juice him up a bit cause how bad he is");
+				}
+			}
 		}
 		case 21:
 		{
-			CPrintToChatAll("{darkgreen}Agent Smith. {crimson}*stink sound effect*");
+			switch(GetRandomInt(1, 2))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{darkgreen}Agent Smith. {crimson}*stink sound effect*");
+				}
+				default:
+				{
+					CPrintToChatAll("{darkgreen}Agent Smith. {crimson}*stink sound effect*");
+				}
+			}
 		}
 		case 22:
 		{
-			CPrintToChatAll("{blue}ATOMIZER! {gold}- {red}I wonder what that nitro fuel is made of...");
+			switch(GetRandomInt(1, 2))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{blue}ATOMIZER! {gold}- {red}I wonder what that nitro fuel is made of...");
+				}
+				default:
+				{
+					CPrintToChatAll("{blue}ATOMIZER! {gold}- {red}I wonder what that nitro fuel is made of...");
+				}
+			}
 		}
 		case 23:
 		{
-			CPrintToChatAll("{lightblue}HUSCARLS! {gold}- {red}Running around in circles just to hit a wall!");
+			switch(GetRandomInt(1, 2))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{lightblue}HUSCARLS! {gold}- {red}Running around in circles just to hit a wall!");
+				}
+				default:
+				{
+					CPrintToChatAll("{lightblue}HUSCARLS! {gold}- {red}Running around in circles just to hit a wall!");
+				}
+			}
 		}
 		case 24:
 		{
-			CPrintToChatAll("{skyblue}HARRISON! {gold}- {red}His rockets surely won't miss you!");
+			switch(GetRandomInt(1, 2))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{skyblue}HARRISON! {gold}- {red}His rockets surely won't miss you!");
+				}
+				default:
+				{
+					CPrintToChatAll("{skyblue}HARRISON! {gold}- {red}His rockets surely won't miss you!");
+				}
+			}
 		}
 		case 25:	
 		{
-			CPrintToChatAll("{steelblue}CASTELLAN! {gold}- {red}In the name of Vesta, he won't allow you further in!");
+			switch(GetRandomInt(1, 2))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{steelblue}CASTELLAN! {gold}- {red}In the name of Vesta, he won't allow you further in!");
+				}
+				default:
+				{
+					CPrintToChatAll("{steelblue}CASTELLAN! {gold}- {red}In the name of Vesta, he won't allow you further in!");
+				}
+			}
 		}
 		case 26:
 		{
@@ -1324,7 +1414,17 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 27:
 		{
-			CPrintToChatAll("{gold}OMEGA! - {red}Waltzing straight to you.");
+			switch(GetRandomInt(1, 2))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{gold}OMEGA! - {red}Waltzing straight to you.");
+				}
+				default:
+				{
+					CPrintToChatAll("{gold}OMEGA! - {red}Waltzing straight to you.");
+				}
+			}
 		}
 		case 28:
 		{
@@ -1343,6 +1443,19 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		case 29:
 		{
 			CPrintToChatAll("{rare}A.R.I.S.! {gold}- {red}C.A.T. must have failed at stopping you.");
+		}
+		{
+			switch(GetRandomInt(1, 2))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{rare}A.R.I.S.! {gold}- {red}C.A.T. must have failed at stopping you.");
+				}
+				default:
+				{
+					CPrintToChatAll("{rare}A.R.I.S.! {gold}- {red}C.A.T. must have failed at stopping you.");
+				}
+			}
 		}
 		case 30:
 		{
@@ -1378,19 +1491,59 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 32:
 		{
-			CPrintToChatAll("{pink}REILA! {gold}- {red}Make sure you attack Reila herself first. I buffed her cause she has no umbrals supporting her");
+			switch(GetRandomInt(1, 2))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{pink}REILA! {gold}- {red}Make sure you attack Reila herself first. I buffed her cause she has no umbrals supporting her");
+				}
+				default:
+				{
+					CPrintToChatAll("{pink}REILA! {gold}- {red}Make sure you attack Reila herself first. I buffed her cause she has no umbrals supporting her");
+				}
+			}
 		}
 		case 33:
 		{
-			CPrintToChatAll("{black}JKEI! {gold}- {red}Hope we don't have to fight more from the Almagest Corporation. I buffed him cause he has no allies with him.");
+			switch(GetRandomInt(1, 2))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{black}JKEI! {gold}- {red}Hope we don't have to fight more from the Almagest Corporation. I buffed him cause he has no allies with him.");
+				}
+				default:
+				{
+					CPrintToChatAll("{black}JKEI! {gold}- {red}Hope we don't have to fight more from the Almagest Corporation. I buffed him cause he has no allies with him.");
+				}
+			}
 		}
 		case 34:
 		{
-			CPrintToChatAll("{darkgray}SHADOWING DARKNESS! {gold}- {red}The hardest challenge we have programmed into this. Good luck beating her.");
+			switch(GetRandomInt(1, 2))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{darkgray}SHADOWING DARKNESS! {gold}- {red}The hardest challenge we have programmed into this. Good luck beating her.");
+				}
+				default:
+				{
+					CPrintToChatAll("{darkgray}SHADOWING DARKNESS! {gold}- {red}The hardest challenge we have programmed into this. Good luck beating her.");
+				}
+			}
 		}
 		case 35:
 		{
-			CPrintToChatAll("{black}ZILIUS! {gold}- {snow}If you guys beat him, I'll join you as a thanks for saving me from him. {red}I made him stronger cause he doesn't have his army.");
+			switch(GetRandomInt(1, 2))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{black}ZILIUS! {gold}- {snow}If you guys beat him, I'll join you as a thanks for saving me from him. {red}I made him stronger cause he doesn't have his army.");
+				}
+				default:
+				{
+					CPrintToChatAll("{black}ZILIUS! {gold}- {snow}If you guys beat him, I'll join you as a thanks for saving me from him. {red}I made him stronger cause he doesn't have his army.");
+				}
+			}
 		}
 		case 36:
 		{
