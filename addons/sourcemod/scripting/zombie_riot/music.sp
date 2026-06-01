@@ -1063,13 +1063,13 @@ void Music_Update(int client)
 				{
 					if(DoesClientHaveMOSB(client))//"distorted" music
 					{
-						EmitCustomToClient(client, "#zombiesurvival/red_mist_lastman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.3, 68);//1.3 is volume, after that is pitch
+						EmitCustomToClient(client, "#zombiesurvival/red_mist_lastman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.3, 75);//1.3 is volume, after that is pitch
 					}
 					else
 					{
 						EmitCustomToClient(client, "#zombiesurvival/red_mist_lastman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.3);//1.3 is volume, after that is pitch
 					}
-					SetMusicTimer(client, GetTime() + 90);//uhhh idk what this does
+					SetMusicTimer(client, GetTime() + 91);
 				}
 				default:
 				{	

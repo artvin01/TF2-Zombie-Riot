@@ -5940,7 +5940,7 @@
 	}
 	"Claws of Savagery"
 	{
-		"en"	"Claws of Savagery:\nWhen taking over 50% max hp in 2 seconds \ngain 50% damage resistance for 4 seconds\n[M1]"
+		"en"	"Claws of Savagery:\nWhen taking over 50% max hp in 2 seconds \ngain 75% damage resistance for 4 seconds\n[M1]"
 	}
 	"The Role of the Wolf"
 	{
