@@ -751,9 +751,10 @@ stock void SetAmmo(int client, int type, int ammo)
 			ammo = 10;
 		//Never ever set lower then 1!!!
 		SetEntProp(client, Prop_Data, "m_iAmmo", ammo, _, Ammo_Metal_Sub);
+		RequestFrames(AutobuyMetalDelay, 2, EntIndexToEntRef(client), true);
 	}
 	SetEntProp(client, Prop_Data, "m_iAmmo", ammo, _, type);
-	RequestFrames(AutobuyMetalDelay, 2, EntIndexToEntRef(client), true);
+	//delay due to revive and allat
 }
 void AutobuyMetalDelay(int ref)
 {
