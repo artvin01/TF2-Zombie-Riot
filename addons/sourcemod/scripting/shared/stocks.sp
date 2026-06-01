@@ -753,9 +753,14 @@ stock void SetAmmo(int client, int type, int ammo)
 		SetEntProp(client, Prop_Data, "m_iAmmo", ammo, _, Ammo_Metal_Sub);
 	}
 	SetEntProp(client, Prop_Data, "m_iAmmo", ammo, _, type);
-	AutobuyMetal(client);
+	RequestFrames(AutobuyMetalDelay, 2, EntIndexToEntRef(client), true);
 }
-
+void AutobuyMetalDelay(int ref)
+{
+	int client = EntRefToEntIndex(ref);
+	if(IsValidClient(client))
+		AutobuyMetal(client);
+}
 #if defined _tf2items_included
 stock int SpawnWeapon(int client, char[] name, int index, int level, int qual, const int[] attrib, const float[] value, int count, int custom_classSetting = 0)
 {
