@@ -124,12 +124,12 @@ methodmap Whiteflower_Boss < CClotBody
 			{
 				static Race race;
 				Races_GetClientInfo(target, race);
-				if(StrEqual(race.Name, "Iberian"))
+				if(StrEqual(race.Name, "Alminan"))
 				{
 					switch(GetRandomInt(0,2))
 					{
 						case 0:
-							NpcSpeechBubble(this.index, "Iberians...", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
+							NpcSpeechBubble(this.index, "Alminans...", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
 						case 1:
 							NpcSpeechBubble(this.index, "Here comes payday.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 						case 2:
@@ -809,7 +809,7 @@ void WF_ThrowGrenadeHappening(Whiteflower_Boss npc)
 			float HealDo = 2500000.0;
 			WF_GrenadeSupportDo(npc.index, Grenade, GrenadeRangeDamage, GrenadeRangeSupport, HealDo);
 			float SpeedReturn[3];
-			ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 1.75, 1.0);
+			ArcToLocationViaSpeedProjectile(Grenade, vecTarget, SpeedReturn, 1.75, 1.0);
 			TeleportEntity(Grenade, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
 			//Throw a grenade towards the target!
 		}

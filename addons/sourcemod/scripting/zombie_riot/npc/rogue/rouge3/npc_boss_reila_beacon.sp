@@ -100,7 +100,7 @@ methodmap ReilaBeacon < CClotBody
 
 	public ReilaBeacon(float vecPos[3], float vecAng[3], int ally)
 	{
-		ReilaBeacon npc = view_as<ReilaBeacon>(CClotBody(vecPos, vecAng, IBERIA_BEACON, "0.3", "99999", ally, .NpcTypeLogic = 1));
+		ReilaBeacon npc = view_as<ReilaBeacon>(CClotBody(vecPos, vecAng, ALMINA_BEACON, "0.3", "99999", ally, .NpcTypeLogic = 1));
 		
 		i_NpcWeight[npc.index] = 999;
 		

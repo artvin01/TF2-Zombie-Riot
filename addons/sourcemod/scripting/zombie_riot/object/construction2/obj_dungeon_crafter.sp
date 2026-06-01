@@ -273,7 +273,7 @@ static void ApplyRandomEffect()
 	static ItemInfo info;
 
 	// Only a chance to grab a weapon someone actually owns
-	if((GetURandomInt() % 2) == 0)
+//	if((GetURandomInt() % 2) == 0)
 	{
 		ArrayList list = new ArrayList();
 

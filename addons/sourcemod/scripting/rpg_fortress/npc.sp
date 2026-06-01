@@ -642,10 +642,10 @@ stock bool AllyNpcInteract(int client, int entity, int weapon)
 #include "npc/whiteflower_combine_bodyguards/npc_combine_flowering_darkness.sp"
 #include "npc/whiteflower_combine_bodyguards/npc_combine_whiteflower.sp"
 
-#include "npc/seaborn/npc_sea_shared.sp"
-#include "npc/seaborn/npc_riversea_melee.sp"
-#include "npc/seaborn/npc_riversea_ranged.sp"
-#include "npc/seaborn/npc_riversea_fast.sp"
-#include "npc/seaborn/npc_riversea_tank.sp"
+#include "npc/dweller/npc_sea_shared.sp"
+#include "npc/dweller/npc_riversea_melee.sp"
+#include "npc/dweller/npc_riversea_ranged.sp"
+#include "npc/dweller/npc_riversea_fast.sp"
+#include "npc/dweller/npc_riversea_tank.sp"
 
 //#include "npc/superbosses/npc_levita.sp"

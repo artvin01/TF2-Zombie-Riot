@@ -37,6 +37,7 @@ static int Player_BuildingBeingCarried[MAXPLAYERS];
 static float PlayerWasHoldingProp[MAXPLAYERS];
 float PreventSameFrameActivation[2][MAXPLAYERS];
 int RandomIntSameRequestFrame[MAXPLAYERS];
+static int Toggle_MetalAutobuy[MAXPLAYERS];
 
 bool BuildingIsSupport(int entity)
 {
@@ -204,6 +205,7 @@ void Building_MapStart()
 
 void Building_ClientDisconnect(int client)
 {
+	Toggle_MetalAutobuy[client] = 0;
 	MenuSection[client] = -1;
 	MenuPage[client] = 0;
 }
@@ -240,6 +242,57 @@ static bool HasWrench(int client)
 		return false;
 
 	return true;
+}
+
+void AutobuyMetal(int client)
+{
+	switch(Toggle_MetalAutobuy[client])
+	{
+		case 0:
+		{
+			//disabled
+			return;
+		}
+		case 1, 2:
+		{
+			int metal = GetAmmo(client, Ammo_Metal);
+			//disabled
+			int MetalToMaxBuy = (Toggle_MetalAutobuy[client] * 500);
+			if(metal >= MetalToMaxBuy)
+				return;
+
+			int cash = CurrentCash - CashSpent[client];
+			if(StarterCashMode[client])
+			{
+				int maxCash = StartCash;
+				maxCash -= CashSpentLoadout[client];
+				cash = maxCash;
+			}
+			//metal to cost ratio
+			MetalToMaxBuy -= metal;
+
+			int TimesToBuy = RoundToCeil(float(MetalToMaxBuy) / float(AmmoData[Ammo_Metal][1]));
+
+			if((TimesToBuy * AmmoData[Ammo_Metal][0]) >= cash)
+				return;
+			
+			CashSpent[client] += AmmoData[Ammo_Metal][0] * TimesToBuy;
+			CashSpentTotal[client] += AmmoData[Ammo_Metal][0] * TimesToBuy;
+			CashSpentLoadout[client] += AmmoData[Ammo_Metal][0] * TimesToBuy;
+			
+			int ammo = GetAmmo(client, Ammo_Metal) + (AmmoData[Ammo_Metal][1] * TimesToBuy);
+			SetAmmo(client, Ammo_Metal, ammo);
+			CurrentAmmo[client][Ammo_Metal] = ammo;
+			TellClientBoughtAmmo(client, AmmoData[Ammo_Metal][1] * TimesToBuy,AmmoData[Ammo_Metal][0] * TimesToBuy);
+
+		}
+	}
+}
+
+void TellClientBoughtAmmo(int client, int metalbought, int cashused)
+{
+	SPrintToChat(client, "%t", "Just Bought Ammo Automatically",metalbought, cashused);
+	ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
 }
 
 static int GetCost(int client, BuildingInfo info, float multi)
@@ -344,8 +397,8 @@ static void BuildingMenu(int client)
 
 	if(MenuSection[client] == -1 || !ducking)
 	{
-		FormatEx(buffer1, sizeof(buffer1), "%t [%d] ($%d)", "Scrap Metal", AmmoData[Ammo_Metal][1], AmmoData[Ammo_Metal][0]);
-		menu.AddItem(buffer1, buffer1, cash < AmmoData[Ammo_Metal][0] ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
+		FormatEx(buffer1, sizeof(buffer1), "%t", "Scrap Metal Auto Buy", (Toggle_MetalAutobuy[client] * 500));
+		menu.AddItem(buffer1, buffer1, ITEMDRAW_DEFAULT);
 
 		FormatEx(buffer1, sizeof(buffer1), "%t x10 [%d] ($%d)%s", "Scrap Metal", AmmoData[Ammo_Metal][1] * 10, AmmoData[Ammo_Metal][0] * 10, MenuSection[client] == -1 ? "" : "\n ");
 		menu.AddItem(buffer1, buffer1, cash < (AmmoData[Ammo_Metal][0] * 10) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
@@ -570,14 +623,9 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 					{
 						case 0:
 						{
-							CashSpent[client] += AmmoData[Ammo_Metal][0];
-							CashSpentTotal[client] += AmmoData[Ammo_Metal][0];
-							CashSpentLoadout[client] += AmmoData[Ammo_Metal][0];
-							ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
-							
-							int ammo = GetAmmo(client, Ammo_Metal) + AmmoData[Ammo_Metal][1];
-							SetAmmo(client, Ammo_Metal, ammo);
-							CurrentAmmo[client][Ammo_Metal] = ammo;
+							Toggle_MetalAutobuy[client]++;
+							if(Toggle_MetalAutobuy[client] >= 3)
+								Toggle_MetalAutobuy[client] = 0;
 						}
 						case 1:
 						{
@@ -613,14 +661,9 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 					{
 						case 0:
 						{
-							CashSpent[client] += AmmoData[Ammo_Metal][0];
-							CashSpentTotal[client] += AmmoData[Ammo_Metal][0];
-							CashSpentLoadout[client] += AmmoData[Ammo_Metal][0];
-							ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
-							
-							int ammo = GetAmmo(client, Ammo_Metal) + AmmoData[Ammo_Metal][1];
-							SetAmmo(client, Ammo_Metal, ammo);
-							CurrentAmmo[client][Ammo_Metal] = ammo;
+							Toggle_MetalAutobuy[client]++;
+							if(Toggle_MetalAutobuy[client] >= 3)
+								Toggle_MetalAutobuy[client] = 0;
 						}
 						case 1:
 						{

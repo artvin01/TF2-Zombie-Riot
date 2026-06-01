@@ -30,14 +30,14 @@ static void ClotPrecache()
 	NPC_GetByPlugin("npc_medival_archer");
 	NPC_GetByPlugin("npc_selfam_ire");
 	NPC_GetByPlugin("npc_searunner");
-	NPC_GetByPlugin("npc_victorian");
+	NPC_GetByPlugin("npc_vestan");
 	NPC_GetByPlugin("npc_refragmented_headcrabzombie");
 	NPC_GetByPlugin("npc_refragmented_fastzombie");
 	NPC_GetByPlugin("npc_refragmented_poisonzombie");
 	NPC_GetByPlugin("npc_last_survivor");
 	NPC_GetByPlugin("npc_medival_construct");
 	NPC_GetByPlugin("npc_vaus_magica");
-	NPC_GetByPlugin("npc_firsttotalk");
+	NPC_GetByPlugin("npc_dwellerhybrid");
 	NPC_GetByPlugin("npc_speedus_initus");
 	NPC_GetByPlugin("npc_refragmented_combine_police_pistol");
 	NPC_GetByPlugin("npc_refragmented_combine_soldier_ar2");
@@ -45,7 +45,7 @@ static void ClotPrecache()
 	NPC_GetByPlugin("npc_combine_soldier_giant_swordsman");
 	NPC_GetByPlugin("npc_medival_crossbow_giant");
 	NPC_GetByPlugin("npc_siccerino");
-	NPC_GetByPlugin("npc_seaborn_heavy");
+	NPC_GetByPlugin("npc_dweller_heavy");
 	NPC_GetByPlugin("npc_sea_xploder");
 	NPC_GetByPlugin("npc_refragmented_heavy");
 	NPC_GetByPlugin("npc_refragmented_medic");
@@ -53,7 +53,7 @@ static void ClotPrecache()
 	NPC_GetByPlugin("npc_combine_soldier_deutsch_ritter");
 	NPC_GetByPlugin("npc_medival_samurai");
 	NPC_GetByPlugin("npc_ignitus");
-	NPC_GetByPlugin("npc_netherseaspewer");
+	NPC_GetByPlugin("npc_abyssspewer");
 	NPC_GetByPlugin("npc_pulverizer");
 	NPC_GetByPlugin("npc_refragmented_parasihtta");
 	NPC_GetByPlugin("npc_refragmented_defectio");
@@ -169,7 +169,7 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 				}
 				case 8,9:
 				{
-					PortalGateSpawn(npc.index, "npc_victorian", pos, ang, team, 800);
+					PortalGateSpawn(npc.index, "npc_vestan", pos, ang, team, 800);
 				}
 				case 10:
 				{
@@ -204,7 +204,7 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 				}
 				case 6,7:
 				{
-					PortalGateSpawn(npc.index, "npc_firsttotalk", pos, ang, team, 2500);
+					PortalGateSpawn(npc.index, "npc_dwellerhybrid", pos, ang, team, 2500);
 				}
 				case 8,9:
 				{
@@ -243,7 +243,7 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 				}
 				case 6,7:
 				{
-					PortalGateSpawn(npc.index, "npc_seaborn_heavy", pos, ang, team, 5000);
+					PortalGateSpawn(npc.index, "npc_dweller_heavy", pos, ang, team, 5000);
 				}
 				case 8,9:
 				{
@@ -282,7 +282,7 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 				}
 				case 6,7:
 				{
-					PortalGateSpawn(npc.index, "npc_netherseaspewer", pos, ang, team, 12500);
+					PortalGateSpawn(npc.index, "npc_abyssspewer", pos, ang, team, 12500);
 				}
 				case 8,9:
 				{
@@ -382,7 +382,7 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 				}
 				case 8,9:
 				{
-					PortalGateSpawn(npc.index, "npc_victorian", pos, ang, team, 800);
+					PortalGateSpawn(npc.index, "npc_vestan", pos, ang, team, 800);
 				}
 				case 10:
 				{
@@ -416,7 +416,7 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 				}
 				case 6,7:
 				{
-					PortalGateSpawn(npc.index, "npc_firsttotalk", pos, ang, team, 2500);
+					PortalGateSpawn(npc.index, "npc_dwellerhybrid", pos, ang, team, 2500);
 				}
 				case 8,9:
 				{
@@ -454,7 +454,7 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 				}
 				case 6,7:
 				{
-					PortalGateSpawn(npc.index, "npc_seaborn_heavy", pos, ang, team, 5000);
+					PortalGateSpawn(npc.index, "npc_dweller_heavy", pos, ang, team, 5000);
 				}
 				case 8,9:
 				{
@@ -492,7 +492,7 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 				}
 				case 6,7:
 				{
-					PortalGateSpawn(npc.index, "npc_netherseaspewer", pos, ang, team, 12500);
+					PortalGateSpawn(npc.index, "npc_abyssspewer", pos, ang, team, 12500);
 				}
 				case 8,9:
 				{

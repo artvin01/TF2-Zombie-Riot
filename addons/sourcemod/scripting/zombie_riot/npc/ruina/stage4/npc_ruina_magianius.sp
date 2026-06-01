@@ -160,7 +160,7 @@ methodmap Magianius < CClotBody
 			Der Wintermantel			"models/workshop/player/items/medic/medic_wintercoat_s02/medic_wintercoat_s02.mdl"
 			"The Breakneck Baggies"		"models/workshop/player/items/all_class/jogon/jogon_%s.mdl"
 			"Scourge of the Sky" 		"models/workshop/player/items/medic/spr18_scourge_of_the_sky/spr18_scourge_of_the_sky.mdl"
-			"Victorian Villainy"		"models/workshop/player/items/medic/hwn2022_victorian_villainy_style3/hwn2022_victorian_villainy_style3.mdl"
+			"Vestan Villainy"		"models/workshop/player/items/medic/hwn2022_victorian_villainy_style3/hwn2022_victorian_villainy_style3.mdl"
 			"The Virus Doctor"			"models/workshop/player/items/medic/robo_medic_grimm_hatte/robo_medic_grimm_hatte.mdl"
 			
 		

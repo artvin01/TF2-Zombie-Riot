@@ -331,7 +331,7 @@ methodmap Sensal < CClotBody
 		{
 			i_RaidGrantExtra[npc.index] = 50;
 		}
-		bool cutscene2 = StrContains(data, "victoria_cutscene") != -1;
+		bool cutscene2 = StrContains(data, "vesta_cutscene") != -1;
 		if(cutscene2)
 		{
 			i_RaidGrantExtra[npc.index] = 51;
@@ -579,7 +579,7 @@ static void Internal_ClotThink(int iNPC)
 			}
 			case 2:
 			{
-				NPCPritToChat_Override("Victoria Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-3", false);
+				NPCPritToChat_Override("Vesta Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-3", false);
 			}
 			case 3:
 			{
@@ -591,7 +591,7 @@ static void Internal_ClotThink(int iNPC)
 			}
 			case 5:
 			{
-				NPCPritToChat_Override("Victoria Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-6", false);
+				NPCPritToChat_Override("Vesta Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-6", false);
 			}
 			case 6:
 			{
@@ -599,7 +599,7 @@ static void Internal_ClotThink(int iNPC)
 			}
 			case 7:
 			{
-				NPCPritToChat_Override("Victoria Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-8", false);
+				NPCPritToChat_Override("Vesta Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-8", false);
 			}
 			case 8:
 			{
@@ -607,7 +607,7 @@ static void Internal_ClotThink(int iNPC)
 			}
 			case 9:
 			{
-				NPCPritToChat_Override("Victoria Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-10", false);
+				NPCPritToChat_Override("Vesta Castellan", "{steelblue}", "Castellan_And_Sensal_Talk-10", false);
 				for (int client = 1; client <= MaxClients; client++)
 				{
 					if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
@@ -2335,10 +2335,10 @@ static void Sensal_Weapon_Lines(Sensal npc, int client)
 		 							case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvester{default}, you...");}
 		case WEAPON_SICCERINO,WEAPON_WALDCH_SWORD_NOVISUAL:  Format(Text_Lines, sizeof(Text_Lines), "How do you have access to such {gold}Expidonsan{default} weaponry {gold}%N{default}?",client);
 		case WEAPON_WALDCH_SWORD_REAL:  Format(Text_Lines, sizeof(Text_Lines), "What? How did you get this elite blade {gold}%N{default}?",client);
-		case WEAPON_NEARL:  Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvester{default} decided to visit Kazimierz?");
+		case WEAPON_NEARL:  Format(Text_Lines, sizeof(Text_Lines), "{gold}Silvester{default} decided to visit Grunwald?");
 		case WEAPON_KAHMLFIST:  Format(Text_Lines, sizeof(Text_Lines), "Kahmlstein caused enough problems as it is.");
 		case WEAPON_KIT_BLITZKRIEG_CORE:  Format(Text_Lines, sizeof(Text_Lines), "This machine is gone now, use it better then it has {gold}%N{default}.",client);
-		case WEAPON_IRENE:  Format(Text_Lines, sizeof(Text_Lines), "Iberia's Weapons!? Looks like the secret is out of the bag now...");
+		case WEAPON_AMPHI:  Format(Text_Lines, sizeof(Text_Lines), "Almina's Weapons!? Looks like the secret is out of the bag now...");
 		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "OH MY GOD, {snow}BOB THE FIRST{default} IS ON YOUR SIDE?!");
 		case WEAPON_ANGELIC_SHOTGUN:  Format(Text_Lines, sizeof(Text_Lines), "How did you get {lightblue}Nemal's{default} weapon {gold}%N{default}?",client);
 		case WEAPON_IMPACT_LANCE:  Format(Text_Lines, sizeof(Text_Lines), "That lance... the only weapon that was forged from both {snow}Ruina{default} and {gold}Expidonsa{default}...");

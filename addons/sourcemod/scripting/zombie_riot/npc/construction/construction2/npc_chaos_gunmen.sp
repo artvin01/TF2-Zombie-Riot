@@ -274,7 +274,7 @@ int ChaosGunmen_SelfDefense(ChaosGunmen npc, float distance, float vecTarget[3],
 			PredictSubjectPositionForProjectiles(npc, npc.m_iTarget, projectile_speed,_,vecTarget);
 		}
 		npc.FaceTowards(vecTarget, 30000.0);	
-		float damage = 140.0;
+		float damage = 160.0;
 
 		int arrow = npc.FireArrow(vecTarget, damage, projectile_speed, "models/weapons/w_bullet.mdl", 2.0);	
 

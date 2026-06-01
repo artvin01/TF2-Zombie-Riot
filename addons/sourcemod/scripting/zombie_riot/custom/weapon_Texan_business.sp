@@ -34,7 +34,9 @@ public void Weapon_TexanBuisness(int attacker, float &damage, int damagetype)
 				velocity[2] += 150.0;    // a little boost to alleviate arcing issues
 
 			TeleportEntity(attacker, NULL_VECTOR, NULL_VECTOR, velocity);
+			SummonerRenerateResources(attacker, 24.0, 0.0, true);
 		}
+		SummonerRenerateResources(attacker, 6.4, 0.0, true);
 	}
 }
 

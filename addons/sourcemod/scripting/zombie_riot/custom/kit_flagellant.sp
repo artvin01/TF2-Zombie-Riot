@@ -954,7 +954,7 @@ static void TriggerDeathDoor(int client, int &healing)
 	}
 }
 
-int GetClientPointVisiblePlayersNPCs(int iClient, float flDistance, float vecEndOrigin[3], bool enemy)
+int GetClientPointVisiblePlayersNPCs(int iClient, float flDistance, float vecEndOrigin[3], bool enemy, bool prioritizeAlliedPlayers = false)
 {
 	float vecOrigin[3], vecAngles[3];
 	GetClientEyePosition(iClient, vecOrigin);
@@ -962,9 +962,32 @@ int GetClientPointVisiblePlayersNPCs(int iClient, float flDistance, float vecEnd
 	
 	Handle hTrace;
 	if(enemy)
+	{
 		hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( MASK_SOLID | CONTENTS_SOLID ), RayType_Infinite, Trace_ClientOrNPCEnemy, iClient);
+	}
 	else
-		hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( MASK_SOLID | CONTENTS_SOLID ), RayType_Infinite, Trace_ClientOrNPCAlly, iClient);
+	{
+		if (prioritizeAlliedPlayers)
+		{
+			// Only look for players because NPCs might be getting in the way
+			hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( MASK_SOLID | CONTENTS_SOLID ), RayType_Infinite, Trace_ClientAlly, iClient);
+			TR_GetEndPosition(vecEndOrigin, hTrace);
+			
+			int iHit = TR_GetEntityIndex(hTrace);
+			if (0 < iHit <= MaxClients && GetVectorDistance(vecOrigin, vecEndOrigin, true) < (flDistance * flDistance))
+			{
+				delete hTrace;
+				return iHit;
+			}
+			
+			// Couldn't find a player, just check for NPCs now
+			hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( MASK_SOLID | CONTENTS_SOLID ), RayType_Infinite, Trace_NPCAlly, iClient);
+		}
+		else
+		{
+			hTrace = TR_TraceRayFilterEx(vecOrigin, vecAngles, ( MASK_SOLID | CONTENTS_SOLID ), RayType_Infinite, Trace_ClientOrNPCAlly, iClient);
+		}
+	}
 	
 	TR_GetEndPosition(vecEndOrigin, hTrace);
 	
@@ -1008,6 +1031,34 @@ public bool Trace_ClientOrNPCAlly(int entity, int mask, any data)
 		if(IsValidAlly(data, entity))
 			return true;
 	}
+	
+	if(!b_NpcHasDied[entity])
+	{
+		if(IsValidAlly(data, entity))
+			return true;
+	}
+	
+	return false;
+}
+
+public bool Trace_ClientAlly(int entity, int mask, any data)
+{
+	if(entity == data)
+		return false;
+	
+	if(entity <= MaxClients)
+	{
+		if(IsValidAlly(data, entity))
+			return true;
+	}
+	
+	return false;
+}
+
+public bool Trace_NPCAlly(int entity, int mask, any data)
+{
+	if(entity == data)
+		return false;
 	
 	if(!b_NpcHasDied[entity])
 	{

@@ -78,11 +78,11 @@
 	}
 	"Nemal Arrived"
 	{
-		"en" 		"The Iberia/Expidonsan Nemal is here."
+		"en" 		"The Almina/Expidonsan Nemal is here."
 		"ru" 		"Иберец/Экспидонец Немал прибыла."
-		"fr" 		"Le Iberiain/Expidonsian Nemal est ici."
-		"it"		"L'Iberia/Expidonsan Nemal è arrivato."
-		"ko" 		"이베리아/엑스피돈사 출신, 네말이 등장했습니다."
+		"fr" 		"Le Alminain/Expidonsian Nemal est ici."
+		"it"		"L'Almina/Expidonsan Nemal è arrivato."
+		"ko" 		"알미나/엑스피돈사 출신, 네말이 등장했습니다."
 	}
 	"Vhxis arrived"
 	{
@@ -417,13 +417,13 @@
 		"it"	"È apparso un Portale del Vuoto..."
 		"ko"	"공허 게이트가 나타났습니다..."
 	}
-	"Iberian Lighthouse Teleported in!"
+	"Alminan Lighthouse Teleported in!"
 	{
-		"en"	"Iberian Lighthouse Teleported in!"
+		"en"	"Alminan Lighthouse Teleported in!"
 		"ru" 	"Маяк Иберии Телепортировался!"
-		"fr"	"Une phare Iberiain s'est téléporté ici!"
+		"fr"	"Une phare Alminain s'est téléporté ici!"
 		"it"	"Faro iberico teletrasportato!"
-		"ko"	"이베리아 등대가 나타났습니다!"
+		"ko"	"알미나 등대가 나타났습니다!"
 	}
 	"Snipers Appear"
 	{
@@ -677,11 +677,11 @@
 		"it"		"Una promessa è una promessa"
 		"ko"		"약속은 약속이니까"
 	}
-	"Victorian Radiomast Is Here!"
+	"Vestan Radiomast Is Here!"
 	{
-		"en"	"Victorian Radiomast Is Here! Break this to end the infinite wave"
+		"en"	"Vestan Radiomast Is Here! Break this to end the infinite wave"
 		"it"	"Il Radiomast vittoriano è arrivato! Rompilo per porre fine all'onda infinita."
-		"ko"	"빅토리아 방송탑이 여기에 있습니다! 파괴하여 무한 웨이브를 중단시키세요!"
+		"ko"	"베스타 방송탑이 여기에 있습니다! 파괴하여 무한 웨이브를 중단시키세요!"
 	}
 	"Atomizer Arrived"
 	{
@@ -697,9 +697,9 @@
 	}
 	"Harrison Arrived"
 	{
-		"en" 		 "The Pilot of Victorian Artillery, Harrison Arrived."
+		"en" 		 "The Pilot of Vestan Artillery, Harrison Arrived."
 		"it"		 "Il pilota dell'artiglieria vittoriana, Harrison, è arrivato."
-		"ko" 		 "빅토리아 포병대의 조종사, 해리슨이 도착했습니다."
+		"ko" 		 "베스타 포병대의 조종사, 해리슨이 도착했습니다."
 	}
 	"Castellan Arrived"
 	{
