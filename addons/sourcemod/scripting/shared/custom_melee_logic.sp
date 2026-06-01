@@ -258,6 +258,10 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			{
 				enemies_hit_aoe = 3;
 			}
+			case WEAPON_RED_MIST:
+			{
+				Red_Mist_Horizontal_Slash_DoSwingTrace(client, CustomMeleeRange, CustomMeleeWide, ignore_walls, enemies_hit_aoe);
+			}
 		}	
 	}
 #endif

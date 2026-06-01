@@ -5920,4 +5920,36 @@
 		"#format"	"{1:d}"
 		"en" 		"You dont own enough coffins, you need atleast {1} Coffins."
 	}
+	"Prey"
+	{
+		"en"	"Prey:\nEvery 20 seconds the first enemy you hit gets marked\nmarked enemies takes 50% more damage(35% if boss, 25% if raidboss)\nKilling the marked enemy heals for 20% max hp"
+	}
+	"Vengeance"
+	{
+		"en"	"Vengeance:\nIf max HP is at 50%/33%/25% or lower, gain stacking 1/2/4 Strength(5% bonus dmg dealt)"
+	}
+	"Claws of Savagery"
+	{
+		"en"	"Claws of Savagery:\nWhen taking over 50% max hp in 2 seconds gain 50% damage resistance for 4 seconds"
+	}
+	"The Role of the Wolf"
+	{
+		"en"	"The Role of the Wolf:\nCounter can take more damage before breaking\nIncreased counter count from 15 to 30"
+	}
+	"Absorption"
+	{
+		"en"	"Absorption:\nKilling an enemy heals you for 5% max hp\nFor each 20% max hp healed with this effect gain 1 strenght for 20 seconds"
+	}
+	"Mountain of Corpses"
+	{
+		"en"	"Mountain of Corpses:\nDoes nothing normally\nIf last man activates while this page is chosen gain 10 Strength and 10 Protection.\nDie after 120 seconds from this effects activation"
+	}
+	"Vampirism"
+	{
+		"en"	"Vampirism:\nRecover a small amount of hp on hit, scales with paps"
+	}
+	"Deep Wound"
+	{
+		"en"	"Deep Wound:\nEvery 5th hit inflict bleed onto the enemy"
+	}
 }

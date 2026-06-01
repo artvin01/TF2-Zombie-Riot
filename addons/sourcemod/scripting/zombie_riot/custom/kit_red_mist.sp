@@ -2,6 +2,7 @@
 #pragma newdecls required
 
 static Handle h_Red_Mist_Timer[MAXPLAYERS] = {null, ...};
+static Handle RM_Lastman_Timer[MAXPLAYERS] = {null, ...};
 static bool counter_timer_exists[MAXPLAYERS];
 static bool savagery_timer_exists[MAXPLAYERS];
 static bool Ego_Active[MAXPLAYERS];
@@ -13,6 +14,7 @@ static bool lms_buffs_given[MAXPLAYERS] = false;
 static bool Prey_Mark_Cooldown[MAXPLAYERS];
 static bool Ego_Cooldown_given[MAXPLAYERS];
 static bool Onrush_Is_In_Dash[MAXPLAYERS];
+static bool RM_Lastman_Buffs_applied[MAXPLAYERS] = false;
 static int WeaponLevel[MAXPLAYERS];
 static int ref_MeleeWeapon[MAXPLAYERS];
 static int last_recorded_pap[MAXPLAYERS] = {0, ...};
@@ -21,6 +23,7 @@ static int current_abno_card_selection[MAXPLAYERS] = {0, ...};
 static int counter_dice_amount[MAXPLAYERS] = {15, ...};
 static int absorption_counter[MAXPLAYERS] = {0, ...};
 static int Strenght_Amount[MAXPLAYERS];
+//static int Endurance_Amount[MAXPLAYERS]; only a single card gives this, not worth it making it its own thing
 static int Abno_Pages[MAXPLAYERS];
 static int Deep_Wound_Counter[MAXPLAYERS];
 static int Ego_Energy[MAXPLAYERS];
@@ -94,6 +97,8 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 			Special_Cooldowns[client][2] = GetGameTime() + 15.00;
 			ClientCommand(client, "playgamesound weapons/buffed_off.wav");
 			Ego_Cooldown_given[client] = true;
+			current_card_selection[client] = 2;
+			Special_Active[client] = false;
 		}
 	}
 	if(Onrush_Redash_Window[client] < GetGameTime() && redashes[client] > 0)
@@ -104,10 +109,48 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 		Onrush_Is_In_Dash[client] = false;
 		PrintToChatAll("redash window expired");
 	}
+	if(LastMann)
+	{
+		if(!RM_Lastman_Buffs_applied[client])
+		{
+			Strenght_Amount[client] += 10;
+			RM_Lastman_Timer[client] = CreateTimer(15.0, MOSB_Lastman_Execution, client);
+			RM_Lastman_Buffs_applied[client] = true;
+		}
+	}
+	if(!LastMann)
+	{
+		if(RM_Lastman_Buffs_applied[client])
+		{
+			Strenght_Amount[client] -= 10; //if it isnt lms but buffs were applied. aka lms ended, remove buffs and kill death timer
+			delete RM_Lastman_Timer[client];
+			RM_Lastman_Buffs_applied[client] = false;
+		}
+	}
+	
 	b_IsCannibal[client] = true;
 	//HeartBroken_HUD(client);
 	return Plugin_Continue;
 
+}
+
+void Red_Mist_Horizontal_Slash_DoSwingTrace(int client, float &CustomMeleeRange, float &CustomMeleeWide, bool &ignore_walls, int &enemies_hit_aoe)
+{
+	if(Special_Active[client] && current_card_selection[client] == 3)
+	{
+		CustomMeleeRange = MELEE_RANGE * 1.8;
+		CustomMeleeWide = MELEE_BOUNDS * 5.0;
+		enemies_hit_aoe = 25; //lol
+		ignore_walls = false;
+	}
+	else
+	{
+		CustomMeleeRange = MELEE_RANGE;
+		CustomMeleeWide = MELEE_BOUNDS;
+		enemies_hit_aoe = 1;
+		ignore_walls = false;
+	}
+	
 }
 
 public void Red_Mist_OnMapStart()
@@ -274,6 +317,14 @@ public void Red_Mist_OnTakeDamage_Take(int victim, int &attacker, int &inflictor
 			counter_dice_amount[victim] -= 1;
 		}	
 	}
+	if(LastMann)
+	{
+		if(Abno_Pages[victim] & ABNORMPAGE_MOSB)
+		{
+			damage *= 0.5;
+		}
+	}
+
 }
 
 public Action Timer_RM_CD_Restore(Handle timer, int client)
@@ -313,6 +364,11 @@ public Action UnFreeze_Onrush(Handle timer, int client)
 	SetEntityMoveType(client, MOVETYPE_WALK);
 	return Plugin_Handled;
 }
+public Action MOSB_Lastman_Execution(Handle timer, int client)
+{
+	//kill client
+	return Plugin_Handled;
+}
 
 public void Red_Mist_OnTakeDamage_Deal(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int zr_custom_damage)
 {
@@ -325,6 +381,8 @@ public void Red_Mist_OnTakeDamage_Deal(int victim, int &attacker, int &inflictor
 		Onrush_Is_In_Dash[attacker] = false;
 		SetEntityMoveType(attacker, MOVETYPE_NONE);
 		CreateTimer(0.5, UnFreeze_Onrush, attacker);
+		ApplyTempAttrib(attacker, 206, 0.5, 0.5);
+		ApplyTempAttrib(attacker, 205, 0.5, 0.5);
 	}
 	Strenght_boost[attacker] = 1.0 + (0.05 * Strenght_Amount[attacker]);
 	damage *= Strenght_boost[attacker];
@@ -382,6 +440,20 @@ public void Red_Mist_OnTakeDamage_Deal(int victim, int &attacker, int &inflictor
 			damage *= 25.0;
 			Special_Active[attacker] = false;
 			Special_Cooldowns[attacker][1] = GetGameTime() + 5.00;
+			return;
+		}
+		if(current_card_selection[attacker] == 3)//horizontal slash
+		{
+			damage *= 5.0;
+			//just temp stuff so compiler doesn't bitch, actual values are in the void above
+			//float RangeDo;
+			//float RangeDo2;
+			//bool invalid1;
+			//int invalid2;
+			//Red_Mist_Horizontal_Slash_DoSwingTrace(attacker, RangeDo, RangeDo2, invalid1, invalid2);
+			//Special_Active[attacker] = false;
+			//Special_Cooldowns[attacker][3] = GetGameTime() + 10.00;
+			return;
 		}
 	}
 	if(Ego_Active[attacker])
@@ -447,13 +519,10 @@ public void Red_Mist_Main_Attack(int client, int weapon)
 		}
 		if(current_card_selection[client] == 3)//horizontal
 		{
-			//animation here
-			Special_Cooldowns[client][3] = GetGameTime() + 5.00;
+			
+			Special_Active[client] = false;
+			Special_Cooldowns[client][3] = GetGameTime() + 10.00;
 		}
-	}
-	else if(Onrush_Is_In_Dash[client])
-	{
-		
 	}
 	else
 	{
@@ -472,6 +541,11 @@ public void Red_Mist_Main_Attack(int client, int weapon)
 		}
 		PrintToChatAll("Strength Amount [%d]", Strenght_Amount[client]);
 	}
+	float RangeDo;
+	float RangeDo2;
+	bool invalid1;
+	int invalid2;
+	Red_Mist_Horizontal_Slash_DoSwingTrace(client, RangeDo, RangeDo2, invalid1, invalid2);//here so it checks the attack type each attack, so after using 3rd special attack it resets back to base attacks
 }
 
 public void Red_Mist_Onrush(int client, int weapon)
@@ -525,6 +599,7 @@ public void Red_Mist_Onrush(int client, int weapon)
 	}
 	Onrush_Is_In_Dash[client] = true;
 	Onrush_Redash_Window[client] = GetGameTime() + 2.5;
+	SetEntityMoveType(client, MOVETYPE_WALK);
 	TF2_AddCondition(client, TFCond_LostFooting, 0.35);
 	TF2_AddCondition(client, TFCond_AirCurrent, 0.35);
 	ApplyStatusEffect(client, client, "Intangible", 0.3);
@@ -553,11 +628,44 @@ public void Red_Mist_Special_Cycle(int client, int weapon)//for cycling through 
     {
 		if(current_abno_card_selection[client] == 0 || current_abno_card_selection[client] == 2 )
 		{
+			if(last_recorded_pap[client] == 1)
+			{
+				PrintToChat(client, "%t", "Prey");
+			}
+			if(last_recorded_pap[client] == 2)
+			{
+				PrintToChat(client, "%t", "Claws of Savagery");
+			}
+			if(last_recorded_pap[client] == 3)
+			{
+				PrintToChat(client, "%t", "Absorption");
+			}
+			if(last_recorded_pap[client] == 4)
+			{
+				PrintToChat(client, "%t", "Vampirism");
+			}
 			current_abno_card_selection[client] = 1;
+
 		}
 		else if(current_abno_card_selection[client] == 1)
 		{
 			current_abno_card_selection[client] = 2;
+			if(last_recorded_pap[client] == 1)
+			{
+				PrintToChat(client, "%t", "Vengeance");
+			}
+			if(last_recorded_pap[client] == 2)
+			{
+				PrintToChat(client, "%t", "The Role of the Wolf");
+			}
+			if(last_recorded_pap[client] == 3)
+			{
+				PrintToChat(client, "%t", "Mountain of Corpses");
+			}
+			if(last_recorded_pap[client] == 4)
+			{
+				PrintToChat(client, "%t", "Deep Wound");
+			}
 		}
 		PrintToChat(client, "Current abno Card [%d]", current_abno_card_selection[client]);
 			
@@ -711,6 +819,8 @@ public void Red_Mist_Special(int client, int weapon)//for activating currently s
 			else
 			{
 				float Ability_CD = Special_Cooldowns[client][1] - GetGameTime();
+				if(Ability_CD < 0.0)
+					Ability_CD = 0.0;
 				ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 			}
 			if(current_card_selection[client] == 2 && Special_Cooldowns[client][2] < GetGameTime())
@@ -721,6 +831,8 @@ public void Red_Mist_Special(int client, int weapon)//for activating currently s
 			else
 			{
 				float Ability_CD = Special_Cooldowns[client][2] - GetGameTime();
+				if(Ability_CD < 0.0)
+					Ability_CD = 0.0;
 				ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 			}
 			if(current_card_selection[client] == 3 && Special_Cooldowns[client][3] < GetGameTime())
@@ -731,6 +843,8 @@ public void Red_Mist_Special(int client, int weapon)//for activating currently s
 			else
 			{
 				float Ability_CD = Special_Cooldowns[client][3] - GetGameTime();
+				if(Ability_CD < 0.0)
+					Ability_CD = 0.0;
 				ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 			}
 			
