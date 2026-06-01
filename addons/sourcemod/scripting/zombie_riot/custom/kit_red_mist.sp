@@ -159,7 +159,7 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 		redash_cooldown[client] = GetGameTime() + 7.5;
 		//Ability_Apply_Cooldown(client, 2, 7.5);
 		Onrush_Is_In_Dash[client] = false;
-		PrintToChatAll("redash window expired");
+		//PrintToChatAll("redash window expired");
 	}
 	if(LastMann)
 	{
@@ -168,7 +168,7 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 			if(Abno_Pages[client] & ABNORMPAGE_MOSB)//give bonus buffs if MOSB is picked
 			{
 				Strenght_Amount[client] += 10;
-				RM_Lastman_Timer[client] = CreateTimer(30.0, MOSB_Lastman_Execution, client);
+				RM_Lastman_Timer[client] = CreateTimer(90.0, MOSB_Lastman_Execution, client);
 				EmitCustomToAll("zombiesurvival/medieval_raid/special_mutation/arkantos_scream_buff.mp3", client, SNDCHAN_STATIC, 120, _, 1.0, 75);
 			}
 			Ego_Active[client] = true;
@@ -176,8 +176,8 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 			Ego_Energy[client] = 1000;
 			ApplyStatusEffect(client, client, "Ego Manifestation", 9999.0);
 			RM_Lastman_Buffs_applied[client] = true;
-			PrintToChatAll("enabled last man buffs");
-			PrintToChatAll("%b", Ego_Active[client]);
+			//PrintToChatAll("enabled last man buffs");
+			//PrintToChatAll("%b", Ego_Active[client]);
 		}
 	}
 	if(!LastMann)
@@ -194,8 +194,8 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 			RemoveSpecificBuff(client, "Ego Manifestation");
 			RM_Lastman_Buffs_applied[client] = false;
 			Ego_Energy[client] = 0;
-			PrintToChatAll("disabled last man buffs");
-			PrintToChatAll("%b", Ego_Active[client]);
+			//PrintToChatAll("disabled last man buffs");
+			//PrintToChatAll("%b", Ego_Active[client]);
 
 		}
 	}
@@ -360,19 +360,19 @@ public void Red_Mist_OnTakeDamage_Take(int victim, int &attacker, int &inflictor
 	{
 		float MaxHealth = float(SDKCall_GetMaxHealth(victim));
 		Burst_Damage_Taken[victim] += damage;
-		PrintToChat(victim, "damage taken: [%.1f]", Burst_Damage_Taken[victim]);
+		//PrintToChat(victim, "damage taken: [%.1f]", Burst_Damage_Taken[victim]);
 		if(Burst_Damage_Taken[victim] > MaxHealth / 2)
 		{
-			ApplyStatusEffect(client, client, "Savagery Buff", 4.0);
+			ApplyStatusEffect(victim, victim, "Savagery Buff", 4.0);
 			//ApplyTempAttrib(equipped_weapon, 206, 0.5, 4.0);
 			//ApplyTempAttrib(equipped_weapon, 205, 0.5, 4.0);
-			PrintToChat(victim, "damage res activated");
+			//PrintToChat(victim, "damage res activated");
 			EmitSoundToClient(victim, "physics/nearmiss/whoosh_large1.wav", victim, _, 70, _, 1.0, 100);
 		}
 		if(!savagery_timer_exists[victim])
 		{
 			CreateTimer(2.0, Savagery_Reset_damage, victim);
-			PrintToChat(victim, "dmg timer started");
+			//PrintToChat(victim, "dmg timer started");
 			savagery_timer_exists[victim] = true;
 		}
 	}
@@ -406,8 +406,8 @@ public void Red_Mist_OnTakeDamage_Take(int victim, int &attacker, int &inflictor
 					{
 						CreateTimer(10.0, Timer_RM_CD_Restore, victim);
 						counter_dice_amount[victim] = 0;
-						PrintToChat(victim, "damage taken: [%.1f]", damage);
-						PrintToChatAll("dice broke");
+						//PrintToChat(victim, "damage taken: [%.1f]", damage);
+						//PrintToChatAll("dice broke");
 						counter_timer_exists[victim] = true;
 						EmitSoundToClient(victim, "physics/glass/glass_cup_break2.wav", victim, _, 70, _, 1.0, 100);
 					}
@@ -440,7 +440,7 @@ public void Red_Mist_OnTakeDamage_Take(int victim, int &attacker, int &inflictor
 					pack.WriteCell(ZR_DAMAGE_REFLECT_LOGIC);
 					RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
 					damage *= 0.5;
-					PrintToChatAll("countered");
+					//PrintToChatAll("countered");
 					counter_dice_amount[victim] -= 1;
 				}	
 			}
@@ -468,13 +468,13 @@ public Action Timer_RM_CD_Restore(Handle timer, int client)
 		counter_dice_amount[client] = 15;
 	}
 	counter_timer_exists[client] = false;
-	PrintToChatAll("dice Recovered");
+	//PrintToChatAll("dice Recovered");
 	return Plugin_Handled;
 }
 
 public Action Savagery_Reset_damage(Handle timer, int client)
 {
-	PrintToChat(client, "dmg burst timer");
+	//PrintToChat(client, "dmg burst timer");
 	Burst_Damage_Taken[client] = 0.0;
 	savagery_timer_exists[client] = false;
 	return Plugin_Handled;
@@ -483,7 +483,7 @@ public Action Savagery_Reset_damage(Handle timer, int client)
 public Action Absorption_Remove_Strength(Handle timer, int client)
 {
 	Strenght_Amount[client] -= 1;
-	PrintToChat(client, "Absorption strenght removed");
+	//PrintToChat(client, "Absorption strenght removed");
 	return Plugin_Handled;
 }
 
@@ -543,10 +543,10 @@ public void Red_Mist_OnTakeDamage_Deal(int victim, int &attacker, int &inflictor
 	}
 	if(Abno_Pages[attacker] & ABNORMPAGE_PREY)
 	{
-		PrintToChatAll("prey code works");
+		//PrintToChatAll("prey code works");
 		if(Prey_Mark_Cooldown[attacker])//if cooldown is over
 		{
-			PrintToChatAll("applied mark");
+			//PrintToChatAll("applied mark");
 			ApplyStatusEffect(attacker, victim, "Mark Of Prey", 30.0);
 			Prey_Mark_Cooldown[attacker] = false;
 			EmitSoundToClient(attacker, "weapons/samurai/tf_marked_for_death_indicator.wav", attacker, _, 70, _, 1.0, 60);
@@ -556,14 +556,14 @@ public void Red_Mist_OnTakeDamage_Deal(int victim, int &attacker, int &inflictor
 		if(HasSpecificBuff(victim, "Mark Of Prey"))
 		{
 			EmitSoundToClient(attacker, PREY_MARKED_SOUND, attacker, _, 70, _, 1.0, 60);
-			PrintToChatAll("enemy debuffed");
-			if(b_thisNpcIsABoss[victim])
-			{
-				damage *= 1.35;
-			}	
-			else if(b_thisNpcIsARaid[victim])
+			//PrintToChatAll("enemy debuffed");
+			if(b_thisNpcIsARaid[victim])
 			{
 				damage *= 1.25;
+			}	
+			else if(b_thisNpcIsABoss[victim])
+			{
+				damage *= 1.35;
 			}
 			else
 			{
@@ -602,17 +602,17 @@ public void Red_Mist_On_Kill(int victim, int killer, int weapon)
 {
 	if(Abno_Pages[killer] & ABNORMPAGE_ABSORPTION)
 	{
-		PrintToChatAll("absorption works");
+		//PrintToChatAll("absorption works");
 		float MaxHealth = float(SDKCall_GetMaxHealth(killer));
 		float HealByThis = (MaxHealth * 0.05);
 		HealEntityGlobal(killer, killer, HealByThis, 1.0, 2.0, HEAL_SELFHEAL);
 		absorption_counter[killer] += 1;
-		PrintToChat(killer, "Absorption heal triggered");
+		//PrintToChat(killer, "Absorption heal triggered");
 		if(absorption_counter[killer] >= 4)
 		{
 			absorption_counter[killer] = 0;
 			Strenght_Amount[killer] += 1;
-			PrintToChat(killer, "Absorption strenght trigered");
+			//PrintToChat(killer, "Absorption strenght trigered");
 			CreateTimer(15.0, Absorption_Remove_Strength, killer);
 		}
 	}
@@ -620,7 +620,7 @@ public void Red_Mist_On_Kill(int victim, int killer, int weapon)
 	{
 		float MaxHealth = float(SDKCall_GetMaxHealth(killer));
 		HealEntityGlobal(killer, killer, MaxHealth * 0.2, 1.0, 2.0, HEAL_SELFHEAL);
-		PrintToChatAll("Marked Enemy Died");
+		//PrintToChatAll("Marked Enemy Died");
 	}
 }
 
@@ -628,7 +628,7 @@ public void Red_Mist_Main_Attack(int client, int weapon)
 {
 	if(Special_Active[client])
 	{
-		PrintToChatAll("Special attack");
+		//PrintToChatAll("Special attack");
 		if(current_card_selection[client] == 1)//vertical
 		{
 			Handle swingTrace;
@@ -691,7 +691,7 @@ public void Red_Mist_Main_Attack(int client, int weapon)
 			attackspeed = (attackspeed / 0.25);
 			Attributes_Set(weapon, 6, attackspeed); //Make it really fast for 1 hit!
 		}
-		PrintToChatAll("Strength Amount [%d]", Strenght_Amount[client]);
+		//PrintToChatAll("Strength Amount [%d]", Strenght_Amount[client]);
 	}
 	if(Special_Damage_Boost[client])//we do this cuz "special_active" gets disabled before this function gets called, so this is a small workaround
 	{
@@ -706,7 +706,7 @@ public void Red_Mist_Onrush(int client, int weapon)
 	{
 		redash_cooldown[client] = GetGameTime() + 7.5;
 		Ability_Apply_Cooldown(client, 2, 7.5);
-		PrintToChatAll("too many redashes");
+		//PrintToChatAll("too many redashes");
 		redashes[client] = 0;
 		Onrush_Is_In_Dash[client] = false;
 		return;
@@ -792,28 +792,28 @@ public void Red_Mist_Special_M1(int client, int weapon)//for activating currentl
 			{
 				Abno_Pages[client] |= ABNORMPAGE_PREY;
 				EmitSoundToClient(client, PAGE_SELECT_SOUND, client, _, 70, _, 1.0, 90);
-				PrintToChatAll("pray 1");
+				//PrintToChatAll("pray 1");
 				last_recorded_pap[client] += 1; //add +1 so you cant skip upgrades if you mass pap
 			}
 			case 1://abno pages for 2nd pap
 			{
 				Abno_Pages[client] |= ABNORMPAGE_SAVAGERY;
 				EmitSoundToClient(client, PAGE_SELECT_SOUND, client, _, 70, _, 1.0, 90);
-				PrintToChatAll("savagery 1");
+				//PrintToChatAll("savagery 1");
 				last_recorded_pap[client] += 1; //add +1 so you cant skip upgrades if you mass pap
 			}
 			case 2://abno pages for 3rd pap
 			{
 				Abno_Pages[client] |= ABNORMPAGE_ABSORPTION;
 				EmitSoundToClient(client, PAGE_SELECT_SOUND, client, _, 70, _, 1.0, 90);
-				PrintToChatAll("absorption 1");
+				//PrintToChatAll("absorption 1");
 				last_recorded_pap[client] += 1; //add +1 so you cant skip upgrades if you mass pap
 			}
 			case 3://abno pages for 4th pap
 			{
 				Abno_Pages[client] |= ABNORMPAGE_VAMPIRISM;
 				EmitSoundToClient(client, PAGE_SELECT_SOUND, client, _, 70, _, 1.0, 90);
-				PrintToChatAll("vampirism 1");
+				//PrintToChatAll("vampirism 1");
 				last_recorded_pap[client] += 1; //add +1 so you cant skip upgrades if you mass pap
 			}
 		}
@@ -824,7 +824,7 @@ public void Red_Mist_Special_M1(int client, int weapon)//for activating currentl
 		{
 			Special_Active[client] = false; //disable special attack
 			EmitSoundToClient(client, PAGE_DESELECT_SOUND, client, _, 70, _, 1.0, 90);
-			PrintToChatAll("Special off");
+			//PrintToChatAll("Special off");
 		}
 		else
 		{
@@ -833,10 +833,10 @@ public void Red_Mist_Special_M1(int client, int weapon)//for activating currentl
 				Special_Active[client] = true;
 				current_card_selection[client] = 1;
 				EmitSoundToClient(client, PAGE_SELECT_SOUND, client, _, 70, _, 1.0, 90);
-				PrintToChatAll("Special 1 on");
+				//PrintToChatAll("Special 1 on");
 			}
 		}
-		PrintToChat(client, "Current Card [%d]", current_card_selection[client]);
+		//PrintToChat(client, "Current Card [%d]", current_card_selection[client]);
 	}
 }
 
@@ -879,7 +879,7 @@ public void Red_Mist_Special_M2(int client, int weapon)
 		{
 			Special_Active[client] = false; //disable special attack
 			EmitSoundToClient(client, PAGE_DESELECT_SOUND, client, _, 70, _, 1.0, 90);
-			PrintToChatAll("Special off");
+			//PrintToChatAll("Special off");
 		}
 		else
 		{
@@ -892,7 +892,7 @@ public void Red_Mist_Special_M2(int client, int weapon)
 						Special_Active[client] = true;
 						current_card_selection[client] = 3;
 						EmitSoundToClient(client, PAGE_SELECT_SOUND, client, _, 70, _, 1.0, 90);
-						PrintToChatAll("Special 3 on");
+						//PrintToChatAll("Special 3 on");
 					}
 				}
 				else
@@ -902,14 +902,14 @@ public void Red_Mist_Special_M2(int client, int weapon)
 						Special_Active[client] = true;
 						current_card_selection[client] = 2;
 						EmitSoundToClient(client, PAGE_SELECT_SOUND, client, _, 70, _, 1.0, 90);
-						PrintToChatAll("Special 2 on");
+						//PrintToChatAll("Special 2 on");
 					}
 				}
 				
 				
 			}
 		}
-		PrintToChat(client, "Current Card [%d]", current_card_selection[client]);
+		//PrintToChat(client, "Current Card [%d]", current_card_selection[client]);
 	}
 }
 
@@ -958,7 +958,7 @@ void Abornmality_Page_Display(int client)
 			float Ability_CD = Special_Cooldowns[client][1] - GetGameTime();
 			if(Ability_CD < 0.0)
 				Ability_CD = 0.0;
-			ShowSyncHudText(client, SyncHud_WandMana, "%t", "Ability has cooldown", Ability_CD);
+			ShowSyncHudText(client, SyncHud_WandMana, "%t", "Red Mist cooldown", Ability_CD);
 		}
 		else if(Special_Active[client] && current_card_selection[client] == 1)
 		{
@@ -1008,7 +1008,7 @@ void Abornmality_Page_Display(int client)
 					float Ability_CD = Special_Cooldowns[client][3] - GetGameTime();
 					if(Ability_CD < 0.0)
 						Ability_CD = 0.0;
-					ShowSyncHudText(client, SyncHud_ArmorCounter, "%t", "Ability has cooldown", Ability_CD);
+					ShowSyncHudText(client, SyncHud_ArmorCounter, "%t", "Red Mist cooldown", Ability_CD);
 				}
 				else if(Special_Active[client] && current_card_selection[client] == 3)
 				{
@@ -1026,7 +1026,7 @@ void Abornmality_Page_Display(int client)
 					float Ability_CD = Special_Cooldowns[client][2] - GetGameTime();
 					if(Ability_CD < 0.0)
 						Ability_CD = 0.0;
-					ShowSyncHudText(client, SyncHud_ArmorCounter, "%t", "Ability has cooldown", Ability_CD);
+					ShowSyncHudText(client, SyncHud_ArmorCounter, "%t", "Red Mist cooldown", Ability_CD);
 				}
 				else if(Special_Active[client] && current_card_selection[client] == 2)
 				{

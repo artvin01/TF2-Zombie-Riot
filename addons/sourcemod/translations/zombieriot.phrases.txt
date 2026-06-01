@@ -5952,7 +5952,7 @@
 	}
 	"Mountain of Corpses"
 	{
-		"en"	"Mountain of Corpses:\nDoes nothing normally\nIf last man activates while this page is chosen \ngain 10 Strength and 10 Protection.\nDie after 120 seconds after activation\n[M2]"
+		"en"	"Mountain of Corpses:\nDoes nothing normally\nIf last man activates while this page is chosen \ngain 10 Strength and 50% damage reduction.\nDie after 90 seconds after activation\n[M2]"
 	}
 	"Vampirism"
 	{
@@ -5981,5 +5981,10 @@
 	"Red Mist Card Selected"
 	{
 		"en"	"Card Selected"
+	}
+	"Red Mist cooldown"
+	{
+		"#format"	"{1:.1f}"
+		"en" 		"Card on cooldown ({1} seconds!)"
 	}
 }
