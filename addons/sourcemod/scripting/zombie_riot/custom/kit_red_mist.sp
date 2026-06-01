@@ -30,6 +30,8 @@ static int Ego_Energy[MAXPLAYERS];
 static int redashes[MAXPLAYERS];
 static float redash_cooldown[MAXPLAYERS];
 static float Special_Cooldowns[MAXPLAYERS][4]; //IT WORKS :D, who needs premade cooldowns when you can make your own
+// Note from artvin: this will not work with any cooldown reductions or any "on hit" cooldown reductions unless its specifically coded in.
+
 static float Strenght_boost[MAXPLAYERS];
 static float Burst_Damage_Taken[MAXPLAYERS];
 static float Onrush_Redash_Window[MAXPLAYERS];
@@ -42,6 +44,9 @@ static float Onrush_Redash_Window[MAXPLAYERS];
 #define ABNORMPAGE_MOSB             (1 << 5)
 #define ABNORMPAGE_VAMPIRISM        (1 << 6)
 #define ABNORMPAGE_DEEP_WOUND       (1 << 7)
+
+#define ABNORM_ENTER_SOUND "replay/enterperformancemode.wav"
+#define ABNORM_EXIT_SOUND	"replay/exitperformancemode.wav"
 
 public void Enable_Red_Mist(int client, int weapon)
 {
@@ -127,7 +132,19 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 			RM_Lastman_Buffs_applied[client] = false;
 		}
 	}
-	
+	int Active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	int SecondaryWeap = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
+	if(Active == SecondaryWeap)
+	{
+		Abornmality_Page_Display(client);
+	}	
+	else if(IsIn_HitDetectionCooldown(client,client, RedMist_WasInAbnorm))
+	{
+		EmitSoundToClient(client, ABNORM_EXIT_SOUND, client, _, 70, _, 1.0, 90);
+		EntityKilled_HitDetectionCooldown(client, RedMist_WasInAbnorm);
+		UTIL_ScreenFade(client, 1, 1, FFADE_PURGE, 0, 0, 0, 233);
+		UTIL_ScreenFade(client, 66, 66, FFADE_OUT, 0, 0, 0, 233);
+	}
 	b_IsCannibal[client] = true;
 	//HeartBroken_HUD(client);
 	return Plugin_Continue;
@@ -155,6 +172,8 @@ void Red_Mist_Horizontal_Slash_DoSwingTrace(int client, float &CustomMeleeRange,
 
 public void Red_Mist_OnMapStart()
 {
+	PrecacheSound(ABNORM_ENTER_SOUND);
+	PrecacheSound(ABNORM_EXIT_SOUND);
     //precache stuff
 	Zero(Abno_Pages);
 	Zero2(Special_Cooldowns);
@@ -854,4 +873,38 @@ public void Red_Mist_Special(int client, int weapon)//for activating currently s
 
 		PrintToChat(client, "Current Card [%d]", current_card_selection[client]);
 	}
+}
+
+
+void Abornmality_Page_Display(int client)
+{
+
+	if(IsIn_HitDetectionCooldown(client,client, RedMist_AbnormSelect))
+	{
+		return;
+	}
+	Set_HitDetectionCooldown(client,client, GetGameTime() + 0.25, RedMist_AbnormSelect);
+	if(!IsIn_HitDetectionCooldown(client,client, RedMist_WasInAbnorm))
+	{
+		EmitSoundToClient(client, ABNORM_ENTER_SOUND, client, _, 70, _, 1.0, 90);
+	}
+	Set_HitDetectionCooldown(client,client, FAR_FUTURE, RedMist_WasInAbnorm);
+	int red = 255;
+	int green = 50;
+	int blue = 50;
+	//For each abnorm page, each side.
+	SetHudTextParams(0.15 + GetRandomFloat(-0.01, 0.01), 0.5 + GetRandomFloat(-0.01, 0.01), 0.25, red, green, blue, 255);
+//	ShowSyncHudText(client, SyncHud_WandMana, "%T\n [M1]","Ability has cooldown", client, 5.0);
+	ShowSyncHudText(client, SyncHud_WandMana, "The big kill\nHoly shit is that the red mist?\n [M1]");
+
+	SetHudTextParams(0.65 + GetRandomFloat(-0.01, 0.01), 0.5 + GetRandomFloat(-0.01, 0.01), 0.25, red, green, blue, 255);
+//	ShowSyncHudText(client, SyncHud_ArmorCounter, "%T\n [M2]", "Ability has cooldown", client, 5.0);
+	ShowSyncHudText(client, SyncHud_ArmorCounter, "Absorbtion\nGain health on kill\n [M2]");
+	//hide the huds used for this
+	delay_hud[client] = GetGameTime() + 0.4;
+	Mana_Hud_Delay[client] = GetGameTime() + 0.4;
+	f_DisplayDamageHudCooldown[client] = GetGameTime() + 0.4;
+	Set_HitDetectionCooldown(client,client, GetGameTime() + 0.4, DontUpdateHudClient);
+	UTIL_ScreenFade(client, 33, 9999999, FFADE_IN, 0, 0, 0, 233);
+
 }

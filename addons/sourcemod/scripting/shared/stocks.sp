@@ -5895,6 +5895,9 @@ enum
 	Boomerang = 5,
 	ShadowingSlicer = 6,
 	ReilaSlash = 7,
+	RedMist_AbnormSelect = 8,
+	RedMist_WasInAbnorm = 9,
+	DontUpdateHudClient = 10,
 }
 
 enum struct HitDetectionEnum
