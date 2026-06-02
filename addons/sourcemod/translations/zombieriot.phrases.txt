@@ -5973,6 +5973,10 @@
 		"en"	"Deep Wound:\nEvery 5th hit inflict bleed onto the enemy\n[M2]"
 		"ko"	"깊은 상처:\n매 5번째 적중 시 적에게 출혈 부여\n[M2]"
 	}
+	"Greater Slash Vertical"
+	{
+		"en"	"Perform a powerful single target slash\nSwing your sword once the page is selected\n[M1]"
+	}
 	"Greater Slash Horizontal"
 	{
 		"en"	"Perform a powerful aoe slash \nin front of yourself\nSwing your sword once the page is selected\n[M2]"
