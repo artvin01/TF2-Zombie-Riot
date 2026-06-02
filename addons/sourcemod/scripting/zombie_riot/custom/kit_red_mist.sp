@@ -254,7 +254,7 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 		EmitSoundToClient(client, ABNORM_EXIT_SOUND, client, _, 70, _, 1.0, 90);
 		EntityKilled_HitDetectionCooldown(client, RedMist_WasInAbnorm);
 		UTIL_ScreenFade(client, 1, 1, FFADE_PURGE, 0, 0, 0, 233);
-		UTIL_ScreenFade(client, 66, 66, FFADE_OUT, 0, 0, 0, 233);
+	//	UTIL_ScreenFade(client, 66, 66, FFADE_OUT, 0, 0, 0, 233);
 	}
 	b_IsCannibal[client] = true;
 	//HeartBroken_HUD(client);
@@ -304,6 +304,7 @@ bool RM_Precached = false;
 public void RedMist_ResetAbnorms()
 {
 	Zero(Abno_Pages);
+	Zero(last_recorded_pap);
 }
 public void Red_Mist_OnMapStart()
 {
