@@ -605,7 +605,8 @@ public void OnPostThink(int client)
 			max_mana[client] = 9999999.9;
 		}
 					
-		Mana_Hud_Delay[client] = 0.0;
+		if(!IsIn_HitDetectionCooldown(client,client, DontUpdateHudClient))
+			Mana_Hud_Delay[client] = 0.0;
 	}
 	//A part of Ruina's special mana "corrosion"
 	if(Current_Mana[client] > RoundToCeil(max_mana[client]+10.0))	
@@ -3562,7 +3563,8 @@ void RPG_Sdkhooks_StaminaBar(int client)
 #endif
 stock void SDKhooks_SetManaRegenDelayTime(int client, float time)
 {
-	Mana_Hud_Delay[client] = 0.0;
+	if(!IsIn_HitDetectionCooldown(client,client, DontUpdateHudClient))
+		Mana_Hud_Delay[client] = 0.0;
 #if defined ZR
 	if(Mana_Regen_Delay[client] < GetGameTime() + time)
 		Mana_Regen_Delay[client] = GetGameTime() + time;

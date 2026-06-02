@@ -5462,4 +5462,52 @@
 		"en"	"-Applies more stacks of burn and tremor\n-Increased bonus damage against enemies with burn and tremor\n-R ability inflicts Tremor Burst an additional time (with ammo)"
 		"ko"	"-화상, 진동을 추가로 부여\n-화상, 진동을 보유한 대상에게 피해량 증가 효과 강화\n-탄환 보유 시, R키 능력이 진동 폭발을 추가로 발동"
 	}
+	"The Red Mist"
+	{
+		"en"	"The Red Mist"
+	}
+	"Red Mist Mimicry"
+	{
+		"en"	"Mimicry"
+	}
+	"Card Selection"
+	{
+		"en"	"Card Selection"
+	}
+	"The Red Mist Desc"
+	{
+		"en"	"Personal weapon of a long lost fixer\n-Gain a choosable upgrade on certain enhances\n-Has a passive counter with limited durability when not attacking\n-Specializes in prolonged fights"
+	}
+	"The Red Mist Desc 1"
+	{
+		"en"	"-Tiny stat increases"
+	}
+	"The Red Mist Desc 2"
+	{
+		"en"	"-Gain an upgrade point\n-Overall Stat Increases"
+	}
+	"The Red Mist Desc 3"
+	{
+		"en"	"-Gain a dash attack which you can chain up to 5 times\n-Overall Stat Increases"
+	}
+	"The Red Mist Desc 4"
+	{
+		"en"	"-Gain an upgrade point\n-Overall Stat Increases"
+	}
+	"The Red Mist Desc 5"
+	{
+		"en"	"-Gain an upgrade point\nUnlocks new special card\n-Overall Stat Increases"
+	}
+	"The Red Mist Desc 6"
+	{
+		"en"	"-Gain an upgrade point\n-Overall Stat Increases"
+	}
+	"The Red Mist Desc 7"
+	{
+		"en"	"-Overall Stat Increases"
+	}
+	"The Red Mist Desc 8"
+	{
+		"en"	"-Overall Stat Increases"
+	}
 }

@@ -5930,4 +5930,61 @@
 		"#format"	"{1:d}"
 		"en" 		"You dont own enough coffins, you need atleast {1} Coffins."
 	}
+	"Prey"
+	{
+		"en"	"Prey:\nEvery 20 seconds the first\n enemy you hit gets marked\nmarked enemies take 50％ more damage\n(35％ if boss, 25％ if raidboss)\nKilling the marked enemy heals for 20％ max hp.\n[M1]"
+	}
+	"Vengeance"
+	{
+		"en"	"Vengeance:\nIf max HP is at 50％/33％/25％ or lower, \ngain stacking 1/2/4 Strength\n[M2]"
+	}
+	"Claws of Savagery"
+	{
+		"en"	"Claws of Savagery:\nWhen taking over 50％ max hp in 2 seconds \ngain 75％ damage resistance for 4 seconds\n[M1]"
+	}
+	"The Role of the Wolf"
+	{
+		"en"	"The Role of the Wolf:\nCounter can take more damage before breaking\nIncreased counter count from 15 to 30\n[M2]"
+	}
+	"Absorption"
+	{
+		"en"	"Absorption:\nKilling an enemy heals you for 5％ max hp\nFor each 20％ max hp healed with \nthis effect gain 1 strenght for 20 seconds\n[M1]"
+	}
+	"Mountain of Corpses"
+	{
+		"en"	"Mountain of Corpses:\nDoes nothing normally\nIf last man activates while this page is chosen \ngain 10 Strength and 50％ damage reduction.\nDie after 120 seconds after activation\n[M2]"
+	}
+	"Vampirism"
+	{
+		"en"	"Vampirism:\nRecover a small amount of hp on hit \nscales with enhances\n[M1]"
+	}
+	"Deep Wound"
+	{
+		"en"	"Deep Wound:\nEvery 5th hit inflict bleed onto the enemy\n[M2]"
+	}
+	"Greater Slash Vertical"
+	{
+		"en"	"Perform a powerful single target slash\n[M1]"
+	}
+	"Greater Slash Horizontal"
+	{
+		"en"	"Perform a powerful aoe slash \nin front of yourself\n[M2]"
+	}
+	"Red Mist Ego"
+	{
+		"en"	"Enter an empowered state \nSlowly lose energy overtime \nattack enemies to regain energy\n[M2]"
+	}
+	"Red Mist Card Locked"
+	{
+		"en"	"Locked"
+	}
+	"Red Mist Card Selected"
+	{
+		"en"	"Card Selected"
+	}
+	"Red Mist cooldown"
+	{
+		"#format"	"{1:.1f}"
+		"en" 		"Card on cooldown ({1} seconds!)"
+	}
 }

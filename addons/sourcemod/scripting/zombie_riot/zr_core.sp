@@ -335,7 +335,8 @@ enum
     WEAPON_KIT_PURGE_MISC = 163,
 	WEAPON_BOMB_AR = 164,
 	WEAPON_BRICK = 165,
-	WEAPON_BURNINGTHUMB = 166
+	WEAPON_BURNINGTHUMB = 166,
+	WEAPON_RED_MIST = 167
 }
 
 enum
@@ -749,6 +750,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/weapon_guiding_missile.sp"
 #include "custom/kit_heartbroken.sp"
 #include "custom/weapon_burningthumb.sp"
+#include "custom/kit_red_mist.sp"
 
 void ZR_PluginLoad()
 {
@@ -2398,6 +2400,19 @@ void TriggerLastmanLogic(int killed, int Hurtviasdkhook)
 					HeartBrokenMassRevive(client);
 					Yakuza_Lastman(15);
 				}
+				if(IsDistorted(client))
+				{
+					if(Abno_Pages[client] & ABNORMPAGE_MOSB)//special lms text
+					{
+						CPrintToChatAll("{maroon}The mountain of dead bodies resonates with {darkgrey}%N...",client);
+					}
+					else//normal lms
+					{
+						CPrintToChatAll("{darkgrey}Even with all this strength {fullred}%N {darkgrey}still failed to protect everyone",client);
+					}
+					Yakuza_Lastman(16);
+				}
+				
 				
 				for(int i=1; i<=MaxClients; i++)
 				{
@@ -3380,6 +3395,7 @@ void ForcePlayerWin(bool fakeout = false)
 		RemoveAllCustomMusic();
 		Native_ZR_OnWinTeam(TFTeam_Red);
 
+		WeaponUpdateDo();
 	}
 }
 
@@ -3420,6 +3436,7 @@ void ForcePlayerLoss(bool WasRaid = true)
 	MusicWin.Clear();
 	MusicLoss.Clear();
 	RaidMusicSpecial1.Clear();
+	WeaponUpdateDo();
 }
 
 
@@ -3459,6 +3476,7 @@ void ZR_FastDownloadForce()
 	Cheese_PrecacheMusic();
 	Core_PrecacheGlobalCustom();
 	PrecacheMusicZr();
+	PrecacheRedMistMusic();
 }
 
 
@@ -3685,4 +3703,9 @@ bool ZR_AllowLastman()
 		return true;
 		
 	return false;
+}
+
+void WeaponUpdateDo()
+{
+	RedMist_ResetAbnorms();
 }
