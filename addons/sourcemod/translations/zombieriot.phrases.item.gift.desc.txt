@@ -1583,7 +1583,7 @@
 	{
 		"en"		"I'm not infected, I'm not dweller! Please god!\n- Spawns at it's ally with the lowest health ratio, if successful, grants self buff"
 		"it"		"Non sono infetto, non sono un Dweller! Per favore, Dio!\n- Spawna sull'alleato con il rapporto di salute più basso, se ha successo, concede un auto-buffo"
-		"ko"		"''난 감염되지 않았어! 난 드웰러가 아니라고! 제발!!''\n-이 적은 현재 가장 체력 비율이 낮은 시본 적군의 위치에서 생성됩니다.\n-성공적으로 생성되면, 자가 버프를 얻습니다."
+		"ko"		"''난 감염되지 않았어! 난 드웰러가 아니라고! 제발!!''\n-이 적은 현재 가장 체력 비율이 낮은 드웰러 계열 적군의 위치에서 생성됩니다.\n-성공적으로 생성되면, 자가 버프를 얻습니다."
 	}
 	"Dweller Supporter Desc"
 	{
