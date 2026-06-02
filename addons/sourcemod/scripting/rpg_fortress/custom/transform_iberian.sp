@@ -12,7 +12,7 @@ static const char MissSound[][] =
 	"weapons/fx/nearmiss/bulletltor13.wav",
 	"weapons/fx/nearmiss/bulletltor14.wav",
 };
-void Transform_Iberian_MapStart()
+void Transform_Alminan_MapStart()
 {
 	PrecacheSoundArray(MissSound);
 	PrecacheSound("player/taunt_yeti_appear_snow.wav");
@@ -22,36 +22,36 @@ void Transform_Iberian_MapStart()
 }
 
 
-public void Iberian_Activation_Enable_form_1(int client)
+public void Alminan_Activation_Enable_form_1(int client)
 {
-	Iberian_Activation_Enable_Global(client, 1);
+	Alminan_Activation_Enable_Global(client, 1);
 }
 
-public void Iberian_Activation_Enable_form_2(int client)
+public void Alminan_Activation_Enable_form_2(int client)
 {
-	Iberian_Activation_Enable_Global(client, 2);
+	Alminan_Activation_Enable_Global(client, 2);
 }
-public void Iberian_Activation_Enable_form_3(int client)
+public void Alminan_Activation_Enable_form_3(int client)
 {
-	Iberian_Activation_Enable_Global(client, 3);
+	Alminan_Activation_Enable_Global(client, 3);
 }
-public void Iberian_Activation_Enable_form_4(int client)
+public void Alminan_Activation_Enable_form_4(int client)
 {
-	Iberian_Activation_Enable_Global(client, 4);
+	Alminan_Activation_Enable_Global(client, 4);
 }
 
-public void Iberian_Activation_Deactivate_form_4(int client)
+public void Alminan_Activation_Deactivate_form_4(int client)
 {
 	Expidonsa_InRageMode[client] = false;
 }
-public void Iberian_4thFormNameSpecial(int client, char name[256])
+public void Alminan_4thFormNameSpecial(int client, char name[256])
 {
 	if(Expidonsa_InRageMode[client])
 	{
 		strcopy(name, sizeof(name), "Perfected Instinct");
 	}
 }
-public void Iberian_TakeDamage4th(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public void Alminan_TakeDamage4th(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(Expidonsa_InRageMode[victim])
 	{
@@ -81,7 +81,7 @@ public void Iberian_TakeDamage4th(int victim, int &attacker, int &inflictor, flo
 		damage = 0.0;
 	}
 }
-public void Iberian_4thFormStatMulti(int client, int WhatStat, float StatNum,  float &MultiCurrent)
+public void Alminan_4thFormStatMulti(int client, int WhatStat, float StatNum,  float &MultiCurrent)
 {
 	if(!Expidonsa_InRageMode[client])
 	{
@@ -106,7 +106,7 @@ public void Iberian_4thFormStatMulti(int client, int WhatStat, float StatNum,  f
 		}
 	}
 }
-public void Iberian_Activation_Enable_Global(int client, int level)
+public void Alminan_Activation_Enable_Global(int client, int level)
 {
 	Expidonsa_InRageMode[client] = false;
 	switch(level)
@@ -151,7 +151,7 @@ public void Iberian_Activation_Enable_Global(int client, int level)
 	}
 	delete Timer_Expidonsan_Transform[client];
 	DataPack pack;
-	Timer_Expidonsan_Transform[client] = CreateDataTimer(0.5, TimerIberian_Transform, pack, TIMER_REPEAT);
+	Timer_Expidonsan_Transform[client] = CreateDataTimer(0.5, TimerAlminan_Transform, pack, TIMER_REPEAT);
 	pack.WriteCell(client);
 	i_TransformInitLevel[client] = i_TransformationLevel[client];
 	
@@ -237,7 +237,7 @@ public void Iberian_Activation_Enable_Global(int client, int level)
 }
 
 
-public Action TimerIberian_Transform(Handle timer, DataPack pack)
+public Action TimerAlminan_Transform(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int client = pack.ReadCell();

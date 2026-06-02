@@ -47,7 +47,8 @@ static int NPCId;
 static float GlobalCooldown;
 static int LastGameTime;
 
-static IntMap WeaponPacked;
+
+static StringMap WeaponPacked;
 
 void ObjectGemCrafter_MapStart()
 {
@@ -272,7 +273,7 @@ static void ApplyRandomEffect()
 	static ItemInfo info;
 
 	// Only a chance to grab a weapon someone actually owns
-	if((GetURandomInt() % 2) == 0)
+//	if((GetURandomInt() % 2) == 0)
 	{
 		ArrayList list = new ArrayList();
 
@@ -326,9 +327,11 @@ static void ApplyRandomEffect()
 	int type = (1 + (GetURandomInt() % (Pack_MAX - 1)));
 
 	if(!WeaponPacked)
-		WeaponPacked = new IntMap();
+		WeaponPacked = new StringMap();
 	
-	WeaponPacked.SetValue(index, type);
+	char IntMapReplace[16];
+	IntToString(index, IntMapReplace, sizeof(IntMapReplace));
+	WeaponPacked.SetValue(IntMapReplace, type);
 
 	Store_GetItemData(index, item, info);
 
@@ -358,8 +361,10 @@ static bool ValidWeapon(int index, Item item, ItemInfo info)
 
 bool GemCrafter_HasEffect(int index)
 {
+	char IntMapReplace[16];
+	IntToString(index, IntMapReplace, sizeof(IntMapReplace));
 	if(WeaponPacked)
-		return WeaponPacked.ContainsKey(index);
+		return WeaponPacked.ContainsKey(IntMapReplace);
 	
 	return false;
 }
@@ -369,7 +374,9 @@ void GemCrafter_ExtraDesc(int client, int index)
 	if(WeaponPacked)
 	{
 		int type = -1;
-		if(WeaponPacked.GetValue(index, type) && type >= 0)
+		char IntMapReplace[16];
+		IntToString(index, IntMapReplace, sizeof(IntMapReplace));
+		if(WeaponPacked.GetValue(IntMapReplace, type) && type >= 0)
 		{
 			char buffer[64];
 			FormatEx(buffer, sizeof(buffer), "%s Desc", PackName[type]);
@@ -384,8 +391,10 @@ void GemCrafter_Enable(int client, int weapon)
 {
 	if(WeaponPacked && client)
 	{
+		char IntMapReplace[16];
+		IntToString(StoreWeapon[weapon], IntMapReplace, sizeof(IntMapReplace));
 		int type = -1;
-		if(WeaponPacked.GetValue(StoreWeapon[weapon], type))
+		if(WeaponPacked.GetValue(IntMapReplace, type))
 		{
 			ApplyPackAttribs(type, weapon);
 		}

@@ -314,7 +314,7 @@ methodmap Whiteflower_Boss < CClotBody
 		music.Time = 187;
 		music.Volume = 1.0;
 		music.Custom = true;
-		strcopy(music.Name, sizeof(music.Name), "Iberia's Last Stand");
+		strcopy(music.Name, sizeof(music.Name), "Almina's Last Stand");
 		strcopy(music.Artist, sizeof(music.Artist), "Grandpa Bard");
 		Music_SetRaidMusic(music);
 
@@ -1029,7 +1029,7 @@ void WF_ThrowGrenadeHappening(Whiteflower_Boss npc)
 			HealDo *= RaidModeScaling;
 			WF_GrenadeSupportDo(npc.index, Grenade, damage, GrenadeRangeSupport, HealDo);
 			float SpeedReturn[3];
-			ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 1.75, 1.0);
+			ArcToLocationViaSpeedProjectile(Grenade, vecTarget, SpeedReturn, 1.75, 1.0);
 			TeleportEntity(Grenade, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
 			//Throw a grenade towards the target!
 		}

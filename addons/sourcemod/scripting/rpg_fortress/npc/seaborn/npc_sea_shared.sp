@@ -20,7 +20,7 @@ void SeaShared_Thinking(int entity, float distance, const char[] WalkBack, const
 
 bool SeaShared_ClosestTargetValidity(int entity, int target)
 {
-	// If touching water, x2 range for Seaborn
+	// If touching water, x2 range for Dweller
 	if(target <= MaxClients && ((GetEntityFlags(target) & (FL_SWIM|FL_INWATER)) || TF2_IsPlayerInCondition(target, TFCond_Milked)))
 		return true;
 	

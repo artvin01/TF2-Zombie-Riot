@@ -814,6 +814,7 @@ void Waves_MapEnd()
 	delete Voting;
 	delete VotingMods;
 	Zero(VotedFor);
+	strcopy(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), NULL_STRING);
 	Waves_SetDifficultyName(NULL_STRING);
 	UpdateMvMStatsFrame();
 
@@ -1079,6 +1080,8 @@ void Waves_SetupVote(KeyValues map, bool modifierOnly = false)
 					FormatEx(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s [%s]", WhatDifficultySetting_Internal, vote.Name);
 					Waves_SetDifficultyName(WhatDifficultySetting);
 
+					strcopy(WhatModifierSetting, sizeof(WhatModifierSetting), vote.Name);
+
 					char funcs[5][64];
 					ExplodeString(vote.Config, ";", funcs, sizeof(funcs), sizeof(funcs[]));
 					
@@ -1125,6 +1128,7 @@ void Waves_SetupVote(KeyValues map, bool modifierOnly = false)
 		if(pos > 3)
 			pos = 3;
 		
+		strcopy(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), vote.Name);
 		Waves_SetDifficultyName(vote.Name);
 		WaveLevel = vote.Level;
 		
@@ -2005,6 +2009,7 @@ public Action Waves_EndVote(Handle timer, int WhatWasMyCancel)
 				if(highest > 3)
 					highest = 3;
 				
+				strcopy(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), vote.Name);
 				Waves_SetDifficultyName(vote.Name);
 				WaveLevel = vote.Level;
 				
@@ -2064,6 +2069,8 @@ public Action Waves_EndVote(Handle timer, int WhatWasMyCancel)
 					
 					FormatEx(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s [%s]", WhatDifficultySetting_Internal, vote.Name);
 					Waves_SetDifficultyName(WhatDifficultySetting);
+
+					strcopy(WhatModifierSetting, sizeof(WhatModifierSetting), vote.Name);
 
 					char funcs[5][64];
 					ExplodeString(vote.Config, ";", funcs, sizeof(funcs), sizeof(funcs[]));
@@ -2679,7 +2686,7 @@ bool Waves_Progress(bool donotAdvanceRound = false,
 					}
 				}
 				bool RespawnPeople = true;
-				if(ZR_Get_Modifier() == /*PREFIX_ONESTAND*/ 7)
+				if(ZR_Get_Modifier() == /*PREFIX_ONESTAND*/ 7 && !b_IsAloneOnServer)
 					if(round.Setup < 1.0)
 						RespawnPeople = false;
 						
@@ -3461,9 +3468,9 @@ void Waves_SetSkyName(const char[] skyname = "", int client = 0)
 void WaveEndLogicExtra()
 {
 	if(PapModeDo != PAP_MODE_BUILDING_ONLY)
-		SeaFounder_ClearnNethersea();
+		SeaFounder_ClearnAbyss();
 	
-	VoidArea_ClearnNethersea();
+	VoidArea_ClearnAbyss();
 	FallenWarriorGetRandomSeedEachWave();
 	ResetAbilitiesWaveEnd();
 	for(int client; client <= MaxClients; client++)
@@ -4439,7 +4446,7 @@ static Address AllocPooledString(const char[] value) {
 
 void Waves_SetDifficultyName(const char[] name)
 {
-	strcopy(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), name);
+//	strcopy(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), name);
 	strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), name);
 	WavesUpdateDifficultyName();
 	SteamWorks_UpdateGameTitle();

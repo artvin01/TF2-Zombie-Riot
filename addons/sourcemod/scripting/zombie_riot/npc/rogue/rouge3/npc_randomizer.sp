@@ -204,8 +204,8 @@ static void Randomizer_SelectBehavior(Randomizer npc, TFClassType class, int for
 		case 4:
 		{
 			// Sticky Launcher
-			func_NPCThink[npc.index] = view_as<Function>(IberiaSeaXploder_ClotThink);
-			func_NPCDeath[npc.index] = view_as<Function>(IberiaSeaXploder_NPCDeath);
+			func_NPCThink[npc.index] = view_as<Function>(AlminaSeaXploder_ClotThink);
+			func_NPCDeath[npc.index] = view_as<Function>(AlminaSeaXploder_NPCDeath);
 			
 			npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_stickybomb_launcher/c_stickybomb_launcher.mdl");
 			activity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
@@ -361,8 +361,8 @@ static void Randomizer_SelectBehavior(Randomizer npc, TFClassType class, int for
 				// melee -> Revolver combo
 				case 2:
 				{
-					func_NPCThink[npc.index] = view_as<Function>(IberiaKumbai_ClotThink);
-					func_NPCDeath[npc.index] = view_as<Function>(IberiaKumbai_NPCDeath);
+					func_NPCThink[npc.index] = view_as<Function>(AlminaKumbai_ClotThink);
+					func_NPCDeath[npc.index] = view_as<Function>(AlminaKumbai_NPCDeath);
 					
 					npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_switchblade/c_switchblade.mdl");
 					activity = npc.LookupActivity("ACT_MP_RUN_ITEM1");

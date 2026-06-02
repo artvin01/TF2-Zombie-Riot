@@ -303,7 +303,7 @@ methodmap GogglesFollower < CClotBody
 					}
 					case 4:
 					{
-						this.Speech("Heh, you guys taking out Xeno and Seaborn.");
+						this.Speech("Heh, you guys taking out Xeno and Dweller.");
 						this.SpeechDelay(5.0, "Chaos shouldn't be hard for you.");
 					}
 					case 5:
@@ -317,7 +317,7 @@ methodmap GogglesFollower < CClotBody
 					}
 					case 7:
 					{
-						this.Speech("I thought for sure Seaborn would get you back there.");
+						this.Speech("I thought for sure Dweller would get you back there.");
 					}
 					case 8:
 					{
@@ -375,7 +375,7 @@ methodmap GogglesFollower < CClotBody
 					case 20:
 					{
 						this.Speech("Funny enough, I have a phobia of water.");
-						this.SpeechDelay(5.0, "and Seaborn", "...");
+						this.SpeechDelay(5.0, "and Dweller", "...");
 					}
 					case 21:
 					{
@@ -458,7 +458,7 @@ methodmap GogglesFollower < CClotBody
 					}
 					case 40:
 					{
-						this.Speech("I remember Seaborn crawling through the water supply.");
+						this.Speech("I remember Dweller crawling through the water supply.");
 						this.SpeechDelay(5.0, "Wildingen had to trap down all the rivers, heh.");
 					}
 					case 41:
@@ -476,11 +476,11 @@ methodmap GogglesFollower < CClotBody
 					}
 					case 44:
 					{
-						this.Speech("Funny that Xeno and Seaborn hated each other so much.");
+						this.Speech("Funny that Xeno and Dweller hated each other so much.");
 					}
 					case 45:
 					{
-						this.Speech("Funny that my grief was Seaborn and Xeno was Silvester's");
+						this.Speech("Funny that my grief was Dweller and Xeno was Silvester's");
 						this.SpeechDelay(5.0, "Sorry shouldn't joke like that.");
 					}
 					case 46:

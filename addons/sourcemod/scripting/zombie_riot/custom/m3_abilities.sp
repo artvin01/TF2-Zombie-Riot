@@ -837,7 +837,7 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 				
 				Base_HealingMaxPoints=RoundToCeil(3500.0 * Healing_Amount);
 			}
-			case WEAPON_SEABORN_MISC:
+			case WEAPON_DWELLER_MISC:
 			{
 				Healing_Amount=Attributes_Get(weapon, 8, 0.0)/2.0;
 				if(Healing_Amount<1.0)

@@ -218,7 +218,7 @@ void VillageDetectEnemyInSight(int entity, int victim, float damage, int weapon)
 		{
 			if(b_thisNpcIsARaid[victim])
 			{
-				ApplyStatusEffect(entity, victim, "Iberia's Anti Raid", 3.0);
+				ApplyStatusEffect(entity, victim, "Almina's Anti Raid", 3.0);
 			}
 		}
 		if(effectsDoNow & VILLAGE_020)
@@ -249,10 +249,10 @@ void VillageDetectEnemyInSight(int entity, int victim, float damage, int weapon)
 			ApplyStatusEffect(entity, victim, "Homeland Defense", 1.5);
 
 		if(effectsDoNow & VILLAGE_003)
-			ApplyStatusEffect(entity, victim, "Nethersea Antidote", 1.5);
+			ApplyStatusEffect(entity, victim, "Abyss Antidote", 1.5);
 
 		if(effectsDoNow & VILLAGE_005)
-			ApplyStatusEffect(entity, victim, "Iberia Light", 1.5);
+			ApplyStatusEffect(entity, victim, "Almina Light", 1.5);
 			
 		if(victim <= MaxClients)
 		{
@@ -648,7 +648,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 	
 	if(Village_Flags[client] & VILLAGE_005)
 	{
-		menu.AddItem("", "Iberia Lighthouse", ITEMDRAW_DISABLED);
+		menu.AddItem("", "Almina Lighthouse", ITEMDRAW_DISABLED);
 		menu.AddItem("", "Increases influnce radius and all nearby allies", ITEMDRAW_DISABLED);
 		menu.AddItem("", "gains a +10% attack speed and healing rate.\n ", ITEMDRAW_DISABLED);
 	}
@@ -656,12 +656,12 @@ static void VillageUpgradeMenu(int client, int viewer)
 	{
 		if(Village_TierExists[1] == 5)
 		{
-			menu.AddItem("", "Iberia Anti-Raid", ITEMDRAW_DISABLED);
+			menu.AddItem("", "Almina Anti-Raid", ITEMDRAW_DISABLED);
 			menu.AddItem("", "Causes Raid Bosses to take 10% more damage in its range and for 3 seconds after existing the range.", ITEMDRAW_DISABLED);
 		}
 		else
 		{
-			FormatEx(buffer, sizeof(buffer), "Iberia Lighthouse [18 Upgrade Tokens]");
+			FormatEx(buffer, sizeof(buffer), "Almina Lighthouse [18 Upgrade Tokens]");
 			menu.AddItem(VilN(VILLAGE_005), buffer, (!owner || points < 18) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 			menu.AddItem("", "Increases influnce radius and all nearby allies", ITEMDRAW_DISABLED);
 			menu.AddItem("", "gains a +10% attack speed and healing rate.\n ", ITEMDRAW_DISABLED);
@@ -669,7 +669,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 	}
 	else if(Village_Flags[client] & VILLAGE_003)
 	{
-		FormatEx(buffer, sizeof(buffer), "Iberia Anti-Raid [12 Upgrade Tokens]");
+		FormatEx(buffer, sizeof(buffer), "Almina Anti-Raid [12 Upgrade Tokens]");
 		menu.AddItem(VilN(VILLAGE_004), buffer, (!owner || points < 12) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 		menu.AddItem("", "Causes Raid Bosses to take 10% more damage in its range and for 3 seconds after existing the range.", ITEMDRAW_DISABLED);
 	}
@@ -685,7 +685,7 @@ static void VillageUpgradeMenu(int client, int viewer)
 		{
 			FormatEx(buffer, sizeof(buffer), "Little Handy [6 Upgrade Tokens]%s", Village_TierExists[2] == 5 ? " [Tier 5 Exists]" : Village_TierExists[2] == 4 ? " [Tier 4 Exists]" : Village_TierExists[2] == 3 ? " [Tier 3 Exists]" : "");
 			menu.AddItem(VilN(VILLAGE_003), buffer, (!owner || points < 6) ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
-			menu.AddItem("", "Reduces the damage caused by nethersea brands", ITEMDRAW_DISABLED);
+			menu.AddItem("", "Reduces the damage caused by abyssal weeds", ITEMDRAW_DISABLED);
 			menu.AddItem("", "by 80% to all allies with in range.\n ", ITEMDRAW_DISABLED);
 		}
 	}

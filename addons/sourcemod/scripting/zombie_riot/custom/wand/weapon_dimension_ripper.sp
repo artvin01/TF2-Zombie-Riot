@@ -448,40 +448,40 @@ public void Weapon_Dimension_Summon_Medeival_PAP(int client, int weapon, bool &r
 		}
 	}
 }
-public void Weapon_Dimension_Summon_Seaborn(int client, int weapon, bool &result, int slot, int pap_logic)
+public void Weapon_Dimension_Summon_Dweller(int client, int weapon, bool &result, int slot, int pap_logic)
 {
 	switch(GetRandomInt(1, 5))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, "npc_netherseapredator" ,weapon, 1.0, 1.3, "utaunt_spirit_winter_rings");
+			Dimension_Summon_Npc(client, "npc_abysspredator" ,weapon, 1.0, 1.3, "utaunt_spirit_winter_rings");
 		case 2:
-			Dimension_Summon_Npc(client, "npc_netherseareefbreaker" ,weapon, 1.3, 1.2, "utaunt_spirit_winter_rings");
+			Dimension_Summon_Npc(client, "npc_abyssreefbreaker" ,weapon, 1.3, 1.2, "utaunt_spirit_winter_rings");
 		case 3:
-			Dimension_Summon_Npc(client, "npc_netherseaspewer" ,weapon, 1.0, 1.5, "utaunt_spirit_winter_rings");
+			Dimension_Summon_Npc(client, "npc_abyssspewer" ,weapon, 1.0, 1.5, "utaunt_spirit_winter_rings");
 		case 4:
-			Dimension_Summon_Npc(client, "npc_seaborn_kazimersch_beserker" ,weapon, 1.6, 1.3, "utaunt_spirit_winter_rings");
+			Dimension_Summon_Npc(client, "npc_dweller_grunwald_beserker" ,weapon, 1.6, 1.3, "utaunt_spirit_winter_rings");
 		case 5:
-			Dimension_Summon_Npc(client, "npc_netherseaswarmcaller" ,weapon, 1.0, 1.3, "utaunt_spirit_winter_rings");
+			Dimension_Summon_Npc(client, "npc_abyssswarmcaller" ,weapon, 1.0, 1.3, "utaunt_spirit_winter_rings");
 		default: //This should not happen
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
 		}
 	}
 }
-public void Weapon_Dimension_Summon_Seaborn_PAP(int client, int weapon, bool &result, int slot, int pap_logic)
+public void Weapon_Dimension_Summon_Dweller_PAP(int client, int weapon, bool &result, int slot, int pap_logic)
 {
 	switch(GetRandomInt(1, 5))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, "npc_seaborn_guard" ,weapon, 1.3, 1.0, "utaunt_spirit_winter_rings");
+			Dimension_Summon_Npc(client, "npc_dweller_guard" ,weapon, 1.3, 1.0, "utaunt_spirit_winter_rings");
 		case 2:
-			Dimension_Summon_Npc(client, "npc_seaborn_caster" ,weapon, 1.0, 1.2, "utaunt_spirit_winter_rings");
+			Dimension_Summon_Npc(client, "npc_dweller_caster" ,weapon, 1.0, 1.2, "utaunt_spirit_winter_rings");
 		case 3:
-			Dimension_Summon_Npc(client, "npc_seaborn_kazimersch_knight" ,weapon, 1.2, 1.3, "utaunt_spirit_winter_rings");
+			Dimension_Summon_Npc(client, "npc_dweller_grunwald_knight" ,weapon, 1.2, 1.3, "utaunt_spirit_winter_rings");
 		case 4:
-			Dimension_Summon_Npc(client, "npc_seaborn_specialist" ,weapon, 1.3, 1.4, "utaunt_spirit_winter_rings");
+			Dimension_Summon_Npc(client, "npc_dweller_specialist" ,weapon, 1.3, 1.4, "utaunt_spirit_winter_rings");
 		case 5:
-			Dimension_Summon_Npc(client, "npc_firsttotalk" ,weapon, 1.8, 1.75, "utaunt_spirit_winter_rings");
+			Dimension_Summon_Npc(client, "npc_dwellerhybrid" ,weapon, 1.8, 1.75, "utaunt_spirit_winter_rings");
 		default: //This should not happen
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
@@ -656,14 +656,14 @@ public void Weapon_Dimension_Summon_Void_PAP(int client, int weapon, bool &resul
 	}
 }
 
-public void Weapon_Dimension_Summon_Iberia(int client, int weapon, bool &result, int slot, int pap_logic)
+public void Weapon_Dimension_Summon_Almina(int client, int weapon, bool &result, int slot, int pap_logic)
 {
 	switch(GetRandomInt(1, 5))
 	{
 		case 1:
 			Dimension_Summon_Npc(client, "npc_speedus_instantus" ,weapon, 1.2, 1.3, "teleported_blue");
 		case 2:
-			Dimension_Summon_Npc(client, "npc_iberia_morato" ,weapon, 1.0, 1.4, "teleported_blue");
+			Dimension_Summon_Npc(client, "npc_almina_morato" ,weapon, 1.0, 1.4, "teleported_blue");
 		case 3:
 			Dimension_Summon_Npc(client, "npc_sea_xploder" ,weapon, 1.2, 1.3, "teleported_blue");
 		case 4:
@@ -677,7 +677,7 @@ public void Weapon_Dimension_Summon_Iberia(int client, int weapon, bool &result,
 	}
 }
 
-public void Weapon_Dimension_Summon_Iberia_PAP(int client, int weapon, bool &result, int slot, int pap_logic)
+public void Weapon_Dimension_Summon_Almina_PAP(int client, int weapon, bool &result, int slot, int pap_logic)
 {
 	switch(GetRandomInt(1, 5))
 	{

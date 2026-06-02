@@ -47,7 +47,7 @@ static int NPCId;
 static float f_GlobalSoundCD;
 static int i_squadleader_particle[MAXENTITIES];
 
-void VictorianSquadleader_OnMapStart_NPC()
+void VestanSquadleader_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
@@ -58,26 +58,26 @@ void VictorianSquadleader_OnMapStart_NPC()
 	for (int i = 0; i < (sizeof(g_WarCry)); i++) { PrecacheSound(g_WarCry[i]); }
 
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Victorian ScoutSquad Leader");
+	strcopy(data.Name, sizeof(data.Name), "Vestan ScoutSquad Leader");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_squadleader");
 	strcopy(data.Icon, sizeof(data.Icon), "victoria_squadleaders");
 	data.IconCustom = true;
 
 	data.Flags = 0;
 	f_GlobalSoundCD = 0.0;
-	data.Category = Type_Victoria;
+	data.Category = Type_Vesta;
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
 {
-	return VictorianSquadleader(vecPos, vecAng, ally);
+	return VestanSquadleader(vecPos, vecAng, ally);
 }
 
 #define LEADER_BUFF_MAXRANGE 250.0 		
 
-methodmap VictorianSquadleader < CClotBody
+methodmap VestanSquadleader < CClotBody
 {
 	public void PlayIdleAlertSound() 
 	{
@@ -128,9 +128,9 @@ methodmap VictorianSquadleader < CClotBody
 		EmitSoundToAll(g_WarCry[GetRandomInt(0, sizeof(g_WarCry) - 1)], this.index, _, 80, _, 0.8, 100);
 	}
 	
-	public VictorianSquadleader(float vecPos[3], float vecAng[3], int ally)
+	public VestanSquadleader(float vecPos[3], float vecAng[3], int ally)
 	{
-		VictorianSquadleader npc = view_as<VictorianSquadleader>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "15000", ally, false, true));
+		VestanSquadleader npc = view_as<VestanSquadleader>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.35", "15000", ally, false, true));
 		
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -153,9 +153,9 @@ methodmap VictorianSquadleader < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCDeath[npc.index] = view_as<Function>(VictorianSquadleader_NPCDeath);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VictorianSquadleader_OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(VictorianSquadleader_ClotThink);
+		func_NPCDeath[npc.index] = view_as<Function>(VestanSquadleader_NPCDeath);
+		func_NPCOnTakeDamage[npc.index] = view_as<Function>(VestanSquadleader_OnTakeDamage);
+		func_NPCThink[npc.index] = view_as<Function>(VestanSquadleader_ClotThink);
 		
 		//IDLE
 		npc.m_iState = 0;
@@ -195,9 +195,9 @@ methodmap VictorianSquadleader < CClotBody
 	}
 }
 
-public void VictorianSquadleader_ClotThink(int iNPC)
+public void VestanSquadleader_ClotThink(int iNPC)
 {
-	VictorianSquadleader npc = view_as<VictorianSquadleader>(iNPC);
+	VestanSquadleader npc = view_as<VestanSquadleader>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
 		return;
@@ -224,7 +224,7 @@ public void VictorianSquadleader_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 	
-	//VictorianCalltoArmsRange(npc.index);
+	//VestanCalltoArmsRange(npc.index);
 		
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
@@ -233,7 +233,7 @@ public void VictorianSquadleader_ClotThink(int iNPC)
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		int SetGoalVectorIndex = 0;
-		SetGoalVectorIndex = VictorianSquadleaderSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
+		SetGoalVectorIndex = VestanSquadleaderSelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 		switch(SetGoalVectorIndex)
 		{
 			case 0:
@@ -266,12 +266,12 @@ public void VictorianSquadleader_ClotThink(int iNPC)
 		npc.m_iTarget = GetClosestTarget(npc.index);
 	}
 	npc.PlayIdleAlertSound();
-	VictorianSquadleaderAOEbuff(npc,GetGameTime(npc.index));
+	VestanSquadleaderAOEbuff(npc,GetGameTime(npc.index));
 }
 
-public void VictorianSquadleader_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public void VestanSquadleader_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	VictorianSquadleader npc = view_as<VictorianSquadleader>(victim);
+	VestanSquadleader npc = view_as<VestanSquadleader>(victim);
 		
 	if(attacker <= 0)
 		return;
@@ -283,9 +283,9 @@ public void VictorianSquadleader_OnTakeDamage(int victim, int &attacker, int &in
 	}
 }
 
-public void VictorianSquadleader_NPCDeath(int entity)
+public void VestanSquadleader_NPCDeath(int entity)
 {
-	VictorianSquadleader npc = view_as<VictorianSquadleader>(entity);
+	VestanSquadleader npc = view_as<VestanSquadleader>(entity);
 	if(!npc.m_bGib)
 	{
 		npc.PlayDeathSound();	
@@ -311,7 +311,7 @@ public void VictorianSquadleader_NPCDeath(int entity)
 
 }
 
-int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameTime, int target, float distance)
+int VestanSquadleaderSelfDefense(VestanSquadleader npc, float gameTime, int target, float distance)
 {
 
 	if(npc.m_iOverlordComboAttack <= 0)
@@ -401,7 +401,7 @@ int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameTime, in
 				Handle swingTrace;
 				if(npc.DoSwingTrace(swingTrace, target, { 9999.0, 9999.0, 9999.0 }))
 				{
-					if(!NpcStats_VictorianCallToArms(npc.index))
+					if(!NpcStats_VestanCallToArms(npc.index))
 					{
 						npc.m_iOverlordComboAttack--;
 					}
@@ -478,7 +478,7 @@ int VictorianSquadleaderSelfDefense(VictorianSquadleader npc, float gameTime, in
 	return 0;
 }
 
-void VictorianSquadleaderAOEbuff(VictorianSquadleader npc, float gameTime, bool mute = false)
+void VestanSquadleaderAOEbuff(VestanSquadleader npc, float gameTime, bool mute = false)
 {
 	float pos1[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
@@ -509,7 +509,7 @@ void VictorianSquadleaderAOEbuff(VictorianSquadleader npc, float gameTime, bool 
 		{
 			float bufftime = 25.0;
 			npc.AddGesture("ACT_MP_GESTURE_VC_FISTPUMP_MELEE");
-			if(NpcStats_VictorianCallToArms(npc.index))
+			if(NpcStats_VestanCallToArms(npc.index))
 			{
 				bufftime -= 10.0;
 			}

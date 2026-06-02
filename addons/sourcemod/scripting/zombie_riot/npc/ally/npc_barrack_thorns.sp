@@ -282,7 +282,7 @@ public void BarrackThorns_ClotThink(int iNPC)
 					}
 					case 3:
 					{
-						NpcSpeechBubble(npc.index, "Watch carefully, this is the Destreza of Iberia!", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
+						NpcSpeechBubble(npc.index, "Watch carefully, this is the Destreza of Almina!", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
 					}
 				}
 			}

@@ -782,7 +782,7 @@ public void Captain_AnimEvent(int entity, int event)
 				h_NpcSolidHookType[anchor] = 0;
 
 				SetEntityGravity(anchor, Keelhaul_Gravity); 	
-				ArcToLocationViaSpeedProjectile(pos, targPos, vel, 2.0, 1.0);
+				ArcToLocationViaSpeedProjectile(anchor, targPos, vel, 2.0, 1.0);
 				SetEntityMoveType(anchor, MOVETYPE_FLYGRAVITY);
 				TeleportEntity(anchor, pos, ang, vel);
 

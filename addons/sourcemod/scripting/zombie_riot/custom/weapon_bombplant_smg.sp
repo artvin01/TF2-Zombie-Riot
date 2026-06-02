@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 static Handle h_TimerExploARWeaponManagement[MAXPLAYERS] = {null, ...};
-static int i_VictoriaParticle[MAXPLAYERS];
+static int i_VestaParticle[MAXPLAYERS];
 static bool b_AbilityActivated[MAXPLAYERS];
 static int ExploAR_WeaponPap[MAXPLAYERS+1] = {0, ...};
 static int ExploAR_WeaponID[MAXPLAYERS];
@@ -377,7 +377,7 @@ public void Enable_ExploARWeapon(int client, int weapon) // Enable management, h
 		}
 		
 	}
-	if(Store_IsWeaponFaction(client, weapon, Faction_Victoria))	// Victoria
+	if(Store_IsWeaponFaction(client, weapon, Faction_Vesta))	// Vesta
 	{
 		for(int i = 1; i <= MaxClients; i++)
 		{
@@ -466,7 +466,7 @@ static void ExploARWork(int client, int weapon, float GameTime)
 	}
 	if(ExploAR_OverHit[client]>65)
 	{
-		/*int entity = EntRefToEntIndex(i_VictoriaParticle[client]);
+		/*int entity = EntRefToEntIndex(i_VestaParticle[client]);
 		if(!IsValidEntity(entity))
 		{
 			entity = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
@@ -477,16 +477,16 @@ static void ExploARWork(int client, int weapon, float GameTime)
 				int particle = ParticleEffectAt(flPos, "drg_pipe_smoke", 0.0);
 				AddEntityToThirdPersonTransitMode(client, particle);
 				SetParent(entity, particle, "effect_hand_R");
-				i_VictoriaParticle[client] = EntIndexToEntRef(particle);
+				i_VestaParticle[client] = EntIndexToEntRef(particle);
 			}
 		}*/
 	}
 	else
 	{
-		/*int entity = EntRefToEntIndex(i_VictoriaParticle[client]);
+		/*int entity = EntRefToEntIndex(i_VestaParticle[client]);
 		if(IsValidEntity(entity))
 			RemoveEntity(entity);
-		i_VictoriaParticle[client] = INVALID_ENT_REFERENCE;*/
+		i_VestaParticle[client] = INVALID_ENT_REFERENCE;*/
 	}
 }
 
@@ -580,7 +580,7 @@ static void CreateExploAREffect(int client)
 {
 	if(b_AbilityActivated[client])
 	{
-		int entity = EntRefToEntIndex(i_VictoriaParticle[client]);
+		int entity = EntRefToEntIndex(i_VestaParticle[client]);
 		if(!IsValidEntity(entity))
 		{
 			entity = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
@@ -592,7 +592,7 @@ static void CreateExploAREffect(int client)
 				int particle = ParticleEffectAt(flPos, "eye_powerup_blue_lvl_3", 0.0);
 				AddEntityToThirdPersonTransitMode(entity, particle);
 				SetParent(entity, particle, "eyeglow_l");
-				i_VictoriaParticle[client] = EntIndexToEntRef(particle);
+				i_VestaParticle[client] = EntIndexToEntRef(particle);
 			}
 		}
 	}
@@ -601,8 +601,8 @@ static void CreateExploAREffect(int client)
 }
 static void DestroyExploAREffect(int client)
 {
-	int entity = EntRefToEntIndex(i_VictoriaParticle[client]);
+	int entity = EntRefToEntIndex(i_VestaParticle[client]);
 	if(IsValidEntity(entity))
 		RemoveEntity(entity);
-	i_VictoriaParticle[client] = INVALID_ENT_REFERENCE;
+	i_VestaParticle[client] = INVALID_ENT_REFERENCE;
 }

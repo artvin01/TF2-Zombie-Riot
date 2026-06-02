@@ -136,16 +136,16 @@ methodmap Whiteflower_OutlanderLeader < CClotBody
 			{
 				static Race race;
 				Races_GetClientInfo(target, race);
-				if(StrEqual(race.Name, "Iberian"))
+				if(StrEqual(race.Name, "Alminan"))
 				{
 					switch(GetRandomInt(0,2))
 					{
 						case 0:
-							NpcSpeechBubble(this.index, "Would have hoped you were Irene.", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
+							NpcSpeechBubble(this.index, "Would have hoped you were Amphi.", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
 						case 1:
 							NpcSpeechBubble(this.index, "Why do these birds still try?", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 						case 2:
-							NpcSpeechBubble(this.index, "Hey, i was told iberians are too scared.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+							NpcSpeechBubble(this.index, "Hey, i was told alminans are too scared.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 					}
 					return;
 				}

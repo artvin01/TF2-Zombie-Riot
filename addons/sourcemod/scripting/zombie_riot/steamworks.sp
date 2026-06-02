@@ -59,9 +59,9 @@ void SteamWorks_UpdateGameTitle()
 			FormatEx(buffer, sizeof(buffer), "ZR: Freeplay");
 		}
 		*/
-		else if(Waves_Started() && WhatDifficultySetting_Internal[0])
+		else if(Waves_Started() && WhatDifficultySetting[0])
 		{
-			FormatEx(buffer, sizeof(buffer), "ZR: %s", WhatDifficultySetting_Internal);
+			FormatEx(buffer, sizeof(buffer), "ZR: %s", WhatDifficultySetting);
 		//	FormatEx(buffer, sizeof(buffer), "ZR: %s (Wave %d/%d)", WhatDifficultySetting_Internal, Waves_GetRoundScale() + 1, Waves_GetMaxRound());
 		}
 		else

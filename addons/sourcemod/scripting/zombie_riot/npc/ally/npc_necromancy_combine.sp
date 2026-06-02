@@ -267,7 +267,7 @@ public void NecroCombine_ClotThink(int iNPC)
 	{
 		int PrimaryThreatIndex = npc.m_iTarget;
 		
-		if(IsValidEnemy(npc.index, PrimaryThreatIndex, true) && NpcStats_IberiaIsEnemyMarked(PrimaryThreatIndex))
+		if(IsValidEnemy(npc.index, PrimaryThreatIndex, true) && NpcStats_AlminaIsEnemyMarked(PrimaryThreatIndex))
 		{
 			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 				

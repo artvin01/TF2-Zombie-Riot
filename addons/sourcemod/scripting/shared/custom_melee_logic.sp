@@ -202,7 +202,7 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			{
 				SagaAttackBeforeSwing(client);
 			}
-			case WEAPON_SEABORNMELEE:
+			case WEAPON_DWELLERMELEE:
 			{
 				SeaMelee_DoSwingTrace(client, CustomMeleeRange, CustomMeleeWide, ignore_walls, enemies_hit_aoe);
 			}
@@ -257,6 +257,10 @@ stock void DoSwingTrace_Custom(Handle &trace, int client, float vecSwingForward[
 			case WEAPON_HAMMER_PAP_1:
 			{
 				enemies_hit_aoe = 3;
+			}
+			case WEAPON_RED_MIST:
+			{
+				Red_Mist_Horizontal_Slash_DoSwingTrace(client, CustomMeleeRange, CustomMeleeWide, ignore_walls, enemies_hit_aoe);
 			}
 		}	
 	}
@@ -841,7 +845,7 @@ public void Timer_Do_Melee_Attack_Internal(DataPack pack)
 #if defined ZR
 					switch(i_CustomWeaponEquipLogic[weapon])
 					{
-						case WEAPON_SEABORNMELEE, WEAPON_HAMMER_NONPAP, WEAPON_HAMMER_PAP_1:
+						case WEAPON_DWELLERMELEE, WEAPON_HAMMER_NONPAP, WEAPON_HAMMER_PAP_1:
 						{
 							damage *= 0.5;
 						}
@@ -1041,7 +1045,7 @@ void AOEHammerExtraLogic(int entity, int victim, float damage, int weapon)
 
 bool CanBackstabEnemyPreCheck(int attacker, int weapon, int victim)
 {
-	if(f_BackstabDmgMulti[weapon] != 0.0 && !b_CannotBeBackstabbed[victim]) //Irene weapon cannot backstab.
+	if(f_BackstabDmgMulti[weapon] != 0.0 && !b_CannotBeBackstabbed[victim]) //Amphi weapon cannot backstab.
 	{
 #if defined ZR
 		return (IsBehindAndFacingTarget(attacker, victim, weapon) || b_FaceStabber[attacker] || i_NpcIsABuilding[victim]);

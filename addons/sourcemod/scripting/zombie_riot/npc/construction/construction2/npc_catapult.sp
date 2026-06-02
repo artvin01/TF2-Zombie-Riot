@@ -302,12 +302,12 @@ int CatapultSelfDefense(Catapult npc, float gameTime, float distance)
 		{
 			WorldSpaceCenter(npc.m_iTarget, fl_AbilityVectorData[npc.index] );
 			//save pos to attack
-			npc.m_flAttackHappens = gameTime + 1.0;
+			npc.m_flAttackHappens = gameTime + 1.5;
 			float ProjectileLoc[3];
 			npc.PlayChargeSound();
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 			ProjectileLoc[2] += 60.0;
-			spawnRing_Vectors(ProjectileLoc, 80.0 * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 65, 65, 65, 200, 1, 1.0, 3.0, 12.0, 3, 1.0);	
+			spawnRing_Vectors(ProjectileLoc, 80.0 * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 65, 65, 65, 200, 1, 1.5, 3.0, 12.0, 3, 1.0);	
 		}
 	}
 
@@ -369,7 +369,7 @@ void CatapultSelfDefense_Init(Catapult npc, float gameTime)
 				//Reducing gravity, reduces speed, lol.
 				SetEntityGravity(RocketGet, 1.0); 	
 				//I dont care if its not too accurate, ig they suck with the weapon idk lol, lore.
-				ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 2.45, 1.0);
+				ArcToLocationViaSpeedProjectile(RocketGet, vecTarget, SpeedReturn, 2.45, 1.0);
 				SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
 				TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
 						

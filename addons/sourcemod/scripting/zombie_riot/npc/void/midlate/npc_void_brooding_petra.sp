@@ -210,7 +210,7 @@ public void VoidBroodingPetra_ClotThink(int iNPC)
 		float ProjectileLoc[3];
 		GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 		ProjectileLoc[2] += 5.0;
-		VoidArea_SpawnNethersea(ProjectileLoc);
+		VoidArea_SpawnAbyss(ProjectileLoc);
 	}
 	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))

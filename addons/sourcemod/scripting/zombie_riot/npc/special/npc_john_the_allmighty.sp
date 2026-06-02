@@ -271,7 +271,7 @@ public void JohnTheAllmighty_ClotThink(int iNPC)
 			//always leaves creep onto the floor if enraged
 			GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 			ProjectileLoc[2] += 5.0;
-			VoidArea_SpawnNethersea(ProjectileLoc);
+			VoidArea_SpawnAbyss(ProjectileLoc);
 		}
 	}
 

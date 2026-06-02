@@ -268,7 +268,9 @@ void ApertureDevastatorV2SelfDefense(ApertureDevastatorV2 npc, float gameTime, i
 						npc.m_flNextMeleeAttack = gameTime + 0.25;
 					}
 					int RocketGet = npc.FireRocket(vecTarget, damage, speed, "models/weapons/w_models/w_grenade_grenadelauncher.mdl");
-					ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.75, 1.0);
+					vecTarget[0] += GetRandomFloat(-30.0, 30.0);
+					vecTarget[1] += GetRandomFloat(-30.0, 30.0);
+					ArcToLocationViaSpeedProjectile(RocketGet, vecDest, SpeedReturn, 1.75, 1.0);
 					SetEntProp(RocketGet, Prop_Send, "m_nSkin", 1);
 				}
 				delete swingTrace;

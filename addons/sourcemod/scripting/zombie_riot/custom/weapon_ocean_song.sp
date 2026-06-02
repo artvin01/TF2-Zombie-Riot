@@ -354,7 +354,7 @@ void DoHealingOcean(int client, int target, float range = 160000.0, float extra_
 				int weapon2 = GetEntPropEnt(ally, Prop_Send, "m_hActiveWeapon");
 				if(IsValidEntity(weapon2))
 				{
-					if(Store_IsWeaponFaction(ally, weapon, Faction_Seaborn))
+					if(Store_IsWeaponFaction(ally, weapon, Faction_Dweller))
 					{
 						healingMulti = 1.0825;
 					}
