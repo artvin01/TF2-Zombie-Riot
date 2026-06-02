@@ -304,6 +304,7 @@ bool RM_Precached = false;
 public void RedMist_ResetAbnorms()
 {
 	Zero(Abno_Pages);
+	Zero(last_recorded_pap);
 }
 public void Red_Mist_OnMapStart()
 {
