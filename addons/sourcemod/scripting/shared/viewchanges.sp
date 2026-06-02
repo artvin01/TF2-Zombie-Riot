@@ -752,7 +752,7 @@ static int CreateViewmodel(int client, int modelAnims, int modelOverride, int we
 	return wearable;
 }
 
-static void ImportSkinAttribs(int wearable, int weapon)
+void ImportSkinAttribs(int wearable, int weapon)
 {
 	int index = i_WeaponFakeIndex[weapon] > 0 ? i_WeaponFakeIndex[weapon] : GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
 	SetEntProp(wearable, Prop_Send, "m_iItemDefinitionIndex", index);

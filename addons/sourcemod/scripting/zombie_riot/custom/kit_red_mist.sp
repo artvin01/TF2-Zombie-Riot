@@ -31,7 +31,9 @@ static int Deep_Wound_Counter[MAXPLAYERS];
 static int Ego_Energy[MAXPLAYERS];
 static int redashes[MAXPLAYERS];
 static int swing_type[MAXPLAYERS];
-static float redash_cooldown[MAXPLAYERS];
+static float GradeWeaponAm[MAXPLAYERS];
+static int RandomSeedDo[MAXPLAYERS];
+static bool ValueGoUpOrDown[MAXPLAYERS];
 static float Special_Cooldowns[MAXPLAYERS][4]; //IT WORKS :D, who needs premade cooldowns when you can make your own
 // Note from artvin: this will not work with any cooldown reductions or any "on hit" cooldown reductions unless its specifically coded in.
 
@@ -54,12 +56,14 @@ static float Onrush_Redash_Window[MAXPLAYERS];
 #define ONRUSH_START_SOUND	"player/taunt_yeti_standee_equipment_jingle4.wav"
 #define PREY_MARKED_SOUND "weapons/samurai/tf_marked_for_death_impact_03.wav"
 #define VERTICAL_SLASH_SOUND "items/pumpkin_explode1.wav"
-#define HORIZONTAL_SLASH_SOUND ""
+#define HORIZONTAL_SLASH_SOUND "npc/manhack/grind_flesh2.wav"
 
 #define SWING_TYPE_NORMAL 0
 #define SWING_TYPE_SPECIAL 1
 #define MAX_EGO_CHARGE 1000
 
+static int BeamWand_Laser;
+static int BeamWand_Glow;
 public void Enable_Red_Mist(int client, int weapon)
 {
 	DataPack pack = new DataPack();
@@ -128,7 +132,43 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 	{
 		//Heartbroken_ApplyCoffinBack(clientindx, true);
 		h_Red_Mist_Timer[clientindx] = null;
+		if(IsValidClient(client))
+		{
+			RemoveSpecificBuff(client, "Deathly Influence");
+			RemoveSpecificBuff(client, "Red_Mist_Strength");
+		}
 		return Plugin_Stop;
+	}
+	
+	if(!IsIn_HitDetectionCooldown(weapon,weapon, RedMist_AbnormSelect))
+	{
+		Set_HitDetectionCooldown(weapon,weapon, GetGameTime() + 0.5, RedMist_AbnormSelect);
+		int EntityWeaponModel = EntRefToEntIndex(HandRef[client]);
+		if(IsValidEntity(EntityWeaponModel))
+		{
+			float Value = GetRandomFloat(0.1, 0.2);
+			if(ValueGoUpOrDown[client])
+			{
+				GradeWeaponAm[client] += Value;
+				if(GradeWeaponAm[client] >= 1.0)
+				{
+					ValueGoUpOrDown[client] = false;
+					GradeWeaponAm[client] = 1.0;
+				}
+			}
+			else
+			{
+				GradeWeaponAm[client] -= Value;
+				if(GradeWeaponAm[client] <= 0.0)
+				{
+					ValueGoUpOrDown[client] = true;
+					GradeWeaponAm[client] = 0.0;
+				}
+			}
+			Attributes_Set(weapon, 725, GradeWeaponAm[client]);
+			ImportSkinAttribs(EntityWeaponModel, weapon);
+			Attributes_Set(EntityWeaponModel, 866, float(CurrentGame + RandomSeedDo[client]++));
+		}
 	}
 	if(Ego_Energy[client] <= 0)//if ego isnt active
 	{
@@ -142,10 +182,10 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 				//lol get fucked
 				FreezeNpcInTime(client, 2.0);
 				ApplyStatusEffect(client, client, "Ragdolled", 2.0);
-				ClientCommand(client, "playgamesound weapons/buffed_off.wav");
+				EmitSoundToAll("weapons/buffed_off.wav", client, _, 70, _, 1.0, 100);
 			}
 			
-			Special_Cooldowns[client][2] = GetGameTime() + 120.00;
+			Special_Cooldowns[client][2] = GetGameTime() + (120.00 * CooldownReductionAmount(client));
 			RemoveSpecificBuff(client, "Ego Manifestation");
 			Ego_Cooldown_given[client] = true;
 			current_card_selection[client] = 2;
@@ -155,7 +195,7 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 	if(Onrush_Redash_Window[client] < GetGameTime() && redashes[client] > 0)
 	{
 		redashes[client] = 0;
-		redash_cooldown[client] = GetGameTime() + 7.5;
+		Ability_Apply_Cooldown(client, 2, 12.5, weapon);
 		//Ability_Apply_Cooldown(client, 2, 7.5);
 		Onrush_Is_In_Dash[client] = false;
 		//PrintToChatAll("redash window expired");
@@ -194,7 +234,7 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 				RemoveSpecificBuff(client, "Deathly Influence");
 			}
 			Ego_Active[client] = false;
-			Special_Cooldowns[client][2] = GetGameTime() + 120.00;
+			Special_Cooldowns[client][2] = GetGameTime() + (120.00 * CooldownReductionAmount(client));
 			RemoveSpecificBuff(client, "Ego Manifestation");
 			RM_Lastman_Buffs_applied[client] = false;
 			Ego_Energy[client] = 0;
@@ -233,7 +273,7 @@ static Action Timer_Red_Mist_Ego(Handle timer, int client)
 		//PrintToChatAll("ego energy [%d]", Ego_Energy[client]);
 		if(!LastMann)
 			Ego_Energy[client] -= 25;
-		PrintHintText(client,"Ego Active(Charge: [%i/%i]", Ego_Energy[client], MAX_EGO_CHARGE, ")");
+		PrintHintText(client,"Ego Active(Charge: [%i/%i])", Ego_Energy[client], MAX_EGO_CHARGE);
 	}
 	return Plugin_Continue;
 }
@@ -273,6 +313,10 @@ public void Red_Mist_OnMapStart()
 	PrecacheSound(PAGE_DESELECT_SOUND);
 	PrecacheSound(ONRUSH_START_SOUND);
 	PrecacheSound(PREY_MARKED_SOUND);
+	PrecacheSound("weapons/buffed_on.wav");
+	PrecacheSound("weapons/buffed_off.wav");
+	PrecacheSound("weapons/debris4.wav");
+
     //precache stuff
 	Zero(Abno_Pages);
 	Zero2(Special_Cooldowns);
@@ -299,6 +343,8 @@ public void Red_Mist_OnMapStart()
 	Zero(Special_Damage_Boost);
 	Zero(b_WeaponAttackSpeedModified);
 	RM_Precached = false;
+	BeamWand_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
+	BeamWand_Glow = PrecacheModel("sprites/glow02.vmt", true);
 }
 
 public void Vengeance_Logic(int client)
@@ -517,10 +563,10 @@ public Action MOSB_Lastman_Execution(Handle timer, int client)
 {
 	//kill client
 	ApplyStatusEffect(client, client, "Nightmare Terror", 0.1);
-    HealEntityGlobal(client, client, -9999999.9, _, _, HEAL_ABSOLUTE);
-    ApplyStatusEffect(client, client, "Vuntulum Bomb EMP Death", 99999.9);
+	HealEntityGlobal(client, client, -9999999.9, _, _, HEAL_ABSOLUTE);
+	ApplyStatusEffect(client, client, "Vuntulum Bomb EMP Death", 99999.9);
 	CPrintToChatAll("{maroon}The bodies fully consumed {darkgrey}%N...",client);
-	Special_Cooldowns[client][2] = GetGameTime() + 120.00;
+	Special_Cooldowns[client][2] = GetGameTime() + (120.00 * CooldownReductionAmount(client));
 	RemoveSpecificBuff(client, "Ego Manifestation");
 	RemoveSpecificBuff(client, "Deathly Influence");
 	Ego_Active[client] = false;
@@ -566,7 +612,6 @@ public void Red_Mist_OnTakeDamage_Deal(int victim, int &attacker, int &inflictor
 			ApplyStatusEffect(attacker, victim, "Mark Of Prey", 30.0);
 			Prey_Mark_Cooldown[attacker] = false;
 			EmitSoundToClient(attacker, "weapons/samurai/tf_marked_for_death_indicator.wav", attacker, _, 70, _, 1.0, 60);
-			//ClientCommand(attacker, "playgamesound weapons/samurai/tf_marked_for_death_indicator.wav");
 			CreateTimer(20.0, RM_Prey_Cooldown, attacker);
 		}
 		if(HasSpecificBuff(victim, "Mark Of Prey"))
@@ -592,11 +637,11 @@ public void Red_Mist_OnTakeDamage_Deal(int victim, int &attacker, int &inflictor
 	{
 		if(current_card_selection[attacker] == 1)//vertical slash
 		{
-			EmitSoundToClient(attacker, VERTICAL_SLASH_SOUND, attacker, _, 70, _, 1.0, 50);
+			EmitSoundToAll(VERTICAL_SLASH_SOUND, attacker, _, 70, _, 1.0, 50);
 			damage *= 20.0;
 			Special_Active[attacker] = false;
 			Rogue_OnAbilityUse(attacker, weapon);
-			Special_Cooldowns[attacker][1] = GetGameTime() + 60.00;
+			Special_Cooldowns[attacker][1] = GetGameTime() + (60.00 * CooldownReductionAmount(attacker));
 		}
 	}
 	if(Special_Damage_Boost[attacker])//we do this cuz "special_active" gets disabled before this function gets called, so this is a small workaround
@@ -653,7 +698,7 @@ public void Red_Mist_Main_Attack(int client, int weapon)
 			b_LagCompNPC_No_Layers = true;
 			float vecSwingForward[3];
 			StartLagCompensation_Base_Boss(client);
-			DoSwingTrace_Custom(swingTrace, client, vecSwingForward, MELEE_RANGE, false, MELEE_BOUNDS);//check if we 100% hit before doing effects
+			DoSwingTrace_Custom(swingTrace, client, vecSwingForward, MELEE_RANGE * 1.1, false, MELEE_BOUNDS);//check if we 100% hit before doing effects
 			FinishLagCompensation_Base_boss();
 			int target = TR_GetEntityIndex(swingTrace);
 			delete swingTrace;
@@ -677,8 +722,8 @@ public void Red_Mist_Main_Attack(int client, int weapon)
 				Special_Cooldowns[client][2] = GetGameTime() + 999.00;
 				Rogue_OnAbilityUse(client, weapon);
 				ApplyStatusEffect(client, client, "Ego Manifestation", 9999.0);
-				ClientCommand(client, "playgamesound weapons/buffed_on.wav");
-				ClientCommand(client, "playgamesound weapons/debris4.wav");
+				EmitSoundToAll("weapons/buffed_on.wav", client, _, 70, _, 1.0, 100);
+				EmitSoundToAll("weapons/debris4.wav", client, _, 70, _, 1.0, 100);
 				Special_Active[client] = false;
 			}
 			//Special_Cooldowns[client][2] = GetGameTime() + 20.00;
@@ -687,9 +732,10 @@ public void Red_Mist_Main_Attack(int client, int weapon)
 		{
 			swing_type[client] = SWING_TYPE_SPECIAL;
 			Special_Damage_Boost[client] = true;
-			Special_Cooldowns[client][3] = GetGameTime() + 90.00;
+			Special_Cooldowns[client][3] = GetGameTime() + (90.00 * CooldownReductionAmount(client));
 			Rogue_OnAbilityUse(client, weapon);
-			EmitSoundToClient(client, HORIZONTAL_SLASH_SOUND, client, _, 70, _, 1.0, 90);
+			EmitSoundToAll(HORIZONTAL_SLASH_SOUND, client, _, 70, _, 1.0, 50);
+			DoHorrizontalSlashEffect(client);
 			return;
 		}
 		
@@ -721,18 +767,16 @@ public void Red_Mist_Onrush(int client, int weapon)
 {
 	if(redashes[client] >= 5)//allow for 3 dashes
 	{
-		redash_cooldown[client] = GetGameTime() + 7.5;
-		Ability_Apply_Cooldown(client, 2, 7.5);
+		Ability_Apply_Cooldown(client, 2, 12.5);
 		//PrintToChatAll("too many redashes");
 		redashes[client] = 0;
 		Onrush_Is_In_Dash[client] = false;
 		return;
 	}
 
-	if(redash_cooldown[client] > GetGameTime())
-	//if(Ability_Check_Cooldown(client, 2) > 0.0)
+	if(Ability_Check_Cooldown(client, 2) > 0.0)
 	{
-		float Ability_CD = redash_cooldown[client] - GetGameTime();
+		float Ability_CD = Ability_Check_Cooldown(client, 2);
 
 		if(Ability_CD <= 0.0)
 			Ability_CD = 0.0;
@@ -748,6 +792,7 @@ public void Red_Mist_Onrush(int client, int weapon)
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		return;
 	}
+	Ability_Apply_Cooldown(client, 2, 1.0);
 
 	Handle swingTrace;
 	b_LagCompNPC_No_Layers = true;
@@ -768,7 +813,9 @@ public void Red_Mist_Onrush(int client, int weapon)
 		redashes[client] += 1;
 	}
 	Rogue_OnAbilityUse(client, weapon);
-	EmitSoundToClient(client, ONRUSH_START_SOUND, client, _, 70, _, 1.0, 90);
+	EmitSoundToAll(ONRUSH_START_SOUND, client, _, 70, _, 1.0, 90);
+	EmitSoundToAll(ONRUSH_START_SOUND, client, _, 70, _, 1.0, 90);
+	EmitSoundToAll(ONRUSH_START_SOUND, client, _, 70, _, 1.0, 90);
 	Onrush_Is_In_Dash[client] = true;
 	Onrush_Redash_Window[client] = GetGameTime() + 2.5;
 	SetEntityMoveType(client, MOVETYPE_WALK);
@@ -778,7 +825,7 @@ public void Red_Mist_Onrush(int client, int weapon)
 	//ApplyStatusEffect(client, client, "Touch Ingored", 0.3);
 
 	int trail = Trail_Attach(client, ARROW_TRAIL_RED, 255, 0.45, 60.0, 3.0, 5);
-	SetEntityRenderColor(trail, 255, 200, 200, 255);
+	SetEntityRenderColor(trail, 255, 50, 50, 255);
 	SDKCall_SetLocalOrigin(trail, {0.0,0.0,50.0});
 	CreateTimer(0.45, Timer_RemoveEntityParent, EntIndexToEntRef(trail), TIMER_FLAG_NO_MAPCHANGE);
 	CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(trail), TIMER_FLAG_NO_MAPCHANGE);
@@ -1100,10 +1147,10 @@ void Draw_Greather_Slash_Effect(float Angles[3], int client, float belowBossEyes
 	Angles[0] -= (30.0 * AngleDeviation);
 	float vecForward[3];
 	GetAngleVectors(Angles, vecForward, NULL_VECTOR, NULL_VECTOR);
-	float LaserFatness = 8.0;
+	float LaserFatness = 10.0;
 	
 	int Colour[3];
-	Colour = {255,60,60};
+	Colour = {255,25,25};
 	float VectorTarget_2[3];
 	float VectorForward = 300.0; //a really high number.
 	
@@ -1111,5 +1158,104 @@ void Draw_Greather_Slash_Effect(float Angles[3], int client, float belowBossEyes
 	VectorTarget_2[0] = belowBossEyes[0] + vecForward[0] * VectorForward;
 	VectorTarget_2[1] = belowBossEyes[1] + vecForward[1] * VectorForward;
 	VectorTarget_2[2] = belowBossEyes[2] + vecForward[2] * VectorForward;
-	Passanger_Lightning_Effect(belowBossEyes, VectorTarget_2, 4, LaserFatness, Colour);
+	RedMistSlashEffect(belowBossEyes, VectorTarget_2, LaserFatness, Colour);
+}
+
+
+
+void DoHorrizontalSlashEffect(int client)
+{
+	DataPack pack = new DataPack();
+	pack.WriteCell(EntIndexToEntRef(client));
+	pack.WriteFloat(GetGameTime() + 0.07);	
+	RequestFrame(Horrizontal_Greather_Split_Effect, pack);
+}
+
+
+void Horrizontal_Greather_Split_Effect(DataPack pack)
+{
+	pack.Reset();
+	int client = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidClient(client))
+	{
+		delete pack;
+		return;
+	}
+	float TimeUntillEnd = pack.ReadFloat();
+	float TimeUntillSnap = TimeUntillEnd - GetGameTime();
+	TimeUntillSnap *= 20.0;
+	static float belowBossEyes[3];
+	belowBossEyes[0] = 0.0;
+	belowBossEyes[1] = 0.0;
+	belowBossEyes[2] = 0.0;
+	float Angles[3];
+	GetClientEyeAngles(client, Angles);
+	if(GetGameTime() >= TimeUntillEnd)
+	{
+		//do final slash on the floor where they look  and them delete.
+		Horrizontal_Draw_Greather_Slash_Effect(Angles, client, belowBossEyes, 0.0);
+		delete pack;
+		return;
+	}
+	Horrizontal_Draw_Greather_Slash_Effect(Angles, client, belowBossEyes, TimeUntillSnap);
+	RequestFrame(Horrizontal_Greather_Split_Effect, pack);
+}
+
+void Horrizontal_Draw_Greather_Slash_Effect(float Angles[3], int client, float belowBossEyes[3], float AngleDeviation = 1.0)
+{
+	Angles[1] += 40.0;
+	Angles[1] -= (40.0 * AngleDeviation);
+	float vecForward[3];
+	GetAngleVectors(Angles, vecForward, NULL_VECTOR, NULL_VECTOR);
+	float LaserFatness = 30.0;
+	
+	int Colour[3];
+	Colour = {255,25,25};
+	float VectorTarget_2[3];
+	float VectorForward = 600.0; //a really high number.
+	
+	GetBeamDrawStartPoint_Stock(client, belowBossEyes,{0.0,0.0,0.0}, Angles);
+	VectorTarget_2[0] = belowBossEyes[0] + vecForward[0] * VectorForward;
+	VectorTarget_2[1] = belowBossEyes[1] + vecForward[1] * VectorForward;
+	VectorTarget_2[2] = belowBossEyes[2] + vecForward[2] * VectorForward;
+	RedMistSlashEffect(belowBossEyes, VectorTarget_2, LaserFatness, Colour);
+}
+
+
+
+
+void RedMistSlashEffect(float belowBossEyes[3], float vecHit[3], float diameter = 0.0, int color[3] = {0,0,0})
+{	
+	
+	int r = 255; //Yellow.
+	int g = 255;
+	int b = 65;
+	if(color[0] != 0)
+	{
+		r = color[0]; //Yellow.
+		g = color[1];
+		b = color[2];
+	}
+
+	int colorLayer4[4];
+	SetColorRGBA(colorLayer4, r, g, b, 200);
+	int colorLayer3[4];
+	SetColorRGBA(colorLayer3, r, g, b, 150);
+
+	TE_SetupBeamPoints(belowBossEyes, vecHit, BeamWand_Laser, 0, 0, 0, 0.22, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter  * 0.4 * 1.28), 0, 0.3, colorLayer4, 3);
+	TE_SendToAll(0.0);
+
+	TE_SetupBeamPoints(belowBossEyes, vecHit, BeamWand_Laser, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 1.0 * 1.28), ClampBeamWidth(diameter * 0.2 * 1.28), 0, 0.2, colorLayer4, 3);
+	TE_SendToAll(0.0);
+
+	TE_SetupBeamPoints(belowBossEyes, vecHit, BeamWand_Laser, 0, 0, 0, 0.22, ClampBeamWidth(diameter * 1.0 * 1.28), ClampBeamWidth(diameter * 0.2 * 1.28), 0, 0.3, colorLayer4, 3);
+	TE_SendToAll(0.0);
+	TE_SetupBeamPoints(belowBossEyes, vecHit, BeamWand_Laser, 0, 0, 0, 0.22, ClampBeamWidth(diameter * 1.4 * 1.28), ClampBeamWidth(diameter * 0.5 * 1.28), 0, 1.0, colorLayer3, 3);
+	TE_SendToAll(0.0);
+	
+
+	int glowColor[4];
+	SetColorRGBA(glowColor, r, g, b, 30);
+	TE_SetupBeamPoints(belowBossEyes, vecHit, BeamWand_Glow, 0, 0, 0, 0.22, ClampBeamWidth(diameter * 2.0 * 1.28), ClampBeamWidth(diameter * 1.4 * 1.28), 0, 1.0, glowColor, 0);
+	TE_SendToAll(0.0);
 }
