@@ -369,7 +369,7 @@ void KahmlsteinDeadGrandmaSelfDefense(KahmlsteinDeadGrandma npc, float gameTime,
 				{
 					float damageDealt = 1000.0;
 					if(ShouldNpcDealBonusDamage(target))
-						damageDealt *= 1.5;
+						damageDealt *= 3.0;
 
 					SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 
