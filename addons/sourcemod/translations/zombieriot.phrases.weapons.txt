@@ -5631,6 +5631,11 @@
 		"it" "Merci di Koshi"
 		"ko" "코시의 좋은 물건"
 	}
+	"Medic Upgrades"
+	{
+		"en" "Medic Upgrades"
+		"ko" "메딕 개선"
+	}
 	"Bubble Wand"
 	{
 		"en"	"Bubble Wand"
