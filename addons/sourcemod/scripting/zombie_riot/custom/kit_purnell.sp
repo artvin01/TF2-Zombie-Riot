@@ -367,7 +367,7 @@ public void Purnell_PrimaryShove(int client, int weapon, bool crit, int slot) //
 			if(cooldown <= 0.0)
 				cooldown = 0.0;
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetDefaultHudPosition(client);
+			Purnell_SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", cooldown);	
 		}
@@ -458,6 +458,8 @@ public void Purnell_Delayed_MeleeAttack(DataPack pack)
 			WorldSpaceCenter(EnemyHit, Entity_Position);
 			if(!b_NpcIsInvulnerable[EnemyHit])
 			{
+				Logic_Purnell_Debuff(client, EnemyHit);
+				
 				switch(TypeOfShove)
 				{
 					case 0:
@@ -470,7 +472,6 @@ public void Purnell_Delayed_MeleeAttack(DataPack pack)
 						float knockback = fl_Push_Knockback[client];
 						if(!b_thisNpcIsARaid[EnemyHit])
 							SensalCauseKnockback(client, EnemyHit, (knockback / 900.0), false);
-						Logic_Purnell_Debuff(client, EnemyHit, damage, weapon);
 						float CalcDamageForceVec[3]; CalculateDamageForce(fPosForward, 20000.0, CalcDamageForceVec);
 						SDKHooks_TakeDamage(EnemyHit, client, client, damage, DMG_CLUB, weapon, CalcDamageForceVec, Entity_Position);
 					}
@@ -565,7 +566,7 @@ public void Purnell_MeleeShove(int client, int weapon, bool crit, int slot) // "
 			if(cooldown <= 0.0)
 				cooldown = 0.0;
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetDefaultHudPosition(client);
+			Purnell_SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", cooldown);	
 		}
@@ -651,22 +652,8 @@ public void Weapon_PurnellBuff_M2(int client, int weapon, bool crit, int slot)
 	if(Ability_Check_Cooldown(client, slot) > 0.0)
 	{
 		ClientCommand(client, "playgamesound items/suitchargeno1.wav");
+		Purnell_SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		
-		if (f_NotifHudOffsetX[client] == 0.0 && f_NotifHudOffsetY[client] == 0.0)
-		{
-			// Move the HUD warning up a bit so it doesn't clash with the buff/debuff element
-			const float hudX = -1.0;
-			const float hudY = 0.6;
-			const float duration = 1.01;
-			
-			SetHudTextParams(hudX, hudY, duration, 34, 139, 34, 255);
-		}
-		else
-		{
-			SetDefaultHudPosition(client);
-		}
-		
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_Check_Cooldown(client, slot));
 		return;
 	}
@@ -869,7 +856,7 @@ static void Purnell_AllyBuffApply(int client, int target)
 }
 
 //public void Weapon_Purnell_Debuff(int client, int victim, int weapon, bool crit, int slot)
-public void Logic_Purnell_Debuff(int client, int victim, float damage, int weapon)
+public void Logic_Purnell_Debuff(int client, int victim)
 {
 	Purnell_DebuffApply(client, victim);
 	
@@ -1013,4 +1000,19 @@ static void Purnell_Timer_ShowBuffMessageAgain(Handle timer, DataPack pack)
 	pack.ReadString(text, sizeof(text));
 	
 	ShowGameText(client, PURNELL_GAMETEXTICON, _, text);
+}
+
+static void Purnell_SetDefaultHudPosition(int client, int red = 34, int green = 139, int blue = 34, float duration = 1.01)
+{
+	if (f_NotifHudOffsetX[client] == 0.0 && f_NotifHudOffsetY[client] == 0.0)
+	{
+		// If the player hasn't changed their HUD setting, move the HUD warning up a bit so it doesn't clash with the buff/debuff element
+		const float hudX = -1.0;
+		const float hudY = 0.6;
+		
+		SetHudTextParams(hudX, hudY, duration, red, green, blue, 255);
+		return;
+	}
+	
+	SetDefaultHudPosition(client);
 }
