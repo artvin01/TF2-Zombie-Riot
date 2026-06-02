@@ -5932,15 +5932,15 @@
 	}
 	"Prey"
 	{
-		"en"	"Prey:\nEvery 20 seconds the first\n enemy you hit gets marked\nmarked enemies take 50% more damage\n(35% if boss, 25% if raidboss)\nKilling the marked enemy heals for 20% max hp.\n[M1]"
+		"en"	"Prey:\nEvery 20 seconds the first\n enemy you hit gets marked\nmarked enemies take 50％ more damage\n(35％ if boss, 25％ if raidboss)\nKilling the marked enemy heals for 20％ max hp.\n[M1]"
 	}
 	"Vengeance"
 	{
-		"en"	"Vengeance:\nIf max HP is at 50%/33%/25% or lower, \ngain stacking 1/2/4 Strength(5% bonus dmg dealt)\n[M2]"
+		"en"	"Vengeance:\nIf max HP is at 50％/33％/25％ or lower, \ngain stacking 1/2/4 Strength\n[M2]"
 	}
 	"Claws of Savagery"
 	{
-		"en"	"Claws of Savagery:\nWhen taking over 50% max hp in 2 seconds \ngain 75% damage resistance for 4 seconds\n[M1]"
+		"en"	"Claws of Savagery:\nWhen taking over 50％ max hp in 2 seconds \ngain 75％ damage resistance for 4 seconds\n[M1]"
 	}
 	"The Role of the Wolf"
 	{
@@ -5948,11 +5948,11 @@
 	}
 	"Absorption"
 	{
-		"en"	"Absorption:\nKilling an enemy heals you for 5% max hp\nFor each 20% max hp healed with \nthis effect gain 1 strenght for 20 seconds\n[M1]"
+		"en"	"Absorption:\nKilling an enemy heals you for 5％ max hp\nFor each 20％ max hp healed with \nthis effect gain 1 strenght for 20 seconds\n[M1]"
 	}
 	"Mountain of Corpses"
 	{
-		"en"	"Mountain of Corpses:\nDoes nothing normally\nIf last man activates while this page is chosen \ngain 10 Strength and 50% damage reduction.\nDie after 90 seconds after activation\n[M2]"
+		"en"	"Mountain of Corpses:\nDoes nothing normally\nIf last man activates while this page is chosen \ngain 10 Strength and 50％ damage reduction.\nDie after 120 seconds after activation\n[M2]"
 	}
 	"Vampirism"
 	{

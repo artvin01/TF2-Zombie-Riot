@@ -3434,11 +3434,11 @@
 	}
 	"Red_Mist_Strength"
 	{
-		"en"	"Red_Mist_Strength"
+		"en"	"Strength"
 	}
 	"Red_Mist_Strength Desc"
 	{
-		"en"	"Gain 5% additive more damage dealt per stack\nOnly affects this kit"
+		"en"	"Gain an additive 5％ more damage dealt per stack\nOnly affects this kit"
 	}
 	"Influence of the bodies"
 	{
@@ -3450,10 +3450,19 @@
 	}
 	"Savagery Buff"
 	{
-		"en"	"Savagery Buff"
+		"en"	"Savagery Resistance"
 	}
-	"Savagery Buff"
+	"Savagery Buff Desc"
 	{
-		"en"	"Temporary 75% damage resistance"
+		"en"	"Temporary 75％ damage resistance"
 	}
+	"Ego Manifestation"
+	{
+		"en"	"Ego"
+	}
+	"Ego Manifestation Desc"
+	{
+		"en"	"Deal 35％ more damage and take 15％ less damage\nWhile active unlock a new special ability"
+	}
+	
 }
