@@ -5484,8 +5484,7 @@
 	}
 	"The Red Mist Desc 1"
 	{
-		"en"	"-Tiny stat increases"
-		"ko"	"-능력치 소폭 증가"
+		"en"	"-Tiny stat increases\nUnlocks secondary weapon and a special card"
 	}
 	"The Red Mist Desc 2"
 	{
@@ -5494,8 +5493,7 @@
 	}
 	"The Red Mist Desc 3"
 	{
-		"en"	"-Gain a dash attack which you can chain up to 5 times\n-Overall Stat Increases"
-		"ko"	"-최대 5번까지 연속 사용 가능한 돌진 공격 획득\n-전반적인 능력치 증가"
+		"en"	"-Gain a dash attack which you can chain up to 5 times\nDash deals damage on contant and \nmakes you unable to swing for its duration\n-Overall Stat Increases"
 	}
 	"The Red Mist Desc 4"
 	{

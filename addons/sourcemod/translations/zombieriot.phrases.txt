@@ -5973,20 +5973,13 @@
 		"en"	"Deep Wound:\nEvery 5th hit inflict bleed onto the enemy\n[M2]"
 		"ko"	"깊은 상처:\n매 5번째 적중 시 적에게 출혈 부여\n[M2]"
 	}
-	"Greater Slash Vertical"
-	{
-		"en"	"Perform a powerful single target slash\n[M1]"
-		"ko"	"강력한 단일 대상 공격을 시전\n[M1]"
-	}
 	"Greater Slash Horizontal"
 	{
-		"en"	"Perform a powerful aoe slash \nin front of yourself\n[M2]"
-		"ko"	"정면을 향해\n강력한 광역 공격을 시전\n[M2]"
+		"en"	"Perform a powerful aoe slash \nin front of yourself\nSwing your sword once the page is selected\n[M2]"
 	}
 	"Red Mist Ego"
 	{
-		"en"	"Enter an empowered state \nSlowly lose energy overtime \nattack enemies to regain energy\n[M2]"
-		"ko"	"강화 상태로 돌입\n지속적으로 에너지를 소모\n적 적중 시 에너지 회복\n[M2]"
+		"en"	"Enter an empowered state \nSlowly lose energy overtime \nattack enemies to regain energy\nSwing your sword once the page is selected\n[M2]"
 	}
 	"Red Mist Card Locked"
 	{
