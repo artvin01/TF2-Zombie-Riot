@@ -1749,7 +1749,7 @@
 	{
 		"en"	"Deals True Damage if allies are affected, otherwise ranged.\nHeal 25％ less while on fire, when applying fire again (npc only), tick again for 50％ damage.\n{green}Enemies on fire, give 10％ more hp on kill and gibs."
 		"it"	"Infligge danni veri se gli alleati sono colpiti, altrimenti a distanza.\nGuarisce 25％ in meno mentre è in fiamme, quando applica di nuovo il fuoco (solo per gli npc), spunta di nuovo per 50％ danni.\n{green}I nemici in fiamme, danno 10％ hp in più su uccisioni e colpi."																																																																																			
-		"ko"	"아군이 효과를 받으면 고정 피해(트루 대미지)를 입히고,\n그렇지 않다면 원거리 피해를 입힙니다\n불타는 중에는 회복량이 25％ 감소합니다.\nNPC에게 불을 다시 붙이면 50％ 피해로 한 번 더 작동합니다\n불타는 적이 처치되면 처치 시 체력 회복량이 10％ 증가하고 시체가 산산조각납니다."
+		"ko"	"아군이 효과를 받으면 트루 데미지를 입히고, 그렇지 않다면 원거리 피해를 입힙니다.\n불타는 중에는 회복량이 25％ 감소합니다.\nNPC에게 재적용 시 화상 피해의 50％를 1회 가합니다.\n불타는 적이 처치되면 처치 시 체력 회복량이 10％ 증가 및 시체가 산산조각납니다."
 	}
 	"Zealot's Random Drinks"
 	{
