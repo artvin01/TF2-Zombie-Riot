@@ -629,7 +629,7 @@
 	{
 		"en"	"Shows that youre standing in void creep, void creatures in keep get stronger."
 		"it"	"Mostra che ti trovi in void creep, le creature void in keep diventano più forti."
-		"ko"	"현재 당신은 공허 점막 위에 있습니다. 공허체들은 이 위에 있으면 능력치가 증가합니다."
+		"ko"	"현재 공허 점막 위에 있습니다. 공허체들은 이 위에 있으면 능력치가 증가합니다."
 	}
 	"Sea Presence"
 	{
@@ -641,7 +641,7 @@
 	{
 		"en"	"Shows that youre standing in Abyssal Weed, you take continuous damage, get out.\n{green}If you are apart or one with the sea, you instead benefit from it..."
 		"it"	"Mostra che sei in mezzo al mare, subisci danni continui, esci.\n{green}Se sei separato o un tutt'uno con il mare, invece ne trai beneficio..."
-		"ko"	"현재 당신은 심연 해초 위에 있습니다. 영역 내에 있으면 계속해서 피해를 받습니다. 빠져나오세요.\n{green}만약 당신이 바다의 일원이라면, 대신 힘을 얻게 될 것입니다..."
+		"ko"	"현재 심연 해초 위에 있습니다. 영역 내에 있으면 계속해서 피해를 받습니다. 빠져나오세요.\n{green}만약 당신이 바다의 일원이라면, 대신 힘을 얻게 될 것입니다..."
 	}
 	"Sea Strength"
 	{
@@ -653,7 +653,7 @@
 	{
 		"en"	"Shows that youre standing in Abyssal Weed, you benefit from it\nIncreases damage dealt by 10％, Decreases damage taken by 10％."
 		"it"	"Mostra che si è in presenza di mare agitato, se ne trae beneficio. \nAumenta i danni inflitti di 10％, diminuisce i danni subiti di 10％."
-		"ko"	"현재 당신은 심연 해초 위에 있습니다. 영역 내에 있으면 능력치가 증가합니다.\n공격 피해량이 10％ 증가하고, 받는 피해량이 10％ 감소합니다."
+		"ko"	"현재 심연 해초 위에 있습니다. 영역 내에 있으면 능력치가 증가합니다.\n공격 피해량이 10％ 증가하고, 받는 피해량이 10％ 감소합니다."
 	}
 	"Void Strength I"
 	{
@@ -3435,34 +3435,42 @@
 	"Red_Mist_Strength"
 	{
 		"en"	"Strength"
+		"ko"	"힘"
 	}
 	"Red_Mist_Strength Desc"
 	{
 		"en"	"Gain an additive 5％ more damage dealt per stack\nOnly affects this kit"
+		"ko"	"중첩 당 가하는 피해량이 합연산으로 5％ 증가합니다.\n해당 키트에만 영향을 줍니다."
 	}
 	"Influence of the bodies"
 	{
 		"en"	"Influence of the bodies"
+		"ko"	"시체들의 영향"
 	}
 	"Influence of the bodies Desc"
 	{
 		"en"	"{maroon}The bodies are slowly consuming you..\n{darkgrey}Gain huge power at a {maroon}cost."
+		"ko"	"{maroon}시체들이 서서히 당신을 좀먹어갑니다...\n{maroon}댓가{darkgrey}에 따라 막대한 힘을 얻습니다."
 	}
 	"Savagery Buff"
 	{
 		"en"	"Savagery Resistance"
+		"ko"	"흉악한 저항"
 	}
 	"Savagery Buff Desc"
 	{
 		"en"	"Temporary 75％ damage resistance"
+		"ko"	"일시적으로 피해 저항력 75％를 얻습니다."
 	}
 	"Ego Manifestation"
 	{
 		"en"	"Ego"
+		"ko"	"E.G.O 발현"
 	}
 	"Ego Manifestation Desc"
 	{
 		"en"	"Deal 35％ more damage and take 15％ less damage\nWhile active unlock a new special ability"
+		"ko"	"가하는 피해량이 35％ 증가합니다.\n받는 피해량이 15％ 감소합니다.\n사용하는 동안 새로운 특수 능력을 얻습니다."
 	}
 	
 }
