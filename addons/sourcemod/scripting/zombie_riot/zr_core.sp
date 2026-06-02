@@ -408,6 +408,7 @@ int i_MVMPopulator;
 //bool RaidMode; 							//Is this raidmode?
 float RaidModeScaling = 0.5;			//what multiplier to use for the raidboss itself?
 float RaidModeTime = 0.0;
+int TimeWhenStartedWaveset = 0;
 float f_TimerTickCooldownRaid = 0.0;
 float f_TimerTickCooldownShop = 0.0;
 float f_FreeplayDamageExtra = 1.0;
@@ -442,6 +443,7 @@ int StartCash;
 float RoundStartTime;
 char WhatDifficultySetting_Internal[32];
 char WhatDifficultySetting[32];
+char WhatModifierSetting[32];
 float healing_cooldown[MAXPLAYERS];
 float f_TimeAfterSpawn[MAXPLAYERS];
 float WoodAmount[MAXPLAYERS];
@@ -900,6 +902,8 @@ void ZR_MapStart()
 	Dweller_OnMapStart();
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
+	Format(WhatModifierSetting, sizeof(WhatModifierSetting), "");
+	PrintToChatAll("WhatModifierSetting reser");
 	WavesUpdateDifficultyName();
 	cvarTimeScale.SetFloat(1.0);
 	GlobalCheckDelayAntiLagPlayerScale = 0.0;
@@ -3334,6 +3338,47 @@ void ForcePlayerWin(bool fakeout = false)
 
 	if(!fakeout)
 	{
+		
+		// Send info through a forward
+		ArrayList playerList = new ArrayList();
+		for (int client = 1; client <= MaxClients; client++)
+		{
+			if (!b_IsPlayerABot[client] && IsClientInGame(client) && !IsFakeClient(client) && GetTeam(client) == 2)
+				playerList.Push(client);
+		}
+		ArrayList RogueitemNames = new ArrayList(64);
+		if(ZR_GetSpecialMode() == Mode_Rogue1 || 
+		ZR_GetSpecialMode() == Mode_Rogue2 ||
+		ZR_GetSpecialMode() == Mode_Rogue3 || 
+		ZR_GetSpecialMode() == Mode_Construction || 
+		ZR_GetSpecialMode() == Mode_Construction2)
+		{
+			Artifact artifact;
+			int length = CurrentCollection ? CurrentCollection.Length : 0;
+			if(length)
+			{
+				for(int i; i < length; i++)
+				{
+					int index = CurrentCollection.Get(i);
+					Artifacts.GetArray(index, artifact);
+					if(!artifact.Hidden)
+					{
+						RogueitemNames.PushString(artifact.Name);
+					}
+				}
+			}
+
+		}
+		
+		char waveset[64], modifier[64];
+		strcopy(waveset, sizeof(waveset), WhatDifficultySetting_Internal);
+		strcopy(modifier, sizeof(modifier), WhatModifierSetting);
+		int TimeTookToBeat = GetTime() - TimeWhenStartedWaveset;
+		Native_ZR_OnWinInfo(playerList, waveset, modifier, TimeTookToBeat, CurrentRound[0], RogueitemNames);
+
+		delete playerList;
+		delete RogueitemNames;
+
 		MusicString1.Clear();
 		MusicString2.Clear();
 		MusicSetup1.Clear();

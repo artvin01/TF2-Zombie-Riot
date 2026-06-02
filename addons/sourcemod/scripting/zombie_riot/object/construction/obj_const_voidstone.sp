@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const char Artifacts[][] =
+static const char Artifacts2[][] =
 {
 	"Consume Voidstone",
 	"Consume Voidstone",
@@ -19,7 +19,7 @@ static const int CrystalCost = 10;
 static int NPCId;
 static float GlobalCooldown;
 static bool Shuffled;
-static bool Enabled[sizeof(Artifacts)];
+static bool Enabled[sizeof(Artifacts2)];
 
 void ObjectVoidstone_MapStart()
 {
@@ -162,8 +162,8 @@ static void ThisBuildingMenu(int client)
 	{
 		if(Enabled[i])
 		{
-			FormatEx(buffer, sizeof(buffer), "%t", Artifacts[i]);
-			menu.AddItem(Artifacts[i], buffer);
+			FormatEx(buffer, sizeof(buffer), "%t", Artifacts2[i]);
+			menu.AddItem(Artifacts2[i], buffer);
 		}
 	}
 
