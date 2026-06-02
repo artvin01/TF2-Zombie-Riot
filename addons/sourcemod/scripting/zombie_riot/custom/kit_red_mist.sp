@@ -35,7 +35,6 @@ static float redash_cooldown[MAXPLAYERS];
 static float Special_Cooldowns[MAXPLAYERS][4]; //IT WORKS :D, who needs premade cooldowns when you can make your own
 // Note from artvin: this will not work with any cooldown reductions or any "on hit" cooldown reductions unless its specifically coded in.
 
-static float Strenght_boost[MAXPLAYERS];
 static float Burst_Damage_Taken[MAXPLAYERS];
 static float Onrush_Redash_Window[MAXPLAYERS];
 //flags or smth, black magic if you ask me
@@ -167,6 +166,9 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 		{
 			if(Abno_Pages[client] & ABNORMPAGE_MOSB)//give bonus buffs if MOSB is picked
 			{
+				ApplyStatusEffect(client, client, "Deathly Influence", 9999.0);
+				ApplyStatusEffect(client, client, "Red_Mist_Strength", 9999.0);
+				StatusEffects_RM_StrengthBuffAdd(client, 10);
 				Strenght_Amount[client] += 10;
 				RM_Lastman_Timer[client] = CreateTimer(90.0, MOSB_Lastman_Execution, client);
 				EmitCustomToAll("zombiesurvival/medieval_raid/special_mutation/arkantos_scream_buff.mp3", client, SNDCHAN_STATIC, 120, _, 1.0, 75);
@@ -186,8 +188,10 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 		{
 			if(Abno_Pages[client] & ABNORMPAGE_MOSB)//give bonus buffs if MOSB is picked
 			{
+				StatusEffects_RM_StrengthBuffAdd(client, -10);
 				Strenght_Amount[client] -= 10; //if it isnt lms but buffs were applied. aka lms ended, remove buffs and kill death timer
 				delete RM_Lastman_Timer[client];
+				RemoveSpecificBuff(client, "Deathly Influence");
 			}
 			Ego_Active[client] = false;
 			Special_Cooldowns[client][2] = GetGameTime() + 120.00;
@@ -307,32 +311,41 @@ public void Vengeance_Logic(int client)
 	{
 		Strenght_Amount[client] += 1;
 		strength_active_1[client] = true;
+		ApplyStatusEffect(client, client, "Red_Mist_Strength", 9999.0);
+		StatusEffects_RM_StrengthBuffAdd(client, 1);
 	}
 	if(Health < MaxHealth / 3 && !strength_active_2[client])
 	{
 		Strenght_Amount[client] += 2;
 		strength_active_2[client] = true;
+		ApplyStatusEffect(client, client, "Red_Mist_Strength", 9999.0);
+		StatusEffects_RM_StrengthBuffAdd(client, 2);
 	}
 	if(Health < MaxHealth / 4 && !strength_active_3[client])
 	{
 		Strenght_Amount[client] += 4;
 		strength_active_3[client] = true;
+		ApplyStatusEffect(client, client, "Red_Mist_Strength", 9999.0);
+		StatusEffects_RM_StrengthBuffAdd(client, 4);
 	}
 
 	if(Health > MaxHealth / 2 && strength_active_1[client])
 	{
 		Strenght_Amount[client] -= 1;
 		strength_active_1[client] = false;
+		StatusEffects_RM_StrengthBuffAdd(client, -1);
 	}
 	if(Health > MaxHealth / 3 && strength_active_2[client])
 	{
 		Strenght_Amount[client] -= 2;
 		strength_active_2[client] = false;
+		StatusEffects_RM_StrengthBuffAdd(client, -2);
 	}
 	if(Health > MaxHealth / 4 && strength_active_3[client])
 	{
 		Strenght_Amount[client] -= 4;
 		strength_active_3[client] = false;
+		StatusEffects_RM_StrengthBuffAdd(client, -4);
 	}
 
 	//a bit convoluted but with this each boost can only trigger once, same with removal of it, soooo it should never go above the cap or below 0(hopefully)
@@ -483,6 +496,7 @@ public Action Savagery_Reset_damage(Handle timer, int client)
 public Action Absorption_Remove_Strength(Handle timer, int client)
 {
 	Strenght_Amount[client] -= 1;
+	StatusEffects_RM_StrengthBuffAdd(client, -1);
 	//PrintToChat(client, "Absorption strenght removed");
 	return Plugin_Handled;
 }
@@ -508,6 +522,7 @@ public Action MOSB_Lastman_Execution(Handle timer, int client)
 	CPrintToChatAll("{maroon}The bodies fully consumed {darkgrey}%N...",client);
 	Special_Cooldowns[client][2] = GetGameTime() + 120.00;
 	RemoveSpecificBuff(client, "Ego Manifestation");
+	RemoveSpecificBuff(client, "Deathly Influence");
 	Ego_Active[client] = false;
 	return Plugin_Handled;
 }
@@ -518,8 +533,9 @@ public void Red_Mist_OnTakeDamage_Deal(int victim, int &attacker, int &inflictor
 		return;
 	if(zr_custom_damage & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
 		return;
-	Strenght_boost[attacker] = 1.0 + (0.05 * Strenght_Amount[attacker]);
-	damage *= Strenght_boost[attacker];
+	float Strenght_boost;
+	Strenght_boost = 1.0 + (0.05 * Strenght_Amount[attacker]);
+	damage *= Strenght_boost;
 	if(Onrush_Is_In_Dash[attacker])
 	{
 		Onrush_Is_In_Dash[attacker] = false;
@@ -551,7 +567,7 @@ public void Red_Mist_OnTakeDamage_Deal(int victim, int &attacker, int &inflictor
 			Prey_Mark_Cooldown[attacker] = false;
 			EmitSoundToClient(attacker, "weapons/samurai/tf_marked_for_death_indicator.wav", attacker, _, 70, _, 1.0, 60);
 			//ClientCommand(attacker, "playgamesound weapons/samurai/tf_marked_for_death_indicator.wav");
-			CreateTimer(15.0, RM_Prey_Cooldown, attacker);
+			CreateTimer(20.0, RM_Prey_Cooldown, attacker);
 		}
 		if(HasSpecificBuff(victim, "Mark Of Prey"))
 		{
@@ -612,6 +628,8 @@ public void Red_Mist_On_Kill(int victim, int killer, int weapon)
 		{
 			absorption_counter[killer] = 0;
 			Strenght_Amount[killer] += 1;
+			ApplyStatusEffect(killer, killer, "Red_Mist_Strength", 9999.0);
+			StatusEffects_RM_StrengthBuffAdd(killer, 1);
 			//PrintToChat(killer, "Absorption strenght trigered");
 			CreateTimer(15.0, Absorption_Remove_Strength, killer);
 		}
@@ -691,7 +709,6 @@ public void Red_Mist_Main_Attack(int client, int weapon)
 			attackspeed = (attackspeed / 0.25);
 			Attributes_Set(weapon, 6, attackspeed); //Make it really fast for 1 hit!
 		}
-		//PrintToChatAll("Strength Amount [%d]", Strenght_Amount[client]);
 	}
 	if(Special_Damage_Boost[client])//we do this cuz "special_active" gets disabled before this function gets called, so this is a small workaround
 	{

@@ -3432,4 +3432,28 @@
 		"en"	"Negates base resistances (excludes status effects)\nIncreases damage taken by up to 60％."
 		"ko"	"기본 저항력을 무시합니다.(상태이상 효과 제외)\n받는 피해량이 최대 60％까지 증가합니다."
 	}
+	"Red_Mist_Strength"
+	{
+		"en"	"Red_Mist_Strength"
+	}
+	"Red_Mist_Strength Desc"
+	{
+		"en"	"Gain 5% additive more damage dealt per stack\nOnly affects this kit"
+	}
+	"Influence of the bodies"
+	{
+		"en"	"Influence of the bodies"
+	}
+	"Influence of the bodies Desc"
+	{
+		"en"	"{maroon}The bodies are slowly consuming you..\n{darkgrey}Gain huge power at a {maroon}cost."
+	}
+	"Savagery Buff"
+	{
+		"en"	"Savagery Buff"
+	}
+	"Savagery Buff"
+	{
+		"en"	"Temporary 75% damage resistance"
+	}
 }
