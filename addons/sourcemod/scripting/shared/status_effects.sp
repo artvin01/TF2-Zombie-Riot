@@ -90,7 +90,6 @@ static const char Categories[][] =
 bool DisplayBuffHintToClient[MAXPLAYERS][MAXBUFFSEXPLAIN];
 float DisplayChatBuffCD[MAXPLAYERS];
 
-static ArrayList E_AL_StatusEffects[MAXENTITIES];
 
 enum struct E_StatusEffect
 {
@@ -1777,6 +1776,15 @@ void StatusEffect_SpeedModifierPlayer(int victim, float &SpeedModifPercentage)
 			continue;
 		}
 		float SpeedModif = Apply_MasterStatusEffect.MovementspeedModifPlayer;
+		if(Apply_MasterStatusEffect.Status_SpeedFunc != INVALID_FUNCTION && Apply_MasterStatusEffect.Status_SpeedFunc)
+		{
+			//We have a valid function ignore the original value.
+			Call_StartFunction(null, Apply_MasterStatusEffect.Status_SpeedFunc);
+			Call_PushCell(victim);
+			Call_PushArray(Apply_MasterStatusEffect, sizeof(Apply_MasterStatusEffect));
+			Call_PushArray(Apply_StatusEffect, sizeof(Apply_StatusEffect));
+			Call_Finish(SpeedModif);
+		}
 		if(Apply_MasterStatusEffect.Positive)
 		{
 			//If its a positive buff, do No penalty
@@ -10256,8 +10264,6 @@ void Func_ShieldingHud(int attacker, int victim, StatusEffect Apply_MasterStatus
 	Format(HudToDisplay, SizeOfChar, "SH[%i]", RoundToNearest(Apply_StatusEffect.DataForUse));
 }
 
-int Red_Mist_StrengthDebuffIndex;
-int Red_Mist_CounterAmountIndex;
 void StatusEffects_Red_Mist()
 {
 	StatusEffect data;
@@ -10282,12 +10288,28 @@ void StatusEffects_Red_Mist()
 	data.DamageDealMulti			= 0.35; //35% more dmg dealt
 	//Make sure it isnt ignored, set it to 0.0, on need for extra func checks either.
 	data.MovementspeedModif			= -1.0;
+	data.MovementspeedModifPlayer	= 1.1;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.ElementalLogic				= true;
 	data.OnBuffStarted				= EgoManifest_Start;
 	data.OnBuffStoreRefresh			= EgoManifest_Refresh;
 	data.OnBuffEndOrDeleted			= EgoManifest_End;
+	data.Status_SpeedFunc 			= EgoManifestation_SpeedVunc;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Ego Grace");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	//Make sure it isnt ignored, set it to 0.0, on need for extra func checks either.
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
@@ -10347,7 +10369,7 @@ void StatusEffects_Red_Mist()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.HudDisplay_Func 			= Func_RM_StrengthDisplay;
-	Red_Mist_StrengthDebuffIndex = StatusEffect_AddGlobal(data);
+	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Red Mist Counter");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⚔");
@@ -10362,66 +10384,41 @@ void StatusEffects_Red_Mist()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.HudDisplay_Func 			= Func_RM_CounterAmount_Display;
-	Red_Mist_CounterAmountIndex = StatusEffect_AddGlobal(data);
-}
+	StatusEffect_AddGlobal(data);
 
-void Func_RM_StrengthDisplay(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
-{
-	Format(HudToDisplay, SizeOfChar, "⬆(%i)", RoundToNearest(Apply_StatusEffect.DataForUse));
-	//Format(HudToDisplay, SizeOfChar, "T(%d)", RoundToNearest(Apply_StatusEffect.DataForUse));
-}
-
-stock void StatusEffects_RM_StrengthBuffAdd(int victim, int valuetoadd)
-{
-	if(!E_AL_StatusEffects[victim])
-		return;
-
-	static StatusEffect Apply_MasterStatusEffect;
-	static E_StatusEffect Apply_StatusEffect;
-	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Red_Mist_StrengthDebuffIndex , E_StatusEffect::BuffIndex);
-	if(ArrayPosition != -1)
-	{
-		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
-		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
-		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
-		{
-			if(RoundToNearest(Apply_StatusEffect.DataForUse) <= 0)
-			{
-				//RemoveSpecificBuff(victim, "Strength");
-			}
-			Apply_StatusEffect.DataForUse += float(valuetoadd);
-			E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
-		}
-	}
-
-}
-void Func_RM_CounterAmount_Display(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
-{
-	Format(HudToDisplay, SizeOfChar, "⚔(%i)", RoundToNearest(Apply_StatusEffect.DataForUse));
-}
-
-stock void StatusEffects_RM_CounterAmount(int victim, int valuetoadd)
-{
-	if(!E_AL_StatusEffects[victim])
-		return;
-
-	static StatusEffect Apply_MasterStatusEffect;
-	static E_StatusEffect Apply_StatusEffect;
-	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Red_Mist_CounterAmountIndex , E_StatusEffect::BuffIndex);
-	if(ArrayPosition != -1)
-	{
-		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
-		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
-		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
-		{
-			if(RoundToNearest(Apply_StatusEffect.DataForUse) <= 0)
-			{
-				//RemoveSpecificBuff(victim, "Strength");
-			}
-			Apply_StatusEffect.DataForUse += float(valuetoadd);
-			E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
-		}
-	}
+	
+	//no translations
+	strcopy(data.BuffName, sizeof(data.BuffName), "Red Mist Horrizontal");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "RD");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	//Make sure it isnt ignored, set it to 0.0, on need for extra func checks either.
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.HudDisplay_Func 			= Func_HorrizontalSlashCD;
+	StatusEffect_AddGlobal(data);
+	
+	
+	//no translations
+	strcopy(data.BuffName, sizeof(data.BuffName), "Red Mist Vertical");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "RD");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	//Make sure it isnt ignored, set it to 0.0, on need for extra func checks either.
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.HudDisplay_Func 			= Func_Ego_VerticalSlashCD;
+	StatusEffect_AddGlobal(data);
 }
 
 
@@ -10493,4 +10490,12 @@ public Action Ego_RedMistMusicDo(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}
 	return Plugin_Continue;
+}
+
+float EgoManifestation_SpeedVunc(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(LastMann)
+		return 1.0;
+	else
+		return 1.1;
 }

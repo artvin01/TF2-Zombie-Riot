@@ -55,7 +55,8 @@ static float Onrush_Redash_Window[MAXPLAYERS];
 #define PAGE_SELECT_SOUND	"passtime/scroll_open.wav"
 #define PAGE_DESELECT_SOUND	"passtime/scroll_close.wav"
 #define ONRUSH_START_SOUND	"player/taunt_yeti_standee_equipment_jingle4.wav"
-#define ONRUSH_HIT_SOUND	"npc/barnacle/barnacle_crunch2.wav"
+#define ONRUSH_HIT_SOUND	"zombiesurvival/medieval_raid/special_mutation/arkantos_hurt_1.mp3"
+#define COUNTER_SOUND_HIT	"zombiesurvival/medieval_raid/special_mutation/arkantos_hurt_2.mp3"
 #define PREY_MARKED_SOUND "weapons/samurai/tf_marked_for_death_impact_03.wav"
 #define VERTICAL_SLASH_SOUND "items/pumpkin_explode1.wav"
 #define HORIZONTAL_SLASH_SOUND "npc/manhack/grind_flesh2.wav"
@@ -95,17 +96,14 @@ public void Enable_Red_Mist(int client, int weapon)
 	pack.WriteCell(EntIndexToEntRef(weapon));
 	pack.WriteCell(EntIndexToEntRef(client));
 	PrecacheRedMistMusic();
-	RemoveSpecificBuff(client, "Red Mist Counter");//remove visual buff
 	ApplyStatusEffect(client, client, "Red Mist Counter", 9999.0);//just visual
 	if(Abno_Pages[client] & ABNORMPAGE_ROLE_OF_WOLF)
 	{
 		counter_dice_amount[client] = 30;
-		StatusEffects_RM_CounterAmount(client, 30);
 	}
 	else
 	{
 		counter_dice_amount[client] = 15;
-		StatusEffects_RM_CounterAmount(client, 15);
 	}
 	savagery_timer_exists[client] = false;
 	Prey_Mark_Cooldown[client] = true;
@@ -186,6 +184,15 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 			Attributes_Set(EntityWeaponModel, 866, float(CurrentGame + RandomSeedDo[client]++));
 		}
 	}
+	
+	if(WeaponLevel[client] >= 0)
+	{
+		ApplyStatusEffect(client, client, "Red Mist Vertical", 9999.0);
+	}
+	if(WeaponLevel[client] >= 3)
+	{
+		ApplyStatusEffect(client, client, "Red Mist Horrizontal", 9999.0);
+	}
 	if(Ego_Energy[client] <= 0)//if ego isnt active
 	{
 		Ego_Active[client] = false;
@@ -227,9 +234,7 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 		{
 			if(Abno_Pages[client] & ABNORMPAGE_MOSB)//give bonus buffs if MOSB is picked
 			{
-				ApplyStatusEffect(client, client, "Influence of the bodies", 9999.0);
 				ApplyStatusEffect(client, client, "Red_Mist_Strength", 9999.0);
-				StatusEffects_RM_StrengthBuffAdd(client, 10);
 				Strenght_Amount[client] += 10;
 				RM_Lastman_Timer[client] = CreateTimer(90.0, MOSB_Lastman_Execution, client);
 				EmitCustomToAll("zombiesurvival/medieval_raid/special_mutation/arkantos_scream_buff.mp3", client, SNDCHAN_STATIC, 120, _, 1.0, 75);
@@ -238,9 +243,14 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 			Special_Cooldowns[client][2] = GetGameTime() + 999.00;
 			Ego_Energy[client] = 1000;
 			ApplyStatusEffect(client, client, "Ego Manifestation", 9999.0);
+			ApplyStatusEffect(client, client, "Ego Grace", 30.0);
+			//ego is easier to upkeep for 20 seconds
+			//add no translations to this
 			RM_Lastman_Buffs_applied[client] = true;
 			//PrintToChatAll("enabled last man buffs");
 			//PrintToChatAll("%b", Ego_Active[client]);
+			Store_ApplyAttribs(client);
+			//update client speed due to lastman shits
 		}
 	}
 	if(!LastMann)
@@ -249,7 +259,6 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 		{
 			if(Abno_Pages[client] & ABNORMPAGE_MOSB)//give bonus buffs if MOSB is picked
 			{
-				StatusEffects_RM_StrengthBuffAdd(client, -10);
 				Strenght_Amount[client] -= 10; //if it isnt lms but buffs were applied. aka lms ended, remove buffs and kill death timer
 				delete RM_Lastman_Timer[client];
 				RemoveSpecificBuff(client, "Influence of the bodies");
@@ -293,7 +302,15 @@ static Action Timer_Red_Mist_Ego(Handle timer, int client)
 	{
 		//PrintToChatAll("ego energy [%d]", Ego_Energy[client]);
 		if(!LastMann)
-			Ego_Energy[client] -= 25;
+		{
+			if(HasSpecificBuff(client, "Ego Grace"))
+				Ego_Energy[client] -= 25;
+			else
+				Ego_Energy[client] -= 35;
+
+			if(Ego_Energy[client] <= 0)
+				Ego_Energy[client] = 0;
+		}
 		PrintHintText(client,"Ego Active(Charge: [%i/%i])", Ego_Energy[client], MAX_EGO_CHARGE);
 	}
 	return Plugin_Continue;
@@ -304,7 +321,7 @@ void Disable_Everything_Red_Mist(int client)
 	Ego_Energy[client] = 0;
 	RemoveSpecificBuff(client, "Ego Manifestation");
 	RemoveSpecificBuff(client, "Influence of the bodies");
-    RemoveSpecificBuff(client, "Red_Mist_Strength");
+	RemoveSpecificBuff(client, "Red_Mist_Strength");
 	Ego_Active[client] = false;
 }
 
@@ -344,7 +361,6 @@ public void Red_Mist_OnMapStart()
 	PrecacheSound(PAGE_DESELECT_SOUND);
 	PrecacheSound(ONRUSH_START_SOUND);
 	PrecacheSound(PREY_MARKED_SOUND);
-	PrecacheSound(ONRUSH_HIT_SOUND);
 	PrecacheSound("weapons/buffed_on.wav");
 	PrecacheSound("weapons/buffed_off.wav");
 	PrecacheSound("weapons/debris4.wav");
@@ -383,6 +399,7 @@ public void Red_Mist_SwitchToMeleeWeapon(int client, int weapon)
 	int MeleeWeapon = EntRefToEntIndex(ref_MeleeWeapon[client]);
 	if(!IsValidEntity(MeleeWeapon))
 		return;
+	SetEntPropFloat(MeleeWeapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + 0.25);
 	SetPlayerActiveWeapon(client, MeleeWeapon);
 }
 
@@ -397,40 +414,34 @@ public void Vengeance_Logic(int client)
 		Strenght_Amount[client] += 1;
 		strength_active_1[client] = true;
 		ApplyStatusEffect(client, client, "Red_Mist_Strength", 9999.0);
-		StatusEffects_RM_StrengthBuffAdd(client, 1);
 	}
 	if(Health < MaxHealth / 3 && !strength_active_2[client])
 	{
 		Strenght_Amount[client] += 2;
 		strength_active_2[client] = true;
 		ApplyStatusEffect(client, client, "Red_Mist_Strength", 9999.0);
-		StatusEffects_RM_StrengthBuffAdd(client, 2);
 	}
 	if(Health < MaxHealth / 4 && !strength_active_3[client])
 	{
 		Strenght_Amount[client] += 4;
 		strength_active_3[client] = true;
 		ApplyStatusEffect(client, client, "Red_Mist_Strength", 9999.0);
-		StatusEffects_RM_StrengthBuffAdd(client, 4);
 	}
 
 	if(Health > MaxHealth / 2 && strength_active_1[client])
 	{
 		Strenght_Amount[client] -= 1;
 		strength_active_1[client] = false;
-		StatusEffects_RM_StrengthBuffAdd(client, -1);
 	}
 	if(Health > MaxHealth / 3 && strength_active_2[client])
 	{
 		Strenght_Amount[client] -= 2;
 		strength_active_2[client] = false;
-		StatusEffects_RM_StrengthBuffAdd(client, -2);
 	}
 	if(Health > MaxHealth / 4 && strength_active_3[client])
 	{
 		Strenght_Amount[client] -= 4;
 		strength_active_3[client] = false;
-		StatusEffects_RM_StrengthBuffAdd(client, -4);
 	}
 
 	//a bit convoluted but with this each boost can only trigger once, same with removal of it, soooo it should never go above the cap or below 0(hopefully)
@@ -443,6 +454,8 @@ void PrecacheRedMistMusic()
         //TODO
 		PrecacheSoundCustom("#zombiesurvival/red_mist_lastman.mp3",_,1);
 		PrecacheSoundCustom("zombiesurvival/medieval_raid/special_mutation/arkantos_scream_buff.mp3");
+		PrecacheSoundCustom(ONRUSH_HIT_SOUND);
+		PrecacheSoundCustom(COUNTER_SOUND_HIT);
 		RM_Precached = true;
 	}
 }
@@ -499,22 +512,13 @@ public void Red_Mist_OnTakeDamage_Take(int victim, int &attacker, int &inflictor
 				{
 					RMC_damage_cap = 50.0 * (WeaponLevel[victim] + 1);
 				}
+				bool StopCounters = false;
 				
 				if(damage > RMC_damage_cap || counter_dice_amount[victim] <= 0)
 				{
 					if(!counter_timer_exists[victim])
 					{
-						CreateTimer(15.0, Timer_RM_CD_Restore, victim);
-						
-						//PrintToChat(victim, "damage taken: [%.1f]", damage);
-						//PrintToChatAll("dice broke");
-						counter_timer_exists[victim] = true;
-						StatusEffects_RM_CounterAmount(victim, -counter_dice_amount[victim]);
-						counter_dice_amount[victim] = 0;
-						RemoveSpecificBuff(victim, "Red Mist Counter");//remove visual buff
-						EmitSoundToClient(victim, "physics/glass/glass_cup_break2.wav", victim, _, 70, _, 1.0, 100);
-						EmitSoundToClient(victim, "physics/glass/glass_cup_break2.wav", victim, _, 70, _, 1.0, 100);
-						EmitSoundToClient(victim, "physics/glass/glass_cup_break2.wav", victim, _, 70, _, 1.0, 100);
+						StopCounters = true;
 					}
 				}
 				else //counter normally
@@ -565,10 +569,32 @@ public void Red_Mist_OnTakeDamage_Take(int victim, int &attacker, int &inflictor
 					TE_SetupBeamPoints(player_pos, Entity_Position, BeamWand_Laser, 0, 0, 0, 0.11, ClampBeamWidth(10.0 * 1.0 * 1.28), ClampBeamWidth(5.0 * 0.2 * 1.28), 0, 0.2, colorLayer4, 3);
 					TE_SendToAll(0.0);
 
-					ClientCommand(victim, "playgamesound weapons/samurai/tf_katana_draw_02.wav");//ty ark
-					StatusEffects_RM_CounterAmount(victim, -1);
+					EmitCustomToAll(COUNTER_SOUND_HIT, victim, _, 70, _, 0.4, 100);
+
 					counter_dice_amount[victim] -= 1;
-				}	
+					AddEgoEnergy(victim, 3);
+				}
+				if(counter_dice_amount[victim] <= 0)
+				{
+					if(!counter_timer_exists[victim])
+					{
+						StopCounters = true;
+					}
+				}
+				if(StopCounters)
+				{
+					
+					CreateTimer(15.0, Timer_RM_CD_Restore, victim);
+					
+					//PrintToChat(victim, "damage taken: [%.1f]", damage);
+					//PrintToChatAll("dice broke");
+					counter_timer_exists[victim] = true;
+					counter_dice_amount[victim] = 0;
+					RemoveSpecificBuff(victim, "Red Mist Counter");//remove visual buff
+					EmitSoundToClient(victim, "physics/glass/glass_cup_break2.wav", victim, _, 70, _, 1.0, 100);
+					EmitSoundToClient(victim, "physics/glass/glass_cup_break2.wav", victim, _, 70, _, 1.0, 100);
+					EmitSoundToClient(victim, "physics/glass/glass_cup_break2.wav", victim, _, 70, _, 1.0, 100);
+				}
 			}
 		}
 		
@@ -588,19 +614,85 @@ public Action Timer_RM_CD_Restore(Handle timer, int client)
 	if(Abno_Pages[client] & ABNORMPAGE_ROLE_OF_WOLF)
 	{
 		counter_dice_amount[client] = 30;
-		ApplyStatusEffect(client, client, "Red Mist Counter", 9999.0);//just visual
-		StatusEffects_RM_CounterAmount(client, 30);
+		if(IsValidClient(client))
+		{
+			ApplyStatusEffect(client, client, "Red Mist Counter", 9999.0);//just visual
+		}
 	}
 	else
 	{
 		counter_dice_amount[client] = 15;
-		ApplyStatusEffect(client, client, "Red Mist Counter", 9999.0);//just visual
-		StatusEffects_RM_CounterAmount(client, 15);
+		if(IsValidClient(client))
+		{
+			ApplyStatusEffect(client, client, "Red Mist Counter", 9999.0);//just visual
+		}
 	}
 	counter_timer_exists[client] = false;
 	//PrintToChatAll("dice Recovered");
 	return Plugin_Handled;
 }
+
+void Func_RM_StrengthDisplay(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	Format(HudToDisplay, SizeOfChar, "⬆(%i)", Strenght_Amount[victim]);
+	if(h_Red_Mist_Timer[victim] == null)
+	{
+		int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+		Apply_StatusEffect.TimeUntillOver = 0.0;
+		E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+	}
+}
+
+void Func_RM_CounterAmount_Display(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	Format(HudToDisplay, SizeOfChar, "⚔(%i)", counter_dice_amount[victim]);
+	if(h_Red_Mist_Timer[victim] == null)
+	{
+		PrintToChatAll("test1");
+		int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+		Apply_StatusEffect.TimeUntillOver = 0.0;
+		E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+	}
+}
+void Func_HorrizontalSlashCD(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	if(Ego_Active[victim])
+	{
+		if(Special_Cooldowns[victim][3] > GetGameTime())
+			Format(HudToDisplay, SizeOfChar, "M2(%.1f)", Special_Cooldowns[victim][3] - GetGameTime());
+		else
+			Format(HudToDisplay, SizeOfChar, "M2(✔)");
+	}
+	else
+	{
+		if(Special_Cooldowns[victim][2] > GetGameTime())
+			Format(HudToDisplay, SizeOfChar, "M2(%.1f)", Special_Cooldowns[victim][2] - GetGameTime());
+		else
+			Format(HudToDisplay, SizeOfChar, "M2(✔)");
+	}
+	if(h_Red_Mist_Timer[victim] == null)
+	{
+		int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+		Apply_StatusEffect.TimeUntillOver = 0.0;
+		E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+	}
+}
+void Func_Ego_VerticalSlashCD(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	if(Special_Cooldowns[victim][1] > GetGameTime())
+		Format(HudToDisplay, SizeOfChar, "M1(%.1f)", Special_Cooldowns[victim][1] - GetGameTime());
+	else
+		Format(HudToDisplay, SizeOfChar, "M1(✔)");
+
+		
+	if(h_Red_Mist_Timer[victim] == null)
+	{
+		int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+		Apply_StatusEffect.TimeUntillOver = 0.0;
+		E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+	}
+}
+
 
 public Action Savagery_Reset_damage(Handle timer, int client)
 {
@@ -613,7 +705,6 @@ public Action Savagery_Reset_damage(Handle timer, int client)
 public Action Absorption_Remove_Strength(Handle timer, int client)
 {
 	Strenght_Amount[client] -= 1;
-	StatusEffects_RM_StrengthBuffAdd(client, -1);
 	//PrintToChat(client, "Absorption strenght removed");
 	return Plugin_Handled;
 }
@@ -624,11 +715,11 @@ public Action RM_Prey_Cooldown(Handle timer, int client)
 	return Plugin_Handled;
 }
 
-public Action UnFreeze_Onrush(Handle timer, int client)
+public void UnFreeze_Onrush(int client)
 {
-	SetEntityMoveType(client, MOVETYPE_WALK);
+	if(IsValidClient(client))
+		SetEntityMoveType(client, MOVETYPE_WALK);
 	Onrush_Is_In_Dash[client] = false;
-	return Plugin_Handled;
 }
 
 public Action MOSB_Lastman_Execution(Handle timer, int client)
@@ -711,21 +802,27 @@ public void Red_Mist_OnTakeDamage_Deal(int victim, int &attacker, int &inflictor
 			Special_Active[attacker] = false;
 			Rogue_OnAbilityUse(attacker, weapon);
 			Special_Cooldowns[attacker][1] = GetGameTime() + (60.00 * CooldownReductionAmount(attacker));
+			WeaponSpawnGibForce(victim, weapon);
+			WeaponSpawnGibForce(victim, weapon);
 		}
 	}
 	if(Special_Damage_Boost[attacker])
 	{
 		damage *= 7.0;
+		WeaponSpawnGibForce(victim, weapon);
 	}
-	if(Ego_Active[attacker])
+	AddEgoEnergy(attacker);
+}
+void AddEgoEnergy(int client, int dividing = 1)
+{
+	if(Ego_Active[client])
 	{
-		Ego_Energy[attacker] += 75;
-		if(Ego_Energy[attacker] > 1000)
+		Ego_Energy[client] += (75 / dividing);
+		if(Ego_Energy[client] > 1000)
 		{
-			Ego_Energy[attacker] = 1000;
+			Ego_Energy[client] = 1000;
 		}	
 	}
-
 }
 
 public void Red_Mist_On_Kill(int victim, int killer, int weapon)
@@ -743,7 +840,6 @@ public void Red_Mist_On_Kill(int victim, int killer, int weapon)
 			absorption_counter[killer] = 0;
 			Strenght_Amount[killer] += 1;
 			ApplyStatusEffect(killer, killer, "Red_Mist_Strength", 9999.0);
-			StatusEffects_RM_StrengthBuffAdd(killer, 1);
 			//PrintToChat(killer, "Absorption strenght trigered");
 			CreateTimer(15.0, Absorption_Remove_Strength, killer);
 		}
@@ -778,6 +874,7 @@ public void Red_Mist_Main_Attack(int client, int weapon)
 				Special_Cooldowns[client][2] = GetGameTime() + 999.00;
 				Rogue_OnAbilityUse(client, weapon);
 				ApplyStatusEffect(client, client, "Ego Manifestation", 9999.0);
+				ApplyStatusEffect(client, client, "Ego Grace", 30.0);
 				EmitSoundToAll("weapons/buffed_on.wav", client, _, 70, _, 1.0, 100);
 				EmitSoundToAll("weapons/debris4.wav", client, _, 70, _, 1.0, 100);
 				Special_Active[client] = false;
@@ -858,6 +955,7 @@ public void Red_Mist_Onrush(int client, int weapon)
 	if(redashes[client] >= 5)
 	{
 		Ability_Apply_Cooldown(client, 2, 20.0);
+		redashes[client] = 0;
 	}
 	Handle swingTrace;
 	b_LagCompNPC_No_Layers = true;
@@ -885,11 +983,11 @@ public void Red_Mist_Onrush(int client, int weapon)
 	ApplyStatusEffect(client, client, "Intangible", 0.5);
 	//ApplyStatusEffect(client, client, "Touch Ingored", 0.3);
 
-	int trail = Trail_Attach(client, ARROW_TRAIL_RED, 255, 0.45, 60.0, 3.0, 5);
-	SetEntityRenderColor(trail, 255, 50, 50, 255);
+	int trail = Trail_Attach(client, ARROW_TRAIL_RED, 125, 0.45, 40.0, 3.0, 5);
+	SetEntityRenderColor(trail, 175, 25, 25, 125);
 	SDKCall_SetLocalOrigin(trail, {0.0,0.0,50.0});
-	CreateTimer(0.45, Timer_RemoveEntityParent, EntIndexToEntRef(trail), TIMER_FLAG_NO_MAPCHANGE);
-	CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(trail), TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(0.25, Timer_RemoveEntityParent, EntIndexToEntRef(trail), TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(0.8, Timer_RemoveEntity, EntIndexToEntRef(trail), TIMER_FLAG_NO_MAPCHANGE);
 	DataPack Onrush_pack = new DataPack();
 	Onrush_pack.WriteCell(client);
 	Onrush_pack.WriteCell(EntIndexToEntRef(client));
@@ -930,17 +1028,20 @@ public Action Onrush_Check_Distance(Handle timer, DataPack Onrush_pack)
 
 	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
-		h_Red_Mist_Timer[clientindx] = null;
+		h_Onrush_Check_Timer[clientindx] = null;
 		return Plugin_Stop;
 	}
 	ApplyStatusEffect(client, client, "Red Mist Onrush", 0.5);
 	SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + 1.0);
 	float VecMe[3];
 	WorldSpaceCenter(client, VecMe);
-	float VecAttacker[3];
-	WorldSpaceCenter(target, VecAttacker);
-	float dist = GetVectorDistance(VecMe, VecAttacker, true);
-	if(dist < (125.0 * 125.0))
+	float VecVictim[3];
+	WorldSpaceCenter(target, VecVictim);
+	float dist = GetVectorDistance(VecMe, VecVictim, true);
+	float DistanceMin = 125.0;
+	if(b_IsGiant[target])
+		DistanceMin = 150.0;
+	if(dist < (DistanceMin * DistanceMin))
 	{
 		float OnrushDamage = 65.0;
 		OnrushDamage *= WeaponDamageAttributeMultipliers(weapon,_,client);
@@ -972,13 +1073,26 @@ public Action Onrush_Check_Distance(Handle timer, DataPack Onrush_pack)
 		RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
 
 		SetEntityMoveType(client, MOVETYPE_NONE);
-		CreateTimer(0.25, UnFreeze_Onrush, client);
-		EmitSoundToAll(ONRUSH_HIT_SOUND, client, _, 70, _, 1.0, 100);
-		EmitSoundToAll(ONRUSH_HIT_SOUND, client, _, 70, _, 1.0, 100);
-		EmitSoundToAll(ONRUSH_HIT_SOUND, client, _, 70, _, 1.0, 100);
-		EmitSoundToAll(ONRUSH_HIT_SOUND, client, _, 70, _, 1.0, 100);
+		RequestFrames(UnFreeze_Onrush, 10, client);
 
-		h_Red_Mist_Timer[clientindx] = null;
+		EmitCustomToAll(ONRUSH_HIT_SOUND, client, _, 70, _, 1.0, 100);
+
+		float vAngles[3];
+		float vOrigin[3];
+		
+		WorldSpaceCenter(client, vOrigin );
+
+		GetVectorAnglesTwoPoints(vOrigin, Entity_Position, vAngles);
+
+		float vecSwingForward[3];
+		float vecSwingEnd[3];
+		GetAngleVectors(vAngles, vecSwingForward, NULL_VECTOR, NULL_VECTOR);
+		vecSwingEnd[0] = vOrigin[0] - vecSwingForward[0] * 100.0;
+		vecSwingEnd[1] = vOrigin[1] - vecSwingForward[1] * 100.0;
+		vecSwingEnd[2] = vOrigin[2] - vecSwingForward[2] * 100.0;
+		RedMistSlashEffect(vecSwingEnd, VecVictim, 15.0, {255,25,25});
+		
+		h_Onrush_Check_Timer[clientindx] = null;
 		return Plugin_Stop;
 	}
 	return Plugin_Continue;

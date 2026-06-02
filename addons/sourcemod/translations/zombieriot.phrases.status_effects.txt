@@ -3462,7 +3462,7 @@
 	}
 	"Ego Manifestation Desc"
 	{
-		"en"	"Deal 35％ more damage and take 15％ less damage\nWhile active unlock a new special ability"
+		"en"	"Deal 35％ more damage and take 15％ less damage and 10％ movement speed (except during lastman)\nWhile active unlock a new special ability"
 	}
 	"Red Mist Counter"
 	{

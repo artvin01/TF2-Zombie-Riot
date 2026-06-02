@@ -582,7 +582,7 @@ void Config_CreateDescription(const char[] Archetype, const char[] classname, co
 		}
 		damagepersecond /= val;
 
-		Format(buffer, length, "%s\nDPS: %1.f", buffer, damagepersecond);
+		Format(buffer, length, "%s\nDPS: %.1f", buffer, damagepersecond);
 	}
 	*/
 	if(Archetype[0])

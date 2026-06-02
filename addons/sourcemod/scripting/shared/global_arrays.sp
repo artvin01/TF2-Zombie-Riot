@@ -959,4 +959,5 @@ bool g_PrecachedMatrixNPCs;
 int ZoneMarkerRef[Zone_MAX] = {-1, ...};
 ArrayList CurrentCollection;
 ArrayList Artifacts;
+ArrayList E_AL_StatusEffects[MAXENTITIES];
 #endif

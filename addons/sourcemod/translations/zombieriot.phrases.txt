@@ -5966,15 +5966,15 @@
 	}
 	"Greater Slash Vertical"
 	{
-		"en"	"Perform a powerful single target slash\n[M1]"
+		"en"	"Perform a powerful single target slash\nSwing your sword once the page is selected\n[M1]"
 	}
 	"Greater Slash Horizontal"
 	{
-		"en"	"Perform a powerful aoe slash \nin front of yourself\n[M2]"
+		"en"	"Perform a powerful aoe slash \nin front of yourself\nSwing your sword once the page is selected\n[M2]"
 	}
 	"Red Mist Ego"
 	{
-		"en"	"Enter an empowered state \nSlowly lose energy overtime \nattack enemies to regain energy\n[M2]"
+		"en"	"Enter an empowered state \nSlowly lose energy overtime \nattack enemies to regain energy\nSwing your sword once the page is selected\n[M2]"
 	}
 	"Red Mist Card Locked"
 	{

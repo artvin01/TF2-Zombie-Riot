@@ -1607,7 +1607,7 @@ public void OnPostThink(int client)
 			if(Cooldowntocheck > 0.0)
 			{
 				//add one second so it itll never show 0 in there, thats stupid.
-				Format(buffer2, sizeof(buffer2), "%s:%1.f",npc_classname[4], Cooldowntocheck);
+				Format(buffer2, sizeof(buffer2), "%s:%.1f",npc_classname[4], Cooldowntocheck);
 			}
 			else
 			{
