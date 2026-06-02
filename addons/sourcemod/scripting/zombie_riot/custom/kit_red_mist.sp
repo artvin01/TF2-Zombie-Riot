@@ -124,10 +124,6 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 	int clientindx = pack.ReadCell();
 	int weapon = EntRefToEntIndex(pack.ReadCell());
 	int client = EntRefToEntIndex(pack.ReadCell());
-	if(Abno_Pages[client] & ABNORMPAGE_VENGEANCE)
-	{
-		Vengeance_Logic(client);
-	}
 	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
 		//Heartbroken_ApplyCoffinBack(clientindx, true);
@@ -138,6 +134,10 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 			RemoveSpecificBuff(client, "Red_Mist_Strength");
 		}
 		return Plugin_Stop;
+	}
+	if(Abno_Pages[client] & ABNORMPAGE_VENGEANCE)
+	{
+		Vengeance_Logic(client);
 	}
 	
 	if(!IsIn_HitDetectionCooldown(weapon,weapon, RedMist_AbnormSelect))
