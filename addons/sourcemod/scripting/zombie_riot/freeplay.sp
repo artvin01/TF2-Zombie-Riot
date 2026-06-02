@@ -406,13 +406,13 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 					case 1: 
 					{
 						enemy.Index = NPC_GetByPlugin("npc_xeno_mrx");
-						enemy.Health = RoundToFloor((9500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.Health = RoundToFloor((10000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
 					}
 					default: 
 					{
 						enemy.Index = NPC_GetByPlugin("npc_xeno_mrx");
-						enemy.Health = RoundToFloor((9500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.Health = RoundToFloor((10000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
 					}
 				}
@@ -564,9 +564,11 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 34:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_shadowing_darkness_boss");
-				enemy.Health = RoundToFloor((10000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((9000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "force_final_battle";
-				enemy.ExtraDamage = 0.65;
+				enemy.ExtraThinkSpeed = 1.15;
+				enemy.ExtraSpeed = 0.95;
+				enemy.ExtraDamage = 0.60;
 			}
 			case 35:
 			{
@@ -1180,17 +1182,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 12:
 		{
-			switch(GetRandomInt(1, 2))
-			{
-				case 1:
-				{
-					CPrintToChatAll("{midnightblue}CO0R0RR9R'R4R0#(##()#F92 B '11 A =)$ R 49I N 2G4 E 2#f Y =4,93RW9FW0LRSMUW320$");
-				}
-				default:
-				{
-					CPrintToChatAll("{midnightblue}CO0R0RR9R'R4R0#(##()#F92 B '11 A =)$ R 49I N 2G4 E 2#f Y =4,93RW9FW0LRSMUW320$");
-				}
-			}
+			CPrintToChatAll("{midnightblue}CO0R0RR9R'R4R0#(##()#F92 B '11 A =)$ R 49I N 2G4 E 2#f Y =4,93RW9FW0LRSMUW320$");
 		}
 		case 13:
 		{
@@ -1292,7 +1284,11 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{community}Agent... thompson. {crimson}ew.");
+					CPrintToChatAll("{community}Agent... thompson. {crimson}eeew.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{community}Agent... thompson. {crimson}eew.");
 				}
 				default:
 				{
@@ -1306,11 +1302,15 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
+					CPrintToChatAll("{forestgreen}The.... twins. {crimson}eeew.");
+				}
+				case 2:
+				{
 					CPrintToChatAll("{forestgreen}The.... twins. {crimson}eew.");
 				}
 				default:
 				{
-					CPrintToChatAll("{forestgreen}The.... twins. {crimson}eew.");
+					CPrintToChatAll("{forestgreen}The.... twins. {crimson}ew.");
 				}
 			}
 		}
@@ -1320,13 +1320,17 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{community}Agent... johnson. {crimson}ew. Had to juice him up a bit cause how bad he is");
+					CPrintToChatAll("{community}Agent... johnson. {crimson}eeew. Had to juice him up a bit cause how bad he is");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{community}Agent... johnson. {crimson}eew. Had to juice him up a bit cause how bad he is");
 				}
 				default:
 				{
 					CPrintToChatAll("{community}Agent... johnson. {crimson}ew. Had to juice him up a bit cause how bad he is");
 				}
-			}
+			}	
 		}
 		case 21:
 		{
@@ -1334,7 +1338,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{darkgreen}Agent Smith. {crimson}*stink sound effect*");
+					CPrintToChatAll("{darkgreen}Agent Smith. {crimson}Agent Stinky");
 				}
 				default:
 				{
@@ -1348,7 +1352,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{blue}ATOMIZER! {gold}- {red}I wonder what that nitro fuel is made of...");
+					CPrintToChatAll("{blue}ATOMIZER! {gold}- {red}The captain of Vesta's Leatherboots Scoutsquad!");
 				}
 				default:
 				{
@@ -1362,7 +1366,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}HUSCARLS! {gold}- {red}Running around in circles just to hit a wall!");
+					CPrintToChatAll("{lightblue}HUSCARLS! {gold}- {red}The lieutenant of Vesta's Irongate defence unit!");
 				}
 				default:
 				{
@@ -1376,7 +1380,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{skyblue}HARRISON! {gold}- {red}His rockets surely won't miss you!");
+					CPrintToChatAll("{skyblue}HARRISON! {gold}- {red}The lieutenant colonel of Vesta's Stormtrooper team!");
 				}
 				default:
 				{
@@ -1390,7 +1394,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{steelblue}CASTELLAN! {gold}- {red}In the name of Vesta, he won't allow you further in!");
+					CPrintToChatAll("{steelblue}CASTELLAN! {gold}- {red}The colonel of Vesta's army!");
 				}
 				default:
 				{
@@ -1418,7 +1422,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{gold}OMEGA! - {red}Waltzing straight to you.");
+					CPrintToChatAll("{gold}OMEGA! - {red}Baldy.");
 				}
 				default:
 				{
@@ -1442,14 +1446,11 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 29:
 		{
-			CPrintToChatAll("{rare}A.R.I.S.! {gold}- {red}C.A.T. must have failed at stopping you.");
-		}
-		{
 			switch(GetRandomInt(1, 2))
 			{
 				case 1:
 				{
-					CPrintToChatAll("{rare}A.R.I.S.! {gold}- {red}C.A.T. must have failed at stopping you.");
+					CPrintToChatAll("{rare}A.R.I.S.! {gold}- {red}What if you had to fight both A.R.I.S. and C.A.T. at the same time.");
 				}
 				default:
 				{
@@ -1495,11 +1496,11 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{pink}REILA! {gold}- {red}Make sure you attack Reila herself first. I buffed her cause she has no umbrals supporting her");
+					CPrintToChatAll("{pink}REILA! {gold}- {red}The construct will buff reila and itself, but gives you more time to kill reila.");
 				}
 				default:
 				{
-					CPrintToChatAll("{pink}REILA! {gold}- {red}Make sure you attack Reila herself first. I buffed her cause she has no umbrals supporting her");
+					CPrintToChatAll("{pink}REILA! {gold}- {red}Make sure you attack Reila herself first. I buffed her cause she has no umbrals supporting her.");
 				}
 			}
 		}
@@ -1509,7 +1510,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{black}JKEI! {gold}- {red}Hope we don't have to fight more from the Almagest Corporation. I buffed him cause he has no allies with him.");
+					CPrintToChatAll("{black}JKEI! {gold}- {red}What's the whole deal with these Almagest Corp. dudes? I should ask Reila.");
 				}
 				default:
 				{
@@ -1523,7 +1524,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{darkgray}SHADOWING DARKNESS! {gold}- {red}The hardest challenge we have programmed into this. Good luck beating her.");
+					CPrintToChatAll("{darkgray}SHADOWING DARKNESS! {gold}- {snow}Good luck with her. Koshi made her the hardest challenge in the simulation");
 				}
 				default:
 				{
@@ -1537,7 +1538,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{black}ZILIUS! {gold}- {snow}If you guys beat him, I'll join you as a thanks for saving me from him. {red}I made him stronger cause he doesn't have his army.");
+					CPrintToChatAll("{black}ZILIUS! {gold}- {red}Sorry this caused him to imprison you Zeina. {snow}It's alright Koshi, at least these guys freed me from him.");
 				}
 				default:
 				{
@@ -1611,7 +1612,17 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		default:
 		{
-			CPrintToChatAll("{yellow}INFECTED SILVESTER! {gold}- {red}An infected menace!");
+			switch(GetRandomInt(1, 2))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{yellow}INFECTED SILVESTER! {gold}- {red}Wonder how the Xeno Infection bypassed his shield?");
+				}
+				default:
+				{
+					CPrintToChatAll("{yellow}INFECTED SILVESTER! {gold}- {red}An infected menace!");
+				}
+			}
 		}
 	}
 
