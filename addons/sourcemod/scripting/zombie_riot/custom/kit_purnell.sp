@@ -651,8 +651,22 @@ public void Weapon_PurnellBuff_M2(int client, int weapon, bool crit, int slot)
 	if(Ability_Check_Cooldown(client, slot) > 0.0)
 	{
 		ClientCommand(client, "playgamesound items/suitchargeno1.wav");
-		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
+		
+		if (f_NotifHudOffsetX[client] == 0.0 && f_NotifHudOffsetY[client] == 0.0)
+		{
+			// Move the HUD warning up a bit so it doesn't clash with the buff/debuff element
+			const float hudX = -1.0;
+			const float hudY = 0.6;
+			const float duration = 1.01;
+			
+			SetHudTextParams(hudX, hudY, duration, 34, 139, 34, 255);
+		}
+		else
+		{
+			SetDefaultHudPosition(client);
+		}
+		
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_Check_Cooldown(client, slot));
 		return;
 	}
@@ -918,7 +932,7 @@ static void Purnell_DebuffApply(int client, int target)
 	
 	char buff[64];
 	int buffId = i_NextDebuff[client];
-	strcopy(buff, sizeof(buff), PurnellBuffs[buffId].buffName);
+	strcopy(buff, sizeof(buff), PurnellDebuffs[buffId].buffName);
 	
 	ApplyStatusEffect(client, target, buff, duration);
 	ApplyStatusEffect(client, target, "Therapy Duration", duration);
