@@ -82,6 +82,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	DeleteShadowsOffZombieRiot();
 	EventRoundStartMusicFilter();
 	b_GameOnGoing = true;
+	WeaponUpdateDo();
 	
 	
 	LastMann = false;
@@ -163,6 +164,8 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 public void OnSetupFinished(Event event, const char[] name, bool dontBroadcast)
 {
 	Waves_ApplyCooldown(0.0);
+	if(!Waves_Started())
+		TimeWhenStartedWaveset = GetTime();
 	if(CvarAutoSelectDiff.BoolValue && !Waves_Started())
 	{
 		//Do this only once!
@@ -181,7 +184,6 @@ public void OnSetupFinished(Event event, const char[] name, bool dontBroadcast)
 	BuildingVoteEndResetCD();
 	Waves_SetReadyStatus(0);
 	Waves_Progress();
-	TimeWhenStartedWaveset = GetTime();
 }
 #endif
 
