@@ -3476,6 +3476,7 @@ void ZR_FastDownloadForce()
 	Cheese_PrecacheMusic();
 	Core_PrecacheGlobalCustom();
 	PrecacheMusicZr();
+	PrecacheRedMistMusic();
 }
 
 

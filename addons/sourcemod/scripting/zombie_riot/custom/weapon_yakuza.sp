@@ -267,6 +267,7 @@ void Yakuza_Enable(int client, int weapon)
 		UpdateStyle(client);
 	}
 }
+
 void YakuzaMusicDownload()
 {
 	if(!Precached)
