@@ -638,15 +638,15 @@ public void Red_Mist_OnTakeDamage_Deal(int victim, int &attacker, int &inflictor
 		if(current_card_selection[attacker] == 1)//vertical slash
 		{
 			EmitSoundToAll(VERTICAL_SLASH_SOUND, attacker, _, 70, _, 1.0, 50);
-			damage *= 20.0;
+			damage *= 14.0;
 			Special_Active[attacker] = false;
 			Rogue_OnAbilityUse(attacker, weapon);
 			Special_Cooldowns[attacker][1] = GetGameTime() + (60.00 * CooldownReductionAmount(attacker));
 		}
 	}
-	if(Special_Damage_Boost[attacker])//we do this cuz "special_active" gets disabled before this function gets called, so this is a small workaround
+	if(Special_Damage_Boost[attacker])
 	{
-		damage *= 10.0;
+		damage *= 7.0;
 	}
 	if(Ego_Active[attacker])
 	{
