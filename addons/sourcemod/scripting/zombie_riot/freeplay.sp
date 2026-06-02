@@ -1115,6 +1115,10 @@ static Action Freeplay_RouletteMessage(Handle timer)
 				{
 					CPrintToChatAll("{aqua}STELLA {white}& {crimson}KARLAS! {gold}- {red}Hope you like stella's laser of death!");
 				}
+				case 2:
+				{
+					CPrintToChatAll("{crimson}KARLAS {white}& {aqua}STELLA! {gold}- {red}oh hey Karlas, you here to watch. {crimson}*nods head* >:)");
+				}
 				default:
 				{
 					CPrintToChatAll("{crimson}KARLAS {white}& {aqua}STELLA! {gold}- {red}Hope you like dealing with all of karlas's swords!");
