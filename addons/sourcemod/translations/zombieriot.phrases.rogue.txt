@@ -3247,9 +3247,9 @@
 	}
 	"Incorruptable Leaf Desc"
 	{
-		"en"	"{green}Players gain 30％ Elemental Resistance, when under elemental debuffs, gain 15％ Resistance.\n{default}Very soothing, very calming."
-		"it"	"{green}I giocatori guadagnano 30％ Resistenza elementale, quando sono sottoposti a debuff elementali, guadagnano 15％ Resistenza.\n{default}Molto rilassante, molto calmante."
-		"ko"	"{green}모든 플레이어의 원소 피해 저항력 +30％ . 원소 디버프가 있다면, 피해 저항력 +15％ 증가.\n{default}매우 진정되고 평온해진다."
+		"en"	"{green}Players gain 50％ Elemental Resistance, when under elemental debuffs, gain 25％ Resistance.\n{default}Very soothing, very calming."
+		"it"	"{green}I giocatori guadagnano 50％ Resistenza elementale, quando sono sottoposti a debuff elementali, guadagnano 25％ Resistenza.\n{default}Molto rilassante, molto calmante."
+		"ko"	"{green}모든 플레이어의 원소 피해 저항력 +50％ . 원소 디버프가 있다면, 피해 저항력 +25％ 증가.\n{default}매우 진정되고 평온해진다."
 	}
 	"Strange Visitor"
 	{

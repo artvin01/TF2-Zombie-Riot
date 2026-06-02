@@ -8136,7 +8136,7 @@ static void Const2_Gravitational_Timer(int entity, StatusEffect Apply_MasterStat
 		return;
 	}
 	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
-	Apply_StatusEffect.DataForUse = GetGameTime() + 3.0;
+	Apply_StatusEffect.DataForUse = GetGameTime() + 5.0;
 	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
 	static float victimPos[3];
 	static float partnerPos[3];
@@ -8156,8 +8156,8 @@ static void Const2_Gravitational_Timer(int entity, StatusEffect Apply_MasterStat
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", victimPos); 
 
 			float Distance = GetVectorDistance(victimPos, partnerPos);
-			if(Distance < 1250.0)
-			{				
+			if(Distance < 500.0)
+			{
 				static float angles[3];
 				GetVectorAnglesTwoPoints(victimPos, partnerPos, angles);
 
