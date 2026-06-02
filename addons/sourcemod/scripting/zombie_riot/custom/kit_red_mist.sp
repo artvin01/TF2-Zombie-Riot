@@ -4,6 +4,7 @@
 static Handle h_Red_Mist_Timer[MAXPLAYERS] = {null, ...};
 static Handle RM_Lastman_Timer[MAXPLAYERS] = {null, ...};
 static Handle h_Red_Mist_Ego_Timer[MAXPLAYERS] = {null, ...};
+static Handle h_Onrush_Check_Timer[MAXPLAYERS] = {null, ...};
 static bool counter_timer_exists[MAXPLAYERS];
 static bool savagery_timer_exists[MAXPLAYERS];
 static bool Ego_Active[MAXPLAYERS];
@@ -54,6 +55,7 @@ static float Onrush_Redash_Window[MAXPLAYERS];
 #define PAGE_SELECT_SOUND	"passtime/scroll_open.wav"
 #define PAGE_DESELECT_SOUND	"passtime/scroll_close.wav"
 #define ONRUSH_START_SOUND	"player/taunt_yeti_standee_equipment_jingle4.wav"
+#define ONRUSH_HIT_SOUND	"npc/barnacle/barnacle_crunch2.wav"
 #define PREY_MARKED_SOUND "weapons/samurai/tf_marked_for_death_impact_03.wav"
 #define VERTICAL_SLASH_SOUND "items/pumpkin_explode1.wav"
 #define HORIZONTAL_SLASH_SOUND "npc/manhack/grind_flesh2.wav"
@@ -93,7 +95,18 @@ public void Enable_Red_Mist(int client, int weapon)
 	pack.WriteCell(EntIndexToEntRef(weapon));
 	pack.WriteCell(EntIndexToEntRef(client));
 	PrecacheRedMistMusic();
-	counter_dice_amount[client] = 15;
+	RemoveSpecificBuff(client, "Red Mist Counter");//remove visual buff
+	ApplyStatusEffect(client, client, "Red Mist Counter", 9999.0);//just visual
+	if(Abno_Pages[client] & ABNORMPAGE_ROLE_OF_WOLF)
+	{
+		counter_dice_amount[client] = 30;
+		StatusEffects_RM_CounterAmount(client, 30);
+	}
+	else
+	{
+		counter_dice_amount[client] = 15;
+		StatusEffects_RM_CounterAmount(client, 15);
+	}
 	savagery_timer_exists[client] = false;
 	Prey_Mark_Cooldown[client] = true;
 }
@@ -130,10 +143,13 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 		h_Red_Mist_Timer[clientindx] = null;
 		if(IsValidClient(client))
 		{
-			RemoveSpecificBuff(client, "Deathly Influence");
-			RemoveSpecificBuff(client, "Red_Mist_Strength");
+			Disable_Everything_Red_Mist(client);
 		}
 		return Plugin_Stop;
+	}
+	if(dieingstate[client] || TeutonType[client] != TEUTON_NONE)
+	{
+		Disable_Everything_Red_Mist(client);
 	}
 	if(Abno_Pages[client] & ABNORMPAGE_VENGEANCE)
 	{
@@ -194,8 +210,13 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 	}
 	if(Onrush_Redash_Window[client] < GetGameTime() && redashes[client] > 0)
 	{
+		if(h_Red_Mist_Timer[client] != null)
+		{
+			delete h_Onrush_Check_Timer[client];
+			h_Onrush_Check_Timer[client] = null;
+		}
 		redashes[client] = 0;
-		Ability_Apply_Cooldown(client, 2, 12.5, weapon);
+		Ability_Apply_Cooldown(client, 2, 20.0, weapon);
 		//Ability_Apply_Cooldown(client, 2, 7.5);
 		Onrush_Is_In_Dash[client] = false;
 		//PrintToChatAll("redash window expired");
@@ -206,7 +227,7 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 		{
 			if(Abno_Pages[client] & ABNORMPAGE_MOSB)//give bonus buffs if MOSB is picked
 			{
-				ApplyStatusEffect(client, client, "Deathly Influence", 9999.0);
+				ApplyStatusEffect(client, client, "Influence of the bodies", 9999.0);
 				ApplyStatusEffect(client, client, "Red_Mist_Strength", 9999.0);
 				StatusEffects_RM_StrengthBuffAdd(client, 10);
 				Strenght_Amount[client] += 10;
@@ -231,7 +252,7 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 				StatusEffects_RM_StrengthBuffAdd(client, -10);
 				Strenght_Amount[client] -= 10; //if it isnt lms but buffs were applied. aka lms ended, remove buffs and kill death timer
 				delete RM_Lastman_Timer[client];
-				RemoveSpecificBuff(client, "Deathly Influence");
+				RemoveSpecificBuff(client, "Influence of the bodies");
 			}
 			Ego_Active[client] = false;
 			Special_Cooldowns[client][2] = GetGameTime() + (120.00 * CooldownReductionAmount(client));
@@ -278,6 +299,15 @@ static Action Timer_Red_Mist_Ego(Handle timer, int client)
 	return Plugin_Continue;
 }
 
+void Disable_Everything_Red_Mist(int client)
+{
+	Ego_Energy[client] = 0;
+	RemoveSpecificBuff(client, "Ego Manifestation");
+	RemoveSpecificBuff(client, "Influence of the bodies");
+    RemoveSpecificBuff(client, "Red_Mist_Strength");
+	Ego_Active[client] = false;
+}
+
 void Red_Mist_Horizontal_Slash_DoSwingTrace(int client, float &CustomMeleeRange, float &CustomMeleeWide, bool &ignore_walls, int &enemies_hit_aoe)
 {
 	switch(swing_type[client])
@@ -314,6 +344,7 @@ public void Red_Mist_OnMapStart()
 	PrecacheSound(PAGE_DESELECT_SOUND);
 	PrecacheSound(ONRUSH_START_SOUND);
 	PrecacheSound(PREY_MARKED_SOUND);
+	PrecacheSound(ONRUSH_HIT_SOUND);
 	PrecacheSound("weapons/buffed_on.wav");
 	PrecacheSound("weapons/buffed_off.wav");
 	PrecacheSound("weapons/debris4.wav");
@@ -346,6 +377,13 @@ public void Red_Mist_OnMapStart()
 	RM_Precached = false;
 	BeamWand_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
 	BeamWand_Glow = PrecacheModel("sprites/glow02.vmt", true);
+}
+public void Red_Mist_SwitchToMeleeWeapon(int client, int weapon)
+{
+	int MeleeWeapon = EntRefToEntIndex(ref_MeleeWeapon[client]);
+	if(!IsValidEntity(MeleeWeapon))
+		return;
+	SetPlayerActiveWeapon(client, MeleeWeapon);
 }
 
 public void Vengeance_Logic(int client)
@@ -428,6 +466,8 @@ public void Red_Mist_OnTakeDamage_Take(int victim, int &attacker, int &inflictor
 			//ApplyTempAttrib(equipped_weapon, 205, 0.5, 4.0);
 			//PrintToChat(victim, "damage res activated");
 			EmitSoundToClient(victim, "physics/nearmiss/whoosh_large1.wav", victim, _, 70, _, 1.0, 100);
+			EmitSoundToClient(victim, "physics/nearmiss/whoosh_large1.wav", victim, _, 70, _, 1.0, 100);
+			EmitSoundToClient(victim, "physics/nearmiss/whoosh_large1.wav", victim, _, 70, _, 1.0, 100);
 		}
 		if(!savagery_timer_exists[victim])
 		{
@@ -464,11 +504,16 @@ public void Red_Mist_OnTakeDamage_Take(int victim, int &attacker, int &inflictor
 				{
 					if(!counter_timer_exists[victim])
 					{
-						CreateTimer(10.0, Timer_RM_CD_Restore, victim);
-						counter_dice_amount[victim] = 0;
+						CreateTimer(15.0, Timer_RM_CD_Restore, victim);
+						
 						//PrintToChat(victim, "damage taken: [%.1f]", damage);
 						//PrintToChatAll("dice broke");
 						counter_timer_exists[victim] = true;
+						StatusEffects_RM_CounterAmount(victim, -counter_dice_amount[victim]);
+						counter_dice_amount[victim] = 0;
+						RemoveSpecificBuff(victim, "Red Mist Counter");//remove visual buff
+						EmitSoundToClient(victim, "physics/glass/glass_cup_break2.wav", victim, _, 70, _, 1.0, 100);
+						EmitSoundToClient(victim, "physics/glass/glass_cup_break2.wav", victim, _, 70, _, 1.0, 100);
 						EmitSoundToClient(victim, "physics/glass/glass_cup_break2.wav", victim, _, 70, _, 1.0, 100);
 					}
 				}
@@ -500,7 +545,28 @@ public void Red_Mist_OnTakeDamage_Take(int victim, int &attacker, int &inflictor
 					pack.WriteCell(ZR_DAMAGE_REFLECT_LOGIC);
 					RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
 					damage *= 0.5;
-					//PrintToChatAll("countered");
+					
+					int Colour[3];
+					int r = 255; //reeedd.
+					int g = 25;
+					int b = 25;
+					if(Colour[0] != 0)
+					{
+						r = Colour[0];
+						g = Colour[1];
+						b = Colour[2];
+					}
+					int colorLayer4[4];
+					SetColorRGBA(colorLayer4, r, g, b, 200);
+
+					float player_pos[3];
+					WorldSpaceCenter(victim, player_pos );
+
+					TE_SetupBeamPoints(player_pos, Entity_Position, BeamWand_Laser, 0, 0, 0, 0.11, ClampBeamWidth(10.0 * 1.0 * 1.28), ClampBeamWidth(5.0 * 0.2 * 1.28), 0, 0.2, colorLayer4, 3);
+					TE_SendToAll(0.0);
+
+					ClientCommand(victim, "playgamesound weapons/samurai/tf_katana_draw_02.wav");//ty ark
+					StatusEffects_RM_CounterAmount(victim, -1);
 					counter_dice_amount[victim] -= 1;
 				}	
 			}
@@ -522,10 +588,14 @@ public Action Timer_RM_CD_Restore(Handle timer, int client)
 	if(Abno_Pages[client] & ABNORMPAGE_ROLE_OF_WOLF)
 	{
 		counter_dice_amount[client] = 30;
+		ApplyStatusEffect(client, client, "Red Mist Counter", 9999.0);//just visual
+		StatusEffects_RM_CounterAmount(client, 30);
 	}
 	else
 	{
 		counter_dice_amount[client] = 15;
+		ApplyStatusEffect(client, client, "Red Mist Counter", 9999.0);//just visual
+		StatusEffects_RM_CounterAmount(client, 15);
 	}
 	counter_timer_exists[client] = false;
 	//PrintToChatAll("dice Recovered");
@@ -557,6 +627,7 @@ public Action RM_Prey_Cooldown(Handle timer, int client)
 public Action UnFreeze_Onrush(Handle timer, int client)
 {
 	SetEntityMoveType(client, MOVETYPE_WALK);
+	Onrush_Is_In_Dash[client] = false;
 	return Plugin_Handled;
 }
 
@@ -569,7 +640,7 @@ public Action MOSB_Lastman_Execution(Handle timer, int client)
 	CPrintToChatAll("{maroon}The bodies fully consumed {darkgrey}%N...",client);
 	Special_Cooldowns[client][2] = GetGameTime() + (120.00 * CooldownReductionAmount(client));
 	RemoveSpecificBuff(client, "Ego Manifestation");
-	RemoveSpecificBuff(client, "Deathly Influence");
+	RemoveSpecificBuff(client, "Influence of the bodies");
 	Ego_Active[client] = false;
 	return Plugin_Handled;
 }
@@ -583,13 +654,10 @@ public void Red_Mist_OnTakeDamage_Deal(int victim, int &attacker, int &inflictor
 	float Strenght_boost;
 	Strenght_boost = 1.0 + (0.05 * Strenght_Amount[attacker]);
 	damage *= Strenght_boost;
-	if(Onrush_Is_In_Dash[attacker])
-	{
-		Onrush_Is_In_Dash[attacker] = false;
-		SetEntityMoveType(attacker, MOVETYPE_NONE);
-		CreateTimer(0.25, UnFreeze_Onrush, attacker);
-		ApplyStatusEffect(attacker, attacker, "Red Mist Onrush", 0.5);
-	}
+	//if(Onrush_Is_In_Dash[attacker])
+	//{
+	//	Onrush_Is_In_Dash[attacker] = false;
+	//}
 	if(Abno_Pages[attacker] & ABNORMPAGE_DEEP_WOUND)
 	{
 		Deep_Wound_Counter[attacker] += 1;
@@ -695,19 +763,6 @@ public void Red_Mist_Main_Attack(int client, int weapon)
 		//PrintToChatAll("Special attack");
 		if(current_card_selection[client] == 1)//vertical
 		{
-			Handle swingTrace;
-			b_LagCompNPC_No_Layers = true;
-			float vecSwingForward[3];
-			StartLagCompensation_Base_Boss(client);
-			DoSwingTrace_Custom(swingTrace, client, vecSwingForward, MELEE_RANGE * 1.1, false, MELEE_BOUNDS);//check if we 100% hit before doing effects
-			FinishLagCompensation_Base_boss();
-			int target = TR_GetEntityIndex(swingTrace);
-			delete swingTrace;
-			if(!IsValidEnemy(client, target, true))
-			{
-				ClientCommand(client, "playgamesound items/medshotno1.wav");
-				return;
-			}
 			DataPack pack = new DataPack();
 			pack.WriteCell(EntIndexToEntRef(client));
 			pack.WriteFloat(GetGameTime() + 0.07);	
@@ -766,14 +821,6 @@ public void Red_Mist_Main_Attack(int client, int weapon)
 
 public void Red_Mist_Onrush(int client, int weapon)
 {
-	if(redashes[client] >= 5)//allow for 3 dashes
-	{
-		Ability_Apply_Cooldown(client, 2, 12.5);
-		//PrintToChatAll("too many redashes");
-		redashes[client] = 0;
-		Onrush_Is_In_Dash[client] = false;
-		return;
-	}
 
 	if(Ability_Check_Cooldown(client, 2) > 0.0)
 	{
@@ -788,13 +835,30 @@ public void Red_Mist_Onrush(int client, int weapon)
 		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 		return;
 	}
+	
+	if(redashes[client] >= 5)//allow for 3 dashes
+	{
+		Ability_Apply_Cooldown(client, 2, 20.0);
+		//PrintToChatAll("too many redashes");
+		redashes[client] = 0;
+		Onrush_Is_In_Dash[client] = false;
+		return;
+	}
+	if(redashes[client] < 5)
+	{
+		redashes[client] += 1;
+	}
+	
 	if(Onrush_Is_In_Dash[client])
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		return;
 	}
 	Ability_Apply_Cooldown(client, 2, 1.0);
-
+	if(redashes[client] >= 5)
+	{
+		Ability_Apply_Cooldown(client, 2, 20.0);
+	}
 	Handle swingTrace;
 	b_LagCompNPC_No_Layers = true;
 	float vecSwingForward[3];
@@ -808,10 +872,6 @@ public void Red_Mist_Onrush(int client, int weapon)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		return;
-	}
-	if(redashes[client] < 5)
-	{
-		redashes[client] += 1;
 	}
 	Rogue_OnAbilityUse(client, weapon);
 	EmitSoundToAll(ONRUSH_START_SOUND, client, _, 70, _, 1.0, 90);
@@ -830,6 +890,19 @@ public void Red_Mist_Onrush(int client, int weapon)
 	SDKCall_SetLocalOrigin(trail, {0.0,0.0,50.0});
 	CreateTimer(0.45, Timer_RemoveEntityParent, EntIndexToEntRef(trail), TIMER_FLAG_NO_MAPCHANGE);
 	CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(trail), TIMER_FLAG_NO_MAPCHANGE);
+	DataPack Onrush_pack = new DataPack();
+	Onrush_pack.WriteCell(client);
+	Onrush_pack.WriteCell(EntIndexToEntRef(client));
+	Onrush_pack.WriteCell(EntIndexToEntRef(weapon));
+	Onrush_pack.WriteCell(EntIndexToEntRef(target));
+	if(h_Onrush_Check_Timer[client] != null)
+	{
+		if(IsValidHandle(h_Onrush_Check_Timer[client]))
+			delete h_Onrush_Check_Timer[client];
+		h_Onrush_Check_Timer[client] = null;
+	}
+	h_Onrush_Check_Timer[client] = CreateTimer(0.1, Onrush_Check_Distance, Onrush_pack, TIMER_REPEAT);
+
 
 	float MePos[3];
 	WorldSpaceCenter(client, MePos);
@@ -845,6 +918,70 @@ public void Red_Mist_Onrush(int client, int weapon)
 	velocity[2] += 150.0;    // a little boost to alleviate arcing issues
 
 	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
+}
+
+public Action Onrush_Check_Distance(Handle timer, DataPack Onrush_pack)
+{
+	Onrush_pack.Reset();
+	int clientindx = Onrush_pack.ReadCell();
+	int client = EntRefToEntIndex(Onrush_pack.ReadCell());
+	int weapon = EntRefToEntIndex(Onrush_pack.ReadCell());
+	int target = EntRefToEntIndex(Onrush_pack.ReadCell());
+
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
+	{
+		h_Red_Mist_Timer[clientindx] = null;
+		return Plugin_Stop;
+	}
+	ApplyStatusEffect(client, client, "Red Mist Onrush", 0.5);
+	SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + 1.0);
+	float VecMe[3];
+	WorldSpaceCenter(client, VecMe);
+	float VecAttacker[3];
+	WorldSpaceCenter(target, VecAttacker);
+	float dist = GetVectorDistance(VecMe, VecAttacker, true);
+	if(dist < (125.0 * 125.0))
+	{
+		float OnrushDamage = 65.0;
+		OnrushDamage *= WeaponDamageAttributeMultipliers(weapon,_,client);
+		float Strenght_boost;
+		Strenght_boost = 1.0 + (0.05 * Strenght_Amount[client]);
+		OnrushDamage *= Strenght_boost;
+		OnrushDamage *= 2.5; //yes
+		static float angles[3];
+		GetEntPropVector(client, Prop_Send, "m_angRotation", angles);
+		float vecForward[3];
+		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
+		static float Entity_Position[3];
+		WorldSpaceCenter(target, Entity_Position );
+		float ReflectPosVec[3]; CalculateDamageForce(vecForward, 10000.0, ReflectPosVec);
+		DataPack pack = new DataPack();
+		pack.WriteCell(EntIndexToEntRef(target));
+		pack.WriteCell(EntIndexToEntRef(client));
+		pack.WriteCell(EntIndexToEntRef(client));
+		pack.WriteFloat(OnrushDamage);
+		pack.WriteCell(DMG_CLUB);
+		pack.WriteCell(EntIndexToEntRef(weapon));
+		pack.WriteFloat(ReflectPosVec[0]);
+		pack.WriteFloat(ReflectPosVec[1]);
+		pack.WriteFloat(ReflectPosVec[2]);
+		pack.WriteFloat(Entity_Position[0]);
+		pack.WriteFloat(Entity_Position[1]);
+		pack.WriteFloat(Entity_Position[2]);
+		pack.WriteCell(ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED);
+		RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
+
+		SetEntityMoveType(client, MOVETYPE_NONE);
+		CreateTimer(0.25, UnFreeze_Onrush, client);
+		EmitSoundToAll(ONRUSH_HIT_SOUND, client, _, 70, _, 1.0, 100);
+		EmitSoundToAll(ONRUSH_HIT_SOUND, client, _, 70, _, 1.0, 100);
+		EmitSoundToAll(ONRUSH_HIT_SOUND, client, _, 70, _, 1.0, 100);
+		EmitSoundToAll(ONRUSH_HIT_SOUND, client, _, 70, _, 1.0, 100);
+
+		h_Red_Mist_Timer[clientindx] = null;
+		return Plugin_Stop;
+	}
+	return Plugin_Continue;
 }
 
 public void Red_Mist_Special_M1(int client, int weapon)//for activating currently selected special
@@ -898,6 +1035,7 @@ public void Red_Mist_Special_M1(int client, int weapon)//for activating currentl
 				Special_Active[client] = true;
 				current_card_selection[client] = 1;
 				EmitSoundToClient(client, PAGE_SELECT_SOUND, client, _, 70, _, 1.0, 90);
+				Red_Mist_SwitchToMeleeWeapon(client, weapon);
 				//PrintToChatAll("Special 1 on");
 			}
 		}
@@ -957,6 +1095,7 @@ public void Red_Mist_Special_M2(int client, int weapon)
 						Special_Active[client] = true;
 						current_card_selection[client] = 3;
 						EmitSoundToClient(client, PAGE_SELECT_SOUND, client, _, 70, _, 1.0, 90);
+						Red_Mist_SwitchToMeleeWeapon(client, weapon);
 						//PrintToChatAll("Special 3 on");
 					}
 				}
@@ -967,6 +1106,7 @@ public void Red_Mist_Special_M2(int client, int weapon)
 						Special_Active[client] = true;
 						current_card_selection[client] = 2;
 						EmitSoundToClient(client, PAGE_SELECT_SOUND, client, _, 70, _, 1.0, 90);
+						Red_Mist_SwitchToMeleeWeapon(client, weapon);
 						//PrintToChatAll("Special 2 on");
 					}
 				}
@@ -1162,8 +1302,6 @@ void Draw_Greather_Slash_Effect(float Angles[3], int client, float belowBossEyes
 	RedMistSlashEffect(belowBossEyes, VectorTarget_2, LaserFatness, Colour);
 }
 
-
-
 void DoHorrizontalSlashEffect(int client)
 {
 	DataPack pack = new DataPack();
@@ -1171,7 +1309,6 @@ void DoHorrizontalSlashEffect(int client)
 	pack.WriteFloat(GetGameTime() + 0.07);	
 	RequestFrame(Horrizontal_Greather_Split_Effect, pack);
 }
-
 
 void Horrizontal_Greather_Split_Effect(DataPack pack)
 {
@@ -1221,9 +1358,6 @@ void Horrizontal_Draw_Greather_Slash_Effect(float Angles[3], int client, float b
 	VectorTarget_2[2] = belowBossEyes[2] + vecForward[2] * VectorForward;
 	RedMistSlashEffect(belowBossEyes, VectorTarget_2, LaserFatness, Colour);
 }
-
-
-
 
 void RedMistSlashEffect(float belowBossEyes[3], float vecHit[3], float diameter = 0.0, int color[3] = {0,0,0})
 {	

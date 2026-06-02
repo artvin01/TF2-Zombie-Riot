@@ -5480,7 +5480,7 @@
 	}
 	"The Red Mist Desc 1"
 	{
-		"en"	"-Tiny stat increases"
+		"en"	"-Tiny stat increases\nUnlocks secondary weapon and a special card"
 	}
 	"The Red Mist Desc 2"
 	{
@@ -5488,7 +5488,7 @@
 	}
 	"The Red Mist Desc 3"
 	{
-		"en"	"-Gain a dash attack which you can chain up to 5 times\n-Overall Stat Increases"
+		"en"	"-Gain a dash attack which you can chain up to 5 times\nDash deals damage on contant and \nmakes you unable to swing for its duration\n-Overall Stat Increases"
 	}
 	"The Red Mist Desc 4"
 	{
