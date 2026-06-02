@@ -504,13 +504,16 @@ public void Red_Mist_OnTakeDamage_Take(int victim, int &attacker, int &inflictor
 		{
 			if(!Special_Active[victim])
 			{
+				int DmgCapLvl = WeaponLevel[victim];
+				if(DmgCapLvl <= 0)
+					DmgCapLvl = 0;
 				if(Abno_Pages[victim] & ABNORMPAGE_ROLE_OF_WOLF)
 				{
-					RMC_damage_cap = 100.0 * (WeaponLevel[victim] + 1);
+					RMC_damage_cap = 100.0 * (DmgCapLvl + 1);
 				}
 				else
 				{
-					RMC_damage_cap = 50.0 * (WeaponLevel[victim] + 1);
+					RMC_damage_cap = 50.0 * (DmgCapLvl + 1);
 				}
 				bool StopCounters = false;
 				
