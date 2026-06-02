@@ -3462,7 +3462,23 @@
 	}
 	"Ego Manifestation Desc"
 	{
-		"en"	"Deal 35％ more damage and take 15％ less damage\nWhile active unlock a new special ability"
+		"en"	"Deal 35％ more damage and take 15％ less damage and 10％ movement speed (except during lastman)\nWhile active unlock a new special ability"
+	}
+	"Red Mist Counter"
+	{
+		"en"	"Red Mist Counter"
+	}
+	"Red Mist Counter Desc"
+	{
+		"en"	"automatically attack nearby enemies who hit you when not attacking\nHas limited range, goes on cooldown if used too many times \nor taken too much damage at once"
+	}
+	"Red Mist Onrush"
+	{
+		"en"	"Onrush buff"
+	}
+	"Red Mist Onrush Desc"
+	{
+		"en"	"Take 25％ less damage during dashes"
 	}
 	
 }
