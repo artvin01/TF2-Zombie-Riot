@@ -304,7 +304,7 @@ methodmap OmegaRaid < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
-		npc.m_flOmegaRPGCD = GetGameTime() + 6.0;
+		npc.m_flOmegaRPGCD = GetGameTime(npc.index) + 6.0;
 		i_TalkDelayCheck = -1;
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/combine_super_soldier.mdl");
@@ -647,7 +647,7 @@ public void OmegaRaid_ClotThink(int iNPC)
 	}
 
 	//Spawn Rollermines
-	if(npc.m_flRollermineSpawn < GetGameTime())
+	if(npc.m_flRollermineSpawn < GetGameTime(npc.index))
 	{	
 		//If he's using the RPG, this animation won't play
 		if(usage != 1)
@@ -665,7 +665,7 @@ public void OmegaRaid_ClotThink(int iNPC)
 	}
 
 	//Throw Grenade
-	if(npc.m_flThrowSupportGrenadeHappening < GetGameTime())
+	if(npc.m_flThrowSupportGrenadeHappening < GetGameTime(npc.index))
 	{
 		//If he's using the RPG, this animation won't play
 		if(usage != 1)
@@ -752,7 +752,7 @@ void OmegaThrowGrenadeHappening(OmegaRaid npc)
 {
 	if(npc.m_flThrowSupportGrenadeHappening)
 	{
-		if(npc.m_flThrowSupportGrenadeHappening < GetGameTime())
+		if(npc.m_flThrowSupportGrenadeHappening < GetGameTime(npc.index))
 		{
 			switch(GetRandomInt(0,4)) //Armornade voicelines
 			{

@@ -5210,6 +5210,8 @@ void StatusEffect_StoreRefresh(int victim)
 			StatusEffect_UpdateAttackspeedAsap(victim, Apply_MasterStatusEffect, Apply_StatusEffect, false);
 			Apply_StatusEffect.RemoveStatus();
 			i = 0;
+			if(!E_AL_StatusEffects[victim])
+				return;
 			continue;
 		}
 		if(Apply_MasterStatusEffect.OnBuffStoreRefresh != INVALID_FUNCTION && Apply_MasterStatusEffect.OnBuffStoreRefresh)
