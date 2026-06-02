@@ -82,6 +82,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	DeleteShadowsOffZombieRiot();
 	EventRoundStartMusicFilter();
 	b_GameOnGoing = true;
+	WeaponUpdateDo();
 	
 	
 	LastMann = false;
