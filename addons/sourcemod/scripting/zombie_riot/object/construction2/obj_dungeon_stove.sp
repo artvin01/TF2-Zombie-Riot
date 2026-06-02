@@ -19,7 +19,7 @@
 #define CONSTRUCT_COST2		4
 #define CONSTRUCT_MAXCOUNT	1
 
-static const char Artifacts[][] =
+static const char Artifacts2[][] =
 {
 	"Atomic Soda",
 	"Critical Water",
@@ -41,7 +41,7 @@ static const char Artifacts[][] =
 static int NPCId;
 static float GlobalCooldown;
 static bool Shuffled;
-static bool Enabled[sizeof(Artifacts)];
+static bool Enabled[sizeof(Artifacts2)];
 
 void ObjectDStove_MapStart()
 {
@@ -198,8 +198,8 @@ static void ThisBuildingMenu(int client)
 	{
 		if(Enabled[i])
 		{
-			FormatEx(buffer, sizeof(buffer), "%t", Artifacts[i]);
-			menu.AddItem(Artifacts[i], buffer);
+			FormatEx(buffer, sizeof(buffer), "%t", Artifacts2[i]);
+			menu.AddItem(Artifacts2[i], buffer);
 		}
 	}
 

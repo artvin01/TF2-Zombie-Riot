@@ -298,7 +298,6 @@ static char VoteTitle[256];
 static char StartingItem[64];
 
 static ArrayList Curses;
-static ArrayList Artifacts;
 static ArrayList Floors;
 
 static int GameState;
@@ -314,7 +313,6 @@ static int LastFightCount;
 static int LastFightStage;
 static bool CurrentType;
 static ArrayList CurrentExclude;
-static ArrayList CurrentCollection;
 static ArrayList CurrentMissed;
 static int CurrentIngots;
 static int BonusLives;
@@ -856,6 +854,7 @@ void Rogue_StartSetup()	// Waves_RoundStart()
 		
 		strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), StartingItem);
 		strcopy(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), StartingItem);
+		strcopy(WhatModifierSetting, sizeof(WhatModifierSetting), StartingItem);
 		WavesUpdateDifficultyName();
 	}
 
@@ -1008,6 +1007,7 @@ public Action Rogue_EndVote(Handle timer, float time)
 
 				strcopy(WhatDifficultySetting, sizeof(WhatDifficultySetting), StartingItem);
 				strcopy(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), StartingItem);
+				strcopy(WhatModifierSetting, sizeof(WhatModifierSetting), vote.Name);
 				WavesUpdateDifficultyName();
 
 			}

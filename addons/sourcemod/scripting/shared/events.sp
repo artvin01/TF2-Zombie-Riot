@@ -181,6 +181,7 @@ public void OnSetupFinished(Event event, const char[] name, bool dontBroadcast)
 	BuildingVoteEndResetCD();
 	Waves_SetReadyStatus(0);
 	Waves_Progress();
+	TimeWhenStartedWaveset = GetTime();
 }
 #endif
 

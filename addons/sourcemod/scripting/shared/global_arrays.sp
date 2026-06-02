@@ -957,4 +957,6 @@ int ActiveFogEntity;				// Entity ref of the fog controller that is currently ac
 
 bool g_PrecachedMatrixNPCs;
 int ZoneMarkerRef[Zone_MAX] = {-1, ...};
+ArrayList CurrentCollection;
+ArrayList Artifacts;
 #endif
