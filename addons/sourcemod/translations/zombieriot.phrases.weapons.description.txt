@@ -5465,49 +5465,61 @@
 	"The Red Mist"
 	{
 		"en"	"The Red Mist"
+		"ko"	"붉은안개"
 	}
 	"Red Mist Mimicry"
 	{
 		"en"	"Mimicry"
+		"ko"	"미미크리"
 	}
 	"Card Selection"
 	{
 		"en"	"Card Selection"
+		"ko"	"책장 선택"
 	}
 	"The Red Mist Desc"
 	{
 		"en"	"Personal weapon of a long lost fixer\n-Gain a choosable upgrade on certain enhances\n-Has a passive counter with limited durability when not attacking\n-Specializes in prolonged fights"
+		"ko"	"오래 전 사라진 해결사의 무기.\n-특정 강화 시마다 선택 가능한 개선 획득\n-공격하지 않는 동안 제한된 내구성의 자동 반격 상태로 돌입\n-장기전에 특화"
 	}
 	"The Red Mist Desc 1"
 	{
 		"en"	"-Tiny stat increases"
+		"ko"	"-능력치 소폭 증가"
 	}
 	"The Red Mist Desc 2"
 	{
 		"en"	"-Gain an upgrade point\n-Overall Stat Increases"
+		"ko"	"-개선 포인트 획득\n-전반적인 능력치 증가"
 	}
 	"The Red Mist Desc 3"
 	{
 		"en"	"-Gain a dash attack which you can chain up to 5 times\n-Overall Stat Increases"
+		"ko"	"-최대 5번까지 연속 사용 가능한 돌진 공격 획득\n-전반적인 능력치 증가"
 	}
 	"The Red Mist Desc 4"
 	{
 		"en"	"-Gain an upgrade point\n-Overall Stat Increases"
+		"ko"	"-개선 포인트 획득\n-전반적인 능력치 증가"
 	}
 	"The Red Mist Desc 5"
 	{
 		"en"	"-Gain an upgrade point\nUnlocks new special card\n-Overall Stat Increases"
+		"ko"	"-개선 포인트 획득\n-새로운 특별 책장 해금\n-전반적인 능력치 증가"
 	}
 	"The Red Mist Desc 6"
 	{
 		"en"	"-Gain an upgrade point\n-Overall Stat Increases"
+		"ko"	"-개선 포인트 획득\n-전반적인 능력치 증가"
 	}
 	"The Red Mist Desc 7"
 	{
 		"en"	"-Overall Stat Increases"
+		"ko"	"-전반적인 능력치 증가"
 	}
 	"The Red Mist Desc 8"
 	{
 		"en"	"-Overall Stat Increases"
+		"ko"	"-전반적인 능력치 증가"
 	}
 }
