@@ -648,7 +648,6 @@ void Func_RM_CounterAmount_Display(int attacker, int victim, StatusEffect Apply_
 	Format(HudToDisplay, SizeOfChar, "⚔(%i)", counter_dice_amount[victim]);
 	if(h_Red_Mist_Timer[victim] == null)
 	{
-		PrintToChatAll("test1");
 		int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
 		Apply_StatusEffect.TimeUntillOver = 0.0;
 		E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
