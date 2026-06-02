@@ -488,9 +488,6 @@ stock void RemoveSpecificBuff(int victim, const char[] name, int IndexID = -1, b
 				StatusEffect_UpdateAttackspeedAsap(victim, Apply_MasterStatusEffect, Apply_StatusEffect, false);
 			Apply_StatusEffect.RemoveStatus();
 		}
-		
-		if(E_AL_StatusEffects[victim].Length < 1)
-			delete E_AL_StatusEffects[victim];
 	}
 }
 
@@ -533,8 +530,7 @@ int HasSpecificBuff(int victim, const char[] name, int IndexID = -1, int attacke
 				Return = 1;
 		}
 	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
+	
 
 	return Return;
 }
@@ -585,8 +581,7 @@ stock void RemoveAllBuffs(int victim, bool RemoveGood, bool Everything = false)
 			continue;
 		}
 	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
+	
 }
 void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration, int IndexID = -1)
 {
@@ -845,8 +840,6 @@ void StatusEffect_OnTakeDamage_TakenPositive(int victim, int attacker, float &da
 #endif
 	
 	damage *= DamageRes;	
-	if(length < 1)
-		delete E_AL_StatusEffects[victim];
 }
 
 /*
@@ -915,8 +908,6 @@ void StatusEffect_OnTakeDamage_DealNegative(int victim, int attacker, float &dam
 #endif
 	
 	damage *= DamageRes;	
-	if(length < 1)
-		delete E_AL_StatusEffects[attacker];
 }
 
 //Damage vulnerabilities, when i get HURT, this means i TAKE more damage
@@ -996,8 +987,6 @@ float StatusEffect_OnTakeDamage_TakenNegative(int victim, int attacker, float &b
 			ExtraDamageAdd += basedamage * (Apply_MasterStatusEffect.DamageTakenMulti * DamageBuffScalingDo);
 		}
 	}
-	if(length < 1)
-		delete E_AL_StatusEffects[victim];
 
 	return ExtraDamageAdd;
 }
@@ -1077,8 +1066,6 @@ float StatusEffect_OnTakeDamage_DealPositive(int victim, int attacker, float &ba
 			ExtraDamageAdd += basedamage * (Apply_MasterStatusEffect.DamageDealMulti * DamageBuffScalingDo);
 		}
 	}
-	if(length < 1) 		
-		delete E_AL_StatusEffects[attacker];
 
 	return ExtraDamageAdd;
 }
@@ -1301,8 +1288,6 @@ void StatusEffects_HudHurt(int victim, int attacker, char[] Debuff_Adder_left, c
 			}
 		}
 	}
-	if(length < 1) 		
-		delete E_AL_StatusEffects[victim];
 }
 
 bool Status_Effects_AttackspeedBuffChange(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, bool HasBuff = true)
@@ -1755,8 +1740,7 @@ void StatusEffects_HudAbove(int victim, char[] HudAbove, int SizeOfChar)
 
 		Format(HudAbove, SizeOfChar, "%s%s", Apply_MasterStatusEffect.AboveEnemyDisplay, HudAbove);
 	}
-	if(length < 1) 		
-		delete E_AL_StatusEffects[victim];
+	
 }
 
 void StatusEffect_ApplySpeedPlayer(int victim)
@@ -1811,8 +1795,7 @@ void StatusEffect_SpeedModifierPlayer(int victim, float &SpeedModifPercentage)
 	{
 		SpeedModifPercentage = 0.0;
 	}
-	if(length < 1) 		
-		delete E_AL_StatusEffects[victim];
+	
 }
 void StatusEffect_JumpModifierPlayer(int victim, float &SpeedModifPercentage)
 {
@@ -1856,8 +1839,7 @@ void StatusEffect_JumpModifierPlayer(int victim, float &SpeedModifPercentage)
 	{
 		SpeedModifPercentage = 0.0;
 	}
-	if(length < 1) 		
-		delete E_AL_StatusEffects[victim];
+	
 }
 //Speed Buff modif!
 void StatusEffect_SpeedModifier(int victim, float &SpeedModifPercentage)
@@ -1928,8 +1910,7 @@ void StatusEffect_SpeedModifier(int victim, float &SpeedModifPercentage)
 	{
 		SpeedModifPercentage = 0.0;
 	}
-	if(length < 1) 		
-		delete E_AL_StatusEffects[victim];
+	
 }
 
 int LowTeslarIndex;
@@ -2007,8 +1988,7 @@ stock bool NpcStats_IsEnemyTeslar(int victim, bool High)
 		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
 			return true;
 	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
+	
 
 	return false;
 }
@@ -2128,8 +2108,7 @@ stock bool NpcStats_IsEnemyFrozen(int victim, int TierDo)
 		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
 			return true;
 	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
+	
 
 	return false;
 }
@@ -2872,8 +2851,7 @@ stock void ApplyRapidSuturing(int victim)
 			E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 		}
 	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
+	
 }
 stock bool StatusEffects_RapidSuturingCheck(int victim, float BleedTimeActive)
 {
@@ -2894,8 +2872,7 @@ stock bool StatusEffects_RapidSuturingCheck(int victim, float BleedTimeActive)
 			}
 		}
 	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
+	
 
 	return false;
 }
@@ -3076,8 +3053,7 @@ static bool CheckBuffIndex(int victim, int buffIndex)
 		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
 			return true;
 	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
+	
 
 	return false;
 }
@@ -3440,8 +3416,7 @@ stock void StatusEffects_PikemanDebuffAdd(int victim, int valuetoadd)
 			E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 		}
 	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
+	
 
 }
 
@@ -3469,8 +3444,7 @@ stock bool StatusEffects_PikemanDebuffMaxStacks(int victim)
 			}
 		}
 	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
+	
 
 	return false;
 }
@@ -4481,8 +4455,7 @@ stock void NpcStats_CasinoDebuffStengthen(int victim, float NewBuffValue)
 			}
 		}
 	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
+	
 
 }
 
@@ -4626,8 +4599,7 @@ stock void NpcStats_RuinaAgilityStengthen(int victim, float NewBuffValue, bool A
 			}
 		}
 	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
+	
 }
 
 float RuinasAgility_Func(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
@@ -4660,8 +4632,7 @@ stock void NpcStats_RuinaDefenseStengthen(int victim, float NewBuffValue, bool A
 			}
 		}
 	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
+	
 }
 
 float RuinasDefense_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
@@ -4696,8 +4667,7 @@ stock void NpcStats_RuinaDamageStengthen(int victim, float NewBuffValue, bool Ad
 			}
 		}
 	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
+	
 }
 float Ruinas_DamageFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float basedamage, float DamageBuffExtraScaling)
 {
@@ -5260,8 +5230,7 @@ void StatusEffect_TimerCallDo(int victim)
 		}
 	}
 
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
+	
 }
 void StatusEffect_OnTakeDamagePostVictim(int victim, int attacker, float damage, int damagetype)
 {
@@ -5294,8 +5263,6 @@ void StatusEffect_OnTakeDamagePostVictim(int victim, int attacker, float damage,
 		}
 	}
 
-	if(length < 1)
-		delete E_AL_StatusEffects[victim];
 }
 void StatusEffect_OnTakeDamagePostAttacker(int victim, int attacker, float damage, int damagetype)
 {
@@ -5328,8 +5295,6 @@ void StatusEffect_OnTakeDamagePostAttacker(int victim, int attacker, float damag
 		}
 	}
 
-	if(length < 1)
-		delete E_AL_StatusEffects[attacker];
 }
 
 void StatusEffects_PurnellKitBuffs()
@@ -6194,8 +6159,7 @@ stock void StatusEffects_SetCustomValue(int victim, float NewBuffValue, int Inde
 			E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 		}
 	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
+	
 }
 
 stock float Status_Effects_GetCustomValue(int victim, int Index)
@@ -6223,8 +6187,7 @@ stock float Status_Effects_GetCustomValue(int victim, int Index)
 			E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 		}
 	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
+	
 
 	return BuffValuereturn;
 }
@@ -6700,8 +6663,7 @@ stock void NpcStats_PrimalFearChange(int victim, float AddBuff)
 			E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 		}
 	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
+	
 }
 
 
@@ -10004,8 +9966,7 @@ stock void StatusEffects_SinkingDebuffAdd(int victim, int valuetoadd)
 			E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 		}
 	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
+	
 
 }
 stock bool StatusEffects_SinkingDebuffMaxStacks(int victim)
@@ -10027,8 +9988,7 @@ stock bool StatusEffects_SinkingDebuffMaxStacks(int victim)
 			}
 		}
 	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
+	
 
 	return false;
 }
@@ -10177,8 +10137,7 @@ stock void StatusEffects_MemorialDebuffAdd(int victim, int valuetoadd)
 			E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 		}
 	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
+	
 
 }
 stock bool StatusEffects_MemorialDebuffMaxStacks(int victim)
@@ -10200,8 +10159,7 @@ stock bool StatusEffects_MemorialDebuffMaxStacks(int victim)
 			}
 		}
 	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
+	
 
 	return false;
 }
@@ -10245,8 +10203,6 @@ stock void Shielding_Add(int victim, int valuetoadd)
 			E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 		}
 	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
 
 }
 float Shielding_DamageTakenFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float &damage)
@@ -10328,6 +10284,9 @@ void StatusEffects_Red_Mist()
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.ElementalLogic				= true;
+	data.OnBuffStarted				= EgoManifest_Start;
+	data.OnBuffStoreRefresh			= EgoManifest_Refresh;
+	data.OnBuffEndOrDeleted			= EgoManifest_End;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
@@ -10418,7 +10377,76 @@ stock void StatusEffects_RM_StrengthBuffAdd(int victim, int valuetoadd)
 			E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 		}
 	}
-	if(E_AL_StatusEffects[victim].Length < 1)
-		delete E_AL_StatusEffects[victim];
 
+}
+
+
+
+static void EgoManifest_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	float flPos[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", flPos);
+	int ParticleEffect = ParticleEffectAt_Parent(flPos, "dragons_fury_effect", victim, "", {0.0,0.0,0.0});
+	CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(ParticleEffect), TIMER_FLAG_NO_MAPCHANGE);
+	Ego_RedMistInitMusicTemp(victim);
+	
+	if(IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+
+	ParticleEffect = ParticleEffectAt_Parent(flPos, "utaunt_aestheticlogo_red_mist", victim, "", {0.0,0.0,0.0});
+	
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.WearableUse = EntIndexToEntRef(ParticleEffect);
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+}
+static void EgoManifest_Refresh(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+
+
+	float flPos[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", flPos);
+	int ParticleEffect = ParticleEffectAt_Parent(flPos, "utaunt_aestheticlogo_red_mist", victim, "", {0.0,0.0,0.0});
+	
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.WearableUse = EntIndexToEntRef(ParticleEffect);
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+}
+static void EgoManifest_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+
+	if(!IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+	RemoveEntity(Apply_StatusEffect.WearableUse);
+}
+
+
+void Ego_RedMistInitMusicTemp(int client)
+{
+	EmitCustomToAll("#zombiesurvival/red_mist_lastman.mp3", client, SNDCHAN_STATIC, 80, SND_CHANGEVOL, 1.0);
+	DataPack pack;
+	CreateDataTimer(0.25, Ego_RedMistMusicDo, pack, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	pack.WriteCell(EntIndexToEntRef(client));
+	pack.WriteFloat(GetGameTime() + 2.0);
+}
+
+
+public Action Ego_RedMistMusicDo(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(client))
+		return Plugin_Stop;
+	float TimeUntillEnd = pack.ReadFloat();
+	float TimeUntillSnap = TimeUntillEnd - GetGameTime();
+	TimeUntillSnap *= 0.5;
+
+	EmitCustomToAll("#zombiesurvival/red_mist_lastman.mp3", client, SNDCHAN_STATIC, 80, SND_CHANGEVOL, TimeUntillSnap);
+	if(GetGameTime() >= TimeUntillEnd)
+	{
+		EmitCustomToAll("#zombiesurvival/red_mist_lastman.mp3", client, SNDCHAN_STATIC, 80, SND_STOP, 1.0);
+		return Plugin_Stop;
+	}
+	return Plugin_Continue;
 }
