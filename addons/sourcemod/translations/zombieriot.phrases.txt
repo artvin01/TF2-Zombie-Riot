@@ -5956,7 +5956,7 @@
 	}
 	"Vampirism"
 	{
-		"en"	"Vampirism:\nRecover a small amount of hp on hit \nscales with paps\n[M1]"
+		"en"	"Vampirism:\nRecover a small amount of hp on hit \nscales with enhances\n[M1]"
 	}
 	"Deep Wound"
 	{
