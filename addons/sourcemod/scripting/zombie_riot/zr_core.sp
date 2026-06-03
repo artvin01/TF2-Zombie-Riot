@@ -2174,10 +2174,6 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 			{
 				if(PlayersLeftAliveHere > 1)
 				{
-					if(LastMann)
-					{
-						Music_EndLastmann();
-					}
 					LastMannScreenEffect = false;
 					//there are players left, dont trigger lastman
 					LastMann = false;
@@ -2186,10 +2182,6 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 		}
 		else	
 		{
-			if(LastMann)
-			{
-				Music_EndLastmann();
-			}
 			LastMannScreenEffect = false;
 			//there are players left, dont trigger lastman
 			LastMann = false;
@@ -2211,7 +2203,6 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 		{	
 			TriggerLastmanLogic(killed, Hurtviasdkhook);
 		}
-			
 	}
 	
 	if(PlayersLeftNotDowned)
