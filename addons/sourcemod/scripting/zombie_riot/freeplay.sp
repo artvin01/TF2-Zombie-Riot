@@ -1051,7 +1051,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 3:
 		{
-			switch(GetRandomInt(1, 5))
+			switch(GetRandomInt(1, 6))
 			{
 				case 1:
 				{
@@ -1071,7 +1071,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 				}
 				case 5:
 				{
-					CPrintToChatAll("{yellow}SILVESTER {white}& {darkblue}WALDCH! {gold}- {yellow}Hey thanks again for saving me from the Xeno infection");
+					CPrintToChatAll("{yellow}SILVESTER {white}& {darkblue}WALDCH! {gold}- {yellow}Hey thanks again for saving me from the Xeno infection, now beat Waldch and me in this simulation.");
 				}
 				default:
 				{
@@ -1109,7 +1109,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 6:
 		{
-			switch(GetRandomInt(1, 2))
+			switch(GetRandomInt(1, 3))
 			{
 				case 1:
 				{
@@ -1127,11 +1127,31 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 7:	
 		{
-			CPrintToChatAll("{crimson}THE PURGE! {gold}- {red}Annihilation shall be absolute.");
+			switch(GetRandomInt(1, 2))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{crimson}THE PURGE! {gold}- {red}Annihilation shall be absolute.");
+				}
+				default:
+				{
+					CPrintToChatAll("{crimson}THE PURGE! {gold}- {red}Annihilation shall be absolute.");
+				}
+			}
 		}
 		case 8:	
 		{
-			CPrintToChatAll("{lightblue}THE MESSENGER! {gold}- {red}He REALLY wants to make Kahmlstein proud!");
+			switch(GetRandomInt(1, 2))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{lightblue}THE MESSENGER! {gold}- {red}He REALLY wants to make Kahmlstein proud!");
+				}
+				default:
+				{
+					CPrintToChatAll("{lightblue}THE MESSENGER! {gold}- {red}He REALLY wants to make Kahmlstein proud!");
+				}
+			}
 		}
 		/*
 		FUCK YOU, YOU FUCKING DICK, ALWAYS BUGGING OUT, ANYTIME YOU SPAWN
@@ -1140,9 +1160,19 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			CPrintToChatAll("{white}BOB THE FIRST! {gold}- {red}Are you a god?");
 		}
 		*/
-		case 9:	
+		case 9:
 		{
-			CPrintToChatAll("{darkblue}CHAOS KAHMLSTEIN! {gold}- {red}He thinks he's unstoppable, prove him wrong!");
+			switch(GetRandomInt(1, 2))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{darkblue}CHAOS KAHMLSTEIN! {gold}- {red}He thinks he's unstoppable, prove him wrong!");
+				}
+				default:
+				{
+					CPrintToChatAll("{darkblue}CHAOS KAHMLSTEIN! {gold}- {red}He thinks he's unstoppable, prove him wrong!");
+				}
+			}
 		}
 		case 10:	
 		{
@@ -1244,7 +1274,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 16:
 		{
-			switch(GetRandomInt(1, 4))
+			switch(GetRandomInt(1, 6))
 			{
 				case 1:
 				{
@@ -1260,7 +1290,11 @@ static Action Freeplay_RouletteMessage(Handle timer)
 				}
 				case 4:
 				{
-					CPrintToChatAll("{lightblue}NEMAL! {gold}- {lightblue}Aah you guys are fighting me!!! Yay!");
+					CPrintToChatAll("{lightblue}NEMAL! {white}& {yellow}SILVESTER! {gold}- {lightblue}Aah you guys are fighting me! Yay!!!");
+				}
+				case 5:
+				{
+					CPrintToChatAll("{yellow}SILVESTER {white}& {lightblue}NEMAL! {gold}- {yellow}Oh you guys are fighting Nemal and me. Another round of training, inside a training simulation.");
 				}
 				default:
 				{
@@ -1288,15 +1322,15 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{community}Agent... thompson. {crimson}eeew.");
+					CPrintToChatAll("{community}Agent... thompson. {red}eeew.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{community}Agent... thompson. {crimson}eew.");
+					CPrintToChatAll("{community}Agent... thompson. {red}eew.");
 				}
 				default:
 				{
-					CPrintToChatAll("{community}Agent... thompson. {crimson}ew.");
+					CPrintToChatAll("{community}Agent... thompson. {red}ew.");
 				}
 			}
 		}
@@ -1306,15 +1340,15 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{forestgreen}The.... twins. {crimson}eeew.");
+					CPrintToChatAll("{forestgreen}The.... twins. {red}eeew.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{forestgreen}The.... twins. {crimson}eew.");
+					CPrintToChatAll("{forestgreen}The.... twins. {red}eew.");
 				}
 				default:
 				{
-					CPrintToChatAll("{forestgreen}The.... twins. {crimson}ew.");
+					CPrintToChatAll("{forestgreen}The.... twins. {red}ew.");
 				}
 			}
 		}
@@ -1324,15 +1358,15 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{community}Agent... johnson. {crimson}eeew. Had to juice him up a bit cause how bad he is");
+					CPrintToChatAll("{community}Agent... johnson. {red}eeew. Had to juice him up a bit cause how bad he is");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{community}Agent... johnson. {crimson}eew. Had to juice him up a bit cause how bad he is");
+					CPrintToChatAll("{community}Agent... johnson. {red}eew. Had to juice him up a bit cause how bad he is");
 				}
 				default:
 				{
-					CPrintToChatAll("{community}Agent... johnson. {crimson}ew. Had to juice him up a bit cause how bad he is");
+					CPrintToChatAll("{community}Agent... johnson. {red}ew. Had to juice him up a bit cause how bad he is");
 				}
 			}	
 		}
@@ -1342,7 +1376,19 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{darkgreen}Agent Smith. {crimson}Agent Stinky");
+					CPrintToChatAll("{darkgreen}Agent Smith. {red}Agent Stinky");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{darkgreen}Agent Smith. {red}Agent Stinker");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{darkgreen}Agent Smith. {red}Agent Stinkiest");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{darkgreen}Agent Smith. {red}Agent St- {snow}Shut up Koshi. *sigh* That guy from the simulation movie.");
 				}
 				default:
 				{
