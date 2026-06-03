@@ -406,13 +406,13 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 					case 1: 
 					{
 						enemy.Index = NPC_GetByPlugin("npc_xeno_mrx");
-						enemy.Health = RoundToFloor((9500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.Health = RoundToFloor((10000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
 					}
 					default: 
 					{
 						enemy.Index = NPC_GetByPlugin("npc_xeno_mrx");
-						enemy.Health = RoundToFloor((9500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.Health = RoundToFloor((10000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
 					}
 				}
@@ -564,9 +564,11 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 34:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_shadowing_darkness_boss");
-				enemy.Health = RoundToFloor((10000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((9000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "force_final_battle";
-				enemy.ExtraDamage = 0.65;
+				enemy.ExtraThinkSpeed = 1.15;
+				enemy.ExtraSpeed = 0.95;
+				enemy.ExtraDamage = 0.60;
 			}
 			case 35:
 			{
