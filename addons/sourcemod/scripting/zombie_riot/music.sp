@@ -539,6 +539,7 @@ bool BlockLastmanMusicRaidboss(int client)
 	}
 	return false;
 }
+
 void Music_EndLastmann(bool Reinforce=false)
 {
 	if(LastMann)
@@ -608,6 +609,7 @@ void Music_EndLastmann(bool Reinforce=false)
 		LastMann = false;
 		Yakuza_Lastman(0);
 	}
+	Yakuza_Lastman(0);
 }
 
 void PlayTeamDeadSound()
@@ -1061,15 +1063,16 @@ void Music_Update(int client)
 				}
 				case 16:
 				{
-					if(DoesClientHaveMOSB(client))//"distorted" music
+					if(AnyClientHaveMOSB())//"distorted" music
 					{
 						EmitCustomToClient(client, "#zombiesurvival/red_mist_lastman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.3, 75);//1.3 is volume, after that is pitch
+						SetMusicTimer(client, GetTime() + 113);
 					}
 					else
 					{
 						EmitCustomToClient(client, "#zombiesurvival/red_mist_lastman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.3);//1.3 is volume, after that is pitch
+						SetMusicTimer(client, GetTime() + 91);
 					}
-					SetMusicTimer(client, GetTime() + 91);
 				}
 				default:
 				{	

@@ -143,7 +143,7 @@ public void Rogue_StoneNemesis_Collect()
 
 public void Rogue_StoneNemesis_FloorChange(int newFloor)
 {
-	Rogue_AddUmbral(3);
+	Rogue_AddUmbral(6);
 }
 
 public void Rogue_StoneNemesis_Remove()

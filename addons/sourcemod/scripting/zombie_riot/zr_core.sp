@@ -2083,9 +2083,10 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 	if(!Waves_Started() || Waves_InSetup() || GameRules_GetRoundState() != RoundState_ZombieRiot || Dungeon_CanRespawn())
 	{
 		//This is player check in setup rounds or in stuff that truly should never call lastman
+		Music_EndLastmann();
 		LastMann = false;
 		LastMann_BeforeLastman = false;
-		Yakuza_Lastman(0);
+		applied_lastmann_buffs_once = false;
 		CurrentPlayers = 0;
 		for(int client=1; client<=MaxClients; client++)
 		{
@@ -2104,6 +2105,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 	}
 	
 	CheckIfAloneOnServer();
+
 	
 	LastMann = true;
 	LastMann_BeforeLastman = false;
@@ -2162,48 +2164,54 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 		}
 	}
 	
-	if(PlayersLeftNotDowned == 1)
+
+	if(!applied_lastmann_buffs_once)
 	{
-		LastMann_BeforeLastman = true;
-		if(!CheckDownedState)
+		if(PlayersLeftNotDowned == 1)
 		{
-			if(PlayersLeftAliveHere > 1)
+			LastMann_BeforeLastman = true;
+			if(!CheckDownedState)
 			{
-				if(LastMann)
+				if(PlayersLeftAliveHere > 1)
 				{
-					Yakuza_Lastman(0);
+					if(LastMann)
+					{
+						Music_EndLastmann();
+					}
+					LastMannScreenEffect = false;
+					//there are players left, dont trigger lastman
+					LastMann = false;
 				}
-				LastMannScreenEffect = false;
-				//there are players left, dont trigger lastman
-				LastMann = false;
 			}
 		}
-	}
-	else
-	{
-		if(LastMann)
+		else	
 		{
-			Yakuza_Lastman(0);
+			if(LastMann)
+			{
+				Music_EndLastmann();
+			}
+			LastMannScreenEffect = false;
+			//there are players left, dont trigger lastman
+			LastMann = false;
 		}
-		LastMannScreenEffect = false;
-		//there are players left, dont trigger lastman
-		LastMann = false;
-	}
+			
 
-	//force lastman
-	if(TestLastman)
-	{
-		LastMann = true;
-		LastMannScreenEffect = false;
-		applied_lastmann_buffs_once = false;
-	}
+		//force lastman
+		if(TestLastman)
+		{
+			LastMann = true;
+			LastMannScreenEffect = false;
+			applied_lastmann_buffs_once = false;
+		}
 
-	if(!LastMann)
-		applied_lastmann_buffs_once = false;
+		if(!LastMann)
+			applied_lastmann_buffs_once = false;
 
-	if(LastMann)
-	{	
-		TriggerLastmanLogic(killed, Hurtviasdkhook);
+		if(LastMann)
+		{	
+			TriggerLastmanLogic(killed, Hurtviasdkhook);
+		}
+			
 	}
 	
 	if(PlayersLeftNotDowned)
@@ -2843,6 +2851,8 @@ void ReviveAll(bool raidspawned = false,
 	
 	if(ZR_Get_Modifier() == PREFIX_ONESTAND && !IsSetupRevive)
 		return;
+
+	applied_lastmann_buffs_once = false;
 	for(int client=1; client<=MaxClients; client++)
 	{
 		CheckClientLateJoin(client, false);

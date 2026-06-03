@@ -748,6 +748,7 @@ void StatusEffectReset(int victim, bool force)
 	{
 		E_AL_StatusEffects[victim].GetArray(i, Apply_StatusEffect);
 		Apply_StatusEffect.RemoveStatus(true);
+		length--;
 		//only remove effects.
 	}
 
@@ -9650,7 +9651,7 @@ void TakeDamagePostAtttacker_CoffinsReturn(int attacker, int victim, float damag
 	if(HasSpecificBuff(attacker, "Call of the Heartbroken Weakened"))
 		return;
 #if defined ZR
-	GiveCoffinOnDamage(OwnerAttach,victim, damage * 2);
+	GiveCoffinOnDamage(OwnerAttach,victim, damage);
 #endif
 }
 static float TiantuiDamageDeal(int attacker, int victim, float basedamage, float bonus, float multi)
@@ -9691,9 +9692,11 @@ static void TiantuiStart(int victim, StatusEffect Apply_MasterStatusEffect, E_St
 {
 	if(victim <= MaxClients)
 	{
+		/*
 #if defined ZR
 		MakeBladeBloddy(victim, true);
 #endif
+*/
 		if(IsValidEntity(Apply_StatusEffect.WearableUse))
 			return;
 	
@@ -9710,10 +9713,12 @@ static void TiantuiStart(int victim, StatusEffect Apply_MasterStatusEffect, E_St
 }
 static void TiantuiEnd(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
+		/*
 #if defined ZR
 	if(victim <= MaxClients)
 		MakeBladeBloddy(victim, false);
 #endif
+*/
 
 	if(!IsValidEntity(Apply_StatusEffect.WearableUse))
 		return;
@@ -9760,7 +9765,21 @@ static void CallOfHeartBroken_Timer(int entity, StatusEffect Apply_MasterStatusE
 
 	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
 
-	if(OwnerAttach == -1 || (dieingstate[OwnerAttach] == 0 && !IsEntityAlive(OwnerAttach)) || !IsHeartBroken(OwnerAttach))
+	bool KillVictim = false;
+	if(OwnerAttach == -1)
+		KillVictim = true;
+	else
+	{
+		if(!IsEntityAlive(OwnerAttach))
+			if(dieingstate[OwnerAttach] == 0)
+				KillVictim = true;
+
+		if(!IsHeartBroken(OwnerAttach))
+			KillVictim = true;
+	}
+
+
+	if(KillVictim)
 	{
 		Apply_StatusEffect.TimeUntillOver = 0.0;
 		SDKHooks_TakeDamage(entity, entity, entity, 99999.0, DMG_TRUEDAMAGE, _, _, _, true);
@@ -10433,35 +10452,60 @@ static void EgoManifest_Start(int victim, StatusEffect Apply_MasterStatusEffect,
 	CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(ParticleEffect), TIMER_FLAG_NO_MAPCHANGE);
 	Ego_RedMistInitMusicTemp(victim);
 	
-	if(IsValidEntity(Apply_StatusEffect.WearableUse))
-		return;
-
-	ParticleEffect = ParticleEffectAt_Parent(flPos, "utaunt_aestheticlogo_red_mist", victim, "", {0.0,0.0,0.0});
-	
 	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
-	Apply_StatusEffect.WearableUse = EntIndexToEntRef(ParticleEffect);
+	if(!IsValidEntity(Apply_StatusEffect.WearableUse))
+	{
+		ParticleEffect = ParticleEffectAt_Parent(flPos, "utaunt_aestheticlogo_red_mist", victim, "", {0.0,0.0,0.0});
+		Apply_StatusEffect.WearableUse = EntIndexToEntRef(ParticleEffect);
+	}
+	if(!IsValidEntity(Apply_StatusEffect.WearableUse2) && IsValidClient(victim))
+	{
+		int viewmodelModel;
+		viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[victim]);
+		if(IsValidEntity(viewmodelModel))
+		{
+			GetAttachment(viewmodelModel, "eyeglow_L", flPos, NULL_VECTOR);
+			int particle = ParticleEffectAt(flPos, "raygun_projectile_red_crit_trail", 0.0);
+			AddEntityToThirdPersonTransitMode(victim, particle);
+			SetParent(viewmodelModel, particle, "eyeglow_L");
+			Apply_StatusEffect.WearableUse2 = EntIndexToEntRef(particle);
+		}
+	}
+
 	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 }
 static void EgoManifest_Refresh(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
-	if(IsValidEntity(Apply_StatusEffect.WearableUse))
-		return;
-
-
+	int ParticleEffect;
 	float flPos[3];
-	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", flPos);
-	int ParticleEffect = ParticleEffectAt_Parent(flPos, "utaunt_aestheticlogo_red_mist", victim, "", {0.0,0.0,0.0});
-	
 	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
-	Apply_StatusEffect.WearableUse = EntIndexToEntRef(ParticleEffect);
+	if(!IsValidEntity(Apply_StatusEffect.WearableUse))
+	{
+		ParticleEffect = ParticleEffectAt_Parent(flPos, "utaunt_aestheticlogo_red_mist", victim, "", {0.0,0.0,0.0});
+		Apply_StatusEffect.WearableUse = EntIndexToEntRef(ParticleEffect);
+	}
+	if(!IsValidEntity(Apply_StatusEffect.WearableUse2) && IsValidClient(victim))
+	{
+		int viewmodelModel;
+		viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[victim]);
+		if(IsValidEntity(viewmodelModel))
+		{
+			GetAttachment(viewmodelModel, "eyeglow_L", flPos, NULL_VECTOR);
+			int particle = ParticleEffectAt(flPos, "raygun_projectile_red_crit_trail", 0.0);
+			AddEntityToThirdPersonTransitMode(victim, particle);
+			SetParent(viewmodelModel, particle, "eyeglow_L");
+			Apply_StatusEffect.WearableUse2 = EntIndexToEntRef(particle);
+		}
+	}
+	
 	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 }
 static void EgoManifest_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
-
-	if(!IsValidEntity(Apply_StatusEffect.WearableUse))
-		return;
-	RemoveEntity(Apply_StatusEffect.WearableUse);
+	if(IsValidEntity(Apply_StatusEffect.WearableUse))
+		RemoveEntity(Apply_StatusEffect.WearableUse);
+	if(IsValidEntity(Apply_StatusEffect.WearableUse2))
+		RemoveEntity(Apply_StatusEffect.WearableUse2);
 }
 
 

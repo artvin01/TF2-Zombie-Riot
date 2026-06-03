@@ -255,7 +255,7 @@ static void Internal_ClotThink(int iNPC)
 		SetGoalVectorIndex = BrolySelfDefense(npc,GetGameTime(npc.index), npc.m_iTarget, flDistanceToTarget); 
 
 		float TimeLeft = RaidModeTime - GetGameTime();
-		if(TimeLeft > 10.0 && npc.m_iState)
+		if(TimeLeft > 15.0 && npc.m_iState)
 		{
 			npc.StopPathing();
 			npc.m_flSpeed = 0.0;

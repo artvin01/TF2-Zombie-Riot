@@ -5414,9 +5414,8 @@
 	}
 	"The Heartbroken Desc 4"
 	{
-		"en"	"-Overall Stat Increases\n-Unlock secondary R ability:\n-Launches a coffin that deals immense damage on hit\n-If the enemy is not a boss or special, instakill them and gain 1 coffin stack\n-Coffins give a damage bonus"
-		"ko"	"-전반적인 능력치 증가\n-보조 무기 R키 능력 해금:\n-막대한 피해를 가하는 관을 날림\n-대상이 보스나 특수형 적이 아니라면, 대상을 즉사시키고 관을 1 얻음\n-관은 피해량 보너스를 제공"
-
+		"en"	"-Overall Stat Increases\n-Unlock secondary R ability:\n-Launches a coffin that deals immense damage on hit\n-If the enemy is not a boss or special, instakill them and gain 2 coffin stacks\n-Coffins give a damage bonus"
+		"ko"	"-전반적인 능력치 증가\n-보조 무기 R키 능력 해금:\n-막대한 피해를 가하는 관을 날림\n-대상이 보스나 특수형 적이 아니라면, 대상을 즉사시키고 관을 2 얻음\n-관은 피해량 보너스를 제공"
 	}
 	"The Heartbroken Desc 5"
 	{

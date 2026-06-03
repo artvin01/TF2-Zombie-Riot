@@ -2928,6 +2928,13 @@ void ApplyLastmanOrDyingOverlay(int client)
 			{
 				return;
 			}
+			case 16:
+			{
+				if(AnyClientHaveMOSB())
+					DoOverlay(client, "zombie_riot/filmgrain/filmgrain_4", 1);
+				DoOverlay(client, "effects/invuln_overlay_red");
+				return;
+			}
 			case 8:
 			{
 				if(!HasSpecificBuff(client, "Death is comming."))
