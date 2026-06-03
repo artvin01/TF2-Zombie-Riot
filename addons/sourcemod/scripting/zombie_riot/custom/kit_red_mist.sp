@@ -117,16 +117,19 @@ bool IsDistorted(int client)//idk how this works
 	return false;
 }
 
-bool DoesClientHaveMOSB(int client)
+bool AnyClientHaveMOSB()
 {
-	if(Abno_Pages[client] & ABNORMPAGE_MOSB)
+	for(int client=1; client<=MaxClients; client++)
 	{
-		return true;
+		if(IsClientInGame(client) && TeutonType[client] == TEUTON_NONE && IsEntityAlive(client) && IsDistorted(client))
+		{
+			if(Abno_Pages[client] & ABNORMPAGE_MOSB)
+			{
+				return true;
+			}
+		}
 	}
-	else
-	{
-		return false;
-	}
+	return false;
 }
 
 static Action Timer_Red_Mist(Handle timer, DataPack pack)
@@ -296,6 +299,7 @@ static Action Timer_Red_Mist_Ego(Handle timer, int client)
 {
 	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client))
 	{
+		h_Red_Mist_Ego_Timer[client] = null;
 		return Plugin_Stop;
 	}
 	if(Ego_Active[client] && !LastMann)//only lose charge if ego is active and it ISNT lms
@@ -735,10 +739,12 @@ public Action MOSB_Lastman_Execution(Handle timer, int client)
 	HealEntityGlobal(client, client, -9999999.9, _, _, HEAL_ABSOLUTE);
 	ApplyStatusEffect(client, client, "Vuntulum Bomb EMP Death", 99999.9);
 	CPrintToChatAll("{maroon}The bodies fully consumed {darkgrey}%N...",client);
+	f_OneShotProtectionTimer[client] = GetGameTime() + 2.0;
 	Special_Cooldowns[client][2] = GetGameTime() + (120.00 * CooldownReductionAmount(client));
 	RemoveSpecificBuff(client, "Ego Manifestation");
 	RemoveSpecificBuff(client, "Influence of the bodies");
 	Ego_Active[client] = false;
+	ForcePlayerSuicide(client);
 	return Plugin_Handled;
 }
 

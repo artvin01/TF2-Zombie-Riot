@@ -5411,7 +5411,7 @@
 	}
 	"The Heartbroken Desc 4"
 	{
-		"en"	"-Overall Stat Increases\n-Unlock secondary R ability:\n-Launches a coffin that deals immense damage on hit\n-If the enemy is not a boss or special, instakill them and gain 1 coffin stack\n-Coffins give a damage bonus"
+		"en"	"-Overall Stat Increases\n-Unlock secondary R ability:\n-Launches a coffin that deals immense damage on hit\n-If the enemy is not a boss or special, instakill them and gain 2 coffin stacks\n-Coffins give a damage bonus"
 
 	}
 	"The Heartbroken Desc 5"
