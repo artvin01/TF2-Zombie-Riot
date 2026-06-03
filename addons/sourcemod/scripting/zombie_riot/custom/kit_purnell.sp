@@ -818,7 +818,7 @@ static void Purnell_AllyBuffApply(int client, int target)
 		Format(textSelf, sizeof(textSelf), "You have shared buffs with %s:\n", name);
 	
 	if (targetIsOtherClient)
-		Format(textOther, sizeof(textOther), "You have received Therapy buffs from %N:", client);
+		Format(textOther, sizeof(textOther), "You have received Therapy buffs from %N:\n", client);
 	
 	for (int i = 0; i < buffAmount; i++)
 	{
@@ -834,6 +834,7 @@ static void Purnell_AllyBuffApply(int client, int target)
 		ApplyStatusEffect(client, client, buff, duration);
 	}
 	
+	i_LastHealer[client] = client;
 	ShowGameText(client, PURNELL_GAMETEXTICON, _, textSelf);
 	
 	DataPack pack;
