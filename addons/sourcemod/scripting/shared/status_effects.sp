@@ -748,6 +748,7 @@ void StatusEffectReset(int victim, bool force)
 	{
 		E_AL_StatusEffects[victim].GetArray(i, Apply_StatusEffect);
 		Apply_StatusEffect.RemoveStatus(true);
+		length--;
 		//only remove effects.
 	}
 
@@ -9760,7 +9761,21 @@ static void CallOfHeartBroken_Timer(int entity, StatusEffect Apply_MasterStatusE
 
 	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
 
-	if(OwnerAttach == -1 || (dieingstate[OwnerAttach] == 0 && !IsEntityAlive(OwnerAttach)) || !IsHeartBroken(OwnerAttach))
+	bool KillVictim = false;
+	if(OwnerAttach == -1)
+		KillVictim = true;
+	else
+	{
+		if(!IsEntityAlive(OwnerAttach))
+			if(dieingstate[OwnerAttach] == 0)
+				KillVictim = true;
+
+		if(!IsHeartBroken(OwnerAttach))
+			KillVictim = true;
+	}
+
+
+	if(KillVictim)
 	{
 		Apply_StatusEffect.TimeUntillOver = 0.0;
 		SDKHooks_TakeDamage(entity, entity, entity, 99999.0, DMG_TRUEDAMAGE, _, _, _, true);

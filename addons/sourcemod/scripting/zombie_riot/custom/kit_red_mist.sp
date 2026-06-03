@@ -394,6 +394,8 @@ public void Red_Mist_OnMapStart()
 	RM_Precached = false;
 	BeamWand_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
 	BeamWand_Glow = PrecacheModel("sprites/glow02.vmt", true);
+	if(!FileNetwork_Enabled())
+		PrecacheRedMistMusic();
 }
 public void Red_Mist_SwitchToMeleeWeapon(int client, int weapon)
 {
@@ -1030,7 +1032,7 @@ public Action Onrush_Check_Distance(Handle timer, DataPack Onrush_pack)
 	int weapon = EntRefToEntIndex(Onrush_pack.ReadCell());
 	int target = EntRefToEntIndex(Onrush_pack.ReadCell());
 
-	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
+	if(!IsEntityAlive(target) || !IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
 		h_Onrush_Check_Timer[clientindx] = null;
 		return Plugin_Stop;
