@@ -70,11 +70,11 @@ stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float &dama
 			return true;
 		//LogEntryInvicibleTest(victim, attacker, damage, 9);
 	}
-	Damage_AnyVictimPost(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, damagecustom);
+	Damage_AnyVictimPost(victim, attacker, inflictor, damage, damagetype, weapon, damagePosition);
 	return false;
 }
 
-stock void Damage_AnyVictimPost(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+stock void Damage_AnyVictimPost(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damagePosition[3])
 {
 	if(victim <= MaxClients)
 	{
