@@ -1137,9 +1137,6 @@ stock void GiveCoffinOnDamage(int client, int victim, float damage)
 	if(StatusEffects_SinkingDebuffMaxStacks(victim))
 		DamageForMaxCharge *= 0.5;
 
-	if(b_thisNpcIsARaid[victim])
-		DamageForMaxCharge *= 0.5;
-
 	CoffinCharge[client] += (damage / DamageForMaxCharge);
 	if(WeaponLevel[client] >= 6)
 	{
