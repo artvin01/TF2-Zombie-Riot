@@ -3454,7 +3454,7 @@
 	"Influence of the bodies Desc"
 	{
 		"en"	"{maroon}The bodies are slowly consuming you..\n{darkgrey}Gain huge power at a {maroon}cost."
-		"ko"	"{maroon}시체들이 서서히 당신을 좀먹어갑니다...\n{maroon}댓가{darkgrey}에 따라 막대한 힘을 얻습니다."
+		"ko"	"{maroon}시체들이 서서히 당신을 흡수합니다...\n{maroon}댓가{darkgrey}에 따라 막대한 힘을 얻습니다."
 	}
 	"Savagery Buff"
 	{
@@ -3474,22 +3474,27 @@
 	"Ego Manifestation Desc"
 	{
 		"en"	"Deal 35％ more damage and take 15％ less damage and 10％ movement speed (except during lastman)\nWhile active unlock a new special ability"
+		"ko"	"가하는 피해량 35％ 증가, 받는 피해량 15％ 감소, 이동 속도가 10％ 증가합니다.(최후의 1인 상태 제외)\n활성화된 동안 특별 책장이 해금됩니다."
 	}
 	"Red Mist Counter"
 	{
 		"en"	"Red Mist Counter"
+		"ko"	"붉은안개의 반격"
 	}
 	"Red Mist Counter Desc"
 	{
 		"en"	"automatically attack nearby enemies who hit you when not attacking\nHas limited range, goes on cooldown if used too many times \nor taken too much damage at once"
+		"ko"	"공격하지 않는 동안 자신을 공격한 적에게 자동으로 반격합니다.\n제한된 사거리를 보유, 일정 횟수 사용 혹은 한번에 너무 큰 피해를 받을 시 쿨다운으로 돌입합니다."
 	}
 	"Red Mist Onrush"
 	{
 		"en"	"Onrush buff"
+		"ko"	"돌진 강화"
 	}
 	"Red Mist Onrush Desc"
 	{
 		"en"	"Take 25％ less damage during dashes"
+		"ko"	"돌진하는 동안 받는 피해량이 25％ 감소합니다."
 	}
 	
 }
