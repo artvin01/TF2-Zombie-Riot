@@ -364,6 +364,7 @@ public void Red_Mist_OnMapStart()
 	PrecacheSound("weapons/buffed_on.wav");
 	PrecacheSound("weapons/buffed_off.wav");
 	PrecacheSound("weapons/debris4.wav");
+	PrecacheSound("physics/nearmiss/whoosh_large1.wav");
 
     //precache stuff
 	Zero(Abno_Pages);
@@ -460,13 +461,11 @@ void PrecacheRedMistMusic()
 	}
 }
 
-public void Red_Mist_OnTakeDamage_Take(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int equipped_weapon, float damagePosition[3], int zr_custom_damage)
+public void Red_Mist_OnTakeDamage_Take_Post(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, int equipped_weapon, float damagePosition[3], int zr_custom_damage)
 {
 	if(CheckInHud())
 		return;
-	if(zr_custom_damage & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
-		return;
-	
+		
 	if(Abno_Pages[victim] & ABNORMPAGE_SAVAGERY)
 	{
 		float MaxHealth = float(SDKCall_GetMaxHealth(victim));
@@ -475,10 +474,6 @@ public void Red_Mist_OnTakeDamage_Take(int victim, int &attacker, int &inflictor
 		if(Burst_Damage_Taken[victim] > MaxHealth / 2)
 		{
 			ApplyStatusEffect(victim, victim, "Savagery Buff", 4.0);
-			//ApplyTempAttrib(equipped_weapon, 206, 0.5, 4.0);
-			//ApplyTempAttrib(equipped_weapon, 205, 0.5, 4.0);
-			//PrintToChat(victim, "damage res activated");
-			EmitSoundToClient(victim, "physics/nearmiss/whoosh_large1.wav", victim, _, 70, _, 1.0, 100);
 			EmitSoundToClient(victim, "physics/nearmiss/whoosh_large1.wav", victim, _, 70, _, 1.0, 100);
 			EmitSoundToClient(victim, "physics/nearmiss/whoosh_large1.wav", victim, _, 70, _, 1.0, 100);
 		}
@@ -489,6 +484,13 @@ public void Red_Mist_OnTakeDamage_Take(int victim, int &attacker, int &inflictor
 			savagery_timer_exists[victim] = true;
 		}
 	}
+}
+public void Red_Mist_OnTakeDamage_Take(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, int equipped_weapon, float damagePosition[3], int zr_custom_damage)
+{
+	if(CheckInHud())
+		return;
+	if(zr_custom_damage & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
+		return;
 	
 
 	float RMC_damage_cap = 0.0;
@@ -572,7 +574,7 @@ public void Red_Mist_OnTakeDamage_Take(int victim, int &attacker, int &inflictor
 					TE_SetupBeamPoints(player_pos, Entity_Position, BeamWand_Laser, 0, 0, 0, 0.11, ClampBeamWidth(10.0 * 1.0 * 1.28), ClampBeamWidth(5.0 * 0.2 * 1.28), 0, 0.2, colorLayer4, 3);
 					TE_SendToAll(0.0);
 
-					EmitCustomToAll(COUNTER_SOUND_HIT, victim, _, 70, _, 0.4, 100);
+					EmitCustomToAll(COUNTER_SOUND_HIT, victim, _, 70, _, 0.6, 100);
 
 					counter_dice_amount[victim] -= 1;
 					AddEgoEnergy(victim, 3);
@@ -935,7 +937,7 @@ public void Red_Mist_Onrush(int client, int weapon)
 		return;
 	}
 	
-	if(redashes[client] >= 5)//allow for 3 dashes
+	if(redashes[client] >= 3)//allow for 3 dashes
 	{
 		Ability_Apply_Cooldown(client, 2, 20.0);
 		//PrintToChatAll("too many redashes");
@@ -943,21 +945,10 @@ public void Red_Mist_Onrush(int client, int weapon)
 		Onrush_Is_In_Dash[client] = false;
 		return;
 	}
-	if(redashes[client] < 5)
-	{
-		redashes[client] += 1;
-	}
-	
 	if(Onrush_Is_In_Dash[client])
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		return;
-	}
-	Ability_Apply_Cooldown(client, 2, 1.0);
-	if(redashes[client] >= 5)
-	{
-		Ability_Apply_Cooldown(client, 2, 20.0);
-		redashes[client] = 0;
 	}
 	Handle swingTrace;
 	b_LagCompNPC_No_Layers = true;
@@ -973,12 +964,23 @@ public void Red_Mist_Onrush(int client, int weapon)
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		return;
 	}
+	if(redashes[client] < 3)
+	{
+		redashes[client] += 1;
+	}
+	
+	Ability_Apply_Cooldown(client, 2, 0.5);
+	if(redashes[client] >= 3)
+	{
+		Ability_Apply_Cooldown(client, 2, 20.0);
+		redashes[client] = 0;
+	}
 	Rogue_OnAbilityUse(client, weapon);
 	EmitSoundToAll(ONRUSH_START_SOUND, client, _, 70, _, 1.0, 90);
 	EmitSoundToAll(ONRUSH_START_SOUND, client, _, 70, _, 1.0, 90);
 	EmitSoundToAll(ONRUSH_START_SOUND, client, _, 70, _, 1.0, 90);
 	Onrush_Is_In_Dash[client] = true;
-	Onrush_Redash_Window[client] = GetGameTime() + 2.5;
+	Onrush_Redash_Window[client] = GetGameTime() + 1.5;
 	SetEntityMoveType(client, MOVETYPE_WALK);
 	TF2_AddCondition(client, TFCond_LostFooting, 0.35);
 	TF2_AddCondition(client, TFCond_AirCurrent, 0.35);
@@ -1034,7 +1036,7 @@ public Action Onrush_Check_Distance(Handle timer, DataPack Onrush_pack)
 		return Plugin_Stop;
 	}
 	ApplyStatusEffect(client, client, "Red Mist Onrush", 0.5);
-	SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + 1.0);
+	SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + 0.5);
 	float VecMe[3];
 	WorldSpaceCenter(client, VecMe);
 	float VecVictim[3];
@@ -1075,9 +1077,9 @@ public Action Onrush_Check_Distance(Handle timer, DataPack Onrush_pack)
 		RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
 
 		SetEntityMoveType(client, MOVETYPE_NONE);
-		RequestFrames(UnFreeze_Onrush, 10, client);
+		RequestFrames(UnFreeze_Onrush, 5, client);
 
-		EmitCustomToAll(ONRUSH_HIT_SOUND, client, _, 70, _, 1.0, 100);
+		EmitCustomToAll(ONRUSH_HIT_SOUND, client, _, 70, _, 1.75, 100);
 
 		float vAngles[3];
 		float vOrigin[3];
@@ -1095,6 +1097,7 @@ public Action Onrush_Check_Distance(Handle timer, DataPack Onrush_pack)
 		RedMistSlashEffect(vecSwingEnd, VecVictim, 15.0, {255,25,25});
 		
 		h_Onrush_Check_Timer[clientindx] = null;
+		Onrush_Redash_Window[clientindx] = GetGameTime() + 1.5;
 		return Plugin_Stop;
 	}
 	return Plugin_Continue;

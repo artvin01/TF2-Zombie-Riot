@@ -9357,7 +9357,7 @@ void SteamHappy_Prefix_Start(int victim, StatusEffect Apply_MasterStatusEffect, 
 	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 }
 
-#define MAXSINKING_STACKS 10
+#define MAXSINKING_STACKS 5
 int SinkingDebuffIndex;
 int MemorialDebuffIndex;
 void StatusEffects_HeartBroken()
@@ -9505,13 +9505,14 @@ void StatusEffects_HeartBroken()
 	strcopy(data.BuffName, sizeof(data.BuffName), "Call of the Heartbroken Weakened");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "WEAK");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
-	data.DamageTakenMulti 			= 0.5;
-	data.DamageDealMulti			= 0.5;
+	data.DamageTakenMulti 			= 0.6;
+	data.DamageDealMulti			= 0.6;
 	//Make sure it isnt ignored, set it to 0.0, on need for extra func checks either.
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = false;
 	data.ElementalLogic				= true;
+	data.MovementspeedModifPlayer	= 0.9;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
@@ -9520,13 +9521,14 @@ void StatusEffects_HeartBroken()
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "H");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
-	data.DamageTakenMulti 			= 0.15;
-	data.DamageDealMulti			= 0.85;
+	data.DamageTakenMulti 			= 0.65;
+	data.DamageDealMulti			= 1.15;
 	//Make sure it isnt ignored, set it to 0.0, on need for extra func checks either.
 	data.MovementspeedModif			= -1.0;
-	data.Positive 					= false;
+	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.ElementalLogic				= true;
+	data.MovementspeedModifPlayer	= 1.1;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.OnBuffStarted				= CallOfHeartBroken_Start;
@@ -9989,7 +9991,7 @@ stock bool StatusEffects_SinkingDebuffMaxStacks(int victim)
 		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
 		{
-			if(RoundToNearest(Apply_StatusEffect.DataForUse) >= 10)
+			if(RoundToNearest(Apply_StatusEffect.DataForUse) >= 5)
 			{
 				//we at max.
 				return true;

@@ -271,7 +271,7 @@ public void HeartBroken_OnTakeDamage_Take(int victim, int &attacker, int &inflic
 	if(zr_custom_damage & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
 		return;
 		
-	if(HasSpecificBuff(victim, "HB In Parry") && IsValidEnemy(victim, attacker, true))
+	if(HasSpecificBuff(victim, "HB In Parry") && IsValidEnemy(victim, attacker, true, true))
 	{
 		LookAtTarget(victim, attacker);
 		RemoveSpecificBuff(victim, "HB In Parry");
@@ -490,13 +490,15 @@ static int HeartBrokenAction(int client, int target, int which)
 		case 2:
 		{
 			Format(animation, sizeof(animation), "o_dohhulan_parry");
-			duration = 2.0;
+			duration = 1.25;
 			ShieldGive = ReturnEntityMaxHealth(client) / 7;
 		}
 	}
-	ApplyStatusEffect(client, client, "Shielding", duration);
+	ApplyStatusEffect(client, client, "Shielding", duration + 0.5);
 	if(LastMann)
 		ShieldGive *= 2;
+	
+	ShieldGive *= 2;
 
 	Shielding_Add(client, ShieldGive);
 
@@ -639,7 +641,8 @@ void Heartbroken_ShootHorseProjectile(int client, int target, float dmgmotif = 1
 
 	GetClientEyeAngles(client, vAngles);
 	vAngles[0] = 0.0;
-	vAngles[0] += GetRandomFloat(-5.0,5.0);
+	vAngles[0] += GetRandomFloat(-1.0,1.0);
+	vAngles[0] += 20.0;
 	vAngles[1] += GetRandomFloat(-15.0,15.0);
 	fClamp(vAngles[1], -20.0, 20.0);
 	float vecSwingForward[3];
@@ -651,7 +654,7 @@ void Heartbroken_ShootHorseProjectile(int client, int target, float dmgmotif = 1
 	
 	
 	//This spawns the projectile, this is a return int, if you want, you can do extra stuff with it, otherwise, it can be used as a void.
-	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, -1/*Default wand*/, -1, "",_,_,vecSwingEnd);
+	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, -1/*Default wand*/, -1, "",vAngles,_,vecSwingEnd);
 	b_ProjectileCollideIgnoreWorld[projectile] = true;
 	SetEntityMoveType(projectile, MOVETYPE_NOCLIP);
 	WandProjectile_ApplyFunctionToEntity(projectile, Horse_Projectile_Hit);
@@ -707,6 +710,8 @@ public void Horse_Projectile_Hit(int entity, int target)
 	float Wand_Dmg = f_WandDamage[entity];
 	
 
+	ApplyStatusEffect(owner, target, "Sinking", 10.0);
+	StatusEffects_SinkingDebuffAdd(target, 1);
 	float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 	SDKHooks_TakeDamage(target, entity, owner, Wand_Dmg, DMG_CLUB, -1, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 	f_WandDamage[entity] *= 0.5;
@@ -984,7 +989,7 @@ public void Coffin_Projectile_ReturnOwner(int entity, int target)
 		EmitSoundToAll(g_CoffinClaim[SoundDo], owner, SNDCHAN_AUTO, 80, _, 0.9, 90);
 		EmitSoundToAll(g_CoffinClaim2[GetRandomInt(0, sizeof(g_CoffinClaim2) - 1)], owner, SNDCHAN_AUTO, 80, _, 0.9, 90);
 		EmitSoundToAll(g_CoffinClaim2[GetRandomInt(0, sizeof(g_CoffinClaim2) - 1)], owner, SNDCHAN_AUTO, 80, _, 0.9, 90);
-		CoffinCharge[owner] += (1.0 / float(MAX_COFFINS));
+		CoffinCharge[owner] += (2.0 / float(MAX_COFFINS));
 		if(WeaponLevel[owner] >= 6)
 		{
 			if(CoffinCharge[owner] >= 1.0)
@@ -1120,14 +1125,17 @@ stock void GiveCoffinOnDamage(int client, int victim, float damage)
 
 	MinCashMaxGain -= 250;
 
-	if(MinCashMaxGain >= 200000)
+	if(MinCashMaxGain >= 100000)
 	{
-		MinCashMaxGain = 200000;
+		MinCashMaxGain = 100000;
 	}
 	
 	float DamageForMaxCharge = (Pow(2.0 * MinCashMaxGain, 1.2) + MinCashMaxGain * 3.0);
 
 	DamageForMaxCharge *= 0.5;
+	DamageForMaxCharge *= 0.5;
+	if(StatusEffects_SinkingDebuffMaxStacks(victim))
+		DamageForMaxCharge *= 0.5;
 
 	if(b_thisNpcIsARaid[victim])
 		DamageForMaxCharge *= 0.5;
@@ -1270,6 +1278,7 @@ void Heartbroken_WildHunt(int client, bool ForceRevive = false)
 	float Duration = 45.0;
 	if(ForceRevive)
 		Duration *= 2.0;
+	Duration += GetRandomFloat(0.1, 1.0);
 	GiveCompleteInvul(RandomWildHunted, 3.0);
 	TF2_AddCondition(RandomWildHunted, TFCond_SpeedBuffAlly, 3.0);
 	MorphineShotLogic(RandomWildHunted, true);
@@ -1279,7 +1288,7 @@ void Heartbroken_WildHunt(int client, bool ForceRevive = false)
 		ApplyStatusEffect(client, RandomWildHunted, "Coffin's Return", Duration);
 
 	ApplyStatusEffect(client, RandomWildHunted,	"Call of the Heartbroken Internal", Duration + 1.0);
-	ApplyStatusEffect(client, RandomWildHunted, "Shielding", 3.0);
-	Shielding_Add(RandomWildHunted, ReturnEntityMaxHealth(RandomWildHunted) / 5);
+	ApplyStatusEffect(client, RandomWildHunted, "Shielding", 10.0);
+	Shielding_Add(RandomWildHunted, ReturnEntityMaxHealth(RandomWildHunted) / 2);
 	CheckAlivePlayers();
 }
