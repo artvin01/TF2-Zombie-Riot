@@ -398,6 +398,7 @@ public void Red_Mist_OnMapStart()
 	RM_Precached = false;
 	BeamWand_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
 	BeamWand_Glow = PrecacheModel("sprites/glow02.vmt", true);
+	PrecacheSound("physics/glass/glass_cup_break2.wav");
 	if(!FileNetwork_Enabled())
 		PrecacheRedMistMusic();
 }
