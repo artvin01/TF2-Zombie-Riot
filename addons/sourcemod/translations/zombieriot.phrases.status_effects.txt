@@ -847,6 +847,7 @@
 	"Sinking Desc"
 	{
 		"en"	"Count increases by 1 for each hit taken that applies this debuff\nAt Max, hits from this kit or summons deal bleed and take 10％ less dmg & 2x coffins\nSome abilities benifit from max or less sinking\n"
+		"ko"	"해당 디버프를 부여하는 공격에 피격 시 1회 누적\n최대까지 누적 시, 무기 키트 및 소환물에 피격 시 출혈 획득, 받는 피해량 -10％, 관을 2배로 제공\n일부 능력은 침잠에 따라 효과 추가"
 	}
 	"Call of the Heartbroken"
 	{
@@ -856,7 +857,7 @@
 	"Call of the Heartbroken Desc"
 	{
 		"en"	"Increases damage dealt by 15％\nDecreases damage taken by 35％\nPlayers are 10％ faster\nYou are tempomary alive again\nYou have to stay near your summoner or else you are massively weakened."
-		"ko"	"일시적으로 다시 부활하게 됩니다.\n소환자의 근처에 있지 않는 경우 대폭 약화됩니다."
+		"ko"	"공격 피해량 15％ 증가\n피해 저항력 35％ 증가\n이동 속도 10％ 증가\n일시적으로 다시 부활하게 됩니다.\n소환자의 근처에 있지 않는 경우 대폭 약화됩니다."
 	}
 	"Coffin's Return"
 	{
