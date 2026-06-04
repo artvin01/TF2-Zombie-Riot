@@ -5935,8 +5935,8 @@
 	}
 	"Prey"
 	{
-		"en"	"Prey:\nEvery 20 seconds the first\n enemy you hit gets marked\nmarked enemies take 50％ more damage\n(35％ if boss, 25％ if raidboss)\nKilling the marked enemy heals for 20％ max hp.\n[M1]"
-		"ko"	"사냥감:\n매 20초마다 처음으로 공격하는\n적에게 표식을 부여\n표식 상태인 적은 받는 피해량 +50％\n(보스 - 35％, 레이드 보스 - 25％)\n표식 상태인 적 처치 시 최대 체력의 20％ 회복\n[M1]"
+		"en"	"Prey:\nEvery 20 seconds the first\n enemy you hit gets marked\nmarked enemies take 50％ more damage\n(35％ if boss, 15％ if raidboss)\nKilling the marked enemy heals for 20％ max hp.\n[M1]"
+		"ko"	"사냥감:\n매 20초마다 처음으로 공격하는\n적에게 표식을 부여\n표식 상태인 적은 받는 피해량 +50％\n(보스 - 35％, 레이드 보스 - 15％)\n표식 상태인 적 처치 시 최대 체력의 20％ 회복\n[M1]"
 	}
 	"Vengeance"
 	{

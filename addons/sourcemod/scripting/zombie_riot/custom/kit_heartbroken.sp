@@ -498,7 +498,7 @@ static int HeartBrokenAction(int client, int target, int which)
 	if(LastMann)
 		ShieldGive *= 2;
 	
-	ShieldGive *= 2;
+	ShieldGive = ((ShieldGive * 3) / 4);
 
 	Shielding_Add(client, ShieldGive);
 
@@ -1133,7 +1133,7 @@ stock void GiveCoffinOnDamage(int client, int victim, float damage)
 	float DamageForMaxCharge = (Pow(2.0 * MinCashMaxGain, 1.2) + MinCashMaxGain * 3.0);
 
 	DamageForMaxCharge *= 0.5;
-	DamageForMaxCharge *= 0.5;
+	DamageForMaxCharge *= 0.75;
 	if(StatusEffects_SinkingDebuffMaxStacks(victim))
 		DamageForMaxCharge *= 0.5;
 
@@ -1274,7 +1274,7 @@ void Heartbroken_WildHunt(int client, bool ForceRevive = false)
 	TE_Particle("halloween_boss_death_cloud", PosMe, NULL_VECTOR, NULL_VECTOR, RandomWildHunted, _, _, _, _, _, _, _, _, _, 0.0);
 	float Duration = 45.0;
 	if(ForceRevive)
-		Duration *= 2.0;
+		Duration *= 1.5;
 	Duration += GetRandomFloat(0.1, 1.0);
 	GiveCompleteInvul(RandomWildHunted, 3.0);
 	TF2_AddCondition(RandomWildHunted, TFCond_SpeedBuffAlly, 3.0);

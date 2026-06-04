@@ -9522,8 +9522,8 @@ void StatusEffects_HeartBroken()
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "H");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
-	data.DamageTakenMulti 			= 0.65;
-	data.DamageDealMulti			= 1.15;
+	data.DamageTakenMulti 			= 0.75;
+	data.DamageDealMulti			= 1.10;
 	//Make sure it isnt ignored, set it to 0.0, on need for extra func checks either.
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
@@ -9651,7 +9651,7 @@ void TakeDamagePostAtttacker_CoffinsReturn(int attacker, int victim, float damag
 	if(HasSpecificBuff(attacker, "Call of the Heartbroken Weakened"))
 		return;
 #if defined ZR
-	GiveCoffinOnDamage(OwnerAttach,victim, damage);
+	GiveCoffinOnDamage(OwnerAttach,victim, damage * 0.75);
 #endif
 }
 static float TiantuiDamageDeal(int attacker, int victim, float basedamage, float bonus, float multi)
@@ -10305,8 +10305,8 @@ void StatusEffects_Red_Mist()
 	strcopy(data.BuffName, sizeof(data.BuffName), "Ego Manifestation");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ↂ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
-	data.DamageTakenMulti 			= 0.85; //15% less dmg taken
-	data.DamageDealMulti			= 0.35; //35% more dmg dealt
+	data.DamageTakenMulti 			= 0.90; //15% less dmg taken
+	data.DamageDealMulti			= 0.30; //35% more dmg dealt
 	//Make sure it isnt ignored, set it to 0.0, on need for extra func checks either.
 	data.MovementspeedModif			= -1.0;
 	data.MovementspeedModifPlayer	= 1.1;

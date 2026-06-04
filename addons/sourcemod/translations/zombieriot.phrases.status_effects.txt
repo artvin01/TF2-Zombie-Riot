@@ -856,8 +856,8 @@
 	}
 	"Call of the Heartbroken Desc"
 	{
-		"en"	"Increases damage dealt by 15％\nDecreases damage taken by 35％\nPlayers are 10％ faster\nYou are tempomary alive again\nYou have to stay near your summoner or else you are massively weakened."
-		"ko"	"공격 피해량 15％ 증가\n피해 저항력 35％ 증가\n이동 속도 10％ 증가\n일시적으로 다시 부활하게 됩니다.\n소환자의 근처에 있지 않는 경우 대폭 약화됩니다."
+		"en"	"Increases damage dealt by 10％\nDecreases damage taken by 25％\nPlayers are 10％ faster\nYou are tempomary alive again\nYou have to stay near your summoner or else you are massively weakened."
+		"ko"	"공격 피해량 10％ 증가\n피해 저항력 25％ 증가\n이동 속도 10％ 증가\n일시적으로 다시 부활하게 됩니다.\n소환자의 근처에 있지 않는 경우 대폭 약화됩니다."
 	}
 	"Coffin's Return"
 	{
@@ -3474,8 +3474,8 @@
 	}
 	"Ego Manifestation Desc"
 	{
-		"en"	"Deal 35％ more damage and take 15％ less damage and 10％ movement speed (except during lastman)\nWhile active unlock a new special ability"
-		"ko"	"가하는 피해량 35％ 증가, 받는 피해량 15％ 감소, 이동 속도가 10％ 증가합니다.(최후의 1인 상태 제외)\n활성화된 동안 특별 책장이 해금됩니다."
+		"en"	"Deal 30％ more damage and take 10％ less damage and 10％ movement speed (except during lastman)\nWhile active unlock a new special ability"
+		"ko"	"가하는 피해량 30％ 증가, 받는 피해량 10％ 감소, 이동 속도가 10％ 증가합니다.(최후의 1인 상태 제외)\n활성화된 동안 특별 책장이 해금됩니다."
 	}
 	"Red Mist Counter"
 	{

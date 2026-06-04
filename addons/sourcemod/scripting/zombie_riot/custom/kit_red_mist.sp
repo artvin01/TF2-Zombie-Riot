@@ -15,7 +15,6 @@ static bool strength_active_3[MAXPLAYERS] = {false};
 static bool lms_buffs_given[MAXPLAYERS] = {false};
 static bool Prey_Mark_Cooldown[MAXPLAYERS];
 static bool Ego_Cooldown_given[MAXPLAYERS] = {true};
-static bool Onrush_Is_In_Dash[MAXPLAYERS];
 static bool RM_Lastman_Buffs_applied[MAXPLAYERS] = {false};
 static bool Special_Damage_Boost[MAXPLAYERS] = {false};
 static int WeaponLevel[MAXPLAYERS];
@@ -227,9 +226,6 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 		}
 		redashes[client] = 0;
 		Ability_Apply_Cooldown(client, 2, 20.0, weapon);
-		//Ability_Apply_Cooldown(client, 2, 7.5);
-		Onrush_Is_In_Dash[client] = false;
-		//PrintToChatAll("redash window expired");
 	}
 	if(LastMann)
 	{
@@ -390,7 +386,6 @@ public void Red_Mist_OnMapStart()
 	Zero(Special_Active);
 	Zero(Prey_Mark_Cooldown);
 	Zero(redashes);
-	Zero(Onrush_Is_In_Dash);
 	Zero(Onrush_Redash_Window);
 	Zero(swing_type);
 	Zero(Special_Damage_Boost);
@@ -730,7 +725,6 @@ public void UnFreeze_Onrush(int client)
 {
 	if(IsValidClient(client))
 		SetEntityMoveType(client, MOVETYPE_WALK);
-	Onrush_Is_In_Dash[client] = false;
 }
 
 public Action MOSB_Lastman_Execution(Handle timer, int client)
@@ -755,13 +749,14 @@ public void Red_Mist_OnTakeDamage_Deal(int victim, int &attacker, int &inflictor
 		return;
 	if(zr_custom_damage & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
 		return;
+	
+	//dmg nerf overall
+	damage *= 0.95;
+
+
 	float Strenght_boost;
 	Strenght_boost = 1.0 + (0.05 * Strenght_Amount[attacker]);
 	damage *= Strenght_boost;
-	//if(Onrush_Is_In_Dash[attacker])
-	//{
-	//	Onrush_Is_In_Dash[attacker] = false;
-	//}
 	if(Abno_Pages[attacker] & ABNORMPAGE_DEEP_WOUND)
 	{
 		Deep_Wound_Counter[attacker] += 1;
@@ -793,7 +788,7 @@ public void Red_Mist_OnTakeDamage_Deal(int victim, int &attacker, int &inflictor
 			//PrintToChatAll("enemy debuffed");
 			if(b_thisNpcIsARaid[victim])
 			{
-				damage *= 1.25;
+				damage *= 1.15;
 			}	
 			else if(b_thisNpcIsABoss[victim])
 			{
@@ -808,10 +803,10 @@ public void Red_Mist_OnTakeDamage_Deal(int victim, int &attacker, int &inflictor
 	
 	if(Special_Active[attacker])
 	{
-		if(current_card_selection[attacker] == 1)//vertical slash
+		if(current_card_selection[attacker] == 1)//vertical slash, single target, m1 ability
 		{
 			EmitSoundToAll(VERTICAL_SLASH_SOUND, attacker, _, 70, _, 1.0, 50);
-			damage *= 14.0;
+			damage *= 11.0;
 			Special_Active[attacker] = false;
 			Rogue_OnAbilityUse(attacker, weapon);
 			Special_Cooldowns[attacker][1] = GetGameTime() + (60.00 * CooldownReductionAmount(attacker));
@@ -819,9 +814,9 @@ public void Red_Mist_OnTakeDamage_Deal(int victim, int &attacker, int &inflictor
 			WeaponSpawnGibForce(victim, weapon);
 		}
 	}
-	if(Special_Damage_Boost[attacker])
+	if(Special_Damage_Boost[attacker]) //Horrizontal Slash, multi target, m2 ability
 	{
-		damage *= 7.0;
+		damage *= 6.0;
 		WeaponSpawnGibForce(victim, weapon);
 	}
 	AddEgoEnergy(attacker);
@@ -945,18 +940,17 @@ public void Red_Mist_Onrush(int client, int weapon)
 		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 		return;
 	}
+	if(h_Onrush_Check_Timer[client] != null)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return;
+	}
 	
 	if(redashes[client] >= 3)//allow for 3 dashes
 	{
 		Ability_Apply_Cooldown(client, 2, 20.0);
 		//PrintToChatAll("too many redashes");
 		redashes[client] = 0;
-		Onrush_Is_In_Dash[client] = false;
-		return;
-	}
-	if(Onrush_Is_In_Dash[client])
-	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		return;
 	}
 	Handle swingTrace;
@@ -988,7 +982,6 @@ public void Red_Mist_Onrush(int client, int weapon)
 	EmitSoundToAll(ONRUSH_START_SOUND, client, _, 70, _, 1.0, 90);
 	EmitSoundToAll(ONRUSH_START_SOUND, client, _, 70, _, 1.0, 90);
 	EmitSoundToAll(ONRUSH_START_SOUND, client, _, 70, _, 1.0, 90);
-	Onrush_Is_In_Dash[client] = true;
 	Onrush_Redash_Window[client] = GetGameTime() + 1.5;
 	SetEntityMoveType(client, MOVETYPE_WALK);
 	TF2_AddCondition(client, TFCond_LostFooting, 0.35);
