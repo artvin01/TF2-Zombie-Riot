@@ -7877,7 +7877,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	StatusEffect_AddGlobal(data);
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Depressing Prefix");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), ":(");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ":("); //dont display above head, so empty
 	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Depressing");
 	//-1.0 means unused
