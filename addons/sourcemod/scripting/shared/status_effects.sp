@@ -9523,8 +9523,9 @@ static void TramplingPrefix_Think(int entity, StatusEffect Apply_MasterStatusEff
 static const char ScrambledBlacklist[][] =
 {
 	"Overheat", // Causes errors
-	"Stalker Prefix", // lol
+	"Stalker Prefix",
 	"Stalker Prefix Nerf",
+	"7 Heavy Souls",
 };
 
 static void ScrambledPrefix_Think(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
