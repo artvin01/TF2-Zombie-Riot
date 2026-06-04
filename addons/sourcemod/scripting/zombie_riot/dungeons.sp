@@ -2494,7 +2494,7 @@ public void ZRModifs_GiveRandomPrefix(int iNpc)
 		GiveOneGuranteed = false;
 		RetryBuffGiving = false;
 		
-		switch(GetRandomInt(1,35))
+		switch(GetRandomInt(1,43))
 		{
 			case 1:
 			{
@@ -2724,7 +2724,7 @@ public void ZRModifs_GiveRandomPrefix(int iNpc)
 			}
 			case 30:
 			{
-				if(HasSpecificBuff(iNpc, "Loud Prefix"))
+				if(HasSpecificBuff(iNpc, "Loud Prefix") || HasSpecificBuff(iNpc, "Quiet Prefix"))
 					RetryBuffGiving = true;
 				else
 					ApplyStatusEffect(iNpc, iNpc, "Loud Prefix", 999999.9);
@@ -2763,7 +2763,62 @@ public void ZRModifs_GiveRandomPrefix(int iNpc)
 					RetryBuffGiving = true;
 				else
 					ApplyStatusEffect(iNpc, iNpc, "Modifier+ Prefix", 999999.9);
-			}	
+			}
+			case 36:
+			{
+				if(HasSpecificBuff(iNpc, "Quiet Prefix") || HasSpecificBuff(iNpc, "Loud Prefix"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "Quiet Prefix", 999999.9);
+			}
+			case 37:
+			{
+				if(HasSpecificBuff(iNpc, "Trampling Prefix"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "Trampling Prefix", 999999.9);
+			}
+			case 38:
+			{
+				if(HasSpecificBuff(iNpc, "Scrambled Prefix"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "Scrambled Prefix", 999999.9);
+			}
+			case 39:
+			{
+				if(HasSpecificBuff(iNpc, "Indecisive Prefix"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "Indecisive Prefix", 999999.9);
+			}
+			case 40:
+			{
+				if(HasSpecificBuff(iNpc, "Depressing Prefix"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "Depressing Prefix", 999999.9);
+			}
+			case 41:
+			{
+				//free token
+				RetryBuffGiving = true;
+				ApplyStatusEffect(iNpc, iNpc, "Whimsical Prefix", 999999.9);
+			}
+			case 42:
+			{
+				if(HasSpecificBuff(iNpc, "Seraph Prefix"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "Seraph Prefix", 999999.9);
+			}
+			case 43:
+			{
+				if(HasSpecificBuff(iNpc, "Party Popper Prefix"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "Party Popper Prefix", 999999.9);
+			}
 		}
 	}
 }

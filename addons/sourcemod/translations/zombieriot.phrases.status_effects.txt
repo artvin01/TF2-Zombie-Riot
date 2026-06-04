@@ -3352,6 +3352,110 @@
 		"en"	"Infected by steam happy, gains insane stats."
 		"ko"	"Steam Happy 이모지에 감염되어, 파멸적인 버프를 얻습니다."
 	}
+	"Quiet Prefix"
+	{
+		"en"	"Quiet Prefix"
+	}
+	"Quiet"
+	{
+		"en"	"Quiet"
+	}
+	"Quiet Prefix Desc"
+	{
+		"en"	"Makes no sound."
+	}
+	"Trampling Prefix"
+	{
+		"en"	"Trampling Prefix"
+	}
+	"Trampling"
+	{
+		"en"	"Trampling"
+	}
+	"Trampling Prefix Desc"
+	{
+		"en"	"Damages and pushes enemies on touch."
+	}
+	"Scrambled Prefix"
+	{
+		"en"	"Scrambled Prefix"
+	}
+	"Scrambled"
+	{
+		"en"	"Scrambled"
+	}
+	"Scrambled Prefix Desc"
+	{
+		"en"	"Become inflicted with up to 5 random buffs/debuffs every 10 seconds."
+	}
+	"Indecisive Prefix"
+	{
+		"en"	"Indecisive Prefix"
+	}
+	"Indecisive"
+	{
+		"en"	"Indecisive"
+	}
+	"Indecisive Prefix Desc"
+	{
+		"en"	"Become a neutral entity for 5 seconds every 15 seconds."
+	}
+	"Depressing Prefix"
+	{
+		"en"	"Depressing Prefix"
+	}
+	"Depressing"
+	{
+		"en"	"Depressing"
+	}
+	"Depressing Prefix Desc"
+	{
+		"en"	"Inflicts Depressed to all nearby enemies and allies."
+	}
+	"Depressed"
+	{
+		"en"	"Depressed"
+	}
+	"Depressed Prefix Desc"
+	{
+		"en"	"Decreases attack/reload speed and heal rate by 30％ and movement speed by 20％."
+	}
+	"Whimsical Prefix"
+	{
+		"en"	"Whimsical Prefix"
+	}
+	"Whimsical"
+	{
+		"en"	"Whimsical"
+	}
+	"Whimsical Prefix Desc"
+	{
+		"en"	"Make the most out of this cruel world with a propeller hat and lollipop."
+	}
+	"Seraph Prefix"
+	{
+		"en"	"Seraph Prefix"
+	}
+	"Seraph"
+	{
+		"en"	"Seraph"
+	}
+	"Seraph Prefix Desc"
+	{
+		"en"	"Receives several stacks of damage-blocking shield on spawn and when reaching 66％/33％ health."
+	}
+	"Party Popper Prefix"
+	{
+		"en"	"Party Popper Prefix"
+	}
+	"Party Popper"
+	{
+		"en"	"Party Popper"
+	}
+	"Party Popper Prefix Desc"
+	{
+		"en"	"NPCs burst into confetti on death, infecting everything around with Party Popper.\nNPCs take damage and players cannot get downed temporarily."
+	}
 	"Ragdolled"
 	{
 		"en"	"Ragdolled"

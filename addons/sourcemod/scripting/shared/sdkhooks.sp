@@ -2598,6 +2598,9 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 	}
 	else
 	{
+		if (!(flags & SND_STOP) && HasSpecificBuff(entity, "Quiet Prefix"))
+			return Plugin_Handled;
+		
 		if(!LouderSoundStop && entity != -1 && HasSpecificBuff(entity, "Loud Prefix"))
 		{
 			level += 50;

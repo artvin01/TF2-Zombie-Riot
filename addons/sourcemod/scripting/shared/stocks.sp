@@ -6157,3 +6157,13 @@ stock void StringToUpper(char[] buffer)
 		i++;
 	}
 }
+
+stock void StringToLower(char[] buffer)
+{
+	int i; 
+	while (buffer[i] != '\0')
+	{
+		buffer[i] = CharToLower(buffer[i]);
+		i++;
+	}
+}
