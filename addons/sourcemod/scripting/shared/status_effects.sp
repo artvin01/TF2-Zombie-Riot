@@ -639,10 +639,8 @@ void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration,
 				continue;
 			if(CurrentSlotSaved == Local_Apply_MasterStatusEffect.Slot)
 			{
-				PrintToChatAll("CurrentSlotSaved1");
 				if(CurrentPriority > Local_Apply_MasterStatusEffect.SlotPriority)
 				{
-					PrintToChatAll("CurrentSlotSaved2 1");
 					// New buff is high priority, remove this one, stop the loop
 					CurrentData = Local_Apply_StatusEffect.DataForUse;
 					
@@ -659,7 +657,6 @@ void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration,
 				}
 				else if(CurrentPriority < Local_Apply_MasterStatusEffect.SlotPriority)
 				{
-					PrintToChatAll("CurrentSlotSaved2 2");
 					// New buff is low priority, Extend the stronger one if this one is longer
 					index = Local_Apply_StatusEffect.BuffIndex;
 					break;
