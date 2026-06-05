@@ -455,7 +455,6 @@ void PrecacheRedMistMusic()
 	if(!RM_Precached)
 	{
         //TODO
-		PrecacheSoundCustom("#zombiesurvival/red_mist_lastman.mp3",_,1);
 		PrecacheSoundCustom("zombiesurvival/medieval_raid/special_mutation/arkantos_scream_buff.mp3");
 		PrecacheSoundCustom(ONRUSH_HIT_SOUND);
 		PrecacheSoundCustom(COUNTER_SOUND_HIT);

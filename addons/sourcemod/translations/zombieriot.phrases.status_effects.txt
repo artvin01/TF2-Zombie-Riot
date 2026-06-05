@@ -3456,6 +3456,42 @@
 	{
 		"en"	"NPCs burst into confetti on death, infecting everything around with Party Popper.\nNPCs take damage and players cannot get downed temporarily."
 	}
+	"Gory Prefix"
+	{
+		"en"	"Gory Prefix"
+	}
+	"Gory Prefix Desc"
+	{
+		"en"	"On death spawn immensive gore, on hit spawn gore."
+	}
+	"Gory"
+	{
+		"en"	"Gory"
+	}
+	"Aleph Prefix"
+	{
+		"en"	"Aleph Prefix"
+	}
+	"Aleph Prefix Desc"
+	{
+		"en"	"When hurt once, instantly enrage and gain insane buffs."
+	}
+	"Aleph"
+	{
+		"en"	"Aleph"
+	}
+	"Aleph All Prefix"
+	{
+		"en"	"Aleph All Prefix"
+	}
+	"Aleph All Prefix Desc"
+	{
+		"en"	"Gain Ego, Shin, and a major stat boost."
+	}
+	"Red Mist Shin"
+	{
+		"en"	"Red Mist Shin"
+	}
 	"Ragdolled"
 	{
 		"en"	"Ragdolled"

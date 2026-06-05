@@ -799,6 +799,7 @@ void ZR_PluginStart()
 
 
 	RegConsoleCmd("sm_afk", Command_AFK, "BRB GONNA CLEAN MY MOM'S DISHES");
+	RegConsoleCmd("sm_flop", Command_Flop, "Flop");
 	//RegConsoleCmd("sm_rtd", Command_RTdFail, "Go away.");						//Littearlly cannot support RTD. I will remove this onec i add support for it, but i doubt i ever will.
 	
 	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
@@ -1447,6 +1448,15 @@ public Action Command_AFK(int client, int args)
 		WaitingInQueue[client] = true;
 		SetTeam(client, 1);
 		Queue_ClientDisconnect(client);
+	}
+	return Plugin_Handled;
+}
+public Action Command_Flop(int client, int args)
+{
+	if(client && IsEntityAlive(client))
+	{
+		FreezeNpcInTime(client, 1.5, true);
+		ApplyStatusEffect(client, client, "Ragdolled", 1.5);	
 	}
 	return Plugin_Handled;
 }
@@ -3460,6 +3470,8 @@ stock void SPrintToChatAll(const char[] message, any ...)
 //IF you disable ingame downloads, it will download all these files nontherless!
 void ZR_FastDownloadForce()
 {
+	//always
+	PrecacheSoundCustom("#zombiesurvival/red_mist_lastman.mp3",_,1);
 	//do not download!!
 	if(FileNetwork_Enabled())
 		return;

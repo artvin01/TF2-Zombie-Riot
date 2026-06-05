@@ -238,7 +238,7 @@ stock float ZR_GetGameTime(int entity = 0)
 void Delay_TeleportEntity(DataPack PackTele)
 {
 	PackTele.Reset();
-	int entity = EntRefToEntIndex(PackTele.ReadFloat());
+	int entity = EntRefToEntIndex(PackTele.ReadCell());
 	float origin[3]; PackTele.ReadFloatArray(origin, 3);
 	float angles[3]; PackTele.ReadFloatArray(angles, 3);
 	float velocity[3]; PackTele.ReadFloatArray(velocity, 3);
@@ -271,7 +271,7 @@ stock void Custom_TeleportEntity(int entity, const float origin[3] = NULL_VECTOR
 				PackTele.WriteFloatArray(origin, sizeof(origin));
 				PackTele.WriteFloatArray(angles, sizeof(origin));
 				PackTele.WriteFloatArray(velocity, sizeof(origin));
-				RequestFrame(Delay_TeleportEntity);
+				RequestFrame(Delay_TeleportEntity, PackTele);
 				return;
 			}
 			else

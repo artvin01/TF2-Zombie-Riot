@@ -5494,7 +5494,7 @@
 	}
 	"The Red Mist Desc 3"
 	{
-		"en"	"-Gain a dash attack which you can chain up to 5 times\nDash deals damage on contact and \nmakes you unable to swing for its duration\n-Overall Stat Increases"
+		"en"	"-Gain a dash attack which you can chain up to 3 times\nDash deals damage on contact and \nmakes you unable to swing for its duration\n-Overall Stat Increases"
 		"ko"	"-최대 5번까지 연속 사용 가능한 돌진 공격 획득\n-돌진은 접촉 시 피해를 가하며 돌진하는 동안 공격 불가\n-전반적인 능력치 증가"
 	}
 	"The Red Mist Desc 4"

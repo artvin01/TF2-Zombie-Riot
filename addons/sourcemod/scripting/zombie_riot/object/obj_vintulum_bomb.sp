@@ -39,9 +39,9 @@ void ObjectVintulumBomb_MapStart()
 	BuildingInfo build;
 	build.Section = 1;
 	strcopy(build.Plugin, sizeof(build.Plugin), "obj_vintulum_bomb");
-	build.Cost = 2000;
+	build.Cost = 1000;
 	build.Health = 60;
-	build.Cooldown = 120.0;
+	build.Cooldown = 100.0;
 	build.Func = ObjectGeneric_CanBuildBomb;
 	Building_Add(build);
 }
@@ -219,7 +219,7 @@ static bool ClotInteract(int client, int weapon, ObjectVintulumBomb npc)
 			return false;
 		}
 	}
-	float CooldownGive = 120.0;
+	float CooldownGive = 100.0;
 	if(Rogue_Mode())
 		CooldownGive *= 0.5;
 	SPrintToChat(Owner, "%T", "Global Cooldown Bomb", Owner, CooldownGive);

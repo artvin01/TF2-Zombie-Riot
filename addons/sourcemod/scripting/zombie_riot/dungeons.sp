@@ -445,6 +445,7 @@ void Dungeon_SetupVote(KeyValues kv)
 	PrecacheSound("ui/itemcrate_smash_rare.wav");
 
 	DungeonMode = true;
+	CurrentAttacks = 0;
 
 	Rogue_SetupVote(kv, "Dungeon");
 
@@ -1803,7 +1804,8 @@ static void TeleportToFrom(DungeonZone tele, DungeonZone from1 = Zone_Unknown, D
 			DungeonZone zone = Dungeon_GetEntityZone(client);
 			if(zone == Zone_Unknown || (zone != tele && from1 == Zone_Unknown) || zone == from1 || zone == from2 || zone == from3)
 			{
-				Vehicle_Exit(client, false, false);
+				//let code handle it
+			//	Vehicle_Exit(client, false, false);
 				TeleportEntity(client, pos, ang, NULL_VECTOR);
 				SaveLastValidPositionEntity(client, pos);
 				Dungeon_SetEntityZone(client, tele);
@@ -2512,7 +2514,7 @@ public void ZRModifs_GiveRandomPrefix(int iNpc)
 		GiveOneGuranteed = false;
 		RetryBuffGiving = false;
 		
-		switch(GetRandomInt(1,43))
+		switch(GetRandomInt(1,45))
 		{
 			case 1:
 			{
@@ -2674,7 +2676,7 @@ public void ZRModifs_GiveRandomPrefix(int iNpc)
 			}
 			case 22:
 			{
-				if(RaidBossActive == EntIndexToEntRef(iNpc) || b_thisNpcIsARaid[iNpc] || Elemental_DamageRatio(iNpc, Element_Warped) > 0.0)
+				if(RaidBossActive == EntIndexToEntRef(iNpc) || b_thisNpcIsARaid[iNpc])
 				{
 					RetryBuffGiving = true;
 				}
@@ -2805,10 +2807,17 @@ public void ZRModifs_GiveRandomPrefix(int iNpc)
 			}
 			case 38:
 			{
-				if(HasSpecificBuff(iNpc, "Scrambled Prefix"))
+				if(RaidBossActive == EntIndexToEntRef(iNpc) || b_thisNpcIsARaid[iNpc])
+				{
 					RetryBuffGiving = true;
+				}
 				else
-					ApplyStatusEffect(iNpc, iNpc, "Scrambled Prefix", 999999.9);
+				{
+					if(HasSpecificBuff(iNpc, "Scrambled Prefix"))
+						RetryBuffGiving = true;
+					else
+						ApplyStatusEffect(iNpc, iNpc, "Scrambled Prefix", 999999.9);
+				}
 			}
 			case 39:
 			{
@@ -2843,6 +2852,20 @@ public void ZRModifs_GiveRandomPrefix(int iNpc)
 					RetryBuffGiving = true;
 				else
 					ApplyStatusEffect(iNpc, iNpc, "Party Popper Prefix", 999999.9);
+			}
+			case 44:
+			{
+				if(HasSpecificBuff(iNpc, "Gory Prefix"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "Gory Prefix", 999999.9);
+			}
+			case 45:
+			{
+				if(HasSpecificBuff(iNpc, "Aleph Prefix"))
+					RetryBuffGiving = true;
+				else
+					ApplyStatusEffect(iNpc, iNpc, "Aleph Prefix", 999999.9);
 			}
 		}
 	}
@@ -3076,6 +3099,7 @@ void Dungeon_GiveNpcMoney(int entity)
 		f_CreditsOnKill[entity] += float(reward / 5 * 5);
 	}
 }
+
 #include "roguelike/dungeon_items.sp"
 #include "roguelike/dungeon_encounters.sp"
 
