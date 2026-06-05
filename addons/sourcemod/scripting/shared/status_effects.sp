@@ -7396,7 +7396,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	strcopy(data.BuffName, sizeof(data.BuffName), "Verde");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
-	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Verde");fat
+	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Verde");
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
