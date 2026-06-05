@@ -692,7 +692,7 @@ void ApplyStatusEffect(int owner, int victim, const char[] name, float Duration,
 	if(!HadBuffBefore)
 	{
 		Apply_StatusEffect.TimeUntillOver = GetGameTime() + Duration;
-	//	Apply_StatusEffect.DataForUse = CurrentData;
+		Apply_StatusEffect.DataForUse = CurrentData;
 	}
 	bool UpdateClient = false;
 	Apply_StatusEffect.ApplyStatusEffect_Internal(owner, victim, HadBuffBefore, ArrayPosition);
