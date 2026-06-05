@@ -70,12 +70,33 @@ stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float &dama
 			return true;
 		//LogEntryInvicibleTest(victim, attacker, damage, 9);
 	}
-	Damage_AnyVictimPost(victim, damage, damagetype);
+	Damage_AnyVictimPost(victim, attacker, inflictor, damage, damagetype, weapon, damagePosition);
 	return false;
 }
 
-stock void Damage_AnyVictimPost(int victim, float &damage, int &damagetype)
+stock void Damage_AnyVictimPost(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damagePosition[3])
 {
+	if(victim <= MaxClients)
+	{
+		int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
+		if(IsValidEntity(Victim_weapon))
+		{
+			if(EntityFuncTakeDamage[Victim_weapon][2] && EntityFuncTakeDamage[Victim_weapon][2] != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, EntityFuncTakeDamage[Victim_weapon][2]);
+				Call_PushCell(victim);
+				Call_PushCell(attacker);
+				Call_PushCell(inflictor);
+				Call_PushFloat(damage);
+				Call_PushCell(damagetype);
+				Call_PushCell(weapon);
+				Call_PushCell(Victim_weapon);
+				Call_PushArray(damagePosition, sizeof(damagePosition));
+				Call_PushCell(i_HexCustomDamageTypes[victim]);
+				Call_Finish();
+			}
+		}
+	}
 	//the hud shouzldnt check this.
 	if(CheckInHud())
 		return;
@@ -232,6 +253,29 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 	if(!CheckInHud())
 		HudDamageIndicator(victim,damagetype, false);
 #if defined ZR
+
+	if(attacker <= MaxClients && attacker > 0 && attacker != 0)
+	{
+		if(victim <= MaxClients && victim > 0 && victim != 0)
+		{
+			//in PVP scenarios, we nerf damage by 10x
+			damage *= 0.35;
+			switch(Armor_Level[victim])
+			{
+				case 50:
+					damage *= 0.75;
+
+				case 100:
+					damage *= 0.45;
+
+				case 150:
+					damage *= 0.2;
+
+				case 200:
+					damage *= 0.1;
+			}
+		}
+	}
 	if(VIPBuilding_Active())
 		return true;
 	
@@ -1142,10 +1186,10 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 			if(!CheckInHud())
 				return SniperMonkey_CrippleMoab(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition);
 		}
-		case WEAPON_IRENE:
+		case WEAPON_AMPHI:
 		{
 			if(!CheckInHud())
-				Npc_OnTakeDamage_Iberia(attacker, damagetype);
+				Npc_OnTakeDamage_Almina(attacker, damagetype);
 		}
 		case 7://WEAPON_PHLOG:
 		{
@@ -1437,6 +1481,10 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
             if(!CheckInHud())
 				return Brick_NPCTakeDamage_Do(attacker, inflictor, victim, damage, weapon, damagetype);
 		}
+		case WEAPON_BURNINGTHUMB:
+		{
+			BurningThumb_NPCTakeDamage(victim, attacker, damage, weapon);
+		}
 	}
 #endif
 
@@ -1556,6 +1604,7 @@ static stock void OnTakeDamageRpgAgressionOnHit(int victim, int &attacker, int &
 
 stock void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damage, int &damagetype, bool trueArmorOnly = false, int weapon = 0)
 {
+	int StaggerType = StaggerTypeTarget(victim);
 	if((damagetype & DMG_CLUB)) //Needs to be here because it already gets it from the top.
 	{
 		if(!trueArmorOnly)
@@ -1581,9 +1630,21 @@ stock void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damag
 				}
 			}
 #endif
+			//if enemy is staggered, remove all res from this
+			if(StaggerType)
+				if(TotalMeleeRes < 1.0)
+					TotalMeleeRes = 1.0;
 			damage *= TotalMeleeRes;
 		}
-		damage *= fl_TotalArmor[victim];
+		if(!StaggerType)
+		{
+			damage *= fl_TotalArmor[victim];
+		}
+		else
+		{
+			if(fl_TotalArmor[victim] > 1.0)
+				damage *= fl_TotalArmor[victim];
+		}
 	}
 	else if(!(damagetype & DMG_TRUEDAMAGE))
 	{
@@ -1607,9 +1668,21 @@ stock void OnTakeDamageNpcBaseArmorLogic(int victim, int &attacker, float &damag
 			TotalMeleeRes *= fl_RangedArmor[victim];
 			TotalMeleeRes *= fl_Extra_RangedArmor[victim];
 
+			//if enemy is staggered, remove all res from this
+			if(StaggerType)
+				if(TotalMeleeRes < 1.0)
+					TotalMeleeRes = 1.0;
 			damage *= TotalMeleeRes;
 		}
-		damage *= fl_TotalArmor[victim];
+		if(!StaggerType)
+		{
+			damage *= fl_TotalArmor[victim];
+		}
+		else
+		{
+			if(fl_TotalArmor[victim] > 1.0)
+				damage *= fl_TotalArmor[victim];
+		}
 	}
 	else if((damagetype & DMG_TRUEDAMAGE))
 	{
@@ -1785,7 +1858,7 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 	if(i_ExplosiveProjectileHexArray[weapon] & EP_GIBS_REGARDLESS) //Block explosives ?
 		return false;
 
-	if(f_BackstabDmgMulti[weapon] != 0.0 && !b_CannotBeBackstabbed[victim]) //Irene weapon cannot backstab.
+	if(f_BackstabDmgMulti[weapon] != 0.0 && !b_CannotBeBackstabbed[victim]) //Amphi weapon cannot backstab.
 	{
 		if(damagetype & DMG_CLUB && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)) //Use dmg slash for any npc that shouldnt be scaled.
 		{
@@ -2217,9 +2290,9 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 
 	char BufferAdd[12];
 #if defined ZR
-	if(Victoria_Support_RechargeTime(victim))
+	if(Vesta_Support_RechargeTime(victim))
 	{
-		FormatEx(Debuff_Adder_left, SizeOfChar, "%s[◈ %i％]", Debuff_Adder_left, Victoria_Support_RechargeTime(victim));
+		FormatEx(Debuff_Adder_left, SizeOfChar, "%s[◈ %i％]", Debuff_Adder_left, Vesta_Support_RechargeTime(victim));
 	}
 	else if(IsValidClient(victim) && Vs_LockOn[victim])
 	{

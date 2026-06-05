@@ -109,14 +109,14 @@ methodmap Whiteflower_RagingBlader < CClotBody
 			{
 				static Race race;
 				Races_GetClientInfo(target, race);
-				if(StrEqual(race.Name, "Iberian"))
+				if(StrEqual(race.Name, "Alminan"))
 				{
 					switch(GetRandomInt(0,2))
 					{
 						case 0:
-							NpcSpeechBubble(this.index, "Iberians are like ants.", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
+							NpcSpeechBubble(this.index, "Alminans are like ants.", 7, {255,0,0,255}, {0.0,0.0,120.0}, "");
 						case 1:
-							NpcSpeechBubble(this.index, "Like sand in the desert, iberians in the water.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+							NpcSpeechBubble(this.index, "Like sand in the desert, alminans in the water.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 						case 2:
 							NpcSpeechBubble(this.index, "Annoying birds.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 					}

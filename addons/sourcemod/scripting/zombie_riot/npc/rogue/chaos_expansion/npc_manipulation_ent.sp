@@ -35,6 +35,8 @@ methodmap Manipulation < CClotBody
 
 
 		*/
+		b_thisNpcIsABoss[npc.index] = true;
+		b_NoHealthbar[npc.index] = 1;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		

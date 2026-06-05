@@ -330,7 +330,7 @@ public void MedivalHalb_ClotThink(int iNPC)
 									if(!ShouldNpcDealBonusDamage(target))
 									{
 										//not to buildings
-										ApplyStatusEffect(target, target, "Pikeman's Slashes", 5.0);
+										ApplyStatusEffect(target, target, "Pikeman's Stabs", 5.0);
 										StatusEffects_PikemanDebuffAdd(target, 1);
 									}
 

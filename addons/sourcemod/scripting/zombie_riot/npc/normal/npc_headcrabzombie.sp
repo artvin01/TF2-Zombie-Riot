@@ -83,7 +83,7 @@ static char g_MeleeMissSounds[][] = {
 	Type_BTD,
 	Type_Medieval,
 	Type_COF,
-	Type_Seaborn,
+	Type_Dweller,
 	Type_Expidonsa,
 	Type_Interitus
 

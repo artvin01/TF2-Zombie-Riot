@@ -907,9 +907,9 @@
 	}
 	"Mediveal Ally Title"
 	{
-		"en"	"A group of Medievalists seem to be fighting a group of seaborn and they're losing."
+		"en"	"A group of Medievalists seem to be fighting a group of dweller and they're losing."
 		"it"	"Un gruppo di medievali sembra combattere contro un gruppo di marinai e sta perdendo."
-		"ko"	"중세인들 무리가 시본 무리들과 싸우고 있는 것처럼 보인다. 그들은 전투에서 밀려나고 있다."
+		"ko"	"중세인들 무리가 드웰러 무리들과 싸우고 있는 것처럼 보인다. 그들은 전투에서 밀려나고 있다."
 	}
 	"Mediveal Option 1"
 	{
@@ -2013,10 +2013,10 @@
 	}
 	"Bracelets of Agility Desc"
 	{
-		"en"	"Light and agile, from the far reaches of Kazimierz.\n- {green}Gain a 10％ dodge chance."
+		"en"	"Light and agile, from the far reaches of Grunwald.\n- {green}Gain a 10％ dodge chance."
 		"ru"	"Лёгкие и проворные, из далекого Казимира.\n- Получите 10％ шанс уклонения."
-		"it"	"Leggero e agile, proveniente dalle lontane regioni di Kazimierz.\n- {green} Guadagna un 10％ di possibilità di schivare."
-		"ko"	"저 멀리 카시미어에서 온 가볍고 민첩한 허리띠. \n- {green}공격 회피 확률 +10％."
+		"it"	"Leggero e agile, proveniente dalle lontane regioni di Grunwald.\n- {green} Guadagna un 10％ di possibilità di schivare."
+		"ko"	"저 멀리 그룬발트에서 온 가볍고 민첩한 허리띠. \n- {green}공격 회피 확률 +10％."
 	}
 	"Elastic Flying Cape"
 	{
@@ -2186,16 +2186,16 @@
 	}
 	"Spanish Specialised Gunpowder"
 	{
-		"en"	"Iberia Specialised Gunpowder"
-		"it"	"Polvere da sparo specializzata in Iberia"
-		"ko"	"이베리아제 특수 화약"
+		"en"	"Almina Specialised Gunpowder"
+		"it"	"Polvere da sparo specializzata in Almina"
+		"ko"	"알미나제 특수 화약"
 	}
 	"Spanish Specialised Gunpowder Desc"
 	{
-		"en"	"Gunpower created in Iberia, and made specifically for Iberian Inquisitors.\n- {green}Players gain +15％ ranged and mage damage."
+		"en"	"Gunpower created in Almina, and made specifically for Alminan Inquisitors.\n- {green}Players gain +15％ ranged and mage damage."
 		"ru"	"Оружие, созданное в Испании специально для испанских войск.\n- +15％ к урону в дальнем бою."
-		"it"	"Potere delle armi creato in Iberia e realizzato specificamente per gli Inquisitori iberici.\n- {green}I giocatori guadagnano +15％ danni a distanza e da mago."
-		"ko"	"이베리아에서 개발된 화약. 특히 이베리아 재판관들을 위해 만들어진 것이다.\n- {green}원거리 및 마법 공격 피해량 +15％."
+		"it"	"Potere delle armi creato in Almina e realizzato specificamente per gli Inquisitori iberici.\n- {green}I giocatori guadagnano +15％ danni a distanza e da mago."
+		"ko"	"알미나에서 개발된 화약. 특히 알미나 재판관들을 위해 만들어진 것이다.\n- {green}원거리 및 마법 공격 피해량 +15％."
 	}
 	"Supply Depot"
 	{
@@ -2615,17 +2615,17 @@
 		"it"	"Sopprime gli effetti di Xeno, per un momento.\n{green}I nemici di Xeno subiscono +75％ danni"
 		"ko"	"제노 감염의 효과를 억제한다... 잠깐 동안은.\n{green}제노 계열 적들에게 가하는 공격 피해량이 +75％ 증가합니다."
 	}
-	"Seaborn Anti-Vial"
+	"Dweller Anti-Vial"
 	{
-		"en"	"Seaborn Anti-Vial"
-		"it"	"Seaborn Anti-Vial"
-		"ko"	"항-시본 바이알"
+		"en"	"Dweller Anti-Vial"
+		"it"	"Dweller Anti-Vial"
+		"ko"	"항-드웰러 바이알"
 	}
-	"Seaborn Anti-Vial Desc"
+	"Dweller Anti-Vial Desc"
 	{
-		"en"	"A lantern that even Seaborn fear.\n{green}Seaborn enemies take +75％ damage"
-		"it"	"Una lanterna che persino i Seaborn temono.\n{green}I nemici dei Seaborn subiscono +75％ danni"
-		"ko"	"시본이 두려워하는 랜턴.\n{green}시본 계열 적들에게 기하는 공격 피해량이 +75％ 증가합니다."
+		"en"	"A lantern that even Dweller fear.\n{green}Dweller enemies take +75％ damage"
+		"it"	"Una lanterna che persino i Dweller temono.\n{green}I nemici dei Dweller subiscono +75％ danni"
+		"ko"	"드웰러가 두려워하는 랜턴.\n{green}드웰러 계열 적들에게 기하는 공격 피해량이 +75％ 증가합니다."
 	}
 	"Revenge Squad"
 	{
@@ -2657,11 +2657,11 @@
 		"it"	"Ma non c'è nessuno..."
 		"ko"	"여기엔 아무도 없는 것 같다..."
 	}
-	"W.F. Mercenary Iberian"
+	"W.F. Mercenary Alminan"
 	{
-		"en"	"W.F. Mercenary Iberian"
+		"en"	"W.F. Mercenary Alminan"
 		"it"	"W.F. Mercenario Iberico"
-		"ko"	"W.F. 용병 이베리아인"
+		"ko"	"W.F. 용병 알미나인"
 	}
 	"W.F. Mercenary Ruinian"
 	{
@@ -2773,9 +2773,9 @@
 	}
 	"Empty Plate Desc"
 	{
-		"en"	"Waiter! Waiter! More Endspeakers please!\n{green}Steal and consume dropped Remains as new Artifacts, max of 5"
-		"it"	"Cameriere! Cameriere! Più Endspeaker per favore! \n{green}Sfrutta e consuma i Resti caduti come nuovi Artefatti, massimo 5"
-		"ko"	"신탁 도살자 하나 주문이요!\n{green}전장에 배치된 남겨진 유해들을 빼앗아 흡수하고 소장품으로 만듭니다. 최대 5개까지 흡수 가능."
+		"en"	"Waiter! Waiter! More Heralds please!\n{green}Steal and consume dropped Remains as new Artifacts, max of 5"
+		"it"	"Cameriere! Cameriere! Più Herald per favore! \n{green}Sfrutta e consuma i Resti caduti come nuovi Artefatti, massimo 5"
+		"ko"	"전령 하나 주문이요!\n{green}전장에 배치된 남겨진 유해들을 빼앗아 흡수하고 소장품으로 만듭니다. 최대 5개까지 흡수 가능."
 	}
 	"Founder Fondue"
 	{
@@ -2809,9 +2809,9 @@
 	}
 	"Brandguider Brunch Desc"
 	{
-		"en"	"{green}Nethersea Brand deals -50％ damage"
-		"it"	"{green}Il marchio di Nethersea infligge -50％ danni"
-		"ko"	"{green}명흔으로 받는 피해량이 50％ 감소합니다."
+		"en"	"{green}Abyssal Weeds deal -50％ damage"
+		"it"	"{green}Il marchio di Abyss infligge -50％ danni"
+		"ko"	"{green}심연 해초로 받는 피해량이 50％ 감소합니다."
 	}
 	"Spewer Spewers"
 	{
@@ -3247,9 +3247,9 @@
 	}
 	"Incorruptable Leaf Desc"
 	{
-		"en"	"{green}Players gain 30％ Elemental Resistance, when under elemental debuffs, gain 15％ Resistance.\n{default}Very soothing, very calming."
-		"it"	"{green}I giocatori guadagnano 30％ Resistenza elementale, quando sono sottoposti a debuff elementali, guadagnano 15％ Resistenza.\n{default}Molto rilassante, molto calmante."
-		"ko"	"{green}모든 플레이어의 원소 피해 저항력 +30％ . 원소 디버프가 있다면, 피해 저항력 +15％ 증가.\n{default}매우 진정되고 평온해진다."
+		"en"	"{green}Players gain 50％ Elemental Resistance, when under elemental debuffs, gain 25％ Resistance.\n{default}Very soothing, very calming."
+		"it"	"{green}I giocatori guadagnano 50％ Resistenza elementale, quando sono sottoposti a debuff elementali, guadagnano 25％ Resistenza.\n{default}Molto rilassante, molto calmante."
+		"ko"	"{green}모든 플레이어의 원소 피해 저항력 +50％ . 원소 디버프가 있다면, 피해 저항력 +25％ 증가.\n{default}매우 진정되고 평온해진다."
 	}
 	"Strange Visitor"
 	{

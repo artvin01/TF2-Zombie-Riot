@@ -921,9 +921,9 @@
 	}
 	"Devilbane Banner Desc"
 	{
-		"en"	"Made by Al-Hallem mercenaries loyal to Iberia.\n{green}Weapon cooldown reduced by 2s when hitting an Umbral enemy"
-		"it"	"Realizzato da mercenari Al-Hallem fedeli a Iberia.\n{green}Il cooldown dell'arma si riduce di 2s quando si colpisce un nemico Umbral"
-		"ko"	"이베리아에 충성하던 알-할렘 용병이 만들었다.\n{green}움브랄 계열 적을 적중할 때마다, 무기 능력 쿨타임이 2초씩 감소."
+		"en"	"Made by Al-Hallem mercenaries loyal to Almina.\n{green}Weapon cooldown reduced by 2s when hitting an Umbral enemy"
+		"it"	"Realizzato da mercenari Al-Hallem fedeli a Almina.\n{green}Il cooldown dell'arma si riduce di 2s quando si colpisce un nemico Umbral"
+		"ko"	"알미나에 충성하던 알-할렘 용병이 만들었다.\n{green}움브랄 계열 적을 적중할 때마다, 무기 능력 쿨타임이 2초씩 감소."
 	}
 	"Great Banshee Veil"
 	{
@@ -957,9 +957,9 @@
 	}
 	"Fearless Blade Desc"
 	{
-		"en"	"Ziberia artilleries, Ruina casters, and Victorian sharpshooters all took their shots at him.\n{green}The player who spent the most cash receives +50％ damage and max health"
+		"en"	"Ziberia artilleries, Ruina casters, and Vestan sharpshooters all took their shots at him.\n{green}The player who spent the most cash receives +50％ damage and max health"
 		"it"	"Le artiglierie di Ziberia, gli incantatori di Ruina e i tiratori scelti vittoriani hanno tutti sparato contro di lui.\n{green}Il giocatore che ha speso più denaro riceve +50％ danni e salute massima"
-		"ko"	"지베리아 화포 부대, 루이나 캐스터 부대, 빅토리아 명사수들이 그에게 파상 공세를 퍼부었다.\n{green}자금을 가장 많이 소모한 플레이어의 최대 체력, 피해량 +50％"
+		"ko"	"지베리아 화포 부대, 루이나 캐스터 부대, 베스타 명사수들이 그에게 파상 공세를 퍼부었다.\n{green}자금을 가장 많이 소모한 플레이어의 최대 체력, 피해량 +50％"
 	}
 	"Chaos Star"
 	{
@@ -1162,9 +1162,9 @@
 	}
 	"Nemesis Blood Desc"
 	{
-		"en"	"{green}Umbral Affinity increased by 3 when reaching a new chapter {red}but Umbral Affinity reduced by 15 while held\n{purple}Chance obtain a rare artifact when consumed"
-		"it"	"{green}l'Affinità Umbrale aumenta di 3 quando si raggiunge un nuovo capitolo {red}ma l'Affinità Umbrale si riduce di 15 mentre si tiene \n{purple}Possibilità di ottenere un artefatto raro quando si consuma"
-		"ko"	"{green}새 챕터 진입 시 움브랄 친화력이 3 증가. {red}대신 이것을 보유하는 동안, 움브랄 친화력 15 감소\n{purple}관문에 흡수시키면, 확률적으로 희귀 등급 소장품 획득"
+		"en"	"{green}Umbral Affinity increased by 6 when reaching a new chapter {red}but Umbral Affinity reduced by 15 while held\n{purple}Chance obtain a rare artifact when consumed"
+		"it"	"{green}l'Affinità Umbrale aumenta di 6 quando si raggiunge un nuovo capitolo {red}ma l'Affinità Umbrale si riduce di 15 mentre si tiene \n{purple}Possibilità di ottenere un artefatto raro quando si consuma"
+		"ko"	"{green}새 챕터 진입 시 움브랄 친화력이 6 증가. {red}대신 이것을 보유하는 동안, 움브랄 친화력 15 감소\n{purple}관문에 흡수시키면, 확률적으로 희귀 등급 소장품 획득"
 	}
 	"Sprouting Stem"
 	{
@@ -2382,17 +2382,17 @@
 		"it" "⚠ Taskforce sconosciuta"
 		"ko" "⚠ 정체불명의 특무대"
 	}
-	"Seaborn Enslaved"
+	"Dweller Enslaved"
 	{
-		"en" "⚔ Seaborn Enslaved"
-		"it" "⚔ Seaborn Enslaved"
-		"ko" "⚔ 억압당한 시본"
+		"en" "⚔ Dweller Enslaved"
+		"it" "⚔ Dweller Enslaved"
+		"ko" "⚔ 억압당한 드웰러"
 	}
-	"Seaborn Enslaved!"
+	"Dweller Enslaved!"
 	{
-		"en" "⚠ Seaborn Enslaved"
-		"it" "⚠ Seaborn Enslaved"
-		"ko" "⚠ 억압당한 시본"
+		"en" "⚠ Dweller Enslaved"
+		"it" "⚠ Dweller Enslaved"
+		"ko" "⚠ 억압당한 드웰러"
 	}
 	"Voided Superior's"
 	{

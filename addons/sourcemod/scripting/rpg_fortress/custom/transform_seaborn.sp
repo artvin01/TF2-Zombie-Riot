@@ -7,7 +7,7 @@ static int WeaponRes[MAXPLAYERS] = {-1, ...};
 static Handle CreepTimer;
 static int Sprite;
 
-void Transform_Seaborn_MapStart()
+void Transform_Dweller_MapStart()
 {
 	PrecacheSound("player/souls_receive2.wav");
 	PrecacheSound("player/souls_receive3.wav");
@@ -61,7 +61,7 @@ static void ResetRes(int client)
 	}
 }
 
-public void Seaborn_Activation_Enable_form_1(int client)
+public void Dweller_Activation_Enable_form_1(int client)
 {
 	CleanEffects(client);
 
@@ -78,14 +78,14 @@ public void Seaborn_Activation_Enable_form_1(int client)
 	}
 }
 
-public void Seaborn_Activation_Disable_form_1(int client)
+public void Dweller_Activation_Disable_form_1(int client)
 {
 	CleanEffects(client);
 
 	EmitSoundToAll("player/souls_receive2.wav", client, SNDCHAN_AUTO, 80);
 }
 
-public void Seaborn_Activation_Enable_form_2(int client)
+public void Dweller_Activation_Enable_form_2(int client)
 {
 	CleanEffects(client);
 
@@ -114,7 +114,7 @@ public void Seaborn_Activation_Enable_form_2(int client)
 	}
 }
 
-public void Seaborn_Activation_Disable_form_2(int client)
+public void Dweller_Activation_Disable_form_2(int client)
 {
 	CleanEffects(client);
 
@@ -135,7 +135,7 @@ public void Seaborn_Activation_Disable_form_2(int client)
 
 }
 
-public bool Seaborn_Activation_Require_form_3(int client)
+public bool Dweller_Activation_Require_form_3(int client)
 {
 	Race race;
 	if(Races_GetRaceByIndex(RaceIndex[client], race) && race.Forms)
@@ -160,7 +160,7 @@ public bool Seaborn_Activation_Require_form_3(int client)
 	return false;
 }
 
-public void Seaborn_Activation_Enable_form_3(int client)
+public void Dweller_Activation_Enable_form_3(int client)
 {
 	CleanEffects(client);
 
@@ -205,7 +205,7 @@ public void Seaborn_Activation_Enable_form_3(int client)
 		CreepTimer = CreateTimer(0.5, Timer_CreepThink, _, TIMER_REPEAT);
 }
 
-public void Seaborn_TakeDamage_form_3(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+public void Dweller_TakeDamage_form_3(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	if(CreepSize[victim] > 400.0)
 	{
@@ -317,7 +317,7 @@ static Action Timer_CreepThink(Handle timer)
 	return Plugin_Stop;
 }
 
-public void Seaborn_Activation_Disable_form_3(int client)
+public void Dweller_Activation_Disable_form_3(int client)
 {
 	CleanEffects(client);
 

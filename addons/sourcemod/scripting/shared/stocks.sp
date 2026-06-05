@@ -751,10 +751,17 @@ stock void SetAmmo(int client, int type, int ammo)
 			ammo = 10;
 		//Never ever set lower then 1!!!
 		SetEntProp(client, Prop_Data, "m_iAmmo", ammo, _, Ammo_Metal_Sub);
+		RequestFrames(AutobuyMetalDelay, 2, EntIndexToEntRef(client), true);
 	}
 	SetEntProp(client, Prop_Data, "m_iAmmo", ammo, _, type);
+	//delay due to revive and allat
 }
-
+void AutobuyMetalDelay(int ref)
+{
+	int client = EntRefToEntIndex(ref);
+	if(IsValidClient(client))
+		AutobuyMetal(client);
+}
 #if defined _tf2items_included
 stock int SpawnWeapon(int client, char[] name, int index, int level, int qual, const int[] attrib, const float[] value, int count, int custom_classSetting = 0)
 {
@@ -763,16 +770,18 @@ stock int SpawnWeapon(int client, char[] name, int index, int level, int qual, c
 		custom_classSetting = 0;
 	}
 	int weapon = SpawnWeaponBase(client, name, index, level, qual, custom_classSetting);
+	
 	if(weapon != -1)
 	{
 		HandleAttributes(weapon, attrib, value, count); //Thanks suza! i love my min models
 	}
+	
 	return weapon;
 }
 
 static int SpawnWeaponBase(int client, char[] name, int index, int level, int qual, int custom_classSetting = 0)
 {
-	Handle weapon = TF2Items_CreateItem(OVERRIDE_ALL|FORCE_GENERATION|PRESERVE_ATTRIBUTES);
+	Handle weapon = TF2Items_CreateItem(OVERRIDE_ALL|FORCE_GENERATION);
 	if(weapon == INVALID_HANDLE)
 		return -1;
 	
@@ -847,7 +856,7 @@ public void HandleAttributes(int weapon, const int[] attributes, const float[] v
 	}
 }
 
-void RemoveAllDefaultAttribsExceptStrings(int entity)
+stock void RemoveAllDefaultAttribsExceptStrings(int entity)
 {
 	Attributes_RemoveAll(entity);
 	
@@ -2979,6 +2988,7 @@ stock int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 		else
 			return -1;
 #else
+		if(GetTeam(owner_projectile) == GetTeam(other_entity))
 			return -1;
 #endif	
 	}
@@ -5057,7 +5067,7 @@ stock void MakePlayerGiveResponseVoice(int client, int status)
 
 	switch(status)
 	{	
-		case 1: //Irene cocky talk
+		case 1: //Amphi cocky talk
 		{
 			switch(ClassShown)
 			{
@@ -5891,6 +5901,9 @@ enum
 	Boomerang = 5,
 	ShadowingSlicer = 6,
 	ReilaSlash = 7,
+	RedMist_AbnormSelect = 8,
+	RedMist_WasInAbnorm = 9,
+	DontUpdateHudClient = 10,
 }
 
 enum struct HitDetectionEnum

@@ -3245,7 +3245,7 @@
 		"ko"		"저 멀리 거대한 방송탑이 보입니다."
 		"it"		"Si vede in lontananza una gigantesca torre radio."
 	}
-	"Victoria_Help_Message"
+	"Vesta_Help_Message"
 	{
 		"en"		"Ziberian Guerillas are here to help."
 		"ko"		"지베리아 게릴라의 지원이 도착했습니다."
@@ -4829,13 +4829,13 @@
 		"it"	"Ordine Lore: (5) L'agente del gruppo di esplorazione, hai danneggiato silvester e waldch, ma non sono stati in grado di dire a sensal che si trattava di un falso allarme, tieniti forte."
 		"ko"	"설정 순서: (5) 당신은 정찰 부대 요원인 실베스터와 왈츠를 공격했지만, 그들은 센살에게 이것이 허위 경보란 사실을 알리지 못했습니다. 대비하세요."
 	}
-	"Deep Sea Desc"
+	"Dwellers Desc"
 	{
-		"en"	"You head to W.F.'s Outpost, after seeing his elite soldiers infected by Xeno, to see if there are any remaining soldiers there. Turns out there was, but they're infected by the Seaborn. And the sea has an army ready to attack the mainland."
-		"fr"	"L'infection Seaborn attaque avec la Corrosion d'Armure. Guérissez-la avec vos tables d'armure!"
+		"en"	"You head to W.F.'s Outpost, after seeing his elite soldiers infected by Xeno, to see if there are any remaining soldiers there. Turns out there was, but they're infected by the Dwellers. And the sea has an army ready to attack the mainland."
+		"fr"	"L'infection Dweller attaque avec la Corrosion d'Armure. Guérissez-la avec vos tables d'armure!"
 		"chi"	"海嗣感染将会侵蚀你的盾。"
-		"it"	"L'infezione Seaborn è arrivata, gli attacchi di Corrosione dell'Armatura infetteranno la tua armatura, curala con le tabelle dell'armatura!"
-		"ko"	"제노에 감염된 배풍등의 정예병들을 본 후, 그의 전초기지에 남은 병사가 있는지 확인을 하러 갑니다. 그곳엔 시본이 된 병사들이 있었고... 본토를 공격할 준비를 마친 상태였습니다."
+		"it"	"L'infezione Dweller è arrivata, gli attacchi di Corrosione dell'Armatura infetteranno la tua armatura, curala con le tabelle dell'armatura!"
+		"ko"	"제노에 감염된 배풍등의 정예병들을 본 후, 그의 전초기지에 남은 병사가 있는지 확인을 하러 갑니다. 그곳엔 드웰러가 된 병사들이 있었고... 본토를 공격할 준비를 마친 상태였습니다."
 	}
 	"Interitus Desc"
 	{
@@ -4847,9 +4847,9 @@
 	}
 	"Schwert Donner Desc"
 	{
-		"en"	"Lore order: (6) Invade the seaborn and kill them off while Alaxios distracts them... however, it seems another party missunderstands this temporary alliance."
-		"it"	"Ordine Lore: (6) Invadi i seaborn e ucciderli mentre alaxios li distrae... tuttavia, sembra che un'altra parte non capisca questa alleanza temporanea."
-		"ko"	"설정 순서: (6) 알락시오스가 그들을 유인하는 동안 시본을 침공해 처치하세요…\n그러나 다른 세력이 이 일시적인 동맹을 오해한 것 같습니다."
+		"en"	"Lore order: (6) Invade the dweller and kill them off while Alaxios distracts them... however, it seems another party missunderstands this temporary alliance."
+		"it"	"Ordine Lore: (6) Invadi i dweller e ucciderli mentre alaxios li distrae... tuttavia, sembra che un'altra parte non capisca questa alleanza temporanea."
+		"ko"	"설정 순서: (6) 알락시오스가 그들을 유인하는 동안 드웰러를 침공해 처치하세요…\n그러나 다른 세력이 이 일시적인 동맹을 오해한 것 같습니다."
 	}
 	"Schwert Donner Alt Desc"
 	{
@@ -5096,6 +5096,11 @@
 		"it"		"Non ci sono più hamburger! Probabilmente."
 		"ko"		"남은 버거가 없습니다! 아마도."
 	}
+	"No Tinker Left"
+	{
+		"en"		"There is no Tinker User remaining, tinkers disabled."
+		"ko"		"땜장이 키트 사용자가 없습니다. 모루 재련 효과가 비활성화됩니다."
+	}
 	"Blacksmith No Attribs"
 	{
 		"en"		"You have no tinker stats."
@@ -5326,26 +5331,26 @@
 		"it"	"HHH grasso"
 		"ko"	"뚱뚱한 말도 없고 머리도 없는 기만병"
 	}
-	"Iberia Expi Desc"
+	"Almina Expi Desc"
 	{
-	  "en" "After the main mercs are done with their training, Iberia comes to us, the secondary mercs, for some more training. Nemal and Silvester won't be here this time since they're on vacation with Sensal."
-	  "ko" "주요 용병들이 훈련을 마친 후, 이베리아가 더 많은 훈련을 위해 보조 용병들을 방문합니다. 이번엔 네말과 실베스터가 센살과 휴가 중이기에 없을 겁니다."
+	  "en" "After the main mercs are done with their training, Almina comes to us, the secondary mercs, for some more training. Nemal and Silvester won't be here this time since they're on vacation with Sensal."
+	  "ko" "주요 용병들이 훈련을 마친 후, 알미나가 더 많은 훈련을 위해 보조 용병들을 방문합니다. 이번엔 네말과 실베스터가 센살과 휴가 중이기에 없을 겁니다."
 	}
-	"Iberia & Nemal"
+	"Almina & Nemal"
 	{
-		"en" "Iberia & Nemal"
+		"en" "Almina & Nemal"
 		"ru" "Иберия & Немал"
-		"fr" "Iberia & Nemal"
+		"fr" "Almina & Nemal"
 		"chi"	"伊比利亚 & 尼莫尔"
-		"it"	"Iberia e Nemal"
-		"ko" "이베리아 & 네말"
+		"it"	"Almina e Nemal"
+		"ko" "알미나 & 네말"
 	}
-	"Iberia Nemal Desc"
+	"Almina Nemal Desc"
 	{
-		"en" "(10) Iberia and Expidonsa offer training to help against the true final battle against the void... Although iberians seem to take it extremly seriously."
-		"fr" "Iberia et Expidonsa vous offrent un entraînement qui vous aiderait pour le combat final contre le Void... Il semblerait que les Iberians prennent ceci extrêmement sérieusement, pourtant."
-		"it"	"(10) Iberia e expidonsa offrono addestramento per aiutare contro la vera battaglia finale contro il vuoto... Anche se gli iberici sembrano prenderla estremamente sul serio."
-		"ko" "설정 순서: (10) 이베리아와 엑스피돈사가 공허와의 최후의 전투를 돕기 위한 대비 훈련을 제공하려고 합니다... 비록 이베리아인들은 이를 매우 심각하게 받아들이는 것 같지만요."
+		"en" "(10) Almina and Expidonsa offer training to help against the true final battle against the void... Although alminans seem to take it extremly seriously."
+		"fr" "Almina et Expidonsa vous offrent un entraînement qui vous aiderait pour le combat final contre le Void... Il semblerait que les Alminans prennent ceci extrêmement sérieusement, pourtant."
+		"it"	"(10) Almina e expidonsa offrono addestramento per aiutare contro la vera battaglia finale contro il vuoto... Anche se gli iberici sembrano prenderla estremamente sul serio."
+		"ko" "설정 순서: (10) 알미나와 엑스피돈사가 공허와의 최후의 전투를 돕기 위한 대비 훈련을 제공하려고 합니다... 비록 알미나인들은 이를 매우 심각하게 받아들이는 것 같지만요."
 	}
 	"Revenant's Shadow"
 	{
@@ -5618,16 +5623,16 @@
 		"it"	"Piede di porco"
 		"ko"	"쇠지렛대"
 	}
-	"Victoria Survival Desc"
+	"Vesta Survival Desc"
 	{
-		"en" 	"Before Bob the First comes to us for help in Rogue 2, we come across a Victoria outpost. They decide to attack us. Guess they're pissed off about beating them before."
-		"ko" 	"로그2에서 밥 1세가 도움을 위해 찾아오기 전, 빅토리아 전초기지를 지나가게 되고... 그들이 당신을 공격해옵니다?! 아무래도 이전에 그들을 패퇴시킨 것에 화가 난 것 같군요."
+		"en" 	"Before Bob the First comes to us for help in Rogue 2, we come across a Vesta outpost. They decide to attack us. Guess they're pissed off about beating them before."
+		"ko" 	"로그2에서 밥 1세가 도움을 위해 찾아오기 전, 베스타 전초기지를 지나가게 되고... 그들이 당신을 공격해옵니다?! 아무래도 이전에 그들을 패퇴시킨 것에 화가 난 것 같군요."
 	}
-	"Victoria Raid Desc"
+	"Vesta Raid Desc"
 	{
-		"en" 	"Lore order: (11) You are asked by Sensal to visit Ziberia where it is currently under attack by Victoria."
-		"it"	"Ordine Lore: (11) Sensal vi chiede di visitare Ziberia, attualmente attaccata da Victoria."
-		"ko"	"설정 순서: (11) 센살은 당신에게 현재 빅토리아에게 공격받고 있는 지베리아를 방문해달라고 부탁했습니다."
+		"en" 	"Lore order: (11) You are asked by Sensal to visit Ziberia where it is currently under attack by Vesta."
+		"it"	"Ordine Lore: (11) Sensal vi chiede di visitare Ziberia, attualmente attaccata da Vesta."
+		"ko"	"설정 순서: (11) 센살은 당신에게 현재 베스타에게 공격받고 있는 지베리아를 방문해달라고 부탁했습니다."
 	}
 	"Ability already Active"
 	{
@@ -5767,7 +5772,7 @@
 	{
 		"en"		"In rogue2 You also get chaos for getting downed too much (see top during peace phases)"
 		"it"		"In rogue2 si ottiene anche il caos per essere stati abbattuti troppo spesso (vedi top durante le fasi di pace)"
-		"ko"		"로그라이크2에서는 너무 많이 다운될 경우 혼돈 침식도를 얻습니다.(준비 상태에서 확인 가능)"
+		"ko"		"로그라이크2에서는 너무 많이 다운될 경우 혼돈 침식도를 얻습니다.(비전투 상태에서 확인 가능)"
 	}
 	"Explain Rogue2 2"
 	{
@@ -5786,6 +5791,18 @@
 		"en"		"You tried to sell/unequip upgrades your barracks units needed, a rift in time opens and consumes them and kills them in a nanosecond.\n{crimson}Tried to bug abuse huh?"
 		"it"		"Se hai cercato di vendere/disinfettare i potenziamenti di cui avevano bisogno le tue unità della caserma, si è aperto uno squarcio nel tempo che le ha consumate e uccise in un nanosecondo.\n{crimson}Hai cercato di abusare delle cimici, eh?"
 		"ko"		"당신은 배럭 유닛이 필요로 하는 개선을 판매하거나 장착 해제하려고 했고, 시간의 균열이 열리며 유닛을 빨아들이고 순식간에 죽였습니다.\n{crimson}이거 버그 악용인거 알지?"
+	}
+	"Scrap Metal Auto Buy"
+	{
+		"#format"	"{1:d}"
+		"en"		"Scrap Metal Auto Buy Toggle: [{1}]"
+		"ko"		"폐기 금속 자동 구매 토글: [{1}]"
+	}
+	"Just Bought Ammo Automatically"
+	{
+		"#format"	"{1:d},{2:d}"
+		"en"		"{yellow}{1} Metal {snow}was automatically bought for you, for a cost of {yellow}{2}${snow}."
+		"ko"		"자금을 {yellow}{2}${snow} 지불하여 {yellow}금속 {1}{snow}을 자동으로 구매했습니다."
 	}
 	"Plasma Kit Insufficient Charge"
 	{
@@ -5895,10 +5912,10 @@
 		"en"	"Rising Tides"
 		"ko"	"라이징 타이즈"
 	}
-	"Seaborn Escape Desc"
+	"Dweller Escape Desc"
 	{
-		"en"	"Escape from the seaborn's spreading mass!"
-		"ko"	"퍼져나가는 시본의 물결에서 탈출하세요!"
+		"en"	"Escape from the dweller's spreading mass!"
+		"ko"	"퍼져나가는 드웰러의 물결에서 탈출하세요!"
 	}
 	"Medieval Empires"
 	{
@@ -5914,5 +5931,77 @@
 	{
 		"#format"	"{1:d}"
 		"en" 		"You dont own enough coffins, you need atleast {1} Coffins."
+		"ko"		"관이 충분하지 않습니다. 최소 {1}개의 관이 필요합니다."
+	}
+	"Prey"
+	{
+		"en"	"Prey:\nEvery 20 seconds the first\n enemy you hit gets marked\nmarked enemies take 50％ more damage\n(35％ if boss, 15％ if raidboss)\nKilling the marked enemy heals for 20％ max hp.\n[M1]"
+		"ko"	"사냥감:\n매 20초마다 처음으로 공격하는\n적에게 표식을 부여\n표식 상태인 적은 받는 피해량 +50％\n(보스 - 35％, 레이드 보스 - 15％)\n표식 상태인 적 처치 시 최대 체력의 20％ 회복\n[M1]"
+	}
+	"Vengeance"
+	{
+		"en"	"Vengeance:\nIf max HP is at 50％/33％/25％ or lower, \ngain stacking 1/2/4 Strength\n[M2]"
+		"ko"	"복수:\n체력이 50％/33％/25％ 이하라면,\n중첩되는 힘 1/2/4 획득\n[M2]"
+	}
+	"Claws of Savagery"
+	{
+		"en"	"Claws of Savagery:\nWhen taking over 50％ max hp in 2 seconds \ngain 75％ damage resistance for 4 seconds\n[M1]"
+		"ko"	"흉악한 발톱:\n2초 안에 최대 체력의 50％의 피해를 입을 시\n4초 동안 피해 저항력 75％ 증가\n[M1]"
+	}
+	"The Role of the Wolf"
+	{
+		"en"	"The Role of the Wolf:\nCounter can take more damage before breaking\nIncreased counter count from 15 to 30\n[M2]"
+		"ko"	"늑대의 역할:\n반격이 파괴되기 전 더 많은 피해를 막을 수 있음\n반격 횟수가 15에서 30으로 증가\n[M2]"
+	}
+	"Absorption"
+	{
+		"en"	"Absorption:\nKilling an enemy heals you for 5％ max hp\nFor each 20％ max hp healed with \nthis effect gain 1 strenght for 20 seconds\n[M1]"
+		"ko"	"흡수:\n적 처치 시 최대 체력의 5％ 회복\n이 효과로 최대 체력의 20％를 회복할 때마다\n20초 동안 힘 1 획득\n[M1]"
+	}
+	"Mountain of Corpses"
+	{
+		"en"	"Mountain of Corpses:\nDoes nothing normally\nIf last man activates while this page is chosen \ngain 10 Strength and 50％ damage reduction.\nDie after 120 seconds after activation\n[M2]"
+		"ko"	"시체들의 산:\n기본적으로 아무 효과 없음\n해당 책장 선택 시 최후의 1인이 될 경우\n힘을 10 얻고 피해 저항력 50％ 증가\n발동 후 120초 후에 사망\n[M2]"
+	}
+	"Vampirism"
+	{
+		"en"	"Vampirism:\nRecover a small amount of hp on hit \nscales with enhances\n[M1]"
+		"ko"	"흡혈:\n적중 시 체력 소량 회복\n무기 강화에 따라 증가\n[M1]"
+	}
+	"Deep Wound"
+	{
+		"en"	"Deep Wound:\nEvery 5th hit inflict bleed onto the enemy\n[M2]"
+		"ko"	"깊은 상처:\n매 5번째 적중 시 적에게 출혈 부여\n[M2]"
+	}
+	"Greater Slash Vertical"
+	{
+		"en"	"Perform a powerful single target slash\nSwing your sword once the page is selected\n[M1]"
+		"ko"	"강력한 단일 대상 공격을 시전\n선택 후 공격 시 발동\n[M1]"
+	}
+	"Greater Slash Horizontal"
+	{
+		"en"	"Perform a powerful aoe slash \nin front of yourself\nSwing your sword once the page is selected\n[M2]"
+		"ko"	"정면을 향해\n강력한 광역 공격을 시전\n선택 후 공격 시 발동\n[M2]"
+	}
+	"Red Mist Ego"
+	{
+		"en"	"Enter an empowered state \nSlowly lose energy overtime \nattack enemies to regain energy\nSwing your sword once the page is selected\n[M2]"
+		"ko"	"강화 상태로 돌입\n지속적으로 에너지를 소모\n적 적중 시 에너지 회복\n선택 후 공격 시 발동\n[M2]"
+	}
+	"Red Mist Card Locked"
+	{
+		"en"	"Locked"
+		"ko"	"잠김"
+	}
+	"Red Mist Card Selected"
+	{
+		"en"	"Card Selected"
+		"ko"	"책장 선택됨"
+	}
+	"Red Mist cooldown"
+	{
+		"#format"	"{1:.1f}"
+		"en" 		"Card on cooldown ({1} seconds!)"
+		"ko"		"책장 쿨다운 상태 ({1}초)"
 	}
 }

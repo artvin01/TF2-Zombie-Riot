@@ -373,7 +373,7 @@ public void Weapon_RitualistNervous_M2(int client, int weapon, bool &result, int
 		int entity = NPC_CreateByName("npc_ritualist", client, pos1, {0.0, 0.0, 0.0}, TFTeam_Red);
 		if(entity > MaxClients)
 		{
-			CreateTimer(65.0, Seaborn_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(65.0, Dweller_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 			i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 			b_ShowNpcHealthbar[entity] = false;
 		}

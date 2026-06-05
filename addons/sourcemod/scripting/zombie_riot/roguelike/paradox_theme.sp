@@ -217,15 +217,15 @@ public void Rogue_HeavyRain_Ally(int entity, StringMap map)
 {
 	if(map)	// Player
 	{
-		bool seaborn;
+		bool dweller;
 		int i, weapon;
 		while(TF2_GetItem(entity, weapon, i))
 		{
 			switch(i_CustomWeaponEquipLogic[weapon])
 			{
-				case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_GLADIIA, WEAPON_ULPIANUS, WEAPON_SEABORNMELEE, WEAPON_SKADI:
+				case WEAPON_OCEAN, WEAPON_OCEAN_PAP, WEAPON_SPECTER, WEAPON_GLADIIA, WEAPON_ULPIANUS, WEAPON_DWELLERMELEE, WEAPON_SKADI:
 				{
-					seaborn = true;
+					dweller = true;
 					break;
 				}
 			}
@@ -235,7 +235,7 @@ public void Rogue_HeavyRain_Ally(int entity, StringMap map)
 
 		// -20% move speed
 		map.GetValue("442", value);
-		map.SetValue("442", value * (seaborn ? 1.1 : 0.8));
+		map.SetValue("442", value * (dweller ? 1.1 : 0.8));
 	}
 	else if(!b_NpcHasDied[entity])	// NPCs
 	{
@@ -249,7 +249,7 @@ public void Rogue_HeavyRain_Ally(int entity, StringMap map)
 
 public void Rogue_HeavyRain_Enemy(int entity)
 {
-	if(view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_SEABORN)
+	if(view_as<CClotBody>(entity).m_iBleedType == BLEEDTYPE_DWELLER)
 	{
 		fl_Extra_Speed[entity] *= 1.1;
 	}

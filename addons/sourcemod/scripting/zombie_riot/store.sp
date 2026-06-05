@@ -93,9 +93,10 @@ enum struct ItemInfo
 	Function Func_OnPlayerRunCmd;
 	Function Func_WeaponCreated;
 	Function Func_MapStart;
+	Function Func_OnKill;
 	Function Func_TakeDamage_Take;
 	Function Func_TakeDamage_Deal;
-	Function Func_TakeDamagePost;
+	Function Func_TakeDamage_Post;
 
 	Function FuncOnPap;
 
@@ -371,6 +372,14 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sfunc_ontakedamage_take", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.Func_TakeDamage_Take = GetFunctionByName(null, buffer);
+
+		Format(buffer, sizeof(buffer), "%sfunc_ontakedamage_take_post", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.Func_TakeDamage_Post = GetFunctionByName(null, buffer);
+
+		Format(buffer, sizeof(buffer), "%sfunc_onkill", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.Func_OnKill = GetFunctionByName(null, buffer);
 
 		Format(buffer, sizeof(buffer), "%sfunc_ontakedamage_deal", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
@@ -793,32 +802,56 @@ void Ability_Apply_Cooldown(int client, int what_slot, float cooldown, int thisW
 	if(weapon != -1)
 	{
 		if(StoreWeapon[weapon] > 0)
-		{
-			static Item item;
-			StoreItems.GetArray(StoreWeapon[weapon], item);
-#if defined ZR
-			if(!ignoreCooldown)
-				cooldown *= CooldownReductionAmount(client);
-#endif
-			
-			switch(what_slot)
-			{
-				case 1:
-					item.Cooldown1[client] = cooldown + GetGameTime();
-				
-				case 2:
-					item.Cooldown2[client] = cooldown + GetGameTime();
-				
-				case 3:
-					item.Cooldown3[client] = cooldown + GetGameTime();
-				
-				default:
-					ThrowError("Invalid slot %d", what_slot);
-			}
-			
-			StoreItems.SetArray(StoreWeapon[weapon], item);
-		}
+			Store_ApplyCooldownIndex(client, StoreWeapon[weapon], what_slot, cooldown, ignoreCooldown);
 	}
+}
+
+void Store_ApplyCooldownIndex(int client, int index, int what_slot, float cooldown, bool ignoreCooldown = false)
+{
+	static Item item;
+	StoreItems.GetArray(index, item);
+#if defined ZR
+	if(!ignoreCooldown)
+		cooldown *= CooldownReductionAmount(client);
+#endif
+	
+	switch(what_slot)
+	{
+		case 1:
+			item.Cooldown1[client] = cooldown + GetGameTime();
+		
+		case 2:
+			item.Cooldown2[client] = cooldown + GetGameTime();
+		
+		case 3:
+			item.Cooldown3[client] = cooldown + GetGameTime();
+		
+		default:
+			ThrowError("Invalid slot %d", what_slot);
+	}
+	
+	StoreItems.SetArray(index, item);
+}
+
+stock float Store_GetCooldownIndex(int client, int index, int what_slot)
+{
+	static Item item;
+	StoreItems.GetArray(index, item);
+
+	switch(what_slot)
+	{
+		case 1:
+			return item.Cooldown1[client] - GetGameTime();
+		
+		case 2:
+			return item.Cooldown2[client] - GetGameTime();
+		
+		case 3:
+			return item.Cooldown3[client] - GetGameTime();
+	}
+
+	ThrowError("Invalid slot %d", what_slot);
+	return 0.0;
 }
 
 void Store_OpenItemPage(int client)
@@ -5709,6 +5742,7 @@ void Store_ApplyAttribs(int client)
 	//Get the previous count to get back all their stats.
 	int clientid = GetSteamAccountID(client);
 	WeaponSpawn_Reapply(client, client, clientid);
+	StatusEffect_ApplySpeedPlayer(client);
 }
 
 void Store_GiveAll(int client, int health, bool removeWeapons = false)
@@ -6202,6 +6236,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					EntityFuncPlayerRunCmd[entity]  = info.Func_OnPlayerRunCmd;
 					EntityFuncTakeDamage[entity][0]  = info.Func_TakeDamage_Deal;
 					EntityFuncTakeDamage[entity][1]  = info.Func_TakeDamage_Take;
+					EntityFuncTakeDamage[entity][2]  = info.Func_TakeDamage_Post;
+					EntityFuncOnKill[entity]  = info.Func_OnKill;
 					
 					b_Do_Not_Compensate[entity] 				= info.NoLagComp;
 					b_Only_Compensate_CollisionBox[entity] 		= info.OnlyLagCompCollision;
@@ -6567,13 +6603,13 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		Enable_StarShooter(client, entity);
 		Enable_Passanger(client, entity);
 		Enable_MG42(client, entity);
-		Reset_stats_Irene_Singular_Weapon(entity);
+		Reset_stats_Amphi_Singular_Weapon(entity);
 		Reset_stats_MG42_Singular_Weapon(entity);
 		Activate_Beam_Wand_Pap(client, entity);
 		Activate_Yamato(client, entity);
 		Activate_Fantasy_Blade(client, entity);
 		Activate_Quincy_Bow(client, entity);
-		Enable_Irene(client, entity);
+		Enable_Amphi(client, entity);
 		Enable_LappLand(client, entity);
 		Enable_PHLOG(client, entity);
 		Enable_OceanSong(client, entity);
@@ -6622,7 +6658,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		WeaponNailgun_Enable(client, entity);
 		Blacksmith_Enable(client, entity);
 		Enable_West_Weapon(client, entity);
-		Enable_Victorian_Launcher(client, entity);
+		Enable_Vestan_Launcher(client, entity);
 		Enable_Chainsaw(client, entity);
 		//Activate_Cosmic_Weapons(client, entity);
 		Merchant_Enable(client, entity);

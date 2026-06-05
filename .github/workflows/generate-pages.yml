@@ -9,7 +9,39 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  decompile:
+      name: decompile-models
+      runs-on: windows-latest
+      steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: wiki_gen
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+      - name: Setup venv
+        run: python -m venv venv; venv\Scripts\pip.exe install -r requirements_decompile.txt
+      
+      - name: Clone ZR repo
+        run: git clone https://github.com/artvin01/TF2-Zombie-Riot --depth 1
+      
+      - name: Download CLI mdl decompiler
+        run: | 
+          Invoke-Webrequest https://github.com/mrglaster/Source-models-decompiler-cmd/releases/download/Update/CrowbarDecompiler.1.1.zip -OutFile CrowbarDecompiler.1.1.zip
+          Expand-Archive .\CrowbarDecompiler.1.1.zip .\
+
+      - name: Decompile
+        run: |
+          venv\Scripts\python.exe modules\weapon-decompile.py
+      
+      - name: Upload decompiled model data
+        uses: actions/cache/save@v5
+        with:
+          path: decompiled/
+          key: decompiled-${{ github.sha }}
+          enableCrossOsArchive: true
   build:
+    needs: decompile
     name: generate-pages
     runs-on: ubuntu-latest
     steps:
@@ -19,14 +51,28 @@ jobs:
     - uses: actions/setup-python@v6
       with:
         python-version: '3.14'
+
+    - name: Install prerequisites (SMD=>OBJ conversion, icons)
+      run: |
+        sudo apt-get install libassimp-dev xvfb -y --allow-downgrades --allow-remove-essential --allow-change-held-packages
+
     - name: Setup venv
       run: python -m venv venv; ./venv/bin/pip install -r requirements.txt
     
     - name: Clone ZR repo
-      run: git clone https://github.com/artvin01/TF2-Zombie-Riot
+      run: git clone https://github.com/artvin01/TF2-Zombie-Riot --depth 1
 
+    - name: Restore cached source
+      uses: actions/cache/restore@v5
+      with:
+        path: decompiled/
+        key: decompiled-${{ github.sha }}
+    
     - name: Parse ZR repo code
-      run: ./venv/bin/python main.py
+      run: |
+        Xvfb :0 -screen 0 1024x768x16 &
+        export DISPLAY=:0
+        ./venv/bin/python main.py
     
     - name: Upload static files as artifact
       id: deployment
@@ -35,6 +81,7 @@ jobs:
         path: gh-pages/
 
   deploy:
+    name: deploy-pages
     runs-on: ubuntu-latest
     environment:
       name: github-pages

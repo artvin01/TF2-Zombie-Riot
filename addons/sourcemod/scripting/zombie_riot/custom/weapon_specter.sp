@@ -502,7 +502,7 @@ public void Enable_SpecterAlter(int client, int weapon) // Enable management, ha
 		}
 	}
 
-	if(Store_IsWeaponFaction(client, weapon, Faction_Seaborn))
+	if(Store_IsWeaponFaction(client, weapon, Faction_Dweller))
 	{
 		for(int i = 1; i <= MaxClients; i++)
 		{

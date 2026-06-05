@@ -605,7 +605,8 @@ public void OnPostThink(int client)
 			max_mana[client] = 9999999.9;
 		}
 					
-		Mana_Hud_Delay[client] = 0.0;
+		if(!IsIn_HitDetectionCooldown(client,client, DontUpdateHudClient))
+			Mana_Hud_Delay[client] = 0.0;
 	}
 	//A part of Ruina's special mana "corrosion"
 	if(Current_Mana[client] > RoundToCeil(max_mana[client]+10.0))	
@@ -1384,7 +1385,7 @@ public void OnPostThink(int client)
 #if defined ZR
 		UpdatePlayerPoints(client);
 
-		if(HasSpecificBuff(client, "Call of the Heartbroken") || LastMann || dieingstate[client] > 0)
+		if(HasSpecificBuff(client, "Call of the Heartbroken Weakened") || LastMann || dieingstate[client] > 0)
 		{
 			ApplyLastmanOrDyingOverlay(client);
 		}
@@ -1451,7 +1452,7 @@ public void OnPostThink(int client)
 					green = 55 + abs(200 - (RoundFloat(GetGameTime()) % 400));
 					blue = 55 + abs(200 - (RoundFloat(GetEngineTime()) % 400));
 				}
-				//seaborn
+				//dweller
 				default:
 				{
 					red = 150;
@@ -1606,7 +1607,7 @@ public void OnPostThink(int client)
 			if(Cooldowntocheck > 0.0)
 			{
 				//add one second so it itll never show 0 in there, thats stupid.
-				Format(buffer2, sizeof(buffer2), "%s:%1.f",npc_classname[4], Cooldowntocheck);
+				Format(buffer2, sizeof(buffer2), "%s:%.1f",npc_classname[4], Cooldowntocheck);
 			}
 			else
 			{
@@ -2277,7 +2278,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 					if(b_IsAloneOnServer)
 						i_AmountDowned[victim] = 999;
 					// Trigger lastman
-					CheckAlivePlayers();
+					CheckAlivePlayers(_,_,_,true);
 					//We trigger lastman if we hit this
 				}
 			}
@@ -2907,16 +2908,31 @@ void ApplyLastmanOrDyingOverlay(int client)
 {
 	if(HasSpecificBuff(client, "Call of the Heartbroken"))
 	{
-		DoOverlay(client, "zombie_riot/filmgrain/filmgrain_4", 1);
-		DoOverlay(client, "debug/yuv");
+		if(!HasSpecificBuff(client, "Call of the Heartbroken Weakened"))
+		{
+			DoOverlay(client, "", 1);
+			DoOverlay(client, "");
+		}
+		else
+		{
+			DoOverlay(client, "zombie_riot/filmgrain/filmgrain_4", 1);
+			DoOverlay(client, "debug/yuv");
+		}
 		return;
 	}
 	if(LastMann)
 	{
 		switch(Yakuza_Lastman())
 		{
-			case 1,2,3,4,7,9:
+			case 1,2,3,4,7,9, 15:
 			{
+				return;
+			}
+			case 16:
+			{
+				if(AnyClientHaveMOSB())
+					DoOverlay(client, "zombie_riot/filmgrain/filmgrain_4", 1);
+				DoOverlay(client, "effects/invuln_overlay_red");
 				return;
 			}
 			case 8:
@@ -3554,7 +3570,8 @@ void RPG_Sdkhooks_StaminaBar(int client)
 #endif
 stock void SDKhooks_SetManaRegenDelayTime(int client, float time)
 {
-	Mana_Hud_Delay[client] = 0.0;
+	if(!IsIn_HitDetectionCooldown(client,client, DontUpdateHudClient))
+		Mana_Hud_Delay[client] = 0.0;
 #if defined ZR
 	if(Mana_Regen_Delay[client] < GetGameTime() + time)
 		Mana_Regen_Delay[client] = GetGameTime() + time;
@@ -3813,7 +3830,6 @@ void SdkHooks_SetAndUpdateArmorClientText(int client)
 	DispatchKeyValue(ArmorText,	 "color", sColor);
 	DispatchKeyValue(ArmorText, "message", ch_ArmorText);
 }
-#endif
 
 
 bool PlayersLeftAlive(int victim)
@@ -3831,3 +3847,4 @@ bool PlayersLeftAlive(int victim)
 	}
 	return Any_Left;
 }
+#endif

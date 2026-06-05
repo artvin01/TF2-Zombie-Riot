@@ -709,6 +709,7 @@ public Action Shadowing_Darkness_Boss_OnTakeDamage(int victim, int &attacker, in
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", 1000000000);
 			f_AttackSpeedNpcIncrease[spawn_index]	*= 2.0;
 			fl_Extra_Damage[spawn_index]	*= 0.1;
+			b_thisNpcIsABoss[spawn_index] = true;
 
 		}
 		if(npc.m_iChanged_WalkCycle != 99) 	
@@ -796,6 +797,7 @@ public Action Shadowing_Darkness_Boss_OnTakeDamage(int victim, int &attacker, in
 				SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", (ReturnEntityMaxHealth(npc.index) / 4));
 				ApplyStatusEffect(spawn_index, spawn_index, "Extreme Anxiety", 5.0);
 				npc.m_iTargetAlly = spawn_index;
+				b_thisNpcIsABoss[spawn_index] = true;
 			}
 			if(npc.m_flSpeed != 0)
 				npc.m_flSpeed = SHADOW_DEFAULT_SPEED * 0.5;

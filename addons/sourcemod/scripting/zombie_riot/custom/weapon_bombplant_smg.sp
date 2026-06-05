@@ -2,9 +2,9 @@
 #pragma newdecls required
 static Handle h_TimerExploARWeaponManagement[MAXPLAYERS] = {null, ...};
 
-static int i_VictoriaParticle_1[MAXPLAYERS];
+static int i_WindowsVistaParticle_1[MAXPLAYERS]; 
 static int ExploAR_ZoomLaser[MAXPLAYERS];
-static int ExploAR_VictoriaNuke[MAXPLAYERS];
+static int ExploAR_WindowsVistaNuke[MAXPLAYERS];
 static int ExploAR_Robot[MAXPLAYERS];
 
 static int ExploAR_AirStrikeActivated[MAXPLAYERS];
@@ -327,7 +327,7 @@ public void BombAR_AirStrike_Beacon(int client, int weapon, bool crit, int slot)
 			SetEntProp(weapon, Prop_Send, "m_nKillComboClass", SMGAmmoMAX);
 			Can_I_Fire[client]=false;
 			SDKUnhook(client, SDKHook_PreThink, BombAR_M1_PreThink);
-			int Prop = EntRefToEntIndex(ExploAR_VictoriaNuke[client]);
+			int Prop = EntRefToEntIndex(ExploAR_WindowsVistaNuke[client]);
 			if(IsValidEntity(Prop))
 			{
 				RemovePorps(Prop);
@@ -343,7 +343,7 @@ public void BombAR_AirStrike_Beacon(int client, int weapon, bool crit, int slot)
 				TeleportEntity(Prop, vOrigin, NULL_VECTOR, NULL_VECTOR);
 				DispatchSpawn(Prop);
 				
-				ExploAR_VictoriaNuke[client]=EntIndexToEntRef(Prop);
+				ExploAR_WindowsVistaNuke[client]=EntIndexToEntRef(Prop);
 				SetVariantString("1.5");
 				AcceptEntityInput(Prop, "SetModelScale");
 				SetEntPropEnt(Prop, Prop_Data, "m_hOwnerEntity", client);
@@ -428,9 +428,9 @@ public void Deploy_ExploARWeapon(int client, int weapon)
 	Can_I_Fire[client]=false;
 	if(ExploAR_AirStrikeActivated[client])
 	{
-		VictoriaNukeEngage(client, weapon);
+		WindowsVistaNukeEngage(client, weapon);
 		SDKUnhook(client, SDKHook_PreThink, BombAR_Laser_PreThink);
-		int Prop = EntRefToEntIndex(ExploAR_VictoriaNuke[client]);
+		int Prop = EntRefToEntIndex(ExploAR_WindowsVistaNuke[client]);
 		if(IsValidEntity(Prop))
 		{
 			RemovePorps(Prop);
@@ -442,7 +442,7 @@ public void Deploy_ExploARWeapon(int client, int weapon)
 	}
 	CreateExploAREffect(client);
 	IsDeploy[client]=true;
-	if(Store_IsWeaponFaction(client, weapon, Faction_Victoria))	// Victoria
+	if(Store_IsWeaponFaction(client, weapon, Faction_Vesta))	// Vesta
 	{
 		for(int i = 1; i <= MaxClients; i++)
 		{
@@ -486,7 +486,7 @@ public void Holster_ExploARWeapon(int client)
 		RemoveEntity(entity);
 	if(ExploAR_AirStrikeActivated[client])
 	{
-		entity = EntRefToEntIndex(ExploAR_VictoriaNuke[client]);
+		entity = EntRefToEntIndex(ExploAR_WindowsVistaNuke[client]);
 		if(IsValidEntity(entity))
 		{
 			RemovePorps(entity);
@@ -673,7 +673,7 @@ static void ExploARWork(int client, int weapon, float GameTime)
 	
 	if(ExploAR_AirStrikeActivated[client])
 	{
-		int Prop = EntRefToEntIndex(ExploAR_VictoriaNuke[client]);
+		int Prop = EntRefToEntIndex(ExploAR_WindowsVistaNuke[client]);
 		if(IsValidEntity(Prop))
 		{
 			int Props;
@@ -803,10 +803,10 @@ static void ExploARWork(int client, int weapon, float GameTime)
 	}
 }
 
-static void VictoriaNukeEngage(int client, int weapon)
+static void WindowsVistaNukeEngage(int client, int weapon)
 {
 	Store_RemoveSpecificItem(client, "ER Targeting Remote");
-	int Prop = EntRefToEntIndex(ExploAR_VictoriaNuke[client]);
+	int Prop = EntRefToEntIndex(ExploAR_WindowsVistaNuke[client]);
 	if(IsValidEntity(Prop))
 	{
 		int Props;
@@ -1156,7 +1156,7 @@ static void CreateExploAREffect(int client)
 	DestroyExploAREffect(client);
 	if(!Items_HasNamedItem(client, "A copy of Truthful Evidence"))
 		return;
-	int entity = EntRefToEntIndex(i_VictoriaParticle_1[client]);
+	int entity = EntRefToEntIndex(i_WindowsVistaParticle_1[client]);
 	if(!IsValidEntity(entity))
 	{
 		entity = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
@@ -1168,16 +1168,16 @@ static void CreateExploAREffect(int client)
 			int particle = ParticleEffectAt(flPos, "eye_powerup_blue_lvl_3", 0.0);
 			AddEntityToThirdPersonTransitMode(client, particle);
 			SetParent(entity, particle, "eyeglow_l");
-			i_VictoriaParticle_1[client] = EntIndexToEntRef(particle);
+			i_WindowsVistaParticle_1[client] = EntIndexToEntRef(particle);
 		}
 	}
 }
 static void DestroyExploAREffect(int client)
 {
-	int entity = EntRefToEntIndex(i_VictoriaParticle_1[client]);
+	int entity = EntRefToEntIndex(i_WindowsVistaParticle_1[client]);
 	if(IsValidEntity(entity))
 		RemoveEntity(entity);
-	i_VictoriaParticle_1[client] = INVALID_ENT_REFERENCE;
+	i_WindowsVistaParticle_1[client] = INVALID_ENT_REFERENCE;
 }
 
 //ER_TargetingRemote
@@ -1185,7 +1185,7 @@ public void ERTargetingRemote_M1_Attack(int client, int weapon, bool crit, int s
 {
 	slot = EntRefToEntIndex(ExploAR_WeaponID[client]);
 	int Robot = EntRefToEntIndex(ExploAR_Robot[client]);
-	int Prop = EntRefToEntIndex(ExploAR_VictoriaNuke[client]);
+	int Prop = EntRefToEntIndex(ExploAR_WindowsVistaNuke[client]);
 	if(IsValidEntity(Prop) && IsValidEntity(Robot) && IsValidEntity(slot))
 	{
 		if(crit)
@@ -1230,7 +1230,7 @@ public void ERTargetingRemote_M1_Attack(int client, int weapon, bool crit, int s
 		TeleportEntity(Props, vOrigin, NULL_VECTOR, NULL_VECTOR);
 		if(ExploAR_AirStrikeActivated[client]-64<=0)
 		{
-			VictoriaNukeEngage(client, slot);
+			WindowsVistaNukeEngage(client, slot);
 			Store_RemoveSpecificItem(client, "", false, StoreWeapon[weapon]);
 			TF2_RemoveItem(client, weapon);
 			FakeClientCommand(client, "use tf_weapon_smg");

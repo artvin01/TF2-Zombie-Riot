@@ -275,7 +275,7 @@ void BlacksmithBrew_NPCTakeDamagePost(int victim, int attacker, float damage)
 		int aspect = random % A_Water;
 
 		// Special Aspects
-		//if(i_BleedType[victim] == BLEEDTYPE_SEABORN && !b_thisNpcIsABoss[victim] && (random % 9) == 0)
+		//if(i_BleedType[victim] == BLEEDTYPE_DWELLER && !b_thisNpcIsABoss[victim] && (random % 9) == 0)
 		//{
 		//	aspect = A_Water;
 		//}
@@ -300,7 +300,7 @@ void BlacksmithBrew_NPCTakeDamagePost(int victim, int attacker, float damage)
 		{
 			// +1 or -1
 			int aspect2 = (random + ((i_NpcInternalId[victim] % 2) ? 1 : -1)) % A_Water;
-			//if(i_BleedType[victim] == BLEEDTYPE_SEABORN)
+			//if(i_BleedType[victim] == BLEEDTYPE_DWELLER)
 			//	aspect2 = A_Water;
 			
 			Aspects[attacker][aspect2] += gain;
@@ -1087,7 +1087,7 @@ static float Brew_524(char name[64], int attrib[TINKER_LIMIT], float value[TINKE
 // Wat Str* Agi^
 static float Brew_502(char name[64], int attrib[TINKER_LIMIT], float value[TINKER_LIMIT], int add[TINKER_LIMIT])
 {
-	strcopy(name, sizeof(name), "Flask of Kazimierz");
+	strcopy(name, sizeof(name), "Flask of Grunwald");
 	attrib[0] = Attrib_SetArchetype;
 	value[0] = 23.0;
 	add[0] = 1;

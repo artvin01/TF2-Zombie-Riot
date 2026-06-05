@@ -228,21 +228,7 @@ public void Weapon_Boomerang_Touch(int entity, int target)
 		{
 			//lazy copy paste.
 			
-			float GibEnemyGive = 1.0;
-
-#if defined ZR || defined RPG
-			if(IsValidEntity(weapon))
-			{
-				GibEnemyGive *= Attributes_Get(weapon, 4012, 1.0);
-			}
-			//oh i was burnin!!
-			//Grilled.
-			if(HasSpecificBuff(target, "Burn"))
-				GibEnemyGive *= 1.1;
-
-			GibEnemyGive = 0.5;
-			Npc_DoGibLogic(target, GibEnemyGive, true);
-#endif
+			WeaponSpawnGibForce(target, weapon);
 		}
 		if(i_Current_Pap[owner] == 0 || i_Current_Pap[owner] == 3 || i_Current_Pap[owner] == 6)
 		{
@@ -607,4 +593,21 @@ void GlaiveLord_EraseEnemyAoe(int client, int weapon)
 		BoomerRangThrow(client, weapon, METAL_BOOMERANG_MODEl, 4, 1.1, fAng, 1);
 		fAng[1] += (360.0 / float(GLAIVELORD_SPAWNBLADES));
 	}		
+}
+
+void WeaponSpawnGibForce(int victim, int weapon)
+{
+	float GibEnemyGive = 1.0;
+
+	if(IsValidEntity(weapon))
+	{
+		GibEnemyGive *= Attributes_Get(weapon, 4012, 1.0);
+	}
+	//oh i was burnin!!
+	//Grilled.
+	if(HasSpecificBuff(victim, "Burn"))
+		GibEnemyGive *= 1.1;
+
+	GibEnemyGive = 0.5;
+	Npc_DoGibLogic(victim, GibEnemyGive, true);
 }

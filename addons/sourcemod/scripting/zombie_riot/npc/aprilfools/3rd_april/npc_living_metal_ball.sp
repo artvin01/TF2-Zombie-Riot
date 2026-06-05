@@ -96,8 +96,8 @@ methodmap LivingMetalBall < CClotBody
 		npc.m_iWearable1 = shieldModel;
 
 		npc.StartPathing();
-		npc.m_flSpeed = 450.0;
-		f_NpcAdjustFriction[npc.index] = 0.15;
+		npc.m_flSpeed = 380.0;
+		f_NpcAdjustFriction[npc.index] = 0.125;
 		//wwe do it via a buff to give it extra acceleration
 		ApplyStatusEffect(npc.index, npc.index, "Ruina's Agility", 99999.0);
 		NpcStats_RuinaAgilityStengthen(npc.index, 2.0);
@@ -222,7 +222,7 @@ void LivingMetalBallSelfDefense(LivingMetalBall npc, float gameTime)
 	if(gameTime > npc.m_flNextMeleeAttack)
 	{
 		i_ExplosiveProjectileHexArray[npc.index] |= EP_DEALS_CLUB_DAMAGE;
-		float radius = 70.0, damage = 300.0;
+		float radius = 50.0, damage = 300.0;
 		Explode_Logic_Custom(damage, npc.index, npc.index, -1, _, radius, _, _, true, .FunctionToCallOnHit = LivingMetalBallKB);
 
 		if(npc.m_flNextMeleeAttack == FAR_FUTURE)
@@ -233,7 +233,7 @@ void LivingMetalBallSelfDefense(LivingMetalBall npc, float gameTime)
 		else
 		{
 
-			npc.m_flNextMeleeAttack = gameTime + 0.1;
+			npc.m_flNextMeleeAttack = gameTime + 0.05;
 		}
 	}
 }

@@ -304,7 +304,7 @@ methodmap OmegaRaid < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
-		npc.m_flOmegaRPGCD = GetGameTime() + 6.0;
+		npc.m_flOmegaRPGCD = GetGameTime(npc.index) + 6.0;
 		i_TalkDelayCheck = -1;
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/combine_super_soldier.mdl");
@@ -647,7 +647,7 @@ public void OmegaRaid_ClotThink(int iNPC)
 	}
 
 	//Spawn Rollermines
-	if(npc.m_flRollermineSpawn < GetGameTime())
+	if(npc.m_flRollermineSpawn < GetGameTime(npc.index))
 	{	
 		//If he's using the RPG, this animation won't play
 		if(usage != 1)
@@ -665,7 +665,7 @@ public void OmegaRaid_ClotThink(int iNPC)
 	}
 
 	//Throw Grenade
-	if(npc.m_flThrowSupportGrenadeHappening < GetGameTime())
+	if(npc.m_flThrowSupportGrenadeHappening < GetGameTime(npc.index))
 	{
 		//If he's using the RPG, this animation won't play
 		if(usage != 1)
@@ -752,7 +752,7 @@ void OmegaThrowGrenadeHappening(OmegaRaid npc)
 {
 	if(npc.m_flThrowSupportGrenadeHappening)
 	{
-		if(npc.m_flThrowSupportGrenadeHappening < GetGameTime())
+		if(npc.m_flThrowSupportGrenadeHappening < GetGameTime(npc.index))
 		{
 			switch(GetRandomInt(0,4)) //Armornade voicelines
 			{
@@ -799,7 +799,7 @@ void OmegaThrowGrenadeHappening(OmegaRaid npc)
 			float HealDo = 1.0;
 			Omega_GrenadeSupportDo(npc.index, Grenade, damage, GrenadeRangeSupport, HealDo);
 			float SpeedReturn[3];
-			ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 1.75, 1.0);
+			ArcToLocationViaSpeedProjectile(Grenade, vecTarget, SpeedReturn, 1.75, 1.0);
 			TeleportEntity(Grenade, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
 			//Throw a grenade towards the target!
 		}
@@ -1497,7 +1497,7 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 					Format(Text_Lines, sizeof(Text_Lines), "Y'know what? I HOPE {green}he{default} comes back.",client);
 			}
 		}
-		case WEAPON_SEABORN_MISC:
+		case WEAPON_DWELLER_MISC:
 		{
 			if(Waves_InFreeplay())
 			{
@@ -1506,7 +1506,7 @@ static void OmegaRaid_Weapon_Lines(OmegaRaid npc, int client)
 					case 0:
 						Format(Text_Lines, sizeof(Text_Lines), "How the hell are you able to harness its power?");
 					case 1:
-						Format(Text_Lines, sizeof(Text_Lines), "Well after everything you've went through, it shouldn't surprise me that the Seaborn infection doesn't affect you, {gold}%N{default}.",client);
+						Format(Text_Lines, sizeof(Text_Lines), "Well after everything you've went through, it shouldn't surprise me that the Dweller infection doesn't affect you, {gold}%N{default}.",client);
 				}
 			}
 			else

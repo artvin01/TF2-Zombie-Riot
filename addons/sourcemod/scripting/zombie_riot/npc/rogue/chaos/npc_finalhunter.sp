@@ -178,8 +178,8 @@ static void ClotThink(int iNPC)
 
 			float pos[3];
 			GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);
-			SeaFounder_SpawnNethersea(pos);
-			npc.m_iBleedType = BLEEDTYPE_SEABORN;
+			SeaFounder_SpawnAbyss(pos);
+			npc.m_iBleedType = BLEEDTYPE_DWELLER;
 
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidModeTime = GetGameTime() + 9000.0;
@@ -320,7 +320,7 @@ static void ClotThink(int iNPC)
 							if(ShouldNpcDealBonusDamage(target))
 								damage *= 50.0;
 							
-							if(NpcStats_IberiaIsEnemyMarked(target))
+							if(NpcStats_AlminaIsEnemyMarked(target))
 								damage *= 100.0;
 
 							npc.PlayMeleeHitSound();

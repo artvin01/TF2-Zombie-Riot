@@ -2085,6 +2085,8 @@ static int i_CreateAnchor(Lelouch npc, int loop, bool red = false)
 	int spawn_index = NPC_CreateByName("npc_ruina_magia_anchor", npc.index, AproxRandomSpaceToWalkTo, {0.0,0.0,0.0}, red ? TFTeam_Red : GetTeam(npc.index), Data);
 	if(spawn_index > MaxClients)
 	{
+		b_thisNpcIsABoss[spawn_index] = true;
+		b_NoHealthbar[spawn_index] = 1;
 		NpcStats_CopyStats(npc.index, spawn_index);
 		if(GetTeam(spawn_index) != TFTeam_Red)
 		{
@@ -2590,6 +2592,8 @@ static int i_CreateManipulation(Lelouch npc, float Spawn_Loc[3], float Spawn_Ang
 	int spawn_index = NPC_CreateByName("npc_ruina_manipulation", npc.index, Spawn_Loc, Spawn_Ang, GetTeam(npc.index), Model);
 	if(spawn_index > MaxClients)
 	{
+		b_thisNpcIsABoss[spawn_index] = true;
+		b_NoHealthbar[spawn_index] = 1;
 		NpcStats_CopyStats(npc.index, spawn_index);
 		if(GetTeam(npc.index) != TFTeam_Red)
 		{
@@ -2885,6 +2889,8 @@ static int i_summon_weaver(Lelouch npc)
 	int spawn_index = NPC_CreateByName("npc_interstellar_weaver", npc.index, Npc_Loc, ang, GetTeam(npc.index));
 	if(spawn_index > MaxClients)
 	{
+		b_thisNpcIsABoss[spawn_index] = true;
+		b_NoHealthbar[spawn_index] = 1;
 		NpcStats_CopyStats(npc.index, spawn_index);
 		if(GetTeam(npc.index) != TFTeam_Red)
 		{

@@ -52,7 +52,7 @@ public void SkillWeapon_WaldchBonus(int entity, StringMap map, int amount, int c
 	// +1.5% every X
 	WeaponMulti(map, "97", float(amount) * 0.015);
 }
-public void SkillWeapon_IberiaBonus(int entity, StringMap map, int amount, int client)
+public void SkillWeapon_AlminaBonus(int entity, StringMap map, int amount, int client)
 {
 	// +1.5% every X
 	WeaponMulti(map, "6", float(amount) * 0.01);
@@ -64,7 +64,7 @@ public void SkillWeapon_BlitzUp(int entity, StringMap map, int amount, int clien
 	WeaponMulti(map, "6", float(amount) * 0.005);
 	WeaponMulti(map, "97", float(amount) * 0.005);
 }
-public void SkillWeapon_Iberia_Nemal(int entity, StringMap map, int amount, int client)
+public void SkillWeapon_Almina_Nemal(int entity, StringMap map, int amount, int client)
 {
 	// +1% every X
 	WeaponMulti(map, "6", float(amount) * 0.01);

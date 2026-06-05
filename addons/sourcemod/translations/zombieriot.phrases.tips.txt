@@ -152,9 +152,9 @@
 	}
 	"Setup Chat Tip 26"
 	{
-		"en"	"Remember. {crimson}He watches."
-		"it"	"Ricorda. {crimson}Lui osserva."
-		"ko"	"기억하십시오. {crimson}그가 지켜보고 있습니다."
+		"en"	"Raidbosses completely ignore buildings, try not to stay in the same place for too long!"
+		"it"	"I Boss dei Raid ignorano completamente gli edifici, cercate di non rimanere nello stesso posto per troppo tempo!"
+		"ko"	"레이드 보스들은 구조물을 완전히 무시합니다. 같은 장소에 오래 있지 마세요!"
 	}
 	"Setup Chat Tip 27"
 	{
@@ -173,11 +173,5 @@
 		"en"	"Even as a Teutonic Knight you can deal small but consistent damage to enemies. Keep up the fight!"
 		"it"	"Anche come Cavaliere Teutonico potete infliggere danni piccoli ma consistenti ai nemici. Continuate a combattere!"
 		"ko"	"튜튼 기사단이 되더라도, 적지만 지속적으로 적에게 피해를 줄 수 있습니다. 계속 싸워주세요!"
-	}
-	"Setup Chat Tip 30"
-	{
-		"en"	"Raidbosses completely ignore buildings, try not to stay in the same place for too long!"
-		"it"	"I Boss dei Raid ignorano completamente gli edifici, cercate di non rimanere nello stesso posto per troppo tempo!"
-		"ko"	"레이드 보스들은 구조물을 완전히 무시합니다. 같은 장소에 오래 있지 마세요!"
 	}
 }

@@ -330,6 +330,7 @@ public Action Did_Enemy_Step_On_Spike(Handle timer, DataPack pack)
 									DamageTrap *= 4.5;
 
 								SDKHooks_TakeDamage(baseboss_index, client, client, DamageTrap, DMG_BULLET, -1, NULL_VECTOR, Spikepos);
+								SummonerRenerateResources(client, 2.6, 0.0, true);
 
 								RemoveEntity(entity);
 								SetEntitySpike(entity, 0);

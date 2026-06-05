@@ -143,7 +143,7 @@ public void Rogue_StoneNemesis_Collect()
 
 public void Rogue_StoneNemesis_FloorChange(int newFloor)
 {
-	Rogue_AddUmbral(3);
+	Rogue_AddUmbral(6);
 }
 
 public void Rogue_StoneNemesis_Remove()
@@ -381,6 +381,6 @@ public void Rogue_IncorruptableLeaf_Ally(int entity, StringMap map)
 		float value;
 		//give 30% res
 		map.GetValue("4049", value);
-		map.SetValue("4049", value * 0.7);
+		map.SetValue("4049", value * 0.5);
 	}
 }

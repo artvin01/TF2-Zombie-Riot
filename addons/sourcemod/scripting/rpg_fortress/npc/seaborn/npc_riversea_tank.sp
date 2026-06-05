@@ -104,9 +104,9 @@ methodmap RiverSeaTank < CClotBody
 		npc.m_flNextRangedAttackHappening = 0.0;
 		i_GrabbedThis[npc.index] = -1;
 		
-		npc.m_iBleedType = BLEEDTYPE_SEABORN;
+		npc.m_iBleedType = BLEEDTYPE_DWELLER;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
-		npc.m_iNpcStepVariation = STEPTYPE_SEABORN;
+		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
 
 		f3_SpawnPosition[npc.index] = vecPos;
 

@@ -381,7 +381,7 @@ public void Molotov_ThrowBottle(DataPack pack)
 			h_NpcSolidHookType[bottle] = 0;
 
 			SetEntityGravity(bottle, MOLOTOV_GRAVITY); 	
-			ArcToLocationViaSpeedProjectile(pos, vPredictedPos, SpeedReturn, 1.0, 1.0);
+			ArcToLocationViaSpeedProjectile(bottle, vPredictedPos, SpeedReturn, 1.0, 1.0);
 			SetEntityMoveType(bottle, MOVETYPE_FLYGRAVITY);
 			TeleportEntity(bottle, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
 

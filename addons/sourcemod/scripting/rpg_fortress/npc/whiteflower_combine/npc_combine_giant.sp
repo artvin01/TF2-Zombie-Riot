@@ -39,7 +39,7 @@ methodmap CombineGiant < CombineWarrior
 			{
 				static Race race;
 				Races_GetClientInfo(target, race);
-				if(StrEqual(race.Name, "Iberian"))
+				if(StrEqual(race.Name, "Alminan"))
 				{
 					switch(GetRandomInt(0,2))
 					{
@@ -48,7 +48,7 @@ methodmap CombineGiant < CombineWarrior
 						case 1:
 							NpcSpeechBubble(this.index, "Didnt mean to fry that chicken.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 						case 2:
-							NpcSpeechBubble(this.index, "Iberians are bye-irans.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+							NpcSpeechBubble(this.index, "Alminans are bye-irans.", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 					}
 					return;
 				}

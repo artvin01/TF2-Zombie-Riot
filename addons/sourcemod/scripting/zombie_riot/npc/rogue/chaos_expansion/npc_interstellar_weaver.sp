@@ -104,7 +104,8 @@ methodmap Interstellar_Weaver < CClotBody
 
 		if(ally != TFTeam_Red)
 		{
-			//b_thisNpcIsABoss[npc.index] = true;
+			b_thisNpcIsABoss[npc.index] = true;
+			b_NoHealthbar[npc.index] = 1;
 		}
 		b_IgnoreAllCollisionNPC[npc.index] = true;
 		f_NoUnstuckVariousReasons[npc.index] = FAR_FUTURE;

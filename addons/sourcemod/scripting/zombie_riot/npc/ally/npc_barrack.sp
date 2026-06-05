@@ -135,6 +135,7 @@ static bool FreeToSelect[MAXENTITIES];
 static int SupplyCount[MAXENTITIES];
 static bool b_WalkToPosition[MAXENTITIES];
 static int i_RalleyTarget[MAXENTITIES];
+float f_ConfirmSuicide[MAXPLAYERS];
 
 methodmap BarrackBody < CClotBody
 {
@@ -992,16 +993,24 @@ public int BarrackBody_MenuH(Menu menu, MenuAction action, int client, int choic
 							BarracksVillager_MenuSpecial(client, npc.index);
 							return 0;
 						}
-						else if(StrEqual(npc_classname, "npc_barrack_lastknight"))
+						else if(StrEqual(npc_classname, "npc_barrack_corruptedknight"))
 						{
-							LastKnight_MenuSpecial(client, npc.index);
+							CorruptedKnight_MenuSpecial(client, npc.index);
 							return 0;
 						}
 					}
 					case 8:
 					{
-						SmiteNpcToDeath(npc.index);
-						return 0;
+						if(f_ConfirmSuicide[client] > GetGameTime())
+						{
+							SmiteNpcToDeath(npc.index);
+							return 0;
+						}
+						else
+						{
+							CPrintToChat(client, "Press again to confirm killing the unit.");
+							f_ConfirmSuicide[client] = GetGameTime() + 2.0;
+						}
 					}
 				}
 

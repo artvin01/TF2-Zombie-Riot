@@ -212,7 +212,7 @@ public void VoidEncasulator_ClotThink(int iNPC)
 			npc.SetGoalEntity(npc.m_iTarget);
 		}
 		
-		if(npc.m_flJumpCooldown < GetGameTime(npc.index) && VoidArea_TouchingNethersea(npc.m_iTarget))
+		if(npc.m_flJumpCooldown < GetGameTime(npc.index) && VoidArea_TouchingAbyss(npc.m_iTarget))
 		{
 			if(Can_I_See_Enemy_Only(npc.index, npc.m_iTarget))
 			{

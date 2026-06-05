@@ -133,7 +133,7 @@ static Action Timer_HeartBroken(Handle timer, DataPack pack)
 static void HeartBroken_HUD(int client)
 {
 	//char weapon_hint[50];
-	if(WeaponLevel[client] < 5)
+	if(WeaponLevel[client] < 3)
 		return;
 	/*
 	if(CoffinLoseCD[client] < GetGameTime() && !Waves_InSetup())
@@ -229,11 +229,10 @@ public void HeartBroken_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 	if(CheckInHud())
 		return;
 
+	//allow coffin gain at anypoint so they can gather it up beffore upgrading to this
+	GiveCoffinOnDamage(attacker,victim,  damage);
 	if(WeaponLevel[attacker] >= 5)
 	{
-
-		GiveCoffinOnDamage(attacker,victim,  damage);
-
 		//more coffins means more damage, 0.2 is the dmg multiplier
 		damage *= (1.0 + (CoffinCharge[attacker] * 0.2));
 	}
@@ -272,7 +271,7 @@ public void HeartBroken_OnTakeDamage_Take(int victim, int &attacker, int &inflic
 	if(zr_custom_damage & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
 		return;
 		
-	if(HasSpecificBuff(victim, "HB In Parry") && IsValidEnemy(victim, attacker, true))
+	if(HasSpecificBuff(victim, "HB In Parry") && IsValidEnemy(victim, attacker, true, true))
 	{
 		LookAtTarget(victim, attacker);
 		RemoveSpecificBuff(victim, "HB In Parry");
@@ -491,13 +490,15 @@ static int HeartBrokenAction(int client, int target, int which)
 		case 2:
 		{
 			Format(animation, sizeof(animation), "o_dohhulan_parry");
-			duration = 2.0;
+			duration = 1.25;
 			ShieldGive = ReturnEntityMaxHealth(client) / 7;
 		}
 	}
-	ApplyStatusEffect(client, client, "Shielding", duration);
+	ApplyStatusEffect(client, client, "Shielding", duration + 0.5);
 	if(LastMann)
 		ShieldGive *= 2;
+	
+	ShieldGive = ((ShieldGive * 3) / 4);
 
 	Shielding_Add(client, ShieldGive);
 
@@ -640,7 +641,8 @@ void Heartbroken_ShootHorseProjectile(int client, int target, float dmgmotif = 1
 
 	GetClientEyeAngles(client, vAngles);
 	vAngles[0] = 0.0;
-	vAngles[0] += GetRandomFloat(-5.0,5.0);
+	vAngles[0] += GetRandomFloat(-1.0,1.0);
+	vAngles[0] += 20.0;
 	vAngles[1] += GetRandomFloat(-15.0,15.0);
 	fClamp(vAngles[1], -20.0, 20.0);
 	float vecSwingForward[3];
@@ -652,7 +654,7 @@ void Heartbroken_ShootHorseProjectile(int client, int target, float dmgmotif = 1
 	
 	
 	//This spawns the projectile, this is a return int, if you want, you can do extra stuff with it, otherwise, it can be used as a void.
-	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, -1/*Default wand*/, -1, "",_,_,vecSwingEnd);
+	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, -1/*Default wand*/, -1, "",vAngles,_,vecSwingEnd);
 	b_ProjectileCollideIgnoreWorld[projectile] = true;
 	SetEntityMoveType(projectile, MOVETYPE_NOCLIP);
 	WandProjectile_ApplyFunctionToEntity(projectile, Horse_Projectile_Hit);
@@ -708,6 +710,8 @@ public void Horse_Projectile_Hit(int entity, int target)
 	float Wand_Dmg = f_WandDamage[entity];
 	
 
+	ApplyStatusEffect(owner, target, "Sinking", 10.0);
+	StatusEffects_SinkingDebuffAdd(target, 1);
 	float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 	SDKHooks_TakeDamage(target, entity, owner, Wand_Dmg, DMG_CLUB, -1, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 	f_WandDamage[entity] *= 0.5;
@@ -726,6 +730,8 @@ public void Heartbroken_Reqieum(int client, int weapon, bool crit, int slot)
 	}
 	int MeleeWeapon = EntRefToEntIndex(ref_MeleeWeapon[client]);
 	if(!IsValidEntity(MeleeWeapon))
+		return;
+	if(WeaponLevel[client] < 5)
 		return;
 	if(HasSpecificBuff(MeleeWeapon, "Memorial Possession") || HasSpecificBuff(MeleeWeapon, "Decapitate"))
 	{
@@ -873,8 +879,16 @@ public void Coffin_Projectile_Hit(int entity, int target)
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 		SDKHooks_TakeDamage(target, entity, owner, Wand_Dmg, DMG_CLUB, -1, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 
-		EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_INTRO, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.8, SNDPITCH_NORMAL, -1, Entity_Position);
-		EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_INTRO, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.8, SNDPITCH_NORMAL, -1, Entity_Position);
+		if(LastMann)
+		{
+			EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_INTRO, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.8, SNDPITCH_NORMAL, -1, Entity_Position);
+			EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_INTRO, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.8, SNDPITCH_NORMAL, -1, Entity_Position);
+		}
+		else
+		{
+			EmitSoundToClient(owner, SOUND_WAND_LIGHTNING_ABILITY_PAP_INTRO, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.8, SNDPITCH_NORMAL, -1, Entity_Position);
+			EmitSoundToClient(owner, SOUND_WAND_LIGHTNING_ABILITY_PAP_INTRO, 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, 0.8, SNDPITCH_NORMAL, -1, Entity_Position);
+		}
 		
 		GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", Entity_Position);	
 		Entity_Position[2] += 10.0;
@@ -892,8 +906,10 @@ public void Coffin_Projectile_Hit(int entity, int target)
 			WritePackFloat(pack, VecSave[1]);
 			WritePackFloat(pack, VecSave[2]);
 			WritePackFloat(pack, Wand_Dmg * 0.25);
-
-			spawnRing_Vectors(VecSave, Smite_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 0, 255, 200, 1, Smite_ChargeTime, 3.0, 0.1, 1, 1.0);
+			int DisplayToClient = 0;
+			if(!LastMann)
+				DisplayToClient = owner;
+			spawnRing_Vectors(VecSave, Smite_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 0, 255, 200, 1, Smite_ChargeTime, 3.0, 0.1, 1, 1.0, DisplayToClient);
 		}
 		RemoveSpecificBuff(target, "Coffin Target");
 	}
@@ -973,7 +989,7 @@ public void Coffin_Projectile_ReturnOwner(int entity, int target)
 		EmitSoundToAll(g_CoffinClaim[SoundDo], owner, SNDCHAN_AUTO, 80, _, 0.9, 90);
 		EmitSoundToAll(g_CoffinClaim2[GetRandomInt(0, sizeof(g_CoffinClaim2) - 1)], owner, SNDCHAN_AUTO, 80, _, 0.9, 90);
 		EmitSoundToAll(g_CoffinClaim2[GetRandomInt(0, sizeof(g_CoffinClaim2) - 1)], owner, SNDCHAN_AUTO, 80, _, 0.9, 90);
-		CoffinCharge[owner] += (1.0 / float(MAX_COFFINS));
+		CoffinCharge[owner] += (2.0 / float(MAX_COFFINS));
 		if(WeaponLevel[owner] >= 6)
 		{
 			if(CoffinCharge[owner] >= 1.0)
@@ -1012,6 +1028,9 @@ public Action HeartBroken_Smite_Timer(Handle Smite_Logic, DataPack pack)
 	
 	float damage = ReadPackFloat(pack);
 	
+	int DisplayToClient = 0;
+	if(!LastMann)
+		DisplayToClient = client;
 	if (NumLoops >= Smite_ChargeTime)
 	{
 		float secondLoc[3];
@@ -1022,16 +1041,23 @@ public Action HeartBroken_Smite_Timer(Handle Smite_Logic, DataPack pack)
 		
 		for (int sequential = 1; sequential <= 2; sequential++)
 		{
-			spawnRing_Vectors(secondLoc, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 0, 255, 120, 1, 0.33, 4.0, 0.4, 1, (Smite_Radius * 5.0)/float(sequential));
+			spawnRing_Vectors(secondLoc, 1.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 0, 255, 120, 1, 0.33, 4.0, 0.4, 1, (Smite_Radius * 5.0)/float(sequential), DisplayToClient);
 			secondLoc[2] += 150.0 + (float(sequential) * 20.0);
 		}
 		
 		secondLoc[2] = 9999.0;
 		
-		spawnBeam(0.8, 125, 0, 255, 255, "materials/sprites/laserbeam.vmt", 8.0, 8.2, _, 5.0, secondLoc, spawnLoc);	
-		spawnBeam(0.8, 125, 0, 255, 200, "materials/sprites/lgtning.vmt", 5.0, 5.2, _, 5.0, secondLoc, spawnLoc);	
+		spawnBeam(0.8, 125, 0, 255, 255, "materials/sprites/laserbeam.vmt", 8.0, 8.2, _, 5.0, secondLoc, spawnLoc, DisplayToClient);	
+		spawnBeam(0.8, 125, 0, 255, 200, "materials/sprites/lgtning.vmt", 5.0, 5.2, _, 5.0, secondLoc, spawnLoc, DisplayToClient);	
 		
-		EmitAmbientSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE, spawnLoc, _, 75, _ , 0.5);
+		if(LastMann)
+		{
+			EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE, 0, SNDCHAN_AUTO, 75, SND_NOFLAGS, 0.5, SNDPITCH_NORMAL, -1, spawnLoc);
+		}
+		else
+		{
+			EmitSoundToClient(client, SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE, 0, SNDCHAN_AUTO, 75, SND_NOFLAGS, 0.5, SNDPITCH_NORMAL, -1, spawnLoc);
+		}
 		
 		DataPack pack_boom = new DataPack();
 		pack_boom.WriteFloat(spawnLoc[0]);
@@ -1047,9 +1073,17 @@ public Action HeartBroken_Smite_Timer(Handle Smite_Logic, DataPack pack)
 	}
 	else
 	{
-		spawnRing_Vectors(spawnLoc, Smite_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 0, 255, 120, 1, 0.33, 3.0, 0.1, 1, 1.0);
-		EmitAmbientSound(SOUND_WAND_LIGHTNING_ABILITY_PAP_CHARGE, spawnLoc, _, 60, _, 0.7, GetRandomInt(80, 110));
+		spawnRing_Vectors(spawnLoc, Smite_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 0, 255, 120, 1, 0.33, 3.0, 0.1, 1, 1.0, DisplayToClient);
 		
+		if(LastMann)
+		{
+			EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_CHARGE, 0, SNDCHAN_AUTO, 60, SND_NOFLAGS, 0.7, GetRandomInt(80, 110), -1, spawnLoc);
+		}
+		else
+		{
+			EmitSoundToClient(client, SOUND_WAND_LIGHTNING_ABILITY_PAP_CHARGE, 0, SNDCHAN_AUTO, 60, SND_NOFLAGS, 0.7, GetRandomInt(80, 110), -1, spawnLoc);
+		}
+
 		ResetPack(pack);
 		WritePackCell(pack, GetClientUserId(client));
 		WritePackFloat(pack, NumLoops + Smite_ChargeSpan);
@@ -1061,7 +1095,7 @@ public Action HeartBroken_Smite_Timer(Handle Smite_Logic, DataPack pack)
 	
 	return Plugin_Continue;
 }
-static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[PLATFORM_MAX_PATH], float width=2.0, float endwidth=2.0, int fadelength=1, float amp=15.0, float startLoc[3] = {0.0, 0.0, 0.0}, float endLoc[3] = {0.0, 0.0, 0.0})
+static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[PLATFORM_MAX_PATH], float width=2.0, float endwidth=2.0, int fadelength=1, float amp=15.0, float startLoc[3] = {0.0, 0.0, 0.0}, float endLoc[3] = {0.0, 0.0, 0.0}, int client = 0)
 {
 	int color[4];
 	color[0] = r;
@@ -1073,7 +1107,10 @@ static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[
 
 	TE_SetupBeamPoints(startLoc, endLoc, SPRITE_INT, 0, 0, 0, beamTiming, width, endwidth, fadelength, amp, color, 0);
 	
-	TE_SendToAll();
+	if(client == 0)
+		TE_SendToAll();
+	else
+		TE_SendToClient(client);
 }
 
 
@@ -1088,17 +1125,17 @@ stock void GiveCoffinOnDamage(int client, int victim, float damage)
 
 	MinCashMaxGain -= 250;
 
-	if(MinCashMaxGain >= 200000)
+	if(MinCashMaxGain >= 100000)
 	{
-		MinCashMaxGain = 200000;
+		MinCashMaxGain = 100000;
 	}
 	
 	float DamageForMaxCharge = (Pow(2.0 * MinCashMaxGain, 1.2) + MinCashMaxGain * 3.0);
 
 	DamageForMaxCharge *= 0.5;
-
-	if(b_thisNpcIsARaid[victim])
-		DamageForMaxCharge *= 0.85;
+	DamageForMaxCharge *= 0.75;
+	if(StatusEffects_SinkingDebuffMaxStacks(victim))
+		DamageForMaxCharge *= 0.5;
 
 	CoffinCharge[client] += (damage / DamageForMaxCharge);
 	if(WeaponLevel[client] >= 6)
@@ -1237,13 +1274,18 @@ void Heartbroken_WildHunt(int client, bool ForceRevive = false)
 	TE_Particle("halloween_boss_death_cloud", PosMe, NULL_VECTOR, NULL_VECTOR, RandomWildHunted, _, _, _, _, _, _, _, _, _, 0.0);
 	float Duration = 45.0;
 	if(ForceRevive)
-		Duration *= 2.0;
+		Duration *= 1.5;
+	Duration += GetRandomFloat(0.1, 1.0);
 	GiveCompleteInvul(RandomWildHunted, 3.0);
 	TF2_AddCondition(RandomWildHunted, TFCond_SpeedBuffAlly, 3.0);
 	MorphineShotLogic(RandomWildHunted, true);
 
 	ApplyStatusEffect(client, RandomWildHunted, "Call of the Heartbroken", Duration);
+	if(!ForceRevive)
+		ApplyStatusEffect(client, RandomWildHunted, "Coffin's Return", Duration);
+
 	ApplyStatusEffect(client, RandomWildHunted,	"Call of the Heartbroken Internal", Duration + 1.0);
-	ApplyStatusEffect(client, RandomWildHunted, "Shielding", 3.0);
-	Shielding_Add(RandomWildHunted, ReturnEntityMaxHealth(RandomWildHunted) / 5);
+	ApplyStatusEffect(client, RandomWildHunted, "Shielding", 10.0);
+	Shielding_Add(RandomWildHunted, ReturnEntityMaxHealth(RandomWildHunted) / 2);
+	CheckAlivePlayers();
 }

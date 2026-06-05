@@ -98,7 +98,7 @@ bool Attribute_IntAttribute(int attribute)
 {
 	switch(attribute)
 	{
-		case 314, 834, 866, 867, Attrib_BarracksSupplyRate, Attrib_FinalBuilder, Attrib_GlassBuilder, Attrib_WildingenBuilder:
+		case 517, 26, 125, 16, 98, 110, 111, 180, 701, 314, 834, 866, 867, Attrib_BarracksSupplyRate, Attrib_FinalBuilder, Attrib_GlassBuilder, Attrib_WildingenBuilder:
 			return true;
 	}
 
@@ -110,7 +110,7 @@ bool Attribute_DontSaveAsIntAttribute(int attribute)
 	switch(attribute)
 	{
 		//this attrib is a float, but saves as an int, for stuff thats additional, not multi.
-		case 314, 142:
+		case 517, 26, 125, 314, 142:
 			return true;
 	}
 
