@@ -1910,13 +1910,13 @@ void StatusEffect_SpeedModifier(int victim, float &SpeedModifPercentage)
 			if(!HasSpecificBuff(victim, "Fluid Movement"))
 			{
 				SpeedWasNerfed = true;
-				TotalSlowdown *= ((-SpeedModif + 1.0));
+				TotalSlowdown *= ((-(SpeedModif * Effectiveness) + 1.0));
 			}
 		}
 	}
 	//speed debuffs will now behave the excat same as damage buffs
 	if(SpeedWasNerfed)
-		SpeedModifPercentage *= (TotalSlowdown * (1.0 / Effectiveness));
+		SpeedModifPercentage *= (TotalSlowdown);
 
 	//No magical backwards shit
 	if(SpeedModifPercentage <= 0.0)
