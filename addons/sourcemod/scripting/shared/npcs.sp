@@ -456,8 +456,11 @@ bool NPC_SpawnNext(bool panzer,
 					}
 
 					if(Waves_InFreeplay())
+					{
+						TeleportDiversioToRandLocation(entity_Spawner,_,2000.0,1000.0);
 						Freeplay_SpawnEnemy(entity_Spawner);
-					if(Bool_IsNonZRMap())
+					}
+					if(Bool_IsNonZRMap() || Waves_InFreeplay())
 					{
 						TeleportDiversioToRandLocation(entity_Spawner,_,2000.0,1000.0);
 					}

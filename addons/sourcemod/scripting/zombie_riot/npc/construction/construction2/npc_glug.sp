@@ -205,7 +205,7 @@ static void ClotThink(int iNPC)
 
 	if(npc.m_flPeacefullAbdication < gameTime)
 	{
-		npc.Anger = false;
+		npc.Anger = true;
 		npc.m_bDissapearOnDeath = true;	
 		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 		return;
