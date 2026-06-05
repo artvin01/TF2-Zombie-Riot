@@ -7396,7 +7396,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	strcopy(data.BuffName, sizeof(data.BuffName), "Verde");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
-	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Verde");
+	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Verde");fat
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
@@ -7769,9 +7769,9 @@ void StatusEffects_Construct2_EnemyModifs()
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
 	data.DamageDealMulti			= -1.0;
-	data.MovementspeedModif			= 0.25;
+	data.MovementspeedModif			= 0.35;
 	data.AttackspeedBuff			= -1.0;
-	data.Positive 					= true;
+	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = false;
 	data.OnBuffStarted				= Const2Modifs_Fat_Start;
 	data.OnBuffEndOrDeleted			= Const2Modifs_Fat_End;

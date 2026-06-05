@@ -866,8 +866,21 @@ void ZR_PluginStart()
 	NpcConst2Building_CommandPluginStart();
 }
 
+bool IsNonZRMap = false;
+bool Bool_IsNonZRMap()
+{
+	return IsNonZRMap;
+}
 void ZR_MapStart()
 {
+	IsNonZRMap = false;
+	
+	char mapname[64];
+	GetMapName(mapname, sizeof(mapname));
+	if(StrContains(mapname, "zr_") != 0)
+	{
+		IsNonZRMap = true;
+	}
 	MusicString1.Clear();
 	MusicString2.Clear();
 	MusicSetup1.Clear();
