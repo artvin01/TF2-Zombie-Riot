@@ -18,6 +18,7 @@ static char TeleEnter[64];
 static char TeleNext[64];
 static int LimitNotice;
 static bool NoticenoDungeon;
+static float BasePosSave[3];
 
 
 #define MONEY_SCLAING_PUSHFUTURE 3
@@ -429,6 +430,7 @@ int Dungeon_CurrentAttacks()
 
 void Dungeon_MapStart()
 {
+	Zero(BasePosSave);
 	DungeonMode = false;
 	Dungeon_RoundEnd();
 }
@@ -798,6 +800,7 @@ void Dungeon_Start()
 	mp_disable_respawn_times.BoolValue = false;
 
 	CreateAllDefaultBuidldings(pos, ang);
+	BasePosSave = pos;
 
 	int highestLevel;
 	for(int client = 1; client <= MaxClients; client++)
@@ -818,6 +821,21 @@ void Dungeon_Start()
 	Dungeon_SetRandomMusic();
 
 	CreateNewRivals();
+}
+public Action Dhook_TeleportToCenter(Handle timer, int userid)
+{
+	int client = GetClientOfUserId(userid);
+	if(IsValidClient(client))
+	{
+		if(IsNullVector(BasePosSave))
+			return Plugin_Stop;
+		float ang[3];
+		ang[2] = 0.0;
+		SetEntProp(client, Prop_Send, "m_bDucked", true);
+		SetEntityFlags(client, GetEntityFlags(client)|FL_DUCKING);
+		TeleportEntity(client, BasePosSave, ang, NULL_VECTOR);
+	}
+	return Plugin_Stop;
 }
 
 void CreateAllDefaultBuidldings(float pos[3], float ang[3])
@@ -2656,10 +2674,17 @@ public void ZRModifs_GiveRandomPrefix(int iNpc)
 			}
 			case 22:
 			{
-				if(HasSpecificBuff(iNpc, "Asexual Prefix"))
+				if(RaidBossActive == EntIndexToEntRef(iNpc) || b_thisNpcIsARaid[iNpc] || Elemental_DamageRatio(iNpc, Element_Warped) > 0.0)
+				{
 					RetryBuffGiving = true;
+				}
 				else
-					ApplyStatusEffect(iNpc, iNpc, "Asexual Prefix", 999999.9);
+				{
+					if(HasSpecificBuff(iNpc, "Asexual Prefix"))
+						RetryBuffGiving = true;
+					else
+						ApplyStatusEffect(iNpc, iNpc, "Asexual Prefix", 999999.9);
+				}
 			}
 			case 23:
 			{

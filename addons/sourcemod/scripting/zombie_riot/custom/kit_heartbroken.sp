@@ -86,7 +86,7 @@ public Action Timer_ReviveHeartBroken(Handle timer, any entid)
 	int client = EntRefToEntIndex(entid);
 	if(IsValidClient(client))
 	{
-		for(int i=0; i<4; i++)
+		for(int i=0; i<2; i++)
 		{
 			Heartbroken_WildHunt(client, true);
 		}
@@ -496,7 +496,7 @@ static int HeartBrokenAction(int client, int target, int which)
 	}
 	ApplyStatusEffect(client, client, "Shielding", duration + 0.5);
 	if(LastMann)
-		ShieldGive *= 2;
+		ShieldGive = ((ShieldGive * 3) / 4);
 	
 	ShieldGive = ((ShieldGive * 3) / 4);
 
@@ -1163,7 +1163,7 @@ void Heartbroken_WildHunt(int client, bool ForceRevive = false)
 	}
 	float ReviveCost = 0.5;
 	if(LastMann)
-		ReviveCost = 0.3;
+		ReviveCost = 0.4;
 	
 	if(!ForceRevive && CoffinCharge[client] < ReviveCost)
 	{
@@ -1274,7 +1274,7 @@ void Heartbroken_WildHunt(int client, bool ForceRevive = false)
 	TE_Particle("halloween_boss_death_cloud", PosMe, NULL_VECTOR, NULL_VECTOR, RandomWildHunted, _, _, _, _, _, _, _, _, _, 0.0);
 	float Duration = 45.0;
 	if(ForceRevive)
-		Duration *= 1.5;
+		Duration *= 1.25;
 	Duration += GetRandomFloat(0.1, 1.0);
 	GiveCompleteInvul(RandomWildHunted, 3.0);
 	TF2_AddCondition(RandomWildHunted, TFCond_SpeedBuffAlly, 3.0);

@@ -10750,6 +10750,8 @@ void StatusEffects_Red_Mist()
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.ElementalLogic				= true;
+	data.OnTakeDamage_TakenFunc 	= EgoLastman_DamageTakenFunc;
+	data.OnTakeDamage_DealFunc 		= EgoLastman_DamageDealFunc;
 	data.OnBuffStarted				= EgoManifest_Start;
 	data.OnBuffStoreRefresh			= EgoManifest_Refresh;
 	data.OnBuffEndOrDeleted			= EgoManifest_End;
@@ -10981,4 +10983,21 @@ float EgoManifestation_SpeedVunc(int victim, StatusEffect Apply_MasterStatusEffe
 		return 1.0;
 	else
 		return 1.1;
+}
+
+
+float EgoLastman_DamageTakenFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
+{
+	if(LastMann)
+		return 0.95;
+
+	return 0.9;
+}	
+
+float EgoLastman_DamageDealFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float basedamage, float DamageBuffExtraScaling)
+{
+	if(LastMann)
+		return 0.2;
+
+	return 0.3;
 }

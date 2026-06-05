@@ -274,7 +274,7 @@ public void Agent61_ClotThink(int iNPC)
 			case 0:
 			{
 				npc.StartPathing();
-				npc.m_flSpeed = 290.0;
+				npc.m_flSpeed = 400.0;
 			}
 			case 1:
 			{
@@ -290,7 +290,7 @@ public void Agent61_ClotThink(int iNPC)
 					npc.m_iChanged_WalkCycle = 1;
 					npc.SetActivity("ACT_MP_RUN_SECONDARY");
 					npc.StartPathing();
-					npc.m_flSpeed = 290.0;
+					npc.m_flSpeed = 400.0;
 				}	
 			}
 			case 3:
@@ -359,7 +359,7 @@ static int Clot_SelfDefense(Agent61 npc, float gameTime, int target, float dista
 		npc.m_iChanged_WalkCycle = 4;
 		npc.SetActivity("ACT_MP_RUN_ITEM1");
 		npc.StartPathing();
-		npc.m_flSpeed = 290.0;
+		npc.m_flSpeed = 400.0;
 	}	
 	if(npc.m_flAttackHappens)
 	{

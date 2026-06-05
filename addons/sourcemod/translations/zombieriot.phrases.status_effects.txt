@@ -3578,8 +3578,7 @@
 	}
 	"Ego Manifestation Desc"
 	{
-		"en"	"Deal 30％ more damage and take 10％ less damage and 10％ movement speed (except during lastman)\nWhile active unlock a new special ability"
-		"ko"	"가하는 피해량 30％ 증가, 받는 피해량 10％ 감소, 이동 속도가 10％ 증가합니다.(최후의 1인 상태 제외)\n활성화된 동안 특별 책장이 해금됩니다."
+		"en"	"Deal 30％ more damage and take 10％ less damage and 10％ movement speed (except during lastman, lastman nerfs this buff)\nWhile active unlock a new special ability"
 	}
 	"Red Mist Counter"
 	{
