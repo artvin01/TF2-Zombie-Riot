@@ -79,6 +79,11 @@ float BonePosition[3], float BoneAngles[3], int ProjectileType, bool IsCrit)
 public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 {
 #if defined ZR
+
+	if(Bool_IsNonZRMap())
+		DeleteAllPropsBad_NonZrMaps();
+	
+	
 	DeleteShadowsOffZombieRiot();
 	EventRoundStartMusicFilter();
 	b_GameOnGoing = true;
@@ -793,4 +798,27 @@ public Action ChatSetupTipTimer(Handle TimerHandle)
 			SPrintToChat(client, "{green}TIP:{snow} %t",TipText);
 	}
 	return Plugin_Stop;
+}
+
+void DeleteAllPropsBad_NonZrMaps()
+{
+	ServerCommand("sv_cheats 1; nav_load ; sv_cheats 0");
+	for( int i = 1; i <= MAXENTITIES; i++ ) 
+	{
+		if(!IsValidEntity(i))
+			continue;
+		static char classname[36];
+		GetEntityClassname(i, classname, sizeof(classname));
+		if(!StrContains(classname, "prop_door") ||
+		!StrContains(classname, "item_healthkit_") ||
+		!StrContains(classname, "item_ammopack_") ||
+		!StrContains(classname, "item_teamflag") ||
+		!StrContains(classname, "func_regenerate") ||
+		!StrContains(classname, "func_respawnroom") ||
+		!StrContains(classname, "func_respawnroomvisualizer") ||
+		!StrContains(classname, "func_door"))
+		{
+			RemoveEntity(i);
+		}
+	}
 }
