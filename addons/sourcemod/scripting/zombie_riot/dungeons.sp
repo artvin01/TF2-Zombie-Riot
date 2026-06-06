@@ -828,8 +828,9 @@ public Action Dhook_TeleportToCenter(Handle timer, int userid)
 	int client = GetClientOfUserId(userid);
 	if(IsValidClient(client))
 	{
-		if(IsNullVector(BasePosSave))
+		if(BasePosSave[1] == NULL_VECTOR[1] && BasePosSave[0] == NULL_VECTOR[0] && BasePosSave[2] == NULL_VECTOR[2])
 			return Plugin_Stop;
+	
 		float ang[3];
 		ang[2] = 0.0;
 		SetEntProp(client, Prop_Send, "m_bDucked", true);
