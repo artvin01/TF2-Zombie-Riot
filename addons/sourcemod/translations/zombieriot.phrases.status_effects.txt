@@ -3416,7 +3416,7 @@
 	{
 		"en"	"Depressed"
 	}
-	"Depressed Prefix Desc"
+	"Depressed Desc"
 	{
 		"en"	"Decreases attack/reload speed and heal rate by 30％ and movement speed by 20％."
 	}
@@ -3454,7 +3454,7 @@
 	}
 	"Party Popper Prefix Desc"
 	{
-		"en"	"NPCs burst into confetti on death, infecting everything around with Party Popper.\nNPCs take damage and players cannot get downed temporarily."
+		"en"	"Burst into confetti on death, infecting everything around with Party Popper.\nNPCs take damage and players cannot get downed temporarily."
 	}
 	"Gory Prefix"
 	{
@@ -3491,6 +3491,18 @@
 	"Red Mist Shin"
 	{
 		"en"	"Red Mist Shin"
+	}
+	"Warning Prefix"
+	{
+		"en"	"Warning Prefix"
+	}
+	"Warning Prefix Desc"
+	{
+		"en"	"⚠⚠⚠"
+	}
+	"⚠"
+	{
+		"en"	"⚠"
 	}
 	"Ragdolled"
 	{
