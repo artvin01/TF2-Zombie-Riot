@@ -511,7 +511,7 @@ static void Clone_ClotThink(int iNPC)
 
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
-	if(g_TimesSummoned < 1)
+	if(npc.g_TimesSummoned < 1)
 	{
 		b_NpcForcepowerupspawn[npc.index] = 0;
 		i_RaidGrantExtra[npc.index] = 0;
@@ -522,7 +522,7 @@ static void Clone_ClotThink(int iNPC)
 	}
 	else
 	{
-		g_TimesSummoned -= 1;
+		npc,g_TimesSummoned -= 1;
 	}
 	
 	
