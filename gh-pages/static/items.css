@@ -15,6 +15,11 @@
     align-items: center;
 }
 
+.header:has(.gtag) {
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
 .header #search {
     display: flex;
     align-items: center;
@@ -27,6 +32,8 @@
     padding-right: 6px;
 }
 
+
+/* Header row 1 */
 #cost_slider {
     width: 100%;
 }
@@ -54,6 +61,18 @@
     background-color: #ccc8c1;
     border: 0;
     outline: 0;
+}
+/* Header row 2 */
+.gtag {
+    margin: 5px;
+    padding: 7px;
+    background-color: #26292b;
+    cursor: pointer;
+}
+
+.gtag.active {
+    background-color: #ccc8c1;
+    color: #181a1b;
 }
 
 /* Blocks =================================== */

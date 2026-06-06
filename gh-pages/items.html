@@ -24,11 +24,15 @@
                 <div id="cost_slider"></div>
                 <input type="text" onkeypress='validate_numeric(event)' data-sliderid="1" maxlength="5">
             </div>
+            <div class="secondary">
+                Right-click for link to weapon <!-- no clue where else to put this, would bloat tooltips even more -->
+            </div>
             <div id="search" onclick="open_search()">
                 <img src="builtin_img/search.svg">
                 <span class="secondary">Ctrl+K</span>
             </div>
         </div>
+        <div id="gtags" class="header"></div>
         <div class="block hidden">
             <div id="taglist">
                 <div class="btn btn-active" tabindex="0" onclick="filter_set_tag('All');">All</div>

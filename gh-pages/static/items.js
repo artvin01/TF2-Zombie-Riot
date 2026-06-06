@@ -18,6 +18,7 @@ let isParsing = true;
 let highestPrice = 0;
 let allowSliderUpdates = false;
 let priceRange = [0, Infinity];
+let activeTags = [];
 const ATTRIBUTE_TYPES = ["positive", "negative", "neutral"] // order important
 
 async function parse_items() {
@@ -56,6 +57,14 @@ async function parse_items() {
     interface_goto(...check_url_params())
 }
 
+function update_items() {
+    let blocks = document.body.getElementsByClassName("block");
+    while (blocks.length) {
+        blocks[0].remove();
+    }
+    parse_items();
+}
+
 async function parse_item_list(parent_element, item_data) {
     item_grid = document.createElement("div")
     item_grid.classList.add("item_grid")
@@ -63,7 +72,9 @@ async function parse_item_list(parent_element, item_data) {
     hide_parent_block = true;
     for (const item of item_data) {
         rawcost = Number(item.rawcost || 0);
-        if ((rawcost>=priceRange[0] && rawcost<=priceRange[1])) {
+        let isInPriceRange = (rawcost>=priceRange[0] && rawcost<=priceRange[1]);
+        let hasActiveTag = (activeTags.every(tag => item.tags.includes(tag))) || (activeTags.length===0);
+        if (isInPriceRange && hasActiveTag) {
             hide_parent_block = false;
             iter_item(item_grid, item, true);
         }
@@ -134,7 +145,7 @@ function iter_item(parent_element, item, sw_opt) {
     
     /* Tags */
     if ("tags" in item) {
-        item_tooltip.appendChild(create_element("div", "secondary", item["tags"].join(" ")));
+        item_tooltip.appendChild(create_element("div", "secondary", item["tags"].map(tag => `#${tag}`).join(" ")));
     }
 
     /* Author */
@@ -242,7 +253,7 @@ function iter_item(parent_element, item, sw_opt) {
 
 async function setup_filters() {
     if (isParsing) {
-        fa = setTimeout(setup_filters, 100);
+        fa = setTimeout(setup_filters, 100); // Wait until parse_items is done
     } else {
         clearTimeout(fa);
         // Setup cost slider filter
@@ -268,25 +279,38 @@ async function setup_filters() {
                 priceRange = values;
                 document.querySelectorAll("[data-sliderid='0']")[0].value = Number(priceRange[0]);
                 document.querySelectorAll("[data-sliderid='1']")[0].value = Number(priceRange[1]);
-
-                let blocks = document.body.getElementsByClassName("block");
-                while (blocks.length) {
-                    blocks[0].remove();
-                }
-                parse_items();
+                update_items();
             };
         });
         priceRange = [0,highestPrice];
         document.querySelectorAll("[data-sliderid='0']")[0].value = Number(priceRange[0]);
         document.querySelectorAll("[data-sliderid='1']")[0].value = Number(priceRange[1]);
         allowSliderUpdates = true;
+
+        // Setup weapon tags
+        const tagbody = document.getElementById('gtags');
+        item_data["$gtags"].forEach(tag => {
+            let tag_el = create_element("div", "gtag", `#${tag}`);
+            tag_el.addEventListener("click", event => {
+                let raw_tag = event.target.innerHTML.slice(1);
+                if ((idx = activeTags.indexOf(raw_tag)) !== -1) {
+                    activeTags.splice(idx,1);
+                    event.target.classList.remove("active");
+                } else {
+                    activeTags.push(raw_tag);
+                    event.target.classList.add("active");
+                }
+                update_items();
+            });
+            tagbody.appendChild(tag_el);
+        })
     }
 }
 
 // INTERFACE ===================================================
 async function interface_goto(wid,swid) {
     if (wid===null) {return}; // no params given
-    console.log("goto",wid,swid)
+    //console.log("goto",wid,swid)
     const query = `[data-id='${wid}']`;
     const search = document.querySelectorAll(query)
     if (search.length===1) {
@@ -470,6 +494,9 @@ async function fetch_items() {
 }
 
 // LIB ===================================================
+function has_matching_elements(a,b) {
+    return a.some(el => b.includes(el))
+}
 function isUppercase(word){
   return /^\p{Lu}/u.test( word );
 }

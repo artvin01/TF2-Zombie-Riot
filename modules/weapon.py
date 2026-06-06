@@ -144,7 +144,7 @@ class Weapon:
         if "tags" in weapon_data:
             self.taglist = weapon_data["tags"].split(";")
             if "," in weapon_data["tags"]: self.taglist = weapon_data["tags"].split(",") # crystal shard uses commas instead of semicolons. blame artvin XXX: Source repo issue
-            self.tags = " ".join(f"#{tag}" for tag in self.taglist if tag != "" and len(tag)>2)
+            self.tags = " ".join(f"{tag}" for tag in self.taglist if tag != "" and len(tag)>2)
         else: self.tags = ""; self.taglist=[]
 
         if "author" in weapon_data: self.author = f"By {weapon_data["author"]}"
@@ -314,6 +314,7 @@ def item_block(key, data, output, type_override=None):
                     "type": "trophy",
                     "name": name,
                     "wid": util.id_from_str(name),
+                    "tags": [],
                     "description": util.get_key(item_data["desc"], silent=True),
                     "wtags": "",
                     "wcfghidden": ""
@@ -365,6 +366,8 @@ for item_category in CFG_WEAPONS:
         type_override = None
         if output: # no empty categories
             WEAPONSDATA[item_category] = output
+
+WEAPONSDATA["$gtags"] = GLOBAL_TAGS
 
 if not os.path.isdir("gh-pages/items"): subprocess.run(["mkdir", "gh-pages/items"]) # TODO unified dir for all .json data i.e. put skilltree and weapon json in one directory
 util.write("gh-pages/items/items.json", json.dumps(WEAPONSDATA,indent=2))
