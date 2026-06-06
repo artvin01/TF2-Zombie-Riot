@@ -430,8 +430,8 @@ int Dungeon_CurrentAttacks()
 
 void Dungeon_MapStart()
 {
-	Zero(BasePosSave);
-	DungeonMode = false;
+	BasePosSave = NULL_VECTOR;
+	DungeonMode = false; 
 	Dungeon_RoundEnd();
 }
 
