@@ -2514,7 +2514,7 @@ public void ZRModifs_GiveRandomPrefix(int iNpc)
 		GiveOneGuranteed = false;
 		RetryBuffGiving = false;
 		
-		switch(GetRandomInt(1,45))
+		switch(GetRandomInt(1,46))
 		{
 			case 1:
 			{
@@ -2866,6 +2866,12 @@ public void ZRModifs_GiveRandomPrefix(int iNpc)
 					RetryBuffGiving = true;
 				else
 					ApplyStatusEffect(iNpc, iNpc, "Aleph Prefix", 999999.9);
+			}
+			case 46:
+			{
+				//free token
+				RetryBuffGiving = true;
+				ApplyStatusEffect(iNpc, iNpc, "Warning Prefix", 999999.9);
 			}
 		}
 	}
