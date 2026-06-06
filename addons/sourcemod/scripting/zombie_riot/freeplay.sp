@@ -566,9 +566,9 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Index = NPC_GetByPlugin("npc_shadowing_darkness_boss");
 				enemy.Health = RoundToFloor((9000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "force_final_battle";
-				enemy.ExtraThinkSpeed = 1.15;
-				enemy.ExtraSpeed = 0.95;
-				enemy.ExtraDamage = 0.60;
+				enemy.ExtraThinkSpeed = 1.20;
+				enemy.ExtraSpeed = 0.90;
+				enemy.ExtraDamage = 0.40;
 			}
 			case 35:
 			{
