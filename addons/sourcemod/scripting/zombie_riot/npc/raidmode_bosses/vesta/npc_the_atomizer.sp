@@ -522,7 +522,7 @@ static void Clone_ClotThink(int iNPC)
 	}
 	else
 	{
-		npc,g_TimesSummoned -= 1;
+		npc.g_TimesSummoned -= 1;
 	}
 	
 	
@@ -893,7 +893,11 @@ static void Atomizer_ClotThink(int iNPC)
 		NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_GameEnd", false, false);
 		return;
 	}
-	if(ZR_Get_Modifier != 6)
+	if(ZR_Get_Modifier() == 6)
+	{
+		npc.m_flSpeed = 350.0;	
+	}
+	else
 	{
 		npc.m_flSpeed = npc.m_flBaseSpeed+(((npc.m_flFTL-(RaidModeTime - GetGameTime()))/npc.m_flFTL)*150.0);
 		if(RaidModeTime == FAR_FUTURE)
@@ -902,10 +906,7 @@ static void Atomizer_ClotThink(int iNPC)
 		}
 		if(npc.m_flSpeed >= 400.0)
 			npc.m_flSpeed = 400.0;
-	}
-	else
-	{
-		npc.m_flSpeed = 350.0;
+	
 	}
 	
 		
