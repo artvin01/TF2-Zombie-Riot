@@ -170,6 +170,12 @@
     top: 115%;
 }
 
+.notr-default {
+    transition: none !important;
+    top: 105% !important;
+    opacity: 0 !important;
+}
+
 /* Rightbound tooltip */
 .item_tooltip_toright {
     top: -50%;

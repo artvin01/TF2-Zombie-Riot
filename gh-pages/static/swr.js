@@ -8,7 +8,6 @@ let last_mousepos = [0,0];
 let campos = [0,0];
 let reset_cam = true;
 
-// TODO reliable subweapon id generation
 let swr_item = {};
 let swr_highlight = {"id": -1, "time":0};
 
@@ -382,7 +381,6 @@ function particles_tick() {
 IMG_CACHE = {};
 function render(arr) {
   arr.forEach(function(element) {
-    // TODO switch case
     if (element.type === "text") {
       ctx.save()
       ctx.fillStyle=element.fillStyle; // Text color

@@ -260,6 +260,10 @@ function iter_item(parent_element, item, sw_opt) {
         } else if (tooltip_bbox.right > window.innerWidth) {
             item_tooltip.classList.add("notr-left");item_tooltip.offsetHeight;item_tooltip.classList.remove("notr-left");
             item_tooltip.classList.add("item_tooltip_toleft");
+        } else {
+            item_tooltip.classList.add("notr-default");item_tooltip.offsetHeight;item_tooltip.classList.remove("notr-default");
+            item_tooltip.classList.remove("item_tooltip_toright");
+            item_tooltip.classList.remove("item_tooltip_toleft");
         }
         item_tooltip.offsetHeight;
     })

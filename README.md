@@ -72,11 +72,7 @@ All generated files will be put in `gh-pages/`. If you want to know which of tho
 
 # TODO
 - [ ] Front-end revamp
-  - [ ] Items
-    - [ ] Search filters
-      - [x] Price range filter
-      - [x] Text query
-      - [ ] Item tag list
+  - [x] Items
   - [ ] Waveset viewer
   - [ ] Music list
   - [ ] File structure cleanup

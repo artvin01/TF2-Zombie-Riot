@@ -291,7 +291,6 @@ function update_points() {
 
 function render(arr) {
   arr.forEach(function(element) {
-    // TODO switch case
     if (element.type === "text") {
       ctx.save()
       ctx.fillStyle=element.fillStyle; // Text color

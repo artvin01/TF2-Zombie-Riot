@@ -6,7 +6,6 @@ from collections import defaultdict
 TODO
 [ ] Complete const2 support
 [ ] Include main music parts
-[ ] Class-based templates?
 """
 
 PROPERTY_MAPPINGS = {
