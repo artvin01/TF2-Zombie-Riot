@@ -9,9 +9,8 @@ perk
 barrack
 */
 
-// TODO toggle for hidden weapons
-
 let item_data = [];
+let hidden_item_list = [];
 let item_by_id = {};
 let item_by_contents = {};
 let isParsing = true;
@@ -19,9 +18,10 @@ let highestPrice = 0;
 let allowSliderUpdates = false;
 let priceRange = [0, Infinity];
 let activeTags = [];
+let showHiddenItems = false;
 const ATTRIBUTE_TYPES = ["positive", "negative", "neutral"] // order important
 
-async function parse_items() {
+async function parse_items(goto = true) {
     async function item_block(parent_element,parent_data) {
         for (const [category, data] of Object.entries(parent_data)) {
             if (isUppercase(category)) { // nest
@@ -54,15 +54,17 @@ async function parse_items() {
     await item_block(document.body, item_data);
     isParsing = false;
 
-    interface_goto(...check_url_params())
+    if (goto) { interface_goto(...check_url_params()) }
 }
 
-function update_items() {
+async function update_items() {
     let blocks = document.body.getElementsByClassName("block");
     while (blocks.length) {
         blocks[0].remove();
     }
-    parse_items();
+    let item_by_id = {};
+    let item_by_contents = {};
+    await parse_items(false);
 }
 
 async function parse_item_list(parent_element, item_data) {
@@ -74,7 +76,10 @@ async function parse_item_list(parent_element, item_data) {
         rawcost = Number(item.rawcost || 0);
         let isInPriceRange = (rawcost>=priceRange[0] && rawcost<=priceRange[1]);
         let hasActiveTag = (activeTags.every(tag => item.tags.includes(tag))) || (activeTags.length===0);
-        if (isInPriceRange && hasActiveTag) {
+        if (item.is_hidden) {
+            hidden_item_list.push(item.wid)
+        }
+        if (isInPriceRange && hasActiveTag && (!item.is_hidden || showHiddenItems)) {
             hide_parent_block = false;
             iter_item(item_grid, item, true);
         }
@@ -152,6 +157,10 @@ function iter_item(parent_element, item, sw_opt) {
     if (Boolean(item["author"])) {
         item_tooltip.appendChild(create_element("div", "secondary", apply_morecolors(item["author"])));
     };
+
+    if (item["is_hidden"]) {
+        item_tooltip.appendChild(create_element("div", "secondary", "Hidden"));
+    }
 
 
     /* Add description */
@@ -310,14 +319,33 @@ async function setup_filters() {
             });
             tagbody.appendChild(tag_el);
         })
+
+        // Add hidden item toggle
+        let tag_el = create_element("div", "gtag", "Hidden items");
+        tag_el.addEventListener("click", event => {
+            if (showHiddenItems) {
+                showHiddenItems = false;
+                event.target.classList.remove("active");
+            } else {
+                showHiddenItems = true;
+                event.target.classList.add("active");
+            }
+            update_items();
+        });
+        if (showHiddenItems) {tag_el.classList.add("active")} // if link params have hidden weapon already show as active
+        tagbody.appendChild(tag_el);
     }
 }
 
 // INTERFACE ===================================================
 async function interface_goto(wid,swid) {
     if (wid===null) {return}; // no params given
-    //console.log("goto",wid,swid)
+    console.log("goto",wid,swid)
     const query = `[data-id='${wid}']`;
+    if (hidden_item_list.includes(wid)) {
+        showHiddenItems = true;
+        await update_items();
+    }
     const search = document.querySelectorAll(query)
     if (search.length===1) {
         // remove all existing highlights first & clear their timeouts
@@ -506,8 +534,7 @@ function has_matching_elements(a,b) {
 function isUppercase(word){
   return /^\p{Lu}/u.test( word );
 }
-function create_element(tag, classes, content) {
-    content = content || "";
+function create_element(tag, classes, content = "") {
     el = document.createElement(tag);
     if (classes!=="" && classes!==undefined) { el.classList.add(...classes.split(" ")); }
     el.innerHTML = content;

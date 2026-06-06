@@ -112,12 +112,12 @@ def cfgtofloat(val: str, default: float=0.0):
         return default
 
 
-def id_from_str(string: str):
+def id_from_str(string: str, hexdigest: int=2):
     # https://stackoverflow.com/questions/49808639/generate-a-variable-length-hash
     """
     Generate a length 4 hash given a string.
     """
-    return hashlib.shake_256(string.encode("utf-8")).hexdigest(2)
+    return hashlib.shake_256(string.encode("utf-8")).hexdigest(hexdigest)
 
 
 def html_img(url: str, alt: str):

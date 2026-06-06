@@ -139,7 +139,8 @@ class Weapon:
     def __init__(self, weapon_name, weapon_data):
         self._weapon_name,self.name=weapon_name,weapon_name
         self._weapon_data=weapon_data
-        self.weapon_id = util.id_from_str(weapon_name)
+        self.weapon_id = util.id_from_str(weapon_name, 3) # override hexdigest because Ancestor Launcher and The Ritualist had same ids
+        self.is_hidden = defaultdict(str,weapon_data)["hidden"]=="1"
 
         if "tags" in weapon_data:
             self.taglist = weapon_data["tags"].split(";")
@@ -215,7 +216,7 @@ class Weapon:
             "lvl": self.lvl,
             "cost": self.cost,
             "rawcost": self.rawcost,
-            "is_hidden": defaultdict(str,self._weapon_data)["hidden"]=="1",
+            "is_hidden": self.is_hidden,
             "icon": self.icon,
             "attributes": self.attributes,
             "subweapons": getattr(self, "subweapons", {}) # kit weps, enhancements
@@ -321,12 +322,14 @@ def item_block(key, data, output, type_override=None):
                 })
             elif itm.is_weapon:
                 wep = Weapon(item,item_data)
-                if type_override: wep.type=type_override
+                if len(override_keys := type_override.split(",")) > 0:
+                    if len(override_keys[0])>0: wep.type=override_keys[0]
+                    if "nohide" in override_keys: wep.is_hidden=False
                 wep.add_global_tags()
                 output["$items"].append(wep)
             elif itm.is_weapon_kit:
                 kit = Weapon(item,item_data)
-                if type_override: kit.type=type_override
+                if len(override_keys := type_override.split(",")) > 0: kit.type=override_keys[0]
                 kit.add_global_tags()
                 kit.subweapons = {
                     "name": "Kit Items",
@@ -347,6 +350,8 @@ def item_block(key, data, output, type_override=None):
                     type_override = "barrack"
                 elif item == "Weapon Kits":
                     type_override = "weaponkit"
+                elif key == "Koshi's Goods":
+                    type_override = f"{type_override},nohide"
                 output[item] = item_block(item, item_data, defaultdict(list),type_override)
                 type_override = prev_override
             elif "Trophies" == item:
@@ -357,13 +362,13 @@ def item_block(key, data, output, type_override=None):
 
 GLOBAL_TAGS = []
 WEAPONSDATA = {}
-type_override = None
+type_override = ""
 for item_category in CFG_WEAPONS:
     if GenericItem(CFG_WEAPONS[item_category]).is_item_category:
         if item_category == "Upgrades":
             type_override = "upgrade"
-        output = item_block(item_category, CFG_WEAPONS[item_category], defaultdict(list),type_override)
-        type_override = None
+        output = item_block(item_category, CFG_WEAPONS[item_category], defaultdict(list), type_override)
+        type_override = ""
         if output: # no empty categories
             WEAPONSDATA[item_category] = output
 
