@@ -6238,6 +6238,7 @@
 	"Prefixes"
 	{
 		"en"		"Prefixes"
+		"ko"		"접두사"
 	}
 	"Major Voided"
 	{
