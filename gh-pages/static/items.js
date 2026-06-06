@@ -241,13 +241,19 @@ function iter_item(parent_element, item, sw_opt) {
     });
 
     /* Prevent tooltips from going outside of viewport */
-    // TODO add mousein/out events to each item_instance for tooltip recalc
-    tooltip_bbox = item_tooltip.getBoundingClientRect();
-    if (tooltip_bbox.left < 0) {
-        item_tooltip.classList.add("item_tooltip_toright");
-    } else if (tooltip_bbox.right > window.innerWidth) {
-        item_tooltip.classList.add("item_tooltip_toleft");
-    }
+    item_el.addEventListener("mouseover", event => {
+        let item_tooltip = event.target.getElementsByClassName("item_tooltip")[0];
+        tooltip_bbox = item_tooltip.getBoundingClientRect();
+        // absolute jank
+        if (tooltip_bbox.left < 0) {
+            item_tooltip.classList.add("notr-right");item_tooltip.offsetHeight;item_tooltip.classList.remove("notr-right");
+            item_tooltip.classList.add("item_tooltip_toright");
+        } else if (tooltip_bbox.right > window.innerWidth) {
+            item_tooltip.classList.add("notr-left");item_tooltip.offsetHeight;item_tooltip.classList.remove("notr-left");
+            item_tooltip.classList.add("item_tooltip_toleft");
+        }
+        item_tooltip.offsetHeight;
+    })
     return item_el
 }
 

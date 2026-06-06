@@ -180,6 +180,12 @@
     opacity:1;
     left: 115%;
 }
+.notr-right {
+    transition: none !important;
+    top: -50% !important;
+    left: 105% !important;
+    opacity: 0 !important;
+}
 /* Leftbound tooltip */
 .item_tooltip_toleft {
     top: -50%;
@@ -190,7 +196,12 @@
     opacity:1;
     right: 115%;
 }
-
+.notr-left {
+    transition: none !important;
+    top: -50% !important;
+    right: 105% !important;
+    opacity: 0 !important;
+}
 /* Tooltip styling */
 .item_tooltip h2 {
     margin: 0;
