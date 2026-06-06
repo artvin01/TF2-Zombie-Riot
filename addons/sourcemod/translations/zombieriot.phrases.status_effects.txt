@@ -3386,7 +3386,7 @@
 	}
 	"Scrambled Prefix Desc"
 	{
-		"en"	"Become inflicted with up to 5 random buffs/debuffs every 10 seconds."
+		"en"	"Become inflicted with up to 8 random buffs/debuffs every 10 seconds."
 	}
 	"Indecisive Prefix"
 	{

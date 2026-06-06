@@ -9619,7 +9619,7 @@ static void ScrambledPrefix_Think(int entity, StatusEffect Apply_MasterStatusEff
 	int length = AL_StatusEffects.Length;
 	int givenBuffs, tries;
 	StatusEffect effect;
-	while (givenBuffs < 5 && tries < 20)
+	while (givenBuffs < 8 && tries < 30)
 	{
 		tries++;
 		
