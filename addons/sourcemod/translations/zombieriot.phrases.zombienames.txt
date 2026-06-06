@@ -6235,6 +6235,10 @@
 		"it"		"Negativo"
 		"ko"		"부정적 효과"
 	}
+	"Prefixes"
+	{
+		"en"		"Prefixes"
+	}
 	"Major Voided"
 	{
 		"en"	"Major Voided"

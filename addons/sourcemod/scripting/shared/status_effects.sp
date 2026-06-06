@@ -85,6 +85,7 @@ static const char Categories[][] =
 {
 	"Positive",
 	"Negative",
+	"Prefixes",
 };
 #define MAXBUFFSEXPLAIN 500
 //thres never gonna be more then 500 lol
@@ -327,7 +328,19 @@ void Items_StatusEffectListMenu(int client, int page = -1, bool inPage = false)
 		for(int i; i < length; i++)
 		{
 			AL_StatusEffects.GetArray(i, data);
-			if(data.BuffName[0] && data.Positive != view_as<bool>(CategoryPage[client]))
+			int category = -1;
+			
+			if(data.BuffName[0])
+			{
+				if (data.PrefixEnemyName[0])
+					category = 2;
+				else if (!data.Positive)
+					category = 1;
+				else
+					category = 0;
+			}
+			
+			if (category == CategoryPage[client])
 			{
 				IntToString(i, buffer2, sizeof(buffer2));
 				Format(data.BuffName, sizeof(data.BuffName), "%s\n%s", data.HudDisplay, data.BuffName);
@@ -7133,6 +7146,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	PrecacheSoundArray(g_SuckEnemiesIn);
 	PrecacheModel("models/player/items/pyro/pyro_hat.mdl");
 	PrecacheModel("models/weapons/c_models/c_lollichop/c_lollichop.mdl");
+	PrecacheModel("models/props_medical/street_sign002.mdl");
 	
 	StatusEffect data;
 	strcopy(data.BuffName, sizeof(data.BuffName), "The Haste");
@@ -7885,8 +7899,8 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.AttackspeedBuff			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
-	data.OnBuffStarted				= INVALID_FUNCTION;
-	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
+	data.OnBuffStarted				= DepressingPrefix_Start;
+	data.OnBuffEndOrDeleted			= Perfected_InstinctEnd;
 	data.TimerRepeatCall_Func 		= DepressingPrefix_Think;
 	StatusEffect_AddGlobal(data);
 	
@@ -8006,6 +8020,21 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
 	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Warning Prefix");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "⚠");
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.AttackspeedBuff			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.OnBuffStarted				= WarningPrefix_Start;
+	data.OnBuffEndOrDeleted			= Perfected_InstinctEnd;
+	data.TimerRepeatCall_Func 		= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
 }
 
 
@@ -9590,7 +9619,7 @@ static void ScrambledPrefix_Think(int entity, StatusEffect Apply_MasterStatusEff
 	int length = AL_StatusEffects.Length;
 	int givenBuffs, tries;
 	StatusEffect effect;
-	while (givenBuffs < 5 && tries < 20)
+	while (givenBuffs < 8 && tries < 30)
 	{
 		tries++;
 		
@@ -9650,6 +9679,20 @@ static void IndecisivePrefix_Think(int entity, StatusEffect Apply_MasterStatusEf
 	}
 	
 	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
+}
+
+static void DepressingPrefix_Start(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+
+	float flPos[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", flPos);
+	int ParticleEffect = ParticleEffectAt_Parent(flPos, "env_rain_002_256", entity, "", {0.0,0.0,368.0})
+	
+	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.WearableUse = EntIndexToEntRef(ParticleEffect);
 	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
 }
 
@@ -9782,6 +9825,14 @@ static void PartyPopperPrefix_Think(int entity, StatusEffect Apply_MasterStatusE
 	
 	UTIL_ScreenFade(entity, 0, 0, FFADE_PURGE, 255, 156, 233, 10);
 	UTIL_ScreenFade(entity, 800, 800, FFADE_IN, 255, 156, 233, 10);
+	
+	if (!IsEntityAlive(entity))
+	{
+		PartyPopperPrefix_DelayExplosion(entity);
+		int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+		Apply_StatusEffect.TimeUntillOver = 0.0;
+		E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
+	}
 }
 
 #if defined ZR
@@ -9789,7 +9840,7 @@ static void PartyPopperPrefix_DelayExplosion(int entity)
 {
 	if(!IsValidEntity(entity))
 		return;
-	// Shouldn't need to validate the entity for this? Unless I'm missing something...
+	
 	float DamageDeal = 10.0;
 	DamageDeal = float(CurrentCash);
 	DamageDeal *= 0.5;
@@ -9848,20 +9899,97 @@ static void PartyPopperPrefix_BeforeExplosionHit(int entity, int victim, float &
 	if (entity == victim)
 		return;
 	
+	const float buffDuration = 15.0;
+	
 	if (victim <= MaxClients)
 	{
 		damage = 0.0;
-		const float buffDuration = 15.0;
+		
 		ApplyStatusEffect(entity, victim, "Party Popper Prefix", buffDuration);
 		ApplyStatusEffect(entity, victim, "Nightmare Terror", buffDuration);
 		Client_Shake(victim, _, 8.0, 20.0, 1.5, false);
 	}
+	else if (GetTeam(victim) == 2)
+	{
+		// Friendly npcs
+		ApplyStatusEffect(entity, victim, "Party Popper Prefix", buffDuration);
+	}
 	else
 	{
+		// Enemy npcs
 		ApplyStatusEffect(entity, victim, "Party Popper Prefix", 9999.0);
 	}
 }
 #endif
+
+#define WARNING_VERTICALOFFSET 60.0
+
+static void WarningPrefix_Start(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+	
+	float pos[3], ang[3], maxs[3];
+	GetAbsOrigin(entity, pos);
+	GetEntPropVector(entity, Prop_Data, "m_vecMaxs", maxs);
+	
+	pos[2] += WARNING_VERTICALOFFSET + maxs[2];
+	
+	int wearable = CreateEntityByName("func_rotating");
+	if (wearable > 0)
+	{
+		SetEntPropEnt(wearable, Prop_Send, "m_hOwnerEntity", entity);
+		DispatchKeyValue(wearable, "spawnflags", "81"); // Start ON / Client-side Rotation / Not Solid
+		DispatchKeyValue(wearable, "maxspeed", "150");
+		DispatchSpawn(wearable);
+		
+		TeleportEntity(wearable, pos);
+		
+		SetVariantString("!activator");
+		AcceptEntityInput(wearable, "SetParent", entity);
+		
+		MakeObjectIntangeable(wearable);
+	}
+	
+	int model = CreateEntityByName("prop_dynamic");
+	if (model > 0)
+	{
+		DispatchKeyValue(model, "solid", "0");
+		SetEntPropEnt(model, Prop_Send, "m_hOwnerEntity", entity);
+		SetEntityModel(model, "models/props_medical/street_sign002.mdl");
+		DispatchSpawn(model);
+		
+		TeleportEntity(model, pos);
+		
+		SetVariantString("!activator");
+		AcceptEntityInput(model, "SetParent", wearable);
+		
+		SetEntityRenderColor(model, 255, 210, 0, 255);
+		MakeObjectIntangeable(model);
+	}
+	
+	int model2 = CreateEntityByName("prop_dynamic");
+	if (model2 > 0)
+	{
+		DispatchKeyValue(model2, "solid", "0");
+		SetEntPropEnt(model2, Prop_Send, "m_hOwnerEntity", entity);
+		SetEntityModel(model2, "models/props_medical/street_sign002.mdl");
+		DispatchSpawn(model2);
+		
+		ang[1] -= 180.0;
+		TeleportEntity(model2, pos, ang);
+		
+		SetVariantString("!activator");
+		AcceptEntityInput(model2, "SetParent", wearable);
+		
+		SetEntityRenderColor(model2, 255, 210, 0, 255);
+		MakeObjectIntangeable(model2);
+	}
+	
+	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.WearableUse = EntIndexToEntRef(wearable);
+	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
+}
 
 #define MAXSINKING_STACKS 5
 int SinkingDebuffIndex;

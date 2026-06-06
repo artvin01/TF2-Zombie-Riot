@@ -3394,8 +3394,8 @@
 	}
 	"Scrambled Prefix Desc"
 	{
-		"en"	"Become inflicted with up to 5 random buffs/debuffs every 10 seconds."
-		"ko"	"10초마다 무작위 버프/디버프를 최대 5개까지 얻습니다."
+		"en"	"Become inflicted with up to 8 random buffs/debuffs every 10 seconds."
+		"ko"	"10초마다 무작위 버프/디버프를 최대 8개까지 얻습니다."
 	}
 	"Indecisive Prefix"
 	{
@@ -3432,7 +3432,7 @@
 		"en"	"Depressed"
 		"ko"	"우울함"
 	}
-	"Depressed Prefix Desc"
+	"Depressed Desc"
 	{
 		"en"	"Decreases attack/reload speed and heal rate by 30％ and movement speed by 20％."
 		"ko"	"공격/재장전/치유 속도가 30％ 감소합니다.\n이동 속도가 20％ 감소합니다."
@@ -3479,8 +3479,7 @@
 	}
 	"Party Popper Prefix Desc"
 	{
-		"en"	"NPCs burst into confetti on death, infecting everything around with Party Popper.\nNPCs take damage and players cannot get downed temporarily."
-		"ko"	"NPC가 사망 시 팡파레처럼 폭발하며, 주위의 모든 것들을 '파티광'에 감염시킵니다.\nNPC는 피해를 입으며 플레이어들은 일시적으로 다운되지 않습니다."
+		"en"	"Burst into confetti on death, infecting everything around with Party Popper.\nNPCs take damage and players cannot get downed temporarily."
 	}
 	"Gory Prefix"
 	{
@@ -3526,6 +3525,18 @@
 	{
 		"en"	"Red Mist Shin"
 		"ko"	"신 - 붉은안개"
+	}
+	"Warning Prefix"
+	{
+		"en"	"Warning Prefix"
+	}
+	"Warning Prefix Desc"
+	{
+		"en"	"⚠⚠⚠"
+	}
+	"⚠"
+	{
+		"en"	"⚠"
 	}
 	"Ragdolled"
 	{
