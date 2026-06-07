@@ -53,7 +53,7 @@ async function parse_waveset(file) {
         let m_artist = apply_morecolors(entry["musicartist"]);
         let m_content = `${m_pre}: ${m_title} - ${m_artist}`;
         let modal = create_element("div", {"class": "audio"});
-        modal.appendChild(create_element("img", {"src": "builtin_img/music.svg"})); // MUSIC_ICON constant doesn't work here?????
+        modal.appendChild(MUSIC_ICON.cloneNode(true)); // MUSIC_ICON constant doesn't work here?????
         modal.appendChild(create_element("span", {"innerHTML": m_content}));
         if (!entry["file_exists"]) {
             modal.classList.add("disabled");
@@ -131,7 +131,6 @@ function update_wave_display() {
             
             npc_modal.addEventListener("mouseover", event => {
                 if (event.target.classList.contains("wave_npc")) {
-                    console.log(event.target);
                     let tooltip_container = event.target.getElementsByClassName("tooltip")[0];
                     
                     /* do not switch sides every time */
@@ -170,7 +169,7 @@ function update_wave_display() {
             let m_artist = apply_morecolors(entry["musicartist"]);
             let m_content = `${m_title} - ${m_artist}`;
             let music_modal = create_element("div", {"class": "audio"});
-            music_modal.appendChild(MUSIC_ICON);
+            music_modal.appendChild(MUSIC_ICON.cloneNode(true));
             music_modal.appendChild(create_element("span", {"innerHTML": m_content}));
             if (!entry["file_exists"]) {
                 music_modal.classList.add("disabled");
@@ -213,7 +212,7 @@ function copy_waveset_embed_link(event) {
     let source_url = window.location.href.substring(0,  window.location.href.lastIndexOf('/'));;
     navigator.clipboard.writeText(`${source_url}/embed/${waveset_file.split(".json")[0].split("/")[1]}_${wave}.gif`);
 
-    let notification = create_element("div","notify_copied","Embed link copied!");
+    let notification = create_element("div",{"class": "notify_copied", "innerHTML": "Embed link copied!"});
     notification.style.setProperty("--top",`${event.clientY + window.scrollY - 32}px`);
     notification = document.body.appendChild(notification);
     notification.style["left"] = `${event.clientX - (notification.getBoundingClientRect().width/2)}px`;
