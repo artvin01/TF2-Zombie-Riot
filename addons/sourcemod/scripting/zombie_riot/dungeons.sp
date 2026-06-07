@@ -19,6 +19,7 @@ static char TeleNext[64];
 static int LimitNotice;
 static bool NoticenoDungeon;
 static float BasePosSave[3];
+static bool BasePosWasDone;
 
 
 #define MONEY_SCLAING_PUSHFUTURE 3
@@ -430,8 +431,9 @@ int Dungeon_CurrentAttacks()
 
 void Dungeon_MapStart()
 {
-	Zero(BasePosSave);
-	DungeonMode = false;
+	BasePosSave = NULL_VECTOR;
+	BasePosWasDone = false;
+	DungeonMode = false; 
 	Dungeon_RoundEnd();
 }
 
@@ -802,6 +804,7 @@ void Dungeon_Start()
 
 	CreateAllDefaultBuidldings(pos, ang);
 	BasePosSave = pos;
+	BasePosWasDone = true;
 
 	int highestLevel;
 	for(int client = 1; client <= MaxClients; client++)
@@ -828,8 +831,13 @@ public Action Dhook_TeleportToCenter(Handle timer, int userid)
 	int client = GetClientOfUserId(userid);
 	if(IsValidClient(client))
 	{
-		if(IsNullVector(BasePosSave))
+		if(!BasePosWasDone)
+		{
+			PrintToConsole(client, "Dhook_TeleportToCenter, Teleport Denied, %f, %f, %f", BasePosSave[0], BasePosSave[1], BasePosSave[2]);
 			return Plugin_Stop;
+		}
+		
+		PrintToConsole(client, "Dhook_TeleportToCenter Teleport accepted, %f, %f, %f", BasePosSave[0], BasePosSave[1], BasePosSave[2]);
 		float ang[3];
 		ang[2] = 0.0;
 		SetEntProp(client, Prop_Send, "m_bDucked", true);
