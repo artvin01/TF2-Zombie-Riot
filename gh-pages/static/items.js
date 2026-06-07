@@ -252,7 +252,14 @@ function iter_item(parent_element, item, sw_opt) {
     /* Prevent tooltips from going outside of viewport */
     item_el.addEventListener("mouseover", event => {
         let item_tooltip = event.target.getElementsByClassName("item_tooltip")[0];
+
+        /* do not switch sides every time */
+        item_tooltip.classList.remove("item_tooltip_toright");
+        item_tooltip.classList.remove("item_tooltip_toleft");
+        item_tooltip.offsetHeight;
+
         tooltip_bbox = item_tooltip.getBoundingClientRect();
+
         // absolute jank
         if (tooltip_bbox.left < 0) {
             item_tooltip.classList.add("notr-right");item_tooltip.offsetHeight;item_tooltip.classList.remove("notr-right");

@@ -120,7 +120,7 @@ def id_from_str(string: str, hexdigest: int=2):
     return hashlib.shake_256(string.encode("utf-8")).hexdigest(hexdigest)
 
 
-def html_img(url: str, alt: str):
+def html_img(url: str, alt: str=""):
     """
     -> <img src="{url}" alt="{alt}"/>
     """
@@ -134,7 +134,7 @@ def vtftoimg(vtf_path: str, png_path: str, alt: str):
     """
     if not os.path.isfile("gh-pages/"+png_path): # if file already made
         vtf2img.Parser(vtf_path).get_image().save("gh-pages/"+png_path)
-    return html_img("./"+png_path,alt)
+    return f"./{png_path}"
 
 
 def normalize_whitespace(string: str):

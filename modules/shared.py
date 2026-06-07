@@ -29,8 +29,8 @@ def get_npc_icon(icon):
 
         if os.path.isfile(vtf_path):
             return util.vtftoimg(vtf_path, png_path, "A")
-        elif os.path.isfile("gh-pages/"+legacy_path):
-            return util.html_img("./"+legacy_path,"B")
+        elif os.path.isfile(f"gh-pages/{legacy_path}"):
+            return f"./{legacy_path}"
         else:
             return util.vtftoimg(MISSING_ICON_VTF,MISSING_ICON_PNG,"C")
     else:

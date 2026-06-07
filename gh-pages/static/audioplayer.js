@@ -14,7 +14,7 @@ function set_audio_resource(obj) {
         obj.classList.add("music_playing");
     }
     last_song_id=obj.id;
-    document.getElementById("music_title").innerHTML = apply_morecolors(obj.getAttribute("title")) + " - " + apply_morecolors(obj.getAttribute("artist"));
+    document.getElementById("music_title").innerHTML = apply_morecolors(obj.dataset.title) + " - " + apply_morecolors(obj.dataset.artist);
     
     let audio = document.getElementsByTagName("audio")[0];
     if (audio!==undefined) {
@@ -24,7 +24,7 @@ function set_audio_resource(obj) {
     
     let mphtml = `<audio controls autoplay muted onended="nextsong();"><source src="filepath" type="audio/mpeg"></audio>`;
     const music_player = document.getElementById("music_player");
-    music_player.innerHTML= mphtml.replace("filepath",obj.getAttribute("file"));
+    music_player.innerHTML= mphtml.replace("filepath",obj.dataset.file);
     music_player.parentElement.classList.remove("hidden");
     
     audio = document.getElementsByTagName("audio")[0]
@@ -32,8 +32,8 @@ function set_audio_resource(obj) {
     document.getElementsByTagName("audio")[0].volume = last_vol;
 
     navigator.mediaSession.metadata = new MediaMetadata({
-        title: obj.getAttribute("title"),
-        artist: obj.getAttribute("artist").replace(" - ","").replace("- ",""),
+        title: obj.dataset.title,
+        artist: obj.dataset.artist.replace(" - ","").replace("- ",""),
     });
 }
 

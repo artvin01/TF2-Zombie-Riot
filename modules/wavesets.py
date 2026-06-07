@@ -5,6 +5,7 @@ from collections import defaultdict
 """
 TODO
 [ ] Complete const2 support
+[ ] Const: one-wave files display as 2/2 in embeds
 [ ] Include main music parts
 """
 
@@ -295,7 +296,7 @@ def parse():
                     desc = f"<div class=\"flex_break\"></div>\n{util.divfornewline(get_npc(wave_entry_data["plugin"], {"name": npc_name, "image": image})["description"])}"
             else:
                 # temporarily an actual missing image
-                image = util.html_img("missing.png","E") # npc not found at all. this only happens when parse_wave has force=true
+                image = "missing.png" # npc not found at all. this only happens when parse_wave has force=true
                 
             for property_, val in PROPERTY_MAPPINGS.items():
                 if property_ in wave_entry_data:
@@ -539,7 +540,7 @@ def parse():
         for entry in output:
             if entry["type"] == "npc":
                 context = {
-                    "npc_name": f"{entry["img"]} {entry["prefix"]} {entry["display_name"]}",
+                    "npc_name": f"{util.html_img(entry["img"])} {entry["prefix"]} {entry["display_name"]}",
                     "plugin_name": "",
                     "flags": "",
                     "desc": entry["extra_info"],

@@ -68,7 +68,7 @@ To generate the wiki, simply run
 # Windows (untested!)
 venv\Scripts\python.exe main.py
 ```
-All generated files will be put in `gh-pages/`. If you want to know which of those aren't automatically generated, see the `.gitignore`.
+All generated files will be put in `gh-pages/`. Those not automatically generated are noted in the `.gitignore`.
 
 # TODO
 - [ ] Front-end revamp

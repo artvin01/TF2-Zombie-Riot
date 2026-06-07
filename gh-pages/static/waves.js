@@ -3,23 +3,8 @@ let max_waves = 40;
 let waveset = "";
 let waveset_file = null;
 let waveset_data = null;
-const npc_modal = `<div tabindex="0" class="wave_npc $css_flags">
-    npcimg
-    <div class="wave_npc_count">npccount</div>
+const MUSIC_ICON = create_element("img", {"src": "builtin_img/music.svg"});
 
-    <div class="tooltip">
-        npcdata
-    </div>
-</div>
-`
-const support_npc_modal = `<div class="divider"></div><div id="support_npc_container" $offset>
-    npcdata
-    <div class="flex_break"></div>
-    <h2>SUPPORT</h2>
-</div>
-`
-const music_modal = `<div onclick="set_audio_resource(this);" file=\"filepath\" title='musictitle' artist='musicartist' class="audio"><img src="builtin_img/music.svg">musicpre musictitle - musicartist</div>`
-const music_modal_missing = `<div class="disabled audio"><img src="builtin_img/music.svg">musicpre musictitle - musicartist</div>`
 function cycle_wave(val) {
     let prev_wave = wave;
     wave = wave + val;
@@ -51,37 +36,41 @@ async function parse_waveset(file) {
     }
 
     max_waves = Number(Object.keys(waveset_data["waves"]).reduce((a, b) => Number(a) > Number(b) ? a : b));
-    let waveset_info = "";
-    if (waveset_data["authors"]["npc"]!=="") {waveset_info+=`<div>NPCs by: ${waveset_data["authors"]["npc"]}</div>`};
-    if (waveset_data["authors"]["format"]!=="") {waveset_info+=`<div>Format by: ${waveset_data["authors"]["format"]}</div>`};
-    if (waveset_data["authors"]["raid"]!=="") {waveset_info+=`<div>Raidboss by: ${waveset_data["authors"]["raid"]}</div>`};
-    if (waveset_data["item_on_win"]!=="") {waveset_info+=`<div>Item on win: ${waveset_data["item_on_win"]}</div>`};
-    if (waveset_data["desc"]!=="") {waveset_info+=`<div>${waveset_data["desc"]}</div>`};
+    const waveset_info_container = document.getElementById("waveset_info");
+    if (waveset_data["authors"]["npc"]!=="") { waveset_info_container.appendChild(create_element("div",{"innerHTML": `NPCs by: ${waveset_data["authors"]["npc"]}`})) };
+    if (waveset_data["authors"]["format"]!=="") { waveset_info_container.appendChild(create_element("div",{"innerHTML": `Format by: ${waveset_data["authors"]["format"]}</div>`})) };
+    if (waveset_data["authors"]["raid"]!=="") { waveset_info_container.appendChild(create_element("div",{"innerHTML": `Raidboss by: ${waveset_data["authors"]["raid"]}</div>`})) };
+    if (waveset_data["item_on_win"]!=="") { waveset_info_container.appendChild(create_element("div",{"innerHTML": `Item on win: ${waveset_data["item_on_win"]}</div>`})) };
+    if (waveset_data["desc"]!=="") { waveset_info_container.appendChild(create_element("div",{"innerHTML": `${waveset_data["desc"]}</div>`})) };
     
     // wait until morecolors.js loads
     while(typeof apply_morecolors !== "function") {
         await sleep(1000);
     }
     for (const [key, entry] of Object.entries(waveset_data["music"])) {
-        context = {
-            "filepath": entry["filepath"],
-            "filename": entry["filename"],
-            "musicpre": `${key.split("_")[1]}: `,
-            "musictitle": apply_morecolors(entry["musictitle"].replace("|","")),
-            "musicartist": apply_morecolors(entry["musicartist"])
-        }
+        let m_pre = key.split("_")[1];
+        let m_title =  apply_morecolors(entry["musictitle"].replace("|",""));
+        let m_artist = apply_morecolors(entry["musicartist"]);
+        let m_content = `${m_pre}: ${m_title} - ${m_artist}`;
+        let modal = create_element("div", {"class": "audio"});
+        modal.appendChild(create_element("img", {"src": "builtin_img/music.svg"})); // MUSIC_ICON constant doesn't work here?????
+        modal.appendChild(create_element("span", {"innerHTML": m_content}));
         if (!entry["file_exists"]) {
-            waveset_info += fill_template(music_modal_missing, context);
+            modal.classList.add("disabled");
         } else {
-            waveset_info += fill_template(music_modal, context);
+            modal.dataset.file = entry.filepath;
+            modal.dataset.title = m_title;
+            modal.dataset.artist = m_artist;
+            modal.addEventListener("click", event => {
+                set_audio_resource(event.target);
+            })
         }
+        waveset_info_container.appendChild(modal);
     };
 
-    const waveset_info_container = document.getElementById("waveset_info");
-    if (waveset_info!=="") {
+    if (waveset_info_container.children.length > 1) {
         waveset_info_container.parentElement.classList.remove("hidden");
-        waveset_info_container.innerHTML = waveset_info;
-    };
+    }
 
     console.log(`[parse_waveset] Max waves:${max_waves}`);
     console.log(`[parse_waveset] Fetched ${waveset_file}`);
@@ -121,66 +110,96 @@ function update_wave_display() {
     waveset_name_inner.innerHTML = waveset_data["name"];
 
     const npc_container = document.getElementById("npc_container");
-    let npc_html = "";
-    let support_npc_html = "";
-    let support_npc_amt = 0;
-
+    let support_npc_list = [];
     const wave_info_container = document.getElementById("wave_info_container");
-    let wave_info_html = "";
-
     const wave_music_container = document.getElementById("wave_music_container");
-    let wave_music_html = "";
+
+    empty_element(npc_container);
+    empty_element(wave_info_container);
+    empty_element(wave_music_container);
 
     // entry types: npc, music, info
     waveset_data["waves"][String(wave)].forEach(function (entry, _) {
         if (entry["type"] === "npc") {
-            const context = {
-                "npcimg": entry["img"],
-                "npccount": entry["count"],
-                "npcdata": `<h2>${entry["prefix"]}${entry["display_name"]}</h2>${entry["extra_info"]}`,
-                "$css_flags": entry["css_class"]
-            }
-            let modal = fill_template(npc_modal, context);
+            let npc_modal = create_element("div", {"class": `wave_npc ${entry.css_class}`, "tabIndex": "0"}); // tabIndex neeeded such that one can click on the npc and pick a song from it (css :focus property)
+            npc_modal.appendChild(create_element("img", {"src": entry.img}));
+            npc_modal.appendChild(create_element("div", {"class": "wave_npc_count", "innerHTML": entry.count}));
+            
+            let tooltip_container = create_element("div", {"class": "tooltip"});
+                tooltip_container.appendChild(create_element("h2", {"innerHTML": entry.prefix+entry.display_name}));
+                tooltip_container.appendChild(create_element("span", {"innerHTML": entry.extra_info}));
+            
+            npc_modal.addEventListener("mouseover", event => {
+                if (event.target.classList.contains("wave_npc")) {
+                    console.log(event.target);
+                    let tooltip_container = event.target.getElementsByClassName("tooltip")[0];
+                    
+                    /* do not switch sides every time */
+                    tooltip_container.classList.remove("tooltip_toright");
+                    tooltip_container.classList.remove("tooltip_toleft");
+                    tooltip_container.offsetHeight;
+
+                    tooltip_bbox = tooltip_container.getBoundingClientRect();
+
+                    // absolute jank
+                    if (tooltip_bbox.left < 0) {
+                        tooltip_container.classList.add("notr-right");tooltip_container.offsetHeight;tooltip_container.classList.remove("notr-right");
+                        tooltip_container.classList.add("tooltip_toright");
+                    } else if (tooltip_bbox.right > window.innerWidth) {
+                        tooltip_container.classList.add("notr-left");tooltip_container.offsetHeight;tooltip_container.classList.remove("notr-left");
+                        tooltip_container.classList.add("tooltip_toleft");
+                    } else {
+                        tooltip_container.classList.add("notr-default");tooltip_container.offsetHeight;tooltip_container.classList.remove("notr-default");
+                        tooltip_container.classList.remove("tooltip_toright");
+                        tooltip_container.classList.remove("tooltip_toleft");
+                    }
+                    tooltip_container.offsetHeight;
+                }
+            })
+
+            npc_modal.appendChild(tooltip_container);
+
             let is_support = entry["css_class"].includes("flag_support") || entry["css_class"].includes("flag_support_limited") || entry["css_class"].includes("flag_mission");
             if (is_support) {
-                support_npc_html += modal;
-                support_npc_amt += 1;
+                support_npc_list.push(npc_modal);
             } else {
-                npc_html += modal;
+                npc_container.appendChild(npc_modal);
             }
         } else if (entry["type"]=="music") {
-            context = {
-                "filepath": entry["filepath"],
-                "filename": entry["filename"],
-                "musicpre": "",
-                "musictitle": apply_morecolors(entry["musictitle"].replace("|","")),
-                "musicartist": apply_morecolors(entry["musicartist"])
-            }
+            let m_title =  apply_morecolors(entry["musictitle"].replace("|",""));
+            let m_artist = apply_morecolors(entry["musicartist"]);
+            let m_content = `${m_title} - ${m_artist}`;
+            let music_modal = create_element("div", {"class": "audio"});
+            music_modal.appendChild(MUSIC_ICON);
+            music_modal.appendChild(create_element("span", {"innerHTML": m_content}));
             if (!entry["file_exists"]) {
-                wave_music_html += fill_template(music_modal_missing, context);
+                music_modal.classList.add("disabled");
             } else {
-                wave_music_html += fill_template(music_modal, context);
+                music_modal.dataset.file = entry.filepath;
+                music_modal.dataset.title = m_title;
+                music_modal.dataset.artist = m_artist;
+                music_modal.addEventListener("click", event => {
+                    set_audio_resource(event.target);
+                })
             }
+            wave_music_container.appendChild(music_modal);
         } else if (entry["type"]=="info") {
-            wave_info_html += `<div>${entry["text"]}</div>\n`;
+            wave_info_container.appendChild(create_element("div",{"innerHTML": `${entry["text"]}\n`}));
         }
     });
 
-    wave_music_container.innerHTML = wave_music_html;
+    if (support_npc_list.length > 0) {
+        let support_npc_container = create_element("div", {"id": "support_npc_container"});
+        if (support_npc_list.length > 1) { support_npc_container.style["margin-left"]="-43px" };
+        support_npc_list.forEach(npc_modal => {
+            support_npc_container.appendChild(npc_modal);
+        });
+        support_npc_container.appendChild(create_element("div",{"class": "flex_break"}));
+        support_npc_container.appendChild(create_element("h2",{"innerHTML": "SUPPORT"}));
 
-    wave_info_container.innerHTML = wave_info_html;
-
-    if (support_npc_html!=="") {
-        let support_npc_container_offset = "";
-        if (support_npc_amt>1) { support_npc_container_offset=`style="margin-left: -43px;"` };
-        context = {
-            "npcdata":support_npc_html,
-            "$offset":support_npc_container_offset
-        }
-        npc_html += fill_template(support_npc_modal, context);
+        npc_container.appendChild(create_element("div",{"class": "divider"}));
+        npc_container.appendChild(support_npc_container);
     };
-
-    npc_container.innerHTML = npc_html;
 }
 
 function fill_template(temp, cont) {
@@ -194,7 +213,7 @@ function copy_waveset_embed_link(event) {
     let source_url = window.location.href.substring(0,  window.location.href.lastIndexOf('/'));;
     navigator.clipboard.writeText(`${source_url}/embed/${waveset_file.split(".json")[0].split("/")[1]}_${wave}.gif`);
 
-    let notification = create_element("div","notify_copied","Link copied!");
+    let notification = create_element("div","notify_copied","Embed link copied!");
     notification.style.setProperty("--top",`${event.clientY + window.scrollY - 32}px`);
     notification = document.body.appendChild(notification);
     notification.style["left"] = `${event.clientX - (notification.getBoundingClientRect().width/2)}px`;
@@ -241,12 +260,26 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function create_element(tag, classes, content) {
-    content = content || "";
-    el = document.createElement(tag);
-    if (classes!=="" && classes!==undefined) { el.classList.add(...classes.split(" ")); }
-    el.innerHTML = content;
-    return el
+function create_element(tag, attributes) {
+    let element = document.createElement(tag);
+    for (let val in attributes) {
+        if (element.setAttribute) {
+            if (val==="class") {
+                element.classList.add(...attributes[val].split(" ").filter(i => i));
+            } else if (element[val] in element) {
+               element.setAttribute(val, attributes[val]);
+            } else {
+                element[val] = attributes[val];
+            }
+        } else {
+            element[val] = attributes[val];
+        }
+    }
+    return element;
+}
+
+function empty_element(el) {
+    while (el.firstChild) { el.removeChild(el.firstChild) };
 }
 
 /* Accessibility */

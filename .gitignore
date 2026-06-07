@@ -20,11 +20,7 @@ models/
 # NOTE unused premedia icons in tf2_zr_wikigen archive
 premedia_icons_unused/
 
-npc_data.json
-npc_data_01.json
-npc_data_02.json
-*.cfg 
- 
+# non-generated stuff
 gh-pages/*
 !gh-pages/static/
 !gh-pages/builtin_img/
@@ -38,8 +34,9 @@ gh-pages/*
 !gh-pages/items.html
 !gh-pages/items_legacy.html
 
+# Debug
 logs.txt
-run_rogue.sh
 # only ignore json in root dir
 /*.json
+*.cfg
 *.exe

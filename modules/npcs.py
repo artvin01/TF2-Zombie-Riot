@@ -35,7 +35,7 @@ def parse():
                 for entry in npc["music_entries"]:
                     music += util.musicmodal_to_html(entry)
                 context = {
-                    "npc_name": f"{modules.shared.get_npc_icon(npc["icon"])} {npc["name"]}",
+                    "npc_name": f"{util.html_img(modules.shared.get_npc_icon(npc["icon"]))} {npc["name"]}",
                     "plugin_name": npc["plugin"],
                     "flags": map_flags(npc["flags"]),
                     "desc": f"<div>{npc["description"].replace("\n","</div>\n<div>")}</div>\n{music}"
