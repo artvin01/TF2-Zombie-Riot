@@ -92,6 +92,8 @@ methodmap BossSummonRandom < CClotBody
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iNpcStepVariation = 0;
 		npc.m_bDissapearOnDeath = true;
+		i_NpcIsABuilding[npc.index] = true;
+		//prevent getting prefixes
 
 		func_NPCDeath[npc.index] = view_as<Function>(BossSummonRandom_NPCDeath);
 		func_NPCThink[npc.index] = view_as<Function>(BossSummonRandom_ClotThink);

@@ -8780,7 +8780,7 @@ void Const2Modifs_Asexual_End(int victim, StatusEffect Apply_MasterStatusEffect,
 	int team = GetTeam(victim);
 	if(b_thisNpcIsARaid[victim])
 	{
-		team = 999;
+		team = 3;
 	}
 	for(int i; i<2; i++)
 	{
