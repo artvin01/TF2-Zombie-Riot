@@ -405,7 +405,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			PluginName = "npc_omega_raid";	
 			
 			enemy.ExtraDamage *= 1.1;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.4); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.25); 
 		}
 		case 26:
 		{
@@ -461,7 +461,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			
 			enemy.ExtraDamage *= 1.05;
 			//no umbrals so buff hard
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.35); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.25); 
 		}
 		case 32:
 		{
@@ -469,9 +469,9 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			Format(CharData, sizeof(CharData), "%s%s",CharData, "force_final_battle");
 			
 			enemy.ExtraDamage *= 1.1;
-			enemy.ExtraThinkSpeed *= 0.85;
+			enemy.ExtraThinkSpeed *= 0.6;
 			//no minions, so buff
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.4); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.25); 
 		}
 		case 33:
 		{
