@@ -9600,7 +9600,6 @@ static void TramplingPrefix_Think(int entity, StatusEffect Apply_MasterStatusEff
 
 static const char ScrambledBlacklist[][] =
 {
-	"Overheat", // Causes errors
 	"Stalker Prefix",
 	"Stalker Prefix Nerf",
 	"7 Heavy Souls",
@@ -9629,11 +9628,18 @@ static void ScrambledPrefix_Think(int entity, StatusEffect Apply_MasterStatusEff
 		if (HasSpecificBuff(entity, buffName))
 			continue;
 		
+		bool blacklisted;
 		for (int i = 0; i < sizeof(ScrambledBlacklist); i++)
 		{
 			if (StrEqual(buffName, ScrambledBlacklist[i]))
-				continue;
+			{
+				blacklisted = true;
+				break;
+			}
 		}
+		
+		if (blacklisted)
+			continue;
 		
 		ApplyStatusEffect(entity, entity, buffName, 10.0);
 		givenBuffs++;
@@ -10345,7 +10351,7 @@ static void TiantuiEnd(int victim, StatusEffect Apply_MasterStatusEffect, E_Stat
 }
 static float OverheatDamageTakenFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
-	float ratio = GetClientHealth(victim) / float(ReturnEntityMaxHealth(victim));
+	float ratio = GetEntProp(victim, Prop_Data, "m_iHealth") / float(ReturnEntityMaxHealth(victim));
 	
 	if(ratio > 1.0)
 		ratio = 1.0;
