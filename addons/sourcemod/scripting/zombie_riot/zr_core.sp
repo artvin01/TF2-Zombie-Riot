@@ -881,6 +881,9 @@ void ZR_MapStart()
 	{
 		IsNonZRMap = true;
 	}
+	if(StrContains(mapname, "vsh_zr") != 0)
+		IsNonZRMap = false;
+		
 	MusicString1.Clear();
 	MusicString2.Clear();
 	MusicSetup1.Clear();
