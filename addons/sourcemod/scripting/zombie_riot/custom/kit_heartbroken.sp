@@ -1193,7 +1193,7 @@ void Heartbroken_WildHunt(int client, bool ForceRevive = false)
 			continue;
 		if(HasSpecificBuff(client_check, "Vuntulum Bomb EMP Death"))
 			continue;
-		if(Rogue_BlueParadox_CanTeutonUpdate(client))
+		if(!Rogue_BlueParadox_CanTeutonUpdate(client))
 			continue;
 
 		int CashSpendScale = CashSpentTotal[client_check];

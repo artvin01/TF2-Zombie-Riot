@@ -977,6 +977,8 @@ public void Reinforce(int client, bool NoCD)
 				continue;
 			if(HasSpecificBuff(client_check, "Vuntulum Bomb EMP Death"))
 				continue;
+			if(!Rogue_BlueParadox_CanTeutonUpdate(client_check))
+				continue;
 
 			int CashSpendScale = CashSpentTotal[client_check];
 
@@ -2202,7 +2204,7 @@ stock int GetRandomDeathPlayer(int client)
 			continue;
 		if(HasSpecificBuff(client_check, "Vuntulum Bomb EMP Death"))
 			continue;
-		if(Rogue_BlueParadox_CanTeutonUpdate(client_check))
+		if(!Rogue_BlueParadox_CanTeutonUpdate(client_check))
 			continue;
 
 		int CashSpendScale = CashSpentTotal[client_check];
