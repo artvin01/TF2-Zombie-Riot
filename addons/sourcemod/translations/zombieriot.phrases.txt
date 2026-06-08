@@ -1828,7 +1828,7 @@
 		"en" 		"There are too many buffs and debuffs to be shown.\nSee ''Status Effect List'' For every single buff.\nAlternatively, you get a message in chat when you get a new debuff or buff applied to you."
 		"es"		"Hay demasiados buffs y debuffs a mostrar.\nMira 'Lista de Efectos' para ver todos los buffs/debuffs.\nAlternativamente, cuando recibes uno, se mostrara en el chat."
 		"it"		"Ci sono troppi buff e debuff per essere mostrati.\nVedi ''Elenco degli effetti di stato'' per ogni singolo buff.\nIn alternativa, si riceve un messaggio in chat quando viene applicato un nuovo debuff o un nuovo buff."
-		"ko" 		"너무 많은 버프와 디버프가 게임 내에 존재합니다.\n''상태이상 리스트'' 를 통하여 게임 내에 존재하는 상태이상을 전부 확인해보세요.\n또한, 새로운 버프나 디버프를 받으면, 게임 채팅창에 텍스트로 표시됩니다."
+		"ko" 		"너무 많은 버프와 디버프가 게임 내에 존재합니다.\n''상태이상 목록''을 통하여 게임 내에 존재하는 상태이상을 전부 확인해보세요.\n또한, 새로운 버프나 디버프를 받으면, 게임 채팅창에 텍스트로 표시됩니다."
 	}
 	"Show Debuffs"
 	{

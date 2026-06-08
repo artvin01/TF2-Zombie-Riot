@@ -4907,7 +4907,7 @@
 	{
 		"en"	"This is as far as she can get with teaching magic to you.\n+200 HP, Increases mage damage by +75％ and mage attack speed by +10％.\nIncreases melee resist with wands out by +5％, and max mana by 25％."
 		"it"	"Questo è il massimo che può fare per insegnarti la magia.\n+200 HP, aumenta il danno magico del +75％ e la velocità d'attacco magico del +10％.\nAumenta la resistenza in mischia con bacchette magiche del +5％ e il mana massimo del 25％."
-		"ko"	"그녀가 당신에게 마법을 가르쳐줄 수 있는 한계입니다.\n-최대 체력 +200\n-마법 무기 피해량 +75％\n-공격 속도 +10％.\n마법 무기 장착 시 근접 피해 저항력 +5％\n-최대 마나 +25％"
+		"ko"	"그녀가 당신에게 마법을 가르쳐줄 수 있는 한계입니다.\n-최대 체력 +200\n-마법 무기 피해량 +75％\n-공격 속도 +10％.\n-마법 무기 장착 시 근접 피해 저항력 +5％\n-최대 마나 +25％"
 	}
 	"Magical Fontina Aura Desc"
 	{
@@ -4943,13 +4943,13 @@
 	{
 		"en"	"Nanomachines, they make people harden in response to physical trauma.\nIncreases medigun heal/enemydrain rate by +75％ and uber duration by +1 second.\nIncreases melee resistance with support weapons out by +5％."
 		"it"	"Le nanomacchine rendono le persone più resistenti ai traumi fisici.\nAumenta la velocità di guarigione/drenaggio nemico della medigun del +75％ e la durata dell'uber di +1 secondo.\nAumenta la resistenza al corpo a corpo con le armi di supporto del +5％."
-		"ko"	"나노머신이다, 물리적 충격에 반응해 단단해지지.\n-메디건 치유 속도, 지원 무기 피해량 +75％\n-우버 지속 시간 +1초\n지원 무기 장착 시 근접 피해 저항력 +5％"
+		"ko"	"나노머신이다, 물리적 충격에 반응해 단단해지지.\n-메디건 치유 속도, 지원 무기 피해량 +75％\n-우버 지속 시간 +1초\n-지원 무기 장착 시 근접 피해 저항력 +5％"
 	}
 	"Voided Rejuvenator Pack Desc"
 	{
 		"en"	"The fastest heals in the void.\nIncreases medigun heal/enemydrain rate by +85％ and uber duration by +2 seconds.\nIncreases melee resistance with support weapons out by +10％."
 		"it"	"Le cure più veloci nel vuoto.\nAumenta la velocità di cura/drenaggio nemico della medigun dell'85％ e la durata dell'uber di 2 secondi.\nAumenta la resistenza in mischia con le armi di supporto del 10％."
-		"ko"	"공허에서의 가장 빠른 치료.\n-메디건 치유 속도, 지원 무기 피해량 +85％\n-우버 지속 시간 +2초\n지원 무기 장착 시 근접 피해 저항력 +10％"
+		"ko"	"공허에서의 가장 빠른 치료.\n-메디건 치유 속도, 지원 무기 피해량 +85％\n-우버 지속 시간 +2초\n-지원 무기 장착 시 근접 피해 저항력 +10％"
 	}
 	"Cheesy Slimy Aid Kit Desc"
 	{
@@ -4961,25 +4961,25 @@
 	{
 		"en" "+20％ Kit DMG | +5％ Kit Atkspd | +5 Kit HP on kill | +5％ Kit Overall Resist\n+25％ Repair Rate"
 		"it" "+20％ Danno kit | +5％ Velocità attacco kit | +5 HP kit per uccisione | +5％ Resistenza complessiva kit\n+25％ Velocità riparazione"
-		"ko" "키트 무기 피해량 +20％ | 공격 속도 +5％ | 처치시 체력 +5 회복 | 모든 피해 저항력 +5％\n-수리 효율 +25％"
+		"ko" "키트 무기 피해량 +20％ | 공격 속도 +5％ | 처치시 체력 +5 회복 | 모든 피해 저항력 +5％\n수리 효율 +25％"
 	}
 	"Kit Modernizer II Desc"
 	{
 		"en" "+30％ Kit DMG | +10％ Kit Atkspd | +5 Kit HP on kill | +10％ Kit Overall Resist\n+5％ Max mana | +35％ Repair Rate | +5％ Buidling HP\n20％ less building cost."
 		"it" "+30％ Danni kit | +10％ Velocità attacco kit | +5 HP kit per uccisione | +10％ Resistenza complessiva kit\n+5％ Mana massimo | +35％ Velocità riparazione | +5％ HP edificio\n20％ di costo di costruzione in meno."
-		"ko" "키트 무기 피해량 +30％ | 공격 속도 +10％ | 처치시 체력 +5 회복 | 모든 피해 저항력 +10％\n-최대 마나 +5％ | 수리 효율 +35％ | 구조물 체력 +5％\n-구조물 건설 비용 -20％"
+		"ko" "키트 무기 피해량 +30％ | 공격 속도 +10％ | 처치시 체력 +5 회복 | 모든 피해 저항력 +10％\n최대 마나 +5％ | 수리 효율 +35％ | 구조물 체력 +5％\n구조물 건설 비용 -20％"
 	}
 	"Kit Modernizer III Desc"
 	{
 		"en" "+40％ Kit DMG | +10％ Kit Atkspd | +10 Kit HP on kill | +10％ Kit Overall Resist\n+5％ Max mana | +50％ Repair Rate | +5％ Buidling HP | +20％ Clip Size\n+5％ Projectile Speed | 20％ less building cost."
 		"it" "+40％ Danni kit | +10％ Velocità attacco kit | +10 HP kit per uccisione | +10％ Resistenza complessiva kit\n+5％ Mana massimo | +50％ Velocità riparazione | +5％ HP edificio | +20％ Capacità caricatore\n+5％ Velocità proiettile | 20％ di riduzione del costo di costruzione."
-		"ko" "키트 무기 피해량 +40％ | 공격 속도 +10％ | 처치시 체력 +10 회복 | 모든 피해 저항력 +10％\n-최대 마나 +5％ | 수리 효율 +50％ | 구조물 체력 +5％ | 장탄수 +20％\n-투사체 속도 +5％ | 구조물 건설 비용 20％ 감소"
+		"ko" "키트 무기 피해량 +40％ | 공격 속도 +10％ | 처치시 체력 +10 회복 | 모든 피해 저항력 +10％\n최대 마나 +5％ | 수리 효율 +50％ | 구조물 체력 +5％ | 장탄수 +20％\n투사체 속도 +5％ | 구조물 건설 비용 20％ 감소"
 	}
 	"Kit Modernizer IV Desc"
 	{
 		"en" "+50％ Kit DMG | +15％ Kit Atkspd | +10 Kit HP on kill | +10％ Kit Overall Resist\n+5％ Max mana | +100％ Repair Rate | +5％ Buidling HP | +20％ Clip Size\n+10％ Projectile Speed | +5％ Projectile Range | 20％ less building cost."
 		"it" "+50％ Danni kit | +15％ Velocità attacco kit | +10 HP kit per uccisione | +10％ Resistenza complessiva kit\n+5％ Mana massimo | +100％ Velocità riparazione | +5％ HP edificio | +20％ Capacità caricatore\n+10％ Velocità proiettile | +5％ Portata proiettile | 20％ di costo di costruzione in meno."
-		"ko" "키트 무기 피해량 +50％ | 공격 속도 +15％ | 처치시 체력 +10 회복 | 모든 피해 저항력 +10％\n-최대 마나 +5％ | 수리 효율 +100％ | 구조물 체력 +5％ | 장탄수 +20％\n-투사체 속도 +10％ | 투사체 사거리 +5％ | 구조물 건설 비용 20％ 감소"
+		"ko" "키트 무기 피해량 +50％ | 공격 속도 +15％ | 처치시 체력 +10 회복 | 모든 피해 저항력 +10％\n최대 마나 +5％ | 수리 효율 +100％ | 구조물 체력 +5％ | 장탄수 +20％\n투사체 속도 +10％ | 투사체 사거리 +5％ | 구조물 건설 비용 20％ 감소"
 	}
 	"Kit Modernizer V Desc"
 	{
@@ -4997,7 +4997,7 @@
 	{
 		"en" "Fret not, my buddy, for your Barracks won't be useless this time.\nIncreases barrack unit HP by +75％, and barrack unit damage by +30％."
 		"it" "Non preoccuparti, amico mio, perché questa volta la tua caserma non sarà inutile.\nAumenta i punti salute delle unità della caserma del +75％ e il danno delle unità della caserma del +30％."
-		"ko" "걱정하지마, 친구, 이번엔 네 배럭 유닛들이 유용할테니.\n-배럭 유닛 최대 체력 +75％\n- 배럭 유닛 피해량 +30％"
+		"ko" "걱정하지마, 친구, 이번엔 네 배럭 유닛들이 유용할테니.\n-배럭 유닛 최대 체력 +75％\n-배럭 유닛 피해량 +30％"
 	}
 	"Unit Reformator II Desc"
 	{

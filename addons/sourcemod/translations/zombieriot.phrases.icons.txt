@@ -707,4 +707,49 @@
 		"it"		 "Castellan arriva per porre fine a tutto questo."
 		"ko" 		 "카스텔란이 이 전투를 끝내기 위해 왔습니다."
 	}
+	"A Portal Gate appears..."
+	{
+		"en" 		 "A Portal Gate appears..."
+		"ko" 		 "차원 관문이 생성됩니다..."
+	}
+	"An Aperture Builder appears..."
+	{
+		"en" 		 "An Aperture Builder appears..."
+		"ko" 		 "애퍼처 건축가가 나타납니다..."
+	}
+	"C.A.T. has been engaged"
+	{
+		"en" 		 "C.A.T. has been engaged"
+		"ko" 		 "C.A.T. 교전 시작."
+	}
+	"A.R.I.S. arrives"
+	{
+		"en" 		 "A.R.I.S. arrives"
+		"ko" 		 "A.R.I.S.가 전장에 도착합니다."
+	}
+	"Vincent sets foot"
+	{
+		"en" 		 "Vincent sets foot"
+		"ko" 		 "빈센트가 전장에 발을 들입니다."
+	}
+	"Agent Thompson has Materialized"
+	{
+		"en" 		 "Agent Thompson has Materialized"
+		"ko" 		 "톰슨 요원이 형체를 드러냅니다."
+	}
+	"The Twins have arrived"
+	{
+		"en" 		 "The Twins have arrived"
+		"ko" 		 "트윈스가 현장에 도착했습니다."
+	}
+	"Agent Johnson clocks in"
+	{
+		"en" 		 "Agent Johnson clocks in"
+		"ko" 		 "존슨 요원이 근무를 시작합니다."
+	}
+	"Agent Smith Arrived"
+	{
+		"en" 		 "Agent Smith Arrived"
+		"ko" 		 "스미스 요원이 모습을 드러냅니다."
+	}
 }

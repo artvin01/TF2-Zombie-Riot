@@ -3480,6 +3480,7 @@
 	"Party Popper Prefix Desc"
 	{
 		"en"	"Burst into confetti on death, infecting everything around with Party Popper.\nNPCs take damage and players cannot get downed temporarily."
+		"ko"	"사망 시 팡파레처럼 폭발하며, 주위의 모든 것들을 '파티광'에 감염시킵니다.\nNPC는 피해를 입으며 플레이어들은 일시적으로 다운되지 않고 즉사하게 됩니다."
 	}
 	"Gory Prefix"
 	{
@@ -3529,14 +3530,17 @@
 	"Warning Prefix"
 	{
 		"en"	"Warning Prefix"
+		"ko"	"경고 접두사"
 	}
 	"Warning Prefix Desc"
 	{
 		"en"	"⚠⚠⚠"
+		"ko"	"⚠⚠⚠"
 	}
 	"⚠"
 	{
 		"en"	"⚠"
+		"ko"	"⚠"
 	}
 	"Ragdolled"
 	{
