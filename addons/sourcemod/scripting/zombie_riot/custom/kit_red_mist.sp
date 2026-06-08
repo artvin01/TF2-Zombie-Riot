@@ -640,6 +640,8 @@ public Action Timer_RM_CD_Restore(Handle timer, int client)
 
 void Func_RM_StrengthDisplay(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
 {
+	if(victim >= MaxClients)
+		return;
 	Format(HudToDisplay, SizeOfChar, "⬆(%i)", Strenght_Amount[victim]);
 	if(h_Red_Mist_Timer[victim] == null)
 	{

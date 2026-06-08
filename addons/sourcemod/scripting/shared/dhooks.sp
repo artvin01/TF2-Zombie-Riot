@@ -1544,7 +1544,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 		i_AmountDowned[client] = 0;
 	f_TimeAfterSpawn[client] = GetGameTime() + 1.0;
 
-	if(Dungeon_Mode())
+	if(IsRespawning && Dungeon_Mode())
 	{
 		CreateTimer(0.1, Dhook_TeleportToCenter, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 		return MRES_Ignored;
