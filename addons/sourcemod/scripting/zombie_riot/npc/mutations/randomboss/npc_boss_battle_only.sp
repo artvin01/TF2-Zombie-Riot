@@ -71,6 +71,8 @@ static void ClotPrecache()
 	NPC_GetByPlugin("npc_boss_reila");
 	NPC_GetByPlugin("npc_almagest_jkei");
 	NPC_GetByPlugin("npc_shadowing_darkness_boss");
+	NPC_GetByPlugin("npc_no_random_kranz");
+	NPC_GetByPlugin("npc_black_heavy_soul");
 }
 
 bool SameBossDisallow[64];
@@ -150,11 +152,11 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 	SameBossDisallow[0] = true;
 	while(SameBossDisallow[NumberRand])
 	{
-		NumberRand = GetRandomInt(1,33);
+		NumberRand = GetRandomInt(1,35);
 	}
 	if(i_RaidGrantExtra[bosssummonbase] == 666)
 	{
-		NumberRand = GetRandomInt(34,36);
+		NumberRand = GetRandomInt(36,38);
 	}
 	SameBossDisallow[NumberRand] = true;
 	switch(NumberRand)
@@ -476,23 +478,37 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			PluginName = "npc_shadowing_darkness_boss";	
 			
 			enemy.ExtraDamage *= 0.45;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.25); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.0); 
 			if(CurrentModifOn() == 4) // TURBOLENCES
 			{
 				enemy.ExtraDamage *= 0.65;
 				enemy.Health = RoundToNearest(float(enemy.Health) * 0.75); 
 			}
-			enemy.ExtraThinkSpeed *= 1.15;
+			enemy.ExtraThinkSpeed *= 1.25;
 		}
 		case 34:
 		{
-			PluginName = "npc_gentlespy";	
+			PluginName = "npc_no_random_kranz";	
+			
+			enemy.ExtraDamage *= 0.75;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 0.35); 
 		}
 		case 35:
 		{
-			PluginName = "npc_hhh";	
+			PluginName = "npc_black_heavy_soul";	
+			
+			enemy.ExtraDamage *= 0.65;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 0.8); 
 		}
 		case 36:
+		{
+			PluginName = "npc_gentlespy";	
+		}
+		case 37:
+		{
+			PluginName = "npc_hhh";	
+		}
+		case 38:
 		{
 			PluginName = "npc_christianbrutalsniper";	
 		}
