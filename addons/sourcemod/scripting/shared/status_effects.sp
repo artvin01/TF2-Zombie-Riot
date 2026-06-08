@@ -9936,13 +9936,15 @@ static void WarningPrefix_Start(int entity, StatusEffect Apply_MasterStatusEffec
 		return;
 	
 	float pos[3], ang[3], maxs[3];
+	float originalPos[3];
 	GetAbsOrigin(entity, pos);
 	GetEntPropVector(entity, Prop_Data, "m_vecMaxs", maxs);
 	
 	pos[2] += WARNING_VERTICALOFFSET + maxs[2];
+	originalPos = pos;
 	
 	int wearable = CreateEntityByName("func_rotating");
-	if (wearable > 0)
+	if (wearable != -1)
 	{
 		SetEntPropEnt(wearable, Prop_Send, "m_hOwnerEntity", entity);
 		DispatchKeyValue(wearable, "spawnflags", "81"); // Start ON / Client-side Rotation / Not Solid
@@ -9958,11 +9960,13 @@ static void WarningPrefix_Start(int entity, StatusEffect Apply_MasterStatusEffec
 	}
 	
 	int model = CreateEntityByName("prop_dynamic");
-	if (model > 0)
+	if (model != -1)
 	{
 		DispatchKeyValue(model, "solid", "0");
 		SetEntPropEnt(model, Prop_Send, "m_hOwnerEntity", entity);
 		SetEntityModel(model, "models/props_medical/street_sign002.mdl");
+		DispatchKeyValue(model, "disableshadows", "1");
+		DispatchKeyValue(model, "disablereceivingshadows", "1");
 		DispatchSpawn(model);
 		
 		TeleportEntity(model, pos);
@@ -9975,11 +9979,13 @@ static void WarningPrefix_Start(int entity, StatusEffect Apply_MasterStatusEffec
 	}
 	
 	int model2 = CreateEntityByName("prop_dynamic");
-	if (model2 > 0)
+	if (model2 != -1)
 	{
 		DispatchKeyValue(model2, "solid", "0");
 		SetEntPropEnt(model2, Prop_Send, "m_hOwnerEntity", entity);
 		SetEntityModel(model2, "models/props_medical/street_sign002.mdl");
+		DispatchKeyValue(model, "disableshadows", "1");
+		DispatchKeyValue(model, "disablereceivingshadows", "1");
 		DispatchSpawn(model2);
 		
 		ang[1] -= 180.0;
@@ -9990,6 +9996,52 @@ static void WarningPrefix_Start(int entity, StatusEffect Apply_MasterStatusEffec
 		
 		SetEntityRenderColor(model2, 255, 210, 0, 255);
 		MakeObjectIntangeable(model2);
+	}
+	
+	int light = CreateEntityByName("light_dynamic");
+	if(light != -1)
+	{
+		DispatchKeyValue(light, "brightness", "10");
+		DispatchKeyValue(light, "spotlight_radius", "50");
+		DispatchKeyValue(light, "distance", "50");
+		DispatchKeyValue(light, "_light", "255 255 255 255");
+		DispatchKeyValue(light, "pitch", "-180");
+		DispatchKeyValue(light, "angles", "-180 0 0");
+		DispatchKeyValue(light, "spawnflags", "1"); // Do not light world
+		DispatchSpawn(light);
+		ActivateEntity(light);
+		AcceptEntityInput(light, "LightOn");
+		b_EntityCantBeColoured[light] = true;
+		
+		pos = originalPos;
+		pos[0] += 32.0;
+		
+		TeleportEntity(light, pos, NULL_VECTOR, NULL_VECTOR);
+		SetVariantString("!activator");
+		AcceptEntityInput(light, "SetParent", wearable);
+	}
+	
+	int light2 = CreateEntityByName("light_dynamic");
+	if(light2 != -1)
+	{
+		DispatchKeyValue(light2, "brightness", "10");
+		DispatchKeyValue(light2, "spotlight_radius", "50");
+		DispatchKeyValue(light2, "distance", "50");
+		DispatchKeyValue(light2, "_light", "255 255 255 255");
+		DispatchKeyValue(light2, "pitch", "180");
+		DispatchKeyValue(light2, "angles", "180 0 0");
+		DispatchKeyValue(light2, "spawnflags", "1"); // Do not light world
+		DispatchSpawn(light2);
+		ActivateEntity(light2);
+		AcceptEntityInput(light2, "LightOn");
+		b_EntityCantBeColoured[light2] = true;
+		
+		pos = originalPos;
+		pos[0] -= 32.0;
+		
+		TeleportEntity(light2, pos, NULL_VECTOR, NULL_VECTOR);
+		SetVariantString("!activator");
+		AcceptEntityInput(light2, "SetParent", wearable);
 	}
 	
 	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
