@@ -225,8 +225,8 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			PluginName = "npc_sensal";	
 			Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_40");
 			
-			enemy.ExtraDamage *= 1.05;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.1); 
+			enemy.ExtraDamage *= 0.95;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.0); 
 		}
 		case 6:
 		{
@@ -381,8 +381,8 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			PluginName = "npc_the_wall";	
 		//	Format(CharData, sizeof(CharData), "%s%s",CharData, "raid_time");
 			
-			enemy.ExtraDamage *= 1.1;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.3); 
+			enemy.ExtraDamage *= 1.0;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.1); 
 		}
 		case 23:
 		{
@@ -418,7 +418,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		{
 			PluginName = "npc_cat";	
 			
-			enemy.ExtraDamage *= 1.25;
+			enemy.ExtraDamage *= 1.35;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 1.25); 
 		}
 		case 28:
