@@ -592,7 +592,31 @@ public void Shadowing_Darkness_Boss_ClotThink(int iNPC)
 		npc.StopPathing();
 		npc.m_flNextThinkTime = FAR_FUTURE;
 		i_RaidGrantExtra[npc.index] = 0;
-		CPrintToChatAll("{darkgray}Shadowing Darkness{default}: So you finally understand the calmness of this place, stop fighting, resisting is futile~");	
+		CPrintToChatAll("{darkgray}Shadowing Darkness{default}: So you finally understand the calmness of this place, stop fighting, resisting is futile~");
+		if(Rogue_HasNamedArtifact("Omega's Assistance"))
+		{
+			switch(GetRandomInt(0,2))
+			{
+				case 0:
+					CPrintToChatAll("{gold}Omega{default}: I'm getting too old to deal with this shit, Vhxis, we got this.");
+				case 1:
+					CPrintToChatAll("{gold}Omega{default}: Spare me the heroics. I just want to kick your ass.");
+				case 2:
+					CPrintToChatAll("{gold}Omega{default}: How about...I give you the finger, and you give us the throne?");
+			}
+		}
+		if(Rogue_HasNamedArtifact("Vhxis' Assistance"))
+		{
+			switch(GetRandomInt(0,2))
+			{
+				case 0:
+					CPrintToChatAll("{purple}Vhxis{default}: Bring it on.");
+				case 1:
+					CPrintToChatAll("{purple}Vhxis{default}: Stop fighting? Hah. You're in for a treat.");
+				case 2:
+					CPrintToChatAll("{purple}Vhxis{default}: You're NOTHING before the power of MAZEAT!");
+			}
+		}
 	}
 
 	if(npc.m_flNextThinkTime > gameTime)
