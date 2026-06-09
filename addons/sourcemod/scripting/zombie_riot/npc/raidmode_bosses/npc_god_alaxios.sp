@@ -918,6 +918,8 @@ public void GodAlaxios_ClotThink(int iNPC)
 
 		if(GetTeam(npc.index) == TFTeam_Red)
 			allyAlive = false;
+		if(npc.Anger)
+			allyAlive = false;
 
 		if(allyAlive)
 		{

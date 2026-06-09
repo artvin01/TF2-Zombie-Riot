@@ -81,6 +81,11 @@ methodmap Glug < CClotBody
 		public get()							{ return b_FlamerToggled[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_FlamerToggled[this.index] = TempValueForProperty; }
 	}
+	property float m_flPeacefullAbdication
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][2]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][2] = TempValueForProperty; }
+	}
 	public void PlayIdleSound()
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -137,6 +142,7 @@ methodmap Glug < CClotBody
 		npc.m_iNpcStepVariation = 0;
 		npc.m_bDissapearOnDeath = true;
 		i_ExplosiveProjectileHexArray[npc.index] |= EP_DEALS_CLUB_DAMAGE;
+		npc.m_flPeacefullAbdication = GetGameTime() + 15.0;
 	
 
 		func_NPCDeath[npc.index] = ClotDeath;
@@ -196,6 +202,14 @@ static void ClotThink(int iNPC)
 		return;
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
+
+	if(npc.m_flPeacefullAbdication < gameTime)
+	{
+		npc.Anger = true;
+		npc.m_bDissapearOnDeath = true;	
+		RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+		return;
+	}
 
 	int target = npc.m_iTarget;
 	if(i_Target[npc.index] != -1 && !IsValidEnemy(npc.index, target))
@@ -383,7 +397,8 @@ static void ClotTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 {
 	if(attacker > 0)
 	{
-		Huirgrajo npc = view_as<Huirgrajo>(victim);
+		Glug npc = view_as<Glug>(victim);
+		npc.m_flPeacefullAbdication = GetGameTime() + 15.0;
 
 		float gameTime = GetGameTime(npc.index);
 		if(npc.m_flHeadshotCooldown < gameTime)

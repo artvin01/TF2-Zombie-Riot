@@ -46,6 +46,49 @@ static const char g_MeleeHitSounds[][] = {
 	"npc/vort/foot_hit.wav",
 };
 
+static const char g_RTDPrefixes[][] = {
+	"The Haste",
+	"The Big",
+	"The Strong",
+	"The Tiny",
+	"The Bleeder",
+	"The Vampire",
+	"The Anti Sea",
+	"The Sprayer",
+	"The Gravitational",
+	"1 UP",
+	"Regenerating",
+	"Laggy",
+	"Verde",
+	"Void Afflicted",
+	"The First",
+	"Perfected Instinct",
+	"Armoring Prefix",
+	"Motivating Prefix",
+	"Invisible Prefix",
+	"Asexual Prefix",
+	"Glug Infested Prefix",
+	"Explosive Prefix",
+	"Disco Prefix",
+	"Toxic Prefix",
+	"Boing Prefix",
+	"Knockback Prefix",
+	"Loud Prefix",
+	"Legendary Prefix",
+	"Ragebaiter Prefix",
+	"Semi Healthy Prefix",
+	"Fat Prefix",
+	"Modifier+ Prefix",
+	"Quiet Prefix",
+	"Trampling Prefix",
+	"Scrambled Prefix",
+	"Indecisive Prefix",
+	"Depressing Prefix",
+	"Whimsical Prefix",
+	"Seraph Prefix",
+	"Party Popper Prefix",
+};
+
 void RTDMedic_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DefaultMedic_DeathSounds));	   i++) { PrecacheSound(g_DefaultMedic_DeathSounds[i]);	   }
@@ -321,749 +364,41 @@ public void RTDMedic_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-	float flPosDeath[3];
-	WorldSpaceCenter(npc.index, flPosDeath);
-	ParticleEffectAt(flPosDeath, "ping_circle", 1.0);
-	switch(GetRandomInt(0,35))
+	
+	// Previous code had a bigger random selection than the amount of cases in a switch statement
+	// Not sure if a bug or intentional, but this fail chance is here to mimic that
+	const float failChance = 0.13;
+	bool success = GetURandomFloat() > failChance;
+	
+	if (success)
 	{
-		case 0: //HASTE PREFIX
+		float flPosDeath[3];
+		WorldSpaceCenter(npc.index, flPosDeath);
+		ParticleEffectAt(flPosDeath, "ping_circle", 1.0);
+		
+		int prefixIndex = GetURandomInt() % sizeof(g_RTDPrefixes);
+		for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
 		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
+			if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
 			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
+				if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
 				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
+					float pos1[3];
+					GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
+					static float pos2[3];
+					GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
+					if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
 					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
+						if(!Can_I_See_Ally(npc.index, entitycount))
+							continue;
 
-							ApplyStatusEffect(npc.index, entitycount, "The Haste", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 1: //THE BIG
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "The Big", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 2: //THE STRONG
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "The Strong", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 3: //THE TINY
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "The Tiny", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 4: //THE BLEEDER
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "The Bleeder", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 5: //THE VAMPIRE
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "The Vampire", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 6: //THE ANTI SEA
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "The Anti Sea", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 7: //THE SPRAYER
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "The Sprayer", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 8: //THE GRAVITATIONAL
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "The Gravitational", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 9: //1 UP
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "1 UP", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 10: //REGENERATING
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "Regenerating", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 11: //LAGGY
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "Laggy", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 12: //VERDE
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "Verde", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 13: //VOID AFFLICTED
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "Void Afflicted", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 14: //THE FIRST
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "The First", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 15: //PERFECTED INSTINCT
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "Perfected Instinct", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 16: //ARMORING
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "Armoring Prefix", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 17: //MOTIVATING
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "Motivating Prefix", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 18: //INVISIBLE
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "Invisible Prefix", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 19: //ASEXUAL
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "Asexual Prefix", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 20: //GLUG INFESTED
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "Glug Infested Prefix", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 21: //EXPLOSIVE
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "Explosive Prefix", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 22: //DISCO
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "Disco Prefix", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 23: //TOXIC
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "Toxic Prefix", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 24: //BOING
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "Boing Prefix", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 25: //KNOCKBACK
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "Knockback Prefix", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 26: //LOUD
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "Loud Prefix", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 27: //LEGENDARY
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "Legendary Prefix", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 28: //RAGEBAITER
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "Ragebaiter Prefix", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 29: //SEMI HEALTHY
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "Semi Healthy Prefix", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 30: //FAT
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "Fat Prefix", 999.0);
-						}
-					}
-				}
-			}
-		}
-		case 31: //MODIFIER+
-		{
-			for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
-			{
-				if(IsValidEntity(entitycount) && entitycount != npc.index && (!b_NpcHasDied[entitycount])) //Cannot buff self like this.
-				{
-					if(GetTeam(entitycount) == GetTeam(npc.index) && IsEntityAlive(entitycount))
-					{
-						float pos1[3];
-						GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos1);
-						static float pos2[3];
-						GetEntPropVector(entitycount, Prop_Data, "m_vecAbsOrigin", pos2);
-						if(GetVectorDistance(pos1, pos2, true) < (500 * 500))
-						{
-							if(!Can_I_See_Ally(npc.index, entitycount))
-								continue;
-								
-							ApplyStatusEffect(npc.index, entitycount, "Modifier+ Prefix", 999.0);
-						}
+						ApplyStatusEffect(npc.index, entitycount, g_RTDPrefixes[prefixIndex], 999.0);
 					}
 				}
 			}
 		}
 	}
-		
+
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))

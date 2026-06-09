@@ -1828,7 +1828,7 @@
 		"en" 		"There are too many buffs and debuffs to be shown.\nSee ''Status Effect List'' For every single buff.\nAlternatively, you get a message in chat when you get a new debuff or buff applied to you."
 		"es"		"Hay demasiados buffs y debuffs a mostrar.\nMira 'Lista de Efectos' para ver todos los buffs/debuffs.\nAlternativamente, cuando recibes uno, se mostrara en el chat."
 		"it"		"Ci sono troppi buff e debuff per essere mostrati.\nVedi ''Elenco degli effetti di stato'' per ogni singolo buff.\nIn alternativa, si riceve un messaggio in chat quando viene applicato un nuovo debuff o un nuovo buff."
-		"ko" 		"너무 많은 버프와 디버프가 게임 내에 존재합니다.\n''상태이상 리스트'' 를 통하여 게임 내에 존재하는 상태이상을 전부 확인해보세요.\n또한, 새로운 버프나 디버프를 받으면, 게임 채팅창에 텍스트로 표시됩니다."
+		"ko" 		"너무 많은 버프와 디버프가 게임 내에 존재합니다.\n''상태이상 목록''을 통하여 게임 내에 존재하는 상태이상을 전부 확인해보세요.\n또한, 새로운 버프나 디버프를 받으면, 게임 채팅창에 텍스트로 표시됩니다."
 	}
 	"Show Debuffs"
 	{
@@ -5931,62 +5931,77 @@
 	{
 		"#format"	"{1:d}"
 		"en" 		"You dont own enough coffins, you need atleast {1} Coffins."
+		"ko"		"관이 충분하지 않습니다. 최소 {1}개의 관이 필요합니다."
 	}
 	"Prey"
 	{
-		"en"	"Prey:\nEvery 20 seconds the first\n enemy you hit gets marked\nmarked enemies take 50％ more damage\n(35％ if boss, 25％ if raidboss)\nKilling the marked enemy heals for 20％ max hp.\n[M1]"
+		"en"	"Prey:\nEvery 20 seconds the first\n enemy you hit gets marked\nmarked enemies take 50％ more damage\n(35％ if boss, 15％ if raidboss)\nKilling the marked enemy heals for 20％ max hp.\n[M1]"
+		"ko"	"사냥감:\n매 20초마다 처음으로 공격하는\n적에게 표식을 부여\n표식 상태인 적은 받는 피해량 +50％\n(보스 - 35％, 레이드 보스 - 15％)\n표식 상태인 적 처치 시 최대 체력의 20％ 회복\n[M1]"
 	}
 	"Vengeance"
 	{
 		"en"	"Vengeance:\nIf max HP is at 50％/33％/25％ or lower, \ngain stacking 1/2/4 Strength\n[M2]"
+		"ko"	"복수:\n체력이 50％/33％/25％ 이하라면,\n중첩되는 힘 1/2/4 획득\n[M2]"
 	}
 	"Claws of Savagery"
 	{
 		"en"	"Claws of Savagery:\nWhen taking over 50％ max hp in 2 seconds \ngain 75％ damage resistance for 4 seconds\n[M1]"
+		"ko"	"흉악한 발톱:\n2초 안에 최대 체력의 50％의 피해를 입을 시\n4초 동안 피해 저항력 75％ 증가\n[M1]"
 	}
 	"The Role of the Wolf"
 	{
 		"en"	"The Role of the Wolf:\nCounter can take more damage before breaking\nIncreased counter count from 15 to 30\n[M2]"
+		"ko"	"늑대의 역할:\n반격이 파괴되기 전 더 많은 피해를 막을 수 있음\n반격 횟수가 15에서 30으로 증가\n[M2]"
 	}
 	"Absorption"
 	{
 		"en"	"Absorption:\nKilling an enemy heals you for 5％ max hp\nFor each 20％ max hp healed with \nthis effect gain 1 strenght for 20 seconds\n[M1]"
+		"ko"	"흡수:\n적 처치 시 최대 체력의 5％ 회복\n이 효과로 최대 체력의 20％를 회복할 때마다\n20초 동안 힘 1 획득\n[M1]"
 	}
 	"Mountain of Corpses"
 	{
 		"en"	"Mountain of Corpses:\nDoes nothing normally\nIf last man activates while this page is chosen \ngain 10 Strength and 50％ damage reduction.\nDie after 120 seconds after activation\n[M2]"
+		"ko"	"시체들의 산:\n기본적으로 아무 효과 없음\n해당 책장 선택 시 최후의 1인이 될 경우\n힘을 10 얻고 피해 저항력 50％ 증가\n발동 후 120초 후에 사망\n[M2]"
 	}
 	"Vampirism"
 	{
 		"en"	"Vampirism:\nRecover a small amount of hp on hit \nscales with enhances\n[M1]"
+		"ko"	"흡혈:\n적중 시 체력 소량 회복\n무기 강화에 따라 증가\n[M1]"
 	}
 	"Deep Wound"
 	{
 		"en"	"Deep Wound:\nEvery 5th hit inflict bleed onto the enemy\n[M2]"
+		"ko"	"깊은 상처:\n매 5번째 적중 시 적에게 출혈 부여\n[M2]"
 	}
 	"Greater Slash Vertical"
 	{
-		"en"	"Perform a powerful single target slash\n[M1]"
+		"en"	"Perform a powerful single target slash\nSwing your sword once the page is selected\n[M1]"
+		"ko"	"강력한 단일 대상 공격을 시전\n선택 후 공격 시 발동\n[M1]"
 	}
 	"Greater Slash Horizontal"
 	{
-		"en"	"Perform a powerful aoe slash \nin front of yourself\n[M2]"
+		"en"	"Perform a powerful aoe slash \nin front of yourself\nSwing your sword once the page is selected\n[M2]"
+		"ko"	"정면을 향해\n강력한 광역 공격을 시전\n선택 후 공격 시 발동\n[M2]"
 	}
 	"Red Mist Ego"
 	{
-		"en"	"Enter an empowered state \nSlowly lose energy overtime \nattack enemies to regain energy\n[M2]"
+		"en"	"Enter an empowered state \nSlowly lose energy overtime \nattack enemies to regain energy\nSwing your sword once the page is selected\n[M2]"
+		"ko"	"강화 상태로 돌입\n지속적으로 에너지를 소모\n적 적중 시 에너지 회복\n선택 후 공격 시 발동\n[M2]"
 	}
 	"Red Mist Card Locked"
 	{
 		"en"	"Locked"
+		"ko"	"잠김"
 	}
 	"Red Mist Card Selected"
 	{
 		"en"	"Card Selected"
+		"ko"	"책장 선택됨"
 	}
 	"Red Mist cooldown"
 	{
 		"#format"	"{1:.1f}"
 		"en" 		"Card on cooldown ({1} seconds!)"
+		"ko"		"책장 쿨다운 상태 ({1}초)"
 	}
 }

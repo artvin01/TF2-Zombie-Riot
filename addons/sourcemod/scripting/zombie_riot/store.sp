@@ -96,7 +96,7 @@ enum struct ItemInfo
 	Function Func_OnKill;
 	Function Func_TakeDamage_Take;
 	Function Func_TakeDamage_Deal;
-	Function Func_TakeDamagePost;
+	Function Func_TakeDamage_Post;
 
 	Function FuncOnPap;
 
@@ -372,6 +372,10 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sfunc_ontakedamage_take", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.Func_TakeDamage_Take = GetFunctionByName(null, buffer);
+
+		Format(buffer, sizeof(buffer), "%sfunc_ontakedamage_take_post", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.Func_TakeDamage_Post = GetFunctionByName(null, buffer);
 
 		Format(buffer, sizeof(buffer), "%sfunc_onkill", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
@@ -6232,6 +6236,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					EntityFuncPlayerRunCmd[entity]  = info.Func_OnPlayerRunCmd;
 					EntityFuncTakeDamage[entity][0]  = info.Func_TakeDamage_Deal;
 					EntityFuncTakeDamage[entity][1]  = info.Func_TakeDamage_Take;
+					EntityFuncTakeDamage[entity][2]  = info.Func_TakeDamage_Post;
 					EntityFuncOnKill[entity]  = info.Func_OnKill;
 					
 					b_Do_Not_Compensate[entity] 				= info.NoLagComp;

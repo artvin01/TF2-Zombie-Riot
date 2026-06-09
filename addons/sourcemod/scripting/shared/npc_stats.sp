@@ -7398,7 +7398,7 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0, bool forcesilentMode = fal
 	CClotBody npc = view_as<CClotBody>(pThis);
 	if(npc.m_iBleedType == 0)
 		return;
-
+		
 	float startPosition[3];
 				
 	float damageForce[3];
@@ -7458,6 +7458,10 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0, bool forcesilentMode = fal
 		TempForce = damageForce;
 		if(GibLoop == 0 && npc.m_iBleedType == BLEEDTYPE_NORMAL)
 			ScaleVector(TempForce, 0.4);
+
+		//randomize abit
+		ScaleVector(TempForce, GetRandomFloat(0.9, 1.1));
+		
 		//This gib in specific has too much knockback.
 
 		if(npc.m_iBleedType == BLEEDTYPE_METAL)

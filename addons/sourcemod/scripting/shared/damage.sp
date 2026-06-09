@@ -70,12 +70,33 @@ stock bool Damage_Modifiy(int victim, int &attacker, int &inflictor, float &dama
 			return true;
 		//LogEntryInvicibleTest(victim, attacker, damage, 9);
 	}
-	Damage_AnyVictimPost(victim, damage, damagetype);
+	Damage_AnyVictimPost(victim, attacker, inflictor, damage, damagetype, weapon, damagePosition);
 	return false;
 }
 
-stock void Damage_AnyVictimPost(int victim, float &damage, int &damagetype)
+stock void Damage_AnyVictimPost(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damagePosition[3])
 {
+	if(victim <= MaxClients)
+	{
+		int Victim_weapon = GetEntPropEnt(victim, Prop_Send, "m_hActiveWeapon");
+		if(IsValidEntity(Victim_weapon))
+		{
+			if(EntityFuncTakeDamage[Victim_weapon][2] && EntityFuncTakeDamage[Victim_weapon][2] != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, EntityFuncTakeDamage[Victim_weapon][2]);
+				Call_PushCell(victim);
+				Call_PushCell(attacker);
+				Call_PushCell(inflictor);
+				Call_PushFloat(damage);
+				Call_PushCell(damagetype);
+				Call_PushCell(weapon);
+				Call_PushCell(Victim_weapon);
+				Call_PushArray(damagePosition, sizeof(damagePosition));
+				Call_PushCell(i_HexCustomDamageTypes[victim]);
+				Call_Finish();
+			}
+		}
+	}
 	//the hud shouzldnt check this.
 	if(CheckInHud())
 		return;

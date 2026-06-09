@@ -969,9 +969,8 @@
 	}
 	"Barracks Swordsman"
 	{
-		"en" 		"Combine Swordsman"
-		"ru" 		"Комбайн мечник"
 		"en" 		"Barracks Swordsman"
+		"ru" 		"Комбайн мечник"
 		"it"		"Spadaccino combinatore"
 		"it"		"Spadaccino della caserma"
 		"ko" 		"배럭 콤바인 검객"
@@ -985,7 +984,6 @@
 	}
 	"Barracks Shotgunner"
 	{
-		"en" 		"Combine Shotgunner"
 		"ru" 		"Комбайн с дробовиком"
 		"en" 		"Barracks Shotgunner"
 		"it"		"Combine Shotgunner"
@@ -994,7 +992,6 @@
 	}
 	"Barracks Soldier"
 	{
-		"en" 		"Combine Soldier"
 		"ru" 		"Комбайн Солдат"
 		"en" 		"Barracks Soldier"
 		"it"		"Soldato Combine"
@@ -1003,7 +1000,6 @@
 	}
 	"Barracks DDT"
 	{
-		"en" 		"Combine DDT"
 		"ru" 		"Комбайн DDT"
 		"en" 		"Barracks DDT"
 		"it"		"Combinare il DDT"
@@ -1012,7 +1008,6 @@
 	}
 	"Barracks Elite"
 	{
-		"en" 		"Combine Elite"
 		"ru" 		"Элитный Комбайн"
 		"en" 		"Barracks Elite"
 		"it"		"Combine Elite"
@@ -1027,7 +1022,6 @@
 	}
 	"Barracks Super"
 	{
-		"en" 		"Combine Warrior"
 		"ru" 		"Комбайн Воин"
 		"en" 		"Barracks Warrior"
 		"it"		"Combine Warrior"
@@ -1051,7 +1045,6 @@
 	}
 	"Barracks Giant ddt"
 	{
-		"en" 		"Combine Giant DDT"
 		"ru" 		"Гигантский Комбайн DDT"
 		"en" 		"Barracks Giant DDT"
 		"it"		"Combina DDT gigante"
@@ -1060,7 +1053,6 @@
 	}
 	"Barracks Collos"
 	{
-		"en"		"Combine Collos"
 		"ru" 		"Комбайн Коллос"
 		"en"		"Barracks Collos"
 		"it"		"Combinare Collos"
@@ -6234,6 +6226,11 @@
 		"en"		"Negative"
 		"it"		"Negativo"
 		"ko"		"부정적 효과"
+	}
+	"Prefixes"
+	{
+		"en"		"Prefixes"
+		"ko"		"접두사"
 	}
 	"Major Voided"
 	{

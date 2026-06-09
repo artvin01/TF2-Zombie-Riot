@@ -799,6 +799,7 @@ void ZR_PluginStart()
 
 
 	RegConsoleCmd("sm_afk", Command_AFK, "BRB GONNA CLEAN MY MOM'S DISHES");
+	RegConsoleCmd("sm_flop", Command_Flop, "Flop");
 	//RegConsoleCmd("sm_rtd", Command_RTdFail, "Go away.");						//Littearlly cannot support RTD. I will remove this onec i add support for it, but i doubt i ever will.
 	
 	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
@@ -865,8 +866,26 @@ void ZR_PluginStart()
 	NpcConst2Building_CommandPluginStart();
 }
 
+bool IsNonZRMap = false;
+bool Bool_IsNonZRMap()
+{
+	return IsNonZRMap;
+}
 void ZR_MapStart()
 {
+	IsNonZRMap = false;
+	
+	char mapname[64];
+	GetMapName(mapname, sizeof(mapname));
+	if(StrContains(mapname, "zr_") != 0)
+	{
+		IsNonZRMap = true;
+	}
+	if(StrContains(mapname, "vsh_zr") != 0)
+		IsNonZRMap = false;
+	if(StrContains(mapname, "vsh_") != 0)
+		IsNonZRMap = false;
+
 	MusicString1.Clear();
 	MusicString2.Clear();
 	MusicSetup1.Clear();
@@ -903,7 +922,6 @@ void ZR_MapStart()
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	Format(WhatModifierSetting, sizeof(WhatModifierSetting), "");
-	PrintToChatAll("WhatModifierSetting reser");
 	WavesUpdateDifficultyName();
 	cvarTimeScale.SetFloat(1.0);
 	GlobalCheckDelayAntiLagPlayerScale = 0.0;
@@ -1447,6 +1465,15 @@ public Action Command_AFK(int client, int args)
 		WaitingInQueue[client] = true;
 		SetTeam(client, 1);
 		Queue_ClientDisconnect(client);
+	}
+	return Plugin_Handled;
+}
+public Action Command_Flop(int client, int args)
+{
+	if(client && IsEntityAlive(client))
+	{
+		FreezeNpcInTime(client, 1.5, true);
+		ApplyStatusEffect(client, client, "Ragdolled", 1.5);	
 	}
 	return Plugin_Handled;
 }
@@ -2083,9 +2110,10 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 	if(!Waves_Started() || Waves_InSetup() || GameRules_GetRoundState() != RoundState_ZombieRiot || Dungeon_CanRespawn())
 	{
 		//This is player check in setup rounds or in stuff that truly should never call lastman
+		Music_EndLastmann();
 		LastMann = false;
 		LastMann_BeforeLastman = false;
-		Yakuza_Lastman(0);
+		applied_lastmann_buffs_once = false;
 		CurrentPlayers = 0;
 		for(int client=1; client<=MaxClients; client++)
 		{
@@ -2104,6 +2132,7 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 	}
 	
 	CheckIfAloneOnServer();
+
 	
 	LastMann = true;
 	LastMann_BeforeLastman = false;
@@ -2162,48 +2191,45 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 		}
 	}
 	
-	if(PlayersLeftNotDowned == 1)
+
+	if(!applied_lastmann_buffs_once)
 	{
-		LastMann_BeforeLastman = true;
-		if(!CheckDownedState)
+		if(PlayersLeftNotDowned == 1)
 		{
-			if(PlayersLeftAliveHere > 1)
+			LastMann_BeforeLastman = true;
+			if(!CheckDownedState)
 			{
-				if(LastMann)
+				if(PlayersLeftAliveHere > 1)
 				{
-					Yakuza_Lastman(0);
+					LastMannScreenEffect = false;
+					//there are players left, dont trigger lastman
+					LastMann = false;
 				}
-				LastMannScreenEffect = false;
-				//there are players left, dont trigger lastman
-				LastMann = false;
 			}
 		}
-	}
-	else
-	{
-		if(LastMann)
+		else	
 		{
-			Yakuza_Lastman(0);
+			LastMannScreenEffect = false;
+			//there are players left, dont trigger lastman
+			LastMann = false;
 		}
-		LastMannScreenEffect = false;
-		//there are players left, dont trigger lastman
-		LastMann = false;
-	}
+			
 
-	//force lastman
-	if(TestLastman)
-	{
-		LastMann = true;
-		LastMannScreenEffect = false;
-		applied_lastmann_buffs_once = false;
-	}
+		//force lastman
+		if(TestLastman)
+		{
+			LastMann = true;
+			LastMannScreenEffect = false;
+			applied_lastmann_buffs_once = false;
+		}
 
-	if(!LastMann)
-		applied_lastmann_buffs_once = false;
+		if(!LastMann)
+			applied_lastmann_buffs_once = false;
 
-	if(LastMann)
-	{	
-		TriggerLastmanLogic(killed, Hurtviasdkhook);
+		if(LastMann)
+		{	
+			TriggerLastmanLogic(killed, Hurtviasdkhook);
+		}
 	}
 	
 	if(PlayersLeftNotDowned)
@@ -2843,6 +2869,8 @@ void ReviveAll(bool raidspawned = false,
 	
 	if(ZR_Get_Modifier() == PREFIX_ONESTAND && !IsSetupRevive)
 		return;
+
+	applied_lastmann_buffs_once = false;
 	for(int client=1; client<=MaxClients; client++)
 	{
 		CheckClientLateJoin(client, false);
@@ -3459,6 +3487,8 @@ stock void SPrintToChatAll(const char[] message, any ...)
 //IF you disable ingame downloads, it will download all these files nontherless!
 void ZR_FastDownloadForce()
 {
+	//always
+	PrecacheSoundCustom("#zombiesurvival/red_mist_lastman.mp3",_,1);
 	//do not download!!
 	if(FileNetwork_Enabled())
 		return;

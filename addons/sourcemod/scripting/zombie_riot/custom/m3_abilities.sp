@@ -204,9 +204,9 @@ stock void GiveMorphineOnDamage(int client, int victim, float damage, int damage
 
 	MinCashMaxGain -= 250;
 
-	if(MinCashMaxGain >= 200000)
+	if(MinCashMaxGain >= 100000)
 	{
-		MinCashMaxGain = 200000;
+		MinCashMaxGain = 100000;
 	}
 	
 	float DamageForMaxCharge = (Pow(2.0 * MinCashMaxGain, 1.2) + MinCashMaxGain * 3.0);
@@ -976,6 +976,8 @@ public void Reinforce(int client, bool NoCD)
 			if(f_PlayerLastKeyDetected[client_check] < GetGameTime())
 				continue;
 			if(HasSpecificBuff(client_check, "Vuntulum Bomb EMP Death"))
+				continue;
+			if(!Rogue_BlueParadox_CanTeutonUpdate(client_check))
 				continue;
 
 			int CashSpendScale = CashSpentTotal[client_check];
@@ -2201,6 +2203,8 @@ stock int GetRandomDeathPlayer(int client)
 		if(f_PlayerLastKeyDetected[client_check] < GetGameTime())
 			continue;
 		if(HasSpecificBuff(client_check, "Vuntulum Bomb EMP Death"))
+			continue;
+		if(!Rogue_BlueParadox_CanTeutonUpdate(client_check))
 			continue;
 
 		int CashSpendScale = CashSpentTotal[client_check];
