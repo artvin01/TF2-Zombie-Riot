@@ -2140,7 +2140,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "[%t", "Superboss");
 
 		//Does it have power? No power also hides timer showing
-		if(RaidModeScaling != 0.0)
+		if(RaidModeScaling > 0.0)
 		{
 			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s|%t", ExtraHudHurt, "Power");
 			//time show or not
