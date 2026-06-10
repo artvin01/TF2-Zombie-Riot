@@ -9613,6 +9613,7 @@ static const char ScrambledBlacklist[][] =
 	"Stalker Prefix Nerf",
 	"7 Heavy Souls",
 	"Aleph Prefix",
+	"Asexual Prefix",
 	"Modifier+ Prefix",
 	"Decapitate",
 	"Red Mist",
