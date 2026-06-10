@@ -1029,7 +1029,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 	{
 		case 2:
 		{
-			switch(GetRandomInt(1, 4))
+			switch(GetRandomInt(1, 5))
 			{
 				case 1:
 				{
@@ -1042,6 +1042,10 @@ static Action Freeplay_RouletteMessage(Handle timer)
 				case 3:
 				{
 					CPrintToChatAll("{crimson}THE BLITZKRIEG! {gold}- {snow}I remember Blitz before he was hacked. he was nice to us expidonsans.");
+				}
+				case 4:
+				{
+					CPrintToChatAll("{crimson}THE BLITZKRIEG! {gold}- {red}There was an original group of mercs that tired to stop Blitz at an expidonsan base. They did not succeed  ");
 				}
 				default:
 				{
@@ -1081,11 +1085,15 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 4:
 		{
-			switch(GetRandomInt(1, 2))
+			switch(GetRandomInt(1, 3))
 			{
 				case 1:
 				{
 					CPrintToChatAll("{lightblue}GOD ALAXIOS! {gold}- {red}If Alaxios is the 'god of life', then who's the 'god of death'");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{lightblue}GOD ALAXIOS! {gold}- {red}What if Alaxios was infected by the abyssal while you guys were fighting it?");
 				}
 				default:
 				{
@@ -1176,7 +1184,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 10:	
 		{
-			switch(GetRandomInt(1, 3))
+			switch(GetRandomInt(1, 4))
 			{
 				case 1:
 				{
@@ -1186,6 +1194,14 @@ static Action Freeplay_RouletteMessage(Handle timer)
 				{
 					CPrintToChatAll("{green}NEMESIS! {gold}- {red}Nemesis? That should say Calmaticus.");
 				}
+				case 3:
+				{
+					CPrintToChatAll("{green}CALMATICUS! {gold}- {red}Was Calmaticus enraged while you guys were fighting it and Vivithorn back at that abandoned lab?");
+				}
+				/*case 4:
+				{
+					CPrintToChatAll("{green}CALMATICUS! {gold}- {red}What if you guys fought Calmaticus and Vivithorn at the same time, like how you did back at the abandoned lab?");
+				}*/
 				default:
 				{
 					CPrintToChatAll("{green}CALMATICUS! {gold}- {red}The source of the Xeno infection");
@@ -1205,6 +1221,10 @@ static Action Freeplay_RouletteMessage(Handle timer)
 					CPrintToChatAll("{green}VIROTHORN! {gold}- {red}Oops, misspelled Vivithorn. :P");
 				}
 				/*case 3:
+				{
+					CPrintToChatAll("{green}VIVITHORN! {gold}- {red}What if you guys fought Vivithorn and Calmaticus at the same time, like how you did back at the abandoned lab?");
+				}
+				case 4:
 				{
 					CPrintToChatAll("{green}MR.SEX! {gold}- {red}Don't look at his sex files");
 				}*/
@@ -1533,6 +1553,10 @@ static Action Freeplay_RouletteMessage(Handle timer)
 				case 1:
 				{
 					CPrintToChatAll("{rare}VINCENT! {gold}- {red}The only sentiant robot from that place.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{rare}VINCENT! {gold}- {red}Atleast you guys were friendly enough to not kill {rare}C.A.T. {red}and {rare}A.R.I.S. {red}But what if you weren't? ");
 				}
 				default:
 				{
