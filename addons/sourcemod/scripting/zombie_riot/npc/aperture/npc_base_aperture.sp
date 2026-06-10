@@ -93,7 +93,7 @@ void Aperture_Shared_LastStandSequence_Starting(CClotBody npc)
 	
 	npc.m_flArmorCount = 0.0;
 	
-	RaidModeScaling = -1.0; // negative values make the timer not alarm people
+	RaidModeScaling = 0.0;
 	RaidModeTime = gameTime + APERTURE_LAST_STAND_TIMER_TOTAL;
 	if(CurrentModifOn() == 1)
 	{

@@ -2712,7 +2712,7 @@ public void ZRModifs_GiveRandomPrefix(int iNpc)
 			}
 			case 25:
 			{
-				if(IsValidEntity(RaidBossActive) || HasSpecificBuff(iNpc, "Stalker Prefix"))
+				if(RaidBossActive == EntIndexToEntRef(iNpc) || b_thisNpcIsARaid[iNpc] || HasSpecificBuff(iNpc, "Stalker Prefix"))
 					RetryBuffGiving = true;
 				else
 				{
