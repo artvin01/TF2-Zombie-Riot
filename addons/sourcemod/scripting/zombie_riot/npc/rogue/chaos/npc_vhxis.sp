@@ -367,7 +367,7 @@ methodmap Vhxis < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
-		CPrintToChatAll("{purple}Vhxis: {default}Youre nothing before the power of the void!");
+		NPCTalkMessage(npc.index, "You're nothing before the power of the Void!");
 
 		
 		SetEntityRenderColor(npc.index, 200, 0, 200, 255);
@@ -393,6 +393,11 @@ methodmap Vhxis < CClotBody
 	}
 }
 
+static void NPCTalkMessage(int entity, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(entity, "purple", message);
+}
+
 public void Vhxis_ClotThink(int iNPC)
 {
 	Vhxis npc = view_as<Vhxis>(iNPC);
@@ -407,7 +412,7 @@ public void Vhxis_ClotThink(int iNPC)
 	{
 		if(npc.m_iChanged_WalkCycle != 10)
 		{
-			CPrintToChatAll("{purple}Vhxis: {default}You fools!... You think i made the void?!");
+			NPCTalkMessage(npc.index, "You fools!... You think I made the Void?!");
 			if(IsValidEntity(npc.m_iWearable1))
 			{
 				AcceptEntityInput(npc.m_iWearable1, "Disable");
@@ -434,7 +439,7 @@ public void Vhxis_ClotThink(int iNPC)
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
-		CPrintToChatAll("{purple}Vhxis: {default}You almost released the void, i have to keep it in check, piss off!");
+		NPCTalkMessage(npc.index, "You almost released the Void, I have to keep it in check, piss off!");
 		return;
 	}
 
@@ -545,7 +550,7 @@ public Action Vhxis_OnTakeDamage(int victim, int &attacker, int &inflictor, floa
 	if((ReturnEntityMaxHealth(npc.index)/4) >= GetEntProp(npc.index, Prop_Data, "m_iHealth") && !npc.Anger) //npc.Anger after half hp/400 hp
 	{
 		npc.Anger = true;
-		CPrintToChatAll("{purple}Vhxis: {default}Die already! Im giving it all already!!");
+		NPCTalkMessage(npc.index, "Die already! I'm giving it all already!!");
 	}
 	return Plugin_Changed;
 }
@@ -1281,5 +1286,5 @@ public void VoidVhxisWin(int entity)
 
 	AlreadySaidWin = true;
 	//b_NpcHasDied[client]
-	CPrintToChatAll("{purple}Vhxis: {default}Back to the void gate i go.");
+	NPCTalkMessage(entity, "Back to the Void gate I go.");
 }

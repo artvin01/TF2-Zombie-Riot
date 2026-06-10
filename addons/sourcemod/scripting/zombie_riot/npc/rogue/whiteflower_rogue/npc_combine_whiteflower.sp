@@ -399,6 +399,11 @@ methodmap Whiteflower_Boss < CClotBody
 	
 }
 
+static void NPCTalkMessage(int entity, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(entity, "crimson", message, .customName = "Whiteflower");
+}
+
 public void WhiteflowerWinLine(int entity)
 {
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
@@ -407,7 +412,7 @@ public void WhiteflowerWinLine(int entity)
 		return;
 
 	AlreadySaidWin = true;
-	CPrintToChatAll("{crimson}Whiteflower{default}: Now all thats left.\nIs Bob.");	
+	NPCTalkMessage(entity, "Now all that's left...\nIs Bob.");
 }
 
 public void Whiteflower_Boss_ClotThink(int iNPC)
@@ -444,7 +449,7 @@ public void Whiteflower_Boss_ClotThink(int iNPC)
 		npc.StopPathing();
 		npc.m_flNextThinkTime = FAR_FUTURE;
 		i_RaidGrantExtra[npc.index] = 0;
-		CPrintToChatAll("{crimson}Whiteflower{default}: Out of time, youre entirely surrounded.\nYou now belong to me.\nSubmit.\nHelp me kill Bob, and we will rule it all.");	
+		NPCTalkMessage(npc.index, "Out of time, you're completely surrounded.\nYou now belong to me.\nSubmit.\nHelp me kill Bob, and we will rule it all.");	
 	}
 
 	if(npc.m_flNextThinkTime > gameTime)
@@ -941,7 +946,7 @@ public Action Whiteflower_Boss_OnTakeDamage(int victim, int &attacker, int &infl
 	if(RoundToCeil(damage) > Health)
 	{	
 		if(i_RaidGrantExtra[npc.index] == 1)
-			CPrintToChatAll("{crimson}Whiteflower{default}: Y-You... fucking rats... Rot in hell Bob...\n...\nWhiteflower Perishes.\nHis army scatteres.");	
+			NPCTalkMessage(npc.index, "Y-You... fucking rats... rot in hell Bob...\n...\nWhiteflower perishes.\nHis army scatters.");	
 		
 		npc.StopPathing();
 		ApplyStatusEffect(victim, victim, "Infinite Will", 5.0);
@@ -969,7 +974,7 @@ public void Whiteflower_Boss_NPCDeath(int entity)
 		npc.PlayDeathSound();
 	}
 	if(i_RaidGrantExtra[npc.index] == 1)
-		CPrintToChatAll("{crimson}Whiteflower{default}: Y-You... fucking rats... Rot in hell Bob...\n...\nWhiteflower Perishes.\nHis army scatteres.");	
+		NPCTalkMessage(npc.index, "Y-You... fucking rats... rot in hell Bob...\n...\nWhiteflower perishes.\nHis army scatters.");	
 		
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
@@ -1194,64 +1199,64 @@ public void Whiteflower_Boss_NPCDeathAlly(int self, int ally)
 	{
 		case 1:
 		{
-			CPrintToChatAll("{crimson}Whiteflower{default}: Argk... Youre next.");
+			NPCTalkMessage(npc.index, "Argk... You're next.");
 		}
 		case 2:
 		{
-			CPrintToChatAll("{crimson}Whiteflower{default}: Why are you running?");	
+			NPCTalkMessage(npc.index, "Why are you running?");	
 		}
 		case 3:
 		{
 			if(!Waves_InFreeplay())
 			{
-				CPrintToChatAll("{crimson}Whiteflower{default}: First my army so im alone? Pah!");
+				NPCTalkMessage(npc.index, "First my army so I'm alone? Pah!");
 			}
 			else
 			{
-				CPrintToChatAll("{crimson}Whiteflower{default}: From one maniac to another huh?");
+				NPCTalkMessage(npc.index, "From one maniac to another huh?");
 			}
 			
 		}
 		case 4:
 		{
-			CPrintToChatAll("{crimson}Whiteflower{default}: You are dirty.");	
+			NPCTalkMessage(npc.index, "You are dirty.");	
 		}
 		case 5:
 		{
-			CPrintToChatAll("{crimson}Whiteflower{default}: From one maniac to another huh?");	
+			NPCTalkMessage(npc.index, "From one maniac to another huh?");	
 		}
 		case 6:
 		{
-			CPrintToChatAll("{crimson}Whiteflower{default}: You are just like them, weak.");	
+			NPCTalkMessage(npc.index, "You are just like them, weak.");	
 		}
 		case 7:
 		{
-			CPrintToChatAll("{crimson}Whiteflower{default}: You are a fool.");	
+			NPCTalkMessage(npc.index, "You are a fool.");	
 		}
 		case 8:
 		{
-			CPrintToChatAll("{crimson}Whiteflower{default}: Such ignorance.");	
+			NPCTalkMessage(npc.index, "Such ignorance.");	
 		}
 		case 9:
 		{
 			if(!Waves_InFreeplay())
 			{
-				CPrintToChatAll("{crimson}Whiteflower{default}: They atleast believe in their leader, do you?");	
+				NPCTalkMessage(npc.index, "They at least believe in their leader, do you?");	
 			}
 			else
 			{
-				CPrintToChatAll("{crimson}Whiteflower{default}: Argk... Youre next.");
+				NPCTalkMessage(npc.index, "Argk... You're next.");
 			}	
 		}
 		case 10:
 		{
 			if(!Waves_InFreeplay())
 			{
-				CPrintToChatAll("{crimson}Whiteflower{default}: I actually care for them, do you care for your own army?");	
+				NPCTalkMessage(npc.index, "I actually care for them, do you care for your own army?");	
 			}
 			else
 			{
-				CPrintToChatAll("{crimson}Whiteflower{default}: You are dirty.");
+				NPCTalkMessage(npc.index, "You are dirty.");
 			}
 		}
 	}
