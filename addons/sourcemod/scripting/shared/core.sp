@@ -961,7 +961,7 @@ public Action Timer_Temp(Handle timer)
 			RaidModeTime += 0.2;
 			//if the raidboss is in spawn protection, prevent raidmode from going up.
 		}
-		if (RaidModeScaling != 0.0 && RaidModeTime > GetGameTime() && RaidModeTime < GetGameTime() + 60.0)
+		if (/*RaidModeScaling != 0.0 && */RaidModeTime > GetGameTime() && RaidModeTime < GetGameTime() + 60.0)
 		{
 			PlayTickSound(true, false);
 		}

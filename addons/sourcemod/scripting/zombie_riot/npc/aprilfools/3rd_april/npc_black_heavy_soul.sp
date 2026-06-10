@@ -167,7 +167,7 @@ methodmap BlackHeavySoul < CClotBody
 		
 		if(!this.Anger)
 		{
-			CPrintToChatAll("{black}Black Heavy Soul{default}: I THINK YOU NEED MORE MEN!!");
+			NPCTalkMessage(this.index, "I THINK YOU NEED MORE MEN!!");
 			EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 			EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 			this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(8.0, 10.0);	
@@ -371,9 +371,9 @@ methodmap BlackHeavySoul < CClotBody
 		
 		SetEntityRenderMode(npc.index, RENDER_NORMAL);
 		SetEntityRenderColor(npc.index, 0, 0, 0, 255);
-		CPrintToChatAll("{black}Black Heavy Soul{default}: You come here and threaten my world!? I will take you down!");
-		CPrintToChatAll("{black}Black Heavy Soul{default}: These Heavy souls are fake and evil! They do nothing except hurt!");
-		CPrintToChatAll("{black}Black Heavy Soul{default}: My own world was threatened by them, them and smith...");
+		NPCTalkMessage(npc.index, "You come here and threaten my world!? I will take you down!");
+		NPCTalkMessage(npc.index, "These Heavy souls are fake and evil! They do nothing except hurt!");
+		NPCTalkMessage(npc.index, "My own world was threatened by them, them and Smith...");
 		
 
 		int skin = 1;
@@ -387,6 +387,11 @@ methodmap BlackHeavySoul < CClotBody
 		
 		return npc;
 	}
+}
+
+static void NPCTalkMessage(int entity, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(entity, "black", message);
 }
 
 static void Internal_ClotThink(int iNPC)
@@ -413,7 +418,7 @@ static void Internal_ClotThink(int iNPC)
 		if(!npc.m_fbGunout)
 		{
 			npc.m_fbGunout = true;
-			CPrintToChatAll("{black}Black Heavy Soul{default}: Last Noob Left.");
+			NPCTalkMessage(npc.index, "Last Noob Left.");
 		}
 	}
 	if(i_RaidGrantExtra[npc.index] == RAIDITEM_INDEX_WIN_COND)
@@ -423,7 +428,7 @@ static void Internal_ClotThink(int iNPC)
 		npc.SetCycle(0.01);
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
-		CPrintToChatAll("{black}Black Heavy Soul{default}: GG EZs.");
+		NPCTalkMessage(npc.index, "GG EZs.");
 		return;
 
 	}	
@@ -579,7 +584,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			npc.Anger = true; //	>:(
 			npc.m_flNextIdleSound = 0.0;
 			npc.m_flTransformIn = GetGameTime() + 5.0;
-			CPrintToChatAll("{black}Black Heavy Soul{crimson}: RAHHHHHHHH!!! I WILL NOT LET YOU DESTROY MY WOORLD!!!!!!!!!!!");
+			NPCTalkMessage(npc.index, "{crimson}RAHHHHHHHH!!! I WILL NOT LET YOU DESTROY MY WOORLD!!!!!!!!!!!");
 			NpcSpeechBubble(npc.index, "RAHHHHHHHH!!! I WILL NOT LET YOU DESTROY MY WOORLD!!!!!!!!!!!", 35, {255,0,0,255}, {0.0,0.0,200.0}, "");
 			npc.m_iWhatAbilityDo = 0;
 			npc.m_flDoingAnimation = 0.0;
@@ -674,7 +679,7 @@ public void Raidmode_Expidonsa_BlackHeavySoul_Win(int entity)
 {
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
 	BlockLoseSay = true;
-	CPrintToChatAll("{black}Black Heavy Soul{default}: get owned.");
+	NPCTalkMessage(entity, "get owned.");
 }
 
 static void Internal_NPCDeath(int entity)
@@ -683,8 +688,8 @@ static void Internal_NPCDeath(int entity)
 	if(BlockLoseSay)
 		return;
 
-	CPrintToChatAll("{black}Black Heavy Soul{default}: Nvm fuck you i made it all up.");
-	CPrintToChatAll("{black}Black Heavy Soul{default}: *dies of death*");
+	NPCTalkMessage(entity, "Nvm fuck you i made it all up.");
+	NPCTalkMessage(entity, "*dies of death*");
 }
 
 void BlackHeavySoulAnimationChange(BlackHeavySoul npc)
@@ -848,26 +853,26 @@ bool BlackHeavy_Transform(BlackHeavySoul npc)
 			npc.m_iSaiyanState = 1;
 			HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) / 2.0, _, 4.0, HEAL_ABSOLUTE);
 			RaidModeScaling *= 1.05;
-			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-			CPrintToChatAll("{black}Black Heavy Soul{crimson}: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			NPCTalkMessage(npc.index, "{crimson}AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			NPCTalkMessage(npc.index, "{crimson}AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			NPCTalkMessage(npc.index, "{crimson}AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			NPCTalkMessage(npc.index, "{crimson}AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			NPCTalkMessage(npc.index, "{crimson}AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			NPCTalkMessage(npc.index, "{crimson}AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			NPCTalkMessage(npc.index, "{crimson}AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			NPCTalkMessage(npc.index, "{crimson}AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			NPCTalkMessage(npc.index, "{crimson}AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			NPCTalkMessage(npc.index, "{crimson}AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			NPCTalkMessage(npc.index, "{crimson}AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			NPCTalkMessage(npc.index, "{crimson}AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			NPCTalkMessage(npc.index, "{crimson}AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			NPCTalkMessage(npc.index, "{crimson}AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			NPCTalkMessage(npc.index, "{crimson}AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			NPCTalkMessage(npc.index, "{crimson}AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			NPCTalkMessage(npc.index, "{crimson}AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			NPCTalkMessage(npc.index, "{crimson}AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			NPCTalkMessage(npc.index, "{crimson}AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+			NPCTalkMessage(npc.index, "{crimson}AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 			fl_Extra_Speed[npc.index] *= 1.05;
 			SetVariantColor(view_as<int>({255, 255, 0, 200}));
 			AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");

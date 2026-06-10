@@ -342,8 +342,8 @@ methodmap NoRandomKranz < CClotBody
 			strcopy(music.Artist, sizeof(music.Artist), "Dragon Ball Z Dokkan Battle");
 			Music_SetRaidMusic(music);
 			
-			CPrintToChatAll("{darkblue}No Random Kranz V3{default}: I am not NRCV3 nor Kranz, its over mercs, i have come for you!");
-			CPrintToChatAll("{darkblue}No Random Kranz V3{default}: Us bosses HAVE NO LIMITS!");
+			NPCTalkMessage(npc.index, "I am not NRCV3 nor Kranz, it's over mercs, I have come for you!");
+			NPCTalkMessage(npc.index, "Us bosses HAVE NO LIMITS!");
 			
 			npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_directhit/c_directhit.mdl");
 		}
@@ -386,6 +386,11 @@ methodmap NoRandomKranz < CClotBody
 		
 		return npc;
 	}
+}
+
+static void NPCTalkMessage(int entity, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(entity, "darkblue", message);
 }
 
 public void NoRandomKranz_ClotThink(int iNPC)
@@ -463,7 +468,7 @@ public void NoRandomKranz_ClotThink(int iNPC)
 		RaidModeScaling *= 1.5;
 		b_NpcUnableToDie[npc.index] = false;
 		
-		CPrintToChatAll("{darkblue}No Random Kranz V3{default}: My shitty ass transformation conditions are finally met, DIE!!!");
+		NPCTalkMessage(npc.index, "My shitty ass transformation conditions are finally met, DIE!!!");
 	}
 	if(npc.i_GunMode != 2 && npc.m_CreateClones < GetGameTime(npc.index))
 	{
@@ -619,7 +624,7 @@ public Action NoRandomKranz_OnTakeDamage(int victim, int &attacker, int &inflict
 	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
 	if(RoundToCeil(damage) > Health && npc.m_iHealthBar <= 0)
 	{	
-		CPrintToChatAll("{darkblue}No Random Kranz V3{default}: OH COME ON FULL DODGE BUILD AND THEN THIS???");
+		NPCTalkMessage(npc.index, "OH COME ON FULL DODGE BUILD AND THEN THIS???");
 		
 		npc.StopPathing();
 		ApplyStatusEffect(victim, victim, "Infinite Will", 1.0);
@@ -675,7 +680,7 @@ public void NoRandomKranz_NPCDeath(int entity)
 			Music_Stop_All(client1);
 		}
 	}
-	CPrintToChatAll("{darkblue}No Random Kranz V3{default}: K  O   !");
+	NPCTalkMessage(npc.index, "K  O   !");
 		
 	static float flMyPos[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", flMyPos);
