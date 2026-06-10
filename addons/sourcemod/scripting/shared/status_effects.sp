@@ -1190,11 +1190,17 @@ void StatusEffects_PrefixName(int victim, int attacker, char[] NamePrefix, int C
 		{
 			continue;
 		}
-		//only show to players.
+		
 		if(attacker > 0 && attacker <= MaxClients)
 		{
+			//translate to players.
 			if(Apply_MasterStatusEffect.PrefixEnemyName[0])
 				Format(NamePrefix, CharSize, "%T %s", Apply_MasterStatusEffect.PrefixEnemyName, attacker, NamePrefix);
+		}
+		else
+		{
+			if(Apply_MasterStatusEffect.PrefixEnemyName[0])
+				Format(NamePrefix, CharSize, "%s %s", Apply_MasterStatusEffect.PrefixEnemyName, NamePrefix);
 		}
 	}
 
