@@ -8638,6 +8638,8 @@ float Perfected_Instinct_Dodge(int attacker, int victim, StatusEffect Apply_Mast
 
 	if(HitChance >= 0.75)
 		HitChance = 0.75;
+	if(b_thisNpcIsARaid[victim] || EntRefToEntIndex(RaidBossActive) == victim)
+		HitChance *= 0.1;
 
 	if(GetRandomFloat(0.0, 1.0) < HitChance)
 		return 0.7;

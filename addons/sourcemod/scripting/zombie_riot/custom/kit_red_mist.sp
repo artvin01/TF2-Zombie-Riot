@@ -753,6 +753,7 @@ public void Red_Mist_OnTakeDamage_Deal(int victim, int &attacker, int &inflictor
 	
 	//dmg nerf overall
 	damage *= 0.95;
+	damage *= 0.9;
 
 
 	float Strenght_boost;
