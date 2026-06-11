@@ -1084,12 +1084,13 @@ void Music_Update(int client)
 				}
 			}
 		}
-		
+		/*
 		else if(view_as<bool>(Store_HasNamedItem(client, "Expidonsan Research Card")))
 		{
 			EmitCustomToClient(client, "#zombiesurvival/nilksongboss.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.2);
 			SetMusicTimer(client, GetTime() + 100);
 		}
+		*/
 		else if(f_intencity < 1.0)
 		{
 			SetMusicTimer(client, GetTime() + 8);

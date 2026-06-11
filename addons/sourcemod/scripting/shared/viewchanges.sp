@@ -285,6 +285,18 @@ void ViewChange_PlayerModel(int client)
 				SetVariantString(NULL_STRING);
 				AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
 			}
+			if(view_as<bool>(Store_HasNamedItem(client, "Expidonsan Research Card")))
+			{
+				SetEntProp(entity, Prop_Send, "m_nModelIndex", RobotIndex[CurrentClass[client]]);
+				SetVariantString(NULL_STRING);
+				AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
+			}
+			else
+			{
+				SetEntProp(entity, Prop_Send, "m_nModelIndex", PlayerIndex[CurrentClass[client]]);
+				//i_ClientHasCustomGearEquipped[client] = 0;
+				//ViewChange_PlayerModel(client);
+			}
 
 			UpdatePlayerFakeModel(client);
 			MedicAdjustModel(client);

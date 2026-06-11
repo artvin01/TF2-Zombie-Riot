@@ -1006,10 +1006,34 @@ bool Reila_LossAnimation(int iNpc)
 				case 4:
 				{
 					CPrintToChatAll("{black}Izan{default}: ...Great, language barrier.");
+					if(Rogue_HasNamedArtifact("Omega's Assistance"))
+					{
+						switch(GetRandomInt(0,2))
+						{
+							case 0:
+								CPrintToChatAll("{gold}Omega{default}: Does anyone here speak Vestan?");
+							case 1:
+								CPrintToChatAll("{gold}Omega{default}: Everyone speaks nonsense nowadays.");
+							case 2:
+								CPrintToChatAll("{gold}Omega{default}: Vhxis, use the power of the void to decipher that!");
+						}
+					}
 				}
 				case 5:
 				{
 					CPrintToChatAll("{black}Izan {snow}shakes his head and points at his ears, then shrugs.");
+					if(Rogue_HasNamedArtifact("Vhxis' Assistance"))
+					{
+						switch(GetRandomInt(0,2))
+						{
+							case 0:
+								CPrintToChatAll("{purple}Vhxis{default}: Why are we here? This isn't what we're here for.");
+							case 1:
+								CPrintToChatAll("{purple}Vhxis{default}: This was an enormous waste of time.");
+							case 2:
+								CPrintToChatAll("{purple}Vhxis{default}: We shouldn't be here. We must get to the {purple} Throne.");
+						}
+					}	
 				}
 				case 6:
 				{
@@ -1019,6 +1043,10 @@ bool Reila_LossAnimation(int iNpc)
 				case 7:
 				{
 					CPrintToChatAll("{black}Izan {snow}allows her to leave.");
+					if(Rogue_HasNamedArtifact("Omega's Assistance"))
+					{
+						CPrintToChatAll("{gold}Omega{default} and{purple} Vhxis{default} leave.");
+					}
 				}
 				case 8:
 				{

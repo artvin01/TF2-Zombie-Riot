@@ -256,6 +256,30 @@ methodmap Shadow_FloweringDarkness < CClotBody
 		else
 		{
 			CPrintToChatAll("{black}Flowering Darkness{default} : You again... I'll make {crimson}sure{default} you're dead.");
+			if(Rogue_HasNamedArtifact("Omega's Assistance"))
+			{
+				switch(GetRandomInt(0,2))
+				{
+					case 0:
+						CPrintToChatAll("{gold}Omega{default}: I'd like to see you try.");
+					case 1:
+						CPrintToChatAll("{gold}Omega{default}: Come on then, give us your best shot before your untimely, pathetic death comes.");
+					case 2:
+						CPrintToChatAll("{gold}Omega{default}: Aww, you almost made me feel bad for you. Almost. Time to die.");
+				}
+			}
+			if(Rogue_HasNamedArtifact("Vhxis' Assistance"))
+			{
+				switch(GetRandomInt(0,2))
+				{
+					case 0:
+						CPrintToChatAll("{purple}Vhxis{default}: Adorable.");
+					case 1:
+						CPrintToChatAll("{purple}Vhxis{default}: That's enough out of you.");
+					case 2:
+						CPrintToChatAll("{purple}Vhxis{default}: You hear that? That's the sound of me quaking in my boots.");
+				}
+			}
 			npc.StartPathing();
 			npc.m_flCloneSpawnDo = GetGameTime() + 5.0;
 			npc.m_flNextAirPush = GetGameTime() + 3.0;
