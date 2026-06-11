@@ -231,20 +231,19 @@ methodmap BossReila < CClotBody
 			SetEntityRenderFx(npc.m_iWearable6, RENDERFX_DISTORT);
 			SetEntityRenderColor(npc.m_iWearable6, GetRandomInt(25, 255), GetRandomInt(25, 255), GetRandomInt(25, 255), 255);
 		
+			NPCTalkMessage(npc.index, "Who are you?!", true);
 			strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "Reila?");
-
-			CPrintToChatAll("{pink}?????{default}: Who are you?!");
 		}
 		else if(badEnding)
 		{
-			CPrintToChatAll("{pink}Reila{default}: Is this what you wanted?!");
+			NPCTalkMessage(npc.index, "Is this what you wanted?!");
 			fl_Extra_Damage[npc.index] *= 3.0;
 			fl_Extra_Speed[npc.index] *= 1.4;
 			f_AttackSpeedNpcIncrease[npc.index] *= 0.7;
 		}
 		else
 		{
-			CPrintToChatAll("{pink}Reila{default}: リᒷ╎リ リᒷ╎リ! リ╎ᓵ⍑ℸ ̣ ⋮ᒷℸ ̣⨅ℸ ̣!.");
+			NPCTalkMessage(npc.index, "リᒷ╎リ リᒷ╎リ! リ╎ᓵ⍑ℸ ̣ ⋮ᒷℸ ̣⨅ℸ ̣!.");
 		}
 		if(data[0] && !altEnding && !badEnding && !Rogue_HasNamedArtifact("Ascension Stack"))
 			i_RaidGrantExtra[npc.index] = 1;
@@ -276,6 +275,15 @@ methodmap BossReila < CClotBody
 
 		return npc;
 	}
+}
+
+static void NPCTalkMessage(int entity, const char[] message, bool unknown = false)
+{
+	char customName[32];
+	if (unknown)
+		customName = "??????";
+	
+	PrintNPCMessageWithPrefixes(entity, "pink", message, .customName = customName);
 }
 
 public void BossReila_ClotThink(int iNPC)
@@ -424,7 +432,7 @@ public Action BossReila_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 			i_RaidGrantExtra[npc.index] = 2;
 			npc.m_bisWalking = false;
 			ApplyStatusEffect(npc.index, npc.index, "Infinite Will", 50.0);
-			CPrintToChatAll("{pink}Reila {snow}Puts her hands up and gives up.");
+			CPrintToChatAll("{pink}Reila {snow}puts her hands up and gives up.");
 			damage = 0.0;
 			return Plugin_Changed;
 		}
@@ -988,16 +996,16 @@ bool Reila_LossAnimation(int iNpc)
 			{
 				case 2:
 				{
-					CPrintToChatAll("{pink}Reila {snow}she tries to talk but you understand nothing..");
-					CPrintToChatAll("{pink}Reila :{default} ∴╎ᒷᓭ𝙹 ⍊ᒷ∷ᓭ⚍ᓵ⍑ᓭℸ ̣ ↸⚍ ᒲ╎ᓵ⍑ ᔑ⚍⎓⨅⚍⍑ꖎℸ ̣ᒷリ??...");
+					CPrintToChatAll("{pink}Reila {snow}tries to talk but you understand nothing...");
+					CPrintToChatAll("{pink}Reila:{default} ∴╎ᒷᓭ𝙹 ⍊ᒷ∷ᓭ⚍ᓵ⍑ᓭℸ ̣ ↸⚍ ᒲ╎ᓵ⍑ ᔑ⚍⎓⨅⚍⍑ꖎℸ ̣ᒷリ??...");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{pink}Reila :{default} ∴ᔑ∷ℸ ̣ᒷ ᒲᔑꖎ, ʖ╎ᓭℸ ̣ ↸⚍ üʖᒷ∷⍑ᔑ!¡ℸ ̣ ⍊𝙹リ Almagest? ↸⚍ ꖌᔑリリᓭℸ ̣ ᒲ╎ᓵ⍑ リ╎ᓵ⍑ℸ ̣ ⍊ᒷ∷ᓭℸ ̣ᒷ⍑ᒷリ 𝙹↸ᒷ∷?");
+					CPrintToChatAll("{pink}Reila:{default} ∴ᔑ∷ℸ ̣ᒷ ᒲᔑꖎ, ʖ╎ᓭℸ ̣ ↸⚍ üʖᒷ∷⍑ᔑ!¡ℸ ̣ ⍊𝙹リ Almagest? ↸⚍ ꖌᔑリリᓭℸ ̣ ᒲ╎ᓵ⍑ リ╎ᓵ⍑ℸ ̣ ⍊ᒷ∷ᓭℸ ̣ᒷ⍑ᒷリ 𝙹↸ᒷ∷?");
 				}
 				case 4:
 				{
-					CPrintToChatAll("{black}Izan :{default} ... Great, languge barrier.");
+					CPrintToChatAll("{black}Izan{default}: ...Great, language barrier.");
 					if(Rogue_HasNamedArtifact("Omega's Assistance"))
 					{
 						switch(GetRandomInt(0,2))
@@ -1013,7 +1021,7 @@ bool Reila_LossAnimation(int iNpc)
 				}
 				case 5:
 				{
-					CPrintToChatAll("{black}Izan {snow} Shakes his head and points at his ears, then shrugs.");
+					CPrintToChatAll("{black}Izan {snow}shakes his head and points at his ears, then shrugs.");
 					if(Rogue_HasNamedArtifact("Vhxis' Assistance"))
 					{
 						switch(GetRandomInt(0,2))
@@ -1025,7 +1033,7 @@ bool Reila_LossAnimation(int iNpc)
 							case 2:
 								CPrintToChatAll("{purple}Vhxis{default}: We shouldn't be here. We must get to the {purple} Throne.");
 						}
-					}
+					}	
 				}
 				case 6:
 				{
@@ -1034,7 +1042,7 @@ bool Reila_LossAnimation(int iNpc)
 				}
 				case 7:
 				{
-					CPrintToChatAll("{black}Izan {snow}Allows her to leave.");
+					CPrintToChatAll("{black}Izan {snow}allows her to leave.");
 					if(Rogue_HasNamedArtifact("Omega's Assistance"))
 					{
 						CPrintToChatAll("{gold}Omega{default} and{purple} Vhxis{default} leave.");
@@ -1042,7 +1050,7 @@ bool Reila_LossAnimation(int iNpc)
 				}
 				case 8:
 				{
-					CPrintToChatAll("{black}Izan :{default} Now we have a whole other group to worry about.");
+					CPrintToChatAll("{black}Izan{default}: Now we have a whole other group to worry about.");
 					RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
 				}
 			}

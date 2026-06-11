@@ -229,12 +229,15 @@ public void HeartBroken_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 	if(CheckInHud())
 		return;
 
+	//lazy damage nerf
+	damage *= 0.9;
+	
 	//allow coffin gain at anypoint so they can gather it up beffore upgrading to this
 	GiveCoffinOnDamage(attacker,victim,  damage);
 	if(WeaponLevel[attacker] >= 5)
 	{
 		//more coffins means more damage, 0.2 is the dmg multiplier
-		damage *= (1.0 + (CoffinCharge[attacker] * 0.2));
+		damage *= (1.0 + (CoffinCharge[attacker] * 0.1));
 	}
 
 	if(zr_custom_damage & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
@@ -309,7 +312,7 @@ public void HeartBroken_OnTakeDamage_Take(int victim, int &attacker, int &inflic
 		pack.WriteFloat(Entity_Position[2]);
 		pack.WriteCell(ZR_DAMAGE_REFLECT_LOGIC);
 		RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
-		damage *= 0.25;
+		damage *= 0.5;
 	}
 }
 public void Heartbroken_Decapitate(int client, int weapon, bool crit, int slot)
@@ -491,14 +494,14 @@ static int HeartBrokenAction(int client, int target, int which)
 		{
 			Format(animation, sizeof(animation), "o_dohhulan_parry");
 			duration = 1.25;
-			ShieldGive = ReturnEntityMaxHealth(client) / 7;
+			ShieldGive = ReturnEntityMaxHealth(client) / 20;
 		}
 	}
 	ApplyStatusEffect(client, client, "Shielding", duration + 0.5);
 	if(LastMann)
 		ShieldGive = ((ShieldGive * 3) / 4);
 	
-	ShieldGive = ((ShieldGive * 3) / 4);
+	ShieldGive = ((ShieldGive * 3) / 5);
 
 	Shielding_Add(client, ShieldGive);
 
@@ -625,7 +628,7 @@ void Heartbroken_ShootHorseProjectile(int client, int target, float dmgmotif = 1
 	int MeleeWeapon = EntRefToEntIndex(ref_MeleeWeapon[client]);
 	if(!IsValidEntity(MeleeWeapon))
 		return;
-	float damage = 65.0;
+	float damage = 50.0;
 	damage *= WeaponDamageAttributeMultipliers(MeleeWeapon,_,client);
 	damage *= dmgmotif;
 	float speed = 700.0;

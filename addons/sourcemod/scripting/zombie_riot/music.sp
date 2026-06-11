@@ -414,7 +414,7 @@ void PrecacheMusicZr()
 	PrecacheSoundCustom("#zombiesurvival/lasthuman.mp3",_,1);
 	PrecacheSoundCustom("#zombiesurvival/music_lose.mp3",_,1);
 	PrecacheSoundCustom("#zombiesurvival/music_win_1.mp3",_,1);
-	PrecacheSoundCustom("#zombiesurvival/nilksongboss.mp3",_,5);
+//	PrecacheSoundCustom("#zombiesurvival/nilksongboss.mp3",_,5);
 
 	MusicDisabled = FindInfoTarget("zr_nomusic");
 	XenoMapExtra = FindInfoTarget("zr_xeno_extras");
@@ -735,7 +735,7 @@ void Music_Stop_All(int client)
 		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/7.mp3");
 		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/8.mp3");
 		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/9.mp3");
-		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/nilksongboss.mp3");
+	//	StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/nilksongboss.mp3");
 		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/nilksongboss.mp3");
 	}
 	//dont call so often! causes lag!

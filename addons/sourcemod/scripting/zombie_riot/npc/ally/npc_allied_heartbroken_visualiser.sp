@@ -335,8 +335,6 @@ void Heartbroken_ParryDohhulan(int owner, AlliedHeartbrokenVisualiserAbility npc
 		ApplyStatusEffect(owner, owner, "Shielding", duration + 0.5);
 		if(LastMann)
 			ShieldGive *= 2;
-		
-		ShieldGive *= 2;
 
 		Shielding_Add(owner, ShieldGive);
 		//we did a parry?
