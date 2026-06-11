@@ -1228,6 +1228,32 @@ static void CAT_Weapon_Lines(CAT npc, int client)
 		}
 	}
 
+	if(IsHeartBroken(client))
+	{
+		valid = true;
+		Format(Text_Lines, sizeof(Text_Lines), "DESPITE YOUR VIOLENT BEHAVIOR, THE ONLY THING YOU'VE MANAGED TO BREAK SO FAR IS MY HEART",client);
+	}
+
+	if(Store_HasNamedItem(client, "Expidonsan Research Card"))
+	{
+		valid = true;
+		switch(GetRandomInt(0,2))
+		{
+			case 0:
+			{
+				Format(Text_Lines, sizeof(Text_Lines), "FAKER UNDER THE ALIAS '{rare}%N{default}' DETECTED",client);
+			}
+			case 1:
+			{
+				Format(Text_Lines, sizeof(Text_Lines), "YOU DO NOT BELONG IN HERE, '{rare}%N{default}'",client);
+			}
+			case 2:
+			{
+				Format(Text_Lines, sizeof(Text_Lines), "IT'S A PITY YOU CHOSE TO SIDE WITH {unique}THEM{default}, AND NOT {rare}US{default}, '{rare}%N{default}'",client);
+			}
+		}
+	}
+
 	if(valid)
 	{
 		NPCTalkMessage(npc.index, Text_Lines);
