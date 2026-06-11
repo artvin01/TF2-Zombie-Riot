@@ -239,9 +239,14 @@ static void NPCTalkMessage(int entity, const char[] message, bool corruptedName 
 		
 		char prefixes[255];
 		StatusEffects_PrefixName(entity, -1, prefixes, sizeof(prefixes));
+		if (prefixes[0])
+		{
+			CorruptString(prefixes, sizeof(prefixes));
+			StrCat(prefixes, sizeof(prefixes), " ");
+		}
+		
 		CorruptString(customName, sizeof(customName));
-		CorruptString(prefixes, sizeof(prefixes));
-		CPrintToChatAll("{midnightblue}%s %s{crimson}: %s", prefixes, customName, message);
+		CPrintToChatAll("{midnightblue}%s%s{crimson}: %s", prefixes, customName, message);
 	}
 	else
 	{
