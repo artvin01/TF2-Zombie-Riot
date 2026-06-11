@@ -1474,8 +1474,8 @@ public Action Command_Flop(int client, int args)
 {
 	if(client && IsEntityAlive(client))
 	{
-		FreezeNpcInTime(client, 1.5, true);
-		ApplyStatusEffect(client, client, "Ragdolled", 1.5);	
+		FreezeNpcInTime(client, 1.0, true);
+		ApplyStatusEffect(client, client, "Ragdolled", 2.0);	
 	}
 	return Plugin_Handled;
 }
