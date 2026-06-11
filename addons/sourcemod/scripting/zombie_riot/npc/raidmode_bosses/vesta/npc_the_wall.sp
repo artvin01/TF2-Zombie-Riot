@@ -773,7 +773,7 @@ static void Clone_ClotThink(int iNPC)
 							SetEntProp(RocketGet, Prop_Send, "m_bCritical", true);
 							vecTarget[0] += GetRandomFloat(-200.0, 200.0);
 							vecTarget[1] += GetRandomFloat(-200.0, 200.0);
-							ArcToLocationViaSpeedProjectile(VecSelfNpc, vecTarget, SpeedReturn, 5.0, 2.0);
+							ArcToLocationViaSpeedProjectile(RocketGet, vecTarget, SpeedReturn, 5.0, 2.0);
 							float ang[3]; GetVectorAngles(SpeedReturn, ang);
 							SetEntPropVector(RocketGet, Prop_Data, "m_angRotation", ang);
 							TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
@@ -1521,7 +1521,7 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 						SetEntProp(RocketGet, Prop_Send, "m_bCritical", true);
 						vecTarget[0] += GetRandomFloat(-200.0, 200.0);
 						vecTarget[1] += GetRandomFloat(-200.0, 200.0);
-						ArcToLocationViaSpeedProjectile(VecSelfNpc, vecTarget, SpeedReturn, 5.0, 2.0);
+						ArcToLocationViaSpeedProjectile(RocketGet, vecTarget, SpeedReturn, 5.0, 2.0);
 						float ang[3]; GetVectorAngles(SpeedReturn, ang);
 						SetEntPropVector(RocketGet, Prop_Data, "m_angRotation", ang);
 						TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);

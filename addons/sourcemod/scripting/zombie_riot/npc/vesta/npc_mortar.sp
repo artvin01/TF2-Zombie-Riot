@@ -333,7 +333,7 @@ static int VestaMortarSelfDefense(VestaMortar npc, float gameTime, float distanc
 							Better_Gravity_Rocket(RocketGet, 55.0);
 							vecTarget[0] += GetRandomFloat(-200.0, 200.0);
 							vecTarget[1] += GetRandomFloat(-200.0, 200.0);
-							ArcToLocationViaSpeedProjectile(VecStart, vecTarget, SpeedReturn, 1.5, 1.0);
+							ArcToLocationViaSpeedProjectile(RocketGet, vecTarget, SpeedReturn, 1.5, 1.0);
 							GetEntPropVector(RocketGet, Prop_Data, "m_vecAbsOrigin", VecStart);
 							i_Wearable[RocketGet][0]=ParticleEffectAt(VecStart, "rockettrail", 0.0);
 							SetParent(RocketGet, i_Wearable[RocketGet][0]);
@@ -364,7 +364,7 @@ static int VestaMortarSelfDefense(VestaMortar npc, float gameTime, float distanc
 							i_Wearable[RocketGet][0]=ParticleEffectAt(VecStart, "rockettrail", 0.0);
 							SetParent(RocketGet, i_Wearable[RocketGet][0]);
 							SetEntProp(RocketGet, Prop_Send, "m_nSkin", 1);
-							fl_rocket_particle_dmg[RocketGet] = RocketDamage;
+							f_WandDamage[RocketGet] = RocketDamage;
 							fl_Extra_Damage[RocketGet] = fl_Extra_Damage[npc.index];
 							SDKHook(RocketGet, SDKHook_StartTouch, HEGrenade_StartTouch);
 						}

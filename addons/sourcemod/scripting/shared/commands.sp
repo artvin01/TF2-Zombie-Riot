@@ -25,7 +25,7 @@ void Commands_PluginStart()
 	AddCommandListener(OnJoinClass, "joinclass");
 #endif
 
-}
+} 
 
 public Action OnClientCommandKeyValues(int client, KeyValues kv)
 {

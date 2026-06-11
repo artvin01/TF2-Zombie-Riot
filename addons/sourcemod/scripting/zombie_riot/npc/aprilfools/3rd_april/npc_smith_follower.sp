@@ -97,6 +97,7 @@ methodmap AgentSmithFollower < CClotBody
 			case 1:
 			{
 				this.Speech("What good is a phone call if your name is Unspeakable?");
+				CPrintToChatAll("{olive}Agent Smith{darkgreen}: What good is a phone call if your name is Unspeakable?");
 			}
 			case 2:
 			{
@@ -106,10 +107,12 @@ methodmap AgentSmithFollower < CClotBody
 			case 3:
 			{
 				this.Speech("Deploy the Smithlings. Immediately.");
+				CPrintToChatAll("{olive}Agent Smith{darkgreen}: Deploy the Smithlings. Immediately.");
 			}
 			case 4:
 			{
 				this.Speech("They are a plague, and we are the cure.");
+				CPrintToChatAll("{olive}Agent Smith{darkgreen}: They are a plague, and we are the cure.");
 			}
 			case 5:
 			{
@@ -119,6 +122,7 @@ methodmap AgentSmithFollower < CClotBody
 			case 6:
 			{
 				this.Speech("We're not here because we're free, we're here because we're not free.");
+				CPrintToChatAll("{olive}Agent Smith{darkgreen}: We're not here because we're free, we're here because we're not free.");
 			}
 			case 7:
 			{
@@ -139,14 +143,17 @@ methodmap AgentSmithFollower < CClotBody
 			case 9:
 			{
 				this.Speech("I want exactly what you want. I want everything.");
+				CPrintToChatAll("{olive}Agent Smith{darkgreen}: I want exactly what you want. I want everything.");
 			}
 			case 10:
 			{
 				this.Speech("Oh, I'm not so bad once you get to know me.");
+				CPrintToChatAll("{olive}Agent Smith{darkgreen}: Oh, I'm not so bad once you get to know me.");
 			}
 			case 11:
 			{
 				this.Speech("This is my world! My world!");
+				CPrintToChatAll("{olive}Agent Smith{darkgreen}: This is my world! My world!");
 			}
 		}
 		
@@ -273,7 +280,7 @@ static void ClotThink(int iNPC)
 		}
 	}
 
-	if(target > 0)
+	if(target > 0 && !IsInvuln(target))
 	{
 		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);

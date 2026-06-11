@@ -9,6 +9,7 @@
 #define PURNELL_KNOCKBACK_PAP4	450.0
 #define PURNELL_KNOCKBACK_PAP5	500.0
 #define PURNELL_KNOCKBACK_PAP6	600.0
+#define PURNELL_GAMETEXTICON	"leaderboard_dominated"
 
 /*
 Passives:
@@ -28,6 +29,40 @@ No buffs.
 
 */
 
+enum struct PurnellBuff
+{
+	char buffName[64];
+	char shortBuffDesc[64];
+}
+
+static PurnellBuff PurnellBuffs[] =
+{
+	{ "Hectic Therapy", "+atkspd" },
+	{ "Physical Therapy", "+dmg" },
+	{ "Ensuring Therapy", "+res" },
+	{ "Overall Therapy", "+dmg, +res" },
+	{ "Powering Therapy", "+dmg, +res" },
+	{ "Calling Therapy", "+dmg, +res" },
+	{ "Caffeinated Therapy", "+dmg, +res" },
+	{ "Regenerating Therapy", "+dmg, +res, +hp regen" },
+	{ "False Therapy", "++dmg, ++res" },
+	{ "Squad Leader", "+dmg, +res" },
+};
+
+static PurnellBuff PurnellDebuffs[] =
+{
+	{ "Icy Dereliction", "-res, -spd" },
+	{ "Raiding Dereliction", "-res" },
+	{ "Degrading Dereliction", "-dmg" },
+	{ "Zero Therapy", "-res, -spd" },
+	{ "Debt-Causing Dereliction", "-res" },
+	{ "Headache-Inducing Dereliction", "-res" },
+	{ "Shocking Dereliction", "-res, -spd" },
+	{ "Therapist's Aura", "--spd" },
+	{ "Electric Dereliction", "-res, -spd" },
+	{ "Caffeinated Dereliction", "-res" },
+};
+
 static int LaserIndex;
 static bool Precached;
 static int i_Pap_Level[MAXPLAYERS];
@@ -40,6 +75,12 @@ static bool b_ShoveSound[MAXPLAYERS];
 static float fl_Push_Knockback[MAXPLAYERS];
 static bool b_PurnellLastMann;
 static int i_SaveWeapon_Revolv[MAXPLAYERS] = {-1, ...};
+
+static int i_LastHealer[MAXPLAYERS];
+static int i_NextBuffs[MAXPLAYERS][2];
+static int i_NextDebuff[MAXPLAYERS];
+
+static float fl_HudDelay[MAXPLAYERS];
 
 int Purnell_ReturnRevolver(int client)
 {
@@ -77,6 +118,7 @@ void Purnell_MapStart()
 	Zero(b_ShoveSound);
 	Zero(fl_Push_Knockback);
 	Zero(i_Pap_Level);
+	Zero(fl_HudDelay);
 }
 
 bool Purnell_Lastman(int client)
@@ -119,7 +161,8 @@ void Purnell_Enable(int client, int weapon)
 				delete Timer_Purnell_Management[client];
 				Timer_Purnell_Management[client] = null;
 			}
-			i_Pap_Level[client] = Fantasy_Blade_Get_Pap(weapon);
+			int level = Fantasy_Blade_Get_Pap(weapon);
+			i_Pap_Level[client] = level;
 			i_SaveWeapon_Revolv[client] = EntIndexToEntRef(weapon);
 			
 			DataPack pack;
@@ -130,6 +173,12 @@ void Purnell_Enable(int client, int weapon)
 			PurnellMusicOst();
 		}
 	}
+}
+
+public void Purnell_OnBuy(int client)
+{
+	Purnell_Configure_Buffs(client);
+	Purnell_Configure_Debuffs(client);
 }
 
 void PurnellMusicOst()
@@ -188,6 +237,7 @@ public Action Purnell_Timer_Management(Handle timer, DataPack pack)
 		Purnell_LastMann_Check();
 		//Purnell_Buff_Loc(client);
 		Particle_Add(client);
+		Purnell_Hud_Logic(client);
 		
 		if(i_Pap_Level[client] >= 1 && GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") == weapon)
 		{
@@ -317,7 +367,7 @@ public void Purnell_PrimaryShove(int client, int weapon, bool crit, int slot) //
 			if(cooldown <= 0.0)
 				cooldown = 0.0;
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetDefaultHudPosition(client);
+			Purnell_SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", cooldown);	
 		}
@@ -408,6 +458,8 @@ public void Purnell_Delayed_MeleeAttack(DataPack pack)
 			WorldSpaceCenter(EnemyHit, Entity_Position);
 			if(!b_NpcIsInvulnerable[EnemyHit])
 			{
+				Logic_Purnell_Debuff(client, EnemyHit);
+				
 				switch(TypeOfShove)
 				{
 					case 0:
@@ -420,7 +472,6 @@ public void Purnell_Delayed_MeleeAttack(DataPack pack)
 						float knockback = fl_Push_Knockback[client];
 						if(!b_thisNpcIsARaid[EnemyHit])
 							SensalCauseKnockback(client, EnemyHit, (knockback / 900.0), false);
-						Logic_Purnell_Debuff(client, EnemyHit, damage, weapon);
 						float CalcDamageForceVec[3]; CalculateDamageForce(fPosForward, 20000.0, CalcDamageForceVec);
 						SDKHooks_TakeDamage(EnemyHit, client, client, damage, DMG_CLUB, weapon, CalcDamageForceVec, Entity_Position);
 					}
@@ -515,7 +566,7 @@ public void Purnell_MeleeShove(int client, int weapon, bool crit, int slot) // "
 			if(cooldown <= 0.0)
 				cooldown = 0.0;
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetDefaultHudPosition(client);
+			Purnell_SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", cooldown);	
 		}
@@ -555,7 +606,7 @@ static void Purnell_Buff_Loc(int client)
 {
 	float pos[3];
 	StartPlayerOnlyLagComp(client, true);
-	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos, false);
+	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos, false, true);
 	EndPlayerOnlyLagComp(client);
 
 	bool validAlly;
@@ -576,6 +627,13 @@ static void Purnell_Buff_Loc(int client)
 			validAlly = true;
 		}
 	}
+	
+	if (LastMann && !validAlly)
+	{
+		// As last man, heal self if not aiming at an ally
+		target = client;
+		validAlly = true;
+	}
 
 	static int color[4] = {255, 255, 255, 200};
 	color[0] = validAlly ? 255 : 200;
@@ -594,54 +652,23 @@ public void Weapon_PurnellBuff_M2(int client, int weapon, bool crit, int slot)
 	if(Ability_Check_Cooldown(client, slot) > 0.0)
 	{
 		ClientCommand(client, "playgamesound items/suitchargeno1.wav");
-		SetDefaultHudPosition(client);
+		Purnell_SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_Check_Cooldown(client, slot));
 		return;
 	}
 
-	float cooldown = b_PurnellLastMann ? 5.0 : 15.0;
-	float DurationGive = 4.0;
-	int buff_apply2;
-	int buff_apply = GetRandomInt(0, 3);
-	Purnell_Configure_Buffs(i_Pap_Level[client], cooldown, DurationGive, buff_apply);
-	if(i_Pap_Level[client] >= 3)
-	{
-		buff_apply2 = GetRandomInt(0, 3);
-		Purnell_Configure_Buffs(i_Pap_Level[client], cooldown, DurationGive, buff_apply2);
-
-		while(buff_apply2 == buff_apply)
-		{
-			buff_apply2 = GetRandomInt(0, 3);
-			Purnell_Configure_Buffs(i_Pap_Level[client], cooldown, DurationGive, buff_apply2);
-		}
-	}
-	DurationGive *= 2.0;
-
 	b_LagCompNPC_No_Layers = true;
 	StartPlayerOnlyLagComp(client, true);
 	float pos[3];
-	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos, false);
+	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos, false, true);
 	EndPlayerOnlyLagComp(client);	
-
-	//If lastman, heal self.
-	if(LastMann)
-	{
-		if(Ability_Check_Cooldown(client, slot) < 0.0 && (GetClientButtons(client) & IN_DUCK))
-		{
-			target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos, false);
-		}
-		else
-		{
-			target = client;
-		}
-	}
 
 	bool validAlly;
 
 	if(target < 1)
 	{
-		
+
 	}
 	else if(target <= MaxClients)
 	{
@@ -654,6 +681,13 @@ public void Weapon_PurnellBuff_M2(int client, int weapon, bool crit, int slot)
 		{
 			validAlly = true;
 		}
+	}
+	
+	if (LastMann && !validAlly)
+	{
+		// As last man, heal self if not aiming at an ally
+		target = client;
+		validAlly = true;
 	}
 
 	if(validAlly)
@@ -671,11 +705,14 @@ public void Weapon_PurnellBuff_M2(int client, int weapon, bool crit, int slot)
 			HealEntityGlobal(client, target, MaxHealthally, 0.5, 1.0);
 
 		HealPointToReinforce(client, 1, 0.02);
-
-		Purnell_AllyBuffApply(client, target, buff_apply, DurationGive);
-		if(i_Pap_Level[client] >= 3)
-			Purnell_AllyBuffApply(client, target, buff_apply2, DurationGive);
-
+		
+		float cooldown = b_PurnellLastMann ? 5.0 : 15.0;
+		
+		Purnell_AllyBuffApply(client, target);
+		
+		// Set up the next buffs
+		Purnell_Configure_Buffs(client);
+		
 		int BeamIndex = ConnectWithBeam(client, target, 255, 255, 100, 3.0, 3.0, 1.35, "sprites/laserbeam.vmt");
 		SetEntityRenderFx(BeamIndex, RENDERFX_FADE_SLOW);
 		CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
@@ -704,347 +741,279 @@ public void Weapon_PurnellBuff_M2(int client, int weapon, bool crit, int slot)
 	ClientCommand(client, "playgamesound items/medshotno1.wav");
 }
 
-static void Purnell_Configure_Buffs(int level, float &cooldown, float &DurationGive, int &buff_apply)
+static void Purnell_Configure_Buffs(int client)
 {
+	int maxBuffId = 3;
+	int level = i_Pap_Level[client];
+	switch(level)
+	{
+		case 0, 1, 2:
+			maxBuffId = 3;
+		
+		case 3:
+			maxBuffId = 4;
+		
+		case 4:
+			maxBuffId = 5;
+		
+		case 5:
+			maxBuffId = 7;
+		
+		case 6, 7, 8:
+			maxBuffId = 9;
+	}
+	
+	ArrayList buffList = new ArrayList();
+	for (int i = 0; i <= maxBuffId; i++)
+		buffList.Push(i);
+	
+	buffList.Sort(Sort_Random, Sort_Integer);
+	
+	for (int i = 0; i < 2; i++)
+		i_NextBuffs[client][i] = buffList.Get(i);
+	
+	delete buffList;
+}
+
+static void Purnell_AllyBuffApply(int client, int target)
+{
+	char textSelf[255], textOther[255], buff[64], name[128];
+	Purnell_GetTargetName(target, client, name, sizeof(name));
+	
+	float duration = 4.0;
+	int level = i_Pap_Level[client];
 	switch(level)
 	{
 		case 0, 1:
-		{
-			//cooldown = ;
-			DurationGive = b_PurnellLastMann ? 6.0 : 4.0;
-			//buff_apply = ;
-		}
+			duration = b_PurnellLastMann ? 6.0 : 4.0;
+		
 		case 2:
-		{
-			//cooldown = ;
-			DurationGive = b_PurnellLastMann ? 7.0 : 5.0;
-			buff_apply = GetRandomInt(0, 3);
-		}
+			duration = b_PurnellLastMann ? 7.0 : 5.0;
+		
 		case 3:
-		{
-			//cooldown = ;
-			DurationGive = b_PurnellLastMann ? 8.0 : 6.0;
-			buff_apply = GetRandomInt(0, 4);
-		}
+			duration = b_PurnellLastMann ? 8.0 : 6.0;
+		
 		case 4:
-		{
-			//cooldown = ;
-			DurationGive = b_PurnellLastMann ? 9.0 : 7.0;
-			buff_apply = GetRandomInt(0, 5);
-		}
+			duration = b_PurnellLastMann ? 9.0 : 7.0;
+		
 		case 5:
-		{
-			//cooldown = ;
-			DurationGive = b_PurnellLastMann ? 10.0 : 8.0;
-			buff_apply = GetRandomInt(0, 7);
-		}
+			duration = b_PurnellLastMann ? 10.0 : 8.0;
+		
 		case 6, 7, 8:
-		{
-			//cooldown = ;
-			DurationGive = b_PurnellLastMann ? 12.0 : 10.0;
-			buff_apply = GetRandomInt(0, 9);
-		}
+			duration = b_PurnellLastMann ? 12.0 : 10.0;
 	}
-}
-static void Purnell_AllyBuffApply(int client, int target, int overdose, float DurationGive)
-{
-	char text[255];
-	switch(overdose)
+	
+	duration *= 2.0;
+	
+	bool targetIsOtherClient = (target <= MaxClients && target != client);
+	bool targetIsSelf = target == client;
+	
+	int buffAmount = 1;
+	if (level >= 3)
+		buffAmount = 2;
+	
+	if (targetIsSelf)
+		Format(textSelf, sizeof(textSelf), "You have buffed yourself with:\n");
+	else
+		Format(textSelf, sizeof(textSelf), "You have shared buffs with %s:\n", name);
+	
+	if (targetIsOtherClient)
+		Format(textOther, sizeof(textOther), "You have received Therapy buffs from %N:\n", client);
+	
+	for (int i = 0; i < buffAmount; i++)
 	{
-		case 0:
-		{
-			if(target <= MaxClients)
-			{
-				if(target > MaxClients)
-				{
-					Format(text, sizeof(text), "You buffed an ally with Hectic Therapy!");
-				}
-				else
-				{
-					Format(text, sizeof(text), "You buffed %N with Hectic Therapy!", target);
-				}
-				ApplyStatusEffect(client, target, "Hectic Therapy", DurationGive);
-				ApplyStatusEffect(client, client, "Hectic Therapy", DurationGive);
-			}
-			else
-			{
-				ApplyStatusEffect(client, target, "Physical Therapy", DurationGive);
-				ApplyStatusEffect(client, client, "Physical Therapy", DurationGive);
-				if(target > MaxClients)
-				{
-					Format(text, sizeof(text), "You buffed an ally with Physical Therapy!");
-				}
-				else
-				{
-					Format(text, sizeof(text), "You buffed %N with Physical Therapy!", target);
-				}
-			}
-		}
-		case 1:
-		{
-			ApplyStatusEffect(client, target, "Physical Therapy", DurationGive);
-			ApplyStatusEffect(client, client, "Physical Therapy", DurationGive);
-			if(target > MaxClients)
-			{
-				Format(text, sizeof(text), "You buffed an ally with Physical Therapy!");
-			}
-			else
-			{
-				Format(text, sizeof(text), "You buffed %N with Physical Therapy!", target);
-			}
-		}
-		case 2:
-		{
-			ApplyStatusEffect(client, target, "Ensuring Therapy", DurationGive);
-			ApplyStatusEffect(client, client, "Ensuring Therapy", DurationGive);
-			if(target > MaxClients)
-			{
-				Format(text, sizeof(text), "You buffed an ally with Ensuring Therapy!");
-			}
-			else
-			{
-				Format(text, sizeof(text), "You buffed %N with Ensuring Therapy!", target);
-			}
-		}
-		case 3:
-		{
-			ApplyStatusEffect(client, target, "Overall Therapy", DurationGive);
-			ApplyStatusEffect(client, client, "Overall Therapy", DurationGive);
-			if(target > MaxClients)
-			{
-				Format(text, sizeof(text), "You buffed an ally with Overall Therapy!");
-			}
-			else
-			{
-				Format(text, sizeof(text), "You buffed %N with Overall Therapy!", target);
-			}
-		}
-		case 4:
-		{
-			ApplyStatusEffect(client, target, "Powering Therapy", DurationGive);
-			ApplyStatusEffect(client, client, "Powering Therapy", DurationGive);
-			if(target > MaxClients)
-			{
-				Format(text, sizeof(text), "You buffed an ally with Powering Therapy!");
-			}
-			else
-			{
-				Format(text, sizeof(text), "You buffed %N with Powering Therapy!", target);
-			}
-		}
-		case 5:
-		{
-			ApplyStatusEffect(client, target, "Calling Therapy", DurationGive);
-			ApplyStatusEffect(client, client, "Calling Therapy", DurationGive);
-			if(target > MaxClients)
-			{
-				Format(text, sizeof(text), "You buffed an ally with Calling Therapy!");
-			}
-			else
-			{
-				Format(text, sizeof(text), "You buffed %N with Calling Therapy!", target);
-			}
-		}
-		case 6:
-		{
-			ApplyStatusEffect(client, target, "Caffinated Therapy", DurationGive);
-			ApplyStatusEffect(client, client, "Caffinated Therapy", DurationGive);
-			if(target > MaxClients)
-			{
-				Format(text, sizeof(text), "You buffed an ally with Caffinated Therapy!");
-			}
-			else
-			{
-				Format(text, sizeof(text), "You buffed %N with Caffinated Therapy!", target);
-			}
-		}
-		case 7:
-		{
-			ApplyStatusEffect(client, target, "Regenerating Therapy", DurationGive);
-			ApplyStatusEffect(client, client, "Regenerating Therapy", DurationGive);
-			if(target > MaxClients)
-			{
-				Format(text, sizeof(text), "You buffed an ally with Regenerating Therapy!");
-			}
-			else
-			{
-				Format(text, sizeof(text), "You buffed %N with Regenerating Therapy!", target);
-			}
-		}
-		case 8:
-		{
-			ApplyStatusEffect(client, target, "False Therapy", DurationGive);
-			ApplyStatusEffect(client, client, "False Therapy", DurationGive);
-			if(target > MaxClients)
-			{
-				Format(text, sizeof(text), "You buffed an ally with False Therapy!");
-			}
-			else
-			{
-				Format(text, sizeof(text), "You buffed %N with False Therapy!", target);
-			}
-		}
-		case 9:
-		{
-			ApplyStatusEffect(client, target, "Squad Leader", DurationGive);
-			ApplyStatusEffect(client, client, "Squad Leader", DurationGive);
-			if(target > MaxClients)
-			{
-				Format(text, sizeof(text), "You buffed an ally with Squad Leader!");
-			}
-			else
-			{
-				Format(text, sizeof(text), "You buffed %N with Squad Leader!", target);
-			}
-		}
+		int buffId = i_NextBuffs[client][i];
+		strcopy(buff, sizeof(buff), PurnellBuffs[buffId].buffName);
+		
+		Format(textSelf, sizeof(textSelf), "%s%s%T (%s)", textSelf, i != 0 ? ", " : "", buff, client, PurnellBuffs[buffId].shortBuffDesc);
+		
+		if (targetIsOtherClient)
+			Format(textOther, sizeof(textOther), "%s%s%T (%s)", textOther, i != 0 ? ", " : "", buff, target, PurnellBuffs[buffId].shortBuffDesc);
+		
+		ApplyStatusEffect(client, target, buff, duration);
+		ApplyStatusEffect(client, client, buff, duration);
 	}
-//	Format(text, sizeof(text), "%s\nYou gain a %.0f second cooldown!", text, cooldown);
-	//PrintHintText(client, "%s", text);
+	
+	i_LastHealer[client] = client;
+	ShowGameText(client, PURNELL_GAMETEXTICON, _, textSelf);
+	
+	DataPack pack;
+	CreateDataTimer(2.0, Purnell_Timer_ShowBuffMessageAgain, pack);
+	pack.WriteCell(GetClientUserId(client));
+	pack.WriteCell(client);
+	pack.WriteString(textSelf);
+	
+	if (targetIsOtherClient)
+	{
+		i_LastHealer[target] = client;
+		ShowGameText(target, PURNELL_GAMETEXTICON, _, textOther);
+		
+		DataPack pack2;
+		CreateDataTimer(2.0, Purnell_Timer_ShowBuffMessageAgain, pack2);
+		pack2.WriteCell(GetClientUserId(target));
+		pack2.WriteCell(client);
+		pack2.WriteString(textOther);
+	}
 }
 
 //public void Weapon_Purnell_Debuff(int client, int victim, int weapon, bool crit, int slot)
-public void Logic_Purnell_Debuff(int client, int victim, float damage, int weapon)
+public void Logic_Purnell_Debuff(int client, int victim)
 {
-	float cooldown = b_PurnellLastMann ? 5.0 : 10.0;
-	float DurationGive = 4.0;
-	int debuff_apply = GetRandomInt(0, 3);
-	Purnell_Configure_Debuffs(i_Pap_Level[client], cooldown, DurationGive, debuff_apply);
-	DurationGive *= 0.75;
-//	DurationGive *= 2.0;
-	Purnell_DebuffApply(client, victim, debuff_apply, DurationGive);
+	Purnell_DebuffApply(client, victim);
+	
+	// Set up the next debuff
+	Purnell_Configure_Debuffs(client);
 }
 
-static void Purnell_Configure_Debuffs(int level, float &cooldown, float &DurationGive, int &debuff_apply)
+static void Purnell_Configure_Debuffs(int client)
 {
+	int maxDebuffId = 3;
+	int level = i_Pap_Level[client];
+	switch(level)
+	{
+		case 0, 1, 2:
+			maxDebuffId = 3;
+		
+		case 3:
+			maxDebuffId = 4;
+		
+		case 4:
+			maxDebuffId = 5;
+		
+		case 5:
+			maxDebuffId = 7;
+		
+		case 6, 7, 8:
+			maxDebuffId = 9;
+	}
+	
+	i_NextDebuff[client] = GetURandomInt() % (maxDebuffId + 1);
+}
+
+static void Purnell_DebuffApply(int client, int target)
+{
+	float duration = 4.0;
+	int level = i_Pap_Level[client];
 	switch(level)
 	{
 		case 0, 1:
-		{
-			//cooldown = ;
-			DurationGive = b_PurnellLastMann ? 6.0 : 4.0;
-			//debuff_apply = ;
-		}
+			duration = b_PurnellLastMann ? 6.0 : 4.0;
+		
 		case 2:
-		{
-			//cooldown = ;
-			DurationGive = b_PurnellLastMann ? 7.0 : 5.0;
-			debuff_apply = GetRandomInt(0, 3);
-		}
+			duration = b_PurnellLastMann ? 7.0 : 5.0;
+		
 		case 3:
-		{
-			//cooldown = ;
-			DurationGive = b_PurnellLastMann ? 8.0 : 6.0;
-			debuff_apply = GetRandomInt(0, 4);
-		}
+			duration = b_PurnellLastMann ? 8.0 : 6.0;
+		
 		case 4:
-		{
-			//cooldown = ;
-			DurationGive = b_PurnellLastMann ? 9.0 : 7.0;
-			debuff_apply = GetRandomInt(0, 5);
-		}
+			duration = b_PurnellLastMann ? 9.0 : 7.0;
+		
 		case 5:
-		{
-			//cooldown = ;
-			DurationGive = b_PurnellLastMann ? 10.0 : 8.0;
-			debuff_apply = GetRandomInt(0, 7);
-		}
+			duration = b_PurnellLastMann ? 10.0 : 8.0;
+		
 		case 6, 7, 8:
-		{
-			//cooldown = ;
-			DurationGive = b_PurnellLastMann ? 12.0 : 10.0;
-			debuff_apply = GetRandomInt(0, 9);
-		}
+			duration = b_PurnellLastMann ? 12.0 : 10.0;
 	}
-}
-static void Purnell_DebuffApply(int client, int target, int overdose, float DurationGive)
-{
-	char text[255];
-	switch(overdose)
-	{
-		case 0:
-		{
-			ApplyStatusEffect(client, target, "Icy Dereliction", DurationGive);
-			if(target > MaxClients)
-			{
-				Format(text, sizeof(text), "You debuffed an enemy with Icy Dereliction!");
-			}
-		}
-		case 1:
-		{
-			ApplyStatusEffect(client, target, "Raiding Dereliction", DurationGive);
-			if(target > MaxClients)
-			{
-				Format(text, sizeof(text), "You debuffed an enemy with Raiding Dereliction!");
-			}
-		}
-		case 2:
-		{
-			ApplyStatusEffect(client, target, "Degrading Dereliction", DurationGive);
-			if(target > MaxClients)
-			{
-				Format(text, sizeof(text), "You debuffed an enemy with Degrading Dereliction!");
-			}
-		}
-		case 3:
-		{
-			ApplyStatusEffect(client, target, "Zero Therapy", DurationGive);
-			if(target > MaxClients)
-			{
-				Format(text, sizeof(text), "You debuffed an enemy with Zero Therapy!");
-			}
-		}
-		case 4:
-		{
-			ApplyStatusEffect(client, target, "Debt Causing Dereliction", DurationGive);
-			if(target > MaxClients)
-			{
-				Format(text, sizeof(text), "You debuffed an enemy with Debt Causing Dereliction!");
-			}
-		}
-		case 5:
-		{
-			ApplyStatusEffect(client, target, "Headache Incuding Dereliction", DurationGive);
-			if(target > MaxClients)
-			{
-				Format(text, sizeof(text), "You debuffed an enemy with Headache Incuding Dereliction!");
-			}
-		}
-		case 6:
-		{
-			ApplyStatusEffect(client, target, "Shocking Dereliction", DurationGive);
-			if(target > MaxClients)
-			{
-				Format(text, sizeof(text), "You debuffed an enemy with Shocking Dereliction!");
-			}
-		}
-		case 7:
-		{
-			ApplyStatusEffect(client, target, "Therapists Aura", DurationGive);
-			if(target > MaxClients)
-			{
-				Format(text, sizeof(text), "You debuffed an enemy with Therapists Aura!");
-			}
-		}
-		case 8:
-		{
-			ApplyStatusEffect(client, target, "Electric Dereliction", DurationGive);
-			if(target > MaxClients)
-			{
-				Format(text, sizeof(text), "You debuffed an enemy with Electric Dereliction!");
-			}
-		}
-		case 9:
-		{
-			ApplyStatusEffect(client, target, "Caffinated Dereliction", DurationGive);
-			if(target > MaxClients)
-			{
-				Format(text, sizeof(text), "You debuffed an enemy with Caffinated Dereliction!");
-			}
-		}
-	}
-
-	//for hud
-	ApplyStatusEffect(client, target, "Therapy Duration", DurationGive);
+	
+	duration *= 0.75;
+	//duration *= 2.0;
+	
+	char buff[64];
+	int buffId = i_NextDebuff[client];
+	strcopy(buff, sizeof(buff), PurnellDebuffs[buffId].buffName);
+	
+	ApplyStatusEffect(client, target, buff, duration);
+	ApplyStatusEffect(client, target, "Therapy Duration", duration);
+	
 //	Format(text, sizeof(text), "%s\nYou gain a %.0f second cooldown!", text, cooldown);
 //	PrintHintText(client, "%s", text);
+}
+
+static void Purnell_Hud_Logic(int client)
+{
+	if(fl_HudDelay[client] > GetGameTime())
+		return;
+
+	char text[256], buff[128];
+	
+	int level = i_Pap_Level[client];
+	int buffAmount = 0;
+	
+	if (level >= 3)
+		buffAmount = 2;
+	else if (level >= 1)
+		buffAmount = 1;
+	
+	if (buffAmount > 0)
+	{
+		Format(text, sizeof(text), "Next %s:", buffAmount == 1 ? "therapy" : "therapies");
+		for (int i = 0; i < buffAmount; i++)
+		{
+			int buffId = i_NextBuffs[client][i];
+			strcopy(buff, sizeof(buff), PurnellBuffs[buffId].buffName);
+			ReplaceString(buff, sizeof(buff), " Therapy", "");
+			Format(text, sizeof(text), "%s\n- %s (%s)", text, buff, PurnellBuffs[buffId].shortBuffDesc);
+		}
+		
+		Format(text, sizeof(text), "%s\n \n", text);
+	}
+	
+	Format(text, sizeof(text), "%sNext debuff:", text);
+	
+	int debuffId = i_NextDebuff[client];
+	strcopy(buff, sizeof(buff), PurnellDebuffs[debuffId].buffName);
+	Format(text, sizeof(text), "%s\n- %T (%s)", text, buff, client, PurnellDebuffs[debuffId].shortBuffDesc);
+
+	fl_HudDelay[client] = GetGameTime() + 0.5;
+	PrintHintText(client, "%s", text);
+}
+
+static void Purnell_GetTargetName(int target, int client, char[] buffer, int length)
+{
+	if (target == 0)
+		return;
+	
+	if (target <= MaxClients)
+	{
+		FormatEx(buffer, length, "%N", target);
+		return;
+	}
+	
+	if (!b_NameNoTranslation[target])
+		FormatEx(buffer, length, "%T", c_NpcName[target], client);
+	else
+		strcopy(buffer, length, c_NpcName[target]);
+}
+
+static void Purnell_Timer_ShowBuffMessageAgain(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int client = GetClientOfUserId(pack.ReadCell());
+	if (client == 0)
+		return;
+	
+	// Only show the message again if healers haven't changed so it doesn't swap back and forth between multiple recent healers
+	int healer = pack.ReadCell();
+	if (healer != i_LastHealer[client])
+		return;
+	
+	char text[255];
+	pack.ReadString(text, sizeof(text));
+	
+	ShowGameText(client, PURNELL_GAMETEXTICON, _, text);
+}
+
+static void Purnell_SetDefaultHudPosition(int client, int red = 34, int green = 139, int blue = 34, float duration = 1.01)
+{
+	if (f_NotifHudOffsetX[client] == 0.0 && f_NotifHudOffsetY[client] == 0.0)
+	{
+		// If the player hasn't changed their HUD setting, move the HUD warning up a bit so it doesn't clash with the buff/debuff element
+		const float hudX = -1.0;
+		const float hudY = 0.6;
+		
+		SetHudTextParams(hudX, hudY, duration, red, green, blue, 255);
+		return;
+	}
+	
+	SetDefaultHudPosition(client);
 }

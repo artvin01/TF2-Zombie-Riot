@@ -311,7 +311,7 @@ static int VestanGrenadierSelfDefense(VestanGrenadier npc, float gameTime, float
 					//Reducing gravity, reduces speed, lol.
 					SetEntityGravity(RocketGet, 1.0); 	
 					//I dont care if its not too accurate, ig they suck with the weapon idk lol, lore.
-					ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.75, 1.0);
+					ArcToLocationViaSpeedProjectile(RocketGet, vecDest, SpeedReturn, 1.75, 1.0);
 					Better_Gravity_Rocket(RocketGet, 55.0);
 					TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
 

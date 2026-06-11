@@ -71,6 +71,8 @@ static void ClotPrecache()
 	NPC_GetByPlugin("npc_boss_reila");
 	NPC_GetByPlugin("npc_almagest_jkei");
 	NPC_GetByPlugin("npc_shadowing_darkness_boss");
+	NPC_GetByPlugin("npc_no_random_kranz");
+	NPC_GetByPlugin("npc_black_heavy_soul");
 }
 
 bool SameBossDisallow[64];
@@ -92,6 +94,8 @@ methodmap BossSummonRandom < CClotBody
 		npc.m_iStepNoiseType = 0;	
 		npc.m_iNpcStepVariation = 0;
 		npc.m_bDissapearOnDeath = true;
+		i_NpcIsABuilding[npc.index] = true;
+		//prevent getting prefixes
 
 		func_NPCDeath[npc.index] = view_as<Function>(BossSummonRandom_NPCDeath);
 		func_NPCThink[npc.index] = view_as<Function>(BossSummonRandom_ClotThink);
@@ -148,11 +152,11 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 	SameBossDisallow[0] = true;
 	while(SameBossDisallow[NumberRand])
 	{
-		NumberRand = GetRandomInt(1,33);
+		NumberRand = GetRandomInt(1,35);
 	}
 	if(i_RaidGrantExtra[bosssummonbase] == 666)
 	{
-		NumberRand = GetRandomInt(34,36);
+		NumberRand = GetRandomInt(36,38);
 	}
 	SameBossDisallow[NumberRand] = true;
 	switch(NumberRand)
@@ -221,8 +225,8 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			PluginName = "npc_sensal";	
 			Format(CharData, sizeof(CharData), "%s%s",CharData, "wave_40");
 			
-			enemy.ExtraDamage *= 1.05;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.1); 
+			enemy.ExtraDamage *= 0.95;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.0); 
 		}
 		case 6:
 		{
@@ -377,8 +381,8 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			PluginName = "npc_the_wall";	
 		//	Format(CharData, sizeof(CharData), "%s%s",CharData, "raid_time");
 			
-			enemy.ExtraDamage *= 1.1;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.3); 
+			enemy.ExtraDamage *= 1.0;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.1); 
 		}
 		case 23:
 		{
@@ -401,7 +405,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			PluginName = "npc_omega_raid";	
 			
 			enemy.ExtraDamage *= 1.1;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.4); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.25); 
 		}
 		case 26:
 		{
@@ -414,7 +418,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 		{
 			PluginName = "npc_cat";	
 			
-			enemy.ExtraDamage *= 1.25;
+			enemy.ExtraDamage *= 1.35;
 			enemy.Health = RoundToNearest(float(enemy.Health) * 1.25); 
 		}
 		case 28:
@@ -457,7 +461,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			
 			enemy.ExtraDamage *= 1.05;
 			//no umbrals so buff hard
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.35); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.25); 
 		}
 		case 32:
 		{
@@ -465,32 +469,46 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			Format(CharData, sizeof(CharData), "%s%s",CharData, "force_final_battle");
 			
 			enemy.ExtraDamage *= 1.1;
-			enemy.ExtraThinkSpeed *= 0.85;
+			enemy.ExtraThinkSpeed *= 0.6;
 			//no minions, so buff
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.4); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.25); 
 		}
 		case 33:
 		{
 			PluginName = "npc_shadowing_darkness_boss";	
 			
 			enemy.ExtraDamage *= 0.45;
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.25); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.0); 
 			if(CurrentModifOn() == 4) // TURBOLENCES
 			{
 				enemy.ExtraDamage *= 0.65;
 				enemy.Health = RoundToNearest(float(enemy.Health) * 0.75); 
 			}
-			enemy.ExtraThinkSpeed *= 1.15;
+			enemy.ExtraThinkSpeed *= 1.25;
 		}
 		case 34:
 		{
-			PluginName = "npc_gentlespy";	
+			PluginName = "npc_no_random_kranz";	
+			
+			enemy.ExtraDamage *= 0.75;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 0.35); 
 		}
 		case 35:
 		{
-			PluginName = "npc_hhh";	
+			PluginName = "npc_black_heavy_soul";	
+			
+			enemy.ExtraDamage *= 0.65;
+			enemy.Health = RoundToNearest(float(enemy.Health) * 0.8); 
 		}
 		case 36:
+		{
+			PluginName = "npc_gentlespy";	
+		}
+		case 37:
+		{
+			PluginName = "npc_hhh";	
+		}
+		case 38:
 		{
 			PluginName = "npc_christianbrutalsniper";	
 		}

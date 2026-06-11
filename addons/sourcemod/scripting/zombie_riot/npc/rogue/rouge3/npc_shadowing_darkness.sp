@@ -429,7 +429,7 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 			strcopy(music.Name, sizeof(music.Name), "Burnt Light");
 			strcopy(music.Artist, sizeof(music.Artist), "NeboScrub");
 			Music_SetRaidMusic(music);
-			CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Oh it's you lot, finally you actually prevailed.");
+			NPCTalkMessage(npc.index, "Oh it's you lot, finally you actually prevailed.");
 		}
 		else
 		{
@@ -525,6 +525,11 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 	
 }
 
+static void NPCTalkMessage(int entity, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(entity, "darkgray", message, .customName = "Shadowing Darkness");
+}
+
 public void Shadowing_DarknessWinLine(int entity)
 {
 	i_RaidGrantExtra[entity] = RAIDITEM_INDEX_WIN_COND;
@@ -533,7 +538,7 @@ public void Shadowing_DarknessWinLine(int entity)
 		return;
 
 	AlreadySaidWin = true;
-	CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Oh don't worry, I won't kill you\nI'll make sure that you understand what beauty this place is.");	
+	NPCTalkMessage(entity, "Oh don't worry, I won't kill you.\nI'll make sure that you understand what beauty this place is.");	
 }
 
 public void Shadowing_Darkness_Boss_ClotThink(int iNPC)
@@ -592,7 +597,32 @@ public void Shadowing_Darkness_Boss_ClotThink(int iNPC)
 		npc.StopPathing();
 		npc.m_flNextThinkTime = FAR_FUTURE;
 		i_RaidGrantExtra[npc.index] = 0;
-		CPrintToChatAll("{darkgray}Shadowing Darkness{default}: So you finally understand the calmness of this place, stop fighting, resisting is futile~");	
+
+		NPCTalkMessage(npc.index, "So you finally understand the calmness of this place, stop fighting, resisting is futile~");	
+		if(Rogue_HasNamedArtifact("Omega's Assistance"))
+		{
+			switch(GetRandomInt(0,2))
+			{
+				case 0:
+					CPrintToChatAll("{gold}Omega{default}: I'm getting too old to deal with this shit, Vhxis, we got this.");
+				case 1:
+					CPrintToChatAll("{gold}Omega{default}: Spare me the heroics. I just want to kick your ass.");
+				case 2:
+					CPrintToChatAll("{gold}Omega{default}: How about...I give you the finger, and you give us the throne?");
+			}
+		}
+		if(Rogue_HasNamedArtifact("Vhxis' Assistance"))
+		{
+			switch(GetRandomInt(0,2))
+			{
+				case 0:
+					CPrintToChatAll("{purple}Vhxis{default}: Bring it on.");
+				case 1:
+					CPrintToChatAll("{purple}Vhxis{default}: Stop fighting? Hah. You're in for a treat.");
+				case 2:
+					CPrintToChatAll("{purple}Vhxis{default}: You're NOTHING before the power of MAZEAT!");
+			}
+		}
 	}
 
 	if(npc.m_flNextThinkTime > gameTime)
@@ -722,8 +752,8 @@ public Action Shadowing_Darkness_Boss_OnTakeDamage(int victim, int &attacker, in
 		}
 		i_RaidGrantExtra[npc.index] = 2;
 		CPrintToChatAll("{purple}NO!!!!!!");
-		CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Get this thing off me-.");
-		CPrintToChatAll("{black}Izan :{default} What the-");
+		NPCTalkMessage(npc.index, "Get this thing off me-.");
+		CPrintToChatAll("{black}Izan{default}: What the-");
 		if(Rogue_HasNamedArtifact("Vhxis' Assistance"))
 			CPrintToChatAll("{purple}Vhxis{default}: DON'T YOU DARE TO THINK ABOUT DOING IT!");
 		if(Rogue_HasNamedArtifact("Omega's Assistance"))
@@ -774,11 +804,11 @@ public Action Shadowing_Darkness_Boss_OnTakeDamage(int victim, int &attacker, in
 		switch(GetRandomInt(1,3))
 		{
 			case 1:
-				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Umbrals, Assist me!");
+				NPCTalkMessage(npc.index, "Umbrals, Assist me!");
 			case 2:
-				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Need some resis against them...");
+				NPCTalkMessage(npc.index, "Need some resis against them...");
 			case 3:
-				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Umbral armor should prevent this.");
+				NPCTalkMessage(npc.index, "Umbral armor should prevent this.");
 		}
 	}
 	if(!npc.Anger)
@@ -802,7 +832,7 @@ public Action Shadowing_Darkness_Boss_OnTakeDamage(int victim, int &attacker, in
 			if(npc.m_flSpeed != 0)
 				npc.m_flSpeed = SHADOW_DEFAULT_SPEED * 0.5;
 			CPrintToChatAll("{purple}YOU WILL NOT SEE THE END OF THIS DAY...");
-			CPrintToChatAll("{darkgray}Shadowing Darkness{default}: So i was right, i wasn't alone once i sat on that throne, parasite...");
+			NPCTalkMessage(npc.index, "So I was right, I wasn't alone once I sat on that throne, parasite...");
 			if(Rogue_HasNamedArtifact("Vhxis' Assistance"))
 				CPrintToChatAll("{purple}Vhxis{default}: You god damn vermin, I thought I had seen the last of you!");
 			if(Rogue_HasNamedArtifact("Omega's Assistance"))
@@ -1811,7 +1841,7 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 			if(TimeLeft < 50.0)
 			{
 				i_khamlCutscene = 14;
-				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Oh look how they have come to me...");
+				NPCTalkMessage(npc.index, "Oh look how they have come to me...");
 			}
 		}
 		case 14:
@@ -1827,7 +1857,7 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 				strcopy(music.Artist, sizeof(music.Artist), "NeboScrub");
 				Music_SetRaidMusic(music, false);
 				i_khamlCutscene = 13;
-				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: How many umbrals did you piss off?");
+				NPCTalkMessage(npc.index, "How many umbrals did you piss off?");
 			}
 		}
 		case 13:
@@ -1841,14 +1871,14 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 						if(Rogue_HasNamedArtifact("Omega's Assistance"))
 							CPrintToChatAll("{gold}Omega{default}: None of your business.");
 						else
-							CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Better hope they are on your side, as for the void...");
+							NPCTalkMessage(npc.index, "Better hope they are on your side, as for the Void...");
 					}
 					case 1:
 					{
 						if(Rogue_HasNamedArtifact("Vhxis' Assistance"))
 							CPrintToChatAll("{purple}Vhxis{default}: %i.", GetRandomInt(0, 100));
 						else
-							CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Better hope they are on your side, as for the void...");
+							NPCTalkMessage(npc.index, "Better hope they are on your side, as for the Void...");
 					}
 				}
 				i_khamlCutscene = 12;
@@ -1859,9 +1889,9 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 			if(TimeLeft < 40.0)
 			{
 				if(Rogue_HasNamedArtifact("Omega's Assistance"))
-					CPrintToChatAll("{darkgray}Shadowing Darkness{default}: That was a rhetorical question...regardless, killing me won't stop the voids.");
+					NPCTalkMessage(npc.index, "That was a rhetorical question...regardless, killing me won't stop the Void.");
 				else
-					CPrintToChatAll("{darkgray}Shadowing Darkness{default}: If you really think killing me will stop the voids, be my guest.");
+					NPCTalkMessage(npc.index, "If you really think killing me will stop the Void, be my guest.");
 				i_khamlCutscene = 11;
 			}
 		}
@@ -1872,12 +1902,12 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 				if(Rogue_HasNamedArtifact("Omega's Assistance"))
 				{
 					CPrintToChatAll("{white}Bob{allies} & {gold}Omega{default}: Traitors.");
-					CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Me, a traitor? I didn't do anything.");
+					NPCTalkMessage(npc.index, "Me, a traitor? I didn't do anything.");
 				}
 				else
 				{
 					CPrintToChatAll("{white}Bob{default}: You and whiteflower are the most nasty traitors I have seen.");
-					CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Me, a traitor? I didn't do anything.");
+					NPCTalkMessage(npc.index, "Me, a traitor? I didn't do anything.");
 				}
 				i_khamlCutscene = 10;
 			}
@@ -1899,9 +1929,9 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 			{
 				i_khamlCutscene = 8;
 				if(Rogue_HasNamedArtifact("Bob's Wrath"))
-					CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Guln is dead..? ........");
+					NPCTalkMessage(npc.index, "Guln is dead..? ........");
 				else
-					CPrintToChatAll("{darkgray}Shadowing Darkness{default}: I don't know excatly what happend to Guln, I have tried to find him myself.");
+					NPCTalkMessage(npc.index, "I don't know exactly what happened to Guln, I have tried to find him myself.");
 			}
 		}
 		case 8:
@@ -1909,7 +1939,7 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 			if(TimeLeft < 25.0)
 			{
 				i_khamlCutscene = 7;
-				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Whiteflower was not a bad person, however.... If you want to stop the void, you'll have to get ahold of the umbrals and make them do their job.");
+				NPCTalkMessage(npc.index, "Whiteflower was not a bad person, however... If you want to stop the Void, you'll have to get ahold of the umbrals and make them do their job.");
 			}
 		}
 		case 7:
@@ -1919,7 +1949,7 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 				if(Rogue_HasNamedArtifact("Omega's Assistance"))
 					CPrintToChatAll("{gold}Omega{default}: Whiteflower, not a bad person? You are deluded. You have to be taken out.");
 				else
-					CPrintToChatAll("{darkgray}Shadowing Darkness{default}: This is what the throne does, to a limited degree, and im atop of it, but...");
+					NPCTalkMessage(npc.index, "This is what the throne does, to a limited degree, and I'm atop of it, but...");
 				i_khamlCutscene = 6;
 			}
 		}
@@ -1933,7 +1963,7 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 					CPrintToChatAll("{purple}Vhxis{default}: I'm sure this place will be better off with someone actually competent on the throne.");
 				}
 				else
-					CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Ever since i sat upon it, i wanted to do something else.");
+					NPCTalkMessage(npc.index, "Ever since I sat upon it, I wanted to do something else.");
 				i_khamlCutscene = 5;
 			}
 		}
@@ -1942,9 +1972,9 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 			if(TimeLeft < 13.0)
 			{
 				if(Rogue_HasNamedArtifact("Vhxis' Assistance"))
-					CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Oh please, we all know I won't let anyone be the new heir to the throne.");
+					NPCTalkMessage(npc.index, "Oh please, we all know I won't let anyone be the new heir to the throne.");
 				else
-					CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Izan... i remember when you wanted to be a fake bob, that was hillarious.");
+					NPCTalkMessage(npc.index, "Izan... I remember when you wanted to be a fake Bob, that was hilarious.");
 				i_khamlCutscene = 4;
 			}
 		}
@@ -1953,7 +1983,7 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 			if(TimeLeft < 8.0)
 			{
 				i_khamlCutscene = 3;
-				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Then I'll be what unspeakable was, but reasonable, don't you think?");
+				NPCTalkMessage(npc.index, "Then I'll be what Unspeakable was, but reasonable, don't you think?");
 			}
 		}
 		case 3:
@@ -1961,7 +1991,7 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 			if(TimeLeft < 4.0)
 			{
 				i_khamlCutscene = 2;
-				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Who am I kidding, unspeakable is dead, luckily.");
+				NPCTalkMessage(npc.index, "Who am I kidding, Unspeakable is dead, luckily.");
 			}
 		}
 		case 2:
@@ -1980,7 +2010,7 @@ bool Shadowing_Darkness_TalkStart(Shadowing_Darkness_Boss npc)
 			if(TimeLeft < 0.0)
 			{
 				i_khamlCutscene = 0;
-				CPrintToChatAll("{darkgray}Shadowing Darkness{default}: Let's make sure that the vision will finally come true, all under one, together, and as a collective~");
+				NPCTalkMessage(npc.index, "Let's make sure that the vision will finally come true, all under one, together, and as a collective~");
 				RaidModeTime = GetGameTime() + (350.0);
 				npc.m_flSwordParticleAttackCD = GetGameTime() + 5.0;
 				npc.m_flUpperSlashCD = GetGameTime() + 15.0;

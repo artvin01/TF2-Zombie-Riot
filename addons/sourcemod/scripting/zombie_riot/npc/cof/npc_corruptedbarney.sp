@@ -227,6 +227,29 @@ methodmap CorruptedBarney < CClotBody
 	}
 }
 
+static void NPCTalkMessage(int entity, const char[] message, bool corruptedName = false)
+{
+	char customName[64];
+	customName = "Barney";
+	
+	bool customNameIsTranslated;
+	if (corruptedName)
+	{
+		customNameIsTranslated = false;
+		
+		char prefixes[255];
+		StatusEffects_PrefixName(entity, -1, prefixes, sizeof(prefixes));
+		CorruptString(customName, sizeof(customName));
+		CorruptString(prefixes, sizeof(prefixes));
+		CPrintToChatAll("{midnightblue}%s %s{crimson}: %s", prefixes, customName, message);
+	}
+	else
+	{
+		customNameIsTranslated = true;
+		PrintNPCMessageWithPrefixes(entity, "midnightblue", message, .customName = customName, .messageColor = "crimson", .customNameIsTranslated = customNameIsTranslated);
+	}
+}
+
 public void CorruptedBarney_ClotThink(int iNPC)
 {
 	CorruptedBarney npc = view_as<CorruptedBarney>(iNPC);
@@ -241,7 +264,7 @@ public void CorruptedBarney_ClotThink(int iNPC)
 		{
 			npc.m_flDidGainBuff = 1.0;
 			npc.m_flShutUp = GetGameTime(npc.index) + 4.0;
-			CPrintToChatAll("{snow}Purnell : {default}He's stealing your thearpy! Take him out! His mind is beyond corrupted!");
+			CPrintToChatAll("{snow}Purnell{default}: He's stealing your therapy! Take him out! His mind is beyond corrupted!");
 		}
 	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
@@ -255,7 +278,7 @@ public void CorruptedBarney_ClotThink(int iNPC)
 		i_RaidGrantExtra[npc.index] = 0;
 		ForcePlayerLoss();
 		RaidBossActive = INVALID_ENT_REFERENCE;
-		CPrintToChatAll("{midnightblue}Barney{maroon}: About that beer I owed ya...");
+		NPCTalkMessage(npc.index, "{maroon}About that beer I owed ya...");
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 	}
 
@@ -271,6 +294,13 @@ public void CorruptedBarney_ClotThink(int iNPC)
 		return;
 	}
 
+	if(npc.m_flShutUp < GetGameTime(npc.index))
+	{
+		char message[255];
+		Format(message, sizeof(message), "%c%c%c%c%c%c%c%c", GetRandomInt(1, 2000), GetRandomInt(1, 2000), GetRandomInt(1, 2000), GetRandomInt(1, 2000), GetRandomInt(1, 2000), GetRandomInt(1, 2000), GetRandomInt(1, 2000), GetRandomInt(1, 2000));
+		NPCTalkMessage(npc.index, message, npc.Anger);
+	}
+	
 	if(!npc.Anger)
 	{
 		npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
@@ -280,8 +310,6 @@ public void CorruptedBarney_ClotThink(int iNPC)
 		i_NpcWeight[npc.index] = GetRandomInt(1,5);
 		RaidModeTime = GetGameTime() + GetRandomFloat(15.0, 555.0);
 		FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "%c%c%c%c%c%c%c%c%c%c%c%c", GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000));
-		if(npc.m_flShutUp < GetGameTime(npc.index))
-			CPrintToChatAll("{midnightblue}Barney{crimson}: %c%c%c%c%c%c%c%c", GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000));
 	}
 	else
 	{
@@ -292,8 +320,6 @@ public void CorruptedBarney_ClotThink(int iNPC)
 		npc.m_flSpeed = GetRandomFloat(330.0, 430.0);
 		RaidModeTime = GetGameTime() + GetRandomFloat(15.0, 555.0);
 		FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "B%c\n%c%c\nA%c%c\n%c%c\nR%c%c%c\nN%c\n%cEY", GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000));
-		if(npc.m_flShutUp < GetGameTime(npc.index))
-			CPrintToChatAll("{midnightblue}%c%c%c%c%c{crimson}: %c%c%c%c%c%c%c%c", GetRandomInt(1, 2000), GetRandomInt(1, 2000), GetRandomInt(1, 2000), GetRandomInt(1, 2000), GetRandomInt(1, 2000), GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000));
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", GetURandomInt());
 		SetEntPropFloat(npc.index, Prop_Send, "m_flModelScale", GetRandomFloat(1.5, 1.8));
 		char Buffer[32];
@@ -302,6 +328,7 @@ public void CorruptedBarney_ClotThink(int iNPC)
 			GlobalExtraCash = GetURandomInt();
 			Ammo_Count_Ready = GetURandomInt();
 		}
+		
 		for(int client; client <= MaxClients; client++)
 		{
 			if(IsValidClient(client))
@@ -533,5 +560,23 @@ void CBarney_CreateAllies(int iNpc)
 		NpcStats_CopyStats(npc.index, summon);
 		TeleportDiversioToRandLocation(summon,_,2500.0, 1250.0);
 		npcsummon.m_iWearable1 = ConnectWithBeam(npc.index, npcsummon.index, 125, 125, 65, 5.0, 5.0, 1.0, "sprites/laserbeam.vmt");
+	}
+}
+
+static void CorruptString(char[] buffer, int length, bool respectSpaces = true)
+{
+	for (int i = 0; i < length; i++)
+	{
+		if (buffer[i] == '\0')
+			return;
+		
+		if (respectSpaces && buffer[i] == ' ')
+			continue;
+		
+		do
+		{
+			buffer[i] = (GetURandomInt() % 2000) + 1;
+		}
+		while (buffer[i] == '%'); // prevents errors
 	}
 }

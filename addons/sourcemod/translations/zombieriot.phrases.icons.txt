@@ -82,7 +82,7 @@
 		"ru" 		"Иберец/Экспидонец Немал прибыла."
 		"fr" 		"Le Alminain/Expidonsian Nemal est ici."
 		"it"		"L'Almina/Expidonsan Nemal è arrivato."
-		"ko" 		"이베리아/엑스피돈사 출신, 네말이 등장했습니다."
+		"ko" 		"알미나/엑스피돈사 출신, 네말이 등장했습니다."
 	}
 	"Vhxis arrived"
 	{
@@ -423,7 +423,7 @@
 		"ru" 	"Маяк Иберии Телепортировался!"
 		"fr"	"Une phare Alminain s'est téléporté ici!"
 		"it"	"Faro iberico teletrasportato!"
-		"ko"	"이베리아 등대가 나타났습니다!"
+		"ko"	"알미나 등대가 나타났습니다!"
 	}
 	"Snipers Appear"
 	{
@@ -681,7 +681,7 @@
 	{
 		"en"	"Vestan Radiomast Is Here! Break this to end the infinite wave"
 		"it"	"Il Radiomast vittoriano è arrivato! Rompilo per porre fine all'onda infinita."
-		"ko"	"빅토리아 방송탑이 여기에 있습니다! 파괴하여 무한 웨이브를 중단시키세요!"
+		"ko"	"베스타 방송탑이 여기에 있습니다! 파괴하여 무한 웨이브를 중단시키세요!"
 	}
 	"Atomizer Arrived"
 	{
@@ -699,12 +699,57 @@
 	{
 		"en" 		 "The Pilot of Vestan Artillery, Harrison Arrived."
 		"it"		 "Il pilota dell'artiglieria vittoriana, Harrison, è arrivato."
-		"ko" 		 "빅토리아 포병대의 조종사, 해리슨이 도착했습니다."
+		"ko" 		 "베스타 포병대의 조종사, 해리슨이 도착했습니다."
 	}
 	"Castellan Arrived"
 	{
 		"en" 		 "Castellan arrives to put end to this."
 		"it"		 "Castellan arriva per porre fine a tutto questo."
 		"ko" 		 "카스텔란이 이 전투를 끝내기 위해 왔습니다."
+	}
+	"A Portal Gate appears..."
+	{
+		"en" 		 "A Portal Gate appears..."
+		"ko" 		 "차원 관문이 생성됩니다..."
+	}
+	"An Aperture Builder appears..."
+	{
+		"en" 		 "An Aperture Builder appears..."
+		"ko" 		 "애퍼처 건축가가 나타납니다..."
+	}
+	"C.A.T. has been engaged"
+	{
+		"en" 		 "C.A.T. has been engaged"
+		"ko" 		 "C.A.T. 교전 시작."
+	}
+	"A.R.I.S. arrives"
+	{
+		"en" 		 "A.R.I.S. arrives"
+		"ko" 		 "A.R.I.S.가 전장에 도착합니다."
+	}
+	"Vincent sets foot"
+	{
+		"en" 		 "Vincent sets foot"
+		"ko" 		 "빈센트가 전장에 발을 들입니다."
+	}
+	"Agent Thompson has Materialized"
+	{
+		"en" 		 "Agent Thompson has Materialized"
+		"ko" 		 "톰슨 요원이 형체를 드러냅니다."
+	}
+	"The Twins have arrived"
+	{
+		"en" 		 "The Twins have arrived"
+		"ko" 		 "트윈스가 현장에 도착했습니다."
+	}
+	"Agent Johnson clocks in"
+	{
+		"en" 		 "Agent Johnson clocks in"
+		"ko" 		 "존슨 요원이 근무를 시작합니다."
+	}
+	"Agent Smith Arrived"
+	{
+		"en" 		 "Agent Smith Arrived"
+		"ko" 		 "스미스 요원이 모습을 드러냅니다."
 	}
 }

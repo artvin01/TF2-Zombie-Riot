@@ -299,6 +299,7 @@ methodmap Atomizer < CClotBody
 			b_NoKnockbackFromSources[npc.index] = true;
 			b_ThisEntityIgnored[npc.index] = true;
 			b_NoKillFeed[npc.index] = true;
+			npc.g_TimesSummoned = 300;
 			npc.m_iState = 0;
 			npc.m_iOverlordComboAttack = 0;
 			npc.m_flNextRangedAttack = 0.0;
@@ -509,6 +510,21 @@ static void Clone_ClotThink(int iNPC)
 		return;
 
 	npc.m_flNextThinkTime = gameTime + 0.1;
+
+	if(npc.g_TimesSummoned < 1)
+	{
+		b_NpcForcepowerupspawn[npc.index] = 0;
+		i_RaidGrantExtra[npc.index] = 0;
+		b_DissapearOnDeath[npc.index] = true;
+		b_DoGibThisNpc[npc.index] = true;
+		b_NoKillFeed[npc.index] = true;
+		SmiteNpcToDeath(npc.index);
+	}
+	else
+	{
+		npc.g_TimesSummoned -= 1;
+	}
+	
 	
 	switch(npc.m_iOverlordComboAttack)
 	{
@@ -751,7 +767,7 @@ static int Support_Work(Atomizer npc, float gameTime, float distance)
 									//max duration of 3 seconds
 									CreateTimer(3.0, Timer_RemoveEntity, EntIndexToEntRef(RocketGet), TIMER_FLAG_NO_MAPCHANGE);
 								}
-								ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.0, 1.0);
+								ArcToLocationViaSpeedProjectile(RocketGet, vecDest, SpeedReturn, 1.0, 1.0);
 								SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
 								//Better_Gravity_Rocket(RocketGet, 55.0);
 								TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
@@ -877,13 +893,22 @@ static void Atomizer_ClotThink(int iNPC)
 		NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_GameEnd", false, false);
 		return;
 	}
-	npc.m_flSpeed = npc.m_flBaseSpeed+(((npc.m_flFTL-(RaidModeTime - GetGameTime()))/npc.m_flFTL)*150.0);
-	if(RaidModeTime == FAR_FUTURE)
+	if(ZR_Get_Modifier() == 6)
 	{
-		npc.m_flSpeed = 350.0;
+		npc.m_flSpeed = 350.0;	
 	}
-	if(npc.m_flSpeed >= 400.0)
-		npc.m_flSpeed = 400.0;
+	else
+	{
+		npc.m_flSpeed = npc.m_flBaseSpeed+(((npc.m_flFTL-(RaidModeTime - GetGameTime()))/npc.m_flFTL)*150.0);
+		if(RaidModeTime == FAR_FUTURE)
+		{
+			npc.m_flSpeed = 350.0;
+		}
+		if(npc.m_flSpeed >= 400.0)
+			npc.m_flSpeed = 400.0;
+	
+	}
+	
 		
 	if(RaidModeTime < GetGameTime() && !YaWeFxxked[npc.index] && GetTeam(npc.index) != TFTeam_Red)
 	{
@@ -1571,7 +1596,7 @@ static int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float d
 									SetEntityGravity(RocketGet, 1.0);
 									vecDest[0] += GetRandomFloat(-30.0, 30.0);
 									vecDest[1] += GetRandomFloat(-30.0, 30.0);
-									ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.0, 1.0);
+									ArcToLocationViaSpeedProjectile(RocketGet, vecDest, SpeedReturn, 1.0, 1.0);
 									SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
 									TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
 									/*SDKUnhook(RocketGet, SDKHook_StartTouch, Rocket_Particle_StartTouch);
@@ -1833,8 +1858,8 @@ static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 					PredictSubjectPositionForProjectiles(view_as<Atomizer>(entity), E_Target, 400.0,_,vecDest);
 					vecDest[0] += GetRandomFloat(-30.0, 30.0);
 					vecDest[1] += GetRandomFloat(-30.0, 30.0);
-					ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.25, 1.0);
-			//   TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
+					ArcToLocationViaSpeedProjectile(entity, vecDest, SpeedReturn, 1.25, 1.0);
+				//   TeleportEntity(entity, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
 						
 					DataPack pack = new DataPack();
 					pack.WriteCell(EntIndexToEntRef(entity));

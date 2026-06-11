@@ -251,7 +251,8 @@ methodmap AlliedHeartbrokenVisualiserAbility < CClotBody
 				npc.SetCycle(0.198);
 				npc.SetPlaybackRate(1.5);
 
-				npc.m_flTimeUntillDone = GetGameTime() + (2.0);
+				npc.m_flTimeUntillDone = GetGameTime() + (1.25);
+				ApplyStatusEffect(client, client, "HB In Parry", 1.25);
 
 			}
 		}
@@ -308,17 +309,16 @@ void Heartbroken_ParryDohhulan(int owner, AlliedHeartbrokenVisualiserAbility npc
 
 	
 	float TimeLeft = npc.m_flTimeUntillDone - GameTime;
-	if(TimeLeft < (1.75 * npc.f_SpeedAcelerateAnim))
+	if(TimeLeft < (1.00 * npc.f_SpeedAcelerateAnim))
 	{
 		if(npc.m_iChanged_WalkCycle != 2 && npc.m_iChanged_WalkCycle != 3)
 		{
-			ApplyStatusEffect(owner, owner, "HB In Parry", 1.75);
 			npc.m_iChanged_WalkCycle = 2;
 			npc.SetPlaybackRate(0.0);
 		}
 	}
 
-	if(npc.m_iChanged_WalkCycle == 2 && HasSpecificBuff(owner, "HB Parried"))
+	if(HasSpecificBuff(owner, "HB Parried"))
 	{
 		RemoveSpecificBuff(owner, "HB Parried");
 		npc.m_iChanged_WalkCycle = 3;
@@ -327,6 +327,16 @@ void Heartbroken_ParryDohhulan(int owner, AlliedHeartbrokenVisualiserAbility npc
 		npc.m_flTimeUntillDone = GameTime + 0.5;
 		npc.PlayParrySound();
 		npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("effect_hand_r"), PATTACH_POINT_FOLLOW, true);
+		
+		int ShieldGive;
+		RemoveSpecificBuff(owner, "Shielding");
+		float duration = 0.5;
+		ShieldGive = ReturnEntityMaxHealth(owner) / 10;
+		ApplyStatusEffect(owner, owner, "Shielding", duration + 0.5);
+		if(LastMann)
+			ShieldGive *= 2;
+
+		Shielding_Add(owner, ShieldGive);
 		//we did a parry?
 	}
 }

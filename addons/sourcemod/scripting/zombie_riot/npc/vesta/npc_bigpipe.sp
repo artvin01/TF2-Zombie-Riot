@@ -829,7 +829,9 @@ static int VestaBigpipeSelfDefense(VestaBigpipe npc, float gameTime, float dista
 						//Reducing gravity, reduces speed, lol.
 						//SetEntityGravity(RocketGet, 1.0); 	
 						//I dont care if its not too accurate, ig they suck with the weapon idk lol, lore.
-						ArcToLocationViaSpeedProjectile(VecStart, vecDest, SpeedReturn, 1.75, 1.0);
+						vecTarget[0] += GetRandomFloat(-20.0, 20.0);
+						vecTarget[1] += GetRandomFloat(-20.0, 20.0);
+						ArcToLocationViaSpeedProjectile(RocketGet, vecDest, SpeedReturn, 1.75, 1.0);
 						//SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
 						TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
 						Better_Gravity_Rocket(RocketGet, 55.0);

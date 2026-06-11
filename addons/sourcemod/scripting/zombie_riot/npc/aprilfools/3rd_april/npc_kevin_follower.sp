@@ -81,117 +81,148 @@ methodmap KevinmeryFollower < CClotBody
 			case 0:
 			{
 				this.Speech("i think if we win to easy we should remach");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: i think if we win to easy we should remach");
 			}
 			case 1:
 			{
 				this.Speech("best server stability today vs best server stability of history");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: best server stability today vs best server stability of history");
 			}
 			case 2:
 			{
 				this.Speech("why always im getting stronger so easy");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: why always im getting stronger so easy");
 				this.SpeechDelay(5.0,"power of the protagonist");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: power of the protagonist");
 			}
 			case 3:
 			{
 				this.Speech("hey artvin fix pumking farm y encounter another ncp and boss stuck zone");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: hey artvin fix pumking farm y encounter another ncp and boss stuck zone");
 			}
 			case 4:
 			{
 				this.Speech("we have an army fr");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: we have an army fr");
 			}
 			case 5:
 			{
 				this.Speech("im eating some bean right now");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: im eating some bean right now");
 			}
 			case 6:
 			{
 				this.Speech("this map need more space blut");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: this map need more space blut");
 			}
 			case 7:
 			{
 				this.Speech("fish test the gambler blut");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: fish test the gambler blut");
 			}
 			case 8:
 			{
 				this.Speech("you gonna gain enough money trough the wave");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: you gonna gain enough money trough the wave");
 			}
 			case 9:
 			{
 				this.Speech("time changes man");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: time changes man");
 			}
 			case 10:
 			{
 				this.Speech("windows 12 will fix this!!");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: windows 12 will fix this!!");
 			}
 			case 11:
 			{
 				this.Speech("do a suggestion bruh");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: do a suggestion bruh");
 			}
 			case 12:
 			{
 				this.Speech("went kfc as a raid fr");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: went kfc as a raid fr");
 			}
 			case 13:
 			{
 				this.Speech("ngl eno have a femboy voice fr");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: ngl eno have a femboy voice fr");
 			}
 			case 14:
 			{
 				this.Speech("KEVIN MERY CEO OF SUMMER CAMP AND IM GONNA BONK THIS PLACE TO THE GROUND");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: KEVIN MERY CEO OF SUMMER CAMP AND IM GONNA BONK THIS PLACE TO THE GROUND");
 			}
 			case 15:
 			{
 				this.Speech("yo artvin these enemies need a nerf on damage bruh");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: yo artvin these enemies need a nerf on damage bruh");
 			}
 			case 16:
 			{
 				this.Speech("went you are gonna make kfc a raid");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: went you are gonna make kfc a raid");
 			}
 			case 17:
 			{
 				this.Speech("bg = ww3");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: bg = ww3");
 			}
 			case 18:
 			{
 				this.Speech("omg they are here");
 				this.SpeechDelay(5.0,"the steamhappies");
 				this.SpeechDelay(10.0,"it a infectcion");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: omg they are here");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: the steamhappies");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: it a infectcion");
 			}
 			case 19:
 			{
 				this.Speech("bug are features");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: bug are features");
 			}
 			case 20:
 			{
 				this.Speech("i not gonna sleep for 3 days whit those smithings");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: i not gonna sleep for 3 days whit those smithings");
 			}
 			case 21:
 			{
 				this.Speech("im intakilling that guy");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: im intakilling that guy");
 			}
 			case 22:
 			{
 				this.Speech("is the enemie that one shot you i every history");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: is the enemie that one shot you i every history");
 			}
 			case 23:
 			{
 				this.Speech("we need to cook more cristals");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: we need to cook more cristals");
 			}
 			case 24:
 			{
 				this.Speech("you monsters are just violating a poor creature");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: you monsters are just violating a poor creature");
 			}
 			case 25:
 			{
 				this.Speech("we getting good shits");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: we getting good shits");
 			}
 			case 26:
 			{
 				this.Speech("wtf the enemies are diferent in ever wave");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: wtf the enemies are diferent in ever wave");
 			}
 			case 27:
 			{
 				this.Speech("man that lucky just happens only 1 time per year");
+				CPrintToChatAll("{collectors}kevinmery2009{default}: man that lucky just happens only 1 time per year");
 			}
 		}
 		
@@ -291,7 +322,7 @@ static void ClotThink(int iNPC)
 		npc.m_iTargetWalkTo = ally;
 	}
 
-	if(target > 0)
+	if(target > 0 && !IsInvuln(target))
 	{
 		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);

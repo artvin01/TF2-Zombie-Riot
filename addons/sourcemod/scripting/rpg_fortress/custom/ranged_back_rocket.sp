@@ -177,7 +177,7 @@ void BackRocket_HoverBehindPlayer(DataPack pack)
 		float SubjectAbsVelocity[3];
 		GetEntPropVector(RocketGet, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
 		CurrentVelocity = SquareRoot(Pow(SubjectAbsVelocity[0], 2.0)+Pow(SubjectAbsVelocity[1], 2.0));
-		PrintToChatAll("Velocity %1.f",CurrentVelocity);
+		PrintToChatAll("Velocity %.1f",CurrentVelocity);
 		*/
 		float FinalVelScale = CurrentVelocity * mult;
 		ScaleVector(Velocity, FinalVelScale);

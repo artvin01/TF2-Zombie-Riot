@@ -426,6 +426,8 @@ public void Fusion_Melee_Nearl_Radiant_Knight(int client, int weapon, bool crit,
 				maxhealth = RoundToCeil(float(maxhealth) * 1.05);
 				if(HasSpecificBuff(client, "Dimensional Turbulence"))
 					maxhealth /= 3;
+				float Value = Attributes_GetOnPlayer(client, Attrib_MaxHpNerfForAbility, false,_, 1.0);
+				maxhealth = RoundToCeil(float(maxhealth) * Value);
 					//lol
 
 				ApplyTempAttrib(weapon, 2, 2.6, 10.0); //way higher damage.

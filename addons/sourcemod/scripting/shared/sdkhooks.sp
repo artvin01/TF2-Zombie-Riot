@@ -605,7 +605,8 @@ public void OnPostThink(int client)
 			max_mana[client] = 9999999.9;
 		}
 					
-		Mana_Hud_Delay[client] = 0.0;
+		if(!IsIn_HitDetectionCooldown(client,client, DontUpdateHudClient))
+			Mana_Hud_Delay[client] = 0.0;
 	}
 	//A part of Ruina's special mana "corrosion"
 	if(Current_Mana[client] > RoundToCeil(max_mana[client]+10.0))	
@@ -1606,7 +1607,7 @@ public void OnPostThink(int client)
 			if(Cooldowntocheck > 0.0)
 			{
 				//add one second so it itll never show 0 in there, thats stupid.
-				Format(buffer2, sizeof(buffer2), "%s:%1.f",npc_classname[4], Cooldowntocheck);
+				Format(buffer2, sizeof(buffer2), "%s:%.1f",npc_classname[4], Cooldowntocheck);
 			}
 			else
 			{
@@ -2597,6 +2598,9 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 	}
 	else
 	{
+		if (!(flags & SND_STOP) && entity != -1 && HasSpecificBuff(entity, "Quiet Prefix"))
+			return Plugin_Handled;
+		
 		if(!LouderSoundStop && entity != -1 && HasSpecificBuff(entity, "Loud Prefix"))
 		{
 			level += 50;
@@ -2925,6 +2929,13 @@ void ApplyLastmanOrDyingOverlay(int client)
 		{
 			case 1,2,3,4,7,9, 15:
 			{
+				return;
+			}
+			case 16:
+			{
+				if(AnyClientHaveMOSB())
+					DoOverlay(client, "zombie_riot/filmgrain/filmgrain_4", 1);
+				DoOverlay(client, "effects/invuln_overlay_red");
 				return;
 			}
 			case 8:
@@ -3562,7 +3573,8 @@ void RPG_Sdkhooks_StaminaBar(int client)
 #endif
 stock void SDKhooks_SetManaRegenDelayTime(int client, float time)
 {
-	Mana_Hud_Delay[client] = 0.0;
+	if(!IsIn_HitDetectionCooldown(client,client, DontUpdateHudClient))
+		Mana_Hud_Delay[client] = 0.0;
 #if defined ZR
 	if(Mana_Regen_Delay[client] < GetGameTime() + time)
 		Mana_Regen_Delay[client] = GetGameTime() + time;

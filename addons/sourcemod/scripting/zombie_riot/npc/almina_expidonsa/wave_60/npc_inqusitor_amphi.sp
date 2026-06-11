@@ -738,7 +738,7 @@ static void Amphi_Weapon_Lines(Alminainqusitor_amphi npc, int client)
 			switch(GetRandomInt(0,3))
 			{
 				case 0:
-					Format(Text_Lines, sizeof(Text_Lines), "Let's see who wields the wrath of Ibera better {gold}%N{default}!",client);
+					Format(Text_Lines, sizeof(Text_Lines), "Let's see who wields the wrath of Alimna better {gold}%N{default}!",client);
 				case 1:
 					Format(Text_Lines, sizeof(Text_Lines), "{crimson}Liran{default} tought you too {gold}%N{default}?",client);
 				case 2:

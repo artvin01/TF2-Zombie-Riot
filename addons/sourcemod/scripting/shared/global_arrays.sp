@@ -669,7 +669,7 @@ Function EntityFuncAttack3[MAXENTITIES];
 Function EntityFuncReload4[MAXENTITIES];
 Function EntityFuncPlayerRunCmd[MAXENTITIES];
 Function EntityFuncOnKill[MAXENTITIES];
-Function EntityFuncTakeDamage[MAXENTITIES][2];
+Function EntityFuncTakeDamage[MAXENTITIES][3];
 //Function EntityFuncReloadSingular5[MAXENTITIES];
 
 float f_ClientMusicVolume[MAXPLAYERS];
@@ -957,4 +957,7 @@ int ActiveFogEntity;				// Entity ref of the fog controller that is currently ac
 
 bool g_PrecachedMatrixNPCs;
 int ZoneMarkerRef[Zone_MAX] = {-1, ...};
+ArrayList CurrentCollection;
+ArrayList Artifacts;
+ArrayList E_AL_StatusEffects[MAXENTITIES];
 #endif

@@ -181,7 +181,7 @@
 	{
 		"en"	"Almina's Anti Raid"
 		"it"	"Anti Raid di Almina"
-		"ko"	"이베리아의 레이드 대항마"
+		"ko"	"알미나의 레이드 대항마"
 	}
 	"Almina's Anti Raid Desc"
 	{
@@ -629,7 +629,7 @@
 	{
 		"en"	"Shows that youre standing in void creep, void creatures in keep get stronger."
 		"it"	"Mostra che ti trovi in void creep, le creature void in keep diventano più forti."
-		"ko"	"현재 당신은 공허 점막 위에 있습니다. 공허체들은 이 위에 있으면 능력치가 증가합니다."
+		"ko"	"현재 공허 점막 위에 있습니다. 공허체들은 이 위에 있으면 능력치가 증가합니다."
 	}
 	"Sea Presence"
 	{
@@ -639,9 +639,9 @@
 	}
 	"Sea Presence Desc"
 	{
-		"en"	"Shows that youre standing in sea creep, you take continuous damage, get out.\n{green}If you are apart or one with the sea, you instead benefit from it..."
+		"en"	"Shows that youre standing in Abyssal Weed, you take continuous damage, get out.\n{green}If you are apart or one with the sea, you instead benefit from it..."
 		"it"	"Mostra che sei in mezzo al mare, subisci danni continui, esci.\n{green}Se sei separato o un tutt'uno con il mare, invece ne trai beneficio..."
-		"ko"	"현재 당신은 명흔 위에 있습니다. 영역 내에 있으면 계속해서 피해를 받게 됩니다. 당장 빠져나오세요.\n{green}만약 당신이 바다의 일원이라면, 대신 힘을 얻게 될 것입니다..."
+		"ko"	"현재 심연 해초 위에 있습니다. 영역 내에 있으면 계속해서 피해를 받습니다. 빠져나오세요.\n{green}만약 당신이 바다의 일원이라면, 대신 힘을 얻게 될 것입니다..."
 	}
 	"Sea Strength"
 	{
@@ -651,9 +651,9 @@
 	}
 	"Sea Strength Desc"
 	{
-		"en"	"Shows that youre standing in sea creep, you benefit from it\nIncreases damage dealt by 10％, Decreases damage taken by 10％."
+		"en"	"Shows that youre standing in Abyssal Weed, you benefit from it\nIncreases damage dealt by 10％, Decreases damage taken by 10％."
 		"it"	"Mostra che si è in presenza di mare agitato, se ne trae beneficio. \nAumenta i danni inflitti di 10％, diminuisce i danni subiti di 10％."
-		"ko"	"현재 당신은 명흔 위에 있습니다. 영역 내에 있으면 능력치가 증가합니다.\n공격 피해량이 10％ 증가하고, 받는 피해량이 10％ 감소합니다."
+		"ko"	"현재 심연 해초 위에 있습니다. 영역 내에 있으면 능력치가 증가합니다.\n공격 피해량이 10％ 증가하고, 받는 피해량이 10％ 감소합니다."
 	}
 	"Void Strength I"
 	{
@@ -723,8 +723,8 @@
 	}
 	"Squad Leader Desc"
 	{
-		"en"	"Reduces damage taken by 10％\nBoosts damage dealt by 10％\nBoosts NPC'S Movementspeed by 33％"
-		"ko"	"받는 피해량이 10％ 감소합니다.\n공격 피해량이 10％ 증가합니다.\nNPC의 이동 속도가 33％ 증가합니다."
+		"en"	"Deal 10％ more damage, take 10％ less damage and NPCs gain 33％ speed."
+		"ko"	"공격 피해량이 10％ 증가합니다.\n받는 피해량이 10％ 감소합니다.\nNPC의 이동 속도가 33％ 증가합니다."
 		"it"	"Riduce i danni subiti del 10％\nAumenta i danni inflitti del 10％\nAumenta la velocità di movimento degli NPC del 33％"
 	}
 	"Caffinated"
@@ -754,13 +754,13 @@
 	"Call To Vesta"
 	{
 		"en"	"Call To Vesta"
-		"ko"	"빅토리아의 부름"
+		"ko"	"베스타의 부름"
 		"it"	"Chiamata a Vittoria"
 	}
 	"Call To Vesta Desc"
 	{
 		"en"	"Reduces damage taken by 20％\nBoosts damage dealt by 20％\nBoosts NPC'S Movementspeed by 15％\nAll Vestan enemeies gain extra abilities upon reciving this buff."
-		"ko"	"받는 피해량 20％ 감소\n공격 피해량 20％ 증가\nNPC의 이동 속도 15％ 증가\n해당 버프를 보유한 빅토리아 계열 적들은 추가 능력을 얻습니다."
+		"ko"	"받는 피해량 20％ 감소\n공격 피해량 20％ 증가\nNPC의 이동 속도 15％ 증가\n해당 버프를 보유한 베스타 계열 적들은 추가 능력을 얻습니다."
 		"it"	"Riduce i danni subiti del 20％\nAumenta i danni inflitti del 20％\nAumenta la velocità di movimento degli NPC del 15％\nTutti i nemici vittoriani ottengono abilità extra quando ricevono questo buff."
 	}
 	"Taurine"
@@ -801,9 +801,9 @@
 	}
 	"False Therapy Desc"
 	{
-		"en"	"Reduces damage taken by 40％\nBoosts damage dealt by 50％\nBoosts NPC'S Movementspeed by 25％"
+		"en"	"Deal 50％ more damage, take 40％ less damage and NPCs gain 25％ speed."
 		"it"	"Riduce i danni subiti del 40％\nAumenta i danni inflitti del 50％\nAumenta la velocità di movimento degli NPC del 25％"
-		"ko"	"받는 피해량이 40％ 감소합니다.\n공격 피해량이 50％ 증가합니다.\nNPC의 이동 속도가 25％ 증가합니다."
+		"ko"	"공격 피해량이 50％ 증가합니다.\n받는 피해량이 40％ 감소합니다.\nNPC의 이동 속도가 25％ 증가합니다."
 	}
 	"Expert's Mind"
 	{
@@ -832,7 +832,7 @@
 	"Pikeman's Stabs"
 	{
 		"en"	"Pikeman's Stabs"
-		"ko"	"장창병의 참격"
+		"ko"	"장창병의 찌르기"
 	}
 	"Pikeman's Stabs Desc"
 	{
@@ -846,8 +846,8 @@
 	}
 	"Sinking Desc"
 	{
-		"en"	"Count increases by 1 for each hit taken that applies this debuff\nAt Max, hits from this kit or summons deal bleed and take 10％ less dmg\nSome abilities benifit from max or less sinking"
-		"ko"	"해당 디버프를 부여하는 공격에 피격 시 1회 누적\n최대까지 누적 시, 무기 키트 공격에 피격 시 출혈 디버프를 얻으며, 받는 피해량 10％ 감소\n일부 능력은 침잠에 따라 추가 효과 발생"
+		"en"	"Count increases by 1 for each hit taken that applies this debuff\nAt Max, hits from this kit or summons deal bleed and take 10％ less dmg & 2x coffins\nSome abilities benifit from max or less sinking\n"
+		"ko"	"해당 디버프를 부여하는 공격에 피격 시 1회 누적\n최대까지 누적 시, 무기 키트 및 소환물에 피격 시 출혈 획득, 받는 피해량 -10％, 관을 2배로 제공\n일부 능력은 침잠에 따라 효과 추가"
 	}
 	"Call of the Heartbroken"
 	{
@@ -856,8 +856,8 @@
 	}
 	"Call of the Heartbroken Desc"
 	{
-		"en"	"You are tempomary alive again\nYou have to stay near your summoner or else you are massively weakened."
-		"ko"	"일시적으로 다시 부활하게 됩니다.\n소환자의 근처에 있지 않는 경우 대폭 약화됩니다."
+		"en"	"Increases damage dealt by 10％\nDecreases damage taken by 25％\nPlayers are 10％ faster\nYou are tempomary alive again\nYou have to stay near your summoner or else you are massively weakened."
+		"ko"	"공격 피해량 10％ 증가\n피해 저항력 25％ 증가\n이동 속도 10％ 증가\n일시적으로 다시 부활하게 됩니다.\n소환자의 근처에 있지 않는 경우 대폭 약화됩니다."
 	}
 	"Coffin's Return"
 	{
@@ -1351,19 +1351,19 @@
 	{
 		"en"	"Increases Vestan weapons damage by 10％"
 		"it"	"Aumenta i danni delle armi vittoriane del 10％"
-		"ko"	"''빅토리아'' 진영 무기들의 피해량이 10％ 증가합니다."
+		"ko"	"''베스타'' 진영 무기들의 피해량이 10％ 증가합니다."
 	}
 	"Vestan Launcher's Call"
 	{
 		"en"	"Vestan Launcher's Call"
 		"it"	"Il richiamo del lanciatore vittoriano"
-		"ko"	"빅토리아 런처의 부름"
+		"ko"	"베스타 런처의 부름"
 	}
 	"Vestan Launcher's Call Desc"
 	{
 		"en"	"Increases Vestan Weapons Explosive Radius by 10％"
 		"it"	"Aumenta il raggio di esplosione delle armi vittoriane del 10％"
-		"ko"	"''빅토리아'' 진영 무기들의 폭발 범위가 10％ 증가합니다."
+		"ko"	"''베스타'' 진영 무기들의 폭발 범위가 10％ 증가합니다."
 	}
 	"Explosault Rifle Buff"
 	{
@@ -1373,7 +1373,7 @@
 	"Explosault Rifle Buff Desc"
 	{
 		"en"	"''Vesta'' faction will have 10％ less blast damage reduce per target"
-		"ko"	"''빅토리아'' 진영 무기들의 폭발 타겟당 피해량 감소가 10％ 완화됩니다."
+		"ko"	"''베스타'' 진영 무기들의 폭발 타겟당 피해량 감소가 10％ 완화됩니다."
 	}
 	"Tinkering Curiosity"
 	{
@@ -1610,7 +1610,7 @@
 	{
 		"en"	"Almina Light"
 		"it"	"Luce Almina"
-		"ko"	"이베리아의 빛"
+		"ko"	"알미나의 빛"
 	}
 	"Almina Light Desc"
 	{
@@ -1646,25 +1646,25 @@
 	{
 		"en"	"Abyss Antidote"
 		"it"	"Antidoto di Abyss"
-		"ko"	"명흔 항독제"
+		"ko"	"심연 해초 항독제"
 	}
 	"Abyss Antidote Desc"
 	{
 		"en"	"Reduces the damage caused by abyssal weeds by 80％"
 		"it"	"Riduce i danni causati dai marchi abyss dell'80％"
-		"ko"	"명흔으로 받는 피해가 80％ 감소합니다."
+		"ko"	"심연 해초로 받는 피해가 80％ 감소합니다."
 	}
 	"Vesta Nuke"
 	{
 		"en"	"Vesta Nuke"
 		"it"	"Bomba Atomica Vittoria"
-		"ko"	"빅토리아 핵"
+		"ko"	"베스타 핵"
 	}
 	"Vesta Nuke Desc"
 	{
 		"en"	"Launches a Vesta Nuke when full.\nRemoves Locked On from all enemies when at a certain amount."
 		"it"	"Lancia una Vesta Nuke quando è piena.\nRimuove Locked On da tutti i nemici quando raggiunge una certa quantità."
-		"ko"	"이것이 꽉 차면 빅토리아 핵이 발사됩니다.\n일정 수치 이상이 되면, 모든 적에게 부여된 목표 고정 효과를 제거합니다."
+		"ko"	"이것이 꽉 차면 베스타 핵이 발사됩니다.\n일정 수치 이상이 되면, 모든 적에게 부여된 목표 고정 효과를 제거합니다."
 	}
 	"Locked On"
 	{
@@ -1676,7 +1676,7 @@
 	{
 		"en"	"The Vesta Nuke will always target the victim."
 		"it"	"La Vesta Nuke si rivolge sempre alla vittima."
-		"ko"	"빅토리아 핵은 항상 이 효과가 부여된 대상을 타겟으로 삼습니다."
+		"ko"	"베스타 핵은 항상 이 효과가 부여된 대상을 타겟으로 삼습니다."
 	}
 	"Shield"
 	{
@@ -1706,7 +1706,7 @@
 	{
 		"en" 	"Almina Morale Boost"
 		"it"	"Aumento del morale di Almina"
-		"ko"	"이베리아 사기 증진"
+		"ko"	"알미나 사기 증진"
 	}
 	"Almina Morale Boost Desc"
 	{
@@ -1749,7 +1749,7 @@
 	{
 		"en"	"Deals True Damage if allies are affected, otherwise ranged.\nHeal 25％ less while on fire, when applying fire again (npc only), tick again for 50％ damage.\n{green}Enemies on fire, give 10％ more hp on kill and gibs."
 		"it"	"Infligge danni veri se gli alleati sono colpiti, altrimenti a distanza.\nGuarisce 25％ in meno mentre è in fiamme, quando applica di nuovo il fuoco (solo per gli npc), spunta di nuovo per 50％ danni.\n{green}I nemici in fiamme, danno 10％ hp in più su uccisioni e colpi."																																																																																			
-		"ko"	"아군이 효과를 받으면 고정 피해(트루 대미지)를 입히고,\n그렇지 않다면 원거리 피해를 입힙니다\n불타는 중에는 회복량이 25％ 감소합니다.\nNPC에게 불을 다시 붙이면 50％ 피해로 한 번 더 작동합니다\n불타는 적이 처치되면 처치 시 체력 회복량이 10％ 증가하고 시체가 산산조각납니다."
+		"ko"	"아군이 효과를 받으면 트루 데미지를 입히고, 그렇지 않다면 원거리 피해를 입힙니다.\n불타는 중에는 회복량이 25％ 감소합니다.\nNPC에게 재적용 시 화상 피해의 50％를 1회 가합니다.\n불타는 적이 처치되면 처치 시 체력 회복량이 10％ 증가 및 시체가 산산조각납니다."
 	}
 	"Zealot's Random Drinks"
 	{
@@ -1829,25 +1829,25 @@
 		"it"	"Aumenta i danni subiti del 15％\nRallenta i gli NPC del 15％"
 		"ko"	"받는 피해량이 15％ 증가합니다.\nNPC의 이동 속도를 15％ 감소시킵니다."
 	}
-	"Debt Causing Dereliction"
+	"Debt-Causing Dereliction"
 	{
-		"en" 	"Debt Causing Dereliction"
+		"en" 	"Debt-Causing Dereliction"
 		"it"	"Debito che provoca inadempienza"
 		"ko" 	"빚쟁이의 퇴락"
 	}
-	"Debt Causing Dereliction Desc"
+	"Debt-Causing Dereliction Desc"
 	{
 		"en" 	"Increases Damage Taken by 20％"
 		"it"	"Aumenta i danni subiti di 20％"
 		"ko" 	"받는 피해량이 20％ 증가합니다."
 	}
-	"Headache Incuding Dereliction"
+	"Headache-Inducing Dereliction"
 	{
-		"en" "Headache Incuding Dereliction"
+		"en" "Headache-Inducing Dereliction"
 		"it"	"Mal di testa da deresponsabilizzazione"
 		"ko" 	"퇴락의 두통"
 	}
-	"Headache Incuding Dereliction Desc"
+	"Headache-Inducing Dereliction Desc"
 	{
 		"en"	"Increases Damage Taken by 30％"
 		"it"	"Aumenta i danni subiti del 30％"
@@ -1865,13 +1865,13 @@
 		"it"	"Aumenta i danni subiti del 20％\nRallenta gli NPC del 25％"
 		"ko"	"받는 피해량이 20％ 증가합니다.\nNPC의 이동 속도를 25％ 감소시킵니다."
 	}
-	"Therapists Aura"
+	"Therapist's Aura"
 	{
-		"en" 	"Therapists Aura"
+		"en" 	"Therapist's Aura"
 		"it"	"Aura dei terapeuti"
 		"ko" 	"심리치료사의 오라"
 	}
-	"Therapists Aura Desc"
+	"Therapist's Aura Desc"
 	{
 		"en"	"Slows NPC'S by 60％"
 		"it"	"Rallenta gli NPC del 60"
@@ -1889,13 +1889,13 @@
 		"it"	"Aumenta i danni subiti del 25％\nRallenta i gli NPC del 35％"
 		"ko"	"받는 피해량이 25％ 증가합니다.\nNPC의 이동 속도를 35％ 감소시킵니다."
 	}
-	"Caffinated Dereliction"
+	"Caffeinated Dereliction"
 	{
-		"en" 	"Caffinated Dereliction"
+		"en" 	"Caffeinated Dereliction"
 		"it"	"Derelitto caffinato"
 		"ko" 	"카페인의 퇴락"
 	}
-	"Caffinated Dereliction Desc"
+	"Caffeinated Dereliction Desc"
 	{
 		"en"	"Increas damage taken by 25％"
 		"it"	"Aumenta i danni subiti di 25％"
@@ -2096,7 +2096,7 @@
 	}
 	"Hectic Therapy Desc"
 	{
-		"en" 	"Increases attack/reload speed & healrate and reloadspeed by 20％"
+		"en" 	"Increases attack/reload speed and heal rate by 20％."
 		"it"	"Aumenta la velocità di attacco/ricarica e la velocità di guarigione e ricarica del 20％"
 		"ko" 	"공격 속도, 재장전 속도, 치유 속도가 20％ 증가합니다."
 	}
@@ -2108,7 +2108,7 @@
 	}
 	"Physical Therapy Desc"
 	{
-		"en" 	"Deal 20％ More damage."
+		"en" 	"Deal 20％ more damage."
 		"it"	"Infliggere 20％ danni in più."
 		"ko" 	"공격 피해량이 20％ 증가합니다."
 	}
@@ -2132,7 +2132,7 @@
 	}
 	"Overall Therapy Desc"
 	{
-		"en" 	"Deal 10％ more damage, and take 10％ less damage, NPCS gain 20％ Speed"
+		"en" 	"Deal 10％ more damage, take 10％ less damage and NPCs gain 20％ speed."
 		"it"	"Infligge 10％ danni in più e subisce 10％ danni in meno, i gli NPC guadagnano 20％ velocità"
 		"ko" 	"공격 피해량이 10％ 증가하고, 받는 피해량이 10％ 감소합니다. NPC의 이동 속도가 20％ 증가합니다."
 	}
@@ -2144,9 +2144,9 @@
 	}
 	"Powering Therapy Desc"
 	{
-		"en" 	"5％ resistance and 15％ damage dealt"
+		"en" 	"Deal 15％ more damage and take 5％ less damage."
 		"it"	"5％ di resistenza e 15％ di danni inflitti"
-		"ko" 	"피해 저항력이 5％ 증가하고 공격 피해량이 15％ 증가합니다."
+		"ko" 	"공격 피해량이 15％ 증가합니다.\n받는 피해량이 5％ 감소합니다."
 	}
 	"Calling Therapy"
 	{
@@ -2156,21 +2156,21 @@
 	}
 	"Calling Therapy Desc"
 	{
-		"en" 	"15％ resistance and 5％ damage dealt, 10％ more speed for NPCS"
+		"en" 	"Deal 15％ more damage, take 5％ less damage and NPCs gain 10％ speed."
 		"it"	"15％ resistenza e 5％ danni inflitti, 10％ velocità in più per i gli NPC"
-		"ko" 	"피해 저항력이 15％ 증가하고 공격 피해량이 5％ 증가합니다. NPC의 이동 속도가 10％ 증가합니다."
+		"ko" 	"공격 피해량이 15％ 증가합니다.\n받는 피해량이 5％ 감소합니다.\nNPC의 이동 속도가 10％ 증가합니다."
 	}
-	"Caffinated Therapy"
+	"Caffeinated Therapy"
 	{
-		"en" 	"Caffinated Therapy"
+		"en" 	"Caffeinated Therapy"
 		"it"	"Terapia con caffeina"
 		"ko" 	"카페인 치료술"
 	}
-	"Caffinated Therapy Desc"
+	"Caffeinated Therapy Desc"
 	{
-		"en" 	"25％ Resistance, 25％ more damage dealt, and gain 20％ Speed for NPCS"
+		"en" 	"Deal 25％ more damage, take 25％ less damage and NPCs gain 20％ speed."
 		"it"	"25％ Resistenza, 25％ danni inflitti in più e guadagno di 20％ Velocità per gli NPC"
-		"ko" 	"피해 저항력이 25％ 증가하고 공격 피해량이 25％ 증가합니다. NPC의 이동 속도가 20％ 증가합니다."
+		"ko" 	"공격 피해량이 25％ 증가합니다.\n받는 피해량이 25％ 감소합니다.\nNPC의 이동 속도가 20％ 증가합니다."
 	}
 	"Regenerating Therapy"
 	{
@@ -2180,9 +2180,9 @@
 	}
 	"Regenerating Therapy Desc"
 	{
-		"en" 	"10％ Resistance, and deal 10％ more damage, gain slow HP regen."
+		"en" 	"Deal 10％ more damage, take 10％ less damage and gain slow HP regen."
 		"it"	"10％ Resistenza e infliggere 10％ danni in più, guadagnare una lenta rigenerazione di HP."
-		"ko" 	"피해 저항력이 10％ 증가하고 공격 피해량이 10％ 증가합니다. 초당 체력이 천천히 회복됩니다."
+		"ko" 	"공격 피해량이 10％ 증가합니다.\n받는 피해량이 10％ 감소합니다.\n초당 체력이 천천히 회복됩니다."
 	}
 	"Weapon Overclock"
 	{
@@ -3352,6 +3352,201 @@
 		"en"	"Infected by steam happy, gains insane stats."
 		"ko"	"Steam Happy 이모지에 감염되어, 파멸적인 버프를 얻습니다."
 	}
+	"Quiet Prefix"
+	{
+		"en"	"Quiet Prefix"
+		"ko"	"조용한 접두사"
+	}
+	"Quiet"
+	{
+		"en"	"Quiet"
+		"ko"	"조용한"
+	}
+	"Quiet Prefix Desc"
+	{
+		"en"	"Makes no sound."
+		"ko"	"아무런 소리를 내지 않습니다."
+	}
+	"Trampling Prefix"
+	{
+		"en"	"Trampling Prefix"
+		"ko"	"짓밟는 접두사"
+	}
+	"Trampling"
+	{
+		"en"	"Trampling"
+		"ko"	"짓밟는"
+	}
+	"Trampling Prefix Desc"
+	{
+		"en"	"Damages and pushes enemies on touch."
+		"ko"	"적과 접촉 시 피해와 넉백을 가합니다."
+	}
+	"Scrambled Prefix"
+	{
+		"en"	"Scrambled Prefix"
+		"ko"	"뒤죽박죽 접두사"
+	}
+	"Scrambled"
+	{
+		"en"	"Scrambled"
+		"ko"	"뒤죽박죽"
+	}
+	"Scrambled Prefix Desc"
+	{
+		"en"	"Become inflicted with up to 8 random buffs/debuffs every 10 seconds."
+		"ko"	"10초마다 무작위 버프/디버프를 최대 8개까지 얻습니다."
+	}
+	"Indecisive Prefix"
+	{
+		"en"	"Indecisive Prefix"
+		"ko"	"우유부단한 접두사"
+	}
+	"Indecisive"
+	{
+		"en"	"Indecisive"
+		"ko"	"우유부단한"
+	}
+	"Indecisive Prefix Desc"
+	{
+		"en"	"Become a neutral entity for 5 seconds every 15 seconds."
+		"ko"	"15초마다 5초 동안 중립 개체가 됩니다."
+	}
+	"Depressing Prefix"
+	{
+		"en"	"Depressing Prefix"
+		"ko"	"우울한 접두사"
+	}
+	"Depressing"
+	{
+		"en"	"Depressing"
+		"ko"	"우울한"
+	}
+	"Depressing Prefix Desc"
+	{
+		"en"	"Inflicts Depressed to all nearby enemies and allies."
+		"ko"	"근처의 모든 적과 아군에게 '우울함' 디버프를 부여합니다."
+	}
+	"Depressed"
+	{
+		"en"	"Depressed"
+		"ko"	"우울함"
+	}
+	"Depressed Desc"
+	{
+		"en"	"Decreases attack/reload speed and heal rate by 30％ and movement speed by 20％."
+		"ko"	"공격/재장전/치유 속도가 30％ 감소합니다.\n이동 속도가 20％ 감소합니다."
+	}
+	"Whimsical Prefix"
+	{
+		"en"	"Whimsical Prefix"
+		"ko"	"이상한 접두사"
+	}
+	"Whimsical"
+	{
+		"en"	"Whimsical"
+		"ko"	"이상한"
+	}
+	"Whimsical Prefix Desc"
+	{
+		"en"	"Make the most out of this cruel world with a propeller hat and lollipop."
+		"ko"	"프로펠러 모자와 롤리팝과 함께 이 잔인한 세상을 최대한 즐깁니다."
+	}
+	"Seraph Prefix"
+	{
+		"en"	"Seraph Prefix"
+		"ko"	"세라프 접두사"
+	}
+	"Seraph"
+	{
+		"en"	"Seraph"
+		"ko"	"세라프"
+	}
+	"Seraph Prefix Desc"
+	{
+		"en"	"Receives several stacks of damage-blocking shield on spawn and when reaching 66％/33％ health."
+		"ko"	"스폰 직후, 그리고 체력이 66％/33％가 될 시 다수의 피해 무효화 보호막을 얻습니다."
+	}
+	"Party Popper Prefix"
+	{
+		"en"	"Party Popper Prefix"
+		"ko"	"파티광 접두사"
+	}
+	"Party Popper"
+	{
+		"en"	"Party Popper"
+		"ko"	"파티광"
+	}
+	"Party Popper Prefix Desc"
+	{
+		"en"	"Burst into confetti on death, infecting everything around with Party Popper.\nNPCs take damage and players cannot get downed temporarily."
+		"ko"	"사망 시 팡파레처럼 폭발하며, 주위의 모든 것들을 '파티광'에 감염시킵니다.\nNPC는 피해를 입으며 플레이어들은 일시적으로 다운되지 않고 즉사하게 됩니다."
+	}
+	"Gory Prefix"
+	{
+		"en"	"Gory Prefix"
+		"ko"	"고어 접두사"
+	}
+	"Gory Prefix Desc"
+	{
+		"en"	"On death spawn immensive gore, on hit spawn gore."
+		"ko"	"사망 시 엄청난 양의 유혈을 유발하며, 피격 시 유혈을 유발합니다."
+	}
+	"Gory"
+	{
+		"en"	"Gory"
+		"ko"	"고어"
+	}
+	"Aleph Prefix"
+	{
+		"en"	"Aleph Prefix"
+		"ko"	"알레프 접두사"
+	}
+	"Aleph Prefix Desc"
+	{
+		"en"	"When hurt once, instantly enrage and gain insane buffs."
+		"ko"	"피해를 1번이라도 입을 시, 즉시 격분 상태가 되어 막대한 버프를 얻습니다."
+	}
+	"Aleph"
+	{
+		"en"	"Aleph"
+		"ko"	"알레프"
+	}
+	"Aleph All Prefix"
+	{
+		"en"	"Aleph All Prefix"
+		"ko"	"알레프 올 접두사"
+	}
+	"Aleph All Prefix Desc"
+	{
+		"en"	"Gain Ego, Shin, and a major stat boost."
+		"ko"	"E.G.O, 신, 그리고 대량의 능력치 보너스를 얻습니다."
+	}
+	"Red Mist Shin"
+	{
+		"en"	"Red Mist Shin"
+		"ko"	"신 - 붉은안개"
+	}
+	"Warning Prefix"
+	{
+		"en"	"Warning Prefix"
+		"ko"	"경고 접두사"
+	}
+	"Warning Prefix Desc"
+	{
+		"en"	"⚠⚠⚠"
+		"ko"	"⚠⚠⚠"
+	}
+	"⚠"
+	{
+		"en"	"⚠"
+		"ko"	"⚠"
+	}
+	"Ragdolled"
+	{
+		"en"	"Ragdolled"
+		"ko"	"래그돌 상태"
+	}
 	"Tiantui Star"
 	{
 		"en"	"Tiantui Star"
@@ -3360,7 +3555,7 @@
 	"Tiantui Star Desc"
 	{
 		"en"	"{red}Decreases damage dealt by all other weapons.\n{green}Increases damage dealt by up to 20％ the faster this unit to the target.\nInflicts +1 more Tremor stack and +5s more Tremor extension."
-		"ko"	"{red}이 무기 외의 무기로 가하는 피해 감소\n{green}대상보다 속도가 빠를 수록 가하는 피해량이 최대 20％까지 증가합니다.\n진동 부여량이 1 증가하며 진동 연장이 5초 증가합니다."
+		"ko"	"{red}이 무기 외의 무기로 가하는 피해 감소\n{green}대상보다 속도가 빠를 수록 공격 피해량이 최대 20％까지 증가합니다.\n진동 부여량이 1 증가하며 진동 연장이 5초 증가합니다."
 	}
 	"Shin - Tiantui Star"
 	{
@@ -3370,7 +3565,7 @@
 	"Shin - Tiantui Star Desc"
 	{
 		"en"	"{red}Decreases damage dealt by all other weapons.\n{green}Increases damage dealt by up to 40％ the faster this unit to the target.\nInflicts +2 more Tremor stack and +10s more Tremor extension."
-		"ko"	"{red}이 무기 외의 무기로 가하는 피해 감소\n{green}대상보다 속도가 빠를 수록 가하는 피해량이 최대 40％까지 증가합니다.\n진동 부여량이 2 증가하며 진동 연장이 10초 증가합니다."
+		"ko"	"{red}이 무기 외의 무기로 가하는 피해 감소\n{green}대상보다 속도가 빠를 수록 공격 피해량이 최대 40％까지 증가합니다.\n진동 부여량이 2 증가하며 진동 연장이 10초 증가합니다."
 	}
 	"Overheat"
 	{
@@ -3432,4 +3627,65 @@
 		"en"	"Negates base resistances (excludes status effects)\nIncreases damage taken by up to 60％."
 		"ko"	"기본 저항력을 무시합니다.(상태이상 효과 제외)\n받는 피해량이 최대 60％까지 증가합니다."
 	}
+	"Red_Mist_Strength"
+	{
+		"en"	"Strength"
+		"ko"	"힘"
+	}
+	"Red_Mist_Strength Desc"
+	{
+		"en"	"Gain an additive 5％ more damage dealt per stack\nOnly affects this kit"
+		"ko"	"중첩 당 공격 피해량이 합연산으로 5％ 증가합니다.\n해당 키트에만 영향을 줍니다."
+	}
+	"Influence of the bodies"
+	{
+		"en"	"Influence of the bodies"
+		"ko"	"시체들의 영향"
+	}
+	"Influence of the bodies Desc"
+	{
+		"en"	"{maroon}The bodies are slowly consuming you..\n{darkgrey}Gain huge power at a {maroon}cost."
+		"ko"	"{maroon}시체들이 서서히 당신을 흡수합니다...\n{maroon}댓가{darkgrey}에 따라 막대한 힘을 얻습니다."
+	}
+	"Savagery Buff"
+	{
+		"en"	"Savagery Resistance"
+		"ko"	"흉악한 저항"
+	}
+	"Savagery Buff Desc"
+	{
+		"en"	"Temporary 75％ damage resistance"
+		"ko"	"일시적으로 피해 저항력 75％를 얻습니다."
+	}
+	"Ego Manifestation"
+	{
+		"en"	"Ego"
+		"ko"	"E.G.O 발현"
+	}
+	"Ego Manifestation Desc"
+	{
+		"en"	"Deal 30％ more damage and take 10％ less damage and 10％ movement speed (except during lastman, lastman nerfs this buff)\nWhile active unlock a new special ability"
+		"ko"	"공격 피해량 30％ 증가, 받는 피해량 10％ 감소, 이동 속도가 10％ 증가합니다.(최후의 1인 상태일 시 효과 감소)\n활성화된 동안 특별 책장이 해금됩니다."
+	}
+	"Red Mist Counter"
+	{
+		"en"	"Red Mist Counter"
+		"ko"	"붉은안개의 반격"
+	}
+	"Red Mist Counter Desc"
+	{
+		"en"	"automatically attack nearby enemies who hit you when not attacking\nHas limited range, goes on cooldown if used too many times \nor taken too much damage at once"
+		"ko"	"공격하지 않는 동안 자신을 공격한 적에게 자동으로 반격합니다.\n제한된 사거리를 보유, 일정 횟수 사용 혹은 한번에 너무 큰 피해를 받을 시 쿨다운으로 돌입합니다."
+	}
+	"Red Mist Onrush"
+	{
+		"en"	"Onrush buff"
+		"ko"	"돌진 강화"
+	}
+	"Red Mist Onrush Desc"
+	{
+		"en"	"Take 25％ less damage during dashes"
+		"ko"	"돌진하는 동안 받는 피해량이 25％ 감소합니다."
+	}
+	
 }
