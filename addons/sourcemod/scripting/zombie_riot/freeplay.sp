@@ -1139,7 +1139,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}THE PURGE! {gold}- {red}Annihilation shall be absolute.");
+					CPrintToChatAll("{crimson}THE PURGE! {gold}- {red}The only Ziberian that stood up to Kahml, Ivan Petrova. Now he's this cyborg after Kahml killed him with 1 punch.");
 				}
 				default:
 				{
@@ -1153,7 +1153,11 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}THE MESSENGER! {gold}- {red}He REALLY wants to make Kahmlstein proud!");
+					CPrintToChatAll("{lightblue}THE MESSENGER! {gold}- {red} voidspeaker shit");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{lightblue}THE MESSENGER! {gold}- {red}shhhh, don't tell {lightblue}Nemal {red}what happened to him.");
 				}
 				default:
 				{
@@ -1174,7 +1178,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{darkblue}CHAOS KAHMLSTEIN! {gold}- {red}He thinks he's unstoppable, prove him wrong!");
+					CPrintToChatAll("{darkblue}CHAOS KAHMLSTEIN! {gold}- {red} lines for how zeina and koshi feel about him.   ");
 				}
 				default:
 				{
@@ -1392,7 +1396,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 21:
 		{
-			switch(GetRandomInt(1, 4))
+			switch(GetRandomInt(1, 5))
 			{
 				case 1:
 				{
