@@ -1608,11 +1608,19 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 35:
 		{
-			switch(GetRandomInt(1, 2))
+			switch(GetRandomInt(1, 4))
 			{
 				case 1:
 				{
 					CPrintToChatAll("{black}ZILIUS! {gold}- {red}Sorry this caused him to imprison you Zeina. {snow}It's alright Koshi, at least these guys freed me from him.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{black}ZILIUS! {gold}- {blue}The other citys are the same as his. They do not care about any other race.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{black}ZILIUS! {gold}- {blue}Your strength somehow made Zilius decide not to kill you guys. Maybe we could use that to find the solution to stop Chaos.");
 				}
 				default:
 				{
