@@ -1227,10 +1227,6 @@ static Action Freeplay_RouletteMessage(Handle timer)
 				/*case 3:
 				{
 					CPrintToChatAll("{green}VIVITHORN! {gold}- {red}What if you guys fought Vivithorn and Calmaticus at the same time, like how you did back at the abandoned lab?");
-				}
-				case 4:
-				{
-					CPrintToChatAll("{green}MR.SEX! {gold}- {red}Don't look at his sex files");
 				}*/
 				default:
 				{
