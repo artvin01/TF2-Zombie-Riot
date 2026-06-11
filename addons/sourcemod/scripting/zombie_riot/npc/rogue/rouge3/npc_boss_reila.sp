@@ -1021,7 +1021,7 @@ bool Reila_LossAnimation(int iNpc)
 				}
 				case 5:
 				{
-					CPrintToChatAll("{black}Izan {snow} Shakes his head and points at his ears, then shrugs.");
+					CPrintToChatAll("{black}Izan {snow}shakes his head and points at his ears, then shrugs.");
 					if(Rogue_HasNamedArtifact("Vhxis' Assistance"))
 					{
 						switch(GetRandomInt(0,2))
@@ -1034,10 +1034,6 @@ bool Reila_LossAnimation(int iNpc)
 								CPrintToChatAll("{purple}Vhxis{default}: We shouldn't be here. We must get to the {purple} Throne.");
 						}
 					}	
-				}
-				case 5:
-				{
-					CPrintToChatAll("{black}Izan {snow}shakes his head and points at his ears, then shrugs.");
 				}
 				case 6:
 				{

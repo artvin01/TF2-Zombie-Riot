@@ -598,7 +598,7 @@ public void Shadowing_Darkness_Boss_ClotThink(int iNPC)
 		npc.m_flNextThinkTime = FAR_FUTURE;
 		i_RaidGrantExtra[npc.index] = 0;
 
-    NPCTalkMessage(npc.index, "So you finally understand the calmness of this place, stop fighting, resisting is futile~");	
+		NPCTalkMessage(npc.index, "So you finally understand the calmness of this place, stop fighting, resisting is futile~");	
 		if(Rogue_HasNamedArtifact("Omega's Assistance"))
 		{
 			switch(GetRandomInt(0,2))
