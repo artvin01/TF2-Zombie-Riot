@@ -480,7 +480,7 @@ static void RaidSmith_SelfDefense(AgentSmith npc, float gameTime, int target, fl
 							bool infection = false;
 							if(!PlaySound)
 							{
-								if(!npc.f_Corrupt_Timer && !LastMann)
+								if(!npc.f_Corrupt_Timer && !LastMann && IsValidClient(target))
 								{
 									RemoveParticles(npc);
 									infection = true;
