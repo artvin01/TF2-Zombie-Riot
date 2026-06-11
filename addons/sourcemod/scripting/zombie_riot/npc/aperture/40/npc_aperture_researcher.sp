@@ -238,6 +238,18 @@ public void ApertureResearcher_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
 	}
 
+	if(npc.Anger)
+	{
+		for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
+		{
+			if(IsValidEnemy(npc.index, entitycount))
+				ApplyStatusEffect(npc.index, entitycount, "Kinetic Surge", 20.0);
+			else if(IsValidAlly(npc.index, entitycount))
+				ApplyStatusEffect(npc.index, entitycount, "Kinetic Surge", 20.0);
+		}
+		ApplyStatusEffect(npc.index, npc.index, "Kinetic Surge", 20.0);
+	}
+
 	//Too lazy to implemt atm
 	/*
 	//Check if allies dead for text
@@ -305,6 +317,7 @@ public Action ApertureResearcher_OnTakeDamage(int victim, int &attacker, int &in
 	}
 	if((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) 
 	{
+		npc.Anger = true;
 		for(int entitycount; entitycount<MAXENTITIES; entitycount++) //Check for npcs
 		{
 			if(IsValidEnemy(npc.index, entitycount))

@@ -959,44 +959,23 @@ void OmegaCreateRollermines(int iNpc)
 	OmegaRaid npc = view_as<OmegaRaid>(iNpc);
 	
 	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-	int summon = NPC_CreateByName("npc_rollermine", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index));
+	int summon = NPC_CreateByName("npc_living_metal_ball", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index));
 	if(IsValidEntity(summon))
 	{
-		/*
-		int count;
-		for(int i; i < i_MaxcountNpcTotal; i++)
-		{
-			summon = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-			if(summon != INVALID_ENT_REFERENCE && IsEntityAlive(summon) && GetTeam(summon) == GetTeam(npc.index))
-			{
-				if(++count)
-				{
-					npc.m_flRangedArmor -= 0.03;
-					npc.m_flMeleeArmor -= 0.03;
-					break;
-				}
-				else if(--count)
-				{
-					npc.m_flRangedArmor += 0.05;
-					npc.m_flMeleeArmor += 0.05;
-					break;
-				}
-			}
-		}
-		*/
 		OmegaRaid npcsummon = view_as<OmegaRaid>(summon);
 		if(GetTeam(npc.index) != TFTeam_Red)
 			Zombies_Currently_Still_Ongoing++;
 
 		fl_Extra_Damage[npcsummon.index] = fl_Extra_Damage[npc.index];
 		fl_Extra_Damage[npcsummon.index] *= 1.5;
+		fl_Extra_Speed[npcsummon.index] *= 0.5;
 		npcsummon.m_iTargetAlly = iNpc;
 		SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/120);
 		SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/120);
 		NpcStats_CopyStats(npc.index, summon);
 		//npcsummon.m_iWearable1 = ConnectWithBeam(npc.index, npcsummon.index, 0, 150, 195, 0.5, 0.5, 1.0, "sprites/laserbeam.vmt");
 	}
-	summon = NPC_CreateByName("npc_rollermine", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index));
+	summon = NPC_CreateByName("npc_living_metal_ball", -1, pos, {0.0,0.0,0.0}, GetTeam(npc.index));
 	if(IsValidEntity(summon))
 	{
 		OmegaRaid npcsummon = view_as<OmegaRaid>(summon);
@@ -1005,6 +984,7 @@ void OmegaCreateRollermines(int iNpc)
 
 		fl_Extra_Damage[npcsummon.index] = fl_Extra_Damage[npc.index];
 		fl_Extra_Damage[npcsummon.index] *= 1.5;
+		fl_Extra_Speed[npcsummon.index] *= 0.5;
 		npcsummon.m_iTargetAlly = iNpc;
 		SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/120);
 		SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/120);
@@ -1246,7 +1226,6 @@ public void OmegaRaid_NPCDeath(int entity)
 		ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);
 		npc.PlayTeleSound();
 	}
-	Music_SetRaidMusicSimple("vo/null.mp3", 60, false, 0.5);
 
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
