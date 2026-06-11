@@ -1392,7 +1392,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 21:
 		{
-			switch(GetRandomInt(1, 2))
+			switch(GetRandomInt(1, 4))
 			{
 				case 1:
 				{
@@ -1402,11 +1402,11 @@ static Action Freeplay_RouletteMessage(Handle timer)
 				{
 					CPrintToChatAll("{darkgreen}Agent Smith. {red}Agent Stinker");
 				}
-				case 2:
+				case 3:
 				{
 					CPrintToChatAll("{darkgreen}Agent Smith. {red}Agent Stinkiest");
 				}
-				case 2:
+				case 4:
 				{
 					CPrintToChatAll("{darkgreen}Agent Smith. {red}Agent St- {snow}Shut up Koshi. *sigh* That guy from the simulation movie.");
 				}
