@@ -2760,6 +2760,21 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 					return Plugin_Handled;
 				}
 			}
+			else if (b_IsRobot[entity] && strncmp(sample, "vo/mvm/", 7) != 0)
+			{
+				char file[PLATFORM_MAX_PATH], soundFile[PLATFORM_MAX_PATH];
+				strcopy(file, PLATFORM_MAX_PATH, sample);
+				ReplaceStringEx(file, sizeof(file), "vo/", "vo/mvm/norm/");
+				ReplaceStringEx(file, sizeof(file), "_", "_mvm_");
+				FormatEx(soundFile, sizeof(soundFile), "sound/%s", file);
+				
+				if (FileExists(soundFile, true))
+				{
+					strcopy(sample, sizeof(sample), file);
+					PrecacheSound(sample);
+					return Plugin_Changed;
+				}
+			}
 #endif
 		}
 	}
