@@ -1,4 +1,3 @@
-
 #pragma semicolon 1
 #pragma newdecls required
 
@@ -1147,7 +1146,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}THE PURGE! {gold}- {red}The only Ziberian that stood up to Kahml, Ivan Petrova. Now he's this cyborg after Kahml killed him with 1 punch.");
+						CPrintToChatAll("{crimson}THE PURGE! {gold}- {snow}The only Ziberian that stood up to Kahml, Ivan Petrova. Now he's this cyborg after Kahml killed him with 1 punch.");
 				}
 				default:
 				{
@@ -1161,7 +1160,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}THE MESSENGER! {gold}- {red} voidspeaker shit");
+					CPrintToChatAll("{lightblue}THE MESSENGER! {gold}- {snow}How do these people find the Void, ugh. At least Vhxis was holding it back.");
 				}
 				case 1:
 				{
@@ -1186,11 +1185,11 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{darkblue}CHAOS KAHMLSTEIN! {gold}- {red} lines for how zeina and koshi feel about him.   ");
+					CPrintToChatAll("{darkblue}CHAOS KAHMLSTEIN! {gold}- {snow}He almost got as smart as one of us while Chaos afflicted. But you guys killed him before he got too smart.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{darkblue}CHAOS KAHMLSTEIN! {gold}- {red} lines for how zeina and koshi feel about him.   ");
+					CPrintToChatAll("{darkblue}CHAOS KAHMLSTEIN! {gold}- {red}Chaos really messed him up, with all he's done while under it. At least he did want to fix what he had done after you guys got rid of his Chaos.");
 				}
 				default:
 				{
@@ -1348,7 +1347,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 				}
 				/*case 2:
 				{
-					CPrintToChatAll("{purple}TWIRL! {gold}- {red}What if I add the other elf you guys fought. And her "pet cat.");
+					CPrintToChatAll("{purple}TWIRL! {gold}- {red}What if I add the other elf you guys fought. And her "pet cat." ");
 				}*/
 				default:
 				{
@@ -1526,7 +1525,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{rare}C.A.T.! {gold}- {red}Zeina look, C.A.T. looks like you. :P{snow}And you look like one of those Glugs, Koshi.");
+					CPrintToChatAll("{rare}C.A.T.! {gold}- {red}Zeina look, C.A.T. looks like you. :P {snow}And you look like one of those Glugs, Koshi.");
 				}
 				default:
 				{
@@ -1540,7 +1539,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{rare}A.R.I.S.! {gold}- {red}What if you had to fight both A.R.I.S. and C.A.T. at the same time.");
+					CPrintToChatAll("{rare}A.R.I.S.! {gold}- {red}What if you had to fight both A.R.I.S. and C.A.T. at the same time. Naa.");
 				}
 				default:
 				{
@@ -1590,7 +1589,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{pink}REILA! {gold}- {red}The construct will buff reila and itself, but gives you more time to kill reila.");
+					CPrintToChatAll("{pink}REILA! {gold}- {red}The construct will buff Reila and itself, but gives you more time to kill Reila.");
 				}
 				default:
 				{
