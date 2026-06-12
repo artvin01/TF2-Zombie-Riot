@@ -296,6 +296,7 @@ methodmap Vincent < CClotBody
 
 		b_thisNpcIsARaid[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
+		Zero(b_said_player_weaponline);
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
