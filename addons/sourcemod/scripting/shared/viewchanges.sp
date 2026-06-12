@@ -233,7 +233,7 @@ void ViewChange_PlayerModel(int client)
 		
 		if(TeutonType[client] == TEUTON_NONE)
 		{
-			if(i_HealthBeforeSuit[client] == 0)
+			if(i_HealthBeforeSuit[client] == 0  && !view_as<bool>(Store_HasNamedItem(client, "Expidonsan Research Card")))
 			{
 				int index;
 				int sound = -1;
@@ -284,18 +284,6 @@ void ViewChange_PlayerModel(int client)
 
 				SetVariantString(NULL_STRING);
 				AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
-			}
-			if(view_as<bool>(Store_HasNamedItem(client, "Expidonsan Research Card")))
-			{
-				SetEntProp(entity, Prop_Send, "m_nModelIndex", RobotIndex[CurrentClass[client]]);
-				SetVariantString(NULL_STRING);
-				AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
-			}
-			else
-			{
-				SetEntProp(entity, Prop_Send, "m_nModelIndex", PlayerIndex[CurrentClass[client]]);
-				//i_ClientHasCustomGearEquipped[client] = 0;
-				//ViewChange_PlayerModel(client);
 			}
 
 			UpdatePlayerFakeModel(client);

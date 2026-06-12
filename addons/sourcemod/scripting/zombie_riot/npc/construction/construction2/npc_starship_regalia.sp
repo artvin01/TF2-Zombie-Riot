@@ -2762,7 +2762,7 @@ static void Func_On_Proj_DoG_Patterns(int entity, int other)
 	//ignore non construction buildings. so support buildings.
 	if(i_IsABuilding[other] && !i_IsVehicle[other])
 	{
-		ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
+		ObjectGeneric objstats = view_as<ObjectGeneric>(other);
 		if(!objstats.m_bConstructBuilding)
 			return;
 	}
