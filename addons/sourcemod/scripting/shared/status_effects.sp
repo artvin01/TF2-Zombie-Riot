@@ -10123,6 +10123,7 @@ void StatusEffects_HeartBroken()
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
+	data.AttackspeedBuff			= (1.0 / 1.25);
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.OnBuffStarted				= Memorial_Possession_Start;
