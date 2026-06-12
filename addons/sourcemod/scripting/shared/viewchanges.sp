@@ -93,6 +93,7 @@ static bool b_AntiSameFrameUpdate[MAXPLAYERS];
 
 #if defined ZR
 static int TeutonModelIndex;
+bool b_IsRobot[MAXPLAYERS];
 #endif
 
 void ViewChange_MapStart()
@@ -277,6 +278,8 @@ void ViewChange_PlayerModel(int client)
 					SetEntProp(entity, Prop_Send, "m_nBody", body);
 					SetEntProp(client, Prop_Send, "m_nBody", body);
 				}
+				
+				b_IsRobot[client] = false;
 			}
 			else
 			{
@@ -284,6 +287,8 @@ void ViewChange_PlayerModel(int client)
 
 				SetVariantString(NULL_STRING);
 				AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
+				
+				b_IsRobot[client] = true;
 			}
 
 			UpdatePlayerFakeModel(client);
