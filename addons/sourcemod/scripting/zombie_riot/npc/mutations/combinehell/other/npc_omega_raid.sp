@@ -338,6 +338,7 @@ methodmap OmegaRaid < CClotBody
 		npc.m_flOmegaAirbornAttack = GetGameTime(npc.index) + 7.5;
 		npc.m_flThrowSupportGrenadeHappening = GetGameTime(npc.index) + 15.0;
 		npc.m_flRollermineSpawn = GetGameTime(npc.index) + 20.0;
+		Zero(b_said_player_weaponline);
 
 		AlreadySaidWin = false;
 		

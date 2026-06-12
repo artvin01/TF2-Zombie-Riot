@@ -2760,6 +2760,31 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 					return Plugin_Handled;
 				}
 			}
+			else if (b_IsRobot[entity] && strncmp(sample, "vo/mvm/", 7) != 0)
+			{
+				static int lastEntity;
+				static float lastTime;
+				
+				float time = GetGameTime();
+				
+				char file[PLATFORM_MAX_PATH], soundFile[PLATFORM_MAX_PATH];
+				strcopy(file, PLATFORM_MAX_PATH, sample);
+				ReplaceStringEx(file, sizeof(file), "vo/", "vo/mvm/norm/");
+				ReplaceStringEx(file, sizeof(file), "_", "_mvm_");
+				FormatEx(soundFile, sizeof(soundFile), "sound/%s", file);
+				
+				// Skip checking the file on disk if we already played (hopefully) this
+				if ((time == lastTime && entity == lastEntity) || FileExists(soundFile, true))
+				{
+					strcopy(sample, sizeof(sample), file);
+					PrecacheSound(sample);
+					
+					lastEntity = entity;
+					lastTime = time;
+					
+					return Plugin_Changed;
+				}
+			}
 #endif
 		}
 	}
