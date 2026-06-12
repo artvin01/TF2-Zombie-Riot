@@ -452,6 +452,7 @@ methodmap ARIS < CClotBody
 		RaidModeTime = GetGameTime() + 220.0;
 		b_thisNpcIsARaid[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
+		Zero(b_said_player_weaponline);
 
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
