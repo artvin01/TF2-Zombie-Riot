@@ -3290,9 +3290,7 @@
 	}
 	"Leper Sword Desc"
 	{
-		"en"	"Gain overall resistance and the ability to cleave upto 5 enemies (R)\nDuring animations, take 25％ less damage"
-		"it"	"Guadagna la resistenza generale e la capacità di fendere fino a 5 nemici (R)\nDurante le animazioni, subisce 25％ danni in meno"
-		"ko"	"-모든 피해 저항력 증가. R키 능력으로 주변의 최대 5명의 적을 타격 가능.\n-능력 사용 애니메이션 도중 받는 피해량 -25％"
+		"en"	"Gain overall resistance and the ability to cleave upto 5 enemies (R)\nDuring animations, take 25％ less damage and unable to die"
 	}
 	"Leper Sword Desc Pap 1"
 	{

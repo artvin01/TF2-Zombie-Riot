@@ -498,10 +498,8 @@ static int HeartBrokenAction(int client, int target, int which)
 		}
 	}
 	ApplyStatusEffect(client, client, "Shielding", duration + 0.5);
-	if(LastMann)
-		ShieldGive = ((ShieldGive * 3) / 4);
 	
-	ShieldGive = ((ShieldGive * 3) / 5);
+	ShieldGive *= 2;
 
 	Shielding_Add(client, ShieldGive);
 
@@ -1137,6 +1135,8 @@ stock void GiveCoffinOnDamage(int client, int victim, float damage)
 
 	DamageForMaxCharge *= 0.5;
 	DamageForMaxCharge *= 0.75;
+	//bunch of adjustments for nerfs and etc
+	DamageForMaxCharge *= 0.8;
 	if(StatusEffects_SinkingDebuffMaxStacks(victim))
 		DamageForMaxCharge *= 0.5;
 
