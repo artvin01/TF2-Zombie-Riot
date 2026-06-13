@@ -73,8 +73,7 @@ All generated files will be put in `gh-pages/`. Those not automatically generate
 # TODO
 - [ ] Front-end revamp
   - [x] Items
-  - [ ] Waveset viewer
-  - [ ] Music list
+  - [x] Waveset viewer
   - [ ] File structure cleanup
   - [ ] Fix embed animations
 - [ ] Improved NPC data parsing (low priority)

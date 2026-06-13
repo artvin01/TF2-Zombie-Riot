@@ -351,7 +351,7 @@ def item_block(key, data, output, type_override=None):
                 elif item == "Weapon Kits":
                     type_override = "weaponkit"
                 elif key == "Koshi's Goods":
-                    type_override = f"{type_override},nohide"
+                    type_override = f"upgrade,nohide"
                 output[item] = item_block(item, item_data, defaultdict(list),type_override)
                 type_override = prev_override
             elif "Trophies" == item:

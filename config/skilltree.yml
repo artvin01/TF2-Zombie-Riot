@@ -1,23 +1,23 @@
 # Hardcoded skilltree position offsets as to prevent overlaps
-ab: 7 # Health Up
+ab: 7 # Health Up (#1)
 # and it's descendants...
-aba: 1 # healthup
-abb: 3 # luckup
-abc: -3 # total res
+aba: 1 # Path to Health Up (#2)
+abb: 3 # Path to Luck Up
+abc: -3 # Path to Total Resistance
 
-# total res branch
+# Total Resistance Branch
 abcb: 2
 
-# luck up branch
+# Luck Up branch
 abbb: 3
 #abbaa=>branches go from here
 abbaaca: 2
 abbaacb: -1
 
-# health up brach
+# Health Up Branch
 abac: 2
 abab: 2
 
-# dmg branch
+# Damage branch
 aab: 5
 aaab: 3

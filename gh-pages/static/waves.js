@@ -53,7 +53,7 @@ async function parse_waveset(file) {
         let m_artist = apply_morecolors(entry["musicartist"]);
         let m_content = `${m_pre}: ${m_title} - ${m_artist}`;
         let modal = create_element("div", {"class": "audio"});
-        modal.appendChild(MUSIC_ICON.cloneNode(true)); // MUSIC_ICON constant doesn't work here?????
+        modal.appendChild(MUSIC_ICON.cloneNode(true));
         modal.appendChild(create_element("span", {"innerHTML": m_content}));
         if (!entry["file_exists"]) {
             modal.classList.add("disabled");

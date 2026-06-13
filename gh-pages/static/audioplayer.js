@@ -3,10 +3,9 @@ let last_vol = 1/4;
 let last_muted = false;
 let last_song_id = -1;
 
-let playlist_mode=false;
-
 let shuffle=false;
-let max_songs = 0;
+let loop=false;
+let max_songs=0;
 
 function set_audio_resource(obj) {
     if (max_songs>0) {
@@ -27,8 +26,9 @@ function set_audio_resource(obj) {
     music_player.innerHTML= mphtml.replace("filepath",obj.dataset.file);
     music_player.parentElement.classList.remove("hidden");
     
-    audio = document.getElementsByTagName("audio")[0]
+    audio = document.getElementsByTagName("audio")[0];
     audio.volume = last_vol;audio.muted = last_muted;
+    audio.loop = loop;
     document.getElementsByTagName("audio")[0].volume = last_vol;
 
     navigator.mediaSession.metadata = new MediaMetadata({
@@ -38,12 +38,17 @@ function set_audio_resource(obj) {
 }
 
 function nextsong() {
-    if (playlist_mode) {
+    if (max_songs>0) {
         let id = Number(last_song_id)+1;
         if (shuffle) { id=randint(0,max_songs) };
         if (id>max_songs) {id=0}; // loop back to start
         set_audio_resource(document.getElementById(id));
     }
+}
+
+function setloop(state) {
+    audio = document.getElementsByTagName("audio")[0];
+    audio.loop = state;loop = state;
 }
 
 function randint(min, max) {
