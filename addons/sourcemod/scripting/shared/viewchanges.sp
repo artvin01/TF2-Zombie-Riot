@@ -234,7 +234,7 @@ void ViewChange_PlayerModel(int client)
 		
 		if(TeutonType[client] == TEUTON_NONE)
 		{
-			if(i_HealthBeforeSuit[client] == 0  && !view_as<bool>(Store_HasNamedItem(client, "Expidonsan Research Card")))
+			if(i_HealthBeforeSuit[client] == 0 && Store_HasNamedItem(client, "Expidonsan Research Card") == 0)
 			{
 				int index;
 				int sound = -1;

@@ -3891,10 +3891,10 @@ static void MenuPage(int client, int section)
 			if(PapModeDo == PAP_MODE_BUILDING_ONLY && item.Internal_ClickEnhance)
 				continue;
 			
-			if (item.ViewTeutonOnly == VIEW_TEUTON_ONLY && TeutonType[client] == 0)
+			if (item.ViewTeutonOnly == VIEW_TEUTON_ONLY && IsEntityAlive(client))
 				continue;
 			
-			if (item.ViewTeutonOnly == VIEW_TEUTON_EXCEPTION && TeutonType[client] != 0)
+			if (item.ViewTeutonOnly == VIEW_TEUTON_EXCEPTION && !IsEntityAlive(client))
 				continue;
 			
 			if(item.GiftId != -1 && !Items_HasIdItem(client, item.GiftId))
