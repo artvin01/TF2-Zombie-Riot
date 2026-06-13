@@ -1156,13 +1156,13 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 8:	
 		{
-			switch(GetRandomInt(1, 2))
+			switch(GetRandomInt(1, 3))
 			{
 				case 1:
 				{
 					CPrintToChatAll("{lightblue}THE MESSENGER! {gold}- {snow}How do these people find the Void, ugh. At least Vhxis was holding it back.");
 				}
-				case 1:
+				case 2:
 				{
 					CPrintToChatAll("{lightblue}THE MESSENGER! {gold}- {red}shhhh, don't tell {lightblue}Nemal {red}what happened to him.");
 				}
