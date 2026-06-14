@@ -80,9 +80,11 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 {
 #if defined ZR
 
-	if(Bool_IsNonZRMap())
-		DeleteAllPropsBad_NonZrMaps();
+	if(!InZRMap())
+		DeleteAllBadEntities_NonZrMaps();
 	
+	if (!CanMapSpawnPickups())
+		DeleteAllPickups();
 	
 	DeleteShadowsOffZombieRiot();
 	EventRoundStartMusicFilter();
@@ -800,7 +802,7 @@ public Action ChatSetupTipTimer(Handle TimerHandle)
 	return Plugin_Stop;
 }
 
-void DeleteAllPropsBad_NonZrMaps()
+void DeleteAllBadEntities_NonZrMaps()
 {
 	ServerCommand("sv_cheats 1; nav_load ; sv_cheats 0");
 	for( int i = 1; i <= MAXENTITIES; i++ ) 
@@ -810,13 +812,27 @@ void DeleteAllPropsBad_NonZrMaps()
 		static char classname[36];
 		GetEntityClassname(i, classname, sizeof(classname));
 		if(!StrContains(classname, "prop_door") ||
-//		!StrContains(classname, "item_healthkit_") ||
-		!StrContains(classname, "item_ammopack_") ||
 		!StrContains(classname, "item_teamflag") ||
 		!StrContains(classname, "func_regenerate") ||
 		!StrContains(classname, "func_respawnroom") ||
 		!StrContains(classname, "func_respawnroomvisualizer") ||
 		!StrContains(classname, "func_door"))
+		{
+			RemoveEntity(i);
+		}
+	}
+}
+
+void DeleteAllPickups()
+{
+	for( int i = 1; i <= MAXENTITIES; i++ ) 
+	{
+		if(!IsValidEntity(i))
+			continue;
+		char classname[36];
+		GetEntityClassname(i, classname, sizeof(classname));
+		if(!StrContains(classname, "item_healthkit") ||
+		!StrContains(classname, "item_ammopack"))
 		{
 			RemoveEntity(i);
 		}
