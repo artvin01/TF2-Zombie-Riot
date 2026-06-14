@@ -810,7 +810,7 @@ void DeleteAllPropsBad_NonZrMaps()
 		static char classname[36];
 		GetEntityClassname(i, classname, sizeof(classname));
 		if(!StrContains(classname, "prop_door") ||
-		!StrContains(classname, "item_healthkit_") ||
+//		!StrContains(classname, "item_healthkit_") ||
 		!StrContains(classname, "item_ammopack_") ||
 		!StrContains(classname, "item_teamflag") ||
 		!StrContains(classname, "func_regenerate") ||
