@@ -93,6 +93,7 @@ static bool b_AntiSameFrameUpdate[MAXPLAYERS];
 
 #if defined ZR
 static int TeutonModelIndex;
+bool b_IsRobot[MAXPLAYERS];
 #endif
 
 void ViewChange_MapStart()
@@ -233,7 +234,7 @@ void ViewChange_PlayerModel(int client)
 		
 		if(TeutonType[client] == TEUTON_NONE)
 		{
-			if(i_HealthBeforeSuit[client] == 0  && !view_as<bool>(Store_HasNamedItem(client, "Expidonsan Research Card")))
+			if(i_HealthBeforeSuit[client] == 0 && Store_HasNamedItem(client, "Expidonsan Research Card") == 0)
 			{
 				int index;
 				int sound = -1;
@@ -277,6 +278,8 @@ void ViewChange_PlayerModel(int client)
 					SetEntProp(entity, Prop_Send, "m_nBody", body);
 					SetEntProp(client, Prop_Send, "m_nBody", body);
 				}
+				
+				b_IsRobot[client] = false;
 			}
 			else
 			{
@@ -284,6 +287,8 @@ void ViewChange_PlayerModel(int client)
 
 				SetVariantString(NULL_STRING);
 				AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
+				
+				b_IsRobot[client] = true;
 			}
 
 			UpdatePlayerFakeModel(client);
