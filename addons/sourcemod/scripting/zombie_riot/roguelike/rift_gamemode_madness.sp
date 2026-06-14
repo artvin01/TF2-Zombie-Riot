@@ -133,6 +133,7 @@ static const char g_RandomPlayerName[][] =
 	" Clone",
 	" Kitteh",
 	" LeAlex14"
+	" White Monster"
 };
 
 static ArrayList TemporaryRebelList;
