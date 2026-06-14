@@ -3291,6 +3291,7 @@
 	"Leper Sword Desc"
 	{
 		"en"	"Gain overall resistance and the ability to cleave upto 5 enemies (R)\nDuring animations, take 25％ less damage and unable to die"
+		"ko"	"-모든 피해 저항력 증가. R키 능력으로 주변의 최대 5명의 적을 타격 가능.\n-능력 사용 애니메이션 도중 받는 피해량 -25％\n-능력 사용 애니메이션 동안 사망하지 않음"
 	}
 	"Leper Sword Desc Pap 1"
 	{
@@ -5392,8 +5393,8 @@
 	}
 	"The Heartbroken Desc"
 	{
-		"en"	"Kill EVERY Enemy.\n-M2 allows you to counter\nA short delay, deal damage back to 1 enemy\nCounter blocks 75％ damage\n-Animations give shield, worth ％ of your max hp\n-You passively have cannibalism\n-You are tanky"
-		"ko"	"모든 적들의 목을 벤다.\n-우클릭으로 반격 가능:\n짧은 지연 후 1명의 적에게 피해\n반격 시 받는 피해량 75％ 방어\n-능력 사용 애니메이션 동안 최대 체력의 ％에 해당하는 보호막을 획득\n-기본적으로 '식인 풍습' 보유\n-더 높은 생존력 보유"
+		"en"	"Kill EVERY Enemy.\n-M2 allows you to counter\nA short delay, deal damage back to 1 enemy\nCounter blocks 50％ damage\n-Animations give shield, worth ％ of your max hp\n-You passively have cannibalism\n-You are tanky"
+		"ko"	"모든 적들의 목을 벤다.\n-우클릭으로 반격 가능:\n짧은 지연 후 1명의 적에게 피해\n반격 시 받는 피해량 50％ 방어\n-능력 사용 애니메이션 동안 최대 체력의 ％에 해당하는 보호막을 획득\n-기본적으로 '식인 풍습' 보유\n-더 높은 생존력 보유"
 	}
 	"The Heartbroken Desc 1"
 	{
@@ -5413,7 +5414,7 @@
 	"The Heartbroken Desc 4"
 	{
 		"en"	"-Overall Stat Increases\n-Unlock secondary R ability:\n-Launches a coffin that deals immense damage on hit\n-If the enemy is not a boss or special, instakill them and gain 2 coffin stacks\n-Coffins give a damage bonus"
-		"ko"	"-전반적인 능력치 증가\n-보조 무기 R키 능력 해금:\n-막대한 피해를 가하는 관을 날림\n-대상이 보스나 특수형 적이 아니라면, 대상을 즉사시키고 관을 2 얻음\n-관은 피해량 보너스를 제공"
+		"ko"	"-전반적인 능력치 증가\n-보조 무기 R키 능력 해금:\n-막대한 피해를 가하는 관을 날림\n-대상이 보스나 특수형 적이 아니라면, 대상을 즉사시키고 관을 2 얻음\n-관은 피해량 보너스를 제공(관 1당 1％ 증가)"
 	}
 	"The Heartbroken Desc 5"
 	{
