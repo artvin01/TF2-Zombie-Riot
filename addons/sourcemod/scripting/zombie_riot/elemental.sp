@@ -1791,11 +1791,18 @@ void Elemental_AddStaggerDamage(int victim, int attacker, int damagebase)
 		}
 
 		if(triggered)
+		{
 			FreezeNpcInTime(victim, 3.0);
-
+			EmitSoundToAll("playgamesound physics/glass/glass_sheet_break3.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+		}
+		else
+		{
+			if(attacker && attacker <= MaxClients)
+				ClientCommand(attacker, triggered ? "playgamesound physics/glass/glass_sheet_break3.wav" : ((GetURandomInt() % 2) ? "playgamesound weapons/physcannon/energy_sing_flyby1.wav" : "playgamesound weapons/physcannon/energy_sing_flyby2.wav"));		
+		}
+		
 		if(attacker && attacker <= MaxClients)
 		{
-			ClientCommand(attacker, triggered ? "playgamesound physics/glass/glass_sheet_break3.wav" : ((GetURandomInt() % 2) ? "playgamesound weapons/physcannon/energy_sing_flyby1.wav" : "playgamesound weapons/physcannon/energy_sing_flyby2.wav"));
 			ApplyElementalEvent(victim, attacker, damage);
 		}
 	}

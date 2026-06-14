@@ -1211,6 +1211,7 @@ public void OnMapStart()
 	g_iLaserMaterial_Trace = PrecacheModel("materials/sprites/laserbeam.vmt");
 	CreateTimer(0.2, Timer_Temp, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	PrecacheSound("mvm/mvm_tank_horn.wav");
+	PrecacheSound("playgamesound physics/glass/glass_sheet_break3.wav");
 	DeleteShadowsOffZombieRiot();
 
 	if(LibraryExists("LoadSoundscript"))
