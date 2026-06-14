@@ -1,4 +1,3 @@
-
 #pragma semicolon 1
 #pragma newdecls required
 
@@ -1077,6 +1076,10 @@ static Action Freeplay_RouletteMessage(Handle timer)
 				{
 					CPrintToChatAll("{yellow}SILVESTER {white}& {darkblue}WALDCH! {gold}- {yellow}Hey thanks again for saving me from the Xeno infection, now beat Waldch and me in this simulation.");
 				}
+				/*case 6:
+				{
+					CPrintToChatAll("{yellow}SILVESTER {white}& {darkblue}WALDCH! {gold}- {red}Imagine if I added Sensal to this fight. That would be fun.");
+				}*/
 				default:
 				{
 					CPrintToChatAll("{yellow}SILVESTER {white}& {darkblue}WALDCH! {gold}- {red}Enjoy eating rocks!");
@@ -1127,6 +1130,10 @@ static Action Freeplay_RouletteMessage(Handle timer)
 				{
 					CPrintToChatAll("{crimson}KARLAS {white}& {aqua}STELLA! {gold}- {red}oh hey Karlas, you here to watch. {crimson}*nods head* >:)");
 				}
+				/*case 3:
+				{
+					CPrintToChatAll("{aqua}STELLA {white}& {crimson}KARLAS! {gold}- {red}Now lets add one more elf to this, Twirl. Naaa I wont, maybe.");
+				}*/
 				default:
 				{
 					CPrintToChatAll("{crimson}KARLAS {white}& {aqua}STELLA! {gold}- {red}Hope you like dealing with all of karlas's swords!");
@@ -1139,7 +1146,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{crimson}THE PURGE! {gold}- {red}Annihilation shall be absolute.");
+						CPrintToChatAll("{crimson}THE PURGE! {gold}- {snow}The only Ziberian that stood up to Kahml, Ivan Petrova. Now he's this cyborg after Kahml killed him with 1 punch.");
 				}
 				default:
 				{
@@ -1149,11 +1156,15 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 8:	
 		{
-			switch(GetRandomInt(1, 2))
+			switch(GetRandomInt(1, 3))
 			{
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}THE MESSENGER! {gold}- {red}He REALLY wants to make Kahmlstein proud!");
+					CPrintToChatAll("{lightblue}THE MESSENGER! {gold}- {snow}How do these people find the Void, ugh. At least Vhxis was holding it back.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{lightblue}THE MESSENGER! {gold}- {red}shhhh, don't tell {lightblue}Nemal {red}what happened to him.");
 				}
 				default:
 				{
@@ -1170,11 +1181,15 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		*/
 		case 9:
 		{
-			switch(GetRandomInt(1, 2))
+			switch(GetRandomInt(1, 3))
 			{
 				case 1:
 				{
-					CPrintToChatAll("{darkblue}CHAOS KAHMLSTEIN! {gold}- {red}He thinks he's unstoppable, prove him wrong!");
+					CPrintToChatAll("{darkblue}CHAOS KAHMLSTEIN! {gold}- {snow}He almost got as smart as one of us while Chaos afflicted. But you guys killed him before he got too smart.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{darkblue}CHAOS KAHMLSTEIN! {gold}- {red}Chaos really messed him up, with all he's done while under it. At least he did want to fix what he had done after you guys got rid of his Chaos.");
 				}
 				default:
 				{
@@ -1223,10 +1238,6 @@ static Action Freeplay_RouletteMessage(Handle timer)
 				/*case 3:
 				{
 					CPrintToChatAll("{green}VIVITHORN! {gold}- {red}What if you guys fought Vivithorn and Calmaticus at the same time, like how you did back at the abandoned lab?");
-				}
-				case 4:
-				{
-					CPrintToChatAll("{green}MR.SEX! {gold}- {red}Don't look at his sex files");
 				}*/
 				default:
 				{
@@ -1316,6 +1327,10 @@ static Action Freeplay_RouletteMessage(Handle timer)
 				{
 					CPrintToChatAll("{yellow}SILVESTER {white}& {lightblue}NEMAL! {gold}- {yellow}Oh you guys are fighting Nemal and me. Another round of training, inside a training simulation.");
 				}
+				/*case 6:
+				{
+					CPrintToChatAll("{lightblue}NEMAL! {white}& {yellow}SILVESTER! {gold}- {red}Maybe I should add 1 more expidonsan named Sensal to this. ");
+				}*/
 				default:
 				{
 					CPrintToChatAll("{lightblue}NEMAL {white}& {yellow}SILVESTER! {gold}- {red}The better silv duo fight!");
@@ -1330,6 +1345,10 @@ static Action Freeplay_RouletteMessage(Handle timer)
 				{
 					CPrintToChatAll("{purple}TWIRL! {gold}- {red}Oh so you're strong? Fight her!");
 				}
+				/*case 2:
+				{
+					CPrintToChatAll("{purple}TWIRL! {gold}- {red}What if I add the other elf you guys fought. And her "pet cat." ");
+				}*/
 				default:
 				{
 					CPrintToChatAll("{purple}TWIRL! {gold}- {red}The ruler of ruina descends!");
@@ -1338,7 +1357,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 18:
 		{
-			switch(GetRandomInt(1, 2))
+			switch(GetRandomInt(1, 3))
 			{
 				case 1:
 				{
@@ -1356,7 +1375,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 19:
 		{
-			switch(GetRandomInt(1, 2))
+			switch(GetRandomInt(1, 3))
 			{
 				case 1:
 				{
@@ -1374,7 +1393,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 20:
 		{
-			switch(GetRandomInt(1, 2))
+			switch(GetRandomInt(1, 3))
 			{
 				case 1:
 				{
@@ -1392,7 +1411,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 21:
 		{
-			switch(GetRandomInt(1, 4))
+			switch(GetRandomInt(1, 5))
 			{
 				case 1:
 				{
@@ -1506,7 +1525,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{rare}C.A.T.! {gold}- {red}Zeina look, C.A.T. looks like you. :P{snow}And you look like one of those Glugs, Koshi.");
+					CPrintToChatAll("{rare}C.A.T.! {gold}- {red}Zeina look, C.A.T. looks like you. :P {snow}And you look like one of those Glugs, Koshi.");
 				}
 				default:
 				{
@@ -1520,7 +1539,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{rare}A.R.I.S.! {gold}- {red}What if you had to fight both A.R.I.S. and C.A.T. at the same time.");
+					CPrintToChatAll("{rare}A.R.I.S.! {gold}- {red}What if you had to fight both A.R.I.S. and C.A.T. at the same time. Naa.");
 				}
 				default:
 				{
@@ -1548,7 +1567,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 31:
 		{
-			switch(GetRandomInt(1, 2))
+			switch(GetRandomInt(1, 3))
 			{
 				case 1:
 				{
@@ -1570,7 +1589,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{pink}REILA! {gold}- {red}The construct will buff reila and itself, but gives you more time to kill reila.");
+					CPrintToChatAll("{pink}REILA! {gold}- {red}The construct will buff Reila and itself, but gives you more time to kill Reila.");
 				}
 				default:
 				{
@@ -1608,11 +1627,19 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 35:
 		{
-			switch(GetRandomInt(1, 2))
+			switch(GetRandomInt(1, 4))
 			{
 				case 1:
 				{
 					CPrintToChatAll("{black}ZILIUS! {gold}- {red}Sorry this caused him to imprison you Zeina. {snow}It's alright Koshi, at least these guys freed me from him.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{black}ZILIUS! {gold}- {blue}The other citys are the same as his. They do not care about any other race.");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{black}ZILIUS! {gold}- {blue}Your strength somehow made Zilius decide not to kill you guys. Maybe we could use that to find the solution to stop Chaos.");
 				}
 				default:
 				{
