@@ -866,27 +866,37 @@ void ZR_PluginStart()
 	NpcConst2Building_CommandPluginStart();
 }
 
-bool IsNonZRMap = false;
-bool Bool_IsNonZRMap()
+bool IsZRMap;
+bool CanSpawnPickups;
+
+bool InZRMap()
 {
-	return IsNonZRMap;
+	return IsZRMap;
+}
+
+bool CanMapSpawnPickups()
+{
+	return CanSpawnPickups;
 }
 void ZR_MapStart()
 {
-	IsNonZRMap = false;
-	
 	char mapname[64];
 	GetMapName(mapname, sizeof(mapname));
-	if(StrContains(mapname, "zr_") != 0)
+	if(StrContains(mapname, "zr_") == 0 || StrContains(mapname, "vsh_zr_") == 0)
 	{
-		IsNonZRMap = true;
+		IsZRMap = true;
+		CanSpawnPickups = true;
 	}
-	
-	// Consider VSH maps as ZR maps
-	if(StrContains(mapname, "vsh_zr_") == 0)
-		IsNonZRMap = false;
-	if(StrContains(mapname, "vsh_") == 0)
-		IsNonZRMap = false;
+	else if(StrContains(mapname, "vsh_") == 0)
+	{
+		IsZRMap = false;
+		CanSpawnPickups = true;
+	}
+	else
+	{
+		IsZRMap = false;
+		CanSpawnPickups = false;
+	}
 
 	MusicString1.Clear();
 	MusicString2.Clear();
