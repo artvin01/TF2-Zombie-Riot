@@ -1405,6 +1405,9 @@ stock int HealEntityGlobal(int healer,
 
 	if(!(flag_extrarules & (HEAL_ABSOLUTE)))
 	{
+		if(ZR_Get_Modifier() == NOSTALGICA)
+			if(GetTeam(receiver) == TFTeam_Red)
+				HealTotal *= 0.5;
 #if defined ZR
 		if(HasSpecificBuff(healer, "Dimensional Turbulence"))
 		{
@@ -3316,6 +3319,13 @@ int inflictor = 0)
 		} 
 	}
 	
+	if(ZR_Get_Modifier() == NOSTALGICA)
+	{
+		if(GetTeam(entity) == TFTeam_Red)
+		{
+			ExplosionDmgMultihitFalloff *= 0.75;
+		}
+	}
 	int damage_flags = 0;
 	int custom_flags = 0;
 	if((i_ExplosiveProjectileHexArray[entity] & EP_DEALS_CLUB_DAMAGE))

@@ -1998,7 +1998,13 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		{
 			damage *= 0.9;
 		}
+		if(ZR_Get_Modifier() == NOSTALGICA)
+		{
+			damage *= 6.0;
+		}
 #endif
+	
+
 		if(f_ImmuneToFalldamage[victim] > GameTime)
 		{
 			damage = 0.0;
@@ -3642,6 +3648,8 @@ void ManaCalculationsBefore(int client)
 	int i, entity;
 	float ManaRegen = 12.0;
 	float ManaMaxExtra = 500.0;
+	if(ZR_Get_Modifier() == NOSTALGICA)
+		ManaRegen *= 0.75;
 	
 	while(TF2_GetItem(client, entity, i))
 	{

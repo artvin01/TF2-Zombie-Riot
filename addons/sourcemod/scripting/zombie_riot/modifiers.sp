@@ -11,6 +11,7 @@ static int CurrentModifActive = 0;
 #define PARANORMAL_ACTIVITY 5
 #define PREFIX_GALORE 6
 #define PREFIX_ONESTAND 7
+#define NOSTALGICA 8
 
 void Modifier_MiniBossSpawn(bool &spawns)
 {
@@ -74,7 +75,10 @@ public void Modifier_Collect_OldTimes()
 {
 	CurrentModifActive = OLD_TIMES;
 }
-
+public void Modifier_Collect_Nostalica()
+{
+	CurrentModifActive = NOSTALGICA;
+}
 public void Modifier_Collect_Turbolences()
 {
 	CurrentModifActive = TURBOLENCES;
@@ -159,7 +163,46 @@ public void ZRModifs_OldTimesNPC(int iNpc)
 	fl_Extra_Speed[iNpc] *= 1.06;
 	f_AttackSpeedNpcIncrease[iNpc] *= 0.75;
 }
+public void ZRModifs_NostalicaNPC(int iNpc)
+{
+	fl_Extra_Damage[iNpc] *= 1.50;
+	int Health = GetEntProp(iNpc, Prop_Data, "m_iMaxHealth");
+	SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(Health) * 1.6));
+	SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(Health) * 1.6));
+	fl_GibVulnerablity[iNpc] *= 1.6;
+	f_AttackSpeedNpcIncrease[iNpc] *= 0.75;
+	fl_Extra_RangedArmor[iNpc] *= 0.75;
+	if(b_thisNpcIsARaid[iNpc])
+	{
+		SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 1.25));
+		SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 1.25));
+		fl_Extra_Damage[iNpc] *= 1.25;
+	}
+	else if(b_thisNpcIsABoss[iNpc])
+	{
+		SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 1.5));
+		SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 1.5));
+		fl_Extra_Damage[iNpc] *= 1.5;
+	}
+}
 
+public void ZRModifsPlayer_Nostalica(int entity, StringMap map)
+{
+	if(map)	// Player
+	{
+		// +25% less hp
+		float value = 1.0;
+		map.GetValue("26", value);
+		map.SetValue("26", value * 0.75);
+		// +10% less speed
+		value = 1.0;
+		map.GetValue("107", value);
+		if(!LastMann)
+			map.SetValue("107", value * 0.9);
+		else
+			map.SetValue("107", value * 0.75);
+	}
+}
 float ZRModifs_MaxSpawnsAlive()
 {
 	float Return = 1.0;
@@ -169,7 +212,7 @@ float ZRModifs_MaxSpawnsAlive()
 		{
 			Return *= 1.10;
 		}
-		case SECONDARY_MERCS, OLD_TIMES:
+		case SECONDARY_MERCS, OLD_TIMES, NOSTALGICA:
 		{
 			Return *= 1.20;
 		}
@@ -205,7 +248,7 @@ float ZRModifs_SpawnSpeedModif()
 		{
 			value *= 0.85;
 		}
-		case SECONDARY_MERCS, OLD_TIMES:
+		case SECONDARY_MERCS, OLD_TIMES, NOSTALGICA:
 		{
 			value *= 0.75;
 		}
@@ -225,7 +268,7 @@ float ZRModifs_MaxSpawnWaveModif()
 		{
 			Return *= 1.25;
 		}
-		case SECONDARY_MERCS, OLD_TIMES:
+		case SECONDARY_MERCS, OLD_TIMES, NOSTALGICA:
 		{
 			Return *= 1.35;
 		}
@@ -260,6 +303,10 @@ void ZRModifs_CharBuffToAdd(char[] data)
 		case PREFIX_ONESTAND:
 		{
 			FormatEx(data, 12, "OS");
+		}
+		case NOSTALGICA:
+		{
+			FormatEx(data, 12, "NO");
 		}
 	}
 }

@@ -2524,7 +2524,10 @@ static void FireBlitzRocket(Blitzkrieg npc, float vecTarget[3], float rocket_dam
 	GetVectorAngles(Ang, Ang);
 	Projectile.Angles = Ang;
 	Projectile.speed = rocket_speed;
-	Projectile.radius = 0.0;
+	if(ZR_Get_Modifier() != 8)
+		Projectile.radius = 0.0;
+	else
+		Projectile.radius = 80.0;
 	Projectile.damage = rocket_damage;
 	Projectile.bonus_dmg = rocket_damage*2.5;
 	Projectile.Time = 5.0;

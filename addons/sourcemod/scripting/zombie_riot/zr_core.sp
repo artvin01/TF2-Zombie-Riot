@@ -2635,6 +2635,9 @@ stock int MaxArmorCalculation(int ArmorLevel = -1, int client, float multiplyier
 	if((f_LivingArmorPenalty[client] > GetGameTime() || (Attributes_Get(client, Attrib_Armor_AliveMode, 0.0)) != 0.0) && Armor_Charge[client] >= 0)
 		Armor_Max /= 2;
 		
+	if(ZR_Get_Modifier() == NOSTALGICA)
+		Armor_Max = RoundToCeil(float(Armor_Max) * 0.75);
+		
 	return (RoundToCeil(float(Armor_Max) * multiplyier));
 	
 }

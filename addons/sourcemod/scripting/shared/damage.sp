@@ -803,7 +803,19 @@ stock bool Damage_BuildingVictim(int victim, int &attacker, int &inflictor, floa
 #if defined ZR || defined RPG
 	OnTakeDamageResistanceBuffs(victim, attacker, inflictor, damage, damagetype, weapon);
 #endif
-
+#if defined ZR
+	switch(ZR_Get_Modifier())
+	{
+		case OLD_TIMES:
+		{
+			damage *= 1.25;
+		}
+		case NOSTALGICA:
+		{
+			damage *= 2.0;
+		}
+	}
+#endif
 	if(b_ThisEntityIgnored[victim])
 	{
 		//True damage ignores this.
