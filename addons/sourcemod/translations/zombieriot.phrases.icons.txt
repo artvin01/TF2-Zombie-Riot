@@ -677,6 +677,11 @@
 		"it"		"Una promessa è una promessa"
 		"ko"		"약속은 약속이니까"
 	}
+	"Omega shows up"
+	{
+		"en" 		 "Omega shows up"
+		"ko" 		 "오메가가 등장했습니다."
+	}
 	"Vestan Radiomast Is Here!"
 	{
 		"en"	"Vestan Radiomast Is Here! Break this to end the infinite wave"
