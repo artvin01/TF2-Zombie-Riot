@@ -1243,7 +1243,7 @@ void ZR_ClientPutInServer(int client)
 	b_HasBeenHereSinceStartOfWave[client] = false;
 	Queue_PutInServer(client);
 	i_AmountDowned[client] = 0;
-	if(CurrentModifOn() == 3)
+	if(ZR_Get_Modifier() == 3 || ZR_Get_Modifier() == 8)
 		i_AmountDowned[client] = 1;
 	Waves_TrySpawnBarney();
 		
@@ -2936,7 +2936,7 @@ void ReviveAll(bool raidspawned = false,
 
 			if(i_AmountDowned[client] > 0)
 				i_AmountDowned[client] = 0;
-			if(CurrentModifOn() == 3)
+			if(ZR_Get_Modifier() == 3)
 				i_AmountDowned[client] = 1;
 
 			DoOverlay(client, "", 2);

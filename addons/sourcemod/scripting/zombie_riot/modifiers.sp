@@ -98,7 +98,6 @@ public void Modifier_Remove_ParanormalActivity()
 {
 	CurrentModifActive = 0;
 }
-
 public int ZR_Get_Modifier()
 {
 	return CurrentModifActive;
@@ -248,7 +247,7 @@ float ZRModifs_SpawnSpeedModif()
 		{
 			value *= 0.85;
 		}
-		case SECONDARY_MERCS, OLD_TIMES, NOSTALGICA:
+		case SECONDARY_MERCS, OLD_TIMES:
 		{
 			value *= 0.75;
 		}
@@ -323,9 +322,4 @@ public void ZRModifs_ModifEnemy_OneStand(int iNpc)
 		SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 0.9));
 		fl_Extra_Damage[iNpc] *= 0.9;
 	}
-}
-
-int CurrentModifOn()
-{
-	return CurrentModifActive;
 }

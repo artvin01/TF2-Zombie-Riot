@@ -812,7 +812,7 @@ stock bool Damage_BuildingVictim(int victim, int &attacker, int &inflictor, floa
 		}
 		case NOSTALGICA:
 		{
-			damage *= 2.0;
+			damage *= 1.75;
 		}
 	}
 #endif

@@ -740,7 +740,7 @@ public Action Shadowing_Darkness_Boss_OnTakeDamage(int victim, int &attacker, in
 			f_AttackSpeedNpcIncrease[spawn_index]	*= 2.0;
 			fl_Extra_Damage[spawn_index]	*= 0.1;
 			b_thisNpcIsABoss[spawn_index] = true;
-
+			b_DoNotUnStuck[spawn_index] = true;	
 		}
 		if(npc.m_iChanged_WalkCycle != 99) 	
 		{

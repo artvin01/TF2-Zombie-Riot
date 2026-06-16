@@ -254,15 +254,15 @@ public void HeartBroken_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 		SensalCauseKnockback(attacker, victim, 0.5, false);
 		RemoveSpecificBuff(weapon, "Decapitate");
 	}
-	if(HasSpecificBuff(weapon, "Memorial Possession"))
+	if(HasSpecificBuff(attacker, "Memorial Possession"))
 	{
-		if(StatusEffects_MemorialDebuffMaxStacks(weapon))
+		if(StatusEffects_MemorialDebuffMaxStacks(attacker))
 		{
 			MemorialPossession_ActivateAbility(attacker, victim);
-			RemoveSpecificBuff(weapon, "Memorial Possession");
+			RemoveSpecificBuff(attacker, "Memorial Possession");
 		}
 		else
-			StatusEffects_MemorialDebuffAdd(weapon, 1);
+			StatusEffects_MemorialDebuffAdd(attacker, 1);
 	}
 	ApplyStatusEffect(attacker, victim, "Sinking", 10.0);
 	StatusEffects_SinkingDebuffAdd(victim, 1);
@@ -425,11 +425,13 @@ public void Heartbroken_Memorial_Possesion(int client, int weapon, bool crit, in
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		return;
 	}
+	ApplyStatusEffect(client, client, "Memorial Possession", 3.0);
+	Rogue_OnAbilityUse(client, MeleeWeapon);
+	StatusEffect_TimerCallDo(client);
+	
 	Heartbroken_SwitchToMeleeWeapon(client, weapon, crit, slot);
 	
 
-	ApplyStatusEffect(MeleeWeapon, MeleeWeapon, "Memorial Possession", 3.0);
-	Rogue_OnAbilityUse(client, MeleeWeapon);
 	Ability_Apply_Cooldown(client, slot, 20.0, weapon);
 	EmitSoundToAll(HEARTBREAK_DASH, client, _, 70, _, 1.0, 80);
 	EmitSoundToAll(HEARTBREAK_DASH, client, _, 70, _, 1.0, 80);

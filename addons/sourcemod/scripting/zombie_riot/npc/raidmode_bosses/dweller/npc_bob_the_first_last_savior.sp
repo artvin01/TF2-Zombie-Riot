@@ -446,7 +446,7 @@ methodmap RaidbossBobTheFirst < CClotBody
 		strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), "?????????????");
 		if(SmittenNpc)
 		{
-			if(CurrentModifOn() == 1)
+			if(ZR_Get_Modifier() == 1)
 			{
 				NPCTalkMessage(npc.index, "The chaos is everywhere, we're too late, join me, dont attack.\nProve me your innocence.");
 			}
@@ -949,7 +949,7 @@ public void RaidbossBobTheFirst_ClotThink(int iNPC)
 			if(b_ThisEntityIgnoredByOtherNpcsAggro[npc.index])
 			{
 				b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = false;
-				if(CurrentModifOn() == 1 && i_RaidGrantExtra[npc.index] == 1)
+				if(ZR_Get_Modifier() == 1 && i_RaidGrantExtra[npc.index] == 1)
 					NPCTalkMessage(npc.index, "Nevermind then, you're one of the affected.");
 			}
 		}

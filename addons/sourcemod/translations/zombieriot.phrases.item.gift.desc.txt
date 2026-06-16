@@ -2359,11 +2359,11 @@
 	{
 		"en"	"How difficult it used to be.\nThere are too many changes to list here, assume its oldtimes but much harder"
 		//	What actually it does:
-		// 35％ more enemies, spawn 33％ faster, 15％ more are alive at once
-		// They deal +50％ dmg, +100％ dmg to cades, +60％ HP, +0％ faster, attack 33％ faster.
+		// 35％ more enemies, spawn 0％ faster, 15％ more are alive at once
+		// They deal +50％ dmg, +75％ dmg to cades, +60％ HP, +0％ faster, attack 33％ faster.
 		// 1 down, enemies heal 50％ more.
 		// enemies take 25% less ranged damage
-		// healing is halved for players
+		// healing is reduced by 25% for players
 		// bosses get 50% more stats
 		// raids get 25% more stats
 		// fall damage boosted by 6x

@@ -200,7 +200,7 @@ void OverridePlayerModel(int client, int index = -1, bool DontShowCosmetics = fa
 #if defined ZR
 static void GetTeamOverride(int &team)
 {
-	if(CurrentModifOn() == SECONDARY_MERCS)
+	if(ZR_Get_Modifier() == SECONDARY_MERCS)
 		team = 3;
 	
 	if(Construction_Mode() && (Rogue_HasNamedArtifact("Hold Out Normal") || Rogue_HasNamedArtifact("Hold Out Creep")))

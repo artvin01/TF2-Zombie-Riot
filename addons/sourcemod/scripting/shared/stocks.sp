@@ -1407,7 +1407,7 @@ stock int HealEntityGlobal(int healer,
 	{
 		if(ZR_Get_Modifier() == NOSTALGICA)
 			if(GetTeam(receiver) == TFTeam_Red)
-				HealTotal *= 0.5;
+				HealTotal *= 0.75;
 #if defined ZR
 		if(HasSpecificBuff(healer, "Dimensional Turbulence"))
 		{
@@ -1427,7 +1427,7 @@ stock int HealEntityGlobal(int healer,
 			HealPenalty *= 0.75;
 		}
 
-		if((CurrentModifOn() == 3|| CurrentModifOn() == 2) && GetTeam(healer) != TFTeam_Red && GetTeam(receiver) != TFTeam_Red)
+		if((ZR_Get_Modifier() == 3|| ZR_Get_Modifier() == 2) && GetTeam(healer) != TFTeam_Red && GetTeam(receiver) != TFTeam_Red)
 		{
 			HealTotal *= 1.5;
 		}
