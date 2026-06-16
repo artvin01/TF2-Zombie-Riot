@@ -1245,7 +1245,7 @@ void ZR_ClientPutInServer(int client)
 	i_AmountDowned[client] = 0;
 	if(ZR_Get_Modifier() == 3 || ZR_Get_Modifier() == 8)
 		i_AmountDowned[client] = 1;
-	Waves_TrySpawnBarney();
+	Waves_TrySpawnBarney(); 
 		
 	dieingstate[client] = 0;
 	TeutonType[client] = 0;
