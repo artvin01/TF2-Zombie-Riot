@@ -9141,6 +9141,7 @@ public void NPCStats_SetFuncsToZero(int entity)
 {
 	func_NPCDeath[entity] = INVALID_FUNCTION;
 	func_NPCOnTakeDamage[entity] = INVALID_FUNCTION;
+	func_NPCSpawnForward[entity] = INVALID_FUNCTION;
 	func_NPCOnTakeDamagePost[entity] = INVALID_FUNCTION;
 	func_NPCThink[entity] = INVALID_FUNCTION;
 	func_NPCDeathForward[entity] = INVALID_FUNCTION;
