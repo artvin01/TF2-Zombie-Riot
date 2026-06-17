@@ -143,7 +143,6 @@ static int VotedFor[MAXPLAYERS];
 static float VoteEndTime;
 static float f_ZombieAntiDelaySpeedUp;
 static int i_ZombieAntiDelaySpeedUp;
-static Handle WaveTimer;
 static float ProgressTimerEndAt;
 static bool ProgressTimerType;
 static bool FirstMapRound;

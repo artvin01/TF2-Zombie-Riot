@@ -925,6 +925,7 @@ int i_SaidLineAlready[MAXENTITIES];
 
 #if defined ZR
 
+Handle WaveTimer;
 float MultiGlobalEnemy = 0.25;
 float MultiGlobalEnemyBoss = 0.25;
 //This value is capped at max 4.0, any higher will result in MultiGlobalHealth being increased
