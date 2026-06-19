@@ -10783,13 +10783,6 @@ void Memorial_Possession_Start(int victim, StatusEffect Apply_MasterStatusEffect
 	if(!IsValidEntity(victim) || victim > MaxClients)
 		return;
 
-	Attributes_SetMulti(victim, 6, 0.75);
-
-	int owner = GetEntPropEnt(victim, Prop_Data, "m_hOwnerEntity");
-	if(!IsValidClient(owner))
-	{
-		return;
-	}
 	/*
 	int ModelIndex = GetEntProp(owner, Prop_Send, "m_nModelIndex");
 	char model[PLATFORM_MAX_PATH];
@@ -10813,8 +10806,6 @@ void Memorial_Possession_End(int victim, StatusEffect Apply_MasterStatusEffect, 
 {
 	if(!IsValidEntity(victim) || victim > MaxClients)
 		return;
-
-	Attributes_SetMulti(victim, 6, 1.0 / (0.75));
 
 	if(!IsValidEntity(Apply_StatusEffect.WearableUse))
 		return;

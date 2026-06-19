@@ -148,6 +148,7 @@ methodmap RaidbossBladedance < CClotBody
 		func_NPCOnTakeDamage[npc.index] = RaidbossBladedance_OnTakeDamage;
 		func_NPCThink[npc.index] = RaidbossBladedance_ClotThink;
 		func_NPCSpawnForward[npc.index] = Bladedance_AllySpawn;
+		func_NPCFuncWin[npc.index] = view_as<Function>(Raidmode_Expidonsa_Sensal_Win);
 		
 		f_ExplodeDamageVulnerabilityNpc[npc.index] = 0.7;
 
