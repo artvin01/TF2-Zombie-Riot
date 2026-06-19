@@ -466,6 +466,22 @@ bool NPC_SpawnNext(bool panzer,
 					}
 
 					NpcForward = entity_Spawner;
+					
+					for(int targ; targ<i_MaxcountNpcTotal; targ++)
+					{
+						int DeathNoticer = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
+						if(IsValidEntity(DeathNoticer) && !b_NpcHasDied[DeathNoticer])
+						{
+							Function func = func_NPCSpawnForward[DeathNoticer];
+							if(func && func != INVALID_FUNCTION)
+							{
+								Call_StartFunction(null, func);
+								Call_PushCell(DeathNoticer);
+								Call_PushCell(NpcForward);
+								Call_Finish();
+							}
+						}
+					}
 
 					return true;
 				}

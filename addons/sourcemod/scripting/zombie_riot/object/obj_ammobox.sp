@@ -176,6 +176,8 @@ int AmmoboxUsed(int client, int entity)
 			if(Current_Mana[client] < RoundToCeil(max_mana[client] * 2.0))
 			{
 				Ammo_Count_Used[client] += 2;
+				if(ZR_Get_Modifier() == 8)
+					Ammo_Count_Used[client] += 2;
 				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 				if(Current_Mana[client] < RoundToCeil(max_mana[client] * 2.0))
@@ -210,6 +212,8 @@ int AmmoboxUsed(int client, int entity)
 				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 				AddAmmoClient(client, i_WeaponAmmoAdjustable[weapon] ,_,2.0);
 				Ammo_Count_Used[client] += 1;
+				if(ZR_Get_Modifier() == 8)
+					Ammo_Count_Used[client] += 1;
 				for(int i; i<Ammo_MAX; i++)
 				{
 					CurrentAmmo[client][i] = GetAmmo(client, i);
@@ -225,6 +229,8 @@ int AmmoboxUsed(int client, int entity)
 				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 				AddAmmoClient(client, 23 ,_,2.0);
 				Ammo_Count_Used[client] += 1;
+				if(ZR_Get_Modifier() == 8)
+					Ammo_Count_Used[client] += 1;
 				for(int i; i<Ammo_MAX; i++)
 				{
 					CurrentAmmo[client][i] = GetAmmo(client, i);
@@ -240,6 +246,8 @@ int AmmoboxUsed(int client, int entity)
 				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 				AddAmmoClient(client, Ammo_type ,_,2.0);
 				Ammo_Count_Used[client] += 1;
+				if(ZR_Get_Modifier() == 8)
+					Ammo_Count_Used[client] += 1;
 				for(int i; i<Ammo_MAX; i++)
 				{
 					CurrentAmmo[client][i] = GetAmmo(client, i);
@@ -268,6 +276,8 @@ int AmmoboxUsed(int client, int entity)
 					if(Dungeon_Mode())
 						ApplyBuildingCollectCooldown(entity, client, 2.5, true);
 					Ammo_Count_Used[client] += 1;
+					if(ZR_Get_Modifier() == 8)
+						Ammo_Count_Used[client] += 1;
 					
 					ClientCommand(client, "playgamesound ambient/machines/machine1_hit2.wav");
 					return true;

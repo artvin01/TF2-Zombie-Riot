@@ -95,7 +95,7 @@ void Aperture_Shared_LastStandSequence_Starting(CClotBody npc)
 	
 	RaidModeScaling = 0.0;
 	RaidModeTime = gameTime + APERTURE_LAST_STAND_TIMER_TOTAL;
-	if(CurrentModifOn() == 1)
+	if(ZR_Get_Modifier() == 1)
 	{
 		RaidModeTime = FAR_FUTURE;
 	}
@@ -132,7 +132,7 @@ static void Aperture_Shared_LastStandSequence_AlmostHappening(CClotBody npc)
 		if (!IsClientInGame(client) || IsFakeClient(client))
 			continue;
 		
-		bool chaos = CurrentModifOn() == 1;
+		bool chaos = ZR_Get_Modifier() == 1;
 		
 		Event event = CreateEvent("show_annotation");
 		if (event)
@@ -214,7 +214,7 @@ public void Aperture_Shared_LastStandSequence_ClotThink(int entity)
 public Action Aperture_Shared_LastStandSequence_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	// Don't bother on Chaos Intrusion
-	if (CurrentModifOn() == 1)
+	if (ZR_Get_Modifier() == 1)
 		return Plugin_Continue;
 	
 	// We're massively reducing damage if players dealt too much damage to bosses in the spare/kill sequence

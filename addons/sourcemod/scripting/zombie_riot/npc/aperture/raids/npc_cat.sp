@@ -1290,8 +1290,8 @@ static bool TraceEntityEnumerator_CAT_FindProjectiles(int entity, int self)
 	if (!b_IsAProjectile[entity])
 		return true;
 	
-	// Entity has just been initialized, skip this for now
-	if (GetTeam(entity) == 0)
+	// Scuffed way to check if the entity hasn't been fully initialized (and its team isn't set up yet), skip this for now
+	if (TeamNumber[entity] == -1 && GetTeam(entity) != -1)
 		return true;
 	
 	if (GetTeam(entity) == GetTeam(self))

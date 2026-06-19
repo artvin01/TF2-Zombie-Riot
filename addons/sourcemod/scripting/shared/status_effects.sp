@@ -28,6 +28,7 @@ enum struct StatusEffect
 	float JumpBoostModifPlayer;	//damage buff or nerf
 	bool Positive;//Is it a good buff, if yes, do true
 	bool ElementalLogic;
+	bool FullEffectivenessOnBosses; // Some debuffs are made less effective on bosses, this skips that
 
 	int LinkedStatusEffect; //Which status effect is used for below
 	int LinkedStatusEffectNPC; //Which status effect is used for below
@@ -70,9 +71,10 @@ enum struct StatusEffect
 		this.DamageDealMulti 			= -1.0;
 		this.MovementspeedModif 		= -1.0;
 		this.MovementspeedModifPlayer 	= -1.0;
-		this.JumpBoostModifPlayer 	= -1.0;
+		this.JumpBoostModifPlayer		= -1.0;
 		this.AttackspeedBuff			= -1.0;
 		this.ElementalLogic 			= false;
+		this.FullEffectivenessOnBosses	= false;
 		this.FlagAttackspeedLogic		= 0;
 		this.Slot 						= 0;
 		this.SlotPriority 				= 0;
@@ -1928,8 +1930,10 @@ void StatusEffect_SpeedModifier(int victim, float &SpeedModifPercentage)
 		{
 			if(!HasSpecificBuff(victim, "Fluid Movement"))
 			{
+				float finalEffectiveness = Apply_MasterStatusEffect.FullEffectivenessOnBosses ? 1.0 : Effectiveness;
+				
 				SpeedWasNerfed = true;
-				TotalSlowdown *= ((-(SpeedModif * Effectiveness) + 1.0));
+				TotalSlowdown *= ((-(SpeedModif * finalEffectiveness) + 1.0));
 			}
 		}
 	}
@@ -7623,6 +7627,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.Positive 					= false;
 	data.ElementalLogic				= true;
 	data.ShouldScaleWithPlayerCount = false;
+	data.FullEffectivenessOnBosses	= true;
 	data.OnBuffStarted				= INVALID_FUNCTION;
 	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
 	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
@@ -10126,7 +10131,7 @@ void StatusEffects_HeartBroken()
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
-	data.AttackspeedBuff			= (1.0 / 1.25);
+	data.AttackspeedBuff			= (1.0 / 1.5);
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.OnBuffStarted				= Memorial_Possession_Start;

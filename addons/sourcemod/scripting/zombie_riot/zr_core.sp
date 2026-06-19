@@ -1243,9 +1243,9 @@ void ZR_ClientPutInServer(int client)
 	b_HasBeenHereSinceStartOfWave[client] = false;
 	Queue_PutInServer(client);
 	i_AmountDowned[client] = 0;
-	if(CurrentModifOn() == 3)
+	if(ZR_Get_Modifier() == 3 || ZR_Get_Modifier() == 8)
 		i_AmountDowned[client] = 1;
-	Waves_TrySpawnBarney();
+	Waves_TrySpawnBarney(); 
 		
 	dieingstate[client] = 0;
 	TeutonType[client] = 0;
@@ -2635,6 +2635,9 @@ stock int MaxArmorCalculation(int ArmorLevel = -1, int client, float multiplyier
 	if((f_LivingArmorPenalty[client] > GetGameTime() || (Attributes_Get(client, Attrib_Armor_AliveMode, 0.0)) != 0.0) && Armor_Charge[client] >= 0)
 		Armor_Max /= 2;
 		
+	if(ZR_Get_Modifier() == NOSTALGICA)
+		Armor_Max = RoundToCeil(float(Armor_Max) * 0.75);
+		
 	return (RoundToCeil(float(Armor_Max) * multiplyier));
 	
 }
@@ -2933,7 +2936,7 @@ void ReviveAll(bool raidspawned = false,
 
 			if(i_AmountDowned[client] > 0)
 				i_AmountDowned[client] = 0;
-			if(CurrentModifOn() == 3)
+			if(ZR_Get_Modifier() == 3)
 				i_AmountDowned[client] = 1;
 
 			DoOverlay(client, "", 2);

@@ -1998,7 +1998,13 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		{
 			damage *= 0.9;
 		}
+		if(ZR_Get_Modifier() == NOSTALGICA)
+		{
+			damage *= 6.0;
+		}
 #endif
+	
+
 		if(f_ImmuneToFalldamage[victim] > GameTime)
 		{
 			damage = 0.0;
@@ -2605,6 +2611,9 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 		{
 			level += 50;
 			LouderSoundStop = true;
+			
+			bool raid = b_thisNpcIsARaid[entity];
+			
 			for(int loop1=0; loop1<numClients; loop1++)
 			{
 				int listener = clients[loop1];
@@ -2617,9 +2626,14 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
 				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
 				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
-				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
-				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
-				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
+				
+				if (!raid)
+				{
+					// raids are louder by default
+					EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
+					EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
+					EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
+				}
 			}
 			LouderSoundStop = false;
 		}
@@ -3642,6 +3656,8 @@ void ManaCalculationsBefore(int client)
 	int i, entity;
 	float ManaRegen = 12.0;
 	float ManaMaxExtra = 500.0;
+	if(ZR_Get_Modifier() == NOSTALGICA)
+		ManaRegen *= 0.75;
 	
 	while(TF2_GetItem(client, entity, i))
 	{
