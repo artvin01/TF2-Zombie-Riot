@@ -10,14 +10,14 @@ if "decompile" not in util.DEBUG:
         "zombieriot.phrases.rogue.txt",
         "zombieriot.phrases.rogue.paradox.txt",
         "zombieriot.phrases.rogue.rift.txt",
-        "zombieriot.phrases.status_effects.txt",
+        "zombieriot.phrases.status_effects.txt", # + status_effects.py
         "zombieriot.phrases.construction.txt",
         "zombieriot.phrases.dungeon.txt",
         # weapon.py
         "zombieriot.phrases.weapons.description.txt",
         "zombieriot.phrases.weapons.txt",
         # skilltree.py
-        "zombieriot.phrases.skilltree.txt"
+        "zombieriot.phrases.skilltree.txt",
     ]
     util.log("Parsing phrases...")
     for p in PHRASES:

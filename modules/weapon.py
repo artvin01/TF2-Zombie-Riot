@@ -374,5 +374,5 @@ for item_category in CFG_WEAPONS:
 
 WEAPONSDATA["$gtags"] = GLOBAL_TAGS
 
-if not os.path.isdir("gh-pages/items"): subprocess.run(["mkdir", "gh-pages/items"]) # TODO unified dir for all .json data i.e. put skilltree and weapon json in one directory
-util.write("gh-pages/items/items.json", json.dumps(WEAPONSDATA,indent=2))
+if not os.path.isdir("gh-pages/data"): subprocess.run(["mkdir", "gh-pages/data"])
+util.write("gh-pages/data/items.json", json.dumps(WEAPONSDATA,indent=2))

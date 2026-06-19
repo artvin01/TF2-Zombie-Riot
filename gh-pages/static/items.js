@@ -522,7 +522,7 @@ async function search(event) {
 
 // REQUEST ===================================================
 async function fetch_items() {
-    data_file = `items/items.json`;
+    data_file = `data/items.json`;
     try {
         const response = await fetch(data_file);
         if (!response.ok) {

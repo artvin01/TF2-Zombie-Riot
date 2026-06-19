@@ -32,6 +32,10 @@ if "skilltree" in SCOPE:
     import modules.skilltree
     modules.skilltree.parse()
 
+#if "statusfx" in SCOPE:
+#    print("status_effects.py ----------------------------------------------------------------------------------")
+#    import modules.status_effects
+
 import util
 if util.LOG_REDACT:
     util.log("! Writing logs")

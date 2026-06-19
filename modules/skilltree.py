@@ -69,5 +69,5 @@ def parse():
         return skill_json
     
     skilltree_pointmap = skill_block(0,0,SKILLTREE_CFG,list(SKILLTREE_CFG.keys())[0],skilltree_pointmap,0)
-    if not os.path.isdir("gh-pages/skilltree"): subprocess.run(["mkdir", "gh-pages/skilltree"])
-    util.write("gh-pages/skilltree/skilltree.json", json.dumps(skilltree_pointmap,indent=2))
+    if not os.path.isdir("gh-pages/data"): subprocess.run(["mkdir", "gh-pages/data"])
+    util.write("gh-pages/data/skilltree.json", json.dumps(skilltree_pointmap,indent=2))

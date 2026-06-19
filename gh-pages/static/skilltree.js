@@ -414,7 +414,7 @@ function skilltree_fullscreen(fullscreen_btn) {
 
 // REQUEST ===================================================
 async function fetch_skilltree() {
-    data_file = `skilltree/skilltree.json`;
+    data_file = `data/skilltree.json`;
     try {
         const response = await fetch(data_file);
         if (!response.ok) {
