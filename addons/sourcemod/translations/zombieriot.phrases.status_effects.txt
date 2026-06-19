@@ -3292,6 +3292,122 @@
 		"en"	"You ever had gay thoughts? Act on them."
 		"ko"	"게이같은 생각 해본 적 있어? 한번 해보던가."
 	}
+	"Rage Prefix Text 37"
+	{
+		"en"	"Siiiiiix. Seveeeeeeeeen."
+	}
+	"Rage Prefix Text 38"
+	{
+		"en"	"Im a real Oak guy. I love Oak, its so much better than Birch."
+	}
+	"Rage Prefix Text 39"
+	{
+		"en"	"Gonna touch you in places you wont like."
+	}
+	"Rage Prefix Text 40"
+	{
+		"en"	"Those towers deserved it."
+	}
+	"Rage Prefix Text 41"
+	{
+		"en"	"BLOCKED BLOCKED BLOCKED BLOCKED. YOU'RE ALL BLOCKED"
+	}
+	"Rage Prefix Text 42"
+	{
+		"en"	"i talked to my friend and he said im really cool like the coolest there is"
+	}
+	"Rage Prefix Text 43"
+	{
+		"en"	"i eat the bowl and boil the cereal"
+	}
+	"Rage Prefix Text 44"
+	{
+		"en"	"   king   gg  "
+	}
+	"Rage Prefix Text 45"
+	{
+		"en"	"Melee is cringe"
+	}
+	"Rage Prefix Text 46"
+	{
+		"en"	"Ranged is cringe"
+	}
+	"Rage Prefix Text 47"
+	{
+		"en"	"Mage is cringe"
+	}
+	"Rage Prefix Text 48"
+	{
+		"en"	"Support is cringe"
+	}
+	"Rage Prefix Text 49"
+	{
+		"en"	"Builder is cringe"
+	}
+	"Rage Prefix Text 50"
+	{
+		"en"	"Weapon kits are cringe"
+	}
+	"Rage Prefix Text 51"
+	{
+		"en"	"I bet these enemies would have some kind of mechanic of somekind but I wouldnt know because I CANT READ" 
+	}
+	"Rage Prefix Text 52"
+	{
+		"en"	"your last 2 braincells are fighting for third(3rd) place" 
+	}
+	"Rage Prefix Text 53"
+	{
+		"en"	"your aura stinks"
+	}
+	"Rage Prefix Text 54"
+	{
+		"en"	"i tryhard in casual games so what?"
+	}
+	"Rage Prefix Text 55"
+	{
+		"en"	"Fart face"
+	}
+	"Rage Prefix Text 56"
+	{
+		"en"	"subscribble to me incr3dibl3 u-tube channul"
+	}
+	"Rage Prefix Text 57"
+	{
+		"en"	"im just a class 1 basic zombie"
+	}
+	"Rage Prefix Text 58"
+	{
+		"en"	"Kahlmstein is a FRAUD"
+	}
+	"Rage Prefix Text 59"
+	{
+		"en"	"VincentGPT, how do I play zombie riot"
+	}
+	"Rage Prefix Text 60"
+	{
+		"en"	"My mom rules Ruina"
+	}
+	"Rage Prefix Text 61"
+	{
+		"en"	"My dad made Chaos"
+	}
+	"Rage Prefix Text 62"
+	{
+		"en"	"I would betray you in the hyperbolic time chamber"
+	}
+	"Rage Prefix Text 63"
+	{
+		"en"	"you aint built for these riots cuh"
+	}
+	"Rage Prefix Text 64"
+	{
+		"en"	"AWOOOOOOOOOOOOOOOO. Baby, I'm preyin' on you tonight. Hunt you down, eat you alive \nJust like animals, animals, like animaaaaaaaals"
+	}
+	"Rage Prefix Text 65"
+	{
+		"en"	"ME(sigma) vs YOU(beta)"
+	}
 	"Semi Healthy Prefix"
 	{
 		"en"	"Semi Healthy Prefix"
