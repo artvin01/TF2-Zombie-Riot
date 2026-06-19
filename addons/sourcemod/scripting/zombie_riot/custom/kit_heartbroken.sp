@@ -1176,6 +1176,11 @@ void Heartbroken_WildHunt(int client, bool ForceRevive = false)
 		ShowSyncHudText(client, SyncHud_Notifaction, "%T", "Not Enough Coffins", client, RoundToFloor(ReviveCost * float(MAX_COFFINS)));
 		return;
 	}
+	if(dieingstate[client] != 0)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		return;
+	}
 	
 	int MaxCashScale = CurrentCash;
 	if(MaxCashScale > 60000)
