@@ -40,7 +40,7 @@ function set_audio_resource(obj) {
 function nextsong() {
     if (max_songs>0) {
         let id = Number(last_song_id)+1;
-        if (shuffle) { id=randint(0,max_songs) };
+        if (shuffle) { id=randsong() };
         if (id>max_songs) {id=0}; // loop back to start
         set_audio_resource(document.getElementById(id));
     }
@@ -51,7 +51,13 @@ function setloop(state) {
     audio.loop = state;loop = state;
 }
 
-function randint(min, max) {
+function randsong() {
+    let array = [...Array(max_songs).keys()];
+    array.splice(last_song_id,1)
+    return array[Math.floor(Math.random() * array.length)]; //inclusive min/max
+}
+
+function randint(min, max) { //inclusive min/max
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
