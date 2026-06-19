@@ -5108,7 +5108,7 @@ stock void ArcToLocationViaSpeedProjectile(int projectile, float VecEnd[3], floa
 	}
 	*/
 }
-stock bool IsEntityAlive(int index, bool WasValidAlready = false)
+stock bool IsEntityAlive(int index, bool WasValidAlready = false, bool IgnoreDownCheck = false)
 {
 	if(WasValidAlready || IsValidEntity(index))
 	{
@@ -5128,7 +5128,7 @@ stock bool IsEntityAlive(int index, bool WasValidAlready = false)
 			if(!IsClientInGame(index))
 				return false;	
 #if defined ZR
-			if(!IsPlayerAlive(index) || dieingstate[index] > 0 || TeutonType[index] != TEUTON_NONE)
+			if(!IsPlayerAlive(index) || (dieingstate[index] > 0 && !IgnoreDownCheck) || TeutonType[index] != TEUTON_NONE)
 			{
 				return false;	
 			}

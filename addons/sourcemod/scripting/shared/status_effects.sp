@@ -10465,9 +10465,8 @@ static void CallOfHeartBroken_Timer(int entity, StatusEffect Apply_MasterStatusE
 		KillVictim = true;
 	else
 	{
-		if(!IsEntityAlive(OwnerAttach))
-			if(dieingstate[OwnerAttach] == 0)
-				KillVictim = true;
+		if(!IsEntityAlive(OwnerAttach, _, true))
+			KillVictim = true;
 
 		if(!IsHeartBroken(OwnerAttach))
 			KillVictim = true;
