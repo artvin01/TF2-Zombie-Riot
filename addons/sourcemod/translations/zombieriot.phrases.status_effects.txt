@@ -3292,6 +3292,194 @@
 		"en"	"You ever had gay thoughts? Act on them."
 		"ko"	"게이같은 생각 해본 적 있어? 한번 해보던가."
 	}
+	"Rage Prefix Text 37"
+	{
+		"en"	"Siiiiiix. Seveeeeeeeeen."
+	}
+	"Rage Prefix Text 38"
+	{
+		"en"	"Im a real Oak guy. I love Oak, its so much better than Birch."
+	}
+	"Rage Prefix Text 39"
+	{
+		"en"	"Gonna touch you in places you wont like."
+	}
+	"Rage Prefix Text 40"
+	{
+		"en"	"Those towers deserved it."
+	}
+	"Rage Prefix Text 41"
+	{
+		"en"	"BLOCKED BLOCKED BLOCKED BLOCKED. YOU'RE ALL BLOCKED"
+	}
+	"Rage Prefix Text 42"
+	{
+		"en"	"i talked to my friend and he said im really cool like the coolest there is"
+	}
+	"Rage Prefix Text 43"
+	{
+		"en"	"i eat the bowl and boil the cereal"
+	}
+	"Rage Prefix Text 44"
+	{
+		"en"	"   king   gg  "
+	}
+	"Rage Prefix Text 45"
+	{
+		"en"	"Melee is cringe"
+	}
+	"Rage Prefix Text 46"
+	{
+		"en"	"Ranged is cringe"
+	}
+	"Rage Prefix Text 47"
+	{
+		"en"	"Mage is cringe"
+	}
+	"Rage Prefix Text 48"
+	{
+		"en"	"Support is cringe"
+	}
+	"Rage Prefix Text 49"
+	{
+		"en"	"Builder is cringe"
+	}
+	"Rage Prefix Text 50"
+	{
+		"en"	"Weapon kits are cringe"
+	}
+	"Rage Prefix Text 51"
+	{
+		"en"	"I bet these enemies would have some kind of mechanic of somekind but I wouldnt know because I CANT READ" 
+	}
+	"Rage Prefix Text 52"
+	{
+		"en"	"your last 2 braincells are fighting for third(3rd) place" 
+	}
+	"Rage Prefix Text 53"
+	{
+		"en"	"your aura stinks"
+	}
+	"Rage Prefix Text 54"
+	{
+		"en"	"i tryhard in casual games so what?"
+	}
+	"Rage Prefix Text 55"
+	{
+		"en"	"Fart face"
+	}
+	"Rage Prefix Text 56"
+	{
+		"en"	"subscribble to me incr3dibl3 u-tube channul"
+	}
+	"Rage Prefix Text 57"
+	{
+		"en"	"im just a class 1 basic zombie"
+	}
+	"Rage Prefix Text 58"
+	{
+		"en"	"Kahmlstein is a FRAUD"
+	}
+	"Rage Prefix Text 59"
+	{
+		"en"	"VincentGPT, how do I play zombie riot"
+	}
+	"Rage Prefix Text 60"
+	{
+		"en"	"My mom rules Ruina"
+	}
+	"Rage Prefix Text 61"
+	{
+		"en"	"My dad made Chaos"
+	}
+	"Rage Prefix Text 62"
+	{
+		"en"	"I would betray you in the hyperbolic time chamber"
+	}
+	"Rage Prefix Text 63"
+	{
+		"en"	"you aint built for these riots cuh"
+	}
+	"Rage Prefix Text 64"
+	{
+		"en"	"AWOOOOOOOOOOOOOOOO. Baby, I'm preyin' on you tonight. Hunt you down, eat you alive \nJust like animals, animals, like animaaaaaaaals"
+	}
+	"Rage Prefix Text 65"
+	{
+		"en"	"ME(sigma) vs YOU(beta)"
+	}
+	"Rage Prefix Text 66"
+	{
+		"en"	"Vuntulum bombing is badass"
+	}
+	"Rage Prefix Text 67"
+	{
+		"en"	"The voices in my head are my best guide"
+	}
+	"Rage Prefix Text 68"
+	{
+		"en"	"Erm well that just happened"
+	}
+	"Rage Prefix Text 69"
+	{
+		"en"	"i do ALL of the drugs why do you ask?"
+	}
+	"Rage Prefix Text 70"
+	{
+		"en"	"Enjoying the waveset so far? Enhance your weapon and prepare for some prefix bullshit."
+	}
+	"Rage Prefix Text 71"
+	{
+		"en"	"I AM THE ONE WHO RAGEBAITS"
+	}
+	"Rage Prefix Text 72"
+	{
+		"en"	"why are you blue"
+	}
+	"Rage Prefix Text 73"
+	{
+		"en"	"I WILL ENSURE YOUR FAVOURITE SHOW HAS A DOGSHIT ENDING"
+	}
+	"Rage Prefix Text 74"
+	{
+		"en"	"dimensional ripper back when?"
+	}
+	"Rage Prefix Text 75"
+	{
+		"en"	"Cant touch this."
+	}
+	"Rage Prefix Text 76"
+	{
+		"en"	"The zombies actually heal you when they hit you."
+	}
+	"Rage Prefix Text 76"
+	{
+		"en"	"MY ASS [$$]"
+	}
+	"Rage Prefix Text 77"
+	{
+		"en"	"If you ever happen to hear a soothing female voice remember to listen to it"
+	}
+	"Rage Prefix Text 78"
+	{
+		"en"	"Lemme stuff you into this springlock suit cmere"
+	}
+	"Rage Prefix Text 79"
+	{
+		"en"	"FUCK YOUR CHAT BOX LMAOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"
+	}
+	"Rage Prefix Text 80"
+	{
+		"en"	"I AM SUPERIOR"
+	}
+	"Rage Prefix Text 81"
+	{
+		"en"	"MERCENARIES. ALL THEY THINK ABOUT IS THEMSELVES AND THEIR WAVESETS."
+	}
+	"Rage Prefix Text 82"
+	{
+		"en"	"SWAG MULTIPLIED BY INFINITY."
+	}
 	"Semi Healthy Prefix"
 	{
 		"en"	"Semi Healthy Prefix"
