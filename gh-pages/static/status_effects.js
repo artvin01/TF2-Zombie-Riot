@@ -22,6 +22,7 @@ function fxobject(parent_element, effect, root) {
         fxtooltip.appendChild(create_element("div", "", apply_morecolors(line)));
     });
 
+    fxitem.dataset.id = effect.id;
     if (root) {
         contents = [
             effect.name,
@@ -32,7 +33,6 @@ function fxobject(parent_element, effect, root) {
         effect_by_contents[contents.join(" ")] = effect
 
         /* Weapon selector clipboard shortcut */
-        fxitem.dataset.id = effect.id;
         fxitem.addEventListener("contextmenu", (event) => {
             event.preventDefault();
             let source_url = window.location.href.split('?')[0]; // get url w/o params
