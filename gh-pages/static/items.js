@@ -232,22 +232,24 @@ function iter_item(parent_element, item, sw_opt) {
                     });
                 }
             }
-    }
-
-    /* Weapon selector clipboard shortcut */
-    item_el.addEventListener("contextmenu", (event) => {
-        event.preventDefault();
-        let source_url = window.location.href.split('?')[0]; // get url w/o params
-        navigator.clipboard.writeText(`${source_url}?wid=${event.target.dataset.id}`);
         
-        let notification = create_element("div","notify_copied","Link copied!");
-        notification.style.setProperty("--top",`${event.clientY + window.scrollY - 32}px`);
-        notification = document.body.appendChild(notification);
-        notification.style["left"] = `${event.clientX - (notification.getBoundingClientRect().width/2)}px`;
-        setTimeout(function(notification){
-            notification.remove();
-        }, 1000, notification)
-    });
+
+
+        /* Weapon selector clipboard shortcut (disable if in search modal) */
+        item_el.addEventListener("contextmenu", (event) => {
+            event.preventDefault();
+            let source_url = window.location.href.split('?')[0]; // get url w/o params
+            navigator.clipboard.writeText(`${source_url}?wid=${event.target.dataset.id}`);
+            
+            let notification = create_element("div","notify_copied","Link copied!");
+            notification.style.setProperty("--top",`${event.clientY + window.scrollY - 32}px`);
+            notification = document.body.appendChild(notification);
+            notification.style["left"] = `${event.clientX - (notification.getBoundingClientRect().width/2)}px`;
+            setTimeout(function(notification){
+                notification.remove();
+            }, 1000, notification)
+        });
+    }
 
     /* Prevent tooltips from going outside of viewport */
     item_el.addEventListener("mouseover", event => {

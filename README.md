@@ -74,8 +74,9 @@ All generated files will be put in `gh-pages/`. Those not automatically generate
 - [ ] Front-end revamp
   - [x] Items
   - [x] Waveset viewer
-  - [ ] Status effect page
+  - [x] Status effect page
   - [ ] Fix embed animations
+  - [ ] Possibly more embeds?
 - [ ] Improved NPC data parsing (low priority)
 - [x] Waveset data (low priority)
   - [ ] Special wavesets

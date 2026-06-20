@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="static/items.css">
+        <script src="static/morecolors.js"></script>
+        <script src="static/status_effects.js" defer></script>
+        <!-- Libraries -->
+        <!-- uFuzzy: Status effect filter by string -->
+        <script src="lib/uFuzzy.iife.min.js"></script>
+        <title>ZR Encyclopedia - Status Effects</title>
+    </head>
+    <body>
+        <div class="header">
+            <i><a href="/TF2-Zombie-Riot/">Back to home</a></i>
+            <div class="secondary">
+                Right-click for link to status effect <!-- no clue where else to put this, would bloat tooltips even more -->
+            </div>
+            <div id="search" onclick="open_search()">
+                <img src="builtin_img/search.svg">
+                <span class="secondary">Ctrl+K</span>
+            </div>
+        </div>
+        <div id="gtags" class="header fx_header">
+            <div class="gtag" id="fxtypetrue" onclick="set_tag(true)">
+                Buffs
+            </div>
+            <div class="gtag" id="fxtypefalse" onclick="set_tag(false)">
+                Debuffs
+            </div>
+        </div>
+    </body>
+</html>

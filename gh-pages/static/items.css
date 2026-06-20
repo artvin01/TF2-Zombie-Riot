@@ -382,3 +382,20 @@ input[type=search]::-webkit-search-cancel-button { /* Hide X button on chromium 
     padding: 0;
     border: 0;
 }
+
+/* Status Effects ===================================== */
+.fx_container {
+    margin-top: 2em;
+    display: inline-flex;
+    flex-wrap: wrap;
+}
+.fx_icon {
+    font-size: 1.5em;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+}
+.fx_header {
+    margin-top: 1em;
+}

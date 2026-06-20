@@ -7,7 +7,6 @@ __pycache__/
 venv/
 TF2-Zombie-Riot/
 decompiled/
-modules/status_effects.py
 
 # Generating thumbnails of TF2 models
 # Exclude everything but the bodygroup mappings
@@ -33,7 +32,7 @@ gh-pages/*
 !gh-pages/multipliers.html
 !gh-pages/skilltree.html
 !gh-pages/items.html
-!gh-pages/items_legacy.html
+!gh-pages/status_effects.html
 
 # Debug
 logs.txt

@@ -3,7 +3,7 @@ SCOPE = []
 if "SCOPE" in os.environ:
     SCOPE = [x.lower() for x in os.environ["SCOPE"].split(",")]
 else:
-    SCOPE = ["wavesets", "npcs", "items", "music", "skilltree"]
+    SCOPE = ["wavesets", "npcs", "items", "music", "skilltree", "statusfx"]
 print("SCOPE", SCOPE)
 
 import modules.phrase
@@ -32,9 +32,9 @@ if "skilltree" in SCOPE:
     import modules.skilltree
     modules.skilltree.parse()
 
-#if "statusfx" in SCOPE:
-#    print("status_effects.py ----------------------------------------------------------------------------------")
-#    import modules.status_effects
+if "statusfx" in SCOPE:
+    print("status_effects.py ----------------------------------------------------------------------------------")
+    import modules.status_effects
 
 import util
 if util.LOG_REDACT:
