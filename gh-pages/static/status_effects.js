@@ -248,4 +248,8 @@ function create_element(tag, classes, content = "") {
     return el
 }
 
+// wait until morecolors.js loads
+while(typeof apply_morecolors !== "function") {
+    sleep(1000);
+}
 fetch_fx();
