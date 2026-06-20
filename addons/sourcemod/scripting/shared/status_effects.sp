@@ -9792,9 +9792,11 @@ void WhimsicalPrefix_Start(int entity, StatusEffect Apply_MasterStatusEffect, E_
 
 static void SeraphPrefix_GiveShield(int entity)
 {
-	// This may exceed the VausMagicaGiveShield cap
-	int shieldCount = 3 * CountPlayersOnRed(1);
-	VausMagicaGiveShield(entity, shieldCount); //Give self a shield
+	int shieldCount = RoundToNearest((CurrentCash / 5000) * (CountPlayersOnRed(1) * 0.5));
+	if (shieldCount < 3)
+		shieldCount = 3;
+	
+	VausMagicaGiveShield(entity, shieldCount, true, 250); //Give self a shield
 }
 
 static void SeraphPrefix_Start(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
@@ -9809,9 +9811,6 @@ static void SeraphPrefix_End(int entity, StatusEffect Apply_MasterStatusEffect, 
 
 static void SeraphPrefix_Think(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
-	if(Apply_StatusEffect.DataForUse > GetGameTime())
-		return;
-	
 	int stage = Apply_StatusEffect.WearableUse; // Using this variable to track how many stages we've gone through
 	int health = GetEntProp(entity, Prop_Data, "m_iHealth");
 	
