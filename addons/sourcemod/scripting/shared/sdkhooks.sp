@@ -2774,7 +2774,7 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 					return Plugin_Handled;
 				}
 			}
-			else if (b_IsRobot[entity] && strncmp(sample, "vo/mvm/", 7) != 0)
+			else if (b_IsRobot[entity] && channel == SNDCHAN_VOICE && strncmp(sample, "vo/mvm/", 7) != 0)
 			{
 				static int lastEntity;
 				static float lastTime;
