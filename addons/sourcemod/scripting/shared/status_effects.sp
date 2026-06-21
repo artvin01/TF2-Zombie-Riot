@@ -7317,7 +7317,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.OnBuffStarted				= Const2_1UpStart;
-	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
+	data.OnBuffEndOrDeleted			= Const2_1UpEnd;
 	data.TimerRepeatCall_Func 		= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
 	
@@ -8413,6 +8413,16 @@ void Const2_1UpStart(int victim, StatusEffect Apply_MasterStatusEffect, E_Status
 #endif
 }
 
+void Const2_1UpEnd(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	//not an npc, ignore.
+	if(!b_ThisWasAnNpc[victim])
+		return;
+
+	CClotBody npc = view_as<CClotBody>(victim);
+	if (npc.m_iHealthBar > 0)
+		npc.m_iHealthBar--;
+}
 
 static void Const2_SefHeal_Timer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
