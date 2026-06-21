@@ -3721,6 +3721,9 @@ void StatusEffects_Aperture()
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.OnBuffStarted				= Envenomed_Start;
+	data.OnBuffEndOrDeleted			= Envenomed_End;
+	data.TimerRepeatCall_Func 		= Envenomed_Think;
 	StatusEffect_AddGlobal(data);
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Self-Degradation");
@@ -3854,6 +3857,46 @@ static void QuantumEntanglementEnd(int victim, StatusEffect Apply_MasterStatusEf
 	RemoveEntity(Apply_StatusEffect.WearableUse);
 }
 
+static void Envenomed_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	// If the target is overhealed, only count up to max hp
+	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	int maxHealth = ReturnEntityMaxHealth(victim);
+	if (health > maxHealth)
+		health = maxHealth;
+	
+	SetEntProp(victim, Prop_Data, "m_iHealth", 1);
+	
+	float heal = health * 0.75;
+	HealEntityGlobal(victim, victim, heal, 1.0, 20.0, HEAL_SELFHEAL);
+	
+	if (IsValidClient(victim))
+	{
+		DoOverlay(victim, "debug/yuv", 0);
+		TF2_AddCondition(victim, TFCond_LostFooting, 1.0);
+		TF2_AddCondition(victim, TFCond_MarkedForDeathSilent, 1.0);
+	}
+}
+
+static void Envenomed_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if (IsValidClient(victim))
+	{
+		DoOverlay(victim, "");
+		TF2_RemoveCondition(victim, TFCond_LostFooting);
+		TF2_RemoveCondition(victim, TFCond_MarkedForDeathSilent);
+	}
+}
+
+static void Envenomed_Think(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if (IsValidClient(victim))
+	{
+		DoOverlay(victim, "debug/yuv", 0);
+		TF2_AddCondition(victim, TFCond_LostFooting, 1.0);
+		TF2_AddCondition(victim, TFCond_MarkedForDeathSilent, 1.0);
+	}
+}
 
 void TimeWarp_ApplyAll(int inflictor, float duration = 99999.0)
 {
