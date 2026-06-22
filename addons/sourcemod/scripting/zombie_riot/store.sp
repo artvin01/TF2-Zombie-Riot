@@ -3996,7 +3996,7 @@ static void MenuPage(int client, int section)
 						
 						Format(buffer, sizeof(buffer), "%s [↑]", info.Custom_Name);
 					}
-					else if(!item.WhiteOut && info.Cost_Unlock > 1000 && !Rogue_UnlockStore() && info.Cost_Unlock > CurrentCash)
+					else if(!item.WhiteOut && !CvarUnlockStore.BoolValue && info.Cost_Unlock > 1000 && !Rogue_UnlockStore() && info.Cost_Unlock > CurrentCash)
 					{
 						Format(buffer, sizeof(buffer), "%s [%.0f％]", info.Custom_Name, float(CurrentCash) * 100.0 / float(info.Cost_Unlock));
 						style = ITEMDRAW_DISABLED;
