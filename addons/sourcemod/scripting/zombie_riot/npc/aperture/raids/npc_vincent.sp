@@ -1370,7 +1370,7 @@ static bool TraceEntityEnumerator_Vincent_Oil(int entity)
 	if (entity > MaxClients && !b_ThisWasAnNpc[entity])
 		return true;
 	
-	if (GetTeam(entity) == 0)
+	if (GetTeam(entity) == 0 || !IsEntityAlive(entity))
 		return true;
 	
 	//This will automatically take care of all the checks, very handy. force it to also target invul enemies.
