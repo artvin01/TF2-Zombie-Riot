@@ -9686,46 +9686,129 @@ static const char ScrambledBlacklist[][] =
 	"Call of the Heartbroken",
 };
 
+ArrayList ScrambledBuffList;
+ArrayList ScrambledDebuffList;
+
 static void ScrambledPrefix_Think(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	if(Apply_StatusEffect.DataForUse > GetGameTime())
 		return;
 	
+	if (!ScrambledBuffList)
+	{
+		ScrambledBuffList = new ArrayList(sizeof(StatusEffect));
+		
+		StatusEffect effect;
+		int length = AL_StatusEffects.Length;
+		
+		for (int i = 0; i < length; i++)
+		{
+			AL_StatusEffects.GetArray(i, effect);
+			
+			// only buffs
+			if (!effect.Positive)
+				continue;
+			
+			// skip effects with hud changes to avoid errors
+			if (effect.HudDisplay_Func != INVALID_FUNCTION)
+				continue;
+			
+			// skip blacklisted effects
+			bool blacklisted;
+			for (int j = 0; i < sizeof(ScrambledBlacklist); j++)
+			{
+				if (StrContains(effect.BuffName, ScrambledBlacklist[j]) == 0)
+				{
+					blacklisted = true;
+					break;
+				}
+			}
+			
+			if (blacklisted)
+				continue;
+			
+			ScrambledBuffList.PushArray(effect);
+		}
+	}
+	
+	if (!ScrambledDebuffList)
+	{
+		ScrambledDebuffList = new ArrayList(sizeof(StatusEffect));
+		
+		StatusEffect effect;
+		int length = AL_StatusEffects.Length;
+		
+		for (int i = 0; i < length; i++)
+		{
+			AL_StatusEffects.GetArray(i, effect);
+			
+			// only debuffs
+			if (effect.Positive)
+				continue;
+			
+			// skip effects with hud changes to avoid errors
+			if (effect.HudDisplay_Func != INVALID_FUNCTION)
+				continue;
+			
+			// skip blacklisted effects
+			bool blacklisted;
+			for (int j = 0; j < sizeof(ScrambledBlacklist); j++)
+			{
+				if (StrContains(effect.BuffName, ScrambledBlacklist[j]) == 0)
+				{
+					blacklisted = true;
+					break;
+				}
+			}
+			
+			if (blacklisted)
+				continue;
+			
+			ScrambledDebuffList.PushArray(effect);
+		}
+	}
+	
 	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
 	Apply_StatusEffect.DataForUse = GetGameTime() + 10.1;
 	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
 	
-	int length = AL_StatusEffects.Length;
-	int givenBuffs, tries;
+	int effects, tries;
+	
 	StatusEffect effect;
-	while (givenBuffs < 8 && tries < 30)
+	int length = ScrambledBuffList.Length;
+	
+	// set buffs
+	while (effects < 3 && tries < 15)
 	{
 		tries++;
 		
-		AL_StatusEffects.GetArray(GetURandomInt() % length, effect);
+		ScrambledBuffList.GetArray(GetURandomInt() % length, effect);
 		char buffName[64];
 		strcopy(buffName, sizeof(buffName), effect.BuffName);
 		if (HasSpecificBuff(entity, buffName))
 			continue;
 		
-		if (effect.HudDisplay_Func != INVALID_FUNCTION)
-			continue;
+		ApplyStatusEffect(entity, entity, buffName, 10.0);
+		effects++;
+	}
+	
+	length = ScrambledDebuffList.Length;
+	effects = 0;
+	tries = 0;
+	
+	// set debuffs
+	while (effects < 3 && tries < 15)
+	{
+		tries++;
 		
-		bool blacklisted;
-		for (int i = 0; i < sizeof(ScrambledBlacklist); i++)
-		{
-			if (StrContains(buffName, ScrambledBlacklist[i]) == 0)
-			{
-				blacklisted = true;
-				break;
-			}
-		}
-		
-		if (blacklisted)
+		ScrambledDebuffList.GetArray(GetURandomInt() % length, effect);
+		char buffName[64];
+		strcopy(buffName, sizeof(buffName), effect.BuffName);
+		if (HasSpecificBuff(entity, buffName))
 			continue;
 		
 		ApplyStatusEffect(entity, entity, buffName, 10.0);
-		givenBuffs++;
+		effects++;
 	}
 }
 
