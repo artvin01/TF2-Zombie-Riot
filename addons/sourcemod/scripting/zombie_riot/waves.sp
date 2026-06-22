@@ -2059,6 +2059,8 @@ public Action Waves_EndVote(Handle timer, int WhatWasMyCancel)
 				EmitSoundToAll("ui/chime_rd_2base_neg.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0, 70);
 				EmitSoundToAll("ui/chime_rd_2base_pos.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0, 120);
 				
+				strcopy(WhatModifierSetting, sizeof(WhatModifierSetting), vote.Name);
+				
 				if(highest > 0)
 				{
 					float multi = float(vote.Level) / 1000.0;
@@ -2074,8 +2076,6 @@ public Action Waves_EndVote(Handle timer, int WhatWasMyCancel)
 					
 					FormatEx(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s [%s]", WhatDifficultySetting_Internal, vote.Name);
 					Waves_SetDifficultyName(WhatDifficultySetting);
-
-					strcopy(WhatModifierSetting, sizeof(WhatModifierSetting), vote.Name);
 
 					char funcs[5][64];
 					ExplodeString(vote.Config, ";", funcs, sizeof(funcs), sizeof(funcs[]));
