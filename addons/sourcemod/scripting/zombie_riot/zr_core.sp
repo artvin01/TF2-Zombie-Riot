@@ -470,6 +470,8 @@ bool b_HoldingInspectWeapon[MAXPLAYERS];
 #define ZR_LIVING_ARMOR_DAMAGE_REDUCTION 0.5
 #define ZR_ARMOR_DAMAGE_REDUCTION_INVRERTED 0.25
 
+#define DEFAULT_MISSION_CLIENT "{black}Bob the Second"
+
 float Armor_regen_delay[MAXPLAYERS];
 
 //ConVar CvarSvRollspeed; // sv_rollspeed 
@@ -569,6 +571,7 @@ bool applied_lastmann_buffs_once = false;
 int i_WaveHasFreeplay = 0;
 float fl_MatrixReflect[MAXENTITIES];
 
+char s_MissionClient[64]; // Who hired us for the current job
 
 #include "include/zombie_riot.inc"
 
@@ -1120,6 +1123,8 @@ void ZR_MapStart()
 //	CreateEntityByName("info_populator");
 	RaidBossActive = INVALID_ENT_REFERENCE;
 	RaidTimerAlert = true;
+	
+	s_MissionClient = DEFAULT_MISSION_CLIENT;
 	
 	CreateTimer(0.1, GlobalTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	

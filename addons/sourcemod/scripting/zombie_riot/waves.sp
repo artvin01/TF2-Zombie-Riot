@@ -1416,6 +1416,12 @@ void Waves_SetupWaves(KeyValues kv, bool start, int ArrayDo = Rounds_Default)
 		kv.GetString("difficulty", buffer, sizeof(buffer));
 		if(buffer[0])
 			Waves_SetDifficultyName(buffer);
+		
+		kv.GetString("character_hired_by", buffer, sizeof(buffer));
+		if(buffer[0])
+			strcopy(s_MissionClient, sizeof(s_MissionClient), buffer);
+		else
+			s_MissionClient = DEFAULT_MISSION_CLIENT;
 			
 		round.music_setup.SetupKv("music_setup", kv);
 		
