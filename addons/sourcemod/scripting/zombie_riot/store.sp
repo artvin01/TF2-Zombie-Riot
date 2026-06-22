@@ -3732,10 +3732,7 @@ static void MenuPage(int client, int section)
 			}
 			else
 			{
-				if(Waves_Started())
-					Format(buffer, sizeof(buffer), "%T", "Owned Items", client);
-				else
-					Format(buffer, sizeof(buffer), "%T", "Return to loadout Menu", client);
+				Format(buffer, sizeof(buffer), "%T", "Owned Items", client);
 				menu.AddItem("-2", buffer);
 			}
 		}
@@ -3757,11 +3754,7 @@ static void MenuPage(int client, int section)
 	}
 	if(section == -2)
 	{
-		if(Waves_Started())
-			Format(buffer, sizeof(buffer), "%T", "Sell All Items", client);
-		else
-			Format(buffer, sizeof(buffer), "%T", "Return to loadout Menu", client);
-
+		Format(buffer, sizeof(buffer), "%T", "Sell All Items", client);
 		menu.AddItem("-999969", buffer);
 	}
 	if(section == -999969)

@@ -377,12 +377,6 @@
 		"it"		"Vendi tutti i tuoi articoli"
 		"ko"		"모든 아이템 판매"
 	}
-	"Return to loadout Menu"
-	{
-		"en"		"Return to loadout Menu"
-		"it"		"Ritorno al menu di caricamento"
-		"ko"		"로드아웃 메뉴로 복귀"
-	}
 	"Confirm Loadout"
 	{
 		"en"		"Exit Starter Store"
