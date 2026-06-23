@@ -1,7 +1,7 @@
 // Created by Crowbar 0.71
 // Warp_Ruina_Model
 
-$modelname "zombie_riot/weapons/ruina_models_1_3_test1.mdl"	//current one on the server: "_1_2_2"
+$modelname "zombie_riot/weapons/ruina_models_1_3_test2.mdl"	//current one on the server: "_1_2_2"
 
 $bodygroup "ruina_projectile"	///Converted
 {
@@ -90,6 +90,8 @@ $cdmaterials "models\weapons\w_wrench\"				//it has gold!		w_wrench01_gold
 $cdmaterials "models\weapons\c_items\"					
 //c_saxxy					//gold
 //c_frying_pan_gold 		//gold
+
+$cdmaterials "models/player/shared/"	//gold_player
 
 $cdmaterials "passtime\neons\"	
 //neon_red_solid
