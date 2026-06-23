@@ -456,7 +456,6 @@ public void Rogue_Vote_EyeForAnEye(const Vote vote, int index)
 		{
 			Ammo_Count_Ready -= 20;
 			
-			CurrentCash += 3000;
 			GlobalExtraCash += 3000;
 			
 			PrintToChatAll("%t", "Eye for an Eye Lore 2");

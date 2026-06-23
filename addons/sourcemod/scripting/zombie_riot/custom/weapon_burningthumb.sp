@@ -45,6 +45,7 @@ static bool ShinForm[MAXPLAYERS+1];
 static int ChargeSpent[MAXPLAYERS+1];
 static float HasCharged[MAXPLAYERS+1];
 static int PlayerChargeParticle[MAXPLAYERS+1];
+static float InCharge[MAXPLAYERS+1];
 
 #define BURN_DASH_SOUND_AMMO 	"weapons/dragons_fury_shoot.wav"
 #define BURN_DASH_SOUND_EMPTY	"weapons/fx/nearmiss/dragons_fury_nearmiss.wav"
@@ -59,6 +60,7 @@ public void BurningThumb_MapStart()
 	PrecacheSound(BURN_DASH_SOUND_AMMO);
 	PrecacheSound(BURN_DASH_SOUND_EMPTY);
 	PrecacheSoundArray(g_BurnShootsound);
+	Zero(InCharge);
 }
 void BurningThumb_WaveEnd()
 {
@@ -92,6 +94,13 @@ public void BurningThumb_Enable(int client, int weapon)
 	pack.WriteCell(EntIndexToEntRef(weapon));
 }
 
+public void BurningThumbWeaponTrace(int client, int weapon, float &CustomMeleeRange, float &CustomMeleeWide, bool &ignore_walls, int &enemies_hit_aoe)
+{
+	if(InCharge[client] > GetGameTime())
+	{
+		CustomMeleeRange *= 2.0;
+	}
+}
 public void Weapon_BurningThumb_M1(int client, int weapon, bool crit, int slot)
 {
 	delete ResetMove[client];
@@ -186,11 +195,19 @@ public void Weapon_BurningThumb_M2(int client, int weapon, bool crit, int slot)
 				EmitSoundToAll(g_BurnShootsound[GetRandomInt(0, sizeof(g_BurnShootsound) - 1)], client, SNDCHAN_AUTO, 80, _, 0.9, 90);
 			}
 
+			InCharge[client] = GetGameTime() + TimeUntillReach;
 			Burning_Thumb_ApplyParticle(client, false, TimeUntillReach);
 			f_AntiStuckPhaseThrough[client] = GetGameTime() + TimeUntillReach;
 			f_AntiStuckPhaseThroughFirstCheck[client] = GetGameTime() + TimeUntillReach;
 			ApplyStatusEffect(client, client, "Intangible", TimeUntillReach);
 			ApplyStatusEffect(client, client, "Touch Ingored", TimeUntillReach);
+
+			int ShieldGive;
+			RemoveSpecificBuff(client, "Shielding");
+			ApplyStatusEffect(client, client, "Shielding", TimeUntillReach);
+			ShieldGive = ReturnEntityMaxHealth(client) / 13;
+
+			Shielding_Add(client, ShieldGive);
 
 			TF2_AddCondition(client, TFCond_LostFooting, TimeUntillReach);
 			TF2_AddCondition(client, TFCond_AirCurrent, TimeUntillReach);
@@ -252,6 +269,10 @@ static void ThumbPush(DataPack pack, bool first)
 			if(GetVectorLength(vec1, true) < 10000.0)
 			{
 				// In contact, drift away now
+				if(InCharge[client])
+				{
+					InCharge[client] = GetGameTime() + 0.3;
+				}
 				f_AntiStuckPhaseThrough[client] = GetGameTime() + 0.3;
 				f_AntiStuckPhaseThroughFirstCheck[client] = GetGameTime() + 0.3;
 				ApplyStatusEffect(client, client, "Intangible", 0.3);
@@ -388,6 +409,10 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 	if(CheckInHud())
 		return;
 
+	if(InCharge[attacker])
+	{
+		InCharge[attacker] = 0.0;
+	}
 	bool resetCharge;
 	int power = 6;
 

@@ -2333,7 +2333,7 @@ bool Dungeon_UpdateMvMStats()
 			if(round > limit)
 				round = limit;
 			
-			int current = CurrentCash - GlobalExtraCash;
+			int current = CurrentCash;
 			int goal = DefaultTotalCash(round);
 
 			if(current < goal)
@@ -3094,7 +3094,7 @@ void Dungeon_GiveNpcMoney(int entity)
 		LimitNotice = 0;
 	}
 	
-	int current = CurrentCash - GlobalExtraCash - StartCash;
+	int current = CurrentCash - StartCash;
 
 	int a, other;
 	while((other = FindEntityByNPC(a)) != -1)

@@ -97,6 +97,7 @@ enum struct ItemInfo
 	Function Func_TakeDamage_Take;
 	Function Func_TakeDamage_Deal;
 	Function Func_TakeDamage_Post;
+	Function Func_CustomTraceMelee;
 
 	Function FuncOnPap;
 
@@ -384,6 +385,10 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sfunc_ontakedamage_deal", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.Func_TakeDamage_Deal = GetFunctionByName(null, buffer);
+
+		Format(buffer, sizeof(buffer), "%sfunc_customtracemelee", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.Func_CustomTraceMelee = GetFunctionByName(null, buffer);
 
 		Format(buffer, sizeof(buffer), "%sfunc_weaponcreated", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
@@ -1388,7 +1393,7 @@ void Store_PackMenu(int client, int index, int owneditemlevel = -1, int owner, b
 					CancelClientMenu(client);
 					SetStoreMenuLogic(client, false);
 
-					int cash = CurrentCash-CashSpent[client];
+					int cash = (CurrentCash + GlobalExtraCash)-CashSpent[client];
 					if(StarterCashMode[client])
 					{
 						int maxCash = StartCash;
@@ -1542,7 +1547,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 						//If client clicks on anything, view that pap instead.
 						values[1] = values[1] + 1;
 					}
-					else if((CurrentCash-CashSpent[client]) >= info.Cost)
+					else if(((CurrentCash + GlobalExtraCash)-CashSpent[client]) >= info.Cost)
 					{
 						CashSpent[client] += info.Cost;
 						CashSpentTotal[client] += info.Cost;
@@ -3311,7 +3316,6 @@ static void MenuPage(int client, int section)
 	{
 		CurrentCash = 999999;
 		Ammo_Count_Used[client] = -999999;
-		CashSpent[client] = 0;
 		starterPlayer = false;
 	}
 	CheckClientLateJoin(client);
@@ -3323,7 +3327,7 @@ static void MenuPage(int client, int section)
 		LastMenuPage[client] = 0;
 	}
 	
-	int cash = CurrentCash-CashSpent[client];
+	int cash = (CurrentCash + GlobalExtraCash)-CashSpent[client];
 	if(StarterCashMode[client])
 	{
 		int maxCash = StartCash;
@@ -4748,7 +4752,7 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 			{
 				case 0:
 				{
-					int cash = CurrentCash - CashSpent[client];
+					int cash = (CurrentCash + GlobalExtraCash) - CashSpent[client];
 					
 					if(StarterCashMode[client])
 					{
@@ -5004,7 +5008,7 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 				{
 					if(item.Owned[client])
 					{
-						int cash = CurrentCash - CashSpent[client];
+						int cash = (CurrentCash + GlobalExtraCash) - CashSpent[client];
 						if(StarterCashMode[client])
 						{
 							int maxCash = StartCash;
@@ -6237,7 +6241,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					EntityFuncTakeDamage[entity][0]  = info.Func_TakeDamage_Deal;
 					EntityFuncTakeDamage[entity][1]  = info.Func_TakeDamage_Take;
 					EntityFuncTakeDamage[entity][2]  = info.Func_TakeDamage_Post;
-					EntityFuncOnKill[entity]  = info.Func_OnKill;
+					EntityFuncOnKill[entity]  		= info.Func_OnKill;
+					EntityCustomTraceMelee[entity] = info.Func_CustomTraceMelee;
 					
 					b_Do_Not_Compensate[entity] 				= info.NoLagComp;
 					b_Only_Compensate_CollisionBox[entity] 		= info.OnlyLagCompCollision;

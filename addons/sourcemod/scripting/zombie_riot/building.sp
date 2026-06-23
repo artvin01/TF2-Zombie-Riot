@@ -261,7 +261,7 @@ void AutobuyMetal(int client)
 			if(metal >= MetalToMaxBuy)
 				return;
 
-			int cash = CurrentCash - CashSpent[client];
+			int cash = (CurrentCash + GlobalExtraCash) - CashSpent[client];
 			if(StarterCashMode[client])
 			{
 				int maxCash = StartCash;
@@ -349,7 +349,7 @@ static void BuildingMenu(int client)
 	}
 	
 	int metal = GetAmmo(client, Ammo_Metal);
-	int cash = CurrentCash - CashSpent[client];
+	int cash = (CurrentCash + GlobalExtraCash) - CashSpent[client];
 	if(StarterCashMode[client])
 	{
 		int maxCash = StartCash;

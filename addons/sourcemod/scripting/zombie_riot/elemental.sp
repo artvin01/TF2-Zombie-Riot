@@ -1793,7 +1793,7 @@ void Elemental_AddStaggerDamage(int victim, int attacker, int damagebase)
 		if(triggered)
 		{
 			FreezeNpcInTime(victim, 3.0);
-			EmitSoundToAll("playgamesound physics/glass/glass_sheet_break3.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+			EmitSoundToAll("physics/glass/glass_sheet_break3.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
 		}
 		else
 		{
