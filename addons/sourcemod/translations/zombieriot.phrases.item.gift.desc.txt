@@ -2354,10 +2354,12 @@
 	"Nostalgica"
 	{
 		"en" "Nostalgica"
+		"ko" "향수병"
 	}
 	"Nostalgica Desc"
 	{
 		"en"	"How difficult it used to be.\nThere are too many changes to list here, assume its oldtimes but much harder"
+		"ko"	"한때 어려웠던 대로.\n써야할 것이 너무 많네요. 훨씬 더 어려운 '그때 그 시절(올탐)' 난이도로 생각해주세요."
 		//	What actually it does:
 		// 35％ more enemies, spawn 0％ faster, 15％ more are alive at once
 		// They deal +50％ dmg, +75％ dmg to cades, +60％ HP, +0％ faster, attack 33％ faster.
