@@ -158,7 +158,6 @@ public void Barracks_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	if(HasSpecificBuff(victim, "Marked"))
 	{
 		SummonerRenerateResources(attacker, 3.0 + (WeaponPap[attacker] * 2), 0.0, true);
-		damage *= (1.25 + ((WeaponPap[attacker] * 0.05)));
 	}
 	
 	ApplyStatusEffect(attacker, victim, "Marked", 4.0 + (WeaponPap[attacker] * 2));
@@ -269,7 +268,7 @@ public void Barracks_OnTakeDamage_Italian(int victim, int &attacker, int &inflic
 		{
 			if(WeaponPap[attacker] >= 4)
 			{
-				if(ReDash[attacker] > GetGameTime() && Ability_Check_Cooldown(attacker, 1) <= 0.0)	// Checks to avoid redash bla bla bla, also totally didn't "borrow" Texas Business code (thanks)
+				if(ReDash[attacker] > GetGameTime())	// Checks to avoid redash bla bla bla, also totally didn't "borrow" Texas Business code (thanks)
 				{
 					damage *= 6.0;
 					ReDash[attacker] = 0.0;
