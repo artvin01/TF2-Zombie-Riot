@@ -3259,7 +3259,7 @@
 	"Rage Prefix Text 30"
 	{
 		"en"	"♅ is looking mighty today. Let me grab that."
-		"ko"	"♅가 오늘 개쩔게 보이는데, 좀 가져올게"
+		"ko"	"♅가 오늘 개쩔게 보이는데, 좀 잡아주지"
 	}
 	"Rage Prefix Text 31"
 	{
@@ -3295,190 +3295,238 @@
 	"Rage Prefix Text 37"
 	{
 		"en"	"Siiiiiix. Seveeeeeeeeen."
+		"ko"	"유우우우우우우욱. 치이이이이이이이이이이일."
 	}
 	"Rage Prefix Text 38"
 	{
 		"en"	"Im a real Oak guy. I love Oak, its so much better than Birch."
+		"ko"	"난 진정한 참나무맨이야. 난 참나무를 사랑하지. 자작나무보다 더 낫거든"
+		//Words from translator. Funnily enough I couldn't grasp how this phrase supposed to mean
 	}
 	"Rage Prefix Text 39"
 	{
 		"en"	"Gonna touch you in places you wont like."
+		"ko"	"네놈이 좋아하지 않을 만한 곳을 만져주지"
 	}
 	"Rage Prefix Text 40"
 	{
 		"en"	"Those towers deserved it."
+		"ko"	"저 탑들은 그럴 만했어"
 	}
 	"Rage Prefix Text 41"
 	{
 		"en"	"BLOCKED BLOCKED BLOCKED BLOCKED. YOU'RE ALL BLOCKED"
+		"ko"	"차단 차단 차단 차단. 네놈들 다 차단이야아ㅏ아아ㅏㅏㅇ아"
 	}
 	"Rage Prefix Text 42"
 	{
 		"en"	"i talked to my friend and he said im really cool like the coolest there is"
+		"ko"	"내 친구한테 말해봤더니 내가 세상에서 제일 가는 쿨한 사람이라더라"
 	}
 	"Rage Prefix Text 43"
 	{
 		"en"	"i eat the bowl and boil the cereal"
+		"ko"	"난 그릇을 먹고 시리얼을 끓이지"
 	}
 	"Rage Prefix Text 44"
 	{
 		"en"	"   king   gg  "
+		"ko"	"   킹    갓    g    g    "
 	}
 	"Rage Prefix Text 45"
 	{
 		"en"	"Melee is cringe"
+		"ko"	"근접러는 오글거려"
 	}
 	"Rage Prefix Text 46"
 	{
 		"en"	"Ranged is cringe"
+		"ko"	"원거리는 오글거려"
 	}
 	"Rage Prefix Text 47"
 	{
 		"en"	"Mage is cringe"
+		"ko"	"마법러는 오글거려"
 	}
 	"Rage Prefix Text 48"
 	{
 		"en"	"Support is cringe"
+		"ko"	"힐러는 오글거려"
 	}
 	"Rage Prefix Text 49"
 	{
 		"en"	"Builder is cringe"
+		"ko"	"건축가는 오글거려"
 	}
 	"Rage Prefix Text 50"
 	{
 		"en"	"Weapon kits are cringe"
+		"ko"	"무기 키트는 오글거려"
 	}
 	"Rage Prefix Text 51"
 	{
 		"en"	"I bet these enemies would have some kind of mechanic of somekind but I wouldnt know because I CANT READ" 
+		"ko"	"분명 저 적들이 특별한 기믹 같은게 있을 것 같은데 모르겠어 난 읽을 줄 모르거든!!!!!"
 	}
 	"Rage Prefix Text 52"
 	{
 		"en"	"your last 2 braincells are fighting for third(3rd) place" 
+		"ko"	"네놈의 마지막 두 뇌세포가 3등을 위해 싸우는군"
 	}
 	"Rage Prefix Text 53"
 	{
 		"en"	"your aura stinks"
+		"ko"	"니 아우라 냄새남"
 	}
 	"Rage Prefix Text 54"
 	{
 		"en"	"i tryhard in casual games so what?"
+		"ko"	"내가 캐주얼 게임에서 빡겜을 하는데 뭐?"
 	}
 	"Rage Prefix Text 55"
 	{
 		"en"	"Fart face"
+		"ko"	"얼굴에 방구"
 	}
 	"Rage Prefix Text 56"
 	{
 		"en"	"subscribble to me incr3dibl3 u-tube channul"
+		"ko"	"네 개쯔눈 유투부 채눌애 구둭울 하조새오"
 	}
 	"Rage Prefix Text 57"
 	{
 		"en"	"im just a class 1 basic zombie"
+		"ko"	"난 그저 1등급 기본 좀비일 뿐이야"
 	}
 	"Rage Prefix Text 58"
 	{
 		"en"	"Kahmlstein is a FRAUD"
+		"ko"	"카멜슈타인은 사기꾼이여"
 	}
 	"Rage Prefix Text 59"
 	{
 		"en"	"VincentGPT, how do I play zombie riot"
+		"ko"	"빈센트GPT, 좀비 라이엇 플레이 방법이 어떻게 돼?"
 	}
 	"Rage Prefix Text 60"
 	{
 		"en"	"My mom rules Ruina"
+		"ko"	"내 엄마는 루이나를 통치하지"
 	}
 	"Rage Prefix Text 61"
 	{
 		"en"	"My dad made Chaos"
+		"ko"	"내 아빠가 혼돈을 만들었어"
 	}
 	"Rage Prefix Text 62"
 	{
 		"en"	"I would betray you in the hyperbolic time chamber"
+		"ko"	"난 너를 정신과 시간의 방에서 배신할거야"
 	}
 	"Rage Prefix Text 63"
 	{
 		"en"	"you aint built for these riots cuh"
+		"ko"	"니는 이 '라이엇'에 안 맞는구만 친구"
 	}
 	"Rage Prefix Text 64"
 	{
 		"en"	"AWOOOOOOOOOOOOOOOO. Baby, I'm preyin' on you tonight. Hunt you down, eat you alive \nJust like animals, animals, like animaaaaaaaals"
+		"ko"	"아우우우우우우우우. 베이비, 난 오늘 밤에 널 잡아먹을거야. 널 사냥해서 산채로 먹을거야\n마치 짐승들 처럼, 짐승들 처럼, 짐승들 처러어어어어어엄"
 	}
 	"Rage Prefix Text 65"
 	{
 		"en"	"ME(sigma) vs YOU(beta)"
+		"ko"	"나(시그마) vs 너(베타)"
 	}
 	"Rage Prefix Text 66"
 	{
 		"en"	"Vuntulum bombing is badass"
+		"ko"	"번툴룸 폭탄질은 개쩔어"
 	}
 	"Rage Prefix Text 67"
 	{
 		"en"	"The voices in my head are my best guide"
+		"ko"	"내 머릿 속에 있는 목소리들은 내 최고의 가이드지"
 	}
 	"Rage Prefix Text 68"
 	{
 		"en"	"Erm well that just happened"
+		"ko"	"어음 그래 그렇게 됐네"
 	}
 	"Rage Prefix Text 69"
 	{
 		"en"	"i do ALL of the drugs why do you ask?"
+		"ko"	"난 ''모든'' 약들을 하지, 왜 물어보는데?"
 	}
 	"Rage Prefix Text 70"
 	{
 		"en"	"Enjoying the waveset so far? Enhance your weapon and prepare for some prefix bullshit."
+		"ko"	"웨이브셋은 즐기고 있어? 무기 강화하고 접두자 X랄을 준비하라고."
 	}
 	"Rage Prefix Text 71"
 	{
 		"en"	"I AM THE ONE WHO RAGEBAITS"
+		"ko"	"난 모두를 빡치게 하는 자다!!!!!!!"
 	}
 	"Rage Prefix Text 72"
 	{
 		"en"	"why are you blue"
+		"ko"	"님 왜 파란색임"
 	}
 	"Rage Prefix Text 73"
 	{
 		"en"	"I WILL ENSURE YOUR FAVOURITE SHOW HAS A DOGSHIT ENDING"
+		"ko"	"네가 가장 좋아하는 드라마가 최악의 엔딩을 맞게 해주지!!!!!"
 	}
 	"Rage Prefix Text 74"
 	{
 		"en"	"dimensional ripper back when?"
+		"ko"	"차원 찢개 언제 돌아옴?"
 	}
 	"Rage Prefix Text 75"
 	{
 		"en"	"Cant touch this."
+		"ko"	"이걸 건드릴 수는 없지."
 	}
 	"Rage Prefix Text 76"
 	{
 		"en"	"The zombies actually heal you when they hit you."
+		"ko"	"사실 좀비가 널 때리면 힐을 해줘"
 	}
 	"Rage Prefix Text 76"
 	{
 		"en"	"MY ASS [$$]"
+		"ko"	"내 엉덩이 [$$]"
 	}
 	"Rage Prefix Text 77"
 	{
 		"en"	"If you ever happen to hear a soothing female voice remember to listen to it"
+		"ko"	"만약에 편안한 여자 목소리를 듣게되면 꼭 귀기울여 듣는게 좋아"
 	}
 	"Rage Prefix Text 78"
 	{
 		"en"	"Lemme stuff you into this springlock suit cmere"
+		"ko"	"만약에 편안한 여자 목소리를 듣게되면 꼭 귀 기울여 듣는게 좋아"
 	}
 	"Rage Prefix Text 79"
 	{
 		"en"	"FUCK YOUR CHAT BOX LMAOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"
+		"ko"	"네 채팅 박스 X이나 먹으라지 ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ"
 	}
 	"Rage Prefix Text 80"
 	{
 		"en"	"I AM SUPERIOR"
+		"ko"	"난 최강이여!!!!!"
 	}
 	"Rage Prefix Text 81"
 	{
 		"en"	"MERCENARIES. ALL THEY THINK ABOUT IS THEMSELVES AND THEIR WAVESETS."
+		"ko"	"용병들. 걔네가 생각하는건 그저 자기들과 자기들 웨이브셋들이지"
 	}
 	"Rage Prefix Text 82"
 	{
 		"en"	"SWAG MULTIPLIED BY INFINITY."
+		"ko"	"내 멋을 무한대로오오오오오오오오오오오"
 	}
 	"Semi Healthy Prefix"
 	{
