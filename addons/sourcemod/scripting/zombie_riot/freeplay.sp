@@ -1561,7 +1561,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 				}
 				default:
 				{
-					CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.! {gold}- {lightcyan}Remember to be careful your surrounding, there may be a mine next to you, or a sniper aiming right at you.");
+					CPrintToChatAll("{darkblue}C.H.I.M.E.R.A.! {gold}- {red}Remember to be careful your surrounding, there may be a mine next to you, or a sniper aiming right at you.");
 				}
 			}
 		}
