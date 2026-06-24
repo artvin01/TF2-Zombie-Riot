@@ -1161,7 +1161,7 @@ stock void GiveCoffinOnDamage(int client, int victim, float damage, float Percen
 	{
 		DamageForMaxCharge = (Percentage / float(MAX_COFFINS));
 		if(StatusEffects_SinkingDebuffMaxStacks(victim))
-			DamageForMaxCharge *= 0.5;
+			DamageForMaxCharge *= 2.0;
 		CoffinCharge[client] += DamageForMaxCharge;
 	}
 	else
