@@ -755,6 +755,7 @@ char s_MissionClient[64]; // Who hired us for the current job
 #include "custom/kit_heartbroken.sp"
 #include "custom/weapon_burningthumb.sp"
 #include "custom/kit_red_mist.sp"
+#include "custom/kit_barracks.sp"
 
 void ZR_PluginLoad()
 {
@@ -2457,7 +2458,34 @@ void TriggerLastmanLogic(int killed, int Hurtviasdkhook)
 					}
 					Yakuza_Lastman(16);
 				}
-				
+				if(IsBarracks(client))
+				{
+					CPrintToChatAll("{green}%N and their soldiers are making their last stand.",client);
+					switch (WhatCiv(client))
+					{
+						case Alternative:
+						{
+							CPrintToChatAll("{red}The remnants of Blitzkrieg army overcharge their systems to the maximum, it’s TOTAL BLITZKRIEG.",client);
+						}
+						case Combine:
+						{
+							CPrintToChatAll("{yellow}Not wanting to see you die like Guln, the soldiers of his army quickly load the anti-chaos weaponry, no more mercy.",client);
+						}
+						case Almina_Thorns:
+						{
+							CPrintToChatAll("{blue}Soldiers arm their best gears, remebering what cruel fate they had to go through under Whiteflower and Seaborns",client);
+						}
+						case Thorns:
+						{
+							CPrintToChatAll("{blue}Expidonsa declares code Epsilon, use of experimental technology has been authorized, no more holding back.",client);
+						}
+						default:
+						{
+							CPrintToChatAll("{red}A chanting of war can be heard from Alaxios army, they will not go down without a fight.",client);
+						}
+					}
+					Yakuza_Lastman(17);
+				}
 				
 				for(int i=1; i<=MaxClients; i++)
 				{
@@ -3532,6 +3560,7 @@ void ZR_FastDownloadForce()
 	Core_PrecacheGlobalCustom();
 	PrecacheMusicZr();
 	PrecacheRedMistMusic();
+	PrecacheBarracksMusic();
 }
 
 
