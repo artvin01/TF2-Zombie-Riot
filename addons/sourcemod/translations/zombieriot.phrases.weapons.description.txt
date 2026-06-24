@@ -1410,6 +1410,7 @@
 	"Wind Staff Desc"
 	{
 		"en"	"-Causes Aoe Wind Storms that damage over time.\nHolding m2 summons an aoe wind storm around you"
+		"ko"	"-시간에 걸쳐 광역 피해를 주는 토네이도를 생성합니다.\n-우클릭을 꾹 누르면 사용자 주위를 휘도는 광역 토네이도를 소환합니다."
 	}
 	
 	"Elemental Staff Desc"
@@ -5434,6 +5435,7 @@
 	"Tiantui Star Blade Desc"
 	{
 		"en"	"\n-Abilities uses ammo and refills on wave end\n-M2 to charge forward, consuming ammo, gives 2x melee range and shield\n-Combos reset charge cooldown\n-R and crouch to reload special ammo and gain a buff (spend ammo for stronger, once per wave, revives downed)"
+		"ko"	"-능력이 탄환을 소모하며 웨이브 종료 시 재보급\n-우클릭으로 돌진하며 탄환을 소모: 사거리가 2배로 증가하며 보호막을 획득\n-콤보 적중 시 돌진 쿨다운 초기화\n-웅크리기+R로 특수 탄환 장전, 버프 획득(탄환 일정량 사용 시 버프 강화, 다운 중 사용 시 1회 부활)"
 	}
 	"Tiantui Star Blade Extra"
 	{
