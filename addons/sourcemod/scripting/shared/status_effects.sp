@@ -10232,7 +10232,7 @@ void StatusEffects_HeartBroken()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= 0.75;
-	data.DamageDealMulti			= 1.10;
+	data.DamageDealMulti			= 0.25;
 	//Make sure it isnt ignored, set it to 0.0, on need for extra func checks either.
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;

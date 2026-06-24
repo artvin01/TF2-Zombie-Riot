@@ -5715,7 +5715,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 			if(vehicle != -1)
 				GetClosestTarget_EnemiesToCollect[i] = vehicle;
 
-			GetEntPropVector(GetClosestTarget_EnemiesToCollect[i], Prop_Data, "m_vecOrigin", targetPos[i]);
+			GetEntPropVector(GetClosestTarget_EnemiesToCollect[i], Prop_Data, "m_vecAbsOrigin", targetPos[i]);
 			CNavArea NavAreaUnder = TheNavMesh.GetNavArea(targetPos[i], 100.0);
 
 			if(NavAreaUnder == NULL_AREA)
@@ -5882,8 +5882,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 			static float distance;
 			distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
 			*/
-
-			GetEntPropVector( target, Prop_Data, "m_vecOrigin", TargetLocation ); //do not use abs, some entities do not have abs.
+			GetEntPropVector( target, Prop_Data, "m_vecAbsOrigin", TargetLocation ); //do not use abs, some entities do not have abs.
 			float distanceVector = GetVectorDistance( EntityLocation, TargetLocation, true ); 
 			if(i_CurrentEquippedPerk[target] & PERK_BLOODY)
 				distanceVector *= 2.0;
@@ -7346,6 +7345,18 @@ bool Can_I_See_Enemy_Only(int attacker, int enemy, float pos_npc[3] = {0.0,0.0,0
 	float pos_enemy[3];
 	if(pos_npc[2] == 0.0)
 		WorldSpaceCenter(attacker, pos_npc);
+	if(enemy <= MaxClients)
+	{
+		int vehicle = Vehicle_Driver(enemy);
+		if(vehicle != -1)
+		{
+#if defined ZR
+			enemy = Vehicle_Driver(enemy);
+#else
+			enemy = GetEntPropEnt(enemy, Prop_Data, "m_hPlayer");
+#endif
+		}
+	}
 	WorldSpaceCenter(enemy, pos_enemy);
 
 	

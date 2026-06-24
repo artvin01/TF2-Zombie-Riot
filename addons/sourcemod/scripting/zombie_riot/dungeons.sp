@@ -604,7 +604,7 @@ void Dungeon_SetupVote(KeyValues kv)
 	if(kv.JumpToKey("Raids"))
 	{
 		AttackTime = kv.GetFloat("delay", 300.0);
-		RespawnTime = kv.GetFloat("respawn", 20.0);
+		RespawnTime = kv.GetFloat("respawn", 25.0);
 		MaxWaveScale = kv.GetNum("maxwave", 39);
 
 		if(kv.GotoFirstSubKey())
@@ -833,11 +833,11 @@ public Action Dhook_TeleportToCenter(Handle timer, int userid)
 	{
 		if(!BasePosWasDone)
 		{
-			PrintToConsole(client, "Dhook_TeleportToCenter, Teleport Denied, %f, %f, %f", BasePosSave[0], BasePosSave[1], BasePosSave[2]);
+		//	PrintToConsole(client, "Dhook_TeleportToCenter, Teleport Denied, %f, %f, %f", BasePosSave[0], BasePosSave[1], BasePosSave[2]);
 			return Plugin_Stop;
 		}
 		
-		PrintToConsole(client, "Dhook_TeleportToCenter Teleport accepted, %f, %f, %f", BasePosSave[0], BasePosSave[1], BasePosSave[2]);
+	//	PrintToConsole(client, "Dhook_TeleportToCenter Teleport accepted, %f, %f, %f", BasePosSave[0], BasePosSave[1], BasePosSave[2]);
 		float ang[3];
 		ang[2] = 0.0;
 		SetEntProp(client, Prop_Send, "m_bDucked", true);

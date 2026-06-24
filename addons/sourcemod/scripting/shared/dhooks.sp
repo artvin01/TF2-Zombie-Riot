@@ -1544,14 +1544,14 @@ public MRESReturn DHook_ForceRespawn(int client)
 		i_AmountDowned[client] = 0;
 	f_TimeAfterSpawn[client] = GetGameTime() + 1.0;
 
-	/*
-	if(IsRespawning && Dungeon_Mode())
+	if(f_WasRecentlyRevivedViaNonWave[client] < GetGameTime() && Dungeon_Mode())
 	{
+		//tele to base spawn yippie
 		CreateTimer(0.1, Dhook_TeleportToCenter, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 		return MRES_Ignored;
 	}
-	*/
-	if(Construction_Mode() || BetWar_Mode())
+	
+	if(Construction_Mode() || BetWar_Mode() || Dungeon_Mode())
 		return MRES_Ignored;
 #endif
 	
