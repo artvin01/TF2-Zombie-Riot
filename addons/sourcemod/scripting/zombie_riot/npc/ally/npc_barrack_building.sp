@@ -41,7 +41,7 @@ methodmap BarrackBuilding < BarrackBody
 	}
 	public BarrackBuilding(int client, float vecPos[3], float vecAng[3])
 	{
-		BarrackBuilding npc = view_as<BarrackBuilding>(BarrackBody(client, vecPos, vecAng, "4000", TOWER_MODEL, _, TOWER_SIZE_BARRACKS, 80.0,"models/pickups/pickup_powerup_resistance.mdl", .NpcTypeLogicdo = 1));
+		BarrackBuilding npc = view_as<BarrackBuilding>(BarrackBody(client, vecPos, vecAng, "3000", TOWER_MODEL, _, TOWER_SIZE_BARRACKS, 80.0,"models/pickups/pickup_powerup_resistance.mdl", .NpcTypeLogicdo = 1));
 		npc.m_iWearable1 = npc.EquipItemSeperate("models/props_manor/clocktower_01.mdl");
 		SetVariantString("0.1");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
@@ -102,7 +102,7 @@ public void BarrackBuilding_ClotThink(int iNPC)
 			{
 				if(npc.m_flNextMeleeAttack < GameTime)
 				{
-					float ArrowDamage = 4000.0;
+					float ArrowDamage = 5000.0;
 					int ArrowCount = 3;
 					float AttackDelay = 7.0;
 					if(i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_STRONGHOLDS)
