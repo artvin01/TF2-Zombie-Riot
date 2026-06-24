@@ -2473,7 +2473,7 @@ void TriggerLastmanLogic(int killed, int Hurtviasdkhook)
 						}
 						case Almina_Thorns:
 						{
-							CPrintToChatAll("{blue}Soldiers arm their best gears, remebering what cruel fate they had to go through under Whiteflower and Seaborns",client);
+							CPrintToChatAll("{blue}Soldiers arm their best gears, remebering what cruel fate they had to go through under Whiteflower and Dwellers",client);
 						}
 						case Thorns:
 						{
