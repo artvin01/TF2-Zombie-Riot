@@ -3582,8 +3582,8 @@
 	}
 	"Scrambled Prefix Desc"
 	{
-		"en"	"Become inflicted with up to 8 random buffs/debuffs every 10 seconds."
-		"ko"	"10초마다 무작위 버프/디버프를 최대 8개까지 얻습니다."
+		"en"	"Become inflicted with up to 6 random buffs/debuffs every 10 seconds."
+		"ko"	"10초마다 무작위 버프/디버프를 최대 6개까지 얻습니다."
 	}
 	"Indecisive Prefix"
 	{
