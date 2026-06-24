@@ -5597,7 +5597,7 @@
 	}
 	"The Italian Business Desc 2"
 	{
-		"en"	"More damage, building hp, repair rate\n-You are now able to do a Power-hit with Crouch + m1\n-The power hit briefly stuns and knocks you back (and gives resources)"
+		"en"	"More damage, building hp, repair rate\n-You are now able to do a Power-hit with Crouch + m1\n-The power hit briefly stuns enemies and knocks you backwards (and gives resources)"
 	}
 	"The Italian Business Desc 3"
 	{
@@ -5605,7 +5605,7 @@
 	}
 	"The Italian Business Desc 4"
 	{
-		"en"	"-More damage, building hp, repair rate\n-You can now do another Power-hit in a row\n-Crit particles show if you still can, beware it has increased effect but also cooldown"
+		"en"	"-More damage, building hp, repair rate\n-You can now do another Power-hit in a row\n-The HUD show if you still can, beware it has increased effect but also cooldown"
 	}
 	"The Italian Business Desc 5"
 	{
