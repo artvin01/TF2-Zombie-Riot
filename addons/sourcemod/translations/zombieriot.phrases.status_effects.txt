@@ -3506,7 +3506,7 @@
 	"Rage Prefix Text 78"
 	{
 		"en"	"Lemme stuff you into this springlock suit cmere"
-		"ko"	"만약에 편안한 여자 목소리를 듣게되면 꼭 귀 기울여 듣는게 좋아"
+		"ko"	"네놈을 스프링락 슈트에 쑤셔넣어주지"
 	}
 	"Rage Prefix Text 79"
 	{
