@@ -1409,12 +1409,7 @@
 	
 	"Wind Staff Desc"
 	{
-		"en"	"-Causes Aoe Wind Storms that damage over time."
-		"fr"	"Chaque attaque utilise du Mana. Convoque des tempêtes qui infligent des dégats avec du temps."
-		///"ru"	"Вызывает шторм ветра с уроном по области, который наносит урон с течением времени."
-		"chi"   "形成一个可以造成范围伤害的龙卷风"
-		"it"	"Provoca tempeste di vento che danneggiano in area nel tempo."
-		"ko"	"-시간에 걸쳐 광역 피해를 주는 토네이도를 생성합니다."
+		"en"	"-Causes Aoe Wind Storms that damage over time.\nHolding m2 summons an aoe wind storm around you"
 	}
 	
 	"Elemental Staff Desc"
@@ -5438,8 +5433,7 @@
 	}
 	"Tiantui Star Blade Desc"
 	{
-		"en"	"-Abilities uses ammo and refills on wave end\n-M2 to charge forward, consuming ammo\n-Combos reset charge cooldown\n-R and crouch to reload special ammo and gain a buff (use enough ammo for stronger version, once per wave, revives if downed)"
-		"ko"	"-능력이 탄환을 소모하며 웨이브 종료 시 재보급\n-우클릭으로 돌진하며 탄환을 소모\n-콤보 적중 시 돌진 쿨다운 초기화\n-웅크리기+R로 특수 탄환 장전, 버프 획득(탄환 일정량 사용 시 버프 강화, 다운 중 사용 시 1회 부활)"
+		"en"	"\n-Abilities uses ammo and refills on wave end\n-M2 to charge forward, consuming ammo, gives 2x melee range and shield\n-Combos reset charge cooldown\n-R and crouch to reload special ammo and gain a buff (spend ammo for stronger, once per wave, revives downed)"
 	}
 	"Tiantui Star Blade Extra"
 	{
