@@ -301,8 +301,8 @@ public void CorruptedBarney_ClotThink(int iNPC)
 
 	if(npc.m_flShutUp < GetGameTime(npc.index))
 	{
-		char message[255];
-		Format(message, sizeof(message), "%c%c%c%c%c%c%c%c", GetRandomInt(1, 2000), GetRandomInt(1, 2000), GetRandomInt(1, 2000), GetRandomInt(1, 2000), GetRandomInt(1, 2000), GetRandomInt(1, 2000), GetRandomInt(1, 2000), GetRandomInt(1, 2000));
+		char message[32] = "12345678";
+		CorruptString(message, sizeof(message));
 		NPCTalkMessage(npc.index, message, npc.Anger);
 	}
 	
@@ -314,7 +314,10 @@ public void CorruptedBarney_ClotThink(int iNPC)
 		npc.m_flSpeed = GetRandomFloat(300.0, 400.0);
 		i_NpcWeight[npc.index] = GetRandomInt(1,5);
 		RaidModeTime = GetGameTime() + GetRandomFloat(15.0, 555.0);
-		FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "%c%c%c%c%c%c%c%c%c%c%c%c", GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000));
+		
+		char name[32] = "123456789012";
+		CorruptString(name, sizeof(name));
+		strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), name);
 	}
 	else
 	{
@@ -324,7 +327,11 @@ public void CorruptedBarney_ClotThink(int iNPC)
 		i_NpcWeight[npc.index] = GetRandomInt(1,5);
 		npc.m_flSpeed = GetRandomFloat(330.0, 430.0);
 		RaidModeTime = GetGameTime() + GetRandomFloat(15.0, 555.0);
-		FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "B%c\n%c%c\nA%c%c\n%c%c\nR%c%c%c\nN%c\n%cEY", GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000),GetRandomInt(1, 2000));
+		
+		char name[64] = "B0\n00\nA00\n00\nR000\nN0\n0EY";
+		CorruptString(name, sizeof(name), true, '0');
+		strcopy(c_NpcName[npc.index], sizeof(c_NpcName[]), name);
+		
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", GetURandomInt());
 		SetEntPropFloat(npc.index, Prop_Send, "m_flModelScale", GetRandomFloat(1.5, 1.8));
 		char Buffer[32];
@@ -568,14 +575,17 @@ void CBarney_CreateAllies(int iNpc)
 	}
 }
 
-static void CorruptString(char[] buffer, int length, bool respectSpaces = true)
+static void CorruptString(char[] buffer, int length, bool respectSpaces = true, char onlyRandomizeCharacter = '\0')
 {
 	for (int i = 0; i < length; i++)
 	{
 		if (buffer[i] == '\0')
 			return;
 		
-		if (respectSpaces && buffer[i] == ' ')
+		if (respectSpaces && (buffer[i] == ' ' || buffer[i] == '\n'))
+			continue;
+		
+		if (onlyRandomizeCharacter != '\0' && onlyRandomizeCharacter != buffer[i])
 			continue;
 		
 		do

@@ -339,6 +339,7 @@ float f_AmmoConsumeExtra[MAXPLAYERS];
 
 #if defined ZR || defined RTS
 ConVar CvarInfiniteCash;
+ConVar CvarUnlockStore;
 #endif
 
 #if defined ZR || defined RTS || defined RPG

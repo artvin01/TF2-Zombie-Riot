@@ -165,16 +165,45 @@ public void BoneZone_SetRandomBuffedHP(CClotBody npc)
 
 public Action Command_RemoveAll(int client, int args)
 {
+	bool enemyOnly, friendlyOnly, specificNpc;
+	
+	char strArg[32];
+	if (GetCmdArgString(strArg, sizeof(strArg)))
+	{
+		if (StrContains(strArg, "enemy") == 0 || StrContains(strArg, "blu") == 0)
+			enemyOnly = true;
+		else if (StrContains(strArg, "friend") == 0 || StrContains(strArg, "red") == 0)
+			friendlyOnly = true;
+		else
+			specificNpc = true;
+	}
+	
+	int amountRemoved;
+	
 	int a, entity;
 	while((entity = FindEntityByNPC(a)) != -1)
 	{
 		if(IsValidEntity(entity))
 		{
-			b_DissapearOnDeath[entity] = true;
-			b_DoGibThisNpc[entity] = true;
-			SmiteNpcToDeath(entity);
+			if (!strArg[0]
+			|| (enemyOnly && GetTeam(entity) != TFTeam_Red)
+			|| (friendlyOnly && GetTeam(entity) == TFTeam_Red)
+			|| (specificNpc && StrContains(c_NpcName[entity], strArg, false) == 0))
+			{
+				b_DissapearOnDeath[entity] = true;
+				b_DoGibThisNpc[entity] = true;
+				SmiteNpcToDeath(entity);
+				
+				amountRemoved++;
+			}
 		}
 	}
+	
+	if (amountRemoved > 0)
+		ReplyToCommand(client, "Removed %d NPC%s.", amountRemoved, amountRemoved == 1 ? "" : "s");
+	else
+		ReplyToCommand(client, "Couldn't find any NPCs to remove.");
+	
 	return Plugin_Handled;
 }
 

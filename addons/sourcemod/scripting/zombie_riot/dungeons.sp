@@ -687,6 +687,7 @@ void Dungeon_StartSetup()
 	Rogue_StartSetup();
 	Construction_RoundEnd();
 
+	s_MissionClient = "{white}Bob the First";
 	NextAttackAt = 0.0;
 	BattleWaveScale = 0.0;
 

@@ -3721,6 +3721,9 @@ void StatusEffects_Aperture()
 	data.ShouldScaleWithPlayerCount = false;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.OnBuffStarted				= Envenomed_Start;
+	data.OnBuffEndOrDeleted			= Envenomed_End;
+	data.TimerRepeatCall_Func 		= Envenomed_Think;
 	StatusEffect_AddGlobal(data);
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Self-Degradation");
@@ -3854,6 +3857,46 @@ static void QuantumEntanglementEnd(int victim, StatusEffect Apply_MasterStatusEf
 	RemoveEntity(Apply_StatusEffect.WearableUse);
 }
 
+static void Envenomed_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	// If the target is overhealed, only count up to max hp
+	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	int maxHealth = ReturnEntityMaxHealth(victim);
+	if (health > maxHealth)
+		health = maxHealth;
+	
+	SetEntProp(victim, Prop_Data, "m_iHealth", 1);
+	
+	float heal = health * 0.75;
+	HealEntityGlobal(victim, victim, heal, 1.0, 20.0, HEAL_SELFHEAL);
+	
+	if (IsValidClient(victim))
+	{
+		DoOverlay(victim, "debug/yuv", 0);
+		TF2_AddCondition(victim, TFCond_LostFooting, 1.0);
+		TF2_AddCondition(victim, TFCond_MarkedForDeathSilent, 1.0);
+	}
+}
+
+static void Envenomed_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if (IsValidClient(victim))
+	{
+		DoOverlay(victim, "");
+		TF2_RemoveCondition(victim, TFCond_LostFooting);
+		TF2_RemoveCondition(victim, TFCond_MarkedForDeathSilent);
+	}
+}
+
+static void Envenomed_Think(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if (IsValidClient(victim))
+	{
+		DoOverlay(victim, "debug/yuv", 0);
+		TF2_AddCondition(victim, TFCond_LostFooting, 1.0);
+		TF2_AddCondition(victim, TFCond_MarkedForDeathSilent, 1.0);
+	}
+}
 
 void TimeWarp_ApplyAll(int inflictor, float duration = 99999.0)
 {
@@ -7317,7 +7360,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.OnBuffStarted				= Const2_1UpStart;
-	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
+	data.OnBuffEndOrDeleted			= Const2_1UpEnd;
 	data.TimerRepeatCall_Func 		= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
 	
@@ -8413,6 +8456,16 @@ void Const2_1UpStart(int victim, StatusEffect Apply_MasterStatusEffect, E_Status
 #endif
 }
 
+void Const2_1UpEnd(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	//not an npc, ignore.
+	if(!b_ThisWasAnNpc[victim])
+		return;
+
+	CClotBody npc = view_as<CClotBody>(victim);
+	if (npc.m_iHealthBar > 0)
+		npc.m_iHealthBar--;
+}
 
 static void Const2_SefHeal_Timer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
@@ -9633,46 +9686,129 @@ static const char ScrambledBlacklist[][] =
 	"Call of the Heartbroken",
 };
 
+ArrayList ScrambledBuffList;
+ArrayList ScrambledDebuffList;
+
 static void ScrambledPrefix_Think(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	if(Apply_StatusEffect.DataForUse > GetGameTime())
 		return;
 	
+	if (!ScrambledBuffList)
+	{
+		ScrambledBuffList = new ArrayList(sizeof(StatusEffect));
+		
+		StatusEffect effect;
+		int length = AL_StatusEffects.Length;
+		
+		for (int i = 0; i < length; i++)
+		{
+			AL_StatusEffects.GetArray(i, effect);
+			
+			// only buffs
+			if (!effect.Positive)
+				continue;
+			
+			// skip effects with hud changes to avoid errors
+			if (effect.HudDisplay_Func != INVALID_FUNCTION)
+				continue;
+			
+			// skip blacklisted effects
+			bool blacklisted;
+			for (int j = 0; i < sizeof(ScrambledBlacklist); j++)
+			{
+				if (StrContains(effect.BuffName, ScrambledBlacklist[j]) == 0)
+				{
+					blacklisted = true;
+					break;
+				}
+			}
+			
+			if (blacklisted)
+				continue;
+			
+			ScrambledBuffList.PushArray(effect);
+		}
+	}
+	
+	if (!ScrambledDebuffList)
+	{
+		ScrambledDebuffList = new ArrayList(sizeof(StatusEffect));
+		
+		StatusEffect effect;
+		int length = AL_StatusEffects.Length;
+		
+		for (int i = 0; i < length; i++)
+		{
+			AL_StatusEffects.GetArray(i, effect);
+			
+			// only debuffs
+			if (effect.Positive)
+				continue;
+			
+			// skip effects with hud changes to avoid errors
+			if (effect.HudDisplay_Func != INVALID_FUNCTION)
+				continue;
+			
+			// skip blacklisted effects
+			bool blacklisted;
+			for (int j = 0; j < sizeof(ScrambledBlacklist); j++)
+			{
+				if (StrContains(effect.BuffName, ScrambledBlacklist[j]) == 0)
+				{
+					blacklisted = true;
+					break;
+				}
+			}
+			
+			if (blacklisted)
+				continue;
+			
+			ScrambledDebuffList.PushArray(effect);
+		}
+	}
+	
 	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
 	Apply_StatusEffect.DataForUse = GetGameTime() + 10.1;
 	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
 	
-	int length = AL_StatusEffects.Length;
-	int givenBuffs, tries;
+	int effects, tries;
+	
 	StatusEffect effect;
-	while (givenBuffs < 8 && tries < 30)
+	int length = ScrambledBuffList.Length;
+	
+	// set buffs
+	while (effects < 3 && tries < 15)
 	{
 		tries++;
 		
-		AL_StatusEffects.GetArray(GetURandomInt() % length, effect);
+		ScrambledBuffList.GetArray(GetURandomInt() % length, effect);
 		char buffName[64];
 		strcopy(buffName, sizeof(buffName), effect.BuffName);
 		if (HasSpecificBuff(entity, buffName))
 			continue;
 		
-		if (effect.HudDisplay_Func != INVALID_FUNCTION)
-			continue;
+		ApplyStatusEffect(entity, entity, buffName, 10.0);
+		effects++;
+	}
+	
+	length = ScrambledDebuffList.Length;
+	effects = 0;
+	tries = 0;
+	
+	// set debuffs
+	while (effects < 3 && tries < 15)
+	{
+		tries++;
 		
-		bool blacklisted;
-		for (int i = 0; i < sizeof(ScrambledBlacklist); i++)
-		{
-			if (StrContains(buffName, ScrambledBlacklist[i]) == 0)
-			{
-				blacklisted = true;
-				break;
-			}
-		}
-		
-		if (blacklisted)
+		ScrambledDebuffList.GetArray(GetURandomInt() % length, effect);
+		char buffName[64];
+		strcopy(buffName, sizeof(buffName), effect.BuffName);
+		if (HasSpecificBuff(entity, buffName))
 			continue;
 		
 		ApplyStatusEffect(entity, entity, buffName, 10.0);
-		givenBuffs++;
+		effects++;
 	}
 }
 
@@ -9792,9 +9928,11 @@ void WhimsicalPrefix_Start(int entity, StatusEffect Apply_MasterStatusEffect, E_
 
 static void SeraphPrefix_GiveShield(int entity)
 {
-	// This may exceed the VausMagicaGiveShield cap
-	int shieldCount = 3 * CountPlayersOnRed(1);
-	VausMagicaGiveShield(entity, shieldCount); //Give self a shield
+	int shieldCount = RoundToNearest((CurrentCash / 5000) * (CountPlayersOnRed(1) * 0.5));
+	if (shieldCount < 3)
+		shieldCount = 3;
+	
+	VausMagicaGiveShield(entity, shieldCount, true, 250); //Give self a shield
 }
 
 static void SeraphPrefix_Start(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
@@ -9809,9 +9947,6 @@ static void SeraphPrefix_End(int entity, StatusEffect Apply_MasterStatusEffect, 
 
 static void SeraphPrefix_Think(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
-	if(Apply_StatusEffect.DataForUse > GetGameTime())
-		return;
-	
 	int stage = Apply_StatusEffect.WearableUse; // Using this variable to track how many stages we've gone through
 	int health = GetEntProp(entity, Prop_Data, "m_iHealth");
 	

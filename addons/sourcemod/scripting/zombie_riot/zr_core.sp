@@ -408,6 +408,7 @@ int i_MVMPopulator;
 //bool RaidMode; 							//Is this raidmode?
 float RaidModeScaling = 0.5;			//what multiplier to use for the raidboss itself?
 float RaidModeTime = 0.0;
+bool RaidTimerAlert = true;				// Should players be warned about the raidboss timer?
 int TimeWhenStartedWaveset = 0;
 float f_TimerTickCooldownRaid = 0.0;
 float f_TimerTickCooldownShop = 0.0;
@@ -468,6 +469,8 @@ bool b_HoldingInspectWeapon[MAXPLAYERS];
 #define ZR_ARMOR_DAMAGE_REDUCTION 0.75
 #define ZR_LIVING_ARMOR_DAMAGE_REDUCTION 0.5
 #define ZR_ARMOR_DAMAGE_REDUCTION_INVRERTED 0.25
+
+#define DEFAULT_MISSION_CLIENT "{black}Bob the Second"
 
 float Armor_regen_delay[MAXPLAYERS];
 
@@ -568,6 +571,7 @@ bool applied_lastmann_buffs_once = false;
 int i_WaveHasFreeplay = 0;
 float fl_MatrixReflect[MAXENTITIES];
 
+char s_MissionClient[64]; // Who hired us for the current job
 
 #include "include/zombie_riot.inc"
 
@@ -1118,6 +1122,9 @@ void ZR_MapStart()
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
 //	CreateEntityByName("info_populator");
 	RaidBossActive = INVALID_ENT_REFERENCE;
+	RaidTimerAlert = true;
+	
+	s_MissionClient = DEFAULT_MISSION_CLIENT;
 	
 	CreateTimer(0.1, GlobalTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	
@@ -2749,6 +2756,9 @@ stock void AddAmmoClient(int client, int AmmoType, int AmmoCount = 0, float Mult
 //	f_TimerTickCooldownShop = 0.0;
 stock void PlayTickSound(bool RaidTimer, bool NormalTimer)
 {
+	if (!RaidTimerAlert)
+		return;
+	
 	if(NormalTimer)
 	{
 		if(f_TimerTickCooldownShop < GetGameTime())
