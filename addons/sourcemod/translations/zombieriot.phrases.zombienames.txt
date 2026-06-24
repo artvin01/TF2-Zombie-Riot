@@ -5138,9 +5138,9 @@
 	}
 	"Sea-Xploder Desc"
 	{
-		"en"		"-Shoots a delayed C4, If enemy is killed, C4 despawns."
-		"it"		"-Spara un C4 ritardato, se il nemico viene ucciso, il C4 si disattiva."
-		"ko"		"-지연 후 폭발하는 C4를 발사합니다. 대상이 처치되면, C4가 소멸합니다."
+		"en"		"-Shoots a delayed C4"
+		"it"		"-Spara un C4 ritardato"
+		"ko"		"-지연 후 폭발하는 C4를 발사합니다."
 	}
 	"Anti Sea Robot"
 	{
@@ -5256,9 +5256,9 @@
 	}
 	"Sea Dryer Desc"
 	{
-		"en"		"-Shoots a delayed C4, If enemy is killed, C4 despawns."
-		"it"		"-Spara un C4 ritardato, se il nemico viene ucciso, il C4 si disattiva."
-		"ko"		"-지연 후 폭발하는 C4를 발사합니다. 대상이 처치되면, C4가 소멸합니다."
+		"en"		"-Shoots a delayed C4"
+		"it"		"-Spara un C4 ritardato"
+		"ko"		"-지연 후 폭발하는 C4를 발사합니다."
 	}
 	"Runaka"
 	{
