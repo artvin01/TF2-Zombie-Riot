@@ -5400,7 +5400,7 @@
 	"The Heartbroken Desc 2"
 	{
 		"en"	"-Overall Stat Increases\n-Your R now can dash towards an enemy, next hit dealing big damage\nIf the enemy has not maxed sinking:\nReduce Dash Cooldown\n-Unlock Secondary weapon:\n-Crouch+R to temporarily revive players for 5 coffins\n-Gain coffins on hit, and from summoned allies, raids give 2x as much"
-		"ko"	"-전반적인 능력치 증가\n-R키로 적에게 돌진할 수 있으며, 다음에 적중하는 공격의 피해량이 크게 증가\n적이 보유한 침잠이 최대치가 아니라면:\n돌진 쿨다운 감소\n-보조 무기 해금:\n-웅크리기+R로 '관'을 5 소모하여 사망한 플레이어를 일시적으로 부활 가능\n-자신이나 부활한 아군이 피해를 가할 시 관을 얻음"
+		"ko"	"-전반적인 능력치 증가\n-R키로 적에게 돌진할 수 있으며, 다음에 적중하는 공격의 피해량이 크게 증가\n적이 보유한 침잠이 최대치가 아니라면:\n돌진 쿨다운 감소\n-보조 무기 해금:\n-웅크리기+R로 '관'을 5 소모하여 사망한 플레이어를 일시적으로 부활 가능\n-자신이나 부활한 아군의 공격 적중 시 관을 얻음"
 	}
 	"The Heartbroken Desc 3"
 	{
@@ -5520,105 +5520,141 @@
 	"The Commander"
 	{
 		"en"	"The Commander"
+		"ko"	"지휘관"
 	}
 	"The Commander Desc"
 	{
 		"en"	"A kit based on having your own army and supporting it, consists of:\n-A revolver for resources and support, a shotgun for dmg and healing and,later, buffing your troops\n-A wrench"
+		"ko"	"자신만의 군대를 양성하고 지원하는데 기반 키트입니다:\n-자원 및 지원을 위한 리볼버 보유\n-피해와 지원을 위한 산탄총 보유, 추후에 버프 역시 지원\n-렌치 보유"
+	}
+	"The Marker"
+	{
+		"en"	"The Marker"
+		"ko"	"표식자"
 	}
 	"The Marker Desc"
 	{
 		"en"	"A support gun for the Barracks Kit\n-Marks targets on hit and deals more damage to marked enemies\n-Generates resources (more on marked enemies)\n-More accurate but fires and reloads slower"
+		"ko"	"배럭 키트를 위한 지원용 총기입니다.\n-적중 시 대상에게 표적을 부여하며, 표적 상태인 대상에게 피해량 증가\n-적중 시 자원 생성(표적 상태인 적인 경우 증가)\n-더욱 정확하지만 발사 및 재장전이 느림"
 	}
 	"The Marker Desc 1"
 	{
 		"en"	"-More dmg, slightly more fire rate and reload rate\n-You gain 1 more bullet in the chamber\n-You gain a tiny bit of max hp"
+		"ko"	"-피해량 증가, 발사/재장전 속도 소폭 증가\n-장탄수 1발 증가\n-최대 체력 소폭 증가"
 	}
 	"The Marker Desc 2"
 	{
 		"en"	"-More dmg, slightly more fire rate and reload rate\n-You gain 1 more bullet in the chamber\n-You gain a tiny bit of max hp"
+		"ko"	"-피해량 증가, 발사/재장전 속도 소폭 증가\n-장탄수 1발 증가\n-최대 체력 소폭 증가"
 	}
 	"The Marker Desc 3"
 	{
 		"en"	"-More dmg, slightly more fire rate and reload rate\n-You gain 1 more bullet in the chamber\n-You gain a tiny bit of max hp"
+		"ko"	"-피해량 증가, 발사/재장전 속도 소폭 증가\n-장탄수 1발 증가\n-최대 체력 소폭 증가"
 	}
 	"The Marker Desc 4"
 	{
 		"en"	"More dmg, slightly more fire rate and reload rate\n-You gain 1 more bullet in the chamber\n-You gain a tiny bit of max hp"
+		"ko"	"-피해량 증가, 발사/재장전 속도 소폭 증가\n-장탄수 1발 증가\n-최대 체력 소폭 증가"
 	}
 	"The Marker Desc 5"
 	{
 		"en"	"-More dmg, slightly more fire rate and reload rate\n-You gain a tiny bit of max hp"
+		"ko"	"-피해량 증가, 발사/재장전 속도 소폭 증가\n-최대 체력 소폭 증가"
 	}
 	"The Marker Desc 6"
 	{
 		"en"	"-More dmg, slightly more fire rate and reload rate\n-You gain a tiny bit of max hp"
+		"ko"	"-피해량 증가, 발사/재장전 속도 소폭 증가\n-최대 체력 소폭 증가"
 	}
 	"The Marker Desc 7"
 	{
 		"en"	"-More dmg, slightly more fire rate and reload rate\n-You gain a tiny bit of max hp"
+		"ko"	"-피해량 증가, 발사/재장전 속도 소폭 증가\n-최대 체력 소폭 증가"
+	}
+	"Reconstructive Shotgun"
+	{
+		"en"	"Reconstructive Shotgun"
+		"ko"	"재구성 산탄총"
 	}
 	"Reconstructive Shotgun Desc"
 	{
 		"en"	"Deals more damage to marked enemies and heals (npcs) based off dmg dealt, M2 shows the cooldown\n-The healing nova currently heals 1 target\nYou heal for 5%% of that amount"
+		"ko"	"표적 상태인 대상에게 피해량이 증가하며, 가한 피해량에 따라 NPC들을 치유: 우클릭은 쿨다운을 표시\n-치유 노바는 1명의 대상을 치유할 수 있음\n-해당 효과로 치유 시 사용자도 해당 치유량의 5％를 치유"
 	}
 	"Reconstructive Shotgun Desc 1"
 	{
 		"en"	"-You fire slightly faster and deal more damage\n-Marked enemies take a bit more damage"
+		"ko"	"-발사 속도 소폭 증가, 피해량 증가\n-표적 상태인 적에 대한 피해 증가량 소폭 증가"
 	}
 	"Reconstructive Shotgun Desc 2"
 	{
 		"en"	"-You fire slightly faster and deal more damage\n-Your nova heals 2 targets\n-Marked enemies take a bit more damage"
+		"ko"	"-발사 속도 소폭 증가, 피해량 증가\n-치유 노바가 2명까지 치유 가능\n-표적 상태인 적에 대한 피해 증가량 소폭 증가"
 	}
 	"Reconstructive Shotgun Desc 3"
 	{
 		"en"	"-You fire slightly faster and deal more damage\n-Your nova heals 3 targets\n-Marked enemies take a bit more damage"
+		"ko"	"-발사 속도 소폭 증가, 피해량 증가\n-치유 노바가 3명까지 치유 가능\n-표적 상태인 적에 대한 피해 증가량 소폭 증가"
 	}
 	"Reconstructive Shotgun Desc 4"
 	{
 		"en"	"-You fire slightly faster and deal more damage\n-Your weapon now buffs npcs it heals\n-Pressing R allows you to swap between what type of buffs\n-Marked enemies take a bit more damage"
+		"ko"	"-발사 속도 소폭 증가, 피해량 증가\n-이제 치유하는 대상에게 버프를 부여\n-R키 사용 시 적용되는 버프를 전환 가능\n-표적 상태인 적에 대한 피해 증가량 소폭 증가"
 	}
 	"Reconstructive Shotgun Desc 5"
 	{
 		"en"	"-You fire slightly faster and deal more damage\n-You give stronger buffs\n-Marked enemies take a bit more damage"
+		"ko"	"-발사 속도 소폭 증가, 피해량 증가\n-제공하는 버프의 위력 증가\n-표적 상태인 적에 대한 피해 증가량 소폭 증가"
 	}
 	"Reconstructive Shotgun Desc 6"
 	{
 		"en"	"-You fire slightly faster and deal more damage\n-You give stronger buffs\n-Marked enemies take a bit more damage"
+		"ko"	"-발사 속도 소폭 증가, 피해량 증가\n-제공하는 버프의 위력 증가\n-표적 상태인 적에 대한 피해 증가량 소폭 증가"
 	}
 	"Reconstructive Shotgun Desc 7"
 	{
 		"en"	"-You fire slightly faster and deal more damage\n-You give stronger buffs\n-Marked enemies take a bit more damage"
+		"ko"	"-발사 속도 소폭 증가, 피해량 증가\n-제공하는 버프의 위력 증가\n-표적 상태인 적에 대한 피해 증가량 소폭 증가"
 	}
 	"The Italian Business Desc"
 	{
 		"en"	"-A wrench made by an italian mafia girl (clearly)\n-Allows to repair buildings at hit enemies both\n-Gives barrack resources on hit\n-More effective on marked enemies"
+		"ko"	"-이탈리아인 마피어 소녀가 만든 렌치입니다(정말로요).\n-구조물을 수리하면서 적을 공격 가능\n-적중 시 배럭 지원 생성\n-표적 상태인 대상일 경우 효과 증가"
 	}
 	"The Italian Business Desc 1"
 	{
 		"en"	"-More damage, building hp, repair rate"
+		"ko"	"-피해량, 구조물 체력, 수리 효율 증가"
 	}
 	"The Italian Business Desc 2"
 	{
 		"en"	"More damage, building hp, repair rate\n-You are now able to do a Power-hit with Crouch + m1\n-The power hit briefly stuns enemies and knocks you backwards (and gives resources)"
+		"ko"	"-피해량, 구조물 체력, 수리 효율 증가\n-이제 웅크리기 + 좌클릭을 통해 강타를 사용할 수 있음\n-강타 적중 시 대상을 짧게 기절시키며, 사용자를 뒤로 밀어내고 자원을 생성"
 	}
 	"The Italian Business Desc 3"
 	{
 		"en"	"-More damage, building hp, repair rate"
+		"ko"	"-피해량, 구조물 체력, 수리 효율 증가"
 	}
 	"The Italian Business Desc 4"
 	{
 		"en"	"-More damage, building hp, repair rate\n-You can now do another Power-hit in a row\n-The HUD show if you still can, beware it has increased effect but also cooldown"
+		"ko"	"-피해량, 구조물 체력, 수리 효율 증가\n-이제 두번째 강타를 연속으로 사용할 수 있음\n-HUD에 사용 가능 여부가 표시되며, 연속 사용 시 위력이 증가하지만 쿨다운 역시 증가"
 	}
 	"The Italian Business Desc 5"
 	{
 		"en"	"-More damage, building hp, repair rate"
+		"ko"	"-피해량, 구조물 체력, 수리 효율 증가"
 	}
 	"The Italian Business Desc 6"
 	{
 		"en"	"-More damage, building hp, repair rate"
+		"ko"	"-피해량, 구조물 체력, 수리 효율 증가"
 	}
 	"The Italian Business Desc 7"
 	{
 		"en"	"-More damage, building hp, repair rate"
+		"ko"	"-피해량, 구조물 체력, 수리 효율 증가"
 	}
 }
