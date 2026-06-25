@@ -180,26 +180,31 @@ public void BarrackThorns_ClotThink(int iNPC)
 		if(IsValidClient(owner))
 		{
 			ThornsDelayTimerUpgrade[npc.index] = GetGameTime() + 5.0;
-			if(!ThornsHasElite[npc.index])
+
+			int PapBarracks = Barracks_GetInfo(owner, 1);
+
+			if(!ThornsHasElite[npc.index] && PapBarracks >= 5)
 			{
-				int PapBarracks = Barracks_GetInfo(owner, 1);
-				ThornsHasElite[npc.index] = (PapBarracks >= 5);
-				{
-					ThornsLevelAt[npc.index] = 1;
-					npc.BonusDamageBonus *= 2.0;
-					SetEntProp(npc.index, Prop_Data, "m_iMaxHealth",ReturnEntityMaxHealth(npc.index) * 2);
-				}
+				ThornsHasElite[npc.index] = true;
+				ThornsLevelAt[npc.index] = 1;
+
+				npc.BonusDamageBonus *= 2.0;
+
+				int newMax = ReturnEntityMaxHealth(npc.index) * 2;
+				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", newMax);
+				SetEntProp(npc.index, Prop_Data, "m_iHealth", newMax);
 			}
-			if(!ThornsHasMaxPot[npc.index])
+
+			if(!ThornsHasMaxPot[npc.index] && PapBarracks >= 6)
 			{
-				int PapBarracks = Barracks_GetInfo(owner, 1);
-				ThornsHasMaxPot[npc.index] = (PapBarracks >= 6);
-				{
-					ThornsLevelAt[npc.index] = 2;
-					SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", RoundToNearest(float(ReturnEntityMaxHealth(npc.index)) * 1.5));
-				}
+				ThornsHasMaxPot[npc.index] = true;
+				ThornsLevelAt[npc.index] = 2;
+
+				int newMax = RoundToNearest(float(ReturnEntityMaxHealth(npc.index)) * 1.5);
+				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", newMax);
+				SetEntProp(npc.index, Prop_Data, "m_iHealth", newMax);
 			}
-			if(ThornsHasElite[npc.index] && ThornsHasMaxPot[npc.index] && ThornsLevelAt[npc.index] == 2)
+			if(ThornsHasElite[npc.index] && ThornsHasMaxPot[npc.index])
 			{
 				ThornsDelayTimerUpgrade[npc.index] = FAR_FUTURE;
 			}
