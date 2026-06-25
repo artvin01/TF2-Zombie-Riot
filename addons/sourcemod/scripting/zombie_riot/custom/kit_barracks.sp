@@ -54,7 +54,7 @@ void PrecacheBarracksMusic()
 {
 	if(!BR_Precached)
 	{
-		PrecacheSoundCustom("#zombiesurvival/barracks_lastman.mp3", _, 1);
+	//	PrecacheSoundCustom("#zombiesurvival/barracks_lastman.mp3", _, 1);
 		BR_Precached = true;
 	} 
 }
