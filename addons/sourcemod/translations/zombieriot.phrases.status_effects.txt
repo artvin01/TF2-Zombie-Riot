@@ -3301,7 +3301,7 @@
 	{
 		"en"	"Im a real Oak guy. I love Oak, its so much better than Birch."
 		"ko"	"난 진정한 참나무맨이야. 난 참나무를 사랑하지. 자작나무보다 더 낫거든"
-		//Words from translator. Funnily enough I couldn't grasp how this phrase supposed to mean
+		//Words from translator. Funnily enough I couldn't grasp what this phrase supposed to mean
 	}
 	"Rage Prefix Text 39"
 	{
@@ -3461,7 +3461,7 @@
 	"Rage Prefix Text 70"
 	{
 		"en"	"Enjoying the waveset so far? Enhance your weapon and prepare for some prefix bullshit."
-		"ko"	"웨이브셋은 즐기고 있어? 무기 강화하고 접두자 X랄을 준비하라고."
+		"ko"	"웨이브셋은 즐기고 있어? 무기 강화하고 접두사 X랄을 준비하라고."
 	}
 	"Rage Prefix Text 71"
 	{
