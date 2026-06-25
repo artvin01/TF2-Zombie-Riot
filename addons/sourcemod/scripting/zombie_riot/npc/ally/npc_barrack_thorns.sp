@@ -89,8 +89,8 @@ methodmap BarrackThorns < BarrackBody
 		{
 			int PapBarracks = Barracks_GetInfo(client, 1);
 
-			elite = (PapBarracks >= 5);     // Elite da PAP 5
-			MaxPot = (PapBarracks >= 6);    // MaxPot da PAP 6
+			elite = (PapBarracks >= 5);     // He's ELITE when pap >= 5
+			MaxPot = (PapBarracks >= 6);    // He's Max Potency when Pap >=6
 		}
 		
 		char healthSize[10];
@@ -682,14 +682,14 @@ public Action BarrackThorns_OnTakeDamage(int victim, int &attacker, int &inflict
 void SetDownedState_Thorns(int iNpc, bool StateDo)
 {
     BarrackThorns npc = view_as<BarrackThorns>(iNpc);
-    if(StateDo) // entra in downed
+    if(StateDo) // Make him go KO
     {
         ThornsDowned[iNpc] = 1;
         ThornsRevive[iNpc] = GetGameTime() + 60.0;
         b_ThisEntityIgnored[iNpc] = true;
         b_NpcIsInvulnerable[iNpc] = true;
     }
-    else // rialzati
+    else // Get him back up
     {
         if(ThornsDowned[iNpc])
         {
@@ -698,8 +698,7 @@ void SetDownedState_Thorns(int iNpc, bool StateDo)
         ThornsRevive[iNpc] = 0.0;
         b_ThisEntityIgnored[iNpc] = false;
         b_NpcIsInvulnerable[iNpc] = false;
-        SetEntProp(iNpc, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(iNpc));
-        // effetto di guarigione / particelle facoltative
+        SetEntProp(iNpc, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(iNpc));	// Heal him back to full
         DesertYadeamDoHealEffect(iNpc, 200.0);
 		NpcSpeechBubble(npc.index, "I'm back i'm back... no need to make a fuss.", 7, {50,205,50,255}, {0.0,0.0,120.0}, "");
     }
