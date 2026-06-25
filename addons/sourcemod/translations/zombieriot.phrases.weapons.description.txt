@@ -5515,4 +5515,108 @@
 		"en"	"-Overall Stat Increases"
 		"ko"	"-전반적인 능력치 증가"
 	}
+	"The Commander"
+	{
+		"en"	"The Commander"
+	}
+	"The Commander Desc"
+	{
+		"en"	"A kit based on having your own army and supporting it, consists of:\n-A revolver for resources and support, a shotgun for dmg and healing and,later, buffing your troops\n-A wrench"
+	}
+	"The Marker Desc"
+	{
+		"en"	"A support gun for the Barracks Kit\n-Marks targets on hit and deals more damage to marked enemies\n-Generates resources (more on marked enemies)\n-More accurate but fires and reloads slower"
+	}
+	"The Marker Desc 1"
+	{
+		"en"	"-More dmg, slightly more fire rate and reload rate\n-You gain 1 more bullet in the chamber\n-You gain a tiny bit of max hp"
+	}
+	"The Marker Desc 2"
+	{
+		"en"	"-More dmg, slightly more fire rate and reload rate\n-You gain 1 more bullet in the chamber\n-You gain a tiny bit of max hp"
+	}
+	"The Marker Desc 3"
+	{
+		"en"	"-More dmg, slightly more fire rate and reload rate\n-You gain 1 more bullet in the chamber\n-You gain a tiny bit of max hp"
+	}
+	"The Marker Desc 4"
+	{
+		"en"	"More dmg, slightly more fire rate and reload rate\n-You gain 1 more bullet in the chamber\n-You gain a tiny bit of max hp"
+	}
+	"The Marker Desc 5"
+	{
+		"en"	"-More dmg, slightly more fire rate and reload rate\n-You gain a tiny bit of max hp"
+	}
+	"The Marker Desc 6"
+	{
+		"en"	"-More dmg, slightly more fire rate and reload rate\n-You gain a tiny bit of max hp"
+	}
+	"The Marker Desc 7"
+	{
+		"en"	"-More dmg, slightly more fire rate and reload rate\n-You gain a tiny bit of max hp"
+	}
+	"Reconstructive Shotgun Desc"
+	{
+		"en"	"Deals more damage to marked enemies and heals (npcs) based off dmg dealt, M2 shows the cooldown\n-The healing nova currently heals 1 target\nYou heal for 5%% of that amount"
+	}
+	"Reconstructive Shotgun Desc 1"
+	{
+		"en"	"-You fire slightly faster and deal more damage\n-Marked enemies take a bit more damage"
+	}
+	"Reconstructive Shotgun Desc 2"
+	{
+		"en"	"-You fire slightly faster and deal more damage\n-Your nova heals 2 targets\n-Marked enemies take a bit more damage"
+	}
+	"Reconstructive Shotgun Desc 3"
+	{
+		"en"	"-You fire slightly faster and deal more damage\n-Your nova heals 3 targets\n-Marked enemies take a bit more damage"
+	}
+	"Reconstructive Shotgun Desc 4"
+	{
+		"en"	"-You fire slightly faster and deal more damage\n-Your weapon now buffs npcs it heals\n-Pressing R allows you to swap between what type of buffs\n-Marked enemies take a bit more damage"
+	}
+	"Reconstructive Shotgun Desc 5"
+	{
+		"en"	"-You fire slightly faster and deal more damage\n-You give stronger buffs\n-Marked enemies take a bit more damage"
+	}
+	"Reconstructive Shotgun Desc 6"
+	{
+		"en"	"-You fire slightly faster and deal more damage\n-You give stronger buffs\n-Marked enemies take a bit more damage"
+	}
+	"Reconstructive Shotgun Desc 7"
+	{
+		"en"	"-You fire slightly faster and deal more damage\n-You give stronger buffs\n-Marked enemies take a bit more damage"
+	}
+	"The Italian Business Desc"
+	{
+		"en"	"-A wrench made by an italian mafia girl (clearly)\n-Allows to repair buildings at hit enemies both\n-Gives barrack resources on hit\n-More effective on marked enemies"
+	}
+	"The Italian Business Desc 1"
+	{
+		"en"	"-More damage, building hp, repair rate"
+	}
+	"The Italian Business Desc 2"
+	{
+		"en"	"More damage, building hp, repair rate\n-You are now able to do a Power-hit with Crouch + m1\n-The power hit briefly stuns enemies and knocks you backwards (and gives resources)"
+	}
+	"The Italian Business Desc 3"
+	{
+		"en"	"-More damage, building hp, repair rate"
+	}
+	"The Italian Business Desc 4"
+	{
+		"en"	"-More damage, building hp, repair rate\n-You can now do another Power-hit in a row\n-The HUD show if you still can, beware it has increased effect but also cooldown"
+	}
+	"The Italian Business Desc 5"
+	{
+		"en"	"-More damage, building hp, repair rate"
+	}
+	"The Italian Business Desc 6"
+	{
+		"en"	"-More damage, building hp, repair rate"
+	}
+	"The Italian Business Desc 7"
+	{
+		"en"	"-More damage, building hp, repair rate"
+	}
 }

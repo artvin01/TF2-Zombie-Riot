@@ -580,6 +580,8 @@ void Music_EndLastmann(bool Reinforce=false)
 						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/heatbroken_lastman.mp3", 2.0);
 					case 16:
 						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/red_mist_lastman.mp3", 2.0);
+					case 17:
+						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/barracks_lastman.mp3", 2.0);
 				}
 				SetMusicTimer(client, 0);
 				MusicLastmann.StopMusic(client);
@@ -1073,6 +1075,11 @@ void Music_Update(int client)
 						EmitCustomToClient(client, "#zombiesurvival/red_mist_lastman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.3);//1.3 is volume, after that is pitch
 						SetMusicTimer(client, GetTime() + 91);
 					}
+				}
+				case 17:
+				{
+					EmitCustomToClient(client, "#zombiesurvival/barracks_lastman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.7); // Volume is 1.7 which is quite high due to mp3 file volume being quite lower, the end result is about the same as others
+					SetMusicTimer(client, GetTime() + 258);
 				}
 				default:
 				{	

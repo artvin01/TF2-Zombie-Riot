@@ -2195,7 +2195,7 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 			view_as<BarrackBody>(entity).BonusDamageBonus /= AdjustValues;
 			f_FreeplayAlteredDamageOld_Barracks[entity] = Attribute;
 		}
-		if(!FinalBuilder[entity] && FinalBuilder[client])
+		if(!FinalBuilder[entity] && FinalBuilder[client])	// I'll keep this here in case i wanna use it for something
 		{
 			FinalBuilder[entity] = true;
 			view_as<BarrackBody>(entity).BonusDamageBonus *= 1.35;
@@ -2207,16 +2207,16 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 		if(!WildingenBuilder[entity] && WildingenBuilder[client])
 		{
 			WildingenBuilder[entity] = true;
-			view_as<BarrackBody>(entity).BonusDamageBonus *= 1.55;
-			view_as<BarrackBody>(entity).BonusFireRate *= 0.7;
+			view_as<BarrackBody>(entity).BonusDamageBonus *= 1.3;
+			view_as<BarrackBody>(entity).BonusFireRate *= 0.85;
 			if(BarracksUpgrade)
-				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.7));
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 1.7));
+				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.6));
+			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 1.6));
 		}
 		if(!WildingenBuilder2[entity] && WildingenBuilder2[client])
 		{
 			WildingenBuilder2[entity] = true;
-			view_as<BarrackBody>(entity).BonusDamageBonus *= 1.55;
+			view_as<BarrackBody>(entity).BonusDamageBonus *= 1.5;
 			view_as<BarrackBody>(entity).BonusFireRate *= 0.7;
 			if(BarracksUpgrade)
 				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 1.7));
@@ -2229,21 +2229,6 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 			view_as<BarrackBody>(entity).BonusFireRate /= 0.8;
 			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / 1.35));
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) / 1.35));
-		}
-		if(!GlassBuilder[entity] && GlassBuilder[client])
-		{
-			GlassBuilder[entity] = true;
-			view_as<BarrackBody>(entity).BonusDamageBonus *= 1.15;
-			SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) * 0.8));
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 0.8));
-		}
-		if(GlassBuilder[entity] && !GlassBuilder[client])
-		{
-			GlassBuilder[entity] = false;
-			view_as<BarrackBody>(entity).BonusDamageBonus /= 1.15;
-			if(BarracksUpgrade)
-				SetEntProp(entity, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(entity, Prop_Data, "m_iHealth")) / 0.8));
-			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) / 0.8));
 		}
 		if(!(i_CurrentEquippedPerk[entity] & PERK_MORNING_COFFEE) && (i_CurrentEquippedPerk[client] & PERK_MORNING_COFFEE))
 		{
