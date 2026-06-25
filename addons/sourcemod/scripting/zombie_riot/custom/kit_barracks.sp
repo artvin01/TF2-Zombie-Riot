@@ -36,7 +36,7 @@ A wrench that works similarly to Tinker's one, starting from second pap it gets 
 */
 public void Barracks_OnMapStart()
 {
-    //precache + zero stuff
+	//precache + zero stuff
 	PrecacheSound(WEAPON_SWITCH_SOUND);
 	PrecacheSound(CRIME_SOUND);
 	Zero(CivType);
@@ -107,37 +107,37 @@ bool IsBarracks(int client)
 public int WhatCiv(int client)
 {
 	// And so it begins to check every single Civ
-    if (Store_HasNamedItem(client, "Almina's Last Hope"))
-    {
-        if (Store_HasNamedItem(client, "Almina and Expidonsan's Help"))
-        {
-            CivType[client] = Almina_Thorns;
-        }
-        else 
-        {
-            CivType[client] = Thorns;
-        }
-    }
-    // Check for Expidonsa
-    else if (Store_HasNamedItem(client, "Almina and Expidonsan's Help"))
-    {
-        CivType[client] = Almina_Thornless;
-    }
-    // Check Blitzkrieg
-    else if (Store_HasNamedItem(client, "Blitzkrieg's Army"))
-    {
-        CivType[client] = Alternative;
-    }
-    // Check Guln
-    else if (Store_HasNamedItem(client, "Guln's Companions"))
-    {
-        CivType[client] = Combine;
-    }
-    // Nothing equipped = Default
-    else
-    {
-        CivType[client] = Default;
-    }
+	if (Store_HasNamedItem(client, "Almina's Last Hope"))
+	{
+		if (Store_HasNamedItem(client, "Almina and Expidonsan's Help"))
+		{
+			CivType[client] = Almina_Thorns;
+		}
+		else 
+		{
+			CivType[client] = Thorns;
+		}
+	}
+	// Check for Expidonsa
+	else if (Store_HasNamedItem(client, "Almina and Expidonsan's Help"))
+	{
+		CivType[client] = Almina_Thornless;
+	}
+	// Check Blitzkrieg
+	else if (Store_HasNamedItem(client, "Blitzkrieg's Army"))
+	{
+		CivType[client] = Alternative;
+	}
+	// Check Guln
+	else if (Store_HasNamedItem(client, "Guln's Companions"))
+	{
+		CivType[client] = Combine;
+	}
+	// Nothing equipped = Default
+	else
+	{
+		CivType[client] = Default;
+	}
 	return CivType[client];
 }
 public void Weapon_Marker_M2(int client, int weapon, bool crit, int slot)
@@ -430,10 +430,10 @@ public void Barracks_OnTakeDamage_Italian(int victim, int &attacker, int &inflic
 }
 public int Barracks_GetInfo(int client, int choice)
 {
-    if (client > 0 && client <= MaxClients)
-    {
+	if (client > 0 && client <= MaxClients)
+	{
 		if (!IsBarracks(client))
-        return -1;
+		return -1;
 		
 		switch(choice)
 		{
@@ -442,58 +442,58 @@ public int Barracks_GetInfo(int client, int choice)
 			case 2:
 				return ResourceGen[client];
 		}
-    }
-    return 0;
+	}
+	return 0;
 }
 public void HealingCap(int client)
 {
-    int Targets = 1;
-    switch(WeaponPap[client])
-    {
-        case 1:
-        {
-            Targets = 1;
-        }
-        case 2:
-        {
-            Targets = 2;
-        }
-        case 3:
-        {
-            Targets = 3;
-        }
-        case 4:
-        {
-            Targets = 3;
-        }
-        case 5:
-        {
-            Targets = 3;
-        }
-        case 6:
-        {
-            Targets = 3;
-        }
-        case 7:
-        {
-            Targets = 3;
-        }
-    }
-    ShotgunHeal_Targets[client] = Targets; 
+	int Targets = 1;
+	switch(WeaponPap[client])
+	{
+		case 1:
+		{
+			Targets = 1;
+		}
+		case 2:
+		{
+			Targets = 2;
+		}
+		case 3:
+		{
+			Targets = 3;
+		}
+		case 4:
+		{
+			Targets = 3;
+		}
+		case 5:
+		{
+			Targets = 3;
+		}
+		case 6:
+		{
+			Targets = 3;
+		}
+		case 7:
+		{
+			Targets = 3;
+		}
+	}
+	ShotgunHeal_Targets[client] = Targets; 
 }
 public void Barracks_ChangeBuffMode(int client, int weapon, bool crit, int slot)
 {
-    if (!IsValidClient(client) || !IsPlayerAlive(client))
-        return;
+	if (!IsValidClient(client) || !IsPlayerAlive(client))
+		return;
 
-    if (BarracksBuffMode[client] == 0)
-    {
-        BarracksBuffMode[client] = 1;
-    }
-    else
-    {
-        BarracksBuffMode[client] = 0;
-    }
+	if (BarracksBuffMode[client] == 0)
+	{
+		BarracksBuffMode[client] = 1;
+	}
+	else
+	{
+		BarracksBuffMode[client] = 0;
+	}
 	ClientCommand(client, "playgamesound weapons/vaccinator_toggle.wav");
 }
 public void ShotgunBuffs(int client, int entity)
@@ -504,7 +504,7 @@ public void ShotgunBuffs(int client, int entity)
 		{
 			switch(WeaponPap[client])
 			{
-                case 4:
+				case 4:
 				{
 					ApplyStatusEffect(client, entity, "Barrack Defense Overclock 1", 5.0);
 					ApplyStatusEffect(client, client, "Barrack Defense Overclock 1", 5.0);
@@ -528,9 +528,9 @@ public void ShotgunBuffs(int client, int entity)
 		}
 		else	// Otherwise it's offense mode so buffs that increase dmg/attack speed of troops
 		{
-            switch(WeaponPap[client])
-            {
-                case 4:
+			switch(WeaponPap[client])
+			{
+				case 4:
 				{
 					ApplyStatusEffect(client, entity, "Barrack Offense Overclock 1", 5.0);
 					ApplyStatusEffect(client, client, "Barrack Offense Overclock 1", 5.0);
@@ -550,7 +550,7 @@ public void ShotgunBuffs(int client, int entity)
 					ApplyStatusEffect(client, entity, "Barrack Offense Overclock 4", 5.0);
 					ApplyStatusEffect(client, client, "Barrack Offense Overclock 4", 5.0);
 				}
-            }
+			}
 		}
 	}
 }

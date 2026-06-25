@@ -605,6 +605,7 @@ char s_MissionClient[64]; // Who hired us for the current job
 #include "betting.sp"
 #include "dungeons.sp"
 #include "sm_skyboxprops.sp"
+#include "shared/sound_manualdownload.sp"
 #include "custom/homing_projectile_logic.sp"
 #include "custom/weapon_slug_rifle.sp"
 #include "custom/weapon_boom_stick.sp"
@@ -1295,6 +1296,8 @@ void ZR_ClientPutInServer(int client)
 
 	if(BetWar_Mode() || Dungeon_Mode())
 		b_AntiLateSpawn_Allow[client] = true;
+
+	SoundManual_OnClientPutInServer(client);
 }
 
 void ZR_ClientDisconnect(int client)

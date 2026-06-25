@@ -682,29 +682,29 @@ public Action BarrackThorns_OnTakeDamage(int victim, int &attacker, int &inflict
 		SetDownedState_Thorns(npc.index, true);
 	}
 
-		return Plugin_Changed;
+	return Plugin_Changed;
 }
 void SetDownedState_Thorns(int iNpc, bool StateDo)
 {
-    BarrackThorns npc = view_as<BarrackThorns>(iNpc);
-    if(StateDo) // Make him go KO
-    {
-        ThornsDowned[iNpc] = 1;
-        ThornsRevive[iNpc] = GetGameTime() + 60.0;
-        b_ThisEntityIgnored[iNpc] = true;
-        b_NpcIsInvulnerable[iNpc] = true;
-    }
-    else // Get him back up
-    {
-        if(ThornsDowned[iNpc])
-        {
-            ThornsDowned[iNpc] = 0;
-        }
-        ThornsRevive[iNpc] = 0.0;
-        b_ThisEntityIgnored[iNpc] = false;
-        b_NpcIsInvulnerable[iNpc] = false;
-        SetEntProp(iNpc, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(iNpc));	// Heal him back to full
-        DesertYadeamDoHealEffect(iNpc, 200.0);
+	BarrackThorns npc = view_as<BarrackThorns>(iNpc);
+	if(StateDo) // Make him go KO
+	{
+		ThornsDowned[iNpc] = 1;
+		ThornsRevive[iNpc] = GetGameTime() + 60.0;
+		b_ThisEntityIgnored[iNpc] = true;
+		b_NpcIsInvulnerable[iNpc] = true;
+	}
+	else // Get him back up
+	{
+		if(ThornsDowned[iNpc])
+		{
+			ThornsDowned[iNpc] = 0;
+		}
+		ThornsRevive[iNpc] = 0.0;
+		b_ThisEntityIgnored[iNpc] = false;
+		b_NpcIsInvulnerable[iNpc] = false;
+		SetEntProp(iNpc, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(iNpc));	// Heal him back to full
+		DesertYadeamDoHealEffect(iNpc, 200.0);
 		NpcSpeechBubble(npc.index, "I'm back i'm back... no need to make a fuss.", 7, {50,205,50,255}, {0.0,0.0,120.0}, "");
-    }
+	}
 }
