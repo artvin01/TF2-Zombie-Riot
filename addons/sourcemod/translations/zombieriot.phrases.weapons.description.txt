@@ -5617,10 +5617,15 @@
 		"en"	"-You fire slightly faster and deal more damage\n-You give stronger buffs\n-Marked enemies take a bit more damage"
 		"ko"	"-발사 속도 소폭 증가, 피해량 증가\n-제공하는 버프의 위력 증가\n-표적 상태인 적에 대한 피해 증가량 소폭 증가"
 	}
+	"The Italian Business"
+	{
+		"en"	"The Italian Business"
+		"ko"	"이탈리아식 사업"
+	}
 	"The Italian Business Desc"
 	{
 		"en"	"-A wrench made by an italian mafia girl (clearly)\n-Allows to repair buildings at hit enemies both\n-Gives barrack resources on hit\n-More effective on marked enemies"
-		"ko"	"-이탈리아인 마피어 소녀가 만든 렌치입니다(정말로요).\n-구조물을 수리하면서 적을 공격 가능\n-적중 시 배럭 지원 생성\n-표적 상태인 대상일 경우 효과 증가"
+		"ko"	"-이탈리아인 마피아 소녀가 만든 렌치입니다(정말로요).\n-구조물을 수리하면서 적을 공격 가능\n-적중 시 배럭 지원 생성\n-표적 상태인 대상일 경우 효과 증가"
 	}
 	"The Italian Business Desc 1"
 	{
