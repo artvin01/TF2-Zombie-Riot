@@ -181,7 +181,7 @@ public void ZRModifs_NostalicaNPC(int iNpc)
 	{
 		SetEntProp(iNpc, Prop_Data, "m_iHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 1.25));
 		SetEntProp(iNpc, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(iNpc)) * 1.25));
-		fl_Extra_Damage[iNpc] *= 1.5;
+		fl_Extra_Damage[iNpc] *= 1.35;
 	}
 }
 
