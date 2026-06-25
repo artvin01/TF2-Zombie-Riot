@@ -3923,5 +3923,76 @@
 		"en"	"Take 25％ less damage during dashes"
 		"ko"	"돌진하는 동안 받는 피해량이 25％ 감소합니다."
 	}
-	
+	"Barrack Defense Overclock 1"
+	{
+		"en"	"Barrack Defense Overclock (Tier 1)"
+	}
+	"Barrack Defense Overclock 1 Desc"
+	{
+		"en"	"Take 10%% less damage\nMoves 5%% faster"
+	}
+	"Barrack Defense Overclock 2"
+	{
+		"en"	"Barrack Defense Overclock (Tier 2)"
+	}
+	"Barrack Defense Overclock 2 Desc"
+	{
+		"en"	"Take 15%% less damage\nMoves 10%% faster"
+	}
+	"Barrack Defense Overclock 3"
+	{
+		"en"	"Barrack Defense Overclock (Tier 3)"
+	}
+	"Barrack Defense Overclock 3 Desc"
+	{
+		"en"	"Take 20%% less damage\nMoves 15%% faster"
+	}
+	"Barrack Defense Overclock 4"
+	{
+		"en"	"Barrack Defense Overclock (Tier 4)"
+	}
+	"Barrack Defense Overclock 4 Desc"
+	{
+		"en"	"Take 25%% less damage\nMoves 20%% faster"
+	}
+	"Barrack Offense Overclock 1"
+	{
+		"en"	"Barrack Offense Overclock (Tier 1)"
+	}
+	"Barrack Offense Overclock 1 Desc"
+	{
+		"en"	"Deal 10%% more damage\n5%% faster attack speed"
+	}
+	"Barrack Offense Overclock 2"
+	{
+		"en"	"Barrack Offense Overclock (Tier 2)"
+	}
+	"Barrack Offense Overclock 2 Desc"
+	{
+		"en"	"Deal 15%% more damage\n10%% faster attack speed"
+	}
+	"Barrack Offense Overclock 3"
+	{
+		"en"	"Barrack Offense Overclock (Tier 3)"
+	}
+	"Barrack Offense Overclock 3 Desc"
+	{
+		"en"	"Deal 20%% more damage\n15%% faster attack speed"
+	}
+	"Barrack Offense Overclock 4"
+	{
+		"en"	"Barrack Offense Overclock (Tier 4)"
+	}
+	"Barrack Offense Overclock 4 Desc"
+	{
+		"en"	"Deal 25%% more damage\n20%% faster attack speed"
+	}
+	"Healing Decay"
+	{
+		"en"	"Healing Decay"
+	}
+	"Healing Decay Desc"
+	{
+		"en"	"Cannot be healed by a Healing Nova"
+	}
 }

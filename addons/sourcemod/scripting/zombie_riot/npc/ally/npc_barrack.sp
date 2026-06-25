@@ -808,6 +808,10 @@ public Action BarrackBody_OnTakeDamage(int victim, int &attacker, int &inflictor
 	if(i_NpcIsABuilding[victim])
 		return Plugin_Continue;
 		
+	if(HasSpecificBuff(attacker, "Marked"))
+	{
+		damage *= 0.9;
+	}
 	
 	if(!b_thisNpcIsARaid[attacker])
 	{
@@ -1114,7 +1118,6 @@ float Barracks_UnitExtraRangeCalc(int entity, int client, float range, bool buil
 
 	if(building && (i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CRENELLATIONS))
 		RangeMulti *= 2.0;
-
 	
 	range *= RangeMulti;
 	return range;

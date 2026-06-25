@@ -150,11 +150,16 @@ static void HeartBroken_HUD(int client)
 	*/
 	if(f_HeartBroken_HUDDelay[client] < GetGameTime())
 	{
-		
+		float CoffinPercentToFull = CoffinCharge[client];
+
+		CoffinPercentToFull *= float(MAX_COFFINS);
+		float UntillNextCoffin = FloatFraction(CoffinPercentToFull);
+		UntillNextCoffin *= 100.0;
+
 		if(WeaponLevel[client] >= 6)
-			PrintHintText(client,"Coffins [%i/%i]", RoundToFloor(CoffinCharge[client] * float(MAX_COFFINS)), MAX_COFFINS);
+			PrintHintText(client,"Coffins [%i/%i]\nNext Coffin: (%.1f％)", RoundToFloor(CoffinCharge[client] * float(MAX_COFFINS)), MAX_COFFINS, UntillNextCoffin);
 		else
-			PrintHintText(client,"Coffins [%i/%i]", RoundToFloor(CoffinCharge[client] * float(MAX_COFFINS)), MAX_COFFINS / 2);
+			PrintHintText(client,"Coffins [%i/%i]\nNext Coffin: (%.1f％)", RoundToFloor(CoffinCharge[client] * float(MAX_COFFINS)), MAX_COFFINS / 2, UntillNextCoffin);
 		f_HeartBroken_HUDDelay[client] = GetGameTime() + 0.5;
 	}
 }
@@ -233,7 +238,6 @@ public void HeartBroken_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 	damage *= 0.9;
 	
 	//allow coffin gain at anypoint so they can gather it up beffore upgrading to this
-	GiveCoffinOnDamage(attacker,victim,  damage);
 	if(WeaponLevel[attacker] >= 5)
 	{
 		//more coffins means more damage, 0.2 is the dmg multiplier
@@ -242,6 +246,7 @@ public void HeartBroken_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 
 	if(zr_custom_damage & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
 		return;
+	float GiveCoffinCharge = 0.05;
 	//dont do anything.
 
 	if(HasSpecificBuff(weapon, "Decapitate"))
@@ -253,6 +258,7 @@ public void HeartBroken_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 		EmitSoundToAll(HEARTBREAK_DASHHIT, attacker, _, 70, _, 1.0, 100);
 		SensalCauseKnockback(attacker, victim, 0.5, false);
 		RemoveSpecificBuff(weapon, "Decapitate");
+		GiveCoffinCharge += 0.1;
 	}
 	if(HasSpecificBuff(attacker, "Memorial Possession"))
 	{
@@ -264,6 +270,9 @@ public void HeartBroken_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 		else
 			StatusEffects_MemorialDebuffAdd(attacker, 1);
 	}
+	GiveCoffinOnDamage(attacker,victim,  0.0, GiveCoffinCharge);
+	f_HeartBroken_HUDDelay[attacker] = 0.0;
+	HeartBroken_HUD(attacker);
 	ApplyStatusEffect(attacker, victim, "Sinking", 10.0);
 	StatusEffects_SinkingDebuffAdd(victim, 1);
 }
@@ -712,8 +721,17 @@ public void Horse_Projectile_Hit(int entity, int target)
 
 	float Wand_Dmg = f_WandDamage[entity];
 	
+	if(!HasSpecificBuff(entity, "Sinking"))
+	{
+		GiveCoffinOnDamage(owner,owner,  0.0, 0.025);
+		f_HeartBroken_HUDDelay[owner] = 0.0;
+		HeartBroken_HUD(owner);
+	}
 
 	ApplyStatusEffect(owner, target, "Sinking", 10.0);
+
+	//detector for coffin gain
+	ApplyStatusEffect(entity, entity, "Sinking", 999.0);
 	StatusEffects_SinkingDebuffAdd(target, 1);
 	float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 	SDKHooks_TakeDamage(target, entity, owner, Wand_Dmg, DMG_CLUB, -1, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
@@ -1118,7 +1136,7 @@ static void spawnBeam(float beamTiming, int r, int g, int b, int a, char sprite[
 
 
 
-stock void GiveCoffinOnDamage(int client, int victim, float damage)
+stock void GiveCoffinOnDamage(int client, int victim, float damage, float Percentage = 0.0)
 {
 	int MinCashMaxGain = CurrentCash;
 	if(MinCashMaxGain <= 1000)
@@ -1139,10 +1157,21 @@ stock void GiveCoffinOnDamage(int client, int victim, float damage)
 	DamageForMaxCharge *= 0.75;
 	//bunch of adjustments for nerfs and etc
 	DamageForMaxCharge *= 0.8;
-	if(StatusEffects_SinkingDebuffMaxStacks(victim))
-		DamageForMaxCharge *= 0.5;
+	if(Percentage != 0.0)
+	{
+		DamageForMaxCharge = (Percentage / float(MAX_COFFINS));
+		if(StatusEffects_SinkingDebuffMaxStacks(victim))
+			DamageForMaxCharge *= 2.0;
+		CoffinCharge[client] += DamageForMaxCharge;
+	}
+	else
+	{
 
-	CoffinCharge[client] += (damage / DamageForMaxCharge);
+		if(StatusEffects_SinkingDebuffMaxStacks(victim))
+			DamageForMaxCharge *= 0.5;
+
+		CoffinCharge[client] += (damage / DamageForMaxCharge);
+	}
 	if(WeaponLevel[client] >= 6)
 	{
 		if(CoffinCharge[client] >= 1.0)
