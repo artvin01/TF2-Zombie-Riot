@@ -3521,7 +3521,7 @@
 	"Rage Prefix Text 81"
 	{
 		"en"	"MERCENARIES. ALL THEY THINK ABOUT IS THEMSELVES AND THEIR WAVESETS."
-		"ko"	"용병들. 걔네가 생각하는건 그저 자기들과 자기들 웨이브셋들이지"
+		"ko"	"용병들이여. 그들이 생각하는건 오직 자신들과 자신들의 웨이브셋들이다."
 	}
 	"Rage Prefix Text 82"
 	{
