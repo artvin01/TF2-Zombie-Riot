@@ -44,7 +44,8 @@ Main Servers:
 
 
 ## info
-Zr uses A system that allows creators to add more sounds without straining servers and others
+Zr uses a system that allows creators to add more sounds without straining servers and others.
+
 This uses a different repo were you download sounds manually with a simple drag and drop.
 - [Manual ZR Sound Repo](https://github.com/artvin01/ZrManualSounds)
  
