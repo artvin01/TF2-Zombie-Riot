@@ -47,7 +47,8 @@ def generate_weapon_icon(weapon_data, weapon_name, pure_filename, prefix="", bod
     if (bodygroupmap_path:=f"{prefix}decompiled/{pure_filename}.json") not in BODYGROUP_MAPPINGS: BODYGROUP_MAPPINGS[bodygroupmap_path] = json.loads(util.read(bodygroupmap_path))
     smd_path = f"{prefix}decompiled/{BODYGROUP_MAPPINGS[bodygroupmap_path][mdl_bodygroup]}"
 
-    if smd_path == "decompiled/w_crossbow_reference.smd": return "" # TODO see below
+    # NOTE pyassimp crashes if the material a triangle is referencing has spaces in it!!
+    if smd_path == "decompiled/w_crossbow_reference.smd": util.write(smd_path, util.read(smd_path).replace(" dirtmap",""))
 
     util.debug(f"[weaponicon] {"✓" if os.path.isfile(smd_path) else "✗"} {smd_path} : {mdl_bodygroup}","weaponicon","OKBLUE")
 
@@ -56,10 +57,6 @@ def generate_weapon_icon(weapon_data, weapon_name, pure_filename, prefix="", bod
         return f"{prefix}icons/{pure_filename}_{mdl_bodygroup}.png"
 
     # Convert SMD => OBJ
-    # TODO pyassimp just HATES this model and I do not know why
-    # [LOG] [weaponicon] Crossbow, custom_weaponry_1_57, noprefix
-    # [LOG] [weaponicon] ✓ decompiled/w_crossbow_reference.smd : 4
-    # pyassimp.errors.AssimpError: Could not import file!
     with pyassimp.load(smd_path) as assimp_scene: # <class 'contextlib._GeneratorContextManager'> must have storage info
         pyassimp.export(assimp_scene, f"{prefix}decompiled/{pure_filename}_{mdl_bodygroup}.obj", "obj")
 
