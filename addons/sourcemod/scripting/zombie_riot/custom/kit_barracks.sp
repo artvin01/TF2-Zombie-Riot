@@ -47,6 +47,8 @@ public void Barracks_OnMapStart()
 	Zero(Barrack_HUDDelay);
 	Zero(ResourceGen);
 	Zero(ReDash);
+	Zero(Barracks_NovaCDTime);
+	Zero(Barracks_PowerHitTime);
 	
 	BR_Precached = false;
 }
