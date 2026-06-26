@@ -954,7 +954,8 @@ public Action Timer_Temp(Handle timer)
 	}
 	
 #if defined ZR
-	if(RaidbossIgnoreBuildingsLogic())
+	bool raid = RaidbossIgnoreBuildingsLogic();
+	if(raid)
 	{
 		if(i_npcspawnprotection[EntRefToEntIndex(RaidBossActive)] > NPC_SPAWNPROT_INIT)
 		{
@@ -973,6 +974,25 @@ public Action Timer_Temp(Handle timer)
 			}
 		}
 	}
+	
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if (!IsClientInGame(client) || IsFakeClient(client))
+			continue;
+		
+		// Always show the raid boss to everyone on the HUD
+		if (raid)
+			Calculate_And_Display_hp(client, EntRefToEntIndex(RaidBossActive), 0.0, true, .RaidHudForce = true);
+		
+		// Show the NPC a player is spectating on the HUD
+		if (IsClientObserver(client) && GetEntProp(client, Prop_Send, "m_iObserverMode") == OBS_MODE_CHASE)
+		{
+			int target = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
+			if (target > MaxClients && b_ThisWasAnNpc[target] && !b_NpcHasDied[target])
+				Calculate_And_Display_hp(client, target, 0.0, true);
+		}
+	}
+	
 	if (GetWaveSetupCooldown() > GetGameTime() && GetWaveSetupCooldown() < GetGameTime() + 10.0)
 	{
 		PlayTickSound(false, true);
