@@ -1,40 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="static/css/skilltree.css">
-    <script src="static/js/skilltree.js" defer></script>
-    <title>ZR Encyclopedia - Skilltree</title>
-</head>
-<body>
-    <i style="margin-bottom: 2em;display: block;"><a href="/TF2-Zombie-Riot/">Back to home</a></i>
-    <h2 id="title">Skilltree</h2>
-    <div class="overlay">
-        <canvas id="canvas"></canvas>
-        <div class="overlaybuttons">
-            <img class="btn btnoverlay" tabindex="0" onclick="skilltree_resetcam();" src="static/img/rotate-ccw.svg">
-            <img class="btn btnoverlay" tabindex="0" onclick="skilltree_fullscreen(this);" src="static/img/maximize.svg">
-            <div class="hover">
-                <img class="btn btnoverlay" tabindex="0" src="static/img/help.svg">
-                <div class="tooltip">
-                    <div>LMB - Add point</div>
-                    <div>MMB - Add max points</div>
-                    <div>RMB - Remove point</div>
-                    <div>mwheel - Zoom</div>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="static/css/skilltree.css">
+        <link rel="icon" href="favicon.ico"/>
+        <script src="static/js/skilltree.js" defer></script>
+        <title>ZR Encyclopedia - Skilltree</title>
+    </head>
+    <body>
+        <i style="margin-bottom: 2em;display: block;"><a href="/TF2-Zombie-Riot/">Back to home</a></i>
+        <h2 id="title">Skilltree</h2>
+        <div class="overlay">
+            <canvas id="canvas"></canvas>
+            <div class="overlaybuttons">
+                <img class="btn btnoverlay" tabindex="0" onclick="skilltree_resetcam();" src="static/img/rotate-ccw.svg">
+                <img class="btn btnoverlay" tabindex="0" onclick="skilltree_fullscreen(this);" src="static/img/maximize.svg">
+                <div class="hover">
+                    <img class="btn btnoverlay" tabindex="0" src="static/img/help.svg">
+                    <div class="tooltip">
+                        <div>LMB - Add point</div>
+                        <div>MMB - Add max points</div>
+                        <div>RMB - Remove point</div>
+                        <div>mwheel - Zoom</div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="rightalign">
-        <div>
-            <h2>Skillpoints in use: <span id="skillpoint_amt">0</span></h2>
-            <h2>Required levels: <span id="level_amt">0</span></h2>
+        <div class="rightalign">
+            <div>
+                <h2>Skillpoints in use: <span id="skillpoint_amt">0</span></h2>
+                <h2>Required levels: <span id="level_amt">0</span></h2>
+            </div>
+            <div class="btncontainer">
+                <div class="btn" tabindex="0" onclick="skilltree_reset();">RESET</div>
+                <div class="btn" tabindex="0" onclick="skilltree_filltree();">FULL TREE</div>
+            </div>
         </div>
-        <div class="btncontainer">
-            <div class="btn" tabindex="0" onclick="skilltree_reset();">RESET</div>
-            <div class="btn" tabindex="0" onclick="skilltree_filltree();">FULL TREE</div>
-        </div>
-    </div>
-</body>
+    </body>
 </html>
