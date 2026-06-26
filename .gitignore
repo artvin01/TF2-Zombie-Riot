@@ -20,20 +20,8 @@ models/
 # NOTE unused premedia icons in tf2_zr_wikigen archive
 premedia_icons_unused/
 
-# non-generated stuff
 gh-pages/*
-!gh-pages/static/
-!gh-pages/builtin_img/
-!gh-pages/premedia_icons/
 !gh-pages/tf_icons/
-!gh-pages/lib/
-
-# TODO move to another dir and move them here in generation
-!gh-pages/waveset_viewer.html
-!gh-pages/multipliers.html
-!gh-pages/skilltree.html
-!gh-pages/items.html
-!gh-pages/status_effects.html
 
 # Debug
 logs.txt

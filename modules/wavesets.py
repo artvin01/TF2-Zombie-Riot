@@ -891,7 +891,7 @@ def parse():
         
         cost_text = ""
         for item,amt in obj["cost"].items():
-            cost_text += f"<div>{amt} {modules.shared.get_npc_icon(f"material_{item}")} {item.title()}</div>"
+            cost_text += f"<div>{amt} {util.html_img(modules.shared.get_npc_icon(f"material_{item}"))} {item.title()}</div>"
         context = {
             "cost": cost_text,
             "name": util.get_key(name),
@@ -913,7 +913,7 @@ def parse():
         # materials have no description, npc data only used for icons
         npcinfo = NPCS_BY_FILENAME[name]
         context = {
-            "name": modules.shared.get_npc_icon(npcinfo.icon) + util.get_key(npcinfo.name),
+            "name": util.html_img(modules.shared.get_npc_icon(npcinfo.icon)) + util.get_key(npcinfo.name),
             "cost": "",
             "desc": f"""<div>Min. distance away from base: {obj["distance"]}hu</div>
                     <div>Appearance rate: {obj["common"]}</div>

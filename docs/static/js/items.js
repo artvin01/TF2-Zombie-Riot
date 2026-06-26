@@ -109,25 +109,25 @@ function iter_item(parent_element, item, sw_opt) {
                 item_icon.src = subweapon["icon"]
                 kit_container.appendChild(item_icon);
             } else if ((max==1) || !has_existing_icons) { // Insert missing icon
-                insert_svg("builtin_img/missing_item.svg", "#b2b2b2", "item_icon kit_icon", kit_container);
+                insert_svg("static/img/missing_item.svg", "#b2b2b2", "item_icon kit_icon", kit_container);
             }
         });
     } else {
         switch (item["type"]) {
             case "trophy":
-                icon_path = "builtin_img/award.svg";
+                icon_path = "static/img/award.svg";
                 break;
             case "barrack":
-                icon_path = "builtin_img/users.svg";
+                icon_path = "static/img/users.svg";
                 break;
             case "perk":
-                icon_path = "builtin_img/arrow-up-circle.svg";
+                icon_path = "static/img/arrow-up-circle.svg";
                 break;
             case "upgrade":
-                icon_path = "builtin_img/chevrons-up.svg";
+                icon_path = "static/img/chevrons-up.svg";
                 break;
             default:
-                icon_path = "builtin_img/missing_item.svg";
+                icon_path = "static/img/missing_item.svg";
         } 
         insert_svg(icon_path, "#b2b2b2", "item_icon", item_el);
     }
@@ -411,7 +411,7 @@ async function open_subweapon_modal(item) {
 
     // title
     modal_content.appendChild(create_element("h1","",`${item["name"]}: ${item["subweapons"]["name"]}`));
-    insert_svg("builtin_img/x.svg", "#ccc8c1", "close_button", modal_content, {
+    insert_svg("static/img/x.svg", "#ccc8c1", "close_button", modal_content, {
         "args": [],
         "func": function(element){
             element.addEventListener("click", (event) => {

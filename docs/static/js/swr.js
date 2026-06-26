@@ -269,7 +269,7 @@ function parse_main(data,px,py,angle,sw_id) {
     "type": "image",
     "pos": [x+7, y+7],
     "size": [64,64],
-    "path": data.icon.length>0 ? data.icon : "builtin_img/missing_item_gray.svg"
+    "path": data.icon.length>0 ? data.icon : "static/img/missing_item_gray.svg"
   })
 
   // Weapon Cost

@@ -346,7 +346,7 @@ input[type=search] {
     font-size: 32px;
 
     /* Icon */
-    background-image: url("../builtin_img/search.svg");
+    background-image: url("../static/img/search.svg");
     background-size: calc(32px - 3px);
     background-repeat: no-repeat;
     background-position: 10px center;
@@ -390,7 +390,7 @@ input[type=search]::-webkit-search-cancel-button { /* Hide X button on chromium 
     flex-wrap: wrap;
 }
 .fx_icon {
-    font-size: 1.5em;
+    font-size: 1.3em;
     text-align: center;
     display: flex;
     align-items: center;

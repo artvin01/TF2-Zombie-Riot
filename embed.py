@@ -18,9 +18,9 @@ color = {
 }
 
 font = {
-    "Oswald": ImageFont.truetype('gh-pages/static/Oswald.ttf', 32),
-    "Oswald Small": ImageFont.truetype('gh-pages/static/Oswald.ttf', 24),
-    "Noto Sans": ImageFont.truetype('gh-pages/static/NotoSans.ttf', 16),
+    "Oswald": ImageFont.truetype('gh-pages/static/font/Oswald.ttf', 32),
+    "Oswald Small": ImageFont.truetype('gh-pages/static/font/Oswald.ttf', 24),
+    "Noto Sans": ImageFont.truetype('gh-pages/static/font/NotoSans.ttf', 16),
 }
 
 img_cache = {}

@@ -304,7 +304,7 @@ def get_key(key:str,silent:bool=False,empty_on_fail:bool=False):
 
 # --------------------------- MORECOLORS SUPPORT ---------------------------
 
-MORECOLORS_JSON = json.loads(read("gh-pages/static/morecolors.json"))
+MORECOLORS_JSON = json.loads(read("gh-pages/static/data/morecolors.json"))
 
 def apply_morecolors(string:str):
     new=f"<span>{string}</span>"

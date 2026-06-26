@@ -23,13 +23,13 @@
   font-family: "Oswald";
   src:
     local("Oswald"),
-    url("Oswald.ttf") format("truetype")
+    url("../font/Oswald.ttf") format("truetype")
 }
 @font-face {
   font-family: "Noto Sans";
   src:
     local("Noto Sans"),
-    url("NotoSans.ttf") format("truetype")
+    url("../font/NotoSans.ttf") format("truetype")
 }
 
 body {
@@ -193,6 +193,7 @@ li:before {
 
 /* "Copied!" notifier */
 .notify_copied {
+    z-index:1;
     position: absolute;
     pointer-events: none;
     background-color: rgba(83, 123, 22, 50%);

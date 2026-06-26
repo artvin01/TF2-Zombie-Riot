@@ -3,7 +3,7 @@ let max_waves = 40;
 let waveset = "";
 let waveset_file = null;
 let waveset_data = null;
-const MUSIC_ICON = create_element("img", {"src": "builtin_img/music.svg"});
+const MUSIC_ICON = create_element("img", {"src": "static/img/music.svg"});
 
 function cycle_wave(val) {
     let prev_wave = wave;

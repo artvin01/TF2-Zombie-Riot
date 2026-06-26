@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="static/waves.css">
-    <script src="static/waves.js" defer></script>
-    <script src="static/audioplayer.js"></script>
-    <script src="static/morecolors.js"></script>
+    <link rel="stylesheet" href="static/css/waves.css">
+    <script src="static/js/waves.js" defer></script>
+    <script src="static/js/audioplayer.js"></script>
+    <script src="static/js/morecolors.js"></script>
     <title>ZR Encyclopedia - Unknown waveset</title>
 </head>
 <body>
@@ -15,7 +15,7 @@
         <h1 id="wavesetname">Unknown waveset</h1>
         <div class="flex_break"></div>
         <h2 id="wave_progress_text">WAVE <input type="number" min="1" max="40" value="1" onchange="set_wave(this.value);">/ <span>40</span></h2>
-        <img src="static/link.svg" id="wave_embed_link" tabindex="0" onclick="copy_waveset_embed_link(event);">
+        <img src="static/img/link.svg" id="wave_embed_link" tabindex="0" onclick="copy_waveset_embed_link(event);">
         <div class="flex_break"></div>
         <div class="wave_btn" tabindex="0" onclick="cycle_wave(-1);">&lt;</div>
         <div id="wave_progress_bar" onclick="wavebar_setprogress(event);">
@@ -25,7 +25,7 @@
         <div class="flex_break" style="margin-bottom: 1em;"></div>
         <!-- Body -->
         <div id="npc_container">
-            <img src="builtin_img/loader.svg" class="rotating">
+            <img src="static/img/loader.svg" class="rotating">
         </div>
         
         <div class="flex_break"></div>

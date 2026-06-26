@@ -6,6 +6,7 @@ else:
     SCOPE = ["wavesets", "npcs", "items", "music", "skilltree", "statusfx"]
 print("SCOPE", SCOPE)
 
+os.system("cp -r docs/* gh-pages/")
 import modules.phrase
 
 if "wavesets" in SCOPE:
