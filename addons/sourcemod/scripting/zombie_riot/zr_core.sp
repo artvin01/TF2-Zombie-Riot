@@ -605,6 +605,7 @@ char s_MissionClient[64]; // Who hired us for the current job
 #include "betting.sp"
 #include "dungeons.sp"
 #include "sm_skyboxprops.sp"
+#include "shared/sound_manualdownload.sp"
 #include "custom/homing_projectile_logic.sp"
 #include "custom/weapon_slug_rifle.sp"
 #include "custom/weapon_boom_stick.sp"
@@ -804,7 +805,7 @@ void ZR_PluginStart()
 
 
 	RegConsoleCmd("sm_afk", Command_AFK, "BRB GONNA CLEAN MY MOM'S DISHES");
-	RegConsoleCmd("sm_flop", Command_Flop, "Flop");
+//	RegConsoleCmd("sm_flop", Command_Flop, "Flop");
 	//RegConsoleCmd("sm_rtd", Command_RTdFail, "Go away.");						//Littearlly cannot support RTD. I will remove this onec i add support for it, but i doubt i ever will.
 	
 	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
@@ -1295,6 +1296,8 @@ void ZR_ClientPutInServer(int client)
 
 	if(BetWar_Mode() || Dungeon_Mode())
 		b_AntiLateSpawn_Allow[client] = true;
+
+	SoundManual_OnClientPutInServer(client);
 }
 
 void ZR_ClientDisconnect(int client)
@@ -1488,16 +1491,19 @@ public Action Command_AFK(int client, int args)
 	}
 	return Plugin_Handled;
 }
+/*
 public Action Command_Flop(int client, int args)
 {
 	if(client && IsEntityAlive(client))
 	{
-		FreezeNpcInTime(client, 1.0, true);
+		if(HasSpecificBuff(client, "Stunned"))
+			return Plugin_Handled;
+		FreezeNpcInTime(client, 1.5, true);
 		ApplyStatusEffect(client, client, "Ragdolled", 2.0);	
 	}
 	return Plugin_Handled;
 }
-
+*/
 
 public Action Command_TestTutorial(int client, int args)
 {

@@ -669,10 +669,10 @@ public bool ObjectGeneric_CanBuildSentryBarracks(int client, int &count, int &ma
 	if(!client)
 		return false;
 		
-		count = Object_GetSentryBuilding(client) == -1 ? 0 : 1;
-		maxcount = IsBarracks(client) ? 1 : 0;
+	count = Object_GetSentryBuilding(client) == -1 ? 0 : 1;
+	maxcount = IsBarracks(client) ? 1 : 0;
 
-		return (!count && maxcount);
+	return (!count && maxcount);
 }
 public bool ObjectGeneric_CanBuildSentry(int client, int &count, int &maxcount)
 {

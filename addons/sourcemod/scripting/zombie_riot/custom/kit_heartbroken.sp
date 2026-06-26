@@ -3,6 +3,7 @@
 
 static Handle h_HeartBroken_Timer[MAXPLAYERS] = {null, ...};
 static float f_HeartBroken_HUDDelay[MAXPLAYERS];
+static float f_PlayLaughterSound[MAXPLAYERS];
 static int ref_CoffinEntity[MAXPLAYERS];
 static int ref_MeleeWeapon[MAXPLAYERS];
 static float Smite_ChargeTime = 0.99;
@@ -51,12 +52,16 @@ public void HeartBroken_OnMapStart()
 	PrecacheSoundArray(g_CoffinRevive);
 	Zero(f_HeartBroken_HUDDelay);
 	Zero(RecentSwitch);
+	Zero(f_PlayLaughterSound);
 //	Zero(CoffinLoseCD);
 	PrecacheModel(COFFIN_MODEL);
 	PrecacheModel(HEARTBREAK_HORSE_MODEL);
 	PrecacheModel(CHAIN_BEAM);
 	PrecacheSound(HEARTBREAK_DASH);
 	PrecacheSound(HEARTBREAK_DASHHIT);
+	PrecacheSound("zr_manual/heartbroken/laughter_1.mp3");
+	PrecacheSound("zr_manual/heartbroken/laughter_2.mp3");
+	PrecacheSound("zr_manual/heartbroken/laughter_3.mp3");
 	PrecacheModel("models/flag/briefcase.mdl");
 	Zero(CoffinCharge);
 	Precached = false;
@@ -133,6 +138,33 @@ static Action Timer_HeartBroken(Handle timer, DataPack pack)
 static void HeartBroken_HUD(int client)
 {
 	//char weapon_hint[50];
+	if(f_PlayLaughterSound[client] < GetGameTime())
+	{
+		for(int listener=1; listener<=MaxClients; listener++)
+		{
+			if(!IsValidClient(listener))
+				continue;
+
+			if(SoundManualHas(listener))
+			{
+				switch(GetRandomInt(1,3))
+				{
+					case 1:
+						EmitSoundToClient(listener, "zr_manual/heartbroken/laughter_1.mp3", client, _, 70, _, 1.0, 100);
+					case 2:
+						EmitSoundToClient(listener, "zr_manual/heartbroken/laughter_2.mp3", client, _, 70, _, 1.0, 100);
+					case 3:
+						EmitSoundToClient(listener, "zr_manual/heartbroken/laughter_3.mp3", client, _, 70, _, 1.0, 100);
+
+				}
+			}
+			else
+			{
+				//play smth else, in this case, nothing.
+			}
+		}
+		f_PlayLaughterSound[client] = GetGameTime() + GetRandomFloat(60.0,120.0);
+	}
 	if(WeaponLevel[client] < 3)
 		return;
 	/*
