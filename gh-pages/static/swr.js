@@ -160,8 +160,12 @@ function parse_main(data,px,py,angle,sw_id) {
         
         // Draw weapon tags, author
         secondary_text = [];
-        if (data.tags!=={}) { secondary_text.push(data.tags.join(" ")) };
+        if (data.tags!=={}) {
+          data.tags.forEach(el => {if (!el.includes("#")) { data.tags[data.tags.indexOf(el)]=`#${el}`}}); // Prepend # to each tag once
+          secondary_text.push(data.tags.join(" "));
+        };
         if (data.author!==undefined) { secondary_text.push(data.author) };
+        if (data.faction!=="") { secondary_text.push(data.faction) };
         secondary_text.forEach(line => {
           element_queue.push({
             "type": "text",

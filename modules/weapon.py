@@ -133,6 +133,13 @@ from ruamel.yaml import YAML
 yaml=YAML(typ='safe')
 with open("./config/item_blacklist.yml",'r') as file:
     ITEM_BLACKLIST = yaml.load(file)
+FACTION_MAPPINGS = {
+    "1": "Expidonsa",
+    "2": "Grunwald",
+    "3": "Vesta",
+    "4": "Psychic Warlord",
+    "5": "Dweller"
+}
 
 # MAIN ========================================================================
 class Weapon:
@@ -167,6 +174,9 @@ class Weapon:
         else:
             self.lvl = ""
         
+        if "weapon_faction" in weapon_data: self.faction = FACTION_MAPPINGS[weapon_data["weapon_faction"]]
+        else: self.faction = ""
+
         self.attributes = shared_parse_weapon_attrs(weapon_data)
 
         self.icon = shared_parse_weapon_icon(weapon_data, weapon_name)
@@ -218,6 +228,7 @@ class Weapon:
             "rawcost": self.rawcost,
             "is_hidden": self.is_hidden,
             "icon": self.icon,
+            "faction": self.faction,
             "attributes": self.attributes,
             "subweapons": getattr(self, "subweapons", {}) # kit weps, enhancements
         }
@@ -248,6 +259,9 @@ class WeaponPap:
 
             self.attributes = shared_parse_weapon_attrs(weapon_data, pap_key)
 
+            if f"{pap_key}weapon_faction" in weapon_data: self.faction = FACTION_MAPPINGS[weapon_data[f"{pap_key}weapon_faction"]]
+            else: self.faction = ""
+
             self.icon = shared_parse_weapon_icon(weapon_data, weapon_name, pap_key)
 
             self.papskip = self._weapon_data_df[f"{pap_key}papskip"] or "0"
@@ -267,6 +281,7 @@ class WeaponPap:
             "rawcost": self.rawcost,
             #"is_hidden": defaultdict(str,self._weapon_data)["hidden"]=="1",
             "icon": self.icon,
+            "faction": self.faction,
             "attributes": self.attributes,
             "subweapons": getattr(self, "subweapons", {})
         }

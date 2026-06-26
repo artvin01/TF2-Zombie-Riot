@@ -28,6 +28,7 @@ gh-pages/*
 !gh-pages/tf_icons/
 !gh-pages/lib/
 
+# TODO move to another dir and move them here in generation
 !gh-pages/waveset_viewer.html
 !gh-pages/multipliers.html
 !gh-pages/skilltree.html

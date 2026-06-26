@@ -158,6 +158,10 @@ function iter_item(parent_element, item, sw_opt) {
         item_tooltip.appendChild(create_element("div", "secondary", apply_morecolors(item["author"])));
     };
 
+    if (Boolean(item["faction"])) {
+        item_tooltip.appendChild(create_element("div", "secondary", `Faction: ${item["faction"]}`));
+    };
+
     if (item["is_hidden"]) {
         item_tooltip.appendChild(create_element("div", "secondary", "Hidden"));
     }
@@ -191,6 +195,7 @@ function iter_item(parent_element, item, sw_opt) {
         item_by_id[item.wid] = item
         contents = [
             item.name,
+            item.faction
         //    item.description
         ]
         if (item.tags!==undefined) {
