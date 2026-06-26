@@ -1137,6 +1137,10 @@ public void RaidbossNemesis_OnTakeDamagePost(int victim, int attacker, int infli
 				SetEntityCollisionGroup(client, 5);
 			}
 			
+			i_GrabbedThis[npc.index] = -1;
+			i_TankAntiStuck[client] = EntIndexToEntRef(npc.index);
+			CreateTimer(0.1, CheckStuckNemesis, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+
 			float pos[3];
 			float Angles[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
