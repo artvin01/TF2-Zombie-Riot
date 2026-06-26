@@ -77,7 +77,7 @@ Static ones are located in `docs/` and are copied to `gh-pages` upon generation.
   - [x] Waveset viewer
   - [x] Status effect page
   - [x] Clean up gh-pages dirs
-  - [ ] Fix embed animations
+  - [ ] Fix embed inconsistencies
   - [ ] More embeds?
 - [ ] Improved NPC data parsing (low priority)
 - [x] Waveset data (low priority)

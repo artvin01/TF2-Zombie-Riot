@@ -5,6 +5,7 @@ from itertools import tee
 from re import sub
 from collections import defaultdict
 
+# TODO Gladiator Arena 1 wave on wiki <-> 6 waves on embed
 
 color = {
     "viewer_bg": (38,41,43),
