@@ -18,6 +18,10 @@ FLAG_CSS = {
     "MVM_CLASS_FLAG_ALWAYSCRIT": "flag_crits", #// Add Blue Borders
     "MVM_CLASS_FLAG_SUPPORT_LIMITED": "flag_support_limited" #// Only Visible When Active (waveset viewer is static so no way to simulate this)
 }
+from ruamel.yaml import YAML
+yaml=YAML(typ='safe')
+with open("./config/npc_whitelist.yml",'r') as file:
+    NPC_WHITELIST = yaml.load(file)
 
 MISSING_ICON_VTF = "TF2-Zombie-Riot/materials/hud/leaderboard_class_robo_extremethreat.vtf"
 MISSING_ICON_PNG = "repo_img/robo_extremethreat.png"

@@ -181,7 +181,7 @@ def parse():
             
             if wave_entry_data["plugin"] in NPCS_BY_FILENAME:
                 npc_data = NPCS_BY_FILENAME[wave_entry_data["plugin"]]
-                if (npc_data.category=="Type_Hidden"): continue
+                if (npc_data.category=="Type_Hidden") and (wave_entry_data["plugin"] not in modules.shared.NPC_WHITELIST): continue
             else:
                 npc_data = None
                 assert force
@@ -480,7 +480,7 @@ def parse():
     def parse_waveset_list_cfg(filename, html_mapsets, html_otherset, filename_md=None):
         if (filename not in util.WAVESETS_FILESCOPE) and len(util.WAVESETS_FILESCOPE)>0:
             util.log(f"{filename} not in FILESCOPE", "OKBLUE")
-            return html_mapsets
+            return html_mapsets, html_otherset
         WAVESETLIST_RAW = util.read(f"./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/{filename}")
         WAVESETLIST_DATA = vdf.loads(WAVESETLIST_RAW)
         WAVESETLIST_TYPE = list(WAVESETLIST_DATA.keys())[0]

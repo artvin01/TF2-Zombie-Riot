@@ -47,7 +47,7 @@ def generate_weapon_icon(weapon_data, weapon_name, pure_filename, prefix="", bod
     if (bodygroupmap_path:=f"{prefix}decompiled/{pure_filename}.json") not in BODYGROUP_MAPPINGS: BODYGROUP_MAPPINGS[bodygroupmap_path] = json.loads(util.read(bodygroupmap_path))
     smd_path = f"{prefix}decompiled/{BODYGROUP_MAPPINGS[bodygroupmap_path][mdl_bodygroup]}"
 
-    # NOTE pyassimp crashes if the material a triangle is referencing has spaces in it!!
+    # NOTE pyassimp crashes if a triangle has more than 1 material!
     if smd_path == "decompiled/w_crossbow_reference.smd": util.write(smd_path, util.read(smd_path).replace(" dirtmap",""))
 
     util.debug(f"[weaponicon] {"✓" if os.path.isfile(smd_path) else "✗"} {smd_path} : {mdl_bodygroup}","weaponicon","OKBLUE")
