@@ -300,12 +300,45 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		{
 			case 2:
 			{
-				enemy.Index = NPC_GetByPlugin("npc_blitzkrieg");
-				enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-				if(GetRandomInt(1, 3) == 1)
-					enemy.Data = "wave_40;hyper";
-				else
-					enemy.Data = "wave_40";
+				switch(GetRandomInt(1, 12))
+				{
+					case 1:
+					{
+						enemy.Index = NPC_GetByPlugin("npc_blitzkrieg");
+						enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.Data = "wave_40;hyper";
+					}
+					case 2:
+					{
+						enemy.Index = NPC_GetByPlugin("npc_blitzkrieg");
+						enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.Data = "wave_40;hyper";
+					}
+					case 3:
+					{
+						enemy.Index = NPC_GetByPlugin("npc_blitzkrieg");
+						enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.Data = "wave_40;hyper";
+					}
+					case 4:
+					{
+						enemy.Index = NPC_GetByPlugin("npc_blitzkrieg");
+						enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.Data = "wave_40;hyper";
+					}
+					case 5:
+					{
+						enemy.Index = NPC_GetByPlugin("npc_blitzkrieg");
+						enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.Data = "wave_40;blitzmayhem";
+					}
+					default:
+					{
+						enemy.Index = NPC_GetByPlugin("npc_blitzkrieg");
+						enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.Data = "wave_40";
+					}
+				}
 			}
 			case 3:
 			{
@@ -428,6 +461,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Health = RoundToFloor((7000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraMeleeRes *= 3.0;
 				enemy.ExtraRangedRes *= 3.0;
+				enemy.ExtraDamage = 0.80;
 			}
 			case 14:
 			{
@@ -580,14 +614,14 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 36:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_squad_master");
-				enemy.Health = RoundToFloor((1000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((1250000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "wave_20";
 				enemy.ExtraSpeed = 0.85;
 			}
 			case 37:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_no_random_kranz");
-				enemy.Health = RoundToFloor((750000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((1000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "wave_40";
 				enemy.ExtraThinkSpeed = 1.15;
 				enemy.ExtraDamage = 0.6;
@@ -596,7 +630,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 38:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_black_heavy_soul");
-				enemy.Health = RoundToFloor((4000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "wave_40";
 				enemy.ExtraThinkSpeed = 1.15;
 				enemy.ExtraDamage = 0.7;
