@@ -52,7 +52,7 @@ class NPC:
         if ("npc_donoteveruse" not in self.file_data and "NPC_Add" in self.file_data):
 
             # Get NPC name
-            # TODO multi-npc files can have different prefixes
+            # TODO multi-npc files can have different prefixes (part of NPC code rewrite todo)
             prefixes = [
                 "data",
                 "lantean_data",

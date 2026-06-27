@@ -68,12 +68,13 @@ def generate_weapon_icon(weapon_data, weapon_name, pure_filename, prefix="", bod
     eng.window.render_to_image(no_background=True).save(f"./gh-pages/{prefix}icons/{pure_filename}_{mdl_bodygroup}.png")
     return f"{prefix}icons/{pure_filename}_{mdl_bodygroup}.png"
 
+# Will not be implenenting custom attributes since attributes are already inaccurate. Won't bother adding more info to such a thing.
 def shared_parse_weapon_attrs(weapon_data, pap_key=""):
     attributes = defaultdict(list)
     if f"{pap_key}attributes" in weapon_data:
         _attrs=weapon_data[f"{pap_key}attributes"].split(";")
         for index, value in zip(_attrs[0::2],_attrs[1::2],strict=True):
-            if index.strip() in items_game["attributes"]: # TODO there are some custom attributes, gotta make manual entries for those to be included
+            if index.strip() in items_game["attributes"]:
                 attribute_data = items_game["attributes"][index.strip()]
                 if "hidden" in attribute_data: 
                     if attribute_data["hidden"]=="1": continue
@@ -219,7 +220,7 @@ class Weapon:
             "name": self.name,
             "wid": self.weapon_id,
             "description": self.description,
-            "author": self.author, # TODO apply morecolors on js side
+            "author": self.author,
             "lvl": self.lvl,
             "cost": self.cost,
             "rawcost": self.rawcost,
@@ -235,8 +236,6 @@ class WeaponPap:
         self._weapon_name,self.name=weapon_name,weapon_name
         self._weapon_data=weapon_data
         self._weapon_data_df = defaultdict(str,weapon_data)
-        # TODO reliable subweapon id generation
-        
 
         pap_key = f"pap_{idx}_"
         key_desc = pap_key+"desc"

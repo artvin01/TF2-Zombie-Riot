@@ -78,6 +78,8 @@ Static ones are located in `docs/` and are copied to `gh-pages` upon generation.
   - [x] Status effect page
   - [x] Clean up gh-pages dirs
   - [ ] Fix embed inconsistencies
+  - [ ] Waveset inspect mode
+  - [ ] Subweapon permalinks?
   - [ ] More embeds?
 - [ ] Improved NPC data parsing (low priority)
 - [x] Waveset data (low priority)

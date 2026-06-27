@@ -270,7 +270,7 @@
 }
 /* Disable scroll on main page while modal is open */
 body:has(.modal) {
-    overflow: hidden; /* TODO Prevents weapon links scrolling to weapon while subweapon modal is open */
+    overflow: hidden; /* NOTE Prevents weapon links scrolling to weapon while subweapon modal is open */
 }
 
 /* Subweapon view ------------------------------------- */

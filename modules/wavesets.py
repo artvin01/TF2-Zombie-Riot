@@ -5,8 +5,8 @@ from collections import defaultdict
 """
 TODO
 [ ] Complete const2 support
-[ ] Const: one-wave files display as 2/2 in embeds
-[ ] Include main music parts
+[ ] Embed <-> Website (max) wave count inconsistencies
+[ ] Include main music parts somehow
 """
 
 PROPERTY_MAPPINGS = {
@@ -149,7 +149,7 @@ def parse():
             Float delay => Hidden //setting this to "0.0" will make it wait for this npc group to die before spawning the next npc group.
 
             # NPC
-            Int health => Hidden (apparently it's inaccurate)
+            Int health => Hidden
             Bool is_boss => Flag //if a npc has this, they will get outlined, bonus damage, and their health scales. (1: boss 2: raid w/prepare :3 raid w/o prepare 4: ?)
             Bool force_scaling => Flag
             Float waiting_time_give ?
@@ -171,7 +171,7 @@ def parse():
             Float extra_thinkspeed ? (whatever this does is probably not important)
 
             Int danger_level ? (Only used in challenges/freeplay/advanced.cfg)
-            String custom_name TODO -> Property
+            String custom_name => Builtin (replaces NPC name)
             (
             String data => Builtin (variations of the same NPC)
             String spawn ?
@@ -193,6 +193,9 @@ def parse():
                 npc_name = npc_data.name
             except AttributeError:
                 npc_name = wave_entry_data["plugin"]
+            npc_name_raw = npc_name
+            
+            if "custom_name" in wave_entry_data: npc_name = wave_entry_data["custom_name"]
 
             dd = defaultdict(str, wave_entry_data)
             npc_name_prefix = ""
@@ -330,6 +333,8 @@ def parse():
                 "img": image if image else "",
                 "prefix": npc_name_prefix,
                 "display_name": npc_name,
+                "true_name": npc_name_raw, # Unused for now, might be used in inspect mode.
+                "plugin_name": wave_entry_data["plugin"], # Unused for now, might be used in inspect mode.
                 "extra_info": extra_info + desc + music,
                 # waves.sp line 4165 if(data.Is_Boss < 2 && (support || data.ignore_max_cap || data.Is_Static || data.Team == TFTeam_Red))
                 "css_class": npc_css_class,
@@ -907,7 +912,6 @@ def parse():
     
     def parse_const_resource(name,obj):
         """
-        TODO
         "npc_material_wood"
         {
             "distance"	"500.0"	// Min distance away from base

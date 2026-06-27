@@ -118,7 +118,7 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: center; /* this is the cause of the bandaid fix below, I couldn't find any other way to fix it */
-     /* TODO if support npc is a single one this goes over the divider */
+     /* if support npc is a single one this goes over the divider. manually fixed in waves.js */
 }
 
 #wave_music_container {
@@ -255,12 +255,6 @@ input[type=number] {
 
     /* center number */
     text-align: center;
-}
-
-@media screen and (max-width: 700px) {
-    .tooltip {
-        width: min-content; /* TODO properly size this */
-    }
 }
 
 /* Audio */
