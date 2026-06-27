@@ -14,7 +14,7 @@ public Action NPCCamera_SpecNext(int client, const char[] command, int args)
 #if defined ZR
 	if (GetEntProp(client, Prop_Send, "m_iObserverMode") == OBS_MODE_ROAMING)
 	{
-		// Make it
+		// While in freeroam mode, clicking on a targetable entity lets you spectate it
 		float pos[3];
 		
 		StartLagCompensation_Base_Boss(client);
