@@ -11,6 +11,25 @@ void NPCCamera_PluginStart()
 
 public Action NPCCamera_SpecNext(int client, const char[] command, int args)
 {
+#if defined ZR
+	if (GetEntProp(client, Prop_Send, "m_iObserverMode") == OBS_MODE_ROAMING)
+	{
+		// Make it
+		float pos[3];
+		
+		StartLagCompensation_Base_Boss(client);
+		int target = GetClientPointVisiblePlayersNPCs(client, 500.0, pos, true);
+		FinishLagCompensation_Base_boss();
+		
+		if (target > 0 && IsEntityAlive(target))
+		{
+			SetEntPropEnt(client, Prop_Send, "m_hObserverTarget", target);
+			SetEntProp(client, Prop_Send, "m_iObserverMode", OBS_MODE_CHASE);
+		}
+		
+		return Plugin_Handled;
+	}
+#endif
 	int minEntity = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
 	int bestEntity = MAXENTITIES;
 	int worseEntity = MAXENTITIES;
