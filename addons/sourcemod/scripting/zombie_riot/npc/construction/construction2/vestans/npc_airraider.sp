@@ -153,7 +153,7 @@ methodmap Airraider < CClotBody
 
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 3.0;
 		npc.f_AirraiderRocketJumpCD_Wearoff = GetGameTime(npc.index) + 1.0;
-		b_NpcIsInvulnerable[npc.index] = true;
+	//	b_NpcIsInvulnerable[npc.index] = true;
 		npc.m_bTeamGlowDefault = false;
 		
 		f_NoUnstuckVariousReasons[npc.index] = FAR_FUTURE;
@@ -311,7 +311,7 @@ static void Airraider_ClotThink(int iNPC)
 	{
 		if(npc.Anger && npc.f_AirraiderRocketJumpCD_Wearoff < GameTime)
 		{
-			b_NpcIsInvulnerable[npc.index] = false;
+		//	b_NpcIsInvulnerable[npc.index] = false;
 			npc.m_bTeamGlowDefault = true;
 			if(IsValidEntity(i_InvincibleParticle[npc.index]))
 			{

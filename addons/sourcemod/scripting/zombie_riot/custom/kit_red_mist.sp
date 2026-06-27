@@ -455,7 +455,6 @@ void PrecacheRedMistMusic()
 	if(!RM_Precached)
 	{
         //TODO
-		PrecacheSoundCustom("#zombiesurvival/red_mist_lastman.mp3",_,1);
 		PrecacheSoundCustom("zombiesurvival/medieval_raid/special_mutation/arkantos_scream_buff.mp3");
 		PrecacheSoundCustom(ONRUSH_HIT_SOUND);
 		PrecacheSoundCustom(COUNTER_SOUND_HIT);
@@ -641,6 +640,8 @@ public Action Timer_RM_CD_Restore(Handle timer, int client)
 
 void Func_RM_StrengthDisplay(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
 {
+	if(victim >= MaxClients)
+		return;
 	Format(HudToDisplay, SizeOfChar, "⬆(%i)", Strenght_Amount[victim]);
 	if(h_Red_Mist_Timer[victim] == null)
 	{
@@ -752,6 +753,7 @@ public void Red_Mist_OnTakeDamage_Deal(int victim, int &attacker, int &inflictor
 	
 	//dmg nerf overall
 	damage *= 0.95;
+	damage *= 0.9;
 
 
 	float Strenght_boost;

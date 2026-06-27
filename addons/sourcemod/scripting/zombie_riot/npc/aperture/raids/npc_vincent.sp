@@ -296,6 +296,7 @@ methodmap Vincent < CClotBody
 
 		b_thisNpcIsARaid[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
+		Zero(b_said_player_weaponline);
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
@@ -869,7 +870,9 @@ public Action Vincent_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
-	
+	Vincent_Weapon_Lines(npc, attacker);
+	i_SaidLineAlready[npc.index] = 0;
+
 	return Plugin_Changed;
 }
 
@@ -1367,7 +1370,7 @@ static bool TraceEntityEnumerator_Vincent_Oil(int entity)
 	if (entity > MaxClients && !b_ThisWasAnNpc[entity])
 		return true;
 	
-	if (GetTeam(entity) == 0)
+	if (GetTeam(entity) == 0 || !IsEntityAlive(entity))
 		return true;
 	
 	//This will automatically take care of all the checks, very handy. force it to also target invul enemies.
@@ -1985,6 +1988,52 @@ void Timer_Vincent_FadeBackIn(Handle timer)
 		if (IsClientInGame(client) && !IsFakeClient(client))
 		{
 			UTIL_ScreenFade(client, 333, 1, FFADE_IN | FFADE_PURGE, 255, 255, 255, 255); //make the fade target everyone
+		}
+	}
+}
+
+static void Vincent_Weapon_Lines(Vincent npc, int client)
+{
+	//if(client > MaxClients)
+	if(!IsValidClient(client))
+		return;
+
+	if(b_said_player_weaponline[client])	//only 1 line per player.
+		return;
+
+
+	float GameTime = GetGameTime();	//no need to throttle this.
+
+	if(fl_said_player_weaponline_time[npc.index] > GameTime)	//no spamming in chat please!
+		return;
+
+	bool valid = true;
+	char Text_Lines[255];
+
+	Text_Lines = "";
+
+	if(Store_HasNamedItem(client, "Expidonsan Research Card") && !npc.Anger)
+	{
+		switch(GetRandomInt(0,2))
+		{
+			case 0:
+			{
+				Format(Text_Lines, sizeof(Text_Lines), "Your programming must have gone faulty, {rare}%N{default}.",client);
+			}
+			case 1:
+			{
+				Format(Text_Lines, sizeof(Text_Lines), "You've gone rogue, {rare}%N{default}.",client);
+			}
+			case 2:
+			{
+				Format(Text_Lines, sizeof(Text_Lines), "Your data has been corrupted, {rare}%N{default}.",client);
+			}
+		}
+		if(valid)
+		{
+			NPCTalkMessage(npc.index, Text_Lines);
+			fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(10.0, 15.0);
+			b_said_player_weaponline[client] = true;
 		}
 	}
 }

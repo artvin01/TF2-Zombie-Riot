@@ -397,10 +397,11 @@ static void VShowPackMenu(ScriptContext context)
 static void VAddGlobalCash(ScriptContext context)
 {
 	int amount = context.GetArgInt(0);
-	CurrentCash += amount;
 
 	if(context.GetArgBool(1))
 		GlobalExtraCash += amount;
+	else
+		CurrentCash += amount;
 }
 
 static void VCreateNPC(ScriptContext context)

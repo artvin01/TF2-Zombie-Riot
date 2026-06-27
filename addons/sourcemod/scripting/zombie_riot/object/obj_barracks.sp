@@ -335,6 +335,13 @@ methodmap ObjectBarracks < ObjectGeneric
 static bool ClotInteract(int client, int weapon, ObjectHealingStation npc)
 {
 	int Owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
+	if (Barracks_GetInfo(Owner, 1) == -1)
+    {
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		DestroyBuildingDo(npc.index);
+		SPrintToChat(client, "%t", "The Blacksmith Failed!");
+		return false;
+    }
 	if(Owner != client)
 		return false;
 		
@@ -439,26 +446,26 @@ static const char SummonerBaseNPC[][] =
 static int SummonerBase[][] =
 {
 	// NPC Index, Wood, Food, Gold, Time, Level, Supply, Requirement
-	{ 0, 5, 20, 0, 5, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
-	{ 0, 30, 5, 0, 7, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Novice
+	{ 0, 5, 20, 0, 5, 0, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
+	{ 0, 30, 5, 0, 7, 0, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Novice
 
-	{ 0, 50, 10, 0, 8, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
-	{ 0, 10, 35, 0, 6, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
+	{ 0, 50, 10, 0, 8, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
+	{ 0, 10, 35, 0, 6, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
 
-	{ 0, 100, 20, 0, 9, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
-	{ 0, 20, 60, 0, 7, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Worker
+	{ 0, 100, 20, 0, 9, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
+	{ 0, 20, 60, 0, 7, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Worker
 
-	{ 0, 200, 50, 0, 10, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
-	{ 0, 50, 150, 0, 8, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
+	{ 0, 200, 50, 0, 10, 3, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
+	{ 0, 50, 150, 0, 8, 3, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
 
-	{ 0, 750, 750, 	0, 25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  },	// Construction Expert
-	{ 0, 300, 300, 	20, 16, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },		// Construction Master
+	{ 0, 750, 750, 	0, 25, 3, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  },	// Construction Expert
+	{ 0, 300, 300, 	20, 16, 4, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },		// Construction Master
 
-	{ 0, 600, 200, 20, 12, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
-	{ 0, 200, 600, 30, 15, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
+	{ 0, 600, 200, 20, 12, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 200, 600, 30, 15, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
 	
-	{ 0, 300, 100, 0, 10, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
-	{ 0, 100, 300, 0, 9, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  }		// Construction Master
+	{ 0, 300, 100, 0, 10, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
+	{ 0, 100, 300, 0, 9, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  }		// Construction Master
 };
 
 //THIS IS THORNS ONLY.
@@ -489,26 +496,26 @@ static const char SummonerThornsNPC[][] =
 static int SummonerThorns[][] =
 {
 	// NPC Index, Wood, Food, Gold, Time, Level, Supply, Requirement
-	{ 0, 5, 20, 0, 5, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
-	{ 0, 30, 5, 0, 7, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },		// Construction Novice
+	{ 0, 5, 20, 0, 5, 0, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
+	{ 0, 30, 5, 0, 7, 0, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },		// Construction Novice
 	
-	{ 0, 10, 35, 0, 6, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
-	{ 0, 50, 10, 0, 8, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
+	{ 0, 10, 35, 0, 6, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
+	{ 0, 50, 10, 0, 8, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
 	
-	{ 0, 20, 60, 0, 7, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Worker
-	{ 0, 100, 20, 0, 9, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
+	{ 0, 20, 60, 0, 7, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Worker
+	{ 0, 100, 20, 0, 9, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
 	
-	{ 0, 50, 150, 0, 8, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
-	{ 0, 200, 50, 0, 10, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
+	{ 0, 50, 150, 0, 8, 3, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
+	{ 0, 200, 50, 0, 10, 3, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
 
-	{ 0, 300, 100, 0, 10, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master 
-	{ 0, 100, 300, 0, 9, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
+	{ 0, 300, 100, 0, 10, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master 
+	{ 0, 100, 300, 0, 9, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
 
-	{ 0, 1200, 1200, 50, 50, 11, 2, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
-	{ 0, 600, 200, 20, 12, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 1200, 1200, 50, 50, 3, 2, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+	{ 0, 600, 200, 20, 12, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 	
-	{ 0, 400, 400, 	20, 16, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
-	{ 0, 750, 750, 	0, 25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  }	// Construction Expert 
+	{ 0, 400, 400, 	20, 16, 4, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 750, 750, 	0, 25, 3, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  }	// Construction Expert 
 };
 
 static const char SummonerCombineNPC[][] =
@@ -540,26 +547,26 @@ static int SummonerCombine[][] =
 {
 	// NPC Index, Wood, Food, Gold, Time, Level, Supply, Requirement
 	
-	{ 0, 5, 20, 0, 5, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
-	{ 0, 30, 5, 0, 7, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },		// Construction Novice
+	{ 0, 5, 20, 0, 5, 0, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
+	{ 0, 30, 5, 0, 7, 0, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },		// Construction Novice
 	
-	{ 0, 10, 35, 0, 5, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
-	{ 0, 50, 10, 0, 8, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
+	{ 0, 10, 35, 0, 5, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
+	{ 0, 50, 10, 0, 8, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Apprentice
 	
-	{ 0, 20, 60, 0, 6, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Worker
-	{ 0, 100, 20, 0, 9, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
+	{ 0, 20, 60, 0, 6, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Worker
+	{ 0, 100, 20, 0, 9, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
 	
-	{ 0, 50, 150, 0, 7, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
-	{ 0, 200, 50, 0, 10, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
+	{ 0, 50, 150, 0, 7, 3, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Expert
+	{ 0, 200, 50, 0, 10, 3, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
 	
-	{ 0, 750, 750, 	0, 	25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  },	// Construction Expert
-	{ 0, 600, 600, 	30, 30, 16, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 750, 750, 	0, 	25, 3, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  },	// Construction Expert
+	{ 0, 600, 600, 	30, 30, 4, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 	
-	{ 0, 600, 200, 20, 20, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
-	{ 0, 200, 600, 20, 20, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES }, // Contruction Master
+	{ 0, 600, 200, 20, 20, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 200, 600, 20, 20, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES }, // Contruction Master
 
-	{ 0, 300, 100, 0, 10, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
-	{ 0, 100, 300, 0, 9, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES  }	// Construction Master
+	{ 0, 300, 100, 0, 10, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 100, 300, 0, 9, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  }	// Construction Master
 	
 };
 
@@ -590,72 +597,76 @@ static const char SummonerAlminaNPC[][] =
 static int SummonerAlminaComplete[][] =
 {
 	// NPC Index, Wood, Food, Gold, Time, Level
-	{ 0, 5, 20, 0, 5, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
-	{ 0, 30, 5, 0, 7, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// Construction Novice
+	{ 0, 5, 20, 0, 5, 0, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
+	{ 0, 30, 5, 0, 7, 0, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// Construction Novice
 
-	{ 0, 10, 35, 0, 5, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
-	{ 0, 50, 10, 0, 8, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
+	{ 0, 10, 35, 0, 5, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
+	{ 0, 50, 10, 0, 8, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
 
-	{ 0, 20, 60, 0, 6, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
-	{ 0, 100, 20, 0, 9, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES},	// Construction Worker
+	{ 0, 20, 60, 0, 6, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
+	{ 0, 100, 20, 0, 9, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES},	// Construction Worker
 	
-	{ 0, 50, 150, 0, 8, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
-	{ 0, 200, 50, 0, 10, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+	{ 0, 50, 150, 0, 8, 3, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+	{ 0, 200, 50, 0, 10, 3, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
 
-	{ 0, 750, 750, 	0, 25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0 }, // Construction Expert
-	{ 0, 800, 800, 	30, 25, 16, 2, ZR_BARRACKS_UPGRADES_CASTLE, ZR_BARRACKS_TROOP_CLASSES }, // Construction Master
+	{ 0, 750, 750, 	0, 25, 3, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0 }, // Construction Expert
+	{ 0, 800, 800, 	30, 25, 4, 2, ZR_BARRACKS_UPGRADES_CASTLE, ZR_BARRACKS_TROOP_CLASSES }, // Construction Master
 
-	{ 0, 600, 200, 	20, 15, 16, 1, 0, ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
-	{ 0, 200, 600, 	20, 15, 16, 1, 0, ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 600, 200, 	20, 15, 4, 1, 0, ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 200, 600, 	20, 15, 4, 1, 0, ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 	
-	{ 0, 300, 100, 0, 10, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES }, // Construction Master
-	{ 0, 100, 300, 0, 9, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES }	// Construction Master
+	{ 0, 300, 100, 0, 10, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES }, // Construction Master
+	{ 0, 100, 300, 0, 9, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES }	// Construction Master
 };
 
 
 static const char SummonerAlminaIncompleteNPC[][] =
 {
 	"npc_barrack_runner",
-	
 	"npc_barrack_gunner",
+	
 	"npc_barrack_tanker",
-	
 	"npc_barrack_rocketeer",
+	
 	"npc_barrack_healer",
-	
 	"npc_barrack_boomstick",
+	
 	"npc_barrack_healtanker",
-	
 	"npc_barrack_elite_gunner",
-	"npc_barrack_guards",
 	
+	"npc_barrack_villager",
+	"npc_barrack_lighthouse_guardian",
+		
+	"npc_barrack_inquisitor",	
 	"npc_barrack_headhunter",
 	
-	"npc_barrack_lighthouse_guardian",
-	"npc_barrack_villager"
+	"npc_barrack_commando",
+	"npc_barrack_guards",
 };
 
 static int SummonerAlminaInComplete[][] =
 {
 	// NPC Index, Wood, Food, Gold, Time, Level
-	{ 0, 5, 15, 0, 5, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
+	{ 0, 5, 20, 0, 5, 0, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// None
+	{ 0, 30, 5, 0, 7, 0, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// Construction Novice
 
-	{ 0, 50, 10, 0, 7, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES },		// Construction Novice
-	{ 0, 10, 30, 0, 5, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
+	{ 0, 10, 35, 0, 5, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
+	{ 0, 50, 10, 0, 8, 1, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
 
-	{ 0, 90, 20, 0, 8, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
-	{ 0, 10, 45, 0, 6, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
-
-	{ 0, 210, 50, 0, 9, 7, 1, 0,ZR_BARRACKS_TROOP_CLASSES},	// Construction Worker
-	{ 0, 20, 100, 0, 6, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
-
-	{ 0, 400, 100, 0, 10, 11, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
-	{ 0, 50, 200, 0, 7, 16, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
-
-	{ 0, 100, 350, 	5, 8, 16, 1, 0, ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 20, 60, 0, 6, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
+	{ 0, 100, 20, 0, 9, 2, 1, 0,ZR_BARRACKS_TROOP_CLASSES},	// Construction Worker
 	
-	{ 0, 900, 900, 	30, 10, 16, 2, ZR_BARRACKS_UPGRADES_CASTLE, ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
-	{ 0, 		750, 750, 	0, 25, 11, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0 }	// Construction Expert
+	{ 0, 50, 150, 0, 8, 3, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+	{ 0, 200, 50, 0, 10, 3, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+
+	{ 0, 750, 750, 	0, 25, 3, 1, ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0 }, // Construction Expert
+	{ 0, 800, 800, 	30, 25, 4, 2, ZR_BARRACKS_UPGRADES_CASTLE, ZR_BARRACKS_TROOP_CLASSES }, // Construction Master
+
+	{ 0, 600, 200, 	20, 15, 4, 1, 0, ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 200, 600, 	20, 15, 4, 1, 0, ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	
+	{ 0, 300, 100, 0, 10, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES }, // Construction Master
+	{ 0, 100, 300, 0, 9, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES }	// Construction Master
 };
 
 static const char SummonerAlternativeNPC[][] =
@@ -685,75 +696,75 @@ static const char SummonerAlternativeNPC[][] =
 static int SummonerAlternative[][] =
 {
 	// NPC Index, 	Wood, 	Food, 	Gold, 	Time, Level, Supply
-	{ 0, 			5, 		20, 	0, 		5, 		 1,	 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },		// None
-	{ 0, 			30, 	5,	 	0, 		7, 		 2,		1, 	0,ZR_BARRACKS_TROOP_CLASSES },		// Construction Novice
+	{ 0, 			5, 		20, 	0, 		5, 		 0,	 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },		// None
+	{ 0, 			30, 	5,	 	0, 		7, 		 0,		1, 	0,ZR_BARRACKS_TROOP_CLASSES },		// Construction Novice
 	
-	{ 0,			10, 	35, 	0, 		7, 		 4, 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
-	{ 0, 			50, 	10, 	0, 		9, 		 4, 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
+	{ 0,			10, 	35, 	0, 		7, 		 1, 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
+	{ 0, 			50, 	10, 	0, 		9, 		 1, 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Apprentice
 
-	{ 0,			20,		60, 	0, 		7, 		 7, 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
-	{ 0 , 			100, 	20, 	0,		9,		 7, 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
+	{ 0,			20,		60, 	0, 		7, 		 2, 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
+	{ 0 , 			100, 	20, 	0,		9,		 2, 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Worker
 
-	{ 0, 			50, 	150, 	0,		7, 		 11, 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert	// Suicide bombers 
-	{ 0, 			200, 	50, 	0,		9, 		 11, 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert	
+	{ 0, 			50, 	150, 	0,		7, 		 3, 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert	// Suicide bombers 
+	{ 0, 			200, 	50, 	0,		9, 		 3, 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert	
 	
-	{ 0, 			750, 	750, 	0,		25,		 11,	1,	 ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  },	// Construction Expert
-	{ 0, 			1200, 	1200, 	50, 	30,		 16,	2,	 ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 			750, 	750, 	0,		25,		 3,		1, 	ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,0  },	// Construction Expert
+	{ 0, 			1200, 	1200, 	50, 	30,		 3,		2,	ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 	
-	{ 0, 			600, 	200, 	25, 	12,		 16,	1,	 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
-	{ 0 , 			200, 	600, 	25, 	13,		 16,	1,	 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0, 			600, 	200, 	25, 	12,		 4,		1,	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0 , 			200, 	600, 	25, 	13,		 4,		1,	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 
-	{ 0, 			300, 	100, 	0, 		10, 	 16, 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
-	{ 0 , 			100,	300,	0,		9, 		 16, 	1, 	0,ZR_BARRACKS_TROOP_CLASSES }	// Construction Master
+	{ 0, 			300, 	100, 	0, 		10, 	 4, 	1, 	0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
+	{ 0 , 			100,	300,	0,		9, 		 4,		1, 	0,ZR_BARRACKS_TROOP_CLASSES }	// Construction Master
 };
 
 static const int BarracksUpgrades[][] =
 {
 	// Building Upgrade ID, 		Wood, 	Food, 	Gold, 	Time, 	Level,		,Requirement HexArray ,Requirement 									,Requirement 2 HexArray,	Requirement 2						,give hex array		,Give Client
-	{ UNIT_COPPER_SMITH , 			100, 	25, 	0, 		10, 	2, 			1,						0,											1,							0,									1,					ZR_UNIT_UPGRADES_COPPER_SMITH					},		// Construction Novice
-	{ UNIT_IRON_CASTING, 			150, 	50, 	0, 		10,		4, 			1,						ZR_UNIT_UPGRADES_COPPER_SMITH,				1,							0,									1,					ZR_UNIT_UPGRADES_IRON_CASTING					},		// Construction Apprentice
-	{ UNIT_STEEL_CASTING, 			300, 	100, 	0, 		10,		7, 			1,						ZR_UNIT_UPGRADES_IRON_CASTING,				1,							0,									1,					ZR_UNIT_UPGRADES_STEEL_CASTING					},		// Construction Worker
-	{ UNIT_REFINED_STEEL, 			700, 	250, 	0, 		15,		11, 		1,						ZR_UNIT_UPGRADES_STEEL_CASTING,				1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_UNIT_UPGRADES_REFINED_STEEL					},		// Construction Expert
+	{ UNIT_COPPER_SMITH , 			100, 	25, 	0, 		10, 	0, 			1,						0,											1,							0,									1,					ZR_UNIT_UPGRADES_COPPER_SMITH					},		// Construction Novice
+	{ UNIT_IRON_CASTING, 			150, 	50, 	0, 		10,		1, 			1,						ZR_UNIT_UPGRADES_COPPER_SMITH,				1,							0,									1,					ZR_UNIT_UPGRADES_IRON_CASTING					},		// Construction Apprentice
+	{ UNIT_STEEL_CASTING, 			300, 	100, 	0, 		10,		2, 			1,						ZR_UNIT_UPGRADES_IRON_CASTING,				1,							0,									1,					ZR_UNIT_UPGRADES_STEEL_CASTING					},		// Construction Worker
+	{ UNIT_REFINED_STEEL, 			700, 	250, 	0, 		15,		3,	 		1,						ZR_UNIT_UPGRADES_STEEL_CASTING,				1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_UNIT_UPGRADES_REFINED_STEEL					},		// Construction Expert
 
-	{ UNIT_FLETCHING , 				25, 	100, 	0, 		10, 	2, 			1,						0,											1,							0,									1,					ZR_UNIT_UPGRADES_FLETCHING						},		// Construction Novice
-	{ UNIT_STEEL_ARROWS, 			50, 	200, 	0, 		10,		4, 			1,						ZR_UNIT_UPGRADES_FLETCHING,					1,							0,									1,					ZR_UNIT_UPGRADES_STEEL_ARROWS					},		// Construction Apprentice
-	{ UNIT_BRACER, 					100, 	350, 	0, 		10,		7, 			1,						ZR_UNIT_UPGRADES_STEEL_ARROWS,				1,							0,									1,					ZR_UNIT_UPGRADES_BRACER							},		// Construction Worker
-	{ UNIT_OBSIDIAN_REFINED_TIPS, 	250, 	850, 	0, 		15,		11, 		1,						ZR_UNIT_UPGRADES_BRACER,					1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_UNIT_UPGRADES_OBSIDIAN_REFINED_TIPS			},		// Construction Expert
+	{ UNIT_FLETCHING , 				25, 	100, 	0, 		10, 	0, 			1,						0,											1,							0,									1,					ZR_UNIT_UPGRADES_FLETCHING						},		// Construction Novice
+	{ UNIT_STEEL_ARROWS, 			50, 	200, 	0, 		10,		1, 			1,						ZR_UNIT_UPGRADES_FLETCHING,					1,							0,									1,					ZR_UNIT_UPGRADES_STEEL_ARROWS					},		// Construction Apprentice
+	{ UNIT_BRACER, 					100, 	350, 	0, 		10,		2, 			1,						ZR_UNIT_UPGRADES_STEEL_ARROWS,				1,							0,									1,					ZR_UNIT_UPGRADES_BRACER							},		// Construction Worker
+	{ UNIT_OBSIDIAN_REFINED_TIPS, 	250, 	850, 	0, 		15,		3,	 		1,						ZR_UNIT_UPGRADES_BRACER,					1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_UNIT_UPGRADES_OBSIDIAN_REFINED_TIPS			},		// Construction Expert
 
-	{ UNIT_COPPER_ARMOR_PLATE , 	50, 	50, 	0, 		10, 	2, 			1,						0,											1,							0,									1,					ZR_UNIT_UPGRADES_COPPER_PLATE_ARMOR				},		// Construction Novice
-	{ UNIT_IRON_ARMOR_PLATE, 		100, 	200, 	0, 		10,		4, 			1,						ZR_UNIT_UPGRADES_COPPER_PLATE_ARMOR,		1,							0,									1,					ZR_UNIT_UPGRADES_IRON_PLATE_ARMOR				},		// Construction Apprentice
-	{ UNIT_CHAINMAIL_ARMOR, 		150, 	325, 	0, 		10,		7, 			1,						ZR_UNIT_UPGRADES_IRON_PLATE_ARMOR,			1,							0,									1,					ZR_UNIT_UPGRADES_CHAINMAIL_ARMOR				},		// Construction Worker
-	{ UNIT_REFORGED_ARMOR_PLATE, 	400, 	1000, 	0, 		15,		11, 		1,						ZR_UNIT_UPGRADES_CHAINMAIL_ARMOR,			1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_UNIT_UPGRADES_REFORGED_STEEL_ARMOR			},		// Construction Expert
+	{ UNIT_COPPER_ARMOR_PLATE , 	50, 	50, 	0, 		10, 	0, 			1,						0,											1,							0,									1,					ZR_UNIT_UPGRADES_COPPER_PLATE_ARMOR				},		// Construction Novice
+	{ UNIT_IRON_ARMOR_PLATE, 		100, 	200, 	0, 		10,		1, 			1,						ZR_UNIT_UPGRADES_COPPER_PLATE_ARMOR,		1,							0,									1,					ZR_UNIT_UPGRADES_IRON_PLATE_ARMOR				},		// Construction Apprentice
+	{ UNIT_CHAINMAIL_ARMOR, 		150, 	325, 	0, 		10,		2, 			1,						ZR_UNIT_UPGRADES_IRON_PLATE_ARMOR,			1,							0,									1,					ZR_UNIT_UPGRADES_CHAINMAIL_ARMOR				},		// Construction Worker
+	{ UNIT_REFORGED_ARMOR_PLATE, 	400, 	1000, 	0, 		15,		3,	 		1,						ZR_UNIT_UPGRADES_CHAINMAIL_ARMOR,			1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_UNIT_UPGRADES_REFORGED_STEEL_ARMOR			},		// Construction Expert
 
-	{ UNIT_HERBAL_MEDICINE , 		150, 	225, 	0, 		15, 	2, 			1,						0,											1,							0,									1,					ZR_UNIT_UPGRADES_HERBAL_MEDICINE				},		// Construction Novice
+	{ UNIT_HERBAL_MEDICINE , 		150, 	225, 	0, 		15, 	0, 			1,						0,											1,							0,									1,					ZR_UNIT_UPGRADES_HERBAL_MEDICINE				},		// Construction Novice
 	{ UNIT_REFINED_MEDICINE, 		300, 	1000, 	0, 		20,		4, 			1,						ZR_UNIT_UPGRADES_HERBAL_MEDICINE,			1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_UNIT_UPGRADES_REFINED_MEDICINE				},		// Construction Apprentice
 
 	//tower specific upgrades						1,
-	{ BUILDING_TOWER, 				50, 	10, 	0, 		5, 	2, 			1,						0,											1,							0,									1,					ZR_BARRACKS_UPGRADES_TOWER						},		// Construction Novice
-	{ BUILDING_GUARD_TOWER, 		150, 	25, 	0, 		10,		4, 			1,						ZR_BARRACKS_UPGRADES_TOWER,					1,							0,									1,					ZR_BARRACKS_UPGRADES_GUARD_TOWER				},		// Construction Apprentice
-	{ BUILDING_IMPERIAL_TOWER, 		250, 	50, 	0, 		15,		4, 			1,						ZR_BARRACKS_UPGRADES_GUARD_TOWER,			1,							0,									1,					ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER				},		// Construction Worker
-	{ BUILDING_BALLISTICAL_TOWER, 	350, 	150, 	0, 		20,		7, 			1,						ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER,		1,							0,									1,					ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER			},		// Construction Expert
-	{ BUILDING_DONJON, 				650, 	650, 	0, 		25,		7, 			1,						ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER,		1,							0,									1,					ZR_BARRACKS_UPGRADES_DONJON						},		// Construction Expert
-	{ BUILDING_KREPOST, 			1000, 	1000, 	0, 		30,		11, 		1,						ZR_BARRACKS_UPGRADES_DONJON,				1,							0,									1,					ZR_BARRACKS_UPGRADES_KREPOST					},		// Construction Expert
-	{ BUILDING_CASTLE, 				3000, 	3000, 	0, 		40,		16, 		1,						ZR_BARRACKS_UPGRADES_KREPOST,				1,							0,									1,					ZR_BARRACKS_UPGRADES_CASTLE						},		// Construction Expert
+	{ BUILDING_TOWER, 				50, 	10, 	0, 		5,	 	0, 			1,						0,											1,							0,									1,					ZR_BARRACKS_UPGRADES_TOWER						},		// Construction Novice
+	{ BUILDING_GUARD_TOWER, 		150, 	25, 	0, 		10,		1, 			1,						ZR_BARRACKS_UPGRADES_TOWER,					1,							0,									1,					ZR_BARRACKS_UPGRADES_GUARD_TOWER				},		// Construction Apprentice
+	{ BUILDING_IMPERIAL_TOWER, 		250, 	50, 	0, 		15,		1, 			1,						ZR_BARRACKS_UPGRADES_GUARD_TOWER,			1,							0,									1,					ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER				},		// Construction Worker
+	{ BUILDING_BALLISTICAL_TOWER, 	350, 	150, 	0, 		20,		2, 			1,						ZR_BARRACKS_UPGRADES_IMPERIAL_TOWER,		1,							0,									1,					ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER			},		// Construction Expert
+	{ BUILDING_DONJON, 				650, 	650, 	0, 		25,		2, 			1,						ZR_BARRACKS_UPGRADES_BALLISTICAL_TOWER,		1,							0,									1,					ZR_BARRACKS_UPGRADES_DONJON						},		// Construction Expert
+	{ BUILDING_KREPOST, 			1000, 	1000, 	0, 		30,		3,	 		1,						ZR_BARRACKS_UPGRADES_DONJON,				1,							0,									1,					ZR_BARRACKS_UPGRADES_KREPOST					},		// Construction Expert
+	{ BUILDING_CASTLE, 				3000, 	3000, 	0, 		40,		4,	 		1,						ZR_BARRACKS_UPGRADES_KREPOST,				1,							0,									1,					ZR_BARRACKS_UPGRADES_CASTLE						},		// Construction Expert
 
 //unused for now, too lazy aa
 	{ BUILDING_MANUAL_FIRE , 		10, 	40, 	0, 		5, 		9999,/*2,*/ 1,						ZR_BARRACKS_UPGRADES_TOWER,					1,							0,									1,					ZR_BARRACKS_UPGRADES_MANUAL_FIRE				},		// Construction Novice
 
-	{ BUILDING_MUDERHOLES , 		20, 	200, 	0, 		10, 	2, 			1,						0,											1,							ZR_BARRACKS_UPGRADES_TOWER,			1,					ZR_BARRACKS_UPGRADES_MURDERHOLES				},		// Construction Novice
-	{ BUILDING_BALLISTICS, 			500, 	200, 	0, 		15,		4, 			1,						ZR_BARRACKS_UPGRADES_MURDERHOLES,			1,							ZR_BARRACKS_UPGRADES_TOWER,			1,					ZR_BARRACKS_UPGRADES_BALLISTICS					},		// Construction Apprentice
-	{ BUILDING_CHEMISTRY, 			750, 	200, 	0, 		20,		7, 			1,						ZR_BARRACKS_UPGRADES_BALLISTICS,			1,							ZR_BARRACKS_UPGRADES_TOWER,			1,					ZR_BARRACKS_UPGRADES_CHEMISTY					},		// Construction Worker
-	{ BUILDING_CRENELATIONS, 		1000, 	300, 	0, 		40,		11, 		1,						ZR_BARRACKS_UPGRADES_CHEMISTY,				1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_CRENELLATIONS				},		// Construction Expert
+	{ BUILDING_MUDERHOLES , 		20, 	200, 	0, 		10, 	0, 			1,						0,											1,							ZR_BARRACKS_UPGRADES_TOWER,			1,					ZR_BARRACKS_UPGRADES_MURDERHOLES				},		// Construction Novice
+	{ BUILDING_BALLISTICS, 			500, 	200, 	0, 		15,		1, 			1,						ZR_BARRACKS_UPGRADES_MURDERHOLES,			1,							ZR_BARRACKS_UPGRADES_TOWER,			1,					ZR_BARRACKS_UPGRADES_BALLISTICS					},		// Construction Apprentice
+	{ BUILDING_CHEMISTRY, 			750, 	200, 	0, 		20,		2, 			1,						ZR_BARRACKS_UPGRADES_BALLISTICS,			1,							ZR_BARRACKS_UPGRADES_TOWER,			1,					ZR_BARRACKS_UPGRADES_CHEMISTY					},		// Construction Worker
+	{ BUILDING_CRENELATIONS, 		1000, 	300, 	0, 		40,		3,	 		1,						ZR_BARRACKS_UPGRADES_CHEMISTY,				1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_CRENELLATIONS				},		// Construction Expert
 
 	{ BUILDING_CONSCRIPTION , 		800, 	1000, 	0, 		30, 	2, 			1,						0,											1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_CONSCRIPTION				},		// Construction Novice
 	{ BUILDING_GOLDMINERS, 			1000, 	1000, 	10, 	35,		4, 			1,						ZR_BARRACKS_UPGRADES_CONSCRIPTION,			1,							/*Gold crown?*/0,					1,					ZR_BARRACKS_UPGRADES_GOLDMINERS					},		// Construction Apprentice
 
-	{ BUILDING_ASSISTANT_VILLAGER, 	1200, 	1200, 	0, 		30,		11, 		1,						0,											1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER			},		// Construction Worker
-	{ BUILDING_VILLAGER_EDUCATION, 	2000, 	3000, 	0, 		35,		11, 		1,						ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,		1,							ZR_BARRACKS_UPGRADES_CASTLE,		1,					ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER_EDUCATION	},		// Construction Expert
+	{ BUILDING_ASSISTANT_VILLAGER, 	1200, 	1200, 	0, 		30,		3,	 		1,						0,											1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER			},		// Construction Worker
+	{ BUILDING_VILLAGER_EDUCATION, 	2000, 	3000, 	0, 		35,		3,	 		1,						ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER,		1,							ZR_BARRACKS_UPGRADES_CASTLE,		1,					ZR_BARRACKS_UPGRADES_ASSIANT_VILLAGER_EDUCATION	},		// Construction Expert
 
-	{ BUILDING_STRONGHOLDS, 		1750, 	2000, 	0, 		30,		7, 			1,						0,											1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_STRONGHOLDS				},		// Construction Worker
-	{ BUILDING_HOARDINGS, 			2000, 	1750, 	0, 		30,		11, 		1,						ZR_BARRACKS_UPGRADES_STRONGHOLDS,			1,							ZR_BARRACKS_UPGRADES_KREPOST,		2,					ZR_BARRACKS_UPGRADES_HOARDINGS					},		// Construction Expert
-	{ BUILDING_EXQUISITE_HOUSING, 	4000, 	3500, 	10, 	35,		16, 		2,						ZR_BARRACKS_UPGRADES_HOARDINGS,				1,							ZR_BARRACKS_UPGRADES_CASTLE,		2,					ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING			},		// Construction Expert
+	{ BUILDING_STRONGHOLDS, 		1750, 	2000, 	0, 		30,		2, 			1,						0,											1,							ZR_BARRACKS_UPGRADES_DONJON,		1,					ZR_BARRACKS_UPGRADES_STRONGHOLDS				},		// Construction Worker
+	{ BUILDING_HOARDINGS, 			2000, 	1750, 	0, 		30,		3,	 		1,						ZR_BARRACKS_UPGRADES_STRONGHOLDS,			1,							ZR_BARRACKS_UPGRADES_KREPOST,		2,					ZR_BARRACKS_UPGRADES_HOARDINGS					},		// Construction Expert
+	{ BUILDING_EXQUISITE_HOUSING, 	4000, 	3500, 	10, 	35,		4,	 		2,						ZR_BARRACKS_UPGRADES_HOARDINGS,				1,							ZR_BARRACKS_UPGRADES_CASTLE,		2,					ZR_BARRACKS_UPGRADES_EXQUISITE_HOUSING			},		// Construction Expert
 	{ BUILDING_TROOP_CLASSES, 		10, 	10, 	0, 		5,		0, 			1,						0,											1,							0,									2,					ZR_BARRACKS_TROOP_CLASSES						},		// Construction Expert
 };					
 
@@ -1376,7 +1387,7 @@ void CheckSummonerUpgrades(int client)
 {
 	SupplyRate[client] = 2;
 
-	SupplyRate[client] += RoundToNearest(Attributes_Get(client, Attrib_BarracksSupplyRate, 0.0));
+	SupplyRate[client] += Barracks_GetInfo(client,2);
 
 	FinalBuilder[client] = view_as<bool>(Attributes_Get(client, Attrib_FinalBuilder, 0.0));
 	MedievalUnlock[client] = true;/*Items_HasNamedItem(client, "Medieval Crown");*/
@@ -1385,16 +1396,15 @@ void CheckSummonerUpgrades(int client)
 		MedievalUnlock[client] = view_as<bool>(CivType[client]);
 
 	GlassBuilder[client] = view_as<bool>(Attributes_Get(client, Attrib_GlassBuilder, 0.0));
-	int AttributeIs = RoundToNearest(Attributes_Get(client, Attrib_WildingenBuilder, 0.0));
 	WildingenBuilder[client] = false;
 	WildingenBuilder2[client] = false;
-	switch(AttributeIs)
+	switch(Barracks_GetInfo(client,1))
 	{
-		case 1:
+		case 6:
 		{
 			WildingenBuilder[client] = true;
 		}
-		case 2:
+		case 7:
 		{
 			WildingenBuilder[client] = true;
 			WildingenBuilder2[client] = true;
@@ -1519,7 +1529,7 @@ static void SummonerMenu(int client, int viewer)
 
 	bool owner = client == viewer;
 	bool alive = (owner && IsPlayerAlive(client) && !TeutonType[client]);
-	int level = Object_MaxSupportBuildings(client, true);
+	int level = Barracks_GetInfo(client,1);
 	int itemsAddedToList = 0;
 	
 	Menu menu = new Menu(SummonerMenuH);
@@ -2038,6 +2048,10 @@ public int SummonerMenuH(Menu menu, MenuAction action, int client, int choice)
 							ResearchStartedIn[client] = GetGameTime();
 							
 							float TimeUntillResearch = float(GetRData(item, TrainTime));
+							if(i_CurrentEquippedPerk[client] & PERK_ENERGY_DRINK)
+							{
+								TimeUntillResearch *= 0.85; 
+							}
 							if(Rogue_Mode())
 							{
 								TimeUntillResearch *= 0.5;
@@ -2245,7 +2259,6 @@ void BarracksUnitAttack_NPCTakeDamagePost(int victim, int attacker, float damage
 	int owner = GetClientOfUserId(npc.OwnerUserId);
 	if(IsValidClient(owner))
 	{
-
 		int entity = EntRefToEntIndex(i_PlayerToCustomBuilding[owner]);
 		if(!IsValidEntity(entity))
 			return;

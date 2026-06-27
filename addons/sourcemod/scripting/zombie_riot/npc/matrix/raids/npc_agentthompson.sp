@@ -253,6 +253,11 @@ methodmap AgentThompson < CClotBody
 	}
 }
 
+static void NPCTalkMessage(int entity, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(entity, "community", message, .messageColor = "darkgreen");
+}
+
 public void AgentThompson_ClotThink(int iNPC)
 {
 	AgentThompson npc = view_as<AgentThompson>(iNPC);
@@ -266,7 +271,7 @@ public void AgentThompson_ClotThink(int iNPC)
 	{
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
-		CPrintToChatAll("{community}Agent Thompson{default}: You're free, at last.");
+		NPCTalkMessage(npc.index, "You're free, at last.");
 		return;
 	}
 
@@ -277,7 +282,7 @@ public void AgentThompson_ClotThink(int iNPC)
 		{
 			ForcePlayerLoss();
 			RaidBossActive = INVALID_ENT_REFERENCE;
-			CPrintToChatAll("{community}Agent Thompson{forestgreen}: {forestgreen}Redpills are behind the time.");
+			NPCTalkMessage(npc.index, "Redpills are behind the time.");
 			func_NPCThink[npc.index] = INVALID_FUNCTION;
 			return;
 		}
@@ -598,7 +603,6 @@ public void AgentThompson_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 		
-	Music_SetRaidMusicSimple("vo/null.mp3", 60, false, 0.5);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))

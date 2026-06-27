@@ -264,7 +264,6 @@ void OnTakeDamage_RogueItemGeneric(int attacker, float &damage, int damagetype, 
 
 public void Rogue_Item_HandWrittenLetter()
 {
-	CurrentCash += 750;
 	GlobalExtraCash += 750;	
 }
 
@@ -293,7 +292,6 @@ public void Rogue_Item_CrudeFlute_Ally(int entity, StringMap map)
 
 public void Rogue_Item_ScrappedWallet()
 {
-	CurrentCash += 500;
 	GlobalExtraCash += 500;	
 }
 
@@ -308,7 +306,6 @@ public void Rogue_Item_ScrappedWallet_Ally(int entity, StringMap map)
 
 public void Rogue_Item_GoldenCoin()
 {
-	CurrentCash += 2000;
 	GlobalExtraCash += 2000;
 		
 	Rogue_AddIngots(10, true);

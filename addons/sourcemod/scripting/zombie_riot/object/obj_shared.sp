@@ -669,13 +669,14 @@ public bool ObjectGeneric_CanBuildSentryBarracks(int client, int &count, int &ma
 	if(!client)
 		return false;
 		
-	return ObjectGeneric_CanBuildSentryInternal(client, count, maxcount);
+	count = Object_GetSentryBuilding(client) == -1 ? 0 : 1;
+	maxcount = IsBarracks(client) ? 1 : 0;
+
+	return (!count && maxcount);
 }
 public bool ObjectGeneric_CanBuildSentry(int client, int &count, int &maxcount)
 {
 	if(!client)
-		return false;
-	if(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_TROOP_CLASSES)
 		return false;
 	if(f_VintulumBombRecentlyUsed[client] > GetGameTime())
 		return false;
@@ -686,7 +687,7 @@ public bool ObjectGeneric_CanBuildSentry(int client, int &count, int &maxcount)
 bool ObjectGeneric_CanBuildSentryInternal(int client, int &count, int &maxcount)
 {
 	count = Object_GetSentryBuilding(client) == -1 ? 0 : 1;
-	maxcount = (Blacksmith_IsASmith(client) || Merchant_IsAMerchant(client)) ? 0 : 1;
+	maxcount = (Blacksmith_IsASmith(client) || Merchant_IsAMerchant(client) || IsBarracks(client)) ? 0 : 1;
 
 	return (!count && maxcount);
 }
@@ -1108,15 +1109,11 @@ int Object_MaxSupportBuildings(int client, bool ingore_glass = false)
 			maxAllowed = 1;
 	}
 
-	if(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_TROOP_CLASSES)
+	if(IsBarracks(client))
 	{
 		if(!ingore_glass)
 		{
-			if(maxAllowed > 2)
-			{
-				maxAllowed = 2;
-
-			}
+			maxAllowed = 2;
 		}
 	}
 	return maxAllowed;
@@ -1148,8 +1145,6 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 	
 	if(GetTeam(victim) == TFTeam_Red)
 	{
-		if(CurrentModifOn() == 2 || CurrentModifOn() == 3)
-			damage *= 1.25;
 
 		if(Rogue_Mode()) //buildings are refunded alot, so they shouldnt last long.
 		{

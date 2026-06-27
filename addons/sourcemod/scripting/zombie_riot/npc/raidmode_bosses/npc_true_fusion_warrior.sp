@@ -747,7 +747,8 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 														
 									TF2_AddCondition(client, TFCond_LostFooting, 0.5);
 									TF2_AddCondition(client, TFCond_AirCurrent, 0.5);
-									f_ImmuneToFalldamage[client] = GetGameTime() + 5.0;
+									if(ZR_Get_Modifier() != 8)
+										f_ImmuneToFalldamage[client] = GetGameTime() + 5.0;
 															
 									GetAngleVectors(vAngles, vDirection, NULL_VECTOR, NULL_VECTOR);
 														
@@ -791,13 +792,14 @@ public void TrueFusionWarrior_ClotThink(int iNPC)
 								{				
 									if(vAngles[0] > -45.0)
 									{
-											vAngles[0] = -45.0;
+										vAngles[0] = -45.0;
 									}
 														
 									TF2_AddCondition(client, TFCond_LostFooting, 0.5);
 									TF2_AddCondition(client, TFCond_AirCurrent, 0.5);
 									
-									f_ImmuneToFalldamage[client] = GetGameTime() + 5.0;
+									if(ZR_Get_Modifier() != 8)
+										f_ImmuneToFalldamage[client] = GetGameTime() + 5.0;
 															
 									GetAngleVectors(vAngles, vDirection, NULL_VECTOR, NULL_VECTOR);
 											
@@ -1123,6 +1125,8 @@ public void TrueFusionwarrior_IOC_Invoke(int ref, int enemy)
 		static float IOCDist=250.0;
 		static float IOCdamage;
 		IOCdamage= (150.0 * RaidModeScaling);
+		if(ZR_Get_Modifier() == 8)
+			IOCdamage = 2000000000.0;
 		
 		float vecTarget[3];
 		GetEntPropVector(enemy, Prop_Data, "m_vecAbsOrigin", vecTarget);

@@ -79,6 +79,13 @@ float BonePosition[3], float BoneAngles[3], int ProjectileType, bool IsCrit)
 public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 {
 #if defined ZR
+
+	if(!InZRMap())
+		DeleteAllBadEntities_NonZrMaps();
+	
+	if (!CanMapSpawnPickups())
+		DeleteAllPickups();
+	
 	DeleteShadowsOffZombieRiot();
 	EventRoundStartMusicFilter();
 	b_GameOnGoing = true;
@@ -125,14 +132,13 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 		Armor_Charge[client] = 0; //reset armor to 0
 	}
 	ReviveAll();
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if(IsValidClient(client))
+			Loadout_DatabaseLoadFavorite(client);
+	}
 	if(RoundStartTime > GetGameTime())
 	{
-		//This asumes it already picked a map, get loadouts while not redoing map logic!
-		for(int client=1; client<=MaxClients; client++)
-		{
-			if(IsValidClient(client))
-				Loadout_DatabaseLoadFavorite(client);
-		}
 		return;
 	}
 	
@@ -794,4 +800,41 @@ public Action ChatSetupTipTimer(Handle TimerHandle)
 			SPrintToChat(client, "{green}TIP:{snow} %t",TipText);
 	}
 	return Plugin_Stop;
+}
+
+void DeleteAllBadEntities_NonZrMaps()
+{
+	ServerCommand("sv_cheats 1; nav_load ; sv_cheats 0");
+	for( int i = 1; i <= MAXENTITIES; i++ ) 
+	{
+		if(!IsValidEntity(i))
+			continue;
+		static char classname[36];
+		GetEntityClassname(i, classname, sizeof(classname));
+		if(!StrContains(classname, "prop_door") ||
+		!StrContains(classname, "item_teamflag") ||
+		!StrContains(classname, "func_regenerate") ||
+		!StrContains(classname, "func_respawnroom") ||
+		!StrContains(classname, "func_respawnroomvisualizer") ||
+		!StrContains(classname, "func_door"))
+		{
+			RemoveEntity(i);
+		}
+	}
+}
+
+void DeleteAllPickups()
+{
+	for( int i = 1; i <= MAXENTITIES; i++ ) 
+	{
+		if(!IsValidEntity(i))
+			continue;
+		char classname[36];
+		GetEntityClassname(i, classname, sizeof(classname));
+		if(!StrContains(classname, "item_healthkit") ||
+		!StrContains(classname, "item_ammopack"))
+		{
+			RemoveEntity(i);
+		}
+	}
 }

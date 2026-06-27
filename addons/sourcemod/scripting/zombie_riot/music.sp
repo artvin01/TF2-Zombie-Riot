@@ -414,7 +414,7 @@ void PrecacheMusicZr()
 	PrecacheSoundCustom("#zombiesurvival/lasthuman.mp3",_,1);
 	PrecacheSoundCustom("#zombiesurvival/music_lose.mp3",_,1);
 	PrecacheSoundCustom("#zombiesurvival/music_win_1.mp3",_,1);
-	PrecacheSoundCustom("#zombiesurvival/nilksongboss.mp3",_,5);
+//	PrecacheSoundCustom("#zombiesurvival/nilksongboss.mp3",_,5);
 
 	MusicDisabled = FindInfoTarget("zr_nomusic");
 	XenoMapExtra = FindInfoTarget("zr_xeno_extras");
@@ -580,6 +580,8 @@ void Music_EndLastmann(bool Reinforce=false)
 						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/heatbroken_lastman.mp3", 2.0);
 					case 16:
 						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/red_mist_lastman.mp3", 2.0);
+					case 17:
+						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/medieval_raid/kazimierz_boss.mp3", 2.0);
 				}
 				SetMusicTimer(client, 0);
 				MusicLastmann.StopMusic(client);
@@ -735,8 +737,8 @@ void Music_Stop_All(int client)
 		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/7.mp3");
 		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/8.mp3");
 		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/beats/defaulthuman/9.mp3");
-		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/nilksongboss.mp3");
-		StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/nilksongboss.mp3");
+	//	StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/nilksongboss.mp3");
+	//	StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/nilksongboss.mp3");
 	}
 	//dont call so often! causes lag!
 	
@@ -1074,6 +1076,11 @@ void Music_Update(int client)
 						SetMusicTimer(client, GetTime() + 91);
 					}
 				}
+				case 17:
+				{
+					EmitCustomToClient(client, "#zombiesurvival/medieval_raid/kazimierz_boss.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.8);
+					SetMusicTimer(client, GetTime() + 189);
+				}
 				default:
 				{	
 					if(!MusicLastmann.PlayMusic(client))
@@ -1084,12 +1091,13 @@ void Music_Update(int client)
 				}
 			}
 		}
-		
+		/*
 		else if(view_as<bool>(Store_HasNamedItem(client, "Expidonsan Research Card")))
 		{
 			EmitCustomToClient(client, "#zombiesurvival/nilksongboss.mp3", client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.2);
 			SetMusicTimer(client, GetTime() + 100);
 		}
+		*/
 		else if(f_intencity < 1.0)
 		{
 			SetMusicTimer(client, GetTime() + 8);

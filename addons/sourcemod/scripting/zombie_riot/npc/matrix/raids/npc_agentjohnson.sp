@@ -271,6 +271,11 @@ methodmap AgentJohnson < CClotBody
 	}
 }
 
+static void NPCTalkMessage(int entity, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(entity, "community", message, .messageColor = "darkgreen");
+}
+
 public void Johnson_GroundCheck(int entity, int victim, float damage, int weapon)
 {
 	Custom_Knockback(entity, victim, 1000.0, true);
@@ -294,11 +299,11 @@ public void AgentJohnson_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{community}Agent Johnson{default}: Was it worth the risk?");
+					NPCTalkMessage(npc.index, "Was it worth the risk?");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{community}Agent Johnson{default}: Human minds are so feeble.");
+					NPCTalkMessage(npc.index, "Human minds are so feeble.");
 				}
 			}
 		}
@@ -308,7 +313,7 @@ public void AgentJohnson_ClotThink(int iNPC)
 	{
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
-		CPrintToChatAll("{community}Agent Johnson{default}: Your story ends here.");
+		NPCTalkMessage(npc.index, "Your story ends here.");
 		return;
 	}
 
@@ -319,7 +324,7 @@ public void AgentJohnson_ClotThink(int iNPC)
 		{
 			ForcePlayerLoss();
 			RaidBossActive = INVALID_ENT_REFERENCE;
-			CPrintToChatAll("{community}Agent Johnson{default}: {default}The Exiles are done here.{default}");
+			NPCTalkMessage(npc.index, "The Exiles are done here.");
 			func_NPCThink[npc.index] = INVALID_FUNCTION;
 			return;
 		}
@@ -700,7 +705,6 @@ public void AgentJohnson_NPCDeath(int entity)
 		npc.PlayDeathSound();	
 	}
 		
-	Music_SetRaidMusicSimple("vo/null.mp3", 60, false, 0.5);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))

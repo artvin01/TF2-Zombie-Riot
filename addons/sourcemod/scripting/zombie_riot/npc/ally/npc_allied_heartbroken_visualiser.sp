@@ -331,11 +331,10 @@ void Heartbroken_ParryDohhulan(int owner, AlliedHeartbrokenVisualiserAbility npc
 		int ShieldGive;
 		RemoveSpecificBuff(owner, "Shielding");
 		float duration = 0.5;
-		ShieldGive = ReturnEntityMaxHealth(owner) / 10;
+		ShieldGive = ReturnEntityMaxHealth(owner) / 13;
 		ApplyStatusEffect(owner, owner, "Shielding", duration + 0.5);
-		if(LastMann)
-			ShieldGive *= 2;
-		
+		GiveCoffinOnDamage(owner,owner,  0.0, 0.25);
+
 		ShieldGive *= 2;
 
 		Shielding_Add(owner, ShieldGive);

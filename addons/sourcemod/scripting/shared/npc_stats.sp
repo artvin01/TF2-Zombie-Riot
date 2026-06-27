@@ -76,6 +76,7 @@ static int i_WasPathingToHere[MAXENTITIES];
 static float f3_WasPathingToHere[MAXENTITIES][3];
 Function func_NPCDeath[MAXENTITIES];
 Function func_NPCDeathForward[MAXENTITIES];
+Function func_NPCSpawnForward[MAXENTITIES];
 Function func_NPCOnTakeDamage[MAXENTITIES];
 Function func_NPCOnTakeDamagePost[MAXENTITIES];
 Function func_NPCThink[MAXENTITIES];
@@ -164,16 +165,45 @@ public void BoneZone_SetRandomBuffedHP(CClotBody npc)
 
 public Action Command_RemoveAll(int client, int args)
 {
+	bool enemyOnly, friendlyOnly, specificNpc;
+	
+	char strArg[32];
+	if (GetCmdArgString(strArg, sizeof(strArg)))
+	{
+		if (StrContains(strArg, "enemy") == 0 || StrContains(strArg, "blu") == 0)
+			enemyOnly = true;
+		else if (StrContains(strArg, "friend") == 0 || StrContains(strArg, "red") == 0)
+			friendlyOnly = true;
+		else
+			specificNpc = true;
+	}
+	
+	int amountRemoved;
+	
 	int a, entity;
 	while((entity = FindEntityByNPC(a)) != -1)
 	{
 		if(IsValidEntity(entity))
 		{
-			b_DissapearOnDeath[entity] = true;
-			b_DoGibThisNpc[entity] = true;
-			SmiteNpcToDeath(entity);
+			if (!strArg[0]
+			|| (enemyOnly && GetTeam(entity) != TFTeam_Red)
+			|| (friendlyOnly && GetTeam(entity) == TFTeam_Red)
+			|| (specificNpc && StrContains(c_NpcName[entity], strArg, false) == 0))
+			{
+				b_DissapearOnDeath[entity] = true;
+				b_DoGibThisNpc[entity] = true;
+				SmiteNpcToDeath(entity);
+				
+				amountRemoved++;
+			}
 		}
 	}
+	
+	if (amountRemoved > 0)
+		ReplyToCommand(client, "Removed %d NPC%s.", amountRemoved, amountRemoved == 1 ? "" : "s");
+	else
+		ReplyToCommand(client, "Couldn't find any NPCs to remove.");
+	
 	return Plugin_Handled;
 }
 
@@ -5107,7 +5137,7 @@ stock void ArcToLocationViaSpeedProjectile(int projectile, float VecEnd[3], floa
 	}
 	*/
 }
-stock bool IsEntityAlive(int index, bool WasValidAlready = false)
+stock bool IsEntityAlive(int index, bool WasValidAlready = false, bool IgnoreDownCheck = false)
 {
 	if(WasValidAlready || IsValidEntity(index))
 	{
@@ -5124,8 +5154,10 @@ stock bool IsEntityAlive(int index, bool WasValidAlready = false)
 		}
 		else
 		{
+			if(!IsClientInGame(index))
+				return false;	
 #if defined ZR
-			if(!IsPlayerAlive(index) || dieingstate[index] > 0 || TeutonType[index] != TEUTON_NONE)
+			if(!IsPlayerAlive(index) || (dieingstate[index] > 0 && !IgnoreDownCheck) || TeutonType[index] != TEUTON_NONE)
 			{
 				return false;	
 			}
@@ -5712,7 +5744,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 			if(vehicle != -1)
 				GetClosestTarget_EnemiesToCollect[i] = vehicle;
 
-			GetEntPropVector(GetClosestTarget_EnemiesToCollect[i], Prop_Data, "m_vecOrigin", targetPos[i]);
+			GetEntPropVector(GetClosestTarget_EnemiesToCollect[i], Prop_Data, "m_vecAbsOrigin", targetPos[i]);
 			CNavArea NavAreaUnder = TheNavMesh.GetNavArea(targetPos[i], 100.0);
 
 			if(NavAreaUnder == NULL_AREA)
@@ -5879,8 +5911,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 			static float distance;
 			distance = GetVectorDistance( EntityLocation, TargetLocation, true ); 
 			*/
-
-			GetEntPropVector( target, Prop_Data, "m_vecOrigin", TargetLocation ); //do not use abs, some entities do not have abs.
+			GetEntPropVector( target, Prop_Data, "m_vecAbsOrigin", TargetLocation ); //do not use abs, some entities do not have abs.
 			float distanceVector = GetVectorDistance( EntityLocation, TargetLocation, true ); 
 			if(i_CurrentEquippedPerk[target] & PERK_BLOODY)
 				distanceVector *= 2.0;
@@ -7343,6 +7374,18 @@ bool Can_I_See_Enemy_Only(int attacker, int enemy, float pos_npc[3] = {0.0,0.0,0
 	float pos_enemy[3];
 	if(pos_npc[2] == 0.0)
 		WorldSpaceCenter(attacker, pos_npc);
+	if(enemy <= MaxClients)
+	{
+		int vehicle = Vehicle_Driver(enemy);
+		if(vehicle != -1)
+		{
+#if defined ZR
+			enemy = Vehicle_Driver(enemy);
+#else
+			enemy = GetEntPropEnt(enemy, Prop_Data, "m_hPlayer");
+#endif
+		}
+	}
 	WorldSpaceCenter(enemy, pos_enemy);
 
 	
@@ -7398,7 +7441,7 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0, bool forcesilentMode = fal
 	CClotBody npc = view_as<CClotBody>(pThis);
 	if(npc.m_iBleedType == 0)
 		return;
-
+		
 	float startPosition[3];
 				
 	float damageForce[3];
@@ -9138,6 +9181,7 @@ public void NPCStats_SetFuncsToZero(int entity)
 {
 	func_NPCDeath[entity] = INVALID_FUNCTION;
 	func_NPCOnTakeDamage[entity] = INVALID_FUNCTION;
+	func_NPCSpawnForward[entity] = INVALID_FUNCTION;
 	func_NPCOnTakeDamagePost[entity] = INVALID_FUNCTION;
 	func_NPCThink[entity] = INVALID_FUNCTION;
 	func_NPCDeathForward[entity] = INVALID_FUNCTION;

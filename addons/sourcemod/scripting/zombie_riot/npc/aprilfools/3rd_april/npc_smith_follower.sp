@@ -280,7 +280,7 @@ static void ClotThink(int iNPC)
 		}
 	}
 
-	if(target > 0)
+	if(target > 0 && !IsInvuln(target))
 	{
 		float vecTarget[3]; WorldSpaceCenter(target, vecTarget);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);

@@ -408,6 +408,7 @@ int i_MVMPopulator;
 //bool RaidMode; 							//Is this raidmode?
 float RaidModeScaling = 0.5;			//what multiplier to use for the raidboss itself?
 float RaidModeTime = 0.0;
+bool RaidTimerAlert = true;				// Should players be warned about the raidboss timer?
 int TimeWhenStartedWaveset = 0;
 float f_TimerTickCooldownRaid = 0.0;
 float f_TimerTickCooldownShop = 0.0;
@@ -468,6 +469,8 @@ bool b_HoldingInspectWeapon[MAXPLAYERS];
 #define ZR_ARMOR_DAMAGE_REDUCTION 0.75
 #define ZR_LIVING_ARMOR_DAMAGE_REDUCTION 0.5
 #define ZR_ARMOR_DAMAGE_REDUCTION_INVRERTED 0.25
+
+#define DEFAULT_MISSION_CLIENT "{black}Bob the Second"
 
 float Armor_regen_delay[MAXPLAYERS];
 
@@ -568,6 +571,7 @@ bool applied_lastmann_buffs_once = false;
 int i_WaveHasFreeplay = 0;
 float fl_MatrixReflect[MAXENTITIES];
 
+char s_MissionClient[64]; // Who hired us for the current job
 
 #include "include/zombie_riot.inc"
 
@@ -601,6 +605,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "betting.sp"
 #include "dungeons.sp"
 #include "sm_skyboxprops.sp"
+#include "shared/sound_manualdownload.sp"
 #include "custom/homing_projectile_logic.sp"
 #include "custom/weapon_slug_rifle.sp"
 #include "custom/weapon_boom_stick.sp"
@@ -751,6 +756,7 @@ float fl_MatrixReflect[MAXENTITIES];
 #include "custom/kit_heartbroken.sp"
 #include "custom/weapon_burningthumb.sp"
 #include "custom/kit_red_mist.sp"
+#include "custom/kit_barracks.sp"
 
 void ZR_PluginLoad()
 {
@@ -799,6 +805,7 @@ void ZR_PluginStart()
 
 
 	RegConsoleCmd("sm_afk", Command_AFK, "BRB GONNA CLEAN MY MOM'S DISHES");
+//	RegConsoleCmd("sm_flop", Command_Flop, "Flop");
 	//RegConsoleCmd("sm_rtd", Command_RTdFail, "Go away.");						//Littearlly cannot support RTD. I will remove this onec i add support for it, but i doubt i ever will.
 	
 	RegAdminCmd("sm_give_cash", Command_GiveCash, ADMFLAG_ROOT, "Give Cash to the Person");
@@ -865,8 +872,38 @@ void ZR_PluginStart()
 	NpcConst2Building_CommandPluginStart();
 }
 
+bool IsZRMap;
+bool CanSpawnPickups;
+
+bool InZRMap()
+{
+	return IsZRMap;
+}
+
+bool CanMapSpawnPickups()
+{
+	return CanSpawnPickups;
+}
 void ZR_MapStart()
 {
+	char mapname[64];
+	GetMapName(mapname, sizeof(mapname));
+	if(StrContains(mapname, "zr_") == 0 || StrContains(mapname, "vsh_zr_") == 0)
+	{
+		IsZRMap = true;
+		CanSpawnPickups = true;
+	}
+	else if(StrContains(mapname, "vsh_") == 0)
+	{
+		IsZRMap = false;
+		CanSpawnPickups = true;
+	}
+	else
+	{
+		IsZRMap = false;
+		CanSpawnPickups = false;
+	}
+
 	MusicString1.Clear();
 	MusicString2.Clear();
 	MusicSetup1.Clear();
@@ -903,7 +940,6 @@ void ZR_MapStart()
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	Format(WhatModifierSetting, sizeof(WhatModifierSetting), "");
-	PrintToChatAll("WhatModifierSetting reser");
 	WavesUpdateDifficultyName();
 	cvarTimeScale.SetFloat(1.0);
 	GlobalCheckDelayAntiLagPlayerScale = 0.0;
@@ -1088,6 +1124,9 @@ void ZR_MapStart()
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
 //	CreateEntityByName("info_populator");
 	RaidBossActive = INVALID_ENT_REFERENCE;
+	RaidTimerAlert = true;
+	
+	s_MissionClient = DEFAULT_MISSION_CLIENT;
 	
 	CreateTimer(0.1, GlobalTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	
@@ -1213,9 +1252,9 @@ void ZR_ClientPutInServer(int client)
 	b_HasBeenHereSinceStartOfWave[client] = false;
 	Queue_PutInServer(client);
 	i_AmountDowned[client] = 0;
-	if(CurrentModifOn() == 3)
+	if(ZR_Get_Modifier() == 3 || ZR_Get_Modifier() == 8)
 		i_AmountDowned[client] = 1;
-	Waves_TrySpawnBarney();
+	Waves_TrySpawnBarney(); 
 		
 	dieingstate[client] = 0;
 	TeutonType[client] = 0;
@@ -1257,6 +1296,8 @@ void ZR_ClientPutInServer(int client)
 
 	if(BetWar_Mode() || Dungeon_Mode())
 		b_AntiLateSpawn_Allow[client] = true;
+
+	SoundManual_OnClientPutInServer(client);
 }
 
 void ZR_ClientDisconnect(int client)
@@ -1450,7 +1491,19 @@ public Action Command_AFK(int client, int args)
 	}
 	return Plugin_Handled;
 }
-
+/*
+public Action Command_Flop(int client, int args)
+{
+	if(client && IsEntityAlive(client))
+	{
+		if(HasSpecificBuff(client, "Stunned"))
+			return Plugin_Handled;
+		FreezeNpcInTime(client, 1.5, true);
+		ApplyStatusEffect(client, client, "Ragdolled", 2.0);	
+	}
+	return Plugin_Handled;
+}
+*/
 
 public Action Command_TestTutorial(int client, int args)
 {
@@ -2411,7 +2464,34 @@ void TriggerLastmanLogic(int killed, int Hurtviasdkhook)
 					}
 					Yakuza_Lastman(16);
 				}
-				
+				if(IsBarracks(client))
+				{
+					CPrintToChatAll("{green}%N and their soldiers are making their last stand.",client);
+					switch (WhatCiv(client))
+					{
+						case Alternative:
+						{
+							CPrintToChatAll("{red}The remnants of Blitzkrieg army overcharge their systems to the maximum, it’s TOTAL BLITZKRIEG.",client);
+						}
+						case Combine:
+						{
+							CPrintToChatAll("{yellow}Not wanting to see you die like Guln, the soldiers of his army quickly load the anti-chaos weaponry, no more mercy.",client);
+						}
+						case Almina_Thorns:
+						{
+							CPrintToChatAll("{blue}Soldiers arm their best gears, remebering what cruel fate they had to go through under Whiteflower and Dwellers",client);
+						}
+						case Thorns:
+						{
+							CPrintToChatAll("{blue}Expidonsa declares code Epsilon, use of experimental technology has been authorized, no more holding back.",client);
+						}
+						default:
+						{
+							CPrintToChatAll("{red}A chanting of war can be heard from Alaxios army, they will not go down without a fight.",client);
+						}
+					}
+					Yakuza_Lastman(17);
+				}
 				
 				for(int i=1; i<=MaxClients; i++)
 				{
@@ -2596,6 +2676,9 @@ stock int MaxArmorCalculation(int ArmorLevel = -1, int client, float multiplyier
 	if((f_LivingArmorPenalty[client] > GetGameTime() || (Attributes_Get(client, Attrib_Armor_AliveMode, 0.0)) != 0.0) && Armor_Charge[client] >= 0)
 		Armor_Max /= 2;
 		
+	if(ZR_Get_Modifier() == NOSTALGICA)
+		Armor_Max = RoundToCeil(float(Armor_Max) * 0.75);
+		
 	return (RoundToCeil(float(Armor_Max) * multiplyier));
 	
 }
@@ -2707,6 +2790,9 @@ stock void AddAmmoClient(int client, int AmmoType, int AmmoCount = 0, float Mult
 //	f_TimerTickCooldownShop = 0.0;
 stock void PlayTickSound(bool RaidTimer, bool NormalTimer)
 {
+	if (!RaidTimerAlert)
+		return;
+	
 	if(NormalTimer)
 	{
 		if(f_TimerTickCooldownShop < GetGameTime())
@@ -2894,7 +2980,7 @@ void ReviveAll(bool raidspawned = false,
 
 			if(i_AmountDowned[client] > 0)
 				i_AmountDowned[client] = 0;
-			if(CurrentModifOn() == 3)
+			if(ZR_Get_Modifier() == 3)
 				i_AmountDowned[client] = 1;
 
 			DoOverlay(client, "", 2);
@@ -3460,6 +3546,8 @@ stock void SPrintToChatAll(const char[] message, any ...)
 //IF you disable ingame downloads, it will download all these files nontherless!
 void ZR_FastDownloadForce()
 {
+	//always
+	PrecacheSoundCustom("#zombiesurvival/red_mist_lastman.mp3",_,1);
 	//do not download!!
 	if(FileNetwork_Enabled())
 		return;
@@ -3478,6 +3566,7 @@ void ZR_FastDownloadForce()
 	Core_PrecacheGlobalCustom();
 	PrecacheMusicZr();
 	PrecacheRedMistMusic();
+	PrecacheBarracksMusic();
 }
 
 

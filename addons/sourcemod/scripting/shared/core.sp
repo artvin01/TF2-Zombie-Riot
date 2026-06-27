@@ -961,7 +961,7 @@ public Action Timer_Temp(Handle timer)
 			RaidModeTime += 0.2;
 			//if the raidboss is in spawn protection, prevent raidmode from going up.
 		}
-		if (RaidModeScaling != 0.0 && RaidModeTime > GetGameTime() && RaidModeTime < GetGameTime() + 60.0)
+		if (/*RaidModeScaling != 0.0 && */RaidModeTime > GetGameTime() && RaidModeTime < GetGameTime() + 60.0)
 		{
 			PlayTickSound(true, false);
 		}
@@ -1211,6 +1211,7 @@ public void OnMapStart()
 	g_iLaserMaterial_Trace = PrecacheModel("materials/sprites/laserbeam.vmt");
 	CreateTimer(0.2, Timer_Temp, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 	PrecacheSound("mvm/mvm_tank_horn.wav");
+	PrecacheSound("physics/glass/glass_sheet_break3.wav");
 	DeleteShadowsOffZombieRiot();
 
 	if(LibraryExists("LoadSoundscript"))

@@ -3302,6 +3302,194 @@
 		"en"	"You ever had gay thoughts? Act on them."
 		"ko"	"게이같은 생각 해본 적 있어? 한번 해보던가."
 	}
+	"Rage Prefix Text 37"
+	{
+		"en"	"Siiiiiix. Seveeeeeeeeen."
+	}
+	"Rage Prefix Text 38"
+	{
+		"en"	"Im a real Oak guy. I love Oak, its so much better than Birch."
+	}
+	"Rage Prefix Text 39"
+	{
+		"en"	"Gonna touch you in places you wont like."
+	}
+	"Rage Prefix Text 40"
+	{
+		"en"	"Those towers deserved it."
+	}
+	"Rage Prefix Text 41"
+	{
+		"en"	"BLOCKED BLOCKED BLOCKED BLOCKED. YOU'RE ALL BLOCKED"
+	}
+	"Rage Prefix Text 42"
+	{
+		"en"	"i talked to my friend and he said im really cool like the coolest there is"
+	}
+	"Rage Prefix Text 43"
+	{
+		"en"	"i eat the bowl and boil the cereal"
+	}
+	"Rage Prefix Text 44"
+	{
+		"en"	"   king   gg  "
+	}
+	"Rage Prefix Text 45"
+	{
+		"en"	"Melee is cringe"
+	}
+	"Rage Prefix Text 46"
+	{
+		"en"	"Ranged is cringe"
+	}
+	"Rage Prefix Text 47"
+	{
+		"en"	"Mage is cringe"
+	}
+	"Rage Prefix Text 48"
+	{
+		"en"	"Support is cringe"
+	}
+	"Rage Prefix Text 49"
+	{
+		"en"	"Builder is cringe"
+	}
+	"Rage Prefix Text 50"
+	{
+		"en"	"Weapon kits are cringe"
+	}
+	"Rage Prefix Text 51"
+	{
+		"en"	"I bet these enemies would have some kind of mechanic of somekind but I wouldnt know because I CANT READ" 
+	}
+	"Rage Prefix Text 52"
+	{
+		"en"	"your last 2 braincells are fighting for third(3rd) place" 
+	}
+	"Rage Prefix Text 53"
+	{
+		"en"	"your aura stinks"
+	}
+	"Rage Prefix Text 54"
+	{
+		"en"	"i tryhard in casual games so what?"
+	}
+	"Rage Prefix Text 55"
+	{
+		"en"	"Fart face"
+	}
+	"Rage Prefix Text 56"
+	{
+		"en"	"subscribble to me incr3dibl3 u-tube channul"
+	}
+	"Rage Prefix Text 57"
+	{
+		"en"	"im just a class 1 basic zombie"
+	}
+	"Rage Prefix Text 58"
+	{
+		"en"	"Kahmlstein is a FRAUD"
+	}
+	"Rage Prefix Text 59"
+	{
+		"en"	"VincentGPT, how do I play zombie riot"
+	}
+	"Rage Prefix Text 60"
+	{
+		"en"	"My mom rules Ruina"
+	}
+	"Rage Prefix Text 61"
+	{
+		"en"	"My dad made Chaos"
+	}
+	"Rage Prefix Text 62"
+	{
+		"en"	"I would betray you in the hyperbolic time chamber"
+	}
+	"Rage Prefix Text 63"
+	{
+		"en"	"you aint built for these riots cuh"
+	}
+	"Rage Prefix Text 64"
+	{
+		"en"	"AWOOOOOOOOOOOOOOOO. Baby, I'm preyin' on you tonight. Hunt you down, eat you alive \nJust like animals, animals, like animaaaaaaaals"
+	}
+	"Rage Prefix Text 65"
+	{
+		"en"	"ME(sigma) vs YOU(beta)"
+	}
+	"Rage Prefix Text 66"
+	{
+		"en"	"Vuntulum bombing is badass"
+	}
+	"Rage Prefix Text 67"
+	{
+		"en"	"The voices in my head are my best guide"
+	}
+	"Rage Prefix Text 68"
+	{
+		"en"	"Erm well that just happened"
+	}
+	"Rage Prefix Text 69"
+	{
+		"en"	"i do ALL of the drugs why do you ask?"
+	}
+	"Rage Prefix Text 70"
+	{
+		"en"	"Enjoying the waveset so far? Enhance your weapon and prepare for some prefix bullshit."
+	}
+	"Rage Prefix Text 71"
+	{
+		"en"	"I AM THE ONE WHO RAGEBAITS"
+	}
+	"Rage Prefix Text 72"
+	{
+		"en"	"why are you blue"
+	}
+	"Rage Prefix Text 73"
+	{
+		"en"	"I WILL ENSURE YOUR FAVOURITE SHOW HAS A DOGSHIT ENDING"
+	}
+	"Rage Prefix Text 74"
+	{
+		"en"	"dimensional ripper back when?"
+	}
+	"Rage Prefix Text 75"
+	{
+		"en"	"Cant touch this."
+	}
+	"Rage Prefix Text 76"
+	{
+		"en"	"The zombies actually heal you when they hit you."
+	}
+	"Rage Prefix Text 76"
+	{
+		"en"	"MY ASS [$$]"
+	}
+	"Rage Prefix Text 77"
+	{
+		"en"	"If you ever happen to hear a soothing female voice remember to listen to it"
+	}
+	"Rage Prefix Text 78"
+	{
+		"en"	"Lemme stuff you into this springlock suit cmere"
+	}
+	"Rage Prefix Text 79"
+	{
+		"en"	"FUCK YOUR CHAT BOX LMAOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO"
+	}
+	"Rage Prefix Text 80"
+	{
+		"en"	"I AM SUPERIOR"
+	}
+	"Rage Prefix Text 81"
+	{
+		"en"	"MERCENARIES. ALL THEY THINK ABOUT IS THEMSELVES AND THEIR WAVESETS."
+	}
+	"Rage Prefix Text 82"
+	{
+		"en"	"SWAG MULTIPLIED BY INFINITY."
+	}
 	"Semi Healthy Prefix"
 	{
 		"en"	"Semi Healthy Prefix"
@@ -3362,6 +3550,196 @@
 		"en"	"Infected by steam happy, gains insane stats."
 		"ko"	"Steam Happy 이모지에 감염되어, 파멸적인 버프를 얻습니다."
 	}
+	"Quiet Prefix"
+	{
+		"en"	"Quiet Prefix"
+		"ko"	"조용한 접두사"
+	}
+	"Quiet"
+	{
+		"en"	"Quiet"
+		"ko"	"조용한"
+	}
+	"Quiet Prefix Desc"
+	{
+		"en"	"Makes no sound."
+		"ko"	"아무런 소리를 내지 않습니다."
+	}
+	"Trampling Prefix"
+	{
+		"en"	"Trampling Prefix"
+		"ko"	"짓밟는 접두사"
+	}
+	"Trampling"
+	{
+		"en"	"Trampling"
+		"ko"	"짓밟는"
+	}
+	"Trampling Prefix Desc"
+	{
+		"en"	"Damages and pushes enemies on touch."
+		"ko"	"적과 접촉 시 피해와 넉백을 가합니다."
+	}
+	"Scrambled Prefix"
+	{
+		"en"	"Scrambled Prefix"
+		"ko"	"뒤죽박죽 접두사"
+	}
+	"Scrambled"
+	{
+		"en"	"Scrambled"
+		"ko"	"뒤죽박죽"
+	}
+	"Scrambled Prefix Desc"
+	{
+		"en"	"Become inflicted with up to 6 random buffs/debuffs every 10 seconds."
+		"ko"	"10초마다 무작위 버프/디버프를 최대 6개까지 얻습니다."
+	}
+	"Indecisive Prefix"
+	{
+		"en"	"Indecisive Prefix"
+		"ko"	"우유부단한 접두사"
+	}
+	"Indecisive"
+	{
+		"en"	"Indecisive"
+		"ko"	"우유부단한"
+	}
+	"Indecisive Prefix Desc"
+	{
+		"en"	"Become a neutral entity for 5 seconds every 15 seconds."
+		"ko"	"15초마다 5초 동안 중립 개체가 됩니다."
+	}
+	"Depressing Prefix"
+	{
+		"en"	"Depressing Prefix"
+		"ko"	"우울한 접두사"
+	}
+	"Depressing"
+	{
+		"en"	"Depressing"
+		"ko"	"우울한"
+	}
+	"Depressing Prefix Desc"
+	{
+		"en"	"Inflicts Depressed to all nearby enemies and allies."
+		"ko"	"근처의 모든 적과 아군에게 '우울함' 디버프를 부여합니다."
+	}
+	"Depressed"
+	{
+		"en"	"Depressed"
+		"ko"	"우울함"
+	}
+	"Depressed Desc"
+	{
+		"en"	"Decreases attack/reload speed and heal rate by 30％ and movement speed by 20％."
+		"ko"	"공격/재장전/치유 속도가 30％ 감소합니다.\n이동 속도가 20％ 감소합니다."
+	}
+	"Whimsical Prefix"
+	{
+		"en"	"Whimsical Prefix"
+		"ko"	"이상한 접두사"
+	}
+	"Whimsical"
+	{
+		"en"	"Whimsical"
+		"ko"	"이상한"
+	}
+	"Whimsical Prefix Desc"
+	{
+		"en"	"Make the most out of this cruel world with a propeller hat and lollipop."
+		"ko"	"프로펠러 모자와 롤리팝과 함께 이 잔인한 세상을 최대한 즐깁니다."
+	}
+	"Seraph Prefix"
+	{
+		"en"	"Seraph Prefix"
+		"ko"	"세라프 접두사"
+	}
+	"Seraph"
+	{
+		"en"	"Seraph"
+		"ko"	"세라프"
+	}
+	"Seraph Prefix Desc"
+	{
+		"en"	"Receives several stacks of damage-blocking shield on spawn and when reaching 66％/33％ health."
+		"ko"	"스폰 직후, 그리고 체력이 66％/33％가 될 시 다수의 피해 무효화 보호막을 얻습니다."
+	}
+	"Party Popper Prefix"
+	{
+		"en"	"Party Popper Prefix"
+		"ko"	"파티광 접두사"
+	}
+	"Party Popper"
+	{
+		"en"	"Party Popper"
+		"ko"	"파티광"
+	}
+	"Party Popper Prefix Desc"
+	{
+		"en"	"Burst into confetti on death, infecting everything around with Party Popper.\nNPCs take damage and players cannot get downed temporarily."
+		"ko"	"사망 시 팡파레처럼 폭발하며, 주위의 모든 것들을 '파티광'에 감염시킵니다.\nNPC는 피해를 입으며 플레이어들은 일시적으로 다운되지 않고 즉사하게 됩니다."
+	}
+	"Gory Prefix"
+	{
+		"en"	"Gory Prefix"
+		"ko"	"고어 접두사"
+	}
+	"Gory Prefix Desc"
+	{
+		"en"	"On death spawn immensive gore, on hit spawn gore."
+		"ko"	"사망 시 엄청난 양의 유혈을 유발하며, 피격 시 유혈을 유발합니다."
+	}
+	"Gory"
+	{
+		"en"	"Gory"
+		"ko"	"고어"
+	}
+	"Aleph Prefix"
+	{
+		"en"	"Aleph Prefix"
+		"ko"	"알레프 접두사"
+	}
+	"Aleph Prefix Desc"
+	{
+		"en"	"When hurt once, instantly enrage and gain insane buffs."
+		"ko"	"피해를 1번이라도 입을 시, 즉시 격분 상태가 되어 막대한 버프를 얻습니다."
+	}
+	"Aleph"
+	{
+		"en"	"Aleph"
+		"ko"	"알레프"
+	}
+	"Aleph All Prefix"
+	{
+		"en"	"Aleph All Prefix"
+		"ko"	"알레프 올 접두사"
+	}
+	"Aleph All Prefix Desc"
+	{
+		"en"	"Gain Ego, Shin, and a major stat boost."
+		"ko"	"E.G.O, 신, 그리고 대량의 능력치 보너스를 얻습니다."
+	}
+	"Red Mist Shin"
+	{
+		"en"	"Red Mist Shin"
+		"ko"	"신 - 붉은안개"
+	}
+	"Warning Prefix"
+	{
+		"en"	"Warning Prefix"
+		"ko"	"경고 접두사"
+	}
+	"Warning Prefix Desc"
+	{
+		"en"	"⚠⚠⚠"
+		"ko"	"⚠⚠⚠"
+	}
+	"⚠"
+	{
+		"en"	"⚠"
+		"ko"	"⚠"
+	}
 	"Ragdolled"
 	{
 		"en"	"Ragdolled"
@@ -3375,7 +3753,7 @@
 	"Tiantui Star Desc"
 	{
 		"en"	"{red}Decreases damage dealt by all other weapons.\n{green}Increases damage dealt by up to 20％ the faster this unit to the target.\nInflicts +1 more Tremor stack and +5s more Tremor extension."
-		"ko"	"{red}이 무기 외의 무기로 가하는 피해 감소\n{green}대상보다 속도가 빠를 수록 가하는 피해량이 최대 20％까지 증가합니다.\n진동 부여량이 1 증가하며 진동 연장이 5초 증가합니다."
+		"ko"	"{red}이 무기 외의 무기로 가하는 피해 감소\n{green}대상보다 속도가 빠를 수록 공격 피해량이 최대 20％까지 증가합니다.\n진동 부여량이 1 증가하며 진동 연장이 5초 증가합니다."
 	}
 	"Shin - Tiantui Star"
 	{
@@ -3385,7 +3763,7 @@
 	"Shin - Tiantui Star Desc"
 	{
 		"en"	"{red}Decreases damage dealt by all other weapons.\n{green}Increases damage dealt by up to 40％ the faster this unit to the target.\nInflicts +2 more Tremor stack and +10s more Tremor extension."
-		"ko"	"{red}이 무기 외의 무기로 가하는 피해 감소\n{green}대상보다 속도가 빠를 수록 가하는 피해량이 최대 40％까지 증가합니다.\n진동 부여량이 2 증가하며 진동 연장이 10초 증가합니다."
+		"ko"	"{red}이 무기 외의 무기로 가하는 피해 감소\n{green}대상보다 속도가 빠를 수록 공격 피해량이 최대 40％까지 증가합니다.\n진동 부여량이 2 증가하며 진동 연장이 10초 증가합니다."
 	}
 	"Overheat"
 	{
@@ -3455,7 +3833,7 @@
 	"Red_Mist_Strength Desc"
 	{
 		"en"	"Gain an additive 5％ more damage dealt per stack\nOnly affects this kit"
-		"ko"	"중첩 당 가하는 피해량이 합연산으로 5％ 증가합니다.\n해당 키트에만 영향을 줍니다."
+		"ko"	"중첩 당 공격 피해량이 합연산으로 5％ 증가합니다.\n해당 키트에만 영향을 줍니다."
 	}
 	"Influence of the bodies"
 	{
@@ -3484,8 +3862,8 @@
 	}
 	"Ego Manifestation Desc"
 	{
-		"en"	"Deal 30％ more damage and take 10％ less damage and 10％ movement speed (except during lastman)\nWhile active unlock a new special ability"
-		"ko"	"가하는 피해량 30％ 증가, 받는 피해량 10％ 감소, 이동 속도가 10％ 증가합니다.(최후의 1인 상태 제외)\n활성화된 동안 특별 책장이 해금됩니다."
+		"en"	"Deal 30％ more damage and take 10％ less damage and 10％ movement speed (except during lastman, lastman nerfs this buff)\nWhile active unlock a new special ability"
+		"ko"	"공격 피해량 30％ 증가, 받는 피해량 10％ 감소, 이동 속도가 10％ 증가합니다.(최후의 1인 상태일 시 효과 감소)\n활성화된 동안 특별 책장이 해금됩니다."
 	}
 	"Red Mist Counter"
 	{
@@ -3507,5 +3885,76 @@
 		"en"	"Take 25％ less damage during dashes"
 		"ko"	"돌진하는 동안 받는 피해량이 25％ 감소합니다."
 	}
-	
+	"Barrack Defense Overclock 1"
+	{
+		"en"	"Barrack Defense Overclock (Tier 1)"
+	}
+	"Barrack Defense Overclock 1 Desc"
+	{
+		"en"	"Take 10%% less damage\nMoves 5%% faster"
+	}
+	"Barrack Defense Overclock 2"
+	{
+		"en"	"Barrack Defense Overclock (Tier 2)"
+	}
+	"Barrack Defense Overclock 2 Desc"
+	{
+		"en"	"Take 15%% less damage\nMoves 10%% faster"
+	}
+	"Barrack Defense Overclock 3"
+	{
+		"en"	"Barrack Defense Overclock (Tier 3)"
+	}
+	"Barrack Defense Overclock 3 Desc"
+	{
+		"en"	"Take 20%% less damage\nMoves 15%% faster"
+	}
+	"Barrack Defense Overclock 4"
+	{
+		"en"	"Barrack Defense Overclock (Tier 4)"
+	}
+	"Barrack Defense Overclock 4 Desc"
+	{
+		"en"	"Take 25%% less damage\nMoves 20%% faster"
+	}
+	"Barrack Offense Overclock 1"
+	{
+		"en"	"Barrack Offense Overclock (Tier 1)"
+	}
+	"Barrack Offense Overclock 1 Desc"
+	{
+		"en"	"Deal 10%% more damage\n5%% faster attack speed"
+	}
+	"Barrack Offense Overclock 2"
+	{
+		"en"	"Barrack Offense Overclock (Tier 2)"
+	}
+	"Barrack Offense Overclock 2 Desc"
+	{
+		"en"	"Deal 15%% more damage\n10%% faster attack speed"
+	}
+	"Barrack Offense Overclock 3"
+	{
+		"en"	"Barrack Offense Overclock (Tier 3)"
+	}
+	"Barrack Offense Overclock 3 Desc"
+	{
+		"en"	"Deal 20%% more damage\n15%% faster attack speed"
+	}
+	"Barrack Offense Overclock 4"
+	{
+		"en"	"Barrack Offense Overclock (Tier 4)"
+	}
+	"Barrack Offense Overclock 4 Desc"
+	{
+		"en"	"Deal 25%% more damage\n20%% faster attack speed"
+	}
+	"Healing Decay"
+	{
+		"en"	"Healing Decay"
+	}
+	"Healing Decay Desc"
+	{
+		"en"	"Cannot be healed by a Healing Nova"
+	}
 }

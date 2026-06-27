@@ -202,6 +202,7 @@ public void HallamGreatDemon_ClotThink(int iNPC)
 		int spawn_index = NPC_CreateByName("npc_ihanal_demon_whisperer", npc.index, SelfPos, ang, GetTeam(npc.index));
 		if(spawn_index > MaxClients)
 		{
+			b_thisNpcIsABoss[spawn_index] = b_thisNpcIsABoss[npc.index];
 			NpcStats_CopyStats(npc.index, spawn_index);
 			flMaxHealthally /= 2;
 			npc.m_iTargetAlly = spawn_index;

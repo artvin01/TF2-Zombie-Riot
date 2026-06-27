@@ -253,7 +253,7 @@ methodmap Matrix_Twins < CClotBody
 
 		if(whatami)
 		{
-			CPrintToChatAll("{forestgreen}%s{default}: What am I supposed to be.", "Twin No. ");
+			NPCTalkMessage(npc.index, "What am I supposed to be.");
 		}
 		
 		FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "%s %i", "Twin No.", number);
@@ -290,6 +290,11 @@ methodmap Matrix_Twins < CClotBody
 		
 		return npc;
 	}
+}
+
+static void NPCTalkMessage(int entity, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(entity, "forestgreen", message);
 }
 
 public void Matrix_Twins_ClotThink(int iNPC)
@@ -723,7 +728,10 @@ static void Matrix_Twins_Apply_Healing(Matrix_Twins npc, float gameTime)
 
 static void Matrix_Twins_healspeak(Matrix_Twins npc)
 {
-	CPrintToChatAll("{forestgreen}%s{default}: %s", NpcStats_ReturnNpcName(npc.index), npc.b_Twin_On ? "My Healing Glasses are now Ready." : "My Self Regeneration is now Ready.");
+	if (npc.b_Twin_On)
+		NPCTalkMessage(npc.index, "My Healing Glasses are now Ready.");
+	else
+		NPCTalkMessage(npc.index, "My Self Regeneration is now Ready.");
 }
 
 static void Matrix_Twins_Reset_Healing(Matrix_Twins npc, float gameTime)

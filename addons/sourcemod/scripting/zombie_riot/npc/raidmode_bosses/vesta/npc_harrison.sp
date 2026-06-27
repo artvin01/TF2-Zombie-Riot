@@ -319,7 +319,8 @@ methodmap Harrison < CClotBody
 			b_NoKnockbackFromSources[npc.index] = true;
 			b_ThisEntityIgnored[npc.index] = true;
 			b_NoKillFeed[npc.index] = true;
-			
+
+			npc.g_TimesSummoned = 300;
 			npc.m_iState=0;
 			npc.m_iOverlordComboAttack=0;
 			npc.m_flDoingAnimation=0.0;
@@ -548,6 +549,20 @@ static void Clone_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 	if(!IsValidEntity(npc.m_iOverrideOwner))npc.m_iOverrideOwner = npc.index;
 	npc.m_flNextThinkTime = gameTime + 0.1;
+
+	if(npc.g_TimesSummoned < 1)
+	{
+		b_NpcForcepowerupspawn[npc.index] = 0;
+		i_RaidGrantExtra[npc.index] = 0;
+		b_DissapearOnDeath[npc.index] = true;
+		b_DoGibThisNpc[npc.index] = true;
+		b_NoKillFeed[npc.index] = true;
+		SmiteNpcToDeath(npc.index);
+	}
+	else
+	{
+		npc.g_TimesSummoned -= 1;
+	}
 
 	switch(npc.m_iOverlordComboAttack)
 	{
