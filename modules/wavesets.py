@@ -570,8 +570,9 @@ def parse():
     def parse_rogue(name, data, html_mapsets):
         data=data["Rogue"]
         wd = defaultdict(str,data)
-        
         """
+        if(RogueTheme == BlueParadox || RogueTheme == ReilaRift)
+		    s_MissionClient = "{black}Izan";
         # Rogue 1 overview
         - Artifacts
         - Curses
@@ -636,6 +637,7 @@ def parse():
             "startcash": wd["Setup"]["cash"],
             "wavesetlistname": f"Rogue {rogue_num}",
             "wavesetlistdata": info_html,
+            "character_hired_by": f"{util.apply_morecolors(DEFAULT_MISSION_CLIENT) if rogue_num == 1 else util.apply_morecolors("{black}Izan")}"
         }
         HTML_WAVESET_LIST = util.fill_template(util.read(f"templates/rogue/roguedata.html"),context)
         # HTML_WAVESET_LIST -> what will be linked to on the ZR: rogue page
@@ -759,8 +761,6 @@ def parse():
     ### CONST 1 ###
     def parse_const1(name, data, html_mapsets):
         """
-        if(RogueTheme == BlueParadox || RogueTheme == ReilaRift)
-		    s_MissionClient = "{black}Izan";
         # Const1 Structure
         Construction
             Setup
@@ -883,6 +883,7 @@ def parse():
             "startcash": wd["Setup"]["cash"],
             "wavesetlistname": f"Construction 1",
             "wavesetlistdata": info_html,
+            "character_hired_by": util.apply_morecolors(DEFAULT_MISSION_CLIENT)
         }
         HTML_WAVESET_LIST = util.fill_template(util.read(f"templates/rogue/roguedata.html"),context)
         # HTML_WAVESET_LIST -> what will be linked to on the ZR: rogue page
@@ -931,8 +932,6 @@ def parse():
 
     ### CONST 2 ###
     def parse_const2(name, data, html_mapsets):
-        # TODO character_hired_by "{white}Bob the First"
-        # code in dungeons.sp, not config!
         """
         # Const 2 Structure
         Construction
@@ -1086,6 +1085,7 @@ def parse():
             "startcash": wd["Setup"]["cash"],
             "wavesetlistname": f"Construction 2 (incomplete info)",
             "wavesetlistdata": info_html,
+            "character_hired_by": util.apply_morecolors("{white}Bob the First") # Hardcoding :D
         }
         HTML_WAVESET_LIST = util.fill_template(util.read(f"templates/rogue/roguedata.html"),context)
 
@@ -1101,7 +1101,6 @@ def parse():
     NPCS_BY_FILENAME, NPCS_BY_CATEGORY = parse_all_npcs()
     DEFAULT_CASH_BY_WAVE = parse_default_cash()
     DEFAULT_MISSION_CLIENT = parse_default_mission_client()
-    print("Default mission client",DEFAULT_MISSION_CLIENT)
     MUSIC_BY_TITLE = {}
     util.write("npcs_by_category.json", json.dumps(NPCS_BY_CATEGORY,indent=2))
 
