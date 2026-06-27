@@ -373,6 +373,7 @@ public void AgentJohnson_ClotThink(int iNPC)
 				if(iActivity_melee > 0) 
 					npc.StartActivity(iActivity_melee);
 				i_NpcWeight[npc.index] = 4;
+				b_NoGravity[npc.index] = false;
 				npc.m_flAbilityOrAttack0 = GetGameTime(npc.index) + 17.0;
 				npc.m_flAbilityOrAttack1 = 0.0;
 				npc.m_flAbilityOrAttack2 = 0.0;
