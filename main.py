@@ -3,10 +3,12 @@ SCOPE = []
 if "SCOPE" in os.environ:
     SCOPE = [x.lower() for x in os.environ["SCOPE"].split(",")]
 else:
-    SCOPE = ["wavesets", "npcs", "items", "music", "skilltree", "statusfx"]
+    SCOPE = ["static", "wavesets", "npcs", "items", "music", "skilltree", "statusfx"]
 print("SCOPE", SCOPE)
 
-os.system("cp -r docs/* gh-pages/")
+if "static" in SCOPE:
+    os.system("cp -r docs/* gh-pages/")
+
 import modules.phrase
 
 if "wavesets" in SCOPE:

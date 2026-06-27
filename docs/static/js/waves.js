@@ -36,17 +36,28 @@ async function parse_waveset(file) {
     }
 
     max_waves = Number(Object.keys(waveset_data["waves"]).reduce((a, b) => Number(a) > Number(b) ? a : b));
-    const waveset_info_container = document.getElementById("waveset_info");
-    if (waveset_data["authors"]["npc"]!=="") { waveset_info_container.appendChild(create_element("div",{"innerHTML": `NPCs by: ${waveset_data["authors"]["npc"]}`})) };
-    if (waveset_data["authors"]["format"]!=="") { waveset_info_container.appendChild(create_element("div",{"innerHTML": `Format by: ${waveset_data["authors"]["format"]}</div>`})) };
-    if (waveset_data["authors"]["raid"]!=="") { waveset_info_container.appendChild(create_element("div",{"innerHTML": `Raidboss by: ${waveset_data["authors"]["raid"]}</div>`})) };
-    if (waveset_data["item_on_win"]!=="") { waveset_info_container.appendChild(create_element("div",{"innerHTML": `Item on win: ${waveset_data["item_on_win"]}</div>`})) };
-    if (waveset_data["desc"]!=="") { waveset_info_container.appendChild(create_element("div",{"innerHTML": `${waveset_data["desc"]}</div>`})) };
-    
+
     // wait until morecolors.js loads
     while(typeof apply_morecolors !== "function") {
         await sleep(1000);
     }
+
+    const waveset_info_container = document.getElementById("waveset_info");
+    const wd_template = {
+        "authors.npc": "NPCs by: %s",
+        "authors.format": "Format by: %s",
+        "authors.raid": "Raidboss by: %s",
+        "item_on_win": "Item on win: %s",
+        "character_hired_by": "Hired by: %m", // Not usually shown in chat but rather in revive messages
+        "desc": "%s"
+    }
+    for (const [key, entry] of Object.entries(wd_template)) {
+        let val = key.split('.').reduce((p,c)=>p&&p[c]||null, waveset_data);
+        if (val!==null) {
+            waveset_info_container.appendChild(create_element("div",{"innerHTML": entry.replace("%s",val).replace("%m",apply_morecolors(val))}))
+        }
+    }
+
     for (const [key, entry] of Object.entries(waveset_data["music"])) {
         let m_pre = key.split("_")[1];
         let m_title =  apply_morecolors(entry["musictitle"].replace("|",""));

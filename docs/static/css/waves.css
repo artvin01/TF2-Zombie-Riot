@@ -3,6 +3,9 @@
 #wavesetname {
     margin-bottom: .25em;
 }
+#waveset_info {
+    margin: 2em;
+}
 
 .waveset_bg {
     margin-top: 2em;

@@ -70,6 +70,8 @@ def parse():
     def parse_default_cash():
         return util.normalize_whitespace(util.read("TF2-Zombie-Riot/addons/sourcemod/scripting/zombie_riot/zr_core.sp").split("public const int DefaultWaveCash[] =\n{\n")[1].split("\n};")[0]).split(", ")
     
+    def parse_default_mission_client(): # Default for 'character_hired_by' entry
+        return util.read("TF2-Zombie-Riot/addons/sourcemod/scripting/zombie_riot/zr_core.sp").split('#define DEFAULT_MISSION_CLIENT "')[1].split('"')[0]
 
     def unique_enemy_delays(w):
         # Make each wave delay unique as not to lose out on info (for example if 2 enemies have same wave delay)
@@ -370,7 +372,8 @@ def parse():
             },
             "desc": desc,
             "item_on_win": wd["complete_item"],
-            "fakemaxwaves": wd["fakemaxwaves"]
+            "fakemaxwaves": wd["fakemaxwaves"],
+            "character_hired_by": wd["character_hired_by"] or DEFAULT_MISSION_CLIENT
         }
         
         wave_idx = 0
@@ -756,6 +759,8 @@ def parse():
     ### CONST 1 ###
     def parse_const1(name, data, html_mapsets):
         """
+        if(RogueTheme == BlueParadox || RogueTheme == ReilaRift)
+		    s_MissionClient = "{black}Izan";
         # Const1 Structure
         Construction
             Setup
@@ -926,6 +931,8 @@ def parse():
 
     ### CONST 2 ###
     def parse_const2(name, data, html_mapsets):
+        # TODO character_hired_by "{white}Bob the First"
+        # code in dungeons.sp, not config!
         """
         # Const 2 Structure
         Construction
@@ -1093,6 +1100,8 @@ def parse():
     util.log("Fetching base data...")
     NPCS_BY_FILENAME, NPCS_BY_CATEGORY = parse_all_npcs()
     DEFAULT_CASH_BY_WAVE = parse_default_cash()
+    DEFAULT_MISSION_CLIENT = parse_default_mission_client()
+    print("Default mission client",DEFAULT_MISSION_CLIENT)
     MUSIC_BY_TITLE = {}
     util.write("npcs_by_category.json", json.dumps(NPCS_BY_CATEGORY,indent=2))
 
