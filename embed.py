@@ -59,7 +59,6 @@ def generate_waveset_embed(filename, title, wave, wave_max, entries):
     imgs = [Image.new(mode="RGB", size=(WIDTH, HEIGHT))]
 
     # check if entries have at least one npc with the mission flag (red flashing background requires 2 imgs => gif)
-    # TODO doesn't work on some waves for some reason. see: zr_escape_ Rising Tides W50
     entries_have_mission_flag = any(("MVM_CLASS_FLAG_MISSION" in defaultdict(list,entry_data)["embed_extra_flags"]) and (entry_data["type"]=="npc") for entry_data in entries)
     if entries_have_mission_flag:
         imgs.append(Image.new(mode="RGB", size=(WIDTH, HEIGHT)))
@@ -111,12 +110,12 @@ def generate_waveset_embed(filename, title, wave, wave_max, entries):
                 dx += ICON_SIZE+ICON_PADDING
             dy += ICON_SIZE+ICON_PADDING+ICON_SIZE/2
         
-    if len(imgs) == 1:
-        imgs[0].save(f"gh-pages/embed/{filename}.gif")
-    else:
+    if len(imgs) > 1:
         imgs[0].save(f"gh-pages/embed/{filename}.gif",
             save_all = True, append_images = imgs[1:], 
             optimize = False, duration = 500, loop=0)
+    else:
+        imgs[0].save(f"gh-pages/embed/{filename}.gif")
 
 
 def draw_text_centered(drawable, pos, text, fill, font, bold=False):
@@ -131,8 +130,7 @@ def draw_text_centered(drawable, pos, text, fill, font, bold=False):
 def draw_npc(drawable, imgs, pos, npc, frame_idx=0):
     left,top = pos[0]-(ICON_SIZE/2), pos[1]-(ICON_SIZE/2)
     bg_color = color["bg_light"]
-    if ("MVM_CLASS_FLAG_MINIBOSS" in npc["embed_extra_flags"]) or \
-        (("MVM_CLASS_FLAG_MISSION" in npc["embed_extra_flags"]) and frame_idx==0):
+    if ("MVM_CLASS_FLAG_MINIBOSS" in npc["embed_extra_flags"]) ^ (("MVM_CLASS_FLAG_MISSION" in npc["embed_extra_flags"]) and frame_idx==0): # XOR cause npcs that are minibosses+mission have to flash too
         bg_color = color["red_bg"]
     if "MVM_CLASS_FLAG_ALWAYSCRIT" in npc["embed_extra_flags"]:
         drawable.rounded_rectangle([(left-2,top-2), (left+ICON_SIZE+2,top+ICON_SIZE+2)], 4, color["blue_outline"])
