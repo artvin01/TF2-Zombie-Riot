@@ -502,10 +502,12 @@
 	"Fridge Food"
 	{
 		"en"	"Fridge Food"
+		"ko"	"냉장고 음식"
 	}
 	"Fridge Food Desc"
 	{
 		"en"	"Being outside of battle will heal you overtime"
+		"ko"	"전투 상태가 아닐 시 지속적으로 치유됩니다."
 	}
 	"Blessing of Stars"
 	{
