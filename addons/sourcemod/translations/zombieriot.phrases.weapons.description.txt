@@ -2716,10 +2716,12 @@
 	"The Enforcer Desc Weak"
 	{
 		"en"	"-Increases damage.\n-Doubles damage falloff\n-Grants an ability that stuns and knockbacks 3 targets, consumes one clip per target hit.\n-On hit, reduce cooldown"
+		"ko"	"-피해량 증가\n-거리 비례 피해 감소량 2배\n-최대 3명의 적을 기절시키고 넉백시키는 능력 획득. 적중한 적 하나당 장탄 1 소모\n-적중 시, 능력 쿨다운 감소"
 	}
 	"The Enforcer Desc"
 	{
 		"en"	"-Increases damage.\n-Increased ability knockback and can hit up to 10 targets"
+		"ko"	"-피해량 증가\n-능력의 넉백력이 증가하며 최대 10명의 적을 적중할 수 있음"
 	}
 	"The Enforcer Pap 1"
 	{
@@ -3812,6 +3814,7 @@
 	"Riot Gun Desc"
 	{
 		"en"	"-if Armor, resistance from front attacks.\n-15％ Res\n-R stuns targets in front of you and increases attack speed\n-slower with shield on\n-Shield Break: gain speed with a cooldown\n-M2 shoves enemies, gain armor on hit\n-on hurt, you + ally CD Reduced"
+		"ko"	"-아머 보유시 정면의 적에게 받는 피해가 감소\n-저항력 15％ 증가\n-R키 능력: 정면의 적 기절 및 공격 속도 증가\n-방패 전개시 이동 속도 감소\n-방패 파괴시 이동 속도 증가(쿨타임 존재)\n-M2 능력 사용 시 적을 밀쳐내며, 적중 시 아머 획득\n-피해를 입을 시 자신과 아군의 쿨다운 감소"
 	}
 	"Energized Riot Gun Desc"
 	{
