@@ -397,11 +397,15 @@ void ThornsBasicAttackM1Melee(BarrackThorns npc, float gameTime, int EnemyToAtta
 						float damage = 3500.0;
 						if(ThornsLevelAt[npc.index] == 2)
 						{
-							damage *= 2.0;
+							damage *= 2.006;	// Tier 2 - Max Pot
 						}
 						else if(ThornsLevelAt[npc.index] == 1)
 						{
-							damage *= 1.5;
+							damage *= 1.855;	// Tier 1 (or elite, whichever you like more)
+						}
+						else
+						{
+							damage *= 1.744;	// Tier 0
 						}
 						if(npc.CmdOverride == Command_HoldPos) // If he's in position hold, heavily reduce his dmg
 						{
@@ -573,11 +577,15 @@ void ThornsBasicAttackM2Ability(BarrackThorns npc, float gameTime, int EnemyToAt
 					
 					if(ThornsLevelAt[npc.index] == 2)
 					{
-						damage *= 1.8;
+						damage *= 2.006;	// Tier 2 - Max potency, won't touch the slow attack since i want his dps to be low when he's still ramping up
 					}
 					else if(ThornsLevelAt[npc.index] == 1)
 					{
-						damage *= 1.5;
+						damage *= 1.855;	// Tier 1, aka elite
+					}
+					else
+					{
+						 damage *= 1.744;	// Tier 0, only happens if you don't have pap >= 5
 					}
 					if(npc.CmdOverride == Command_HoldPos) // If he's in position hold, heavily reduce his dmg
 					{
@@ -682,29 +690,29 @@ public Action BarrackThorns_OnTakeDamage(int victim, int &attacker, int &inflict
 		SetDownedState_Thorns(npc.index, true);
 	}
 
-	return Plugin_Changed;
+		return Plugin_Changed;
 }
 void SetDownedState_Thorns(int iNpc, bool StateDo)
 {
-	BarrackThorns npc = view_as<BarrackThorns>(iNpc);
-	if(StateDo) // Make him go KO
-	{
-		ThornsDowned[iNpc] = 1;
-		ThornsRevive[iNpc] = GetGameTime() + 60.0;
-		b_ThisEntityIgnored[iNpc] = true;
-		b_NpcIsInvulnerable[iNpc] = true;
-	}
-	else // Get him back up
-	{
-		if(ThornsDowned[iNpc])
-		{
-			ThornsDowned[iNpc] = 0;
-		}
-		ThornsRevive[iNpc] = 0.0;
-		b_ThisEntityIgnored[iNpc] = false;
-		b_NpcIsInvulnerable[iNpc] = false;
-		SetEntProp(iNpc, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(iNpc));	// Heal him back to full
-		DesertYadeamDoHealEffect(iNpc, 200.0);
+    BarrackThorns npc = view_as<BarrackThorns>(iNpc);
+    if(StateDo) // Make him go KO
+    {
+        ThornsDowned[iNpc] = 1;
+        ThornsRevive[iNpc] = GetGameTime() + 60.0;
+        b_ThisEntityIgnored[iNpc] = true;
+        b_NpcIsInvulnerable[iNpc] = true;
+    }
+    else // Get him back up
+    {
+        if(ThornsDowned[iNpc])
+        {
+            ThornsDowned[iNpc] = 0;
+        }
+        ThornsRevive[iNpc] = 0.0;
+        b_ThisEntityIgnored[iNpc] = false;
+        b_NpcIsInvulnerable[iNpc] = false;
+        SetEntProp(iNpc, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(iNpc));	// Heal him back to full
+        DesertYadeamDoHealEffect(iNpc, 200.0);
 		NpcSpeechBubble(npc.index, "I'm back i'm back... no need to make a fuss.", 7, {50,205,50,255}, {0.0,0.0,120.0}, "");
-	}
+    }
 }

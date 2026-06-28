@@ -511,7 +511,7 @@ static int SummonerThorns[][] =
 	{ 0, 300, 100, 0, 10, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master 
 	{ 0, 100, 300, 0, 9, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES  },	// Construction Master
 
-	{ 0, 1200, 1200, 50, 50, 3, 2, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
+	{ 0, 1200, 1200, 50, 50, 3, 3, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Expert
 	{ 0, 600, 200, 20, 12, 4, 1, 0,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
 	
 	{ 0, 400, 400, 	20, 16, 4, 1, ZR_BARRACKS_UPGRADES_CASTLE,ZR_BARRACKS_TROOP_CLASSES },	// Construction Master
