@@ -3819,6 +3819,7 @@
 	"Energized Riot Gun Desc"
 	{
 		"en"	"-Gain 10％ ranged resistance.\n-Increased damage and overall resistance"
+		"ko"	"-원거리 피해 저항력 +10％\n-피해량 및 전반적인 피해 저항력 증가"
 	}
 	"Armor Visualiser Desc"
 	{
