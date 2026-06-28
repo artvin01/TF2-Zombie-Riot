@@ -46,10 +46,12 @@ def music_modal(wave_entry_data: str | dict[str,str]) -> dict[str,str|bool] | No
         wave_entry_data = defaultdict(str,wave_entry_data) # type: ignore[w]
 
         title = wave_entry_data["file"].replace("#","")
-        if wave_entry_data["name"] != "": title = wave_entry_data["name"]
+        if wave_entry_data["name"] != "":
+            title = wave_entry_data["name"]
 
         artist = ""
-        if wave_entry_data["author"] != "": artist = wave_entry_data["author"]
+        if wave_entry_data["author"] != "":
+            artist = wave_entry_data["author"]
 
         mfilename = wave_entry_data["file"].replace("#","")
 
@@ -74,7 +76,7 @@ def musicmodal_to_html(modal: dict[str,str]) -> str:
     context["musicartist"]=apply_morecolors(context["musicartist"])
     return fill_template(read(f"templates/music/music_modal{"_missing"*int(not file_exists)}.html"),context)
 
-def cfgtoint(val: str, default: int=0) -> str:
+def cfgtoint(val: str, default: int=0) -> int:
     """
     Turn a config value into an int, returns default on fail.
     ```
@@ -166,8 +168,10 @@ def remove_multiline_comments(code: str) -> str: # Fixes the script interpreting
     new_str = ""
     reading_comment = False
     for line in code.splitlines():
-        if line == "/*": reading_comment=True
-        if line == "*/": reading_comment=False
+        if line == "/*":
+            reading_comment=True
+        if line == "*/":
+            reading_comment=False
         if not reading_comment:
             new_str += line
     return new_str
@@ -284,7 +288,7 @@ def get_key(key:str,silent:bool=False,empty_on_fail:bool=False) -> str:
     silent = silent or "decompile" in DEBUG
     for phrase in PHRASES:
         if key in phrase:
-            return phrase[key]["en"] # type: ignore[w]
+            return phrase[key]["en"]
     if not silent:
         log(f"'{key}' has no english translation!", "WARNING")
     if empty_on_fail:
@@ -301,9 +305,11 @@ def apply_morecolors(string:str):
     has_replaced = False
     for colorname in MORECOLORS_JSON.keys():
         new=new.replace(f"{{{colorname}}}", f'</span><span class="mc_{colorname}">')
-        if f"{{{colorname}}}" in string: has_replaced=True
+        if f"{{{colorname}}}" in string:
+            has_replaced=True
     new=new.replace("<span></span>","") # remove empty divs
-    if has_replaced: return new.replace("-"," - ")
+    if has_replaced:
+        return new.replace("-"," - ")
     return string
 
 def divfornewline(string:str):

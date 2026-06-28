@@ -1,21 +1,21 @@
 # Parse all items, weapons and their paps.
-import vdf, os, subprocess, json
-from gamedata import modelmapping
+import vdf
+import os
+import subprocess
+import json
+from modules.gamedata import modelmapping
 
-def read(filename):
-    try:
-        # Windows-specific fix to: https://stackoverflow.com/questions/9233027/unicodedecodeerror-charmap-codec-cant-decode-byte-x-in-position-y-character
-        # no idea if applying encoding="utf-8" everywhere changes anything, better be safe
-        if os.name == 'nt':
-            with open(filename, 'r', encoding="utf-8") as f:
-                return f.read()
-        else:
-            with open(filename, 'r') as f:
-                return f.read()
-    except FileNotFoundError:
-        return None
+def read(filename:str) -> str:
+    # Windows-specific fix to: https://stackoverflow.com/questions/9233027/unicodedecodeerror-charmap-codec-cant-decode-byte-x-in-position-y-character
+    # no idea if applying encoding="utf-8" everywhere changes anything, better be safe
+    if os.name == 'nt':
+        with open(filename, 'r', encoding="utf-8") as f:
+            return f.read()
+    else:
+        with open(filename, 'r') as f:
+            return f.read()
 
-def write(filename, val):
+def write(filename:str, val:str):
     with open(filename, 'w+') as f:
         f.write(str(val))
     return True
@@ -36,10 +36,10 @@ def decompile_model(path):
             prefix = "tf_"
         else:
             return
-        
+
         os.environ["WINEDEBUG"] = "-all" # Cleaner logs when decompiling on linux
         subprocess.run(["./CrowbarDecompiler(1.1).exe",path,f"{prefix}decompiled/"])
-        
+
         # Generate bodygroup mappings for model
         qcdata = read(f"{prefix}decompiled/{pure_filename}.qc")
         bodygroup_idx = 1

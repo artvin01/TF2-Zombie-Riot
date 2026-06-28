@@ -1,9 +1,9 @@
 import os
 from time import time
 from importlib import import_module
-import_module("modules.phrase") # surpresses unused import warning
 MODULES = {
     "static": {"file": "modules.static"},
+    "phrase": {"file": "modules.phrase"},
     "wavesets": {
         "file": "modules.wavesets",
         "paths": [
@@ -28,6 +28,8 @@ MODULES = {
     }
 }
 SCOPE = [x.lower() for x in os.environ["SCOPE"].split(",") if (x.lower() in MODULES.keys())] if "SCOPE" in os.environ else list(MODULES.keys())
+if "phrase" not in SCOPE: # always required.
+    SCOPE.append("phrase")
 print("SCOPE", SCOPE)
 
 for item in SCOPE:
