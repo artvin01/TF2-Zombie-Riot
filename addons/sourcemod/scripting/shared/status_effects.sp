@@ -272,6 +272,7 @@ void InitStatusEffects()
 	StatusEffects_SkullServants();
 	StatusEffects_GamemodeMadnessSZF();
 	StatusEffects_Raigeki();
+	StatusEffects_Fridge();
 #endif
 	StatusEffects_Construction2();
 	StatusEffects_AllyInvulnDebuffs();
@@ -10078,9 +10079,12 @@ static void PartyPopperPrefix_BeforeExplosionHit(int entity, int victim, float &
 	{
 		damage = 0.0;
 		
-		ApplyStatusEffect(entity, victim, "Party Popper Prefix", buffDuration);
-		ApplyStatusEffect(entity, victim, "Nightmare Terror", buffDuration);
-		Client_Shake(victim, _, 8.0, 20.0, 1.5, false);
+		if (!VIPBuilding_Active())
+		{
+			ApplyStatusEffect(entity, victim, "Party Popper Prefix", buffDuration);
+			ApplyStatusEffect(entity, victim, "Nightmare Terror", buffDuration);
+			Client_Shake(victim, _, 8.0, 20.0, 1.5, false);
+		}
 	}
 	else if (GetTeam(victim) == 2)
 	{
@@ -11569,4 +11573,37 @@ void Aleph_TakeDamageAttackerPost(int attacker, int victim, float damage, Status
 	ApplyStatusEffect(victim, victim, "Aleph All Prefix", 99999.9);
 	RemoveSpecificBuff(victim, "Infinite Will");
 	ApplyStatusEffect(victim, victim, "Infinite Will", 10.0);
+}
+void StatusEffects_Fridge()
+{
+	StatusEffect data;
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Fridge Food");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "+");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.TimerRepeatCall_Func 		= FridgeFoodTimer;
+	StatusEffect_AddGlobal(data);
+}
+
+static void FridgeFoodTimer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	//make it not as aggressive
+	if(f_TimeUntillNormalHeal[entity] > (GetGameTime() + 2.0))
+	{
+		int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+		Apply_StatusEffect.TimeUntillOver = 0.0;
+		E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
+		return;
+	}
+	float MaxHealthPerc = float(ReturnEntityMaxHealth(entity));
+	MaxHealthPerc *= 0.025;
+	HealEntityGlobal(entity, entity, MaxHealthPerc, _, 0.0, _);
 }
