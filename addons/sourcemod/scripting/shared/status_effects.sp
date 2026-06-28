@@ -10078,9 +10078,12 @@ static void PartyPopperPrefix_BeforeExplosionHit(int entity, int victim, float &
 	{
 		damage = 0.0;
 		
-		ApplyStatusEffect(entity, victim, "Party Popper Prefix", buffDuration);
-		ApplyStatusEffect(entity, victim, "Nightmare Terror", buffDuration);
-		Client_Shake(victim, _, 8.0, 20.0, 1.5, false);
+		if (!VIPBuilding_Active())
+		{
+			ApplyStatusEffect(entity, victim, "Party Popper Prefix", buffDuration);
+			ApplyStatusEffect(entity, victim, "Nightmare Terror", buffDuration);
+			Client_Shake(victim, _, 8.0, 20.0, 1.5, false);
+		}
 	}
 	else if (GetTeam(victim) == 2)
 	{

@@ -1255,8 +1255,18 @@ static void Timer_Vincent_IgniteOil(Handle timer, DataPack pack)
 	Vincent npc = view_as<Vincent>(owner);
 	npc.PlayIgniteSound();
 	
+	CreateTimer(0.2, Timer_Vincent_ResetOilTransmitState, refEnt, TIMER_FLAG_NO_MAPCHANGE);
 	SetEntityRenderMode(entity, RENDER_NONE);
 	IgniteTargetEffect(entity);
+}
+
+static void Timer_Vincent_ResetOilTransmitState(Handle timer, int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if (entity == INVALID_ENT_REFERENCE)
+		return;
+	
+	SetEdictFlags(entity, GetEdictFlags(entity) & ~FL_EDICT_ALWAYS);
 }
 
 static Action Timer_Vincent_OilBurning(Handle timer, DataPack pack)
@@ -1970,6 +1980,8 @@ static void Vincent_PourOil(Vincent npc, float vecPos[3], float radius, float du
 		SetEntityRenderMode(prop, RENDER_NONE);
 	else
 		SetEntityRenderColor(prop, 0, 40, 0, 255);
+	
+	SetEdictFlags(prop, GetEdictFlags(prop) | FL_EDICT_ALWAYS);
 	
 	DataPack pack;
 	CreateDataTimer(delayToIgnite, Timer_Vincent_IgniteOil, pack, TIMER_FLAG_NO_MAPCHANGE);
