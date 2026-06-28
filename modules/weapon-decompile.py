@@ -3,7 +3,7 @@ import vdf
 import os
 import subprocess
 import json
-from modules.gamedata import modelmapping
+from gamedata import modelmapping # type: ignore[w]
 
 def read(filename:str) -> str:
     # Windows-specific fix to: https://stackoverflow.com/questions/9233027/unicodedecodeerror-charmap-codec-cant-decode-byte-x-in-position-y-character
