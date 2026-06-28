@@ -317,7 +317,7 @@ public void NPCPritToChat_Override(const char[] name, const char[] namecolor, co
 	}
 }
 
-public void NPCPritToChat(int entity, const char[] namecolor, const char[] text, bool NoTrans, bool requestframe)
+public void NPCPritToChat(int entity, const char[] namecolor, const char[] text, bool NoTrans, bool requestframe, any data)
 {
 	if(entity==-1||!IsValidEntity(entity))return;
 	if(requestframe)
@@ -343,7 +343,7 @@ public void NPCPritToChat(int entity, const char[] namecolor, const char[] text,
 				Format(NameReturn, sizeof(NameReturn), "%s", c_NpcName[entity]);
 			
 			if(!NoTrans)
-				CPrintToChat(Player, "%s%s{default}: %t", namecolor, NameReturn, text);
+				CPrintToChat(Player, "%s%s{default}: %t", namecolor, NameReturn, text, data);
 			else
 				CPrintToChat(Player, "%s%s{default}: %s", namecolor, NameReturn, text);
 		}
