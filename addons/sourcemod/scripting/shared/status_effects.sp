@@ -11604,6 +11604,6 @@ static void FridgeFoodTimer(int entity, StatusEffect Apply_MasterStatusEffect, E
 		return;
 	}
 	float MaxHealthPerc = float(ReturnEntityMaxHealth(entity));
-	MaxHealthPerc *= 0.025;
+	MaxHealthPerc *= 0.015;
 	HealEntityGlobal(entity, entity, MaxHealthPerc, _, 0.0, _);
 }

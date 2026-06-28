@@ -92,15 +92,15 @@ static bool ClotInteract(int client, int weapon, ObjectHealingStation npc)
 	switch(CountPlayersOnRed(0))
 	{
 		case 1:
-			MaxHealthPerc *= 0.45;
+			MaxHealthPerc *= 0.4;
 		case 2:
-			MaxHealthPerc *= 0.35;
-		case 3:
 			MaxHealthPerc *= 0.3;
-		case 4:
+		case 3:
 			MaxHealthPerc *= 0.25;
-		default:
+		case 4:
 			MaxHealthPerc *= 0.2;
+		default:
+			MaxHealthPerc *= 0.15;
 	}
 	if(HealAmmount < MaxHealthPerc)
 	{
