@@ -4,9 +4,10 @@ __pycache__/
 # Local testing
 .obsidian/
 .github/workflows/act.yml
-venv/
+.venv/
 TF2-Zombie-Riot/
 decompiled/
+pyproject.toml
 
 # Generating thumbnails of TF2 models
 # Exclude everything but the bodygroup mappings

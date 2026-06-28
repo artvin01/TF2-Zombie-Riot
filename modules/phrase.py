@@ -1,4 +1,5 @@
-import util, json, vdf
+import util
+import vdf
 from requests.structures import CaseInsensitiveDict
 
 if "decompile" not in util.DEBUG:
@@ -22,6 +23,6 @@ if "decompile" not in util.DEBUG:
     util.log("Parsing phrases...")
     for p in PHRASES:
         util.log(f"> {p}")
-        util.PHRASES.append(CaseInsensitiveDict(vdf.loads(util.read(f"./TF2-Zombie-Riot/addons/sourcemod/translations/{p}"))["Phrases"]))
+        util.PHRASES.append(CaseInsensitiveDict(vdf.loads(util.read(f"./TF2-Zombie-Riot/addons/sourcemod/translations/{p}"))["Phrases"])) # type: ignore[w]
 else:
     util.log("DEBUG=decompile; Skipping phrase parsing!")

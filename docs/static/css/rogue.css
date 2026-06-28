@@ -1,5 +1,5 @@
 @import url("style.css");
-@import url("musicmodal.css"); 
+@import url("musicmodal.css");
 
 /* Items */
 
@@ -68,7 +68,7 @@ li img {
 
 /* Audio */
 #music_title {
-    text-transform: capitalize;    
+    text-transform: capitalize;
 }
 
 .audio {

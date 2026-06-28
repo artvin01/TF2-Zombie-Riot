@@ -64,14 +64,14 @@ ctx.canvas.addEventListener("mouseup", setPrimaryButtonState);
 
 
 ctx.canvas.addEventListener("wheel", function (e) {
-    let prevzoom = zoom;  
+    let prevzoom = zoom;
     zoom -= e.deltaY/300;
     if (zoom<.4) {zoom=.4};
     if (zoom>5) {zoom=5};
     let diff = zoom-prevzoom;
 
     let zoompos = [mousepos[0]-campos[0],mousepos[1]-campos[1]]
-    
+
     // https://stackoverflow.com/questions/2916081/zoom-in-on-a-point-using-scale-and-translate
     // kinda janky
     campos[0] += -(zoompos[0] * diff)/zoom;
@@ -79,7 +79,7 @@ ctx.canvas.addEventListener("wheel", function (e) {
 
 
     return false;
-    
+
 }, true);
 
 
@@ -200,7 +200,7 @@ function parse_main(data,px,py,parentpts) {
       "args": [data,unlocked]
     }
   })
-  
+
   // Draw text
   let point_amt=0;
   if (data.path in pointdata) {

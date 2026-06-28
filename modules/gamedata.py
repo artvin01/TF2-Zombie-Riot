@@ -1,17 +1,19 @@
-import requests, vdf
+import requests
+import vdf
 from collections import defaultdict
+from typing import Any
 
 # https://github.com/dixon2004/python-tf2-utilities/
-def fetch_game_file(file) -> dict:
+def fetch_game_file(file: str) -> dict[Any,Any]:
     response = requests.get(f'https://raw.githubusercontent.com/SteamDatabase/GameTracking-TF2/master/{file}', timeout=10)
     if response.status_code == 200:
-        return vdf.loads(response.text.replace('\x00', ''))
+        return vdf.loads(response.text.replace('\x00', '')) # type: ignore[w]
     else:
         raise Exception(f"Failed to get {file}.")
 items_game=fetch_game_file("tf/scripts/items/items_game.txt")["items_game"]
 strings_english=fetch_game_file("tf/resource/tf_english.txt")["lang"]["Tokens"]
 
-modelmapping = {}
+modelmapping: dict[str,str] = {}
 for key, data in items_game["items"].items():
     data=defaultdict(str,data)
     if len(data["model_player"])>0:
@@ -23,7 +25,7 @@ for key, data in items_game["items"].items():
             modelmapping[data["name"].lower()] = prefab_data["model_player"]
     if "model_player_per_class" in data:
         modelmapping[data["item_class"]] = data["model_player_per_class"][list(data["model_player_per_class"].keys())[0]]
-         
+
 
 for key, data in items_game["prefabs"].items():
     if "model_player" in data and "item_class" in data:

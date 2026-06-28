@@ -241,7 +241,7 @@ input[type=number] {
     margin-left: 5px;
     field-sizing: content;
     border: 0px;
-    
+
     /* .btn styling */
     background-color: #26292b;
     color: var(--text-dark);
@@ -259,7 +259,7 @@ input[type=number] {
 
 /* Audio */
 #music_title {
-    text-transform: capitalize;    
+    text-transform: capitalize;
 }
 
 .audio {

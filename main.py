@@ -1,45 +1,41 @@
 import os
-SCOPE = []
-if "SCOPE" in os.environ:
-    SCOPE = [x.lower() for x in os.environ["SCOPE"].split(",")]
-else:
-    SCOPE = ["static", "wavesets", "npcs", "items", "music", "skilltree", "statusfx"]
+from time import time
+from importlib import import_module
+import_module("modules.phrase") # surpresses unused import warning
+MODULES = {
+    "static": {"file": "modules.static"},
+    "wavesets": {
+        "file": "modules.wavesets",
+        "paths": [
+            "gh-pages/embed",
+            "gh-pages/repo_img",
+            "gh-pages/wavesets"
+        ]
+    },
+    "npcs": {"file": "modules.npcs"},
+    "music": {
+        "file": "modules.music",
+        "paths": ["gh-pages/data"]
+    },
+    "items": {
+        "file": "modules.weapon",
+        "paths": ["gh-pages/data"]
+    },
+    "skilltree": {"file": "modules.skilltree"},
+    "statusfx": {
+        "file": "modules.status_effects",
+        "paths": ["gh-pages/data"]
+    }
+}
+SCOPE = [x.lower() for x in os.environ["SCOPE"].split(",") if (x.lower() in MODULES.keys())] if "SCOPE" in os.environ else list(MODULES.keys())
 print("SCOPE", SCOPE)
 
-if "static" in SCOPE:
-    os.system("cp -r docs/* gh-pages/")
-
-import modules.phrase
-
-if "wavesets" in SCOPE:
-    print("wavesets.py ----------------------------------------------------------------------------------")
-    import modules.wavesets
-    modules.wavesets.parse()
-
-if "npcs" in SCOPE: # NOTE: NPC data parsed into json in modules/wavesets.py
-    print("npcs.py ----------------------------------------------------------------------------------")
-    import modules.npcs
-    modules.npcs.parse()
-
-if "music" in SCOPE: # NOTE: music data parsed into json in modules/wavesets.py
-    print("music.py ----------------------------------------------------------------------------------")
-    import modules.music
-    modules.music.parse()
-
-if "items" in SCOPE:
-    print("weapon.py ----------------------------------------------------------------------------------")
-    import modules.weapon
-
-if "skilltree" in SCOPE:
-    print("skilltree.py ----------------------------------------------------------------------------------")
-    import modules.skilltree
-    modules.skilltree.parse()
-
-if "statusfx" in SCOPE:
-    print("status_effects.py ----------------------------------------------------------------------------------")
-    import modules.status_effects
-
-import util
-if util.LOG_REDACT:
-    util.log("! Writing logs")
-    util.write("logs.txt",util.LOGS)
+for item in SCOPE:
+    module_data = MODULES[item]
+    if "paths" in module_data:
+        for dir in module_data["paths"]:
+            os.makedirs(dir,exist_ok=True)
+    print(f"[{item}] ========================================")
+    start = time()
+    import_module(module_data["file"])
+    print(f"[{item}] Took {time()-start}s")

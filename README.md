@@ -23,12 +23,12 @@ The file structure should look like this:
 Recommended Python version: 3.14
 ```bash
 git clone https://github.com/artvin01/TF2-Zombie-Riot -b wiki_gen; cd TF2-Zombie-Riot
-python -m venv venv
+python -m venv .venv
 git clone https://github.com/artvin01/TF2-Zombie-Riot --depth 1
 # Linux
-./venv/bin/pip install -r requirements.txt
+./.venv/bin/pip install -r requirements.txt
 # Windows
-venv\Scripts\pip.exe install -r requirements.txt
+.venv\Scripts\pip.exe install -r requirements.txt
 ```
 ## (optional) Decompiling models for weapon icon generation
 ### Linux
@@ -36,7 +36,7 @@ Dependencies: wine, unzip
 ```bash
 wget https://github.com/mrglaster/Source-models-decompiler-cmd/releases/download/Update/CrowbarDecompiler.1.1.zip
 unzip CrowbarDecompiler.1.1.zip
-./venv/bin/python modules/weapon-decompile.py
+./.venv/bin/python modules/weapon-decompile.py
 ```
 ### Windows
 If you *only* want to decompile on Windows, use `requirements_decompile.txt` for the above installation process.
@@ -64,9 +64,9 @@ Expected output:
 To generate the wiki, simply run
 ```bash
 # Linux
-./venv/bin/python main.py
+./.venv/bin/python main.py
 # Windows (untested!)
-venv\Scripts\python.exe main.py
+.venv\Scripts\python.exe main.py
 ```
 All generated files will be put in `gh-pages/`.  
 Static ones are located in `docs/` and are copied to `gh-pages` upon generation. The `tf_icons` directory is an exception to that.
@@ -77,6 +77,7 @@ Static ones are located in `docs/` and are copied to `gh-pages` upon generation.
   - [x] Waveset viewer
   - [x] Status effect page
   - [x] Clean up gh-pages dirs
+  - [ ] Finish defining types in wavesets module
   - [ ] Fix embed inconsistencies
   - [ ] Waveset inspect mode
   - [ ] Subweapon permalinks?

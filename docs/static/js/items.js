@@ -30,7 +30,7 @@ async function parse_items(goto = true) {
                 block.innerHTML = `<h1>${category}</h1>`
                 let new_block = parent_element.appendChild(block)
                 await item_block(new_block, data);
-            } 
+            }
 
             if (category==="$items") {
                 hide = await parse_item_list(parent_element, data);
@@ -102,7 +102,7 @@ function iter_item(parent_element, item, sw_opt) {
 
         // Detect if there is at least one existing icon
         let has_existing_icons = item["subweapons"]["items"].some(function(subweapon){return Boolean(subweapon.icon)});
-        
+
         item["subweapons"]["items"].forEach((subweapon, idx) => {
             if (Boolean(subweapon["icon"])) { // Insert rendered icon
                 item_icon = create_element("img", "item_icon kit_icon");
@@ -128,7 +128,7 @@ function iter_item(parent_element, item, sw_opt) {
                 break;
             default:
                 icon_path = "static/img/missing_item.svg";
-        } 
+        }
         insert_svg(icon_path, "#b2b2b2", "item_icon", item_el);
     }
 
@@ -144,10 +144,10 @@ function iter_item(parent_element, item, sw_opt) {
 
     /* Add item tooltip */
     item_tooltip = item_el.appendChild(create_element("div", "item_tooltip"));
-    
+
     /* Item name */
     item_tooltip.appendChild(create_element("h2", "", item["name"]));
-    
+
     /* Tags */
     if ("tags" in item) {
         item_tooltip.appendChild(create_element("div", "secondary", item["tags"].map(tag => `#${tag}`).join(" ")));
@@ -202,11 +202,11 @@ function iter_item(parent_element, item, sw_opt) {
             contents.push(item.tags.join(" "));
         }
         item_by_contents[contents.join(" ")] = item
-        if ("subweapons" in item) { 
+        if ("subweapons" in item) {
             if ("items" in item["subweapons"]) {
                     item_el.style["cursor"] = "pointer";
                     item_tooltip.appendChild(create_element("div", "secondary item_notice", `Click to view ${item["subweapons"]["name"]}`)) // Show "Click to view Weapon Enhancements/Kit Items" in tooltip
-                    
+
                     item_el.addEventListener("click", (event) => {
                         item = item_by_id[event.target.dataset.id];
                         open_subweapon_modal(item);
@@ -237,7 +237,7 @@ function iter_item(parent_element, item, sw_opt) {
                     });
                 }
             }
-        
+
 
 
         /* Weapon selector clipboard shortcut (disable if in search modal) */
@@ -245,7 +245,7 @@ function iter_item(parent_element, item, sw_opt) {
             event.preventDefault();
             let source_url = window.location.href.split('?')[0]; // get url w/o params
             navigator.clipboard.writeText(`${source_url}?wid=${event.target.dataset.id}`);
-            
+
             let notification = create_element("div","notify_copied","Link copied!");
             notification.style.setProperty("--top",`${event.clientY + window.scrollY - 32}px`);
             notification = document.body.appendChild(notification);
@@ -376,7 +376,7 @@ async function interface_goto(wid,swid) {
         // highlight/open sw modal
         const welement = search[0];
         welement.scrollIntoView({"behavior": "smooth", "block": "center"});
-        if (swid===null) { // No swid: Scroll item into view and highlight for 3s 
+        if (swid===null) { // No swid: Scroll item into view and highlight for 3s
             welement.classList.add("highlight");
             welement.dataset.timeout_id = setTimeout(function(welement){
                 welement.classList.remove("highlight");
@@ -431,7 +431,7 @@ async function open_subweapon_modal(item) {
 
 // reference: https://unixpapa.com/js/key.html
 document.addEventListener("keydown", (event) => {
-    if (event.code==="KeyK" && event.ctrlKey) { 
+    if (event.code==="KeyK" && event.ctrlKey) {
         event.preventDefault();  // Prevent Ctrl+K browser search keybind
         search_modal = document.getElementById("search_modal");
         if (search_modal === null) {

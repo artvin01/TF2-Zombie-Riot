@@ -14,18 +14,18 @@ function set_audio_resource(obj) {
     }
     last_song_id=obj.id;
     document.getElementById("music_title").innerHTML = apply_morecolors(obj.dataset.title) + " - " + apply_morecolors(obj.dataset.artist);
-    
+
     let audio = document.getElementsByTagName("audio")[0];
     if (audio!==undefined) {
         last_vol = audio.volume;
         last_muted = audio.muted;
     }
-    
+
     let mphtml = `<audio controls autoplay muted onended="nextsong();"><source src="filepath" type="audio/mpeg"></audio>`;
     const music_player = document.getElementById("music_player");
     music_player.innerHTML= mphtml.replace("filepath",obj.dataset.file);
     music_player.parentElement.classList.remove("hidden");
-    
+
     audio = document.getElementsByTagName("audio")[0];
     audio.volume = last_vol;audio.muted = last_muted;
     audio.loop = loop;

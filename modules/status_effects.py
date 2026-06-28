@@ -1,7 +1,8 @@
-import util, json, os
+import util
+import json
 from unicodedata import name as unicode_name
 # addons/sourcemod/scripting/shared/status_effects.sp
-# Start: strcopy(data.BuffName, sizeof(data.BuffName), 
+# Start: strcopy(data.BuffName, sizeof(data.BuffName),
 # End: StatusEffect_AddGlobal(data);
 # - No other prefixes
 # - Some attributes defined inbetween but that might be too much to account for
@@ -24,9 +25,9 @@ EFFECTDATA = []
 
 FILEDATA = util.read("./TF2-Zombie-Riot/addons/sourcemod/scripting/shared/status_effects.sp")
 
-effectdata = FILEDATA.split(f"strcopy(data.BuffName, sizeof(data.BuffName),")
+effectdata = FILEDATA.split("strcopy(data.BuffName, sizeof(data.BuffName),")
 effectdata = [item.split("StatusEffect_AddGlobal(data);")[0] for i,item in enumerate(effectdata) if i > 0]
-effectdata_parsed = []
+effectdata_parsed: list[dict[str,str]] = []
 for status_effect in effectdata:
     data = {
         "name": util.get_key(name:=status_effect[2:].split('");')[0], silent=True, empty_on_fail=True),
@@ -37,7 +38,7 @@ for status_effect in effectdata:
         "id": util.id_from_str(f"{name}{icon}")
         #"aboveenemydisplay": (se if len(se:=status_effect.split('sizeof(data.AboveEnemyDisplay), \"'))>1 else ["",""])[1].split('");')[0] # only used for BEER
     }
-    if data["name"] and data["icon"]: effectdata_parsed.append(data)
+    if data["name"] and data["icon"]:
+        effectdata_parsed.append(data)
 
-if not os.path.isdir("gh-pages/data"): subprocess.run(["mkdir", "gh-pages/data"]) 
 util.write("gh-pages/data/status_effects.json", json.dumps(effectdata_parsed,indent=2))

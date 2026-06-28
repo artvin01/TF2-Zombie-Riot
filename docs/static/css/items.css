@@ -311,7 +311,7 @@ body:has(.modal) {
 }
 
 /* Search modal ------------------------------------- */
-/* Structure 
+/* Structure
 .modal: Covers whole page, dims stuff behind
 .search_modal_container Flex Container
 .search_modal_content

@@ -1,6 +1,5 @@
 from PIL import Image, ImageDraw, ImageFont
 import math
-from time import sleep
 from itertools import tee
 from re import sub
 from collections import defaultdict
@@ -51,11 +50,11 @@ def generate_waveset_embed(filename, title, wave, wave_max, entries):
 
     base_npc_list_chunks, base_chunklen = tee(base_npc_list_chunks) # copy generator as not to break following code
     support_npc_list_chunks, support_chunklen = tee(support_npc_list_chunks) # copy generator as not to break following code
-    base_nlen, support_nlen = len(list(base_chunklen)), len(list(support_chunklen)) 
+    base_nlen, support_nlen = len(list(base_chunklen)), len(list(support_chunklen))
     enemy_height = ICON_SIZE+ICON_PADDING+ICON_SIZE/2
     support_padding=100
     HEIGHT = dy+math.ceil(enemy_height * base_nlen)+math.ceil(enemy_height * support_nlen)+support_padding
-    
+
     imgs = [Image.new(mode="RGB", size=(WIDTH, HEIGHT))]
 
     # check if entries have at least one npc with the mission flag (red flashing background requires 2 imgs => gif)
@@ -64,9 +63,7 @@ def generate_waveset_embed(filename, title, wave, wave_max, entries):
         imgs.append(Image.new(mode="RGB", size=(WIDTH, HEIGHT)))
 
     drawables = [ImageDraw.Draw(img) for img in imgs]
-    for idx, drawable in enumerate(drawables):
-        img=imgs[idx]
-
+    for drawable in drawables:
         dx = 0
         dy = bar_y+bar_height+50
 
@@ -93,14 +90,14 @@ def generate_waveset_embed(filename, title, wave, wave_max, entries):
         for npc in row:
             [draw_npc(drawable, imgs, (dx,dy), npc, idx) for idx,drawable in enumerate(drawables)]
             dx += ICON_SIZE+ICON_PADDING
-        
+
         if i == base_nlen-1:
             dy += ICON_SIZE # end directly at the bottom of the base icons list
         else:
             dy += ICON_SIZE+ICON_PADDING+ICON_SIZE/2
-    
+
     if support_nlen>0:
-        dx = 0    
+        dx = 0
         dy += 115
         for row in support_npc_list_chunks:
             row_w = (ICON_SIZE+ICON_PADDING)*len(row)
@@ -109,10 +106,10 @@ def generate_waveset_embed(filename, title, wave, wave_max, entries):
                 [draw_npc(drawable, imgs, (dx,dy), npc, idx) for idx,drawable in enumerate(drawables)]
                 dx += ICON_SIZE+ICON_PADDING
             dy += ICON_SIZE+ICON_PADDING+ICON_SIZE/2
-        
+
     if len(imgs) > 1:
         imgs[0].save(f"gh-pages/embed/{filename}.gif",
-            save_all = True, append_images = imgs[1:], 
+            save_all = True, append_images = imgs[1:],
             optimize = False, duration = 500, loop=0)
     else:
         imgs[0].save(f"gh-pages/embed/{filename}.gif")
@@ -147,7 +144,7 @@ def draw_npc(drawable, imgs, pos, npc, frame_idx=0):
         imgs[frame_idx].paste(icon, (math.floor(left+ICON_INNER_PADDING),math.floor(top+ICON_INNER_PADDING)), icon)
 
     draw_text_centered(drawable, (pos[0], pos[1]+ICON_SIZE/2), npc["count"], color["text_dark"], font["Noto Sans"])
-    
+
 
 # Source - https://stackoverflow.com/a/312464
 def chunks(lst, n):

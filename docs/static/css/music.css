@@ -2,7 +2,7 @@
 
 /* Audio */
 #music_title {
-    text-transform: capitalize;    
+    text-transform: capitalize;
 }
 
 #music_player {
@@ -53,7 +53,7 @@ audio {
     right:0%;
     bottom: 0%;
     width: inherit;
-    
+
     display:flex;
     justify-content: center;
     flex-wrap:wrap;

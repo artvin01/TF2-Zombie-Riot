@@ -1,66 +1,58 @@
-import hashlib, os, datetime, json, vtf2img
+import hashlib
+import os
+import datetime
+import json
+import vtf2img
 from collections import defaultdict
 from re import sub
-from bs4 import BeautifulSoup, Formatter
+from bs4 import BeautifulSoup
+from bs4.formatter import Formatter
 
 # https://stackoverflow.com/questions/3768895/how-to-make-a-class-json-serializable
 # Allow classes to define __json__ to be JSON serializable
 from json import JSONEncoder
-def wrapped_default(self, obj):
-    return getattr(obj.__class__, "__json__", wrapped_default.default)(obj)
-wrapped_default.default = JSONEncoder().default
-JSONEncoder.original_default = JSONEncoder.default
-JSONEncoder.default = wrapped_default
+def wrapped_default(self, obj): # type: ignore[all]
+    return getattr(obj.__class__, "__json__", wrapped_default.default)(obj) # type: ignore[all]
+wrapped_default.default = JSONEncoder().default # type: ignore[all]
+JSONEncoder.original_default = JSONEncoder.default # type: ignore[all]
+JSONEncoder.default = wrapped_default # type: ignore[all]
 
 # --------------------------- ENV ---------------------------
 
-DEBUG = []
-if "DEBUG" in os.environ:
-    DEBUG = [x.lower() for x in os.environ["DEBUG"].split(",")]
-
-WAVESETS_FILESCOPE = []
-if "FILESCOPE" in os.environ:
-    WAVESETS_FILESCOPE = [x.lower() for x in os.environ["FILESCOPE"].split(",")]
-
-WAVESETS_TYPESCOPE = []
-if "TYPESCOPE" in os.environ:
-    WAVESETS_TYPESCOPE = [x.title() for x in os.environ["TYPESCOPE"].split(",")]
-else:
-    WAVESETS_TYPESCOPE = ["Setup", "Custom", "Rogue", "Betting", "Construction"]
-
-LOCAL = os.path.isdir("gh-pages/icons/")
-LOG_REDACT = None
-if "LOG_REDACT" in os.environ:
-    LOG_REDACT = os.environ["LOG_REDACT"]
+DEBUG = [x.lower() for x in os.environ["DEBUG"].split(",")] if "DEBUG" in os.environ else []
+WAVESETS_FILESCOPE = [x.lower() for x in os.environ["FILESCOPE"].split(",")] if "FILESCOPE" in os.environ else []
+WAVESETS_TYPESCOPE = [x.title() for x in os.environ["TYPESCOPE"].split(",")] if "TYPESCOPE" in os.environ else ["Setup", "Custom", "Rogue", "Betting", "Construction"]
 
 print("DEBUG",DEBUG)
-print("LOG_REDACT",LOG_REDACT)
 print("wavesets:FILESCOPE",WAVESETS_FILESCOPE)
 print("wavesets:TYPESCOPE",WAVESETS_TYPESCOPE)
 
 # --------------------------- UTILITY ---------------------------
 
-def music_modal(wave_entry_data: str | dict):
+def music_modal(wave_entry_data: str | dict[str,str]) -> dict[str,str|bool] | None:
     """
     Turn config data into music modal data.
     """
-    if type(wave_entry_data) == str:
+    if type(wave_entry_data) is str:
         mfilename = wave_entry_data.replace("#","")
         title = mfilename
         artist = "?"
-        try: int(wave_entry_data); return None # skip if not actual music entry e.g. "music_outro_duration"	"65"
-        except ValueError: pass
+        try:
+            int(wave_entry_data)
+            return None # skip if not actual music entry e.g. "music_outro_duration"	"65"
+        except ValueError:
+            pass
     else:
-        wave_entry_data = defaultdict(str,wave_entry_data)
-        
+        wave_entry_data = defaultdict(str,wave_entry_data) # type: ignore[w]
+
         title = wave_entry_data["file"].replace("#","")
         if wave_entry_data["name"] != "": title = wave_entry_data["name"]
-        
+
         artist = ""
         if wave_entry_data["author"] != "": artist = wave_entry_data["author"]
-        
+
         mfilename = wave_entry_data["file"].replace("#","")
-    
+
     file = f"https://raw.githubusercontent.com/artvin01/TF2-Zombie-Riot/refs/heads/master/sound/{mfilename}"
     return {
         "type": "music",
@@ -72,9 +64,9 @@ def music_modal(wave_entry_data: str | dict):
         "file_exists": os.path.isfile(f"./TF2-Zombie-Riot/sound/{mfilename}")
     }
 
-def musicmodal_to_html(modal: dict):
+def musicmodal_to_html(modal: dict[str,str]) -> str:
     """
-    Turn music modal data into HTML. 
+    Turn music modal data into HTML.
     """
     context=modal.copy()
     file_exists = context.pop("file_exists")
@@ -82,13 +74,13 @@ def musicmodal_to_html(modal: dict):
     context["musicartist"]=apply_morecolors(context["musicartist"])
     return fill_template(read(f"templates/music/music_modal{"_missing"*int(not file_exists)}.html"),context)
 
-def cfgtoint(val: str, default: int=0):
+def cfgtoint(val: str, default: int=0) -> str:
     """
     Turn a config value into an int, returns default on fail.
     ```
-    npc_hp = cfgtoint(defaultdict(str, entry_data)["hp"])  
-    ' ' -> [default]  
-    '200' -> 200  
+    npc_hp = cfgtoint(defaultdict(str, entry_data)["hp"])
+    ' ' -> [default]
+    '200' -> 200
     ```
     """
     try:
@@ -97,13 +89,13 @@ def cfgtoint(val: str, default: int=0):
         return default
 
 
-def cfgtofloat(val: str, default: float=0.0):
+def cfgtofloat(val: str, default: float=0.0) -> float:
     """
     Turn a config value into an float, returns default on fail.
     ```
-    npc_delay = cfgtoint(entry)  
-    'music_setup' -> [default]  
-    '1.0' -> 1.0  
+    npc_delay = cfgtoint(entry)
+    'music_setup' -> [default]
+    '1.0' -> 1.0
     ```
     """
     try:
@@ -112,7 +104,7 @@ def cfgtofloat(val: str, default: float=0.0):
         return default
 
 
-def id_from_str(string: str, hexdigest: int=2):
+def id_from_str(string: str, hexdigest: int=2) -> str:
     # https://stackoverflow.com/questions/49808639/generate-a-variable-length-hash
     """
     Generate a length 4 hash given a string.
@@ -120,28 +112,28 @@ def id_from_str(string: str, hexdigest: int=2):
     return hashlib.shake_256(string.encode("utf-8")).hexdigest(hexdigest)
 
 
-def html_img(url: str, alt: str=""):
+def html_img(url: str, alt: str="") -> str:
     """
     -> <img src="{url}" alt="{alt}"/>
     """
     return f'<img src="{url}" alt="{alt}"/>'
 
 
-def vtftoimg(vtf_path: str, png_path: str, alt: str):
+def vtftoimg(vtf_path: str, png_path: str) -> str:
     """
     Converts `vtf` format to `png` format.
     -> <img src="{url}" alt="{alt}"/>
     """
     if not os.path.isfile("gh-pages/"+png_path): # if file already made
-        vtf2img.Parser(vtf_path).get_image().save("gh-pages/"+png_path)
+        vtf2img.Parser(vtf_path).get_image().save("gh-pages/"+png_path)  # type: ignore[w]
     return f"./{png_path}"
 
 
-def normalize_whitespace(string: str):
+def normalize_whitespace(string: str) -> str:
     return " ".join(string.split())
 
 
-def absolute_link(filename: str, waveset: str):
+def absolute_link(filename: str, waveset: str) -> str:
     """
     Generates a name for a filename+waveset.
     absolute_link(".../classic.cfg", "Blitz's Army") -> "classic_blitz-s-army"
@@ -149,7 +141,7 @@ def absolute_link(filename: str, waveset: str):
     return f"{filename.split("/")[-1].replace(".cfg","")}{"_"*int(waveset!="")}{to_section_link(waveset)}"
 
 
-def format_num(num: str):
+def format_num(num: str) -> str:
     """
     "100000000" -> 100.000.000
     "2ß00" -> f"<span style="color:red;">2ß00</span>"
@@ -162,7 +154,7 @@ def format_num(num: str):
         return f"<span style=\"color:red;\">{num}</span>"
 
 
-def to_section_link(string: str):
+def to_section_link(string: str) -> str:
     """
     Replaces everything outside of A-Z a-z 0-9 to "-"
     "Blitz's Army" -> "blitz-s-army"
@@ -170,7 +162,7 @@ def to_section_link(string: str):
     return sub(r'[^a-z0-9]', '-', string.lower())
 
 
-def remove_multiline_comments(code: str): # Fixes the script interpreting the comment in npc_headcrabzombie.sp as actual data
+def remove_multiline_comments(code: str) -> str: # Fixes the script interpreting the comment in npc_headcrabzombie.sp as actual data
     new_str = ""
     reading_comment = False
     for line in code.splitlines():
@@ -181,7 +173,7 @@ def remove_multiline_comments(code: str): # Fixes the script interpreting the co
     return new_str
 
 
-def is_float(string: str):
+def is_float(string: str) -> bool:
     try:
         float(string)
         return True
@@ -189,7 +181,7 @@ def is_float(string: str):
         return False
 
 
-def as_duration(seconds: int):
+def as_duration(seconds: int) -> str:
     """
     30s -> "30s"
     60s -> "1m"
@@ -201,7 +193,7 @@ def as_duration(seconds: int):
     return f'{dm}{ds}'
 
 
-def fill_template(template: str, context: dict):
+def fill_template(template: str, context: dict[str,str]) -> str:
     """
     Replaces each context:key with its equivalent context:value in a template.
     For example:
@@ -247,36 +239,34 @@ bcolors = {
 
 
 def debug(string:str, category:str, color:str="OKGREEN"):
-    if category in DEBUG: log(string,color)
+    if category in DEBUG:
+        log(string,color)
 
 
 LOGS = ""
-
 def log(message:str, color:str="OKGREEN"):
     global LOGS
     time = f"[{datetime.datetime.now().strftime('%H:%M:%S')}] "
     pre = "[INFO] "
-    if color == "WARNING": pre="[WARN] "
-    if color == "FAIL": pre="[ERR] "
-    if "OK" in color: pre="[LOG] "
+    if color == "WARNING":
+        pre="[WARN] "
+    if color == "FAIL":
+        pre="[ERR] "
+    if "OK" in color:
+        pre="[LOG] "
     print(bcolors["FAINT"] + time + bcolors["ENDC"] + bcolors[color]  + pre + message.replace("\n","\\n") + bcolors["ENDC"])
-    if LOG_REDACT:
-        LOGS += f"{time}{pre}{message.replace("\n","\\n")}\n".replace(LOG_REDACT,"***")
 
 
 # --------------------------- CORE ---------------------------
-def read(filename:str):
-    try:
-        # Windows-specific fix to: https://stackoverflow.com/questions/9233027/unicodedecodeerror-charmap-codec-cant-decode-byte-x-in-position-y-character
-        # no idea if applying encoding="utf-8" everywhere changes anything, better be safe
-        if os.name == 'nt':
-            with open(filename, 'r', encoding="utf-8") as f:
-                return f.read()
-        else:
-            with open(filename, 'r') as f:
-                return f.read()
-    except FileNotFoundError:
-        return None
+def read(filename:str) -> str:
+    # Windows-specific fix to: https://stackoverflow.com/questions/9233027/unicodedecodeerror-charmap-codec-cant-decode-byte-x-in-position-y-character
+    # no idea if applying encoding="utf-8" everywhere changes anything, better be safe
+    if os.name == 'nt':
+        with open(filename, 'r', encoding="utf-8") as f:
+            return f.read()
+    else:
+        with open(filename, 'r') as f:
+            return f.read()
 
 
 def write(filename:str, val:str):
@@ -285,18 +275,18 @@ def write(filename:str, val:str):
         val=soup.prettify(formatter=Formatter("html5",indent=4))
     with open(filename, 'w+') as f:
         f.write(val)
-    return True
 
 # --------------------------- PHRASES ---------------------------
 
-PHRASES = []
+PHRASES: list[dict[str,str]] = []
 
-def get_key(key:str,silent:bool=False,empty_on_fail:bool=False):
+def get_key(key:str,silent:bool=False,empty_on_fail:bool=False) -> str:
     silent = silent or "decompile" in DEBUG
     for phrase in PHRASES:
         if key in phrase:
-            return phrase[key]["en"]
-    if not silent: log(f"'{key}' has no english translation!", "WARNING")
+            return phrase[key]["en"] # type: ignore[w]
+    if not silent:
+        log(f"'{key}' has no english translation!", "WARNING")
     if empty_on_fail:
         return ""
     else:

@@ -37,7 +37,7 @@ function fxobject(parent_element, effect, root) {
             event.preventDefault();
             let source_url = window.location.href.split('?')[0]; // get url w/o params
             navigator.clipboard.writeText(`${source_url}?id=${event.target.dataset.id}`);
-            
+
             let notification = create_element("div","notify_copied","Link copied!");
             notification.style.setProperty("--top",`${event.clientY + window.scrollY - 32}px`);
             notification = document.body.appendChild(notification);
@@ -133,7 +133,7 @@ async function interface_goto(wid) {
 
 // reference: https://unixpapa.com/js/key.html
 document.addEventListener("keydown", (event) => {
-    if (event.code==="KeyK" && event.ctrlKey) { 
+    if (event.code==="KeyK" && event.ctrlKey) {
         event.preventDefault();  // Prevent Ctrl+K browser search keybind
         search_modal = document.getElementById("search_modal");
         if (search_modal === null) {

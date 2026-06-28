@@ -112,7 +112,7 @@ function update_wave_display() {
     wave_bar.style.width = `${(wave/max_waves)*100}%`;
 
     if (wave===max_waves) {
-        wave_bar.style["border-radius"] = "5px"; 
+        wave_bar.style["border-radius"] = "5px";
     } else {
         wave_bar.style["border-radius"] = "5px 0px 0px 5px";
     }
@@ -135,15 +135,15 @@ function update_wave_display() {
             let npc_modal = create_element("div", {"class": `wave_npc ${entry.css_class}`, "tabIndex": "0"}); // tabIndex neeeded such that one can click on the npc and pick a song from it (css :focus property)
             npc_modal.appendChild(create_element("img", {"src": entry.img}));
             npc_modal.appendChild(create_element("div", {"class": "wave_npc_count", "innerHTML": entry.count}));
-            
+
             let tooltip_container = create_element("div", {"class": "tooltip"});
                 tooltip_container.appendChild(create_element("h2", {"innerHTML": entry.prefix+entry.display_name}));
                 tooltip_container.appendChild(create_element("span", {"innerHTML": entry.extra_info}));
-            
+
             npc_modal.addEventListener("mouseover", event => {
                 if (event.target.classList.contains("wave_npc")) {
                     let tooltip_container = event.target.getElementsByClassName("tooltip")[0];
-                    
+
                     /* do not switch sides every time */
                     tooltip_container.classList.remove("tooltip_toright");
                     tooltip_container.classList.remove("tooltip_toleft");

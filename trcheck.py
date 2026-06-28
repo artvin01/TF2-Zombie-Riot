@@ -1,5 +1,9 @@
 # Check if all cfg files load correctly
-import traceback, vdf, pathlib, sys, datetime
+import traceback
+import vdf
+import pathlib
+import sys
+import datetime
 
 bcolors = {
     "OKGREEN": '\033[92m',
@@ -7,19 +11,13 @@ bcolors = {
     "ENDC": '\033[0m',
     "FAINT": '\033[2m',
 }
-def log(message, color="OKGREEN"):
+def log(message:str, color:str="OKGREEN"):
     time = f"[{datetime.datetime.now().strftime('%H:%M:%S')}] "
-    pre = "[INFO] "
-    if color == "WARNING": pre="[WARN] "
-    if color == "FAIL": pre="[ERR] "
-    if "OK" in color: pre="[LOG] "
+    pre = "[LOG] " if "OK" in color else ("[WARN] " if color=="WARNING" else ("[ERR] " if color == "FAIL" else "[INFO] "))
     print(bcolors["FAINT"] + time + bcolors["ENDC"] + bcolors[color]  + pre + message + bcolors["ENDC"])
-def read(filename):
-    try:
-        with open(filename, 'r') as f:
-            return f.read()
-    except FileNotFoundError:
-        return None
+def read(filename:str)->str:
+    with open(filename, 'r') as f:
+        return f.read()
 
 paths = {
     ".": "**/*.txt",
@@ -39,9 +37,9 @@ for path,filter_ in paths.items():
         if not any(x in str(CFG) for x in exclude) and "/" in str(CFG):
             try:
                 pre,c = "✓","OKGREEN"
-                vdf.loads(read(CFG))
+                vdf.loads(read(CFG)) # type: ignore[w]
                 ex = ""
-            except:
+            except SyntaxError:
                 pre,c = "✗","FAIL"
                 ex = "\n"+traceback.format_exc()
                 had_errors = True

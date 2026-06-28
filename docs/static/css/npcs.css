@@ -1,5 +1,5 @@
 @import url("style.css");
-@import url("musicmodal.css"); 
+@import url("musicmodal.css");
 
 /* NPCs (same as items but without the filter stuff) */
 
@@ -63,7 +63,7 @@ details details details details summary { font-size: .5em }
 
 /* Audio */
 #music_title {
-    text-transform: capitalize;    
+    text-transform: capitalize;
 }
 
 .audio {

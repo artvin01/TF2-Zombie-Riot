@@ -70,7 +70,7 @@ function draw() {
   ctx.restore();
 
   ctx.fillStyle=`rgba(255,0,0,50%)`;
-  
+
   ctx.canvas.style.cursor = "grab";
   parse_main(swr_item, campos[0]-(subweapon_dist+38), campos[1]-38, 0, "a");
   if (swr_highlight.valid===false) {
@@ -92,7 +92,7 @@ function draw() {
   prerun=render(prerun);
   run=render(run);
   postrun=render(postrun);
-  
+
   if (mousedown) {
     campos[0] += (mousepos[0]-last_mousepos[0]);
     campos[1] += (mousepos[1]-last_mousepos[1]);
@@ -157,10 +157,10 @@ function parse_main(data,px,py,angle,sw_id) {
         let size = calc_text_size("1.5em Oswald", data.name);
         totalHeight += size.height + 5;
         maxWidth = Math.max(maxWidth, size.width)
-        
+
         // Draw weapon tags, author
         secondary_text = [];
-        if (data.tags!=={}) {
+        if (Object.keys(data.tags).length !== 0) {
           data.tags.forEach(el => {if (!el.includes("#")) { data.tags[data.tags.indexOf(el)]=`#${el}`}}); // Prepend # to each tag once
           secondary_text.push(data.tags.join(" "));
         };
@@ -263,7 +263,7 @@ function parse_main(data,px,py,angle,sw_id) {
       }
     }
   })
-  
+
   // Weapon Icon
   postrun.push({
     "type": "image",
@@ -323,7 +323,7 @@ function parse_main(data,px,py,angle,sw_id) {
       swr_highlight.panstate = undefined;
     }
   }
-  
+
   if (data.subweapons!==undefined && data.subweapons.items !== undefined) {
     let part = 2*Math.PI / (data.subweapons.items.length+1);
     data.subweapons.items.forEach(function(val,idx){

@@ -178,7 +178,7 @@
 /* readability (unused for most colors since they are bright)
 span[class^='mc_']{
     text-shadow:
-   -1px -1px 0 #777,  
+   -1px -1px 0 #777,
     1px -1px 0 #777,
     -1px 1px 0 #777,
      1px 1px 0 #777;
@@ -187,7 +187,7 @@ span[class^='mc_']{
 
 .mc_black {
     text-shadow:
-   -1px -1px 0 #ffffff6a,  
+   -1px -1px 0 #ffffff6a,
     1px -1px 0 #ffffff6a,
     -1px 1px 0 #ffffff6a,
      1px 1px 0 #ffffff6a;
