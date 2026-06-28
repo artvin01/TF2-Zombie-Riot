@@ -700,9 +700,9 @@ public void Weapon_PurnellBuff_M2(int client, int weapon, bool crit, int slot)
 		if(MaxHealthally >= 10000.0)
 			MaxHealthally = 10000.0;
 		MaxHealthally *= 0.1;
-		HealEntityGlobal(client, client, MaxHealth, 0.5, 1.0, HEAL_SELFHEAL);
+		HealEntityGlobal(client, client, MaxHealth, 1.0, 1.0, HEAL_SELFHEAL);
 		if(!LastMann)
-			HealEntityGlobal(client, target, MaxHealthally, 0.5, 1.0);
+			HealEntityGlobal(client, target, MaxHealthally, 1.0, 1.0);
 
 		HealPointToReinforce(client, 1, 0.02);
 		

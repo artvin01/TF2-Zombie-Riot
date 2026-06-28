@@ -499,6 +499,14 @@
 		"it"	"I suoi HP non possono scendere al di sotto di 1 in nessun caso."
 		"ko"	"체력이 1 이하로 떨어지지 않습니다. 사망하지 않습니다."
 	}
+	"Fridge Food"
+	{
+		"en"	"Fridge Food"
+	}
+	"Fridge Food Desc"
+	{
+		"en"	"Being outside of battle will heal you overtime"
+	}
 	"Blessing of Stars"
 	{
 		"en"	"Blessing of Stars"
