@@ -234,7 +234,11 @@ void ViewChange_PlayerModel(int client)
 		
 		if(TeutonType[client] == TEUTON_NONE)
 		{
-			if(i_HealthBeforeSuit[client] == 0 && Store_HasNamedItem(client, "Expidonsan Research Card") == 0)
+			bool robot = (i_HealthBeforeSuit[client] || Store_HasNamedItem(client, "Expidonsan Research Card"));
+			
+			Gunsaw_PlayerModel(client, robot);
+			
+			if(!robot)
 			{
 				int index;
 				int sound = -1;

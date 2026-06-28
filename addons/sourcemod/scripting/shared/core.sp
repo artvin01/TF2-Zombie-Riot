@@ -3849,6 +3849,7 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		SetEntityHealth(target, 50);
 		RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(target));
 		Rogue_TriggerFunction(Artifact::FuncRevive, target);
+		Gunsaw_TryBodySteal(target, false);
 		int entity, i;
 		while(TF2U_GetWearable(target, entity, i))
 		{

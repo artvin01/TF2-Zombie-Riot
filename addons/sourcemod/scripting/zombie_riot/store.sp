@@ -1147,6 +1147,8 @@ void Store_ConfigSetup()
 //	StoreBalanceLog.ImportFromFile(buffer);
 
 	AutoSaveTimer = CreateTimer(10.0, AutoSaveTime, 1);
+
+	Gunsaw_StoreReloaded();
 }
 
 static Action AutoSaveTime(Handle timer, int client)
@@ -1348,6 +1350,10 @@ bool Store_CanPapItem(int client, int index)
 			}
 		}
 		*/
+
+		if(!Gunsaw_CanPapItem(client, index))
+			return false;
+
 		if(item.Owned[client])
 		{
 			ItemInfo info;
@@ -6680,6 +6686,8 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		GemCrafter_Enable(client, entity);
 		VehicleFullAPC_WeaponEnable(client, entity);
 		Enable_ExploARWeapon(client, entity);
+		Gunsaw_Enable(client, entity);
+
 		//give all revelant things back
 		WeaponSpawn_Reapply(client, entity, StoreWeapon[entity]);
 	}
@@ -6721,7 +6729,7 @@ void Store_GiveItemIndex(int client, int index, int owned = 1, bool equipped = t
 	}
 }
 
-int Store_GiveSpecificItem(int client, const char[] name, bool UpdateSlots = true, int CompareWeaponArray = -1)
+int Store_GiveSpecificItem(int client, const char[] name, bool UpdateSlots = true, int CompareWeaponArray = -1, int ownedLevel = 1)
 {
 	static Item item;
 	int length = StoreItems.Length;
@@ -6735,7 +6743,7 @@ int Store_GiveSpecificItem(int client, const char[] name, bool UpdateSlots = tru
 			static ItemInfo info;
 			item.GetItemInfo(0, info);
 			
-			item.Owned[client] = 1;
+			item.Owned[client] = ownedLevel;
 			item.Equipped[client] = true;
 			item.Sell[client] = 0;
 			item.BuyWave[client] = -1;
@@ -6804,6 +6812,38 @@ stock void Store_ConsumeItem(int client, int index)
 	}
 }
 
+stock int Store_Equip(int client, int index, bool UpdateSlots = true)
+{
+	static Item item;
+	StoreItems.GetArray(index, item);
+	item.Equipped[client] = true;
+	StoreItems.SetArray(index, item);
+	
+	int entity = Store_GiveItem(client, index, item.Equipped[client]);
+	if(UpdateSlots)
+		CheckMultiSlots(client);
+	
+	if(item.ParentKit)
+	{
+		static Item subItem;
+		int length = StoreItems.Length;
+		for(int i; i < length; i++)
+		{
+			StoreItems.GetArray(i, subItem);
+			if(subItem.Section == index)
+			{
+				subItem.Owned[client] = item.Owned[client];
+				subItem.Equipped[client] = true;
+				StoreItems.SetArray(i, subItem);
+				
+				LastBoughtWeapon[client] = subItem;
+			}
+		}
+	}
+	
+	return entity;
+}
+
 stock void Store_Unequip(int client, int index)
 {
 	static Item item;
@@ -6865,7 +6905,7 @@ int Store_GetItemIndex(const char[] name)
 	return StoreItems.FindString(name, Item::Name);
 }
 
-int Store_GetItemName(int index, int client = 0, char[] buffer, int leng, bool translate = true)
+int Store_GetItemName(int index, int client = 0, char[] buffer, int leng, bool translate = true, int forceLevel = -1)
 {
 	static Item item;
 	StoreItems.GetArray(index, item);
@@ -6873,6 +6913,9 @@ int Store_GetItemName(int index, int client = 0, char[] buffer, int leng, bool t
 	int level = item.Owned[client] - 1;
 	if(level < 0)
 		level = 0;
+	
+	if(forceLevel != -1)
+		level = forceLevel;
 	
 	static ItemInfo info;
 	item.GetItemInfo(level, info);
@@ -7724,6 +7767,15 @@ void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip,
 			}
 		}
 	}
+}
+
+int Store_GetAmmoType(int client, int index, int level)
+{
+	static Item item;
+	StoreItems.GetArray(index, item);
+	static ItemInfo info;
+	item.GetItemInfo(level, info);
+	return info.Ammo;
 }
 
 void ResetClipOfWeaponStore(int weapon, int client, int clipsizeSet)
