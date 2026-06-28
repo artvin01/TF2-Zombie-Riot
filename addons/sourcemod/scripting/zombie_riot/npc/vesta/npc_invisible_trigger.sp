@@ -285,7 +285,7 @@ static void Invisible_TRIGGER_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-public void NPCPritToChat_Noname(const char[] text, bool NoTrans)
+stock void NPCPritToChat_Noname(const char[] text, bool NoTrans, any data=0)
 {
 	for(int Player=1; Player<=MaxClients; Player++)
 	{
@@ -294,14 +294,14 @@ public void NPCPritToChat_Noname(const char[] text, bool NoTrans)
 		if(!NoTrans)
 		{
 			SetGlobalTransTarget(Player);
-			CPrintToChat(Player, "%t", text);
+			CPrintToChat(Player, "%t", text, data);
 		}
 		else
 			CPrintToChat(Player, "%s", text);
 	}
 }
 
-public void NPCPritToChat_Override(const char[] name, const char[] namecolor, const char[] text, bool NoTrans)
+stock void NPCPritToChat_Override(const char[] name, const char[] namecolor, const char[] text, bool NoTrans=false, any data=0)
 {
 	for(int Player=1; Player<=MaxClients; Player++)
 	{
@@ -310,14 +310,14 @@ public void NPCPritToChat_Override(const char[] name, const char[] namecolor, co
 		if(!NoTrans)
 		{
 			SetGlobalTransTarget(Player);
-			CPrintToChat(Player, "%s%t{default}: %t", namecolor, name, text);
+			CPrintToChat(Player, "%s%t{default}: %t", namecolor, name, text, data);
 		}
 		else
 			CPrintToChat(Player, "%s%s{default}: %s", namecolor, name, text);
 	}
 }
 
-public void NPCPritToChat(int entity, const char[] namecolor, const char[] text, bool NoTrans, bool requestframe, any data)
+stock void NPCPritToChat(int entity, const char[] namecolor, const char[] text, bool NoTrans=false, bool requestframe=false, any data=0)
 {
 	if(entity==-1||!IsValidEntity(entity))return;
 	if(requestframe)
