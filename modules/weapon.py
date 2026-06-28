@@ -4,7 +4,6 @@ import vdf
 import os
 import json
 import f3d
-import pyassimp
 from modules.gamedata import items_game, modelmapping, strings_english
 from collections import defaultdict
 from ruamel.yaml import YAML
@@ -17,6 +16,7 @@ type SubweaponList = dict[str,str | list[Weapon | WeaponPap]]
 # Patch pyassimp to prevent null pointer error
 if os.path.isdir("venv/lib/python3.14/site-packages/pyassimp/"):
     util.write("venv/lib/python3.14/site-packages/pyassimp/core.py", util.read("config/pyassimp_core.py"))
+import pyassimp # type: ignore[w]
 
 
 # https://github.com/f3d-app/f3d/blob/master/examples/libf3d/python/offscreen-thumbnail/offscreen_thumbnail.py
