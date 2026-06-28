@@ -714,7 +714,7 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 			if(Waves_GetRoundScale()+1==11)
 			{
 				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-2-1", false, false);
-				npcm_flNextTMITal = GameTime + 1.0;
+				npc.m_flNextTMITalk = GameTime + 1.0;
 				npc.m_iNextTMITalk=2;
 			}
 		}
@@ -731,7 +731,7 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 			if(Waves_GetRoundScale()+1==21)
 			{
 				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-3-1", false, false);
-				npcm_flNextTMITal = GameTime + 1.0;
+				npc.m_flNextTMITalk = GameTime + 1.0;
 				npc.m_iNextTMITalk=4;
 			}
 		}
@@ -740,7 +740,7 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 			if(npc.m_flNextTMITalk > GameTime)
 			{
 				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-3-2", false, false);
-				npcm_flNextTMITal = GameTime + 1.0;
+				npc.m_flNextTMITalk = GameTime + 1.0;
 				npc.m_iNextTMITalk=5;
 			}
 		}
@@ -757,7 +757,7 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 			if(Waves_GetRoundScale()+1==31)
 			{
 				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-4-1", false, false);
-				npcm_flNextTMITal = GameTime + 1.0;
+				npc.m_flNextTMITalk = GameTime + 1.0;
 				npc.m_iNextTMITalk=7;
 			}
 		}

@@ -277,7 +277,7 @@ methodmap VestaBirdeye < CClotBody
 			ParticleEffectAt(Vec, "teleported_blue", 0.5);
 		}
 		
-		b_AimBuff = (StrContains(data, "aimbuff") != -1);
+		b_AimBuff = !(StrContains(data, "aimbuff") != -1);
 		
 		b_TheGoons=false;
 		if(!StrContains(data, "only"))
@@ -841,14 +841,14 @@ static int VestaBirdeyeSniperMode(VestaBirdeye npc, float gameTime)
 		TE_SetupBeamPoints(origin, ThrowPos[npc.index], Shared_BEAM_Laser, 0, 0, 0, 0.11, 5.0, 5.0, 0, 0.0, {7,255,255,100}, 3);
 		TE_SendToAll(0.0);
 	}
-			
+	
 	npc.FaceTowards(ThrowPos[npc.index], 15000.0);
 	if(npc.m_flAttackHappens)
 	{
 		if(npc.m_flAttackHappens < gameTime)
 		{
 			npc.m_flAttackHappens = 0.0;
-			ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue_crit", origin, ThrowPos[npc.index], false );
+			ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue_crit", origin, ThrowPos[npc.index], false);
 			float pos_npc[3];
 			WorldSpaceCenter(npc.index, pos_npc);
 			float AngleAim[3];
@@ -908,7 +908,7 @@ static int VestaBirdeyeSniperMode(VestaBirdeye npc, float gameTime)
 			//npc.m_flAttackHappens = gameTime + (npc.m_iBurst>0 ? 0.3 : 1.25);
 			npc.m_flAttackHappens = gameTime + (npc.m_iBurst>0 ? 0.5 : 1.25);
 		}
-		npc.m_flDoingAnimation = gameTime + (b_AimBuff>0 ? 0.2 : 0.95);
+		npc.m_flDoingAnimation = gameTime + (b_AimBuff ? 0.2 : 0.95);
 		if(b_TheGoons)
 		{
 			npc.m_iBurst++;
