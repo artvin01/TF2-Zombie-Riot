@@ -15,7 +15,9 @@ type SubweaponList = dict[str,str | list[Weapon | WeaponPap]]
 # THUMBNAIL ========================================================================
 # Patch pyassimp to prevent null pointer error
 if os.path.isdir("venv/lib/python3.14/site-packages/pyassimp/"):
-    util.write("venv/lib/python3.14/site-packages/pyassimp/core.py", util.read("config/pyassimp_core.py"))
+    util.write("venv/lib/python3.14/site-packages/pyassimp/core.py", util.read("venv/lib/python3.14/site-packages/pyassimp/core.py").replace("""else:
+                        setattr(target, name, [obj[i] for i in range(length)])""","""elif obj:
+                        setattr(target, name, [obj[i] for i in range(length)])"""))
 import pyassimp # type: ignore[w]
 
 
