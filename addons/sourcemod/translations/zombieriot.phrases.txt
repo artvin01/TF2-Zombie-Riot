@@ -2357,6 +2357,7 @@
 	"Credits After Selling"
 	{
 		"en" 		"Post Sell"
+		"ko" 		"판매 후"
 	}
 	"MAX BARRICADES OUT CURRENTLY"
 	{
