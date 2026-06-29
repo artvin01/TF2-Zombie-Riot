@@ -706,7 +706,7 @@ public void Weapon_PurnellBuff_M2(int client, int weapon, bool crit, int slot)
 		if(!LastMann)
 			HealEntityGlobal(client, target, MaxHealthally, 1.0, 0.5);
 
-		HealPointToReinforce(client, 1, 0.02);
+		HealPointToReinforce(client, 1, 0.04);
 		
 		float cooldown = b_PurnellLastMann ? 5.0 : 15.0;
 		
