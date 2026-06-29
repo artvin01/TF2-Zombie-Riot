@@ -3,7 +3,7 @@
 
 static bool ClientHasManualDownload[MAXPLAYERS];
 
-#define VERSION_NUMBER 1
+#define VERSION_NUMBER 2
 
 public void SoundManual_OnClientPutInServer(int client)
 {
