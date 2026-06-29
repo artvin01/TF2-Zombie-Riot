@@ -695,11 +695,11 @@ public void Weapon_PurnellBuff_M2(int client, int weapon, bool crit, int slot)
 		float MaxHealth = float(ReturnEntityMaxHealth(client));
 		if(MaxHealth >= 10000.0)
 			MaxHealth = 10000.0;
-		MaxHealth *= 0.1;
+		
 		float MaxHealthally = float(ReturnEntityMaxHealth(target));
 		if(MaxHealthally >= 10000.0)
 			MaxHealthally = 10000.0;
-		MaxHealthally *= 0.1;
+
 		HealEntityGlobal(client, client, MaxHealth, 1.0, 1.0, HEAL_SELFHEAL);
 		if(!LastMann)
 			HealEntityGlobal(client, target, MaxHealthally, 1.0, 1.0);
