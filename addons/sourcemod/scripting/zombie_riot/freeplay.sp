@@ -615,14 +615,14 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			{
 				enemy.Index = NPC_GetByPlugin("npc_squad_master");
 				enemy.Health = RoundToFloor((1250000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-				enemy.Data = "wave_20";
+				enemy.Data = "sc20";
 				enemy.ExtraSpeed = 0.85;
 			}
 			case 37:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_no_random_kranz");
 				enemy.Health = RoundToFloor((1000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-				enemy.Data = "wave_40";
+				enemy.Data = "sc40";
 				enemy.ExtraThinkSpeed = 1.15;
 				enemy.ExtraDamage = 0.6;
 				enemy.ExtraSpeed = 0.9;
@@ -631,7 +631,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			{
 				enemy.Index = NPC_GetByPlugin("npc_black_heavy_soul");
 				enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-				enemy.Data = "wave_40";
+				enemy.Data = "sc40";
 				enemy.ExtraThinkSpeed = 1.15;
 				enemy.ExtraDamage = 0.7;
 				enemy.ExtraSpeed = 0.9;
