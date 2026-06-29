@@ -4,6 +4,7 @@ import os
 import subprocess
 import json
 from gamedata import modelmapping # type: ignore[w]
+from typing import Any
 
 def read(filename:str) -> str:
     # Windows-specific fix to: https://stackoverflow.com/questions/9233027/unicodedecodeerror-charmap-codec-cant-decode-byte-x-in-position-y-character
@@ -20,10 +21,10 @@ def write(filename:str, val:str):
         f.write(str(val))
     return True
 
-CFG_WEAPONS = vdf.loads(read("./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/weapons.cfg"))["Weapons"]
+CFG_WEAPONS: dict[str,Any] = vdf.loads(read("./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/weapons.cfg"))["Weapons"] # type: ignore[w]
 
-DECOMPILED_MDLS=[]
-def decompile_model(path):
+DECOMPILED_MDLS:list[str]=[]
+def decompile_model(path:str):
     pure_filename = path.split("/")[-1].split(".")[0]
     if (path not in DECOMPILED_MDLS):
         # Decompile model

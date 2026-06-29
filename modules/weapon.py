@@ -18,7 +18,7 @@ if os.path.isdir("venv/lib/python3.14/site-packages/pyassimp/"):
     util.write("venv/lib/python3.14/site-packages/pyassimp/core.py", util.read("venv/lib/python3.14/site-packages/pyassimp/core.py").replace("""else:
                         setattr(target, name, [obj[i] for i in range(length)])""","""elif obj:
                         setattr(target, name, [obj[i] for i in range(length)])"""))
-import pyassimp # type: ignore[w]
+import pyassimp
 
 
 # https://github.com/f3d-app/f3d/blob/master/examples/libf3d/python/offscreen-thumbnail/offscreen_thumbnail.py

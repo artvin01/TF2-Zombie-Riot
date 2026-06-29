@@ -9,6 +9,8 @@ import embed
 import modules.shared
 import vdf
 from collections import defaultdict
+from datetime import datetime
+from typing import Any
 
 """
 TODO
@@ -40,7 +42,7 @@ MULTIPLIER_MAPPINGS = {
 }
 
 
-waveset_cache = {}
+waveset_cache: dict[str,dict[str,Any]] = {}
 def parse_all_npcs() -> tuple[dict[str,modules.shared.TypeNPC],dict[str,list[modules.shared.TypeNPC]]]:
     npc_by_file: dict[str,modules.shared.TypeNPC] = {}
     npc_by_category: dict[str,list[modules.shared.TypeNPC]] = {}
@@ -53,7 +55,7 @@ def parse_all_npcs() -> tuple[dict[str,modules.shared.TypeNPC],dict[str,list[mod
                     for i,pn in enumerate(plugin_name):
                         dummy = modules.shared.NPC_Dummy(npc_obj)
                         if npc_obj.filetype == "shared":
-                            dummy.health = npc_obj.health[min(len(npc_obj.health)-1,i)] # type: ignore[w]
+                            dummy.health = npc_obj.health[min(len(npc_obj.health)-1,i)]
                         else:
                             dummy.health = npc_obj.health
                         dummy.category = npc_obj.category[min(len(npc_obj.category)-1,i)]
@@ -64,10 +66,10 @@ def parse_all_npcs() -> tuple[dict[str,modules.shared.TypeNPC],dict[str,list[mod
                             npc_by_category[dummy.category] = []
                         npc_by_category[dummy.category].append(dummy)
                 else:
-                    npc_by_file[plugin_name] = npc_obj # type: ignore[type is checked for]
+                    npc_by_file[plugin_name] = npc_obj
                     if npc_obj.category not in npc_by_category:
-                        npc_by_category[npc_obj.category]=[] # type: ignore[type is checked for]
-                    npc_by_category[npc_obj.category].append(npc_obj) # type: ignore[type is checked for]
+                        npc_by_category[npc_obj.category]=[]
+                    npc_by_category[npc_obj.category].append(npc_obj)
 
     if "npcs" in util.DEBUG:
         util.write("npc_data.json",json.dumps(npc_by_file,indent=2))
@@ -97,7 +99,7 @@ def get_npc(plugin:str)->dict[str,str]:
     assert type(npc_data.flags) is list
     if "0" not in npc_data.flags and "-1" not in npc_data.flags:
         npc_flags = "Flags: "
-        dflags = ", ".join([modules.shared.FLAG_MAPPINGS[item] for item in npc_data.flags]) # type: ignore[type is checked for]
+        dflags = ", ".join([modules.shared.FLAG_MAPPINGS[item] for item in npc_data.flags])
         npc_flags += dflags + "  \n"
     else:
         npc_flags = ""
@@ -107,9 +109,9 @@ def get_npc(plugin:str)->dict[str,str]:
         "description": npc_data.description
     }
 
-def parse_wave(wave_idx: int, wave_data, auto_wave_cash, force=False): # TODO last
-    output = []
-    output_hashes = {}
+def parse_wave(wave_idx: int, wave_data: dict[str,Any], auto_wave_cash:bool):
+    output:list[dict[str,Any]] = []
+    output_hashes: dict[str,int] = {}
     has_cash_entry = False
 
     for wave_entry, wave_entry_data in wave_data.items():
@@ -190,11 +192,12 @@ def parse_wave(wave_idx: int, wave_data, auto_wave_cash, force=False): # TODO la
 
         if wave_entry_data["plugin"] in NPCS_BY_FILENAME:
             npc_data = NPCS_BY_FILENAME[wave_entry_data["plugin"]]
-            if (npc_data.category=="Type_Hidden") and (wave_entry_data["plugin"] not in modules.shared.NPC_WHITELIST): continue
+            if (npc_data.category=="Type_Hidden") and (wave_entry_data["plugin"] not in modules.shared.NPC_WHITELIST):
+                continue
         else:
-            npc_data = None
-            assert force
+            # force argument would be used here, but the code is no longer handling None values properly
             util.log(f"Plugin name {wave_entry_data["plugin"]} missing!","FAIL")
+            raise FileNotFoundError
 
         try:
             npc_name = npc_data.name
@@ -202,7 +205,8 @@ def parse_wave(wave_idx: int, wave_data, auto_wave_cash, force=False): # TODO la
             npc_name = wave_entry_data["plugin"]
         npc_name_raw = npc_name
 
-        if "custom_name" in wave_entry_data: npc_name = wave_entry_data["custom_name"]
+        if "custom_name" in wave_entry_data:
+            npc_name = wave_entry_data["custom_name"]
 
         dd = defaultdict(str, wave_entry_data)
         npc_name_prefix = ""
@@ -211,11 +215,11 @@ def parse_wave(wave_idx: int, wave_data, auto_wave_cash, force=False): # TODO la
         bool carrier = data[0] == 'R';
         bool elite = !carrier && data[0];
         """
-        extra_info = ""
+        extra_info:str = ""
         if "health" in wave_entry_data:
             extra_info += f" {util.format_num(wave_entry_data["health"])}HP"
         elif npc_data:
-            if type(npc_data.health) == dict:
+            if type(npc_data.health) is dict:
                 if len(dd["data"])>0 and npc_data.has_prefix_logic:
                     """
                     prefix logic:
@@ -232,12 +236,15 @@ def parse_wave(wave_idx: int, wave_data, auto_wave_cash, force=False): # TODO la
                     carrier = data_key[0] == "R"
                     elite = (not carrier) and data_key[0] # If first char isn't R but data exists
 
-                    if carrier: data_key = "carrier"
-                    elif elite: data_key = "elite"
-                    else: data_key = "default";npc_name_prefix="!c"
+                    data_key = "carrier" if carrier else ("elite" if elite else "default" if (npc_name_prefix:="!c") else None)
+                    if data_key is None:
+                        util.log("NPC data_key is somehow None!","FAIL")
+                        raise Exception
 
-                    if data_key not in npc_data.health and "any" in npc_data.health: data_key = "any";
-                    elif data_key not in npc_data.health: data_key = "default";
+                    if data_key not in npc_data.health and "any" in npc_data.health:
+                        data_key = "any"
+                    elif data_key not in npc_data.health:
+                        data_key = "default"
 
                     npc_name_prefix += wave_entry_data["data"].capitalize()
                     util.debug(f"Parsing HP Value {npc_data.health} DATA value {wave_entry_data["data"]} CHOSEN value {data_key}", "npcs", "OKCYAN")
@@ -267,7 +274,7 @@ def parse_wave(wave_idx: int, wave_data, auto_wave_cash, force=False): # TODO la
             flags |= MVM_CLASS_FLAG_ALWAYSCRIT;
         """
         npc_css_class = ""
-        npc_extra_flags = []
+        npc_extra_flags: list[str] = []
 
         cases = {
             "MVM_CLASS_FLAG_SUPPORT": util.cfgtoint(dd["is_boss"]) < 2 and (dd["ignore_max_cap"]=="1" or dd["team_npc"]=="2" or dd["is_static"]=="1"),
@@ -312,7 +319,7 @@ def parse_wave(wave_idx: int, wave_data, auto_wave_cash, force=False): # TODO la
 
         for property_, val in PROPERTY_MAPPINGS.items():
             if property_ in wave_entry_data:
-                if type(val) == dict:
+                if type(val) is dict:
                     extra_info += f" {val[wave_entry_data[property_]]}"
                 else:
                     if wave_entry_data[property_] == "1":
@@ -367,14 +374,14 @@ def parse_wave(wave_idx: int, wave_data, auto_wave_cash, force=False): # TODO la
 
     return output
 
-def parse_waveset(file, data, abslink, name, desc, DEPTH=2):
+def parse_waveset(file: str, data: dict[str,Any], abslink: str, name: str, desc: str) -> dict[str,Any]:
     global waveset_cache
     if file in waveset_cache:
         util.debug(f"    -> Returning cache for {file}", "wavesets", "OKCYAN")
         return waveset_cache[file]
 
     wd = defaultdict(str,data)
-    output = {
+    output: dict[str,Any] = {
         "waves": {},
         "music": {}, # base waveset music, not the per wave one
         "authors": {
@@ -410,7 +417,8 @@ def parse_waveset(file, data, abslink, name, desc, DEPTH=2):
             continue
 
         wave_npc_amt = sum([int(util.is_float(entry)) for entry in wave_data])
-        if len(wave_data)==0 or wave_npc_amt == 0: continue
+        if len(wave_data)==0 or wave_npc_amt == 0:
+            continue
         wave_idx += 1
 
         output["waves"][wave_idx] = parse_wave(wave_idx, wave_data, bool(util.cfgtoint(wd["auto_wave_cash"])))
@@ -419,17 +427,16 @@ def parse_waveset(file, data, abslink, name, desc, DEPTH=2):
     waveset_cache[file] = output
     return output
 
-def parse_waveset_list_cfg_common(cfg, filename, html_mapsets):
+def parse_waveset_list_cfg_common(cfg:dict[str,Any], filename:str, html_mapsets:str):
     map_mode = "maps" in filename # Is map specific config?
-    WAVESET_LIST = cfg[list(cfg.keys())[0]] # data of cfg file
-    if "Setup" in WAVESET_LIST: WAVESET_LIST = WAVESET_LIST["Setup"] # map-specific configs start with custom instead of setup, requiring an extra step to get to waveset/wave< data
-    if "Setup" in WAVESET_LIST: WAVESET_LIST = WAVESET_LIST["Setup"] # zr_bossrush
+    waveset_list: dict[str,Any] = cfg[list(cfg.keys())[0]] # data of cfg file
+    [(waveset_list := waveset_list["Setup"]) for _ in range(2) if "Setup" in waveset_list] # map-specific configs start with custom instead of setup, requiring an extra step to get to waveset/wave< data
 
     wavesetlist_html = ""
-    wavesets_json = {}
+    wavesets_json: dict[str,dict[str,Any]] = {}
 
-    if "Waves" in WAVESET_LIST: # list of wavesets
-        wavesets = WAVESET_LIST["Waves"]
+    if "Waves" in waveset_list: # list of wavesets
+        wavesets = waveset_list["Waves"]
         # Outline
         wavesetlist_html += "<ul>\n"
         for waveset_name in wavesets:
@@ -441,10 +448,10 @@ def parse_waveset_list_cfg_common(cfg, filename, html_mapsets):
             html_mapsets += f"<li><a href=\"{n}.html\">{n}</a></li>"
 
         # Modifier outline
-        if "Modifiers" in WAVESET_LIST:
-            wavesetlist_html += f"<h2>Modifiers</h2>\n"
-            for modifier in WAVESET_LIST["Modifiers"]:
-                data = WAVESET_LIST["Modifiers"][modifier]
+        if "Modifiers" in waveset_list:
+            wavesetlist_html += "<h2>Modifiers</h2>\n"
+            for modifier in waveset_list["Modifiers"]:
+                data = waveset_list["Modifiers"][modifier]
                 desc = util.get_key(data["desc"]).replace("\\n","\n")
                 # no idea what the levels here mean
                 lvl = round(float(data["level"])*1000) # waves.sp line 1018: vote.Level = RoundFloat(kv.GetFloat("level", 1.0) * 1000.0);
@@ -461,10 +468,11 @@ def parse_waveset_list_cfg_common(cfg, filename, html_mapsets):
             wave_cfg = util.read(f"./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/{waveset_file}.cfg")
 
             # Waveset-specific typo fixes (or just removing lines that break the parser)
-            if waveset_file == "classic_alim&expi": wave_cfg=wave_cfg.replace('			"plugin"	"110000000"',"") # overrides actual plugin name before it, which is why it has to be removed
+            if waveset_file == "classic_alim&expi":
+                wave_cfg=wave_cfg.replace('			"plugin"	"110000000"',"") # overrides actual plugin name before it, which is why it has to be removed
             wave_cfg = unique_enemy_delays(wave_cfg)
 
-            WAVESET_DATA = vdf.loads(wave_cfg)["Waves"]
+            WAVESET_DATA: dict[str,Any] = vdf.loads(wave_cfg)["Waves"] # type: ignore[w]
 
             if "desc" in wavesets[waveset_name]:
                 waveset_desc_key = wavesets[waveset_name]["desc"]
@@ -474,10 +482,10 @@ def parse_waveset_list_cfg_common(cfg, filename, html_mapsets):
             else:
                 desc = ""
             util.debug(f"Adding waveset {waveset_name} to {filename}","wavesets","OKCYAN")
-            mn = parse_waveset(waveset_file, WAVESET_DATA, util.absolute_link(filename,waveset_name), waveset_name, desc)
+            mn = parse_waveset(waveset_file, WAVESET_DATA, util.absolute_link(filename,waveset_name), waveset_name, desc) # type: ignore[w] (dict[str,Any] is passed -> argument type partially unknown warning)
             mn["name"] = waveset_name
             wavesets_json[waveset_name] = mn
-    else: # Waveset itself / map_mode | Assume data being in the cfg file itself. Might only be the case for rogue/const/bettingwars
+    else:
         util.log(f"{filename} - No 'Waves' key found!","FAIL")
         raise Exception
 
@@ -485,18 +493,18 @@ def parse_waveset_list_cfg_common(cfg, filename, html_mapsets):
         util.write(f"gh-pages/wavesets/{util.absolute_link(filename,f_waveset)}.json", json.dumps(f_data,indent=2))
 
     context = { # startcash, wavesetlistdata
-        "startcash": WAVESET_LIST["cash"],
+        "startcash": waveset_list["cash"],
         "wavesetlistdata": wavesetlist_html
     }
     HTML_WAVESET_LIST = util.fill_template(util.read(f"templates/waveset/{"mapset_overview" if map_mode else "waveset_list"}.html"),context)
     return HTML_WAVESET_LIST, html_mapsets
 
-def parse_waveset_list_cfg(filename, html_mapsets, html_otherset, filename_md=None):
+def parse_waveset_list_cfg(filename:str, html_mapsets:str, html_otherset:dict[str,str], filename_md:str|None=None) -> tuple[str, dict[str,str]]:
     if (filename not in util.WAVESETS_FILESCOPE) and len(util.WAVESETS_FILESCOPE)>0:
         util.log(f"{filename} not in FILESCOPE", "OKBLUE")
         return html_mapsets, html_otherset
     WAVESETLIST_RAW = util.read(f"./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/{filename}")
-    WAVESETLIST_DATA = vdf.loads(WAVESETLIST_RAW)
+    WAVESETLIST_DATA: dict[str,Any] = vdf.loads(WAVESETLIST_RAW) # type:ignore[w]
     WAVESETLIST_TYPE = list(WAVESETLIST_DATA.keys())[0]
 
     if (WAVESETLIST_TYPE not in util.WAVESETS_TYPESCOPE) or "maps/zr_holdout.cfg" == filename: # Unsupported waveset cfg (Bunker, etc.)
@@ -521,15 +529,16 @@ def parse_waveset_list_cfg(filename, html_mapsets, html_otherset, filename_md=No
     """
 
     if WAVESETLIST_TYPE in ["Setup", "Custom"]:
-        HTML_WAVESETS, html_mapsets = parse_waveset_list_cfg_common(WAVESETLIST_DATA, filename, html_mapsets)
+        html_waveset, html_mapsets = parse_waveset_list_cfg_common(WAVESETLIST_DATA, filename, html_mapsets)
     elif WAVESETLIST_TYPE == "Betting":
-        HTML_WAVESETS, html_mapsets = parse_betting(filename, WAVESETLIST_RAW, html_mapsets)
+        html_waveset, html_mapsets = parse_betting(filename, WAVESETLIST_RAW, html_mapsets)
     else:
-        if WAVESETLIST_TYPE not in html_otherset: html_otherset[WAVESETLIST_TYPE] = ""
+        if WAVESETLIST_TYPE not in html_otherset:
+            html_otherset[WAVESETLIST_TYPE] = ""
         if WAVESETLIST_TYPE == "Rogue":
-            HTML_WAVESETS, html_otherset[WAVESETLIST_TYPE] = parse_rogue(filename, WAVESETLIST_DATA, html_otherset[WAVESETLIST_TYPE])
+            html_waveset, html_otherset[WAVESETLIST_TYPE] = parse_rogue(filename, WAVESETLIST_DATA, html_otherset[WAVESETLIST_TYPE])
         elif WAVESETLIST_TYPE == "Construction":
-            HTML_WAVESETS, html_otherset[WAVESETLIST_TYPE] = parse_const(filename, WAVESETLIST_DATA, html_otherset[WAVESETLIST_TYPE])
+            html_waveset, html_otherset[WAVESETLIST_TYPE] = parse_const(filename, WAVESETLIST_DATA, html_otherset[WAVESETLIST_TYPE])
         else:
             util.log(f"UNSUPPORTED WAVESETLIST_TYPE: {WAVESETLIST_TYPE}", "FAIL")
             exit()
@@ -540,13 +549,14 @@ def parse_waveset_list_cfg(filename, html_mapsets, html_otherset, filename_md=No
         else:
             filename_md = f"gh-pages/wavesets_{filename}.html".replace("/","_")
     name = filename_md.split("/")[-1].replace(".html","")
-    if "maps" not in filename: name=name.title()
-    util.write(filename_md, util.fill_template(HTML_WAVESETS,{"wavesetlistname":name}))
+    if "maps" not in filename:
+        name=name.title()
+    util.write(filename_md, util.fill_template(html_waveset,{"wavesetlistname":name}))
     return html_mapsets, html_otherset
 
 #### ZR: Special Maps ####
-def parse_betting(name, data_raw, html_mapsets): # zr_bettingwars
-    data = vdf.loads(unique_enemy_delays(data_raw))
+def parse_betting(name: str, data_raw: str, html_mapsets:str) -> tuple[str,str]: # zr_bettingwars
+    data: dict[str,Any] = vdf.loads(unique_enemy_delays(data_raw)) # type: ignore[w]
 
     # Generate a table out of data
     bettingdata = "<table>\n<tr>\n<th>Budget</th>\n<th>Count</th>\n<th>NPC</th>\n</tr>\n"
@@ -569,6 +579,7 @@ def parse_betting(name, data_raw, html_mapsets): # zr_bettingwars
     html_mapsets += f"<li><a href=\"{n}.html\">{n}</a></li>"
 
     mm = util.music_modal(data["Betting"]["BetWars"]["music_background"])
+    assert mm is not None
     MUSIC_BY_TITLE[mm["musictitle"]]=mm
     betting_music = util.musicmodal_to_html(mm)
     desc = '<div style="margin-bottom: 1em;margin-top:1em;">Higher budget means more powerful NPC group</div>\n'
@@ -578,7 +589,7 @@ def parse_betting(name, data_raw, html_mapsets): # zr_bettingwars
     return util.fill_template(util.read("templates/betting/bettingdata.html"),context), html_mapsets
 
 #### ZR: Rogue ####
-def parse_rogue(name, data, html_mapsets):
+def parse_rogue(name: str, data: dict[str,Any], html_mapsets:str) -> tuple[str,str]:
     data=data["Rogue"]
     wd = defaultdict(str,data)
     """
@@ -598,7 +609,7 @@ def parse_rogue(name, data, html_mapsets):
             f
 
     """
-    info_html = ""
+    info_html: str = ""
 
     info_html += "<h2>Starting artifacts</h2>\n"
     for artifact in data["Setup"]["Starting"].keys():
@@ -607,7 +618,8 @@ def parse_rogue(name, data, html_mapsets):
     # All Artifacts
     info_html += "<h2>Artifacts</h2>\n"
     for artifact in data["Rogue"]["Artifacts"]:
-        if defaultdict(str, data["Rogue"]["Artifacts"][artifact])["hidden"]=="1": continue
+        if defaultdict(str, data["Rogue"]["Artifacts"][artifact])["hidden"]=="1":
+            continue
         info_html += rogue_item_modal(artifact,data["Rogue"]["Artifacts"][artifact])
 
     # Curses
@@ -627,16 +639,17 @@ def parse_rogue(name, data, html_mapsets):
         for entry, val in floor_data.items():
             if "music" in entry:
                 modal = util.music_modal(val)
+                assert modal is not None
                 MUSIC_BY_TITLE[modal["musictitle"]] = modal
                 info_html += f"{entry.split("_")[0].title()}: {util.musicmodal_to_html(modal)}"
 
         info_html += "<ul>\n"
         for sname, sdata in floor_data["Stages"].items():
             info_html = parse_rogue_stage(info_html,sname,sdata,name,floor_name,rogue_num)
-        info_html += f"</ul>\n<h4>Final</h4>\n<ul>\n"
+        info_html += "</ul>\n<h4>Final</h4>\n<ul>\n"
         for sname, sdata in floor_data["Final"].items():
             info_html = parse_rogue_stage(info_html,sname,sdata,name,floor_name,rogue_num)
-        info_html += f"</ul>\n"
+        info_html += "</ul>\n"
 
     # List in rogue.html
     n = name.split("/")[-1].replace(".cfg","")
@@ -649,15 +662,17 @@ def parse_rogue(name, data, html_mapsets):
         "wavesetlistdata": info_html,
         "character_hired_by": f"{util.apply_morecolors(DEFAULT_MISSION_CLIENT) if rogue_num == 1 else util.apply_morecolors("{black}Izan")}"
     }
-    HTML_WAVESET_LIST = util.fill_template(util.read(f"templates/rogue/roguedata.html"),context)
+    HTML_WAVESET_LIST = util.fill_template(util.read("templates/rogue/roguedata.html"),context)
     # HTML_WAVESET_LIST -> what will be linked to on the ZR: rogue page
     # html_mapsets ->
     return HTML_WAVESET_LIST, html_mapsets
 
-def rogue_item_modal(name, obj={}):
+def rogue_item_modal(name: str, obj:dict[str,str]|str|None=None):
     desc = util.divfornewline(util.apply_morecolors(util.get_key(f"{name} Desc")))
-    if type(obj)==str: # keyonwin in const
+    if type(obj) is str: # keyonwin in const
         desc += f"\n<div>{obj}</div>\n"
+    elif obj is None:
+        obj = {}
     context = {
         "shopcost": f"△ {obj["shopcost"]}" if "shopcost" in obj else "",
         "dropchance": f"dropchance {obj["dropchance"]}" if "dropchance" in obj else "",
@@ -666,9 +681,10 @@ def rogue_item_modal(name, obj={}):
     }
     return util.fill_template(util.read("templates/rogue/rogue_item.html"),context)
 
-def parse_rogue_stage(info_html,snameraw,sdata,name,floor_name,rogue_num):
+def parse_rogue_stage(info_html:str,snameraw:str,sdata:dict[str,Any],name:str,floor_name:str,rogue_num:str) -> str:
     sdesc=util.get_key(snameraw + " Desc",empty_on_fail=True,silent=True)
-    if len(sdesc)>0: sdesc=f"<div>{sdesc}</div>"
+    if len(sdesc)>0:
+        sdesc=f"<div>{sdesc}</div>"
     sname=util.get_key(snameraw)
     sd = defaultdict(str, sdata)
     util.log(f"    {sname}{" "*(35-len(sname))}| {sd["wave"] if "wave" in sdata else "-"}")
@@ -677,10 +693,10 @@ def parse_rogue_stage(info_html,snameraw,sdata,name,floor_name,rogue_num):
         # waveset viewer link
         wave_cfg = util.read(f"./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/{sdata["wave"]}.cfg")
         wave_cfg = unique_enemy_delays(wave_cfg)
-        WAVESET_DATA = vdf.loads(wave_cfg)["Waves"]
+        WAVESET_DATA: dict[str,Any] = vdf.loads(wave_cfg)["Waves"] # type: ignore[w]
         absl = util.absolute_link(name,floor_name+snameraw)
         fullname = f"Rogue {rogue_num} - {floor_name} - {sname}"
-        output = parse_waveset(sdata["wave"], WAVESET_DATA, absl, fullname, "", DEPTH=4)
+        output = parse_waveset(sdata["wave"], WAVESET_DATA, absl, fullname, "") # type: ignore[w]
         output["name"]=fullname
         util.write(f"gh-pages/wavesets/{absl}.json",json.dumps(output,indent=2))
         context = {
@@ -702,14 +718,15 @@ def parse_rogue_stage(info_html,snameraw,sdata,name,floor_name,rogue_num):
     return info_html
 
 ### ZR: Construction ###
-def parse_const(name, data, html_mapsets):
+def parse_const(name:str, data: dict[str,Any], html_mapsets:str) -> tuple[str,str]:
     data=data["Construction"]
     if "dungeon" in data["Setup"]: # Const 2
         return parse_const2(name,data,html_mapsets)
     elif "construction" in data["Setup"]: # Const 1
         return parse_const1(name,data,html_mapsets)
+    raise NotImplementedError
 
-def parse_const_stage(info_html,cfgfile,keyonwin,attacknum, constnum):
+def parse_const_stage(info_html:str, cfgfile:str, keyonwin:str, attacknum:str, constnum:int) -> str:
     util.log(f"    Attack {attacknum}{" "*(35-len(f"Attack {attacknum}"))}| {cfgfile}")
 
     key_text = f"<div>Key on win: {keyonwin}</div>\n" if keyonwin!="" else ""
@@ -717,10 +734,10 @@ def parse_const_stage(info_html,cfgfile,keyonwin,attacknum, constnum):
     # waveset viewer link
     wave_cfg = util.read(f"./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/{cfgfile}.cfg")
     wave_cfg = unique_enemy_delays(wave_cfg)
-    WAVESET_DATA = vdf.loads(wave_cfg)["Waves"]
+    WAVESET_DATA: dict[str,Any] = vdf.loads(wave_cfg)["Waves"] # type: ignore[w]
     absl = util.absolute_link(f"const{constnum}",attacknum+cfgfile)
     fullname = f"Construction {constnum} - Attack {cfgfile.replace("construction/","").replace("construction_rift/","")}" # first part of cfgfile name is attack num itself
-    output = parse_waveset(cfgfile, WAVESET_DATA, absl, fullname, "", DEPTH=4)
+    output = parse_waveset(cfgfile, WAVESET_DATA, absl, fullname, "") # type: ignore[w]
     output["name"]=fullname
     util.write(f"gh-pages/wavesets/{absl}.json",json.dumps(output,indent=2))
     context = {
@@ -732,7 +749,7 @@ def parse_const_stage(info_html,cfgfile,keyonwin,attacknum, constnum):
 
     return info_html
 
-def parse_random_music(name,obj):
+def parse_random_music(obj:dict[str,Any]):
     """
     "0"
     {
@@ -756,6 +773,7 @@ def parse_random_music(name,obj):
 
     # Base music [1]
     modal = util.music_modal(obj)
+    assert modal is not None
     MUSIC_BY_TITLE[modal["musictitle"]] = modal
     out += util.musicmodal_to_html(modal)
 
@@ -769,7 +787,7 @@ def parse_random_music(name,obj):
     return out
 
 ### CONST 1 ###
-def parse_const1(name, data, html_mapsets):
+def parse_const1(name:str, data:dict[str,Any], html_mapsets:str) -> tuple[str,str]:
     """
     # Const1 Structure
     Construction
@@ -840,47 +858,50 @@ def parse_const1(name, data, html_mapsets):
     info_html += "<h2>Artifacts</h2>\n"
     info_html += "<ul>\n"
     for artifact in data["Construction"]["Artifacts"]:
-        if defaultdict(str, data["Construction"]["Artifacts"][artifact])["hidden"]=="1": continue
+        if defaultdict(str, data["Construction"]["Artifacts"][artifact])["hidden"]=="1":
+            continue
         info_html += rogue_item_modal(artifact,data["Construction"]["Artifacts"][artifact])
-    info_html += f"</ul>\n"
+    info_html += "</ul>\n"
 
     # All Research
     info_html += "<h2>Research</h2>\n"
     info_html += "<ul>\n"
     for research in data["Construction"]["Research"]:
-        if defaultdict(str, data["Construction"]["Research"][research])["hidden"]=="1": continue
+        if defaultdict(str, data["Construction"]["Research"][research])["hidden"]=="1":
+            continue
         info_html += parse_const_research(research,data["Construction"]["Research"][research])
-    info_html += f"</ul>\n"
+    info_html += "</ul>\n"
 
     # All Resources
     info_html += f"<h2>Resources</h2>\n<div>Max resources: {data["Construction"]["resourcecount"]}"
     info_html += "<ul>\n"
     for resource in data["Construction"]["Resources"]:
         info_html += parse_const_resource(resource,data["Construction"]["Resources"][resource])
-    info_html += f"</ul>\n"
+    info_html += "</ul>\n"
 
     # Random music
     info_html += "<h2>Music</h2>\n<div>Different cases have different parts of a song.</div>\n"
     info_html += "<ul>\n"
     for music in data["Construction"]["RandomMusic"]:
-        info_html += parse_random_music(music,data["Construction"]["RandomMusic"][music])
-    info_html += f"</ul>\n"
+        info_html += parse_random_music(data["Construction"]["RandomMusic"][music])
+    info_html += "</ul>\n"
 
     # Attacks
     info_html += "<h2>Attacks</h2>\n"
+    attacknum = "?"
     for attacknum, waves in data["Construction"]["Attacks"].items():
         info_html += f"<h3>Attack {attacknum}</h3>\n"
 
         info_html += "<ul>\n"
         for file,keyonwin in waves.items():
             info_html = parse_const_stage(info_html,file,keyonwin,attacknum,1)
-        info_html += f"</ul>\n"
+        info_html += "</ul>\n"
 
     info_html += "<h2>Final Attack</h2>\n"
     info_html += "<ul>\n"
     for file, keyonwin in data["Construction"]["FinalAttack"].items():
-        info_html = parse_const_stage(info_html,file,keyonwin,attacknum,1)
-    info_html += f"</ul>\n"
+        info_html = parse_const_stage(info_html, file, keyonwin, attacknum, 1)
+    info_html += "</ul>\n"
 
     # List in construction.html
     n = name.split("/")[-1].replace(".cfg","")
@@ -890,16 +911,16 @@ def parse_const1(name, data, html_mapsets):
     wd = defaultdict(str,data)
     context = { # startcash, wavesetlistdata
         "startcash": wd["Setup"]["cash"],
-        "wavesetlistname": f"Construction 1",
+        "wavesetlistname": "Construction 1",
         "wavesetlistdata": info_html,
         "character_hired_by": util.apply_morecolors(DEFAULT_MISSION_CLIENT)
     }
-    HTML_WAVESET_LIST = util.fill_template(util.read(f"templates/rogue/roguedata.html"),context)
+    HTML_WAVESET_LIST = util.fill_template(util.read("templates/rogue/roguedata.html"),context)
     # HTML_WAVESET_LIST -> what will be linked to on the ZR: rogue page
     # html_mapsets ->
     return HTML_WAVESET_LIST, html_mapsets
 
-def parse_const_research(name,obj):
+def parse_const_research(name:str,obj:dict[str,Any]):
     dd=defaultdict(str,obj)
     key_text = f"<div>Required research: {dd["key"]}</div>\n" if dd["key"]!="" else ""
     fulldesc = key_text + util.get_key(f"{name} Desc")
@@ -914,7 +935,7 @@ def parse_const_research(name,obj):
     }
     return util.fill_template(util.read("templates/const/const_item.html"),context)
 
-def parse_const_resource(name,obj):
+def parse_const_resource(name:str,obj:dict[str,str]):
     """
     "npc_material_wood"
     {
@@ -939,7 +960,7 @@ def parse_const_resource(name,obj):
 
 
 ### CONST 2 ###
-def parse_const2(name, data, html_mapsets):
+def parse_const2(name: str, data: dict[str,Any], html_mapsets: str) -> tuple[str,str]:
     """
     # Const 2 Structure
     Construction
@@ -1053,20 +1074,22 @@ def parse_const2(name, data, html_mapsets):
     info_html += "<h2>Artifacts</h2>\n"
     info_html += "<ul>\n"
     for artifact in data["Dungeon"]["Artifacts"]:
-        if defaultdict(str, data["Dungeon"]["Artifacts"][artifact])["hidden"]=="1": continue
+        if defaultdict(str, data["Dungeon"]["Artifacts"][artifact])["hidden"]=="1":
+            continue
         info_html += rogue_item_modal(artifact,data["Dungeon"]["Artifacts"][artifact])
-    info_html += f"</ul>\n"
+    info_html += "</ul>\n"
 
     # Random music
     info_html += "<h2>Music</h2>\n"
     info_html += "<ul>\n"
     # Setup Music
     modal = util.music_modal(data["Dungeon"]["music_setup"])
+    assert modal is not None
     MUSIC_BY_TITLE[modal["musictitle"]] = modal
     info_html += f"Setup: {util.musicmodal_to_html(modal)}"
     for music in data["Dungeon"]["RandomMusic"]:
-        info_html += parse_random_music(music,data["Dungeon"]["RandomMusic"][music])
-    info_html += f"</ul>\n"
+        info_html += parse_random_music(data["Dungeon"]["RandomMusic"][music])
+    info_html += "</ul>\n"
 
     # Raids
     info_html += "<h2>Raids</h2>\n"
@@ -1081,7 +1104,7 @@ def parse_const2(name, data, html_mapsets):
         info_html += "<ul>\n"
         for file,keyonwin in waves.items():
             info_html = parse_const_stage(info_html,file,keyonwin,attacknum,2)
-        info_html += f"</ul>\n"
+        info_html += "</ul>\n"
 
     # List in construction.html
     n = name.split("/")[-1].replace(".cfg","")
@@ -1090,11 +1113,11 @@ def parse_const2(name, data, html_mapsets):
     wd = defaultdict(str,data)
     context = {
         "startcash": wd["Setup"]["cash"],
-        "wavesetlistname": f"Construction 2 (incomplete info)",
+        "wavesetlistname": "Construction 2 (incomplete info)",
         "wavesetlistdata": info_html,
         "character_hired_by": util.apply_morecolors("{white}Bob the First") # Hardcoding :D
     }
-    HTML_WAVESET_LIST = util.fill_template(util.read(f"templates/rogue/roguedata.html"),context)
+    HTML_WAVESET_LIST = util.fill_template(util.read("templates/rogue/roguedata.html"),context)
 
     return HTML_WAVESET_LIST,html_mapsets
 
@@ -1116,12 +1139,12 @@ for file in sorted(os.listdir("./TF2-Zombie-Riot/addons/sourcemod/configs/zombie
     if ".cfg" in file:
         cfg_files[f"maps/{file}"] = None
 
-HTML_SPECIALMAPS = ""
-HTML_OTHERSET = {}
+html_specialmaps = ""
+html_otherset = {}
 for f,n in cfg_files.items():
-    HTML_SPECIALMAPS, HTML_OTHERSET = parse_waveset_list_cfg(f, HTML_SPECIALMAPS, HTML_OTHERSET, filename_md=n)
+    html_specialmaps, html_otherset = parse_waveset_list_cfg(f, html_specialmaps, html_otherset, filename_md=n)
 
-util.write("html_otherset.json", json.dumps(HTML_OTHERSET,indent=2))
+util.write("html_otherset.json", json.dumps(html_otherset,indent=2))
 util.write("music_by_title.json", json.dumps(MUSIC_BY_TITLE,indent=2))
 
 # Get current commit SHA for TF2-Zombie-Riot
@@ -1129,12 +1152,12 @@ COMMIT_SHA = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd="TF2-Zomb
 COMMIT_SHA_SHORT = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd="TF2-Zombie-Riot").strip().decode("utf-8")
 
 context = {
-    "wavesetlistdata": HTML_SPECIALMAPS, # list of mapset_overview templates
+    "wavesetlistdata": html_specialmaps, # list of mapset_overview templates
     "wavesetlistname": "Special Maps"
 }
 util.write("gh-pages/special.html", util.fill_template(util.read("templates/waveset/mapset_list.html"), context))
 
-for name, html in HTML_OTHERSET.items():
+for name, html in html_otherset.items():
     context = {
         "wavesetlistdata": html,
         "wavesetlistname": name
@@ -1142,6 +1165,6 @@ for name, html in HTML_OTHERSET.items():
     util.write(f"gh-pages/{name.lower()}.html", util.fill_template(util.read("templates/waveset/mapset_list.html"),context))
 
 context = {
-    "parse_run": f"\n<sub>Code parsed at {util.datetime.datetime.now().strftime('%H:%M:%S %d.%m.%Y')} H:M:S D.M.Y {time.tzname[time.daylight]}</sub><br><sub>Source repository commit <a href=\"https://github.com/artvin01/TF2-Zombie-Riot/commit/{COMMIT_SHA}\">artvin01/TF2-Zombie-Riot@{COMMIT_SHA_SHORT}</a></sub>",
+    "parse_run": f"\n<sub>Code parsed at {datetime.now().strftime('%H:%M:%S %d.%m.%Y')} H:M:S D.M.Y {time.tzname[time.daylight]}</sub><br><sub>Source repository commit <a href=\"https://github.com/artvin01/TF2-Zombie-Riot/commit/{COMMIT_SHA}\">artvin01/TF2-Zombie-Riot@{COMMIT_SHA_SHORT}</a></sub>",
 }
 util.write("gh-pages/index.html", util.fill_template(util.read("templates/index.html"),context))

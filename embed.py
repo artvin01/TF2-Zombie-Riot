@@ -3,6 +3,7 @@ import math
 from itertools import tee
 from re import sub
 from collections import defaultdict
+from typing import Any
 
 # TODO Gladiator Arena 1 wave on wiki <-> 6 waves on embed
 
@@ -33,7 +34,7 @@ ICON_PADDING = 8
 ICON_INNER_PADDING = 5
 
 
-def generate_waveset_embed(filename, title, wave, wave_max, entries):
+def generate_waveset_embed(filename: str, title: str, wave: int, wave_max: int, entries: dict[str,Any]):
     bar_y = 125
     bar_height = 24
     bar_padding = 100
