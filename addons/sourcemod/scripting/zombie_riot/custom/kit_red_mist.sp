@@ -288,7 +288,7 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 
 			if(SoundManualHas(listener))
 			{	
-				EmitSoundToClient(listener, "zr_manual/red_mist/Card_Apply.mp3", client, _, 70, _, 1.0, 100);
+				EmitSoundToClient(listener, "zr_manual/red_mist/card_apply.mp3", client, _, 70, _, 1.0, 100);
 			}
 			else
 			{
@@ -412,14 +412,14 @@ public void Red_Mist_OnMapStart()
 	if(!FileNetwork_Enabled())
 		PrecacheRedMistMusic();
 
-	PrecacheSound("zr_manual/red_mist/Kali_Change.mp3");
-	PrecacheSound("zr_manual/red_mist/Kali_Special_Hori_Fin.mp3");
-	PrecacheSound("zr_manual/red_mist/Kali_Special_Vert_Fin.mp3");
-	PrecacheSound("zr_manual/red_mist/Kali_Special_Cut.mp3");
-	PrecacheSound("zr_manual/red_mist/Kali_Special_Hori_Start.mp3");
-	PrecacheSound("zr_manual/red_mist/Kali_Special_Hori_Eyeon.mp3");
-	PrecacheSound("zr_manual/red_mist/Abnormaility_OverStart.mp3");
-	PrecacheSound("zr_manual/red_mist/Card_Apply.mp3");
+	PrecacheSound("zr_manual/red_mist/kali_change.mp3");
+	PrecacheSound("zr_manual/red_mist/kali_special_hori_fin.mp3");
+	PrecacheSound("zr_manual/red_mist/kali_special_vert_fin.mp3");
+	PrecacheSound("zr_manual/red_mist/kali_special_cut.mp3");
+	PrecacheSound("zr_manual/red_mist/kali_special_hori_start.mp3");
+	PrecacheSound("zr_manual/red_mist/kali_special_hori_eyeon.mp3");
+	PrecacheSound("zr_manual/red_mist/abnormaility_overstart.mp3");
+	PrecacheSound("zr_manual/red_mist/card_apply.mp3");
 
 }
 public void Red_Mist_SwitchToMeleeWeapon(int client, int weapon)
@@ -849,11 +849,11 @@ public void Red_Mist_OnTakeDamage_Deal(int victim, int &attacker, int &inflictor
 					{
 						case 1:
 						{
-							EmitSoundToClient(listener, "zr_manual/red_mist/Kali_Special_Vert_Fin.mp3", attacker, _, 70, _, 1.0, 100);
+							EmitSoundToClient(listener, "zr_manual/red_mist/kali_special_vert_fin.mp3", attacker, _, 70, _, 1.0, 100);
 						}
 						case 2:
 						{
-							EmitSoundToClient(listener, "zr_manual/red_mist/Kali_Special_Cut.mp3", attacker, _, 70, _, 1.0, 100);
+							EmitSoundToClient(listener, "zr_manual/red_mist/kali_special_cut.mp3", attacker, _, 70, _, 1.0, 100);
 						}
 					}
 				}
@@ -876,7 +876,7 @@ public void Red_Mist_OnTakeDamage_Deal(int victim, int &attacker, int &inflictor
 
 				if(SoundManualHas(listener))
 				{	
-					EmitSoundToClient(listener, "zr_manual/red_mist/Kali_Special_Hori_Fin.mp3", attacker, _, 70, _, 1.0, 100);
+					EmitSoundToClient(listener, "zr_manual/red_mist/kali_special_hori_fin.mp3", attacker, _, 70, _, 1.0, 100);
 					Hori_Sound_Played[attacker] = true;
 				}
 				else
@@ -959,8 +959,8 @@ public void Red_Mist_Main_Attack(int client, int weapon)
 
 					if(SoundManualHas(listener))
 					{	
-						EmitSoundToClient(listener, "zr_manual/red_mist/Kali_Change.mp3", client, _, 70, _, 1.0, 100);
-						EmitSoundToClient(listener, "zr_manual/red_mist/Kali_Change.mp3", client, _, 70, _, 1.0, 100);
+						EmitSoundToClient(listener, "zr_manual/red_mist/kali_change.mp3", client, _, 70, _, 1.0, 100);
+						EmitSoundToClient(listener, "zr_manual/red_mist/kali_change.mp3", client, _, 70, _, 1.0, 100);
 					}
 					else
 					{
@@ -980,9 +980,9 @@ public void Red_Mist_Main_Attack(int client, int weapon)
 
 				if(SoundManualHas(listener))
 				{	
-					EmitSoundToClient(listener, "zr_manual/red_mist/Kali_Special_Hori_Start.mp3", client, _, 70, _, 1.0, 100);
-					EmitSoundToClient(listener, "zr_manual/red_mist/Kali_Special_Hori_Start.mp3", client, _, 70, _, 1.0, 100);
-					EmitSoundToClient(listener, "zr_manual/red_mist/Kali_Special_Hori_Eyeon.mp3", client, _, 70, _, 1.0, 100);
+					EmitSoundToClient(listener, "zr_manual/red_mist/kali_special_hori_start.mp3", client, _, 70, _, 1.0, 100);
+					EmitSoundToClient(listener, "zr_manual/red_mist/kali_special_hori_start.mp3", client, _, 70, _, 1.0, 100);
+					EmitSoundToClient(listener, "zr_manual/red_mist/kali_special_hori_eyeon.mp3", client, _, 70, _, 1.0, 100);
 				}
 				else
 				{
@@ -1354,8 +1354,8 @@ void Abornmality_Page_Display(int client)
 
 			if(SoundManualHas(listener))
 			{	
-				EmitSoundToClient(listener, "zr_manual/red_mist/Abnormaility_OverStart.mp3", client, _, 70, _, 1.0, 100);
-				EmitSoundToClient(listener, "zr_manual/red_mist/Abnormaility_OverStart.mp3", client, _, 70, _, 1.0, 100);
+				EmitSoundToClient(listener, "zr_manual/red_mist/abnormaility_overstart.mp3", client, _, 70, _, 1.0, 100);
+				EmitSoundToClient(listener, "zr_manual/red_mist/abnormaility_overstart.mp3", client, _, 70, _, 1.0, 100);
 			}
 			else
 			{
