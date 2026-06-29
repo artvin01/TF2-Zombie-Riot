@@ -3000,6 +3000,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
+			SDKHook(entity, SDKHook_SpawnPost, Set_Rocket_Team);
 			Hook_DHook_UpdateTransmitState(entity);
 			b_IsAProjectile[entity] = true;
 			func_WandOnTouch[entity] = INVALID_FUNCTION;
@@ -3129,6 +3130,28 @@ public Action SDKHook_Regenerate_Touch(int entity, int target)
 		return Plugin_Handled;
 
 	return Plugin_Continue;
+}
+
+void Set_Rocket_Team(int entity)
+{
+	RequestFrame(Set_Rocket_TeamFrame, EntRefToEntIndex(entity));
+}
+
+void Set_Rocket_TeamFrame(int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if (!IsValidEntity(entity))
+		return;
+
+	if (GetTeam(entity) != 0)
+		return;
+
+	// Team likely not yet setup, assume it's meant to be the same as the owner
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if (owner == -1)
+		return;
+	
+	SetTeam(entity, GetTeam(owner));
 }
 
 void Set_Projectile_Collision(int entity)

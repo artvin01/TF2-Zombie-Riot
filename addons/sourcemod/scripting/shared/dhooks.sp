@@ -1000,7 +1000,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				int EntityOwner = i_WandOwner[entity2];
 				if(ShieldDeleteProjectileCheck(EntityOwner, entity1))
 				{
-					if(func_WandOnTouchReturn(entity1))
+					if(func_WandOnTouchReturn(entity1) != INVALID_FUNCTION)
 					{
 						//make it act as if it collided with the world.
 						Wand_Base_StartTouch(entity1, 0);
