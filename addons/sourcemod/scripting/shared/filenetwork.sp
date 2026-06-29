@@ -471,7 +471,7 @@ public void FileNetwork_AddSoundFrame(DataPack pack)
 }
 
 
-static void FormatFileCheck(const char[] file, int client, char[] output, int length)
+void FormatFileCheck(const char[] file, int client, char[] output, int length)
 {
 	strcopy(output, length, file);
 	ReplaceString(output, length, ".", "");

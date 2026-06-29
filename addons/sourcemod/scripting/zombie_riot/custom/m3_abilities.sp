@@ -204,9 +204,9 @@ stock void GiveMorphineOnDamage(int client, int victim, float damage, int damage
 
 	MinCashMaxGain -= 250;
 
-	if(MinCashMaxGain >= 200000)
+	if(MinCashMaxGain >= 100000)
 	{
-		MinCashMaxGain = 200000;
+		MinCashMaxGain = 100000;
 	}
 	
 	float DamageForMaxCharge = (Pow(2.0 * MinCashMaxGain, 1.2) + MinCashMaxGain * 3.0);
@@ -976,6 +976,8 @@ public void Reinforce(int client, bool NoCD)
 			if(f_PlayerLastKeyDetected[client_check] < GetGameTime())
 				continue;
 			if(HasSpecificBuff(client_check, "Vuntulum Bomb EMP Death"))
+				continue;
+			if(!Rogue_BlueParadox_CanTeutonUpdate(client_check))
 				continue;
 
 			int CashSpendScale = CashSpentTotal[client_check];
@@ -2111,7 +2113,7 @@ public Action OnBombDrop(const char [] output, int caller, int activator, float 
 				GiveCompleteInvul(RandomHELLDIVER, 3.5);
 				TF2_AddCondition(RandomHELLDIVER, TFCond_SpeedBuffAlly, 2.0);
 				EmitSoundToAll(g_ReinforceReadySounds, RandomHELLDIVER, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-				CPrintToChatAll("{black}Bob The Second {green}responds.... and was able to recruit {yellow}%N!",RandomHELLDIVER);
+				CPrintToChatAll("%s {green}responds... and was able to recruit {yellow}%N{green}!", s_MissionClient, RandomHELLDIVER);
 				DataPack pack_boom = new DataPack();
 				pack_boom.WriteFloat(position[0]);
 				pack_boom.WriteFloat(position[1]);
@@ -2124,7 +2126,7 @@ public Action OnBombDrop(const char [] output, int caller, int activator, float 
 			{
 				if(IsValidClient(PreviousOwner))
 				{
-					CPrintToChat(PreviousOwner, "{black}Bob The Second {default}wasn't able to get any merc... he refunds the backup call.");
+					CPrintToChat(PreviousOwner, "%s {default}wasn't able to get any merc... the backup call was refunded.");
 					HealPointToReinforce(PreviousOwner, 0, 1.0);
 					i_MaxRevivesAWave--;
 				}
@@ -2201,6 +2203,8 @@ stock int GetRandomDeathPlayer(int client)
 		if(f_PlayerLastKeyDetected[client_check] < GetGameTime())
 			continue;
 		if(HasSpecificBuff(client_check, "Vuntulum Bomb EMP Death"))
+			continue;
+		if(!Rogue_BlueParadox_CanTeutonUpdate(client_check))
 			continue;
 
 		int CashSpendScale = CashSpentTotal[client_check];

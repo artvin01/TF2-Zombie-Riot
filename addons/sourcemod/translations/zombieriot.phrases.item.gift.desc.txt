@@ -2351,6 +2351,32 @@
 		"it"	"Esperienza ZR su come ci si sente ad essere un novellino.\n35％ più nemici, spawn 33％ più veloce, 15％ più sono vivi in una volta.\nFanno +25％ dmg, +25％ dmg ai cad, +60％ HP, +6％ più veloce, attacco 33％ più veloce.\n1 down, i nemici guariscono 50％ in più."
 		"ko"	"뉴비 시절 ZR의 느낌을 다시 체험해보세요.\n웨이브 적 수량 +35％, 생성 속도 +33％, 한번에 존재하는 적의 수 +15％\n적 피해량, 구조물 대상 피해량 +25％, 체력 +60％, 이동 속도 +6％, 공격 속도 +33％\n다운 횟수는 1번 뿐이며, 적들의 체력 회복량 +50％"
 	}
+	"Nostalgica"
+	{
+		"en" "Nostalgica"
+	}
+	"Nostalgica Desc"
+	{
+		"en"	"How difficult it used to be.\nThere are too many changes to list here, assume its oldtimes but much harder"
+		//	What actually it does:
+		// 35％ more enemies, spawn 0％ faster, 15％ more are alive at once
+		// They deal +50％ dmg, +75％ dmg to cades, +60％ HP, +0％ faster, attack 33％ faster.
+		// 1 down, enemies heal 50％ more.
+		// enemies take 25% less ranged damage
+		// healing is reduced by 25% for players
+		// bosses get 35% more dmg and 25% more hp
+		// raids get 25% more stats
+		// fall damage boosted by 6x
+		// armor is reduced by 25%
+		// health is reduced by 25%
+		// Ammo box count is halved
+		// Mana regen is slowed down by 25%
+		// Players are 10% slower
+		// lastman massively slowes the player
+		// aoe damage falls off 25% faster for each target hit (only explodes, not lasers)
+		// True fusion changes: His knockup no longer makes you immune to fall damage, ion oneshots you
+		// Blitzkrieg: Rockets are AOE
+	}
 	"Turbulance"
 	{
 		"en"	"Turbulance"

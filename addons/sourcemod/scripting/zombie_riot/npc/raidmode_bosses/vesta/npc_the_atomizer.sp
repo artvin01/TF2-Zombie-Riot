@@ -299,6 +299,7 @@ methodmap Atomizer < CClotBody
 			b_NoKnockbackFromSources[npc.index] = true;
 			b_ThisEntityIgnored[npc.index] = true;
 			b_NoKillFeed[npc.index] = true;
+			npc.g_TimesSummoned = 300;
 			npc.m_iState = 0;
 			npc.m_iOverlordComboAttack = 0;
 			npc.m_flNextRangedAttack = 0.0;
@@ -509,6 +510,21 @@ static void Clone_ClotThink(int iNPC)
 		return;
 
 	npc.m_flNextThinkTime = gameTime + 0.1;
+
+	if(npc.g_TimesSummoned < 1)
+	{
+		b_NpcForcepowerupspawn[npc.index] = 0;
+		i_RaidGrantExtra[npc.index] = 0;
+		b_DissapearOnDeath[npc.index] = true;
+		b_DoGibThisNpc[npc.index] = true;
+		b_NoKillFeed[npc.index] = true;
+		SmiteNpcToDeath(npc.index);
+	}
+	else
+	{
+		npc.g_TimesSummoned -= 1;
+	}
+	
 	
 	switch(npc.m_iOverlordComboAttack)
 	{
@@ -877,13 +893,22 @@ static void Atomizer_ClotThink(int iNPC)
 		NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_GameEnd", false, false);
 		return;
 	}
-	npc.m_flSpeed = npc.m_flBaseSpeed+(((npc.m_flFTL-(RaidModeTime - GetGameTime()))/npc.m_flFTL)*150.0);
-	if(RaidModeTime == FAR_FUTURE)
+	if(ZR_Get_Modifier() == 6)
 	{
-		npc.m_flSpeed = 350.0;
+		npc.m_flSpeed = 350.0;	
 	}
-	if(npc.m_flSpeed >= 400.0)
-		npc.m_flSpeed = 400.0;
+	else
+	{
+		npc.m_flSpeed = npc.m_flBaseSpeed+(((npc.m_flFTL-(RaidModeTime - GetGameTime()))/npc.m_flFTL)*150.0);
+		if(RaidModeTime == FAR_FUTURE)
+		{
+			npc.m_flSpeed = 350.0;
+		}
+		if(npc.m_flSpeed >= 400.0)
+			npc.m_flSpeed = 400.0;
+	
+	}
+	
 		
 	if(RaidModeTime < GetGameTime() && !YaWeFxxked[npc.index] && GetTeam(npc.index) != TFTeam_Red)
 	{

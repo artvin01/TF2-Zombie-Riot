@@ -7,6 +7,8 @@ int ThornsAbilityActiveTimes[MAXENTITIES];
 float ThornsAbilityActive[MAXENTITIES];
 int ThornsLevelAt[MAXENTITIES];
 float ThornsAttackedSince[MAXENTITIES];
+float ThornsRevive[MAXENTITIES];
+int ThornsDowned[MAXENTITIES];
 
 static const char g_RangedAttackSounds[][] = {
 	"weapons/bison_main_shot_01.wav",
@@ -83,10 +85,12 @@ methodmap BarrackThorns < BarrackBody
 	{
 		bool elite ;
 		bool MaxPot;
-		if(client > 0)
+		if (client > 0)
 		{
-			elite = client ? view_as<bool>(Store_HasNamedItem(client, "Construction Master")) : true;
-			MaxPot = client ? view_as<bool>(Store_HasNamedItem(client, "Construction Killer")) : true;
+			int PapBarracks = Barracks_GetInfo(client, 1);
+
+			elite = (PapBarracks >= 5);     // He's ELITE when pap >= 5
+			MaxPot = (PapBarracks >= 6);    // He's Max Potency when Pap >=6
 		}
 		
 		char healthSize[10];
@@ -164,32 +168,43 @@ public void BarrackThorns_ClotThink(int iNPC)
 {
 	BarrackThorns npc = view_as<BarrackThorns>(iNPC);
 	float GameTime = GetGameTime(iNPC);
+	if (ThornsDowned[npc.index] && ThornsRevive[npc.index] && ThornsRevive[npc.index] < GetGameTime())	// Revive
+	{
+		npc.PlayThornsSpawn();
+		SetDownedState_Thorns(npc.index, false);
+		DesertYadeamDoHealEffect(npc.index, 200.0);
+	}
 	if(ThornsDelayTimerUpgrade[npc.index] < GetGameTime())
 	{
 		int owner = GetClientOfUserId(npc.OwnerUserId);
 		if(IsValidClient(owner))
 		{
 			ThornsDelayTimerUpgrade[npc.index] = GetGameTime() + 5.0;
-			if(!ThornsHasElite[npc.index])
+
+			int PapBarracks = Barracks_GetInfo(owner, 1);
+
+			if(!ThornsHasElite[npc.index] && PapBarracks >= 5)
 			{
-				ThornsHasElite[npc.index] = view_as<bool>(Store_HasNamedItem(owner, "Construction Master"));
-				if(ThornsHasElite[npc.index])
-				{
-					ThornsLevelAt[npc.index] = 1;
-					npc.BonusDamageBonus *= 2.0;
-					SetEntProp(npc.index, Prop_Data, "m_iMaxHealth",ReturnEntityMaxHealth(npc.index) * 2);
-				}
+				ThornsHasElite[npc.index] = true;
+				ThornsLevelAt[npc.index] = 1;
+
+				npc.BonusDamageBonus *= 2.0;
+
+				int newMax = ReturnEntityMaxHealth(npc.index) * 2;
+				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", newMax);
+				SetEntProp(npc.index, Prop_Data, "m_iHealth", newMax);
 			}
-			if(!ThornsHasMaxPot[npc.index])
+
+			if(!ThornsHasMaxPot[npc.index] && PapBarracks >= 6)
 			{
-				ThornsHasMaxPot[npc.index] = view_as<bool>(Store_HasNamedItem(owner, "Construction Killer"));
-				if(ThornsHasMaxPot[npc.index])
-				{
-					ThornsLevelAt[npc.index] = 2;
-					SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", RoundToNearest(float(ReturnEntityMaxHealth(npc.index)) * 1.5));
-				}
+				ThornsHasMaxPot[npc.index] = true;
+				ThornsLevelAt[npc.index] = 2;
+
+				int newMax = RoundToNearest(float(ReturnEntityMaxHealth(npc.index)) * 1.5);
+				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", newMax);
+				SetEntProp(npc.index, Prop_Data, "m_iHealth", newMax);
 			}
-			if(ThornsHasElite[npc.index] && ThornsHasMaxPot[npc.index] && ThornsLevelAt[npc.index] == 2)
+			if(ThornsHasElite[npc.index] && ThornsHasMaxPot[npc.index])
 			{
 				ThornsDelayTimerUpgrade[npc.index] = FAR_FUTURE;
 			}
@@ -203,7 +218,6 @@ public void BarrackThorns_ClotThink(int iNPC)
 	{
 		npc.m_flSpeed = 250.0;
 	}
-
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
 		int client = BarrackBody_ThinkTarget(npc.index, true, GameTime);
@@ -383,11 +397,15 @@ void ThornsBasicAttackM1Melee(BarrackThorns npc, float gameTime, int EnemyToAtta
 						float damage = 3500.0;
 						if(ThornsLevelAt[npc.index] == 2)
 						{
-							damage *= 2.0;
+							damage *= 2.006;	// Tier 2 - Max Pot
 						}
 						else if(ThornsLevelAt[npc.index] == 1)
 						{
-							damage *= 1.5;
+							damage *= 1.855;	// Tier 1 (or elite, whichever you like more)
+						}
+						else
+						{
+							damage *= 1.744;	// Tier 0
 						}
 						if(npc.CmdOverride == Command_HoldPos) // If he's in position hold, heavily reduce his dmg
 						{
@@ -559,11 +577,15 @@ void ThornsBasicAttackM2Ability(BarrackThorns npc, float gameTime, int EnemyToAt
 					
 					if(ThornsLevelAt[npc.index] == 2)
 					{
-						damage *= 1.8;
+						damage *= 2.006;	// Tier 2 - Max potency, won't touch the slow attack since i want his dps to be low when he's still ramping up
 					}
 					else if(ThornsLevelAt[npc.index] == 1)
 					{
-						damage *= 1.5;
+						damage *= 1.855;	// Tier 1, aka elite
+					}
+					else
+					{
+						 damage *= 1.744;	// Tier 0, only happens if you don't have pap >= 5
 					}
 					if(npc.CmdOverride == Command_HoldPos) // If he's in position hold, heavily reduce his dmg
 					{
@@ -648,10 +670,48 @@ public Action BarrackThorns_OnTakeDamage(int victim, int &attacker, int &inflict
 	BarrackThorns npc = view_as<BarrackThorns>(victim);
 	
 	float Maxhealth = ReturnEntityMaxHealth(npc.index) + 0.0;
+	int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 	if((ReturnEntityMaxHealth(npc.index)/2) <= damage) // If teutonic takes a single instance of damage higher than 1/2 of his max hp he instead takes only 50% of his max hp as dmg
 	{
 		damage = Maxhealth/2;
 	}
+	if (damage >= health)
+	{
+		damage = 0.0;
+		npc.PlayThornsDeath();
+		ThornsDowned[npc.index] = 1;
+		ThornsRevive[npc.index] = GetGameTime() + 60.0; // 60 seconds to revive
+		npc.m_flNextMeleeAttack = GetGameTime() + 60.0;
 
+		b_NpcIsInvulnerable[npc.index] = true;
+		b_ThisEntityIgnored[npc.index] = true;
+
+		SetEntProp(npc.index, Prop_Data, "m_iHealth", Maxhealth);
+		SetDownedState_Thorns(npc.index, true);
+	}
 	return Plugin_Changed;
+}
+void SetDownedState_Thorns(int iNpc, bool StateDo)
+{
+	BarrackThorns npc = view_as<BarrackThorns>(iNpc);
+	if(StateDo) // Make him go KO
+	{
+		ThornsDowned[iNpc] = 1;
+		ThornsRevive[iNpc] = GetGameTime() + 60.0;
+		b_ThisEntityIgnored[iNpc] = true;
+		b_NpcIsInvulnerable[iNpc] = true;
+	}
+	else // Get him back up
+	{
+		if(ThornsDowned[iNpc])
+		{
+			ThornsDowned[iNpc] = 0;
+		}
+		ThornsRevive[iNpc] = 0.0;
+		b_ThisEntityIgnored[iNpc] = false;
+		b_NpcIsInvulnerable[iNpc] = false;
+		SetEntProp(iNpc, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(iNpc));	// Heal him back to full
+		DesertYadeamDoHealEffect(iNpc, 200.0);
+		NpcSpeechBubble(npc.index, "I'm back i'm back... no need to make a fuss.", 7, {50,205,50,255}, {0.0,0.0,120.0}, "");
+	}
 }

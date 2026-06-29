@@ -456,9 +456,32 @@ bool NPC_SpawnNext(bool panzer,
 					}
 
 					if(Waves_InFreeplay())
+					{
+						TeleportDiversioToRandLocation(entity_Spawner,_,2000.0,1000.0);
 						Freeplay_SpawnEnemy(entity_Spawner);
+					}
+					if(!InZRMap() || Waves_InFreeplay())
+					{
+						TeleportDiversioToRandLocation(entity_Spawner,_,2000.0,1000.0);
+					}
 
 					NpcForward = entity_Spawner;
+					
+					for(int targ; targ<i_MaxcountNpcTotal; targ++)
+					{
+						int DeathNoticer = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
+						if(IsValidEntity(DeathNoticer) && !b_NpcHasDied[DeathNoticer])
+						{
+							Function func = func_NPCSpawnForward[DeathNoticer];
+							if(func && func != INVALID_FUNCTION)
+							{
+								Call_StartFunction(null, func);
+								Call_PushCell(DeathNoticer);
+								Call_PushCell(NpcForward);
+								Call_Finish();
+							}
+						}
+					}
 
 					return true;
 				}
@@ -2087,16 +2110,22 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 		if(!(b_DamageNumbers[attacker] && b_DisplayDamageHudSettingInvert[attacker])) //hide if dmg numbers on, and setting on
 		{
 			static char c_DmgDelt[64];
-			IntToString(RoundToNearest(f_damageAddedTogether[attacker]),c_DmgDelt, sizeof(c_DmgDelt));
-			offset = RoundToNearest(f_damageAddedTogether[attacker]) < 0 ? 1 : 0;
-			ThousandString(c_DmgDelt[offset], sizeof(c_DmgDelt) - offset);
-
-#if defined ZR
-			if(!raidboss_active)
-#endif
+			bool showDamage;
+			
+			if (f_damageAddedTogether[attacker] > 0.0)
 			{
-				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n-%s", ExtraHudHurt, c_DmgDelt);
+				IntToString(RoundToNearest(f_damageAddedTogether[attacker]),c_DmgDelt, sizeof(c_DmgDelt));
+				offset = RoundToNearest(f_damageAddedTogether[attacker]) < 0 ? 1 : 0;
+				ThousandString(c_DmgDelt[offset], sizeof(c_DmgDelt) - offset);
+				
+#if defined ZR
+				if(!raidboss_active)
+					showDamage = true;
+#endif
 			}
+
+			if (showDamage)
+				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n-%s", ExtraHudHurt, c_DmgDelt);
 		}
 		ShowSyncHudText(attacker, SyncHud,"%s",ExtraHudHurt);
 	}
@@ -2203,12 +2232,15 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 
 		if(!(b_DamageNumbers[attacker] && b_DisplayDamageHudSettingInvert[attacker])) //hide if dmg numbers on, and setting on
 		{
-			static char c_DmgDelt[64];
-			IntToString(RoundToNearest(f_damageAddedTogether[attacker]),c_DmgDelt, sizeof(c_DmgDelt));
-			offset = RoundToNearest(f_damageAddedTogether[attacker]) < 0 ? 1 : 0;
-			ThousandString(c_DmgDelt[offset], sizeof(c_DmgDelt) - offset);
+			if (f_damageAddedTogether[attacker] > 0.0)
+			{
+				static char c_DmgDelt[64];
+				IntToString(RoundToNearest(f_damageAddedTogether[attacker]),c_DmgDelt, sizeof(c_DmgDelt));
+				offset = RoundToNearest(f_damageAddedTogether[attacker]) < 0 ? 1 : 0;
+				ThousandString(c_DmgDelt[offset], sizeof(c_DmgDelt) - offset);
 
-			Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n-%s", ExtraHudHurt, c_DmgDelt);	
+				Format(ExtraHudHurt, sizeof(ExtraHudHurt), "%s \n-%s", ExtraHudHurt, c_DmgDelt);	
+			}
 		}
 		ShowSyncHudText(attacker, SyncHudRaid, ExtraHudHurt);	
 
@@ -2843,7 +2875,7 @@ void PrintNPCMessageWithPrefixes(int entity, const char[] npcColor, const char[]
 	}
 	
 	bool checkedForPrefixes;
-	bool loud;
+	int loudnessScore;
 	char finalNpcColor[32], finalMessageColor[32];
 	char finalName[256], finalMessage[256];
 	
@@ -2865,60 +2897,54 @@ void PrintNPCMessageWithPrefixes(int entity, const char[] npcColor, const char[]
 			bool hasPrefix = prefix[0] != '\0';
 			if (hasPrefix)
 			{
-				if (HasSpecificBuff(entity, "Verde"))
-				{
-					// verd e
+				
+				if (HasSpecificBuff(entity, "Verde")) // verd e
 					finalNpcColor = "forestgreen";
-				}
-				else if (HasSpecificBuff(entity, "Ragebaiter Prefix"))
-				{
-					// To match the rest of ragebaiter text
+				else if (HasSpecificBuff(entity, "Ragebaiter Prefix")) // To match the rest of ragebaiter text
 					finalNpcColor = "crimson";
-				}
 				
 				if (HasSpecificBuff(entity, "Loud Prefix"))
-					loud = true;
+					loudnessScore++;
+				
+				if (HasSpecificBuff(entity, "Quiet Prefix"))
+					loudnessScore--;
 			}
 			
 			if (finalNpcColor[0] == '\0')
-			{
 				FormatEx(finalNpcColor, sizeof(finalNpcColor), "{%s}", npcColor);
-			}
 			else
-			{
 				Format(finalNpcColor, sizeof(finalNpcColor), "{%s}", finalNpcColor);
-			}
 			
 			// Sometimes colors are defined with {}, sometimes without... get rid of dupes to accommodate for everything
 			ReplaceString(finalNpcColor, sizeof(finalNpcColor), "{{", "{");
 			ReplaceString(finalNpcColor, sizeof(finalNpcColor), "}}", "}");
 			
 			if (finalMessageColor[0] == '\0')
-			{
 				FormatEx(finalMessageColor, sizeof(finalMessageColor), "{%s}", messageColor);
-			}
 			else
-			{
 				Format(finalMessageColor, sizeof(finalMessageColor), "{%s}", finalMessageColor);
-			}
 			
 			// Sometimes colors are defined with {}, sometimes without... get rid of dupes to accommodate for everything
 			ReplaceString(finalMessageColor, sizeof(finalMessageColor), "{{", "{");
 			ReplaceString(finalMessageColor, sizeof(finalMessageColor), "}}", "}");
 				
-			
-			if (!messageIsTranslated && loud)
-				StringToUpper(finalMessage);
+			if (!messageIsTranslated)
+			{
+				if (loudnessScore > 0)
+					StringToUpper(finalMessage);
+				else if (loudnessScore < 0)
+					finalMessage = "";
+			}
 			
 			checkedForPrefixes = true;
 		}
 		
-		if (messageIsTranslated)
+		if (messageIsTranslated && loudnessScore >= 0)
 		{
 			// Do some things per-client if the message is translated
 			FormatEx(finalMessage, sizeof(finalMessage), "%T", message, client);
 			
-			if (loud)
+			if (loudnessScore > 0)
 				StringToUpper(finalMessage);
 		}
 		

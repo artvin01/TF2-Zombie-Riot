@@ -34,10 +34,11 @@ enum
 	OBS_MODE_FIXED,		// view from a fixed camera position
 	OBS_MODE_IN_EYE,	// follow a player in first person view
 	OBS_MODE_CHASE,		// follow a player in third person view
+	OBS_MODE_POI,		// PASSTIME point of interest - game objective, big fight, anything interesting; added in the middle of the enum due to tons of hard-coded "<ROAMING" enum compares
 	OBS_MODE_ROAMING,	// free roaming
-
-	NUM_OBSERVER_MODES
-};
+	
+	NUM_OBSERVER_MODES,
+}
 
 #define IN_MAX	26
 

@@ -233,6 +233,14 @@ public void Rogue_Vote_Shop2Encounter_Ruina(const Vote vote)
 			
 			StartShopVote(false);
 			Rogue_SetProgressTime(20.0, false);
+			if(Rogue_HasNamedArtifact("Mark of a Thief"))
+			{
+				Rogue_AddIngots(-36);
+			}
+			else
+			{
+				Rogue_AddIngots(-16);
+			}
 		}
 		default:
 		{
@@ -430,23 +438,19 @@ public void Rogue_Shield6_Collect()
 
 public void Rogue_Hope1_Collect()
 {
-	CurrentCash += 1000;
 	GlobalExtraCash += 1000;
 }
 public void Rogue_Hope1_1_Collect()
 {
-	CurrentCash += 1750;
 	GlobalExtraCash += 1750;
 }
 public void Rogue_Shadowing_coin_Collect()
 {
-	CurrentCash += 1250;
 	GlobalExtraCash += 1250;
 }
 
 public void Rogue_Hope8_Collect()
 {
-	CurrentCash += 8000;
 	GlobalExtraCash += 8000;
 }
 

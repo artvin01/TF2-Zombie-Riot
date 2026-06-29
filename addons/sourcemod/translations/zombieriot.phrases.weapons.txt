@@ -5511,7 +5511,7 @@
 		"it" "Pacchetto ringiovanente per il vuoto"
 		"ko" "공허화된 원기 회복사의 상자"
 	}
-	"Cheesy Slimy Aid Kit"
+	"Cheesy Slimy Aid Kit Pack"
 	{
 		"en" "Cheesy Slimy Aid Kit"
 		"it" "Kit di pronto soccorso viscido e saporito"

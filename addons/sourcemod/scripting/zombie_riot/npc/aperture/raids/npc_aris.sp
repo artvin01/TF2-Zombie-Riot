@@ -452,6 +452,7 @@ methodmap ARIS < CClotBody
 		RaidModeTime = GetGameTime() + 220.0;
 		b_thisNpcIsARaid[npc.index] = true;
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
+		Zero(b_said_player_weaponline);
 
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
@@ -935,6 +936,9 @@ public Action ARIS_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
 	}
+
+	ARIS_Weapon_Lines(npc, attacker);
+	i_SaidLineAlready[npc.index] = 0;
 	
 	return Plugin_Changed;
 }
@@ -1752,4 +1756,46 @@ static void ARIS_SetNextForcedWeaponSwitchThreshold(ARIS npc)
 {
 	const float maxHealthPercentageThreshold = 0.25;
 	npc.m_iForcedWeaponSwitchHealthThreshold = GetEntProp(npc.index, Prop_Data, "m_iHealth") - RoundToCeil(ReturnEntityMaxHealth(npc.index) * maxHealthPercentageThreshold);
+}
+
+static void ARIS_Weapon_Lines(ARIS npc, int client)
+{
+	//if(client > MaxClients)
+	if(!IsValidClient(client))
+		return;
+
+	if(b_said_player_weaponline[client])	//only 1 line per player.
+		return;
+
+
+	float GameTime = GetGameTime();	//no need to throttle this.
+
+	if(fl_said_player_weaponline_time[npc.index] > GameTime)	//no spamming in chat please!
+		return;
+
+	bool valid = true;
+	char Text_Lines[255];
+
+	Text_Lines = "";
+
+	if(Store_HasNamedItem(client, "Expidonsan Research Card"))
+	{
+		switch(GetRandomInt(0,1))
+		{
+			case 0:
+			{
+				Format(Text_Lines, sizeof(Text_Lines), "TR41T0R5 W1LL N0T B3 T0L3R4T3D",client);
+			}
+			case 1:
+			{
+				Format(Text_Lines, sizeof(Text_Lines), "TR41T0R",client);
+			}
+		}
+		if(valid)
+		{
+			NPCTalkMessage(npc.index, Text_Lines);
+			fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(10.0, 15.0);
+			b_said_player_weaponline[client] = true;
+		}
+	}
 }

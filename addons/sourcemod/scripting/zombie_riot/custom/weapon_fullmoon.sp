@@ -52,7 +52,6 @@ void FullMoon_Enable(int client, int weapon)
 			h_TimerFullMoon[client] = CreateDataTimer(0.1, Timer_Management_FullMoon, pack, TIMER_REPEAT);
 			pack.WriteCell(client);
 			pack.WriteCell(EntIndexToEntRef(weapon));
-			Attributes_SetMulti(weapon, 412, 1.8);
 			//force panic attack and vulnerability
 			Panic_Attack[weapon] = 0.175;
 			FullmoonDownload();
@@ -67,7 +66,6 @@ void FullMoon_Enable(int client, int weapon)
 		h_TimerFullMoon[client] = CreateDataTimer(0.1, Timer_Management_FullMoon, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
-		Attributes_SetMulti(weapon, 412, 1.8);
 		Panic_Attack[weapon] = 0.175;
 		FullmoonDownload();
 	}
@@ -96,6 +94,17 @@ public void FullMoonDoubleHp(int client, StringMap map)
 			// +15% max health
 			map.GetValue("26", value);
 			map.SetValue("26", value * 2.4);
+			if(map.GetValue("4062", value))
+			{
+				map.SetValue("4062", value * (1.0/ 2.4));
+				
+			}
+			else
+				map.SetValue("4062", (1.0/ 2.4));
+
+			value = 1.0;
+			map.GetValue("412", value);
+			map.SetValue("412", value * 1.8);
 		}
 		else
 		{

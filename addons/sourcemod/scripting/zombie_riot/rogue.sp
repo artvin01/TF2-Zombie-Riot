@@ -869,6 +869,9 @@ void Rogue_StartSetup()	// Waves_RoundStart()
 		Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE, 10);
 		Store_RandomizeNPCStore(ZR_STORE_DEFAULT_SALE, 5);
 	}
+	
+	if(RogueTheme == BlueParadox || RogueTheme == ReilaRift)
+		s_MissionClient = "{black}Izan";
 }
 
 void Rogue_CleanArtifacts()

@@ -235,7 +235,20 @@ stock float ZR_GetGameTime(int entity = 0)
 #define GetGameTime ZR_GetGameTime
 
 //This is here for rpg, because it relies on triggers, teleportentity disables triggers for an entity for a frame for some reason.
-
+void Delay_TeleportEntity(DataPack PackTele)
+{
+	PackTele.Reset();
+	int entity = EntRefToEntIndex(PackTele.ReadCell());
+	float origin[3]; PackTele.ReadFloatArray(origin, 3);
+	float angles[3]; PackTele.ReadFloatArray(angles, 3);
+	float velocity[3]; PackTele.ReadFloatArray(velocity, 3);
+	delete PackTele;
+	if(!IsValidClient(entity))
+	{
+		return;
+	}
+	Custom_TeleportEntity(entity, origin, angles, velocity);
+}
 stock void Custom_TeleportEntity(int entity, const float origin[3] = NULL_VECTOR, const float angles[3] = NULL_VECTOR, const float velocity[3] = NULL_VECTOR, bool do_original = false)
 {
 	if(!do_original && entity <= MaxClients)
@@ -244,12 +257,28 @@ stock void Custom_TeleportEntity(int entity, const float origin[3] = NULL_VECTOR
 		{
 			if(origin[0] == 0.0 && origin[1] == 0.0 && origin[2] == 0.0)
 				LogStackTrace("Possible unintended 0 0 0 teleport");
-			
+			bool DelayFrame = false;
 #if defined ZR
 			Dungeon_SetEntityZone(entity, Zone_Unknown);
+			if(Vehicle_Exit(entity, false,false))
+				DelayFrame = true;
 #endif
-			
-			Custom_SDKCall_SetLocalOrigin(entity, origin);
+			if(DelayFrame)
+			{
+
+				DataPack PackTele = new DataPack();
+				PackTele.WriteCell(EntIndexToEntRef(entity));
+				PackTele.WriteFloatArray(origin, sizeof(origin));
+				PackTele.WriteFloatArray(angles, sizeof(origin));
+				PackTele.WriteFloatArray(velocity, sizeof(origin));
+				RequestFrame(Delay_TeleportEntity, PackTele);
+				return;
+			}
+			else
+			{
+				Custom_SDKCall_SetLocalOrigin(entity, origin);
+
+			}
 		}
 
 		if(angles[1] != NULL_VECTOR[1] || angles[0] != NULL_VECTOR[0] || angles[2] != NULL_VECTOR[2])

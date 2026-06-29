@@ -339,6 +339,7 @@ float f_AmmoConsumeExtra[MAXPLAYERS];
 
 #if defined ZR || defined RTS
 ConVar CvarInfiniteCash;
+ConVar CvarUnlockStore;
 #endif
 
 #if defined ZR || defined RTS || defined RPG
@@ -669,7 +670,8 @@ Function EntityFuncAttack3[MAXENTITIES];
 Function EntityFuncReload4[MAXENTITIES];
 Function EntityFuncPlayerRunCmd[MAXENTITIES];
 Function EntityFuncOnKill[MAXENTITIES];
-Function EntityFuncTakeDamage[MAXENTITIES][2];
+Function EntityFuncTakeDamage[MAXENTITIES][3];
+Function EntityCustomTraceMelee[MAXENTITIES];
 //Function EntityFuncReloadSingular5[MAXENTITIES];
 
 float f_ClientMusicVolume[MAXPLAYERS];
@@ -925,6 +927,7 @@ int i_SaidLineAlready[MAXENTITIES];
 
 #if defined ZR
 
+Handle WaveTimer;
 float MultiGlobalEnemy = 0.25;
 float MultiGlobalEnemyBoss = 0.25;
 //This value is capped at max 4.0, any higher will result in MultiGlobalHealth being increased
@@ -959,4 +962,5 @@ bool g_PrecachedMatrixNPCs;
 int ZoneMarkerRef[Zone_MAX] = {-1, ...};
 ArrayList CurrentCollection;
 ArrayList Artifacts;
+ArrayList E_AL_StatusEffects[MAXENTITIES];
 #endif

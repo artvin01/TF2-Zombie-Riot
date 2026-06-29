@@ -143,7 +143,7 @@ public void Rogue_StoneNemesis_Collect()
 
 public void Rogue_StoneNemesis_FloorChange(int newFloor)
 {
-	Rogue_AddUmbral(3);
+	Rogue_AddUmbral(6);
 }
 
 public void Rogue_StoneNemesis_Remove()
@@ -357,7 +357,6 @@ public void Rogue_StoneFurnace_Remove()
 
 static void GiveCash(int cash)
 {
-	CurrentCash += cash;
 	GlobalExtraCash += cash;
 	CPrintToChatAll("{green}%t", "Cash Gained!", cash);
 }

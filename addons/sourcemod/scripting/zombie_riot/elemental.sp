@@ -36,6 +36,7 @@ static const char ElementName[][] =
 };
 
 static float LastTime[MAXENTITIES];
+static float LastTimeSpecific[MAXENTITIES][Element_MAX];
 static int LastElement[MAXENTITIES];
 static int ElementDamage[MAXENTITIES][Element_MAX];
 
@@ -47,6 +48,7 @@ void Elemental_ClearDamage(int entity)
 	for(int i; i < Element_MAX; i++)
 	{
 		ElementDamage[entity][i] = 0;
+		LastTimeSpecific[entity][i] = 0.0;
 	}
 }
 
@@ -288,6 +290,11 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[128])
 	
 	// <CY 50%>
 	Format(Debuff_Adder, sizeof(Debuff_Adder), "<%s %d％>", ElementName[low], Elemental_GetDamage(entity, low) * 100 / Elemental_TriggerDamage(entity, low));
+	if(ElementDamage[entity][Element_Stagger] && LastTimeSpecific[entity][Element_Stagger] > GetGameTime())
+	{
+		//keep try to stagger?
+		Elemental_AddStaggerDamage(entity, 0, 0);
+	}
 	return true;
 }
 
@@ -1752,16 +1759,20 @@ void Elemental_AddStaggerDamage(int victim, int attacker, int damagebase)
 			return;
 	}
 	
-	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
-	if(NpcStats_ElementalAmp(victim))
+	int damage = damagebase;
+	if(attacker > 0)
 	{
-		damage = RoundToNearest(float(damage) * 1.3);
+		damage = RoundFloat(damage * fl_Extra_Damage[attacker]);
+		if(NpcStats_ElementalAmp(victim))
+		{
+			damage = RoundToNearest(float(damage) * 1.3);
+		}
 	}
 	
 	if(!b_NpcHasDied[victim])	// NPCs
 	{
 		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Stagger));
-		if(damage < 1)
+		if(damage < 1 && attacker != 0)
 			return;
 		
 		bool triggered;
@@ -1770,6 +1781,7 @@ void Elemental_AddStaggerDamage(int victim, int attacker, int damagebase)
 		LastTime[victim] = GetGameTime();
 		LastElement[victim] = Element_Stagger;
 		ElementDamage[victim][Element_Stagger] += damage;
+		LastTimeSpecific[victim][Element_Stagger] = GetGameTime() + 10.0;
 		while(Elemental_GetDamage(victim, Element_Stagger) > trigger)
 		{
 			triggered = true;
@@ -1791,13 +1803,44 @@ void Elemental_AddStaggerDamage(int victim, int attacker, int damagebase)
 		}
 
 		if(triggered)
+		{
 			FreezeNpcInTime(victim, 3.0);
-
+			EmitSoundToAll("physics/glass/glass_sheet_break3.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);					
+			float ProjectileLoc[3];
+			GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+			DoStaggerEffects(ProjectileLoc);
+		}
+		else
+		{
+			if(attacker && attacker <= MaxClients)
+				ClientCommand(attacker, triggered ? "playgamesound physics/glass/glass_sheet_break3.wav" : ((GetURandomInt() % 2) ? "playgamesound weapons/physcannon/energy_sing_flyby1.wav" : "playgamesound weapons/physcannon/energy_sing_flyby2.wav"));		
+		}
+		
 		if(attacker && attacker <= MaxClients)
 		{
-			ClientCommand(attacker, triggered ? "playgamesound physics/glass/glass_sheet_break3.wav" : ((GetURandomInt() % 2) ? "playgamesound weapons/physcannon/energy_sing_flyby1.wav" : "playgamesound weapons/physcannon/energy_sing_flyby2.wav"));
 			ApplyElementalEvent(victim, attacker, damage);
 		}
 	}
 }
-
+void DoStaggerEffects(float ProjectileLoc[3])
+{
+	
+	for(int i; i < 5; i++)
+	{
+		int ent2 = CreateEntityByName( "func_breakable" );
+		DispatchKeyValue( ent2, "propdata", "Glass.Small" );
+		DispatchKeyValue( ent2, "material", "Glass" );
+		DispatchSpawn( ent2 );
+		float mins[3], maxs[3];
+		b_ThisEntityIgnored[ent2] = true;
+		b_ThisEntityIgnoredEntirelyFromAllCollisions[ent2] = true;
+		maxs = view_as<float>( { 35.0, 35.0, 35.0 } );
+		mins = view_as<float>( { -35.0, -35.0, 0.0 } );	
+		SetEntPropVector(ent2, Prop_Send, "m_vecMins", mins);
+		SetEntPropVector(ent2, Prop_Send, "m_vecMaxs", maxs);
+		TeleportEntity( ent2, ProjectileLoc, NULL_VECTOR, NULL_VECTOR );
+		AcceptEntityInput( ent2, "break" );
+		TE_Particle("rps_win_sparks", ProjectileLoc, NULL_VECTOR, {0.0,0.0,0.0}, -1, _, _, _, _, _, _, _, _, _, 0.0);
+		ProjectileLoc[2] += 15.0;
+	}
+}

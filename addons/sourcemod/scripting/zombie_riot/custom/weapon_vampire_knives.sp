@@ -138,6 +138,7 @@ public void Vamp_ActivateThrow(int client, int weapon, int pap, bool cleaver)
 		
 	if (Ability_Check_Cooldown(client, 2) < 0.0)
 	{
+		Rogue_OnAbilityUse(client, weapon);
 		Ability_Apply_Cooldown(client, 2, cleaver ? Vamp_ThrowCD_Cleaver[pap] : Vamp_ThrowCD_Normal[pap]);
 		
 		int BleedStacks = cleaver ? Vamp_BleedStacksOnThrow_Cleaver[pap] : Vamp_BleedStacksOnThrow_Normal[pap];

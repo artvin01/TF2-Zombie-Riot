@@ -781,7 +781,7 @@ stock int SpawnWeapon(int client, char[] name, int index, int level, int qual, c
 
 static int SpawnWeaponBase(int client, char[] name, int index, int level, int qual, int custom_classSetting = 0)
 {
-	Handle weapon = TF2Items_CreateItem(OVERRIDE_ALL|FORCE_GENERATION);
+	Handle weapon = TF2Items_CreateItem(OVERRIDE_ALL|FORCE_GENERATION|PRESERVE_ATTRIBUTES);
 	if(weapon == INVALID_HANDLE)
 		return -1;
 	
@@ -1405,6 +1405,9 @@ stock int HealEntityGlobal(int healer,
 
 	if(!(flag_extrarules & (HEAL_ABSOLUTE)))
 	{
+		if(ZR_Get_Modifier() == NOSTALGICA)
+			if(GetTeam(receiver) == TFTeam_Red)
+				HealTotal *= 0.75;
 #if defined ZR
 		if(HasSpecificBuff(healer, "Dimensional Turbulence"))
 		{
@@ -1424,7 +1427,7 @@ stock int HealEntityGlobal(int healer,
 			HealPenalty *= 0.75;
 		}
 
-		if((CurrentModifOn() == 3|| CurrentModifOn() == 2) && GetTeam(healer) != TFTeam_Red && GetTeam(receiver) != TFTeam_Red)
+		if((ZR_Get_Modifier() == 3|| ZR_Get_Modifier() == 2) && GetTeam(healer) != TFTeam_Red && GetTeam(receiver) != TFTeam_Red)
 		{
 			HealTotal *= 1.5;
 		}
@@ -3316,6 +3319,13 @@ int inflictor = 0)
 		} 
 	}
 	
+	if(ZR_Get_Modifier() == NOSTALGICA)
+	{
+		if(GetTeam(entity) == TFTeam_Red)
+		{
+			ExplosionDmgMultihitFalloff *= 0.75;
+		}
+	}
 	int damage_flags = 0;
 	int custom_flags = 0;
 	if((i_ExplosiveProjectileHexArray[entity] & EP_DEALS_CLUB_DAMAGE))
@@ -3418,7 +3428,7 @@ int inflictor = 0)
 	}
 	
 	bool AdditionalDistanceCheck = false;
-	if(explosionRadius >= 850.0)
+	if(explosionRadius >= 512.0)
 	{
 		AdditionalDistanceCheck = true;
 		//at such high ranges, AOE checks in tf2 become very inaccurate and become more of a box, this was noticed with twirl's
@@ -3426,21 +3436,23 @@ int inflictor = 0)
 		//it may not be fully accurate anymore, but its the best we can do.
 	}
 	int length = HitEntitiesSphereExplosionTrace.Length;
-	for (int i = 0; i < length; i++)
+	if (length > 0)
 	{
-		int entity_traced = HitEntitiesSphereExplosionTrace.Get(i);
-		
-		WorldSpaceCenter(entity_traced, VicPos[entity_traced]);
-		distance[entity_traced] = GetVectorDistance(VicPos[entity_traced], spawnLoc, true);
-		//Save their distances.
-		if(AdditionalDistanceCheck)
+		for (int i = length - 1; i >= 0; i--)
 		{
-			if(distance[entity_traced] > (explosionRadius * explosionRadius))
+			int entity_traced = HitEntitiesSphereExplosionTrace.Get(i);
+			
+			WorldSpaceCenter(entity_traced, VicPos[entity_traced]);
+			distance[entity_traced] = GetVectorDistance(VicPos[entity_traced], spawnLoc, true);
+			//Save their distances.
+			if(AdditionalDistanceCheck)
 			{
-				//the distance that was calculated was bigger then the distance check, remove.
-				HitEntitiesSphereExplosionTrace.Erase(i);
-				length--;
-				continue;
+				if(distance[entity_traced] > (explosionRadius * explosionRadius))
+				{
+					//the distance that was calculated was bigger then the distance check, remove.
+					HitEntitiesSphereExplosionTrace.Erase(i);
+					continue;
+				}
 			}
 		}
 	}
@@ -3448,7 +3460,7 @@ int inflictor = 0)
 	//do another check, this time we only need the amount of entities we actually hit.
 	//Im lazy and dumb, i dont know a better way.
 
-	
+	length = HitEntitiesSphereExplosionTrace.Length;
 	for (int repeatloop = 0; repeatloop < maxtargetshit && length > 0; repeatloop++)
 	{
 		float ClosestDistance;

@@ -3073,5 +3073,5 @@ void Lelouch_Lines(Lelouch npc, const char[] text)
 	if(b_test_mode[npc.index])
 		return;
 
-	CPrintToChatAll("%s %s", npc.GetName(), text);
+	PrintNPCMessageWithPrefixes(npc.index, NameColour, text, .messageColor = TextColour);
 }

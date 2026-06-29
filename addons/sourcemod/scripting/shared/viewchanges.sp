@@ -93,6 +93,7 @@ static bool b_AntiSameFrameUpdate[MAXPLAYERS];
 
 #if defined ZR
 static int TeutonModelIndex;
+bool b_IsRobot[MAXPLAYERS];
 #endif
 
 void ViewChange_MapStart()
@@ -199,7 +200,7 @@ void OverridePlayerModel(int client, int index = -1, bool DontShowCosmetics = fa
 #if defined ZR
 static void GetTeamOverride(int &team)
 {
-	if(CurrentModifOn() == SECONDARY_MERCS)
+	if(ZR_Get_Modifier() == SECONDARY_MERCS)
 		team = 3;
 	
 	if(Construction_Mode() && (Rogue_HasNamedArtifact("Hold Out Normal") || Rogue_HasNamedArtifact("Hold Out Creep")))
@@ -233,7 +234,7 @@ void ViewChange_PlayerModel(int client)
 		
 		if(TeutonType[client] == TEUTON_NONE)
 		{
-			if(i_HealthBeforeSuit[client] == 0)
+			if(i_HealthBeforeSuit[client] == 0 && Store_HasNamedItem(client, "Expidonsan Research Card") == 0)
 			{
 				int index;
 				int sound = -1;
@@ -277,6 +278,8 @@ void ViewChange_PlayerModel(int client)
 					SetEntProp(entity, Prop_Send, "m_nBody", body);
 					SetEntProp(client, Prop_Send, "m_nBody", body);
 				}
+				
+				b_IsRobot[client] = false;
 			}
 			else
 			{
@@ -284,6 +287,8 @@ void ViewChange_PlayerModel(int client)
 
 				SetVariantString(NULL_STRING);
 				AcceptEntityInput(client, "SetCustomModelWithClassAnimations");
+				
+				b_IsRobot[client] = true;
 			}
 
 			UpdatePlayerFakeModel(client);

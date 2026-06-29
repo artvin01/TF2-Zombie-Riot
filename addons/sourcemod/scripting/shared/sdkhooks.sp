@@ -145,7 +145,7 @@ public void SDKHook_ScoreThink(int entity)
 	for(int client=1; client<=MaxClients; client++)
 	{
 	#if defined ZR
-		CashCurrentlyOwned[client] = CurrentCash-CashSpent[client];
+		CashCurrentlyOwned[client] = (CurrentCash + GlobalExtraCash)-CashSpent[client];
 		alive[client] = (TeutonType[client] == TEUTON_NONE && IsClientInGame(client) && IsPlayerAlive(client));
 	#else
 		CashCurrentlyOwned[client] = TextStore_Cash(client);
@@ -1607,7 +1607,7 @@ public void OnPostThink(int client)
 			if(Cooldowntocheck > 0.0)
 			{
 				//add one second so it itll never show 0 in there, thats stupid.
-				Format(buffer2, sizeof(buffer2), "%s:%1.f",npc_classname[4], Cooldowntocheck);
+				Format(buffer2, sizeof(buffer2), "%s:%.1f",npc_classname[4], Cooldowntocheck);
 			}
 			else
 			{
@@ -1696,7 +1696,7 @@ public void OnPostThink(int client)
 				Format(HudBuffer, sizeof(HudBuffer), "%s %t",HudBuffer, "You Wait Teuton"
 				);
 			}
-			SetEntProp(client, Prop_Send, "m_nCurrency", CurrentCash-CashSpent[client]);
+			SetEntProp(client, Prop_Send, "m_nCurrency", (CurrentCash + GlobalExtraCash)-CashSpent[client]);
 			
 			if(HudBuffer[0])
 				PrintKeyHintText(client,"%s", HudBuffer);
@@ -1998,7 +1998,13 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		{
 			damage *= 0.9;
 		}
+		if(ZR_Get_Modifier() == NOSTALGICA)
+		{
+			damage *= 6.0;
+		}
 #endif
+	
+
 		if(f_ImmuneToFalldamage[victim] > GameTime)
 		{
 			damage = 0.0;
@@ -2598,10 +2604,16 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 	}
 	else
 	{
+		if (!(flags & SND_STOP) && entity != -1 && HasSpecificBuff(entity, "Quiet Prefix"))
+			return Plugin_Handled;
+		
 		if(!LouderSoundStop && entity != -1 && HasSpecificBuff(entity, "Loud Prefix"))
 		{
 			level += 50;
 			LouderSoundStop = true;
+			
+			bool raid = b_thisNpcIsARaid[entity];
+			
 			for(int loop1=0; loop1<numClients; loop1++)
 			{
 				int listener = clients[loop1];
@@ -2612,11 +2624,16 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
 				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
 				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
-				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
-				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
-				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
-				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
-				EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
+				
+				if (!raid)
+				{
+					// raids are louder by default
+					EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
+					EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
+					EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
+					EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
+					EmitSoundToClient(listener,sample,entity,SNDCHAN_STATIC,level,flags,volume,pitch,_,_,_,_,_);
+				}
 			}
 			LouderSoundStop = false;
 		}
@@ -2755,6 +2772,31 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 				else
 				{
 					return Plugin_Handled;
+				}
+			}
+			else if (b_IsRobot[entity] && channel == SNDCHAN_VOICE && strncmp(sample, "vo/mvm/", 7) != 0)
+			{
+				static int lastEntity;
+				static float lastTime;
+				
+				float time = GetGameTime();
+				
+				char file[PLATFORM_MAX_PATH], soundFile[PLATFORM_MAX_PATH];
+				strcopy(file, PLATFORM_MAX_PATH, sample);
+				ReplaceStringEx(file, sizeof(file), "vo/", "vo/mvm/norm/");
+				ReplaceStringEx(file, sizeof(file), "_", "_mvm_");
+				FormatEx(soundFile, sizeof(soundFile), "sound/%s", file);
+				
+				// Skip checking the file on disk if we already played (hopefully) this
+				if ((time == lastTime && entity == lastEntity) || FileExists(soundFile, true))
+				{
+					strcopy(sample, sizeof(sample), file);
+					PrecacheSound(sample);
+					
+					lastEntity = entity;
+					lastTime = time;
+					
+					return Plugin_Changed;
 				}
 			}
 #endif
@@ -2926,6 +2968,13 @@ void ApplyLastmanOrDyingOverlay(int client)
 		{
 			case 1,2,3,4,7,9, 15:
 			{
+				return;
+			}
+			case 16:
+			{
+				if(AnyClientHaveMOSB())
+					DoOverlay(client, "zombie_riot/filmgrain/filmgrain_4", 1);
+				DoOverlay(client, "effects/invuln_overlay_red");
 				return;
 			}
 			case 8:
@@ -3607,6 +3656,8 @@ void ManaCalculationsBefore(int client)
 	int i, entity;
 	float ManaRegen = 12.0;
 	float ManaMaxExtra = 500.0;
+	if(ZR_Get_Modifier() == NOSTALGICA)
+		ManaRegen *= 0.75;
 	
 	while(TF2_GetItem(client, entity, i))
 	{

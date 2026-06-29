@@ -169,7 +169,6 @@ public void Rogue_Trading_Collect()
 public void Rogue_Weapon_Collect()
 {
 	GlobalExtraCash += 250;
-	CurrentCash += 250;
 
 	Ammo_Count_Ready += 30;
 }
