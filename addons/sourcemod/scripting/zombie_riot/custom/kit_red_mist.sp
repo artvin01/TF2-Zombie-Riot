@@ -281,19 +281,13 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 	}	
 	else if(IsIn_HitDetectionCooldown(client,client, RedMist_WasInAbnorm))
 	{
-		for(int listener=1; listener<=MaxClients; listener++)//for special manual download sounds
+		if(SoundManualHas(client))
+		{	
+			EmitSoundToClient(client, "zr_manual/red_mist/card_apply.mp3", client, _, 70, _, 1.0, 100);
+		}
+		else
 		{
-			if(!IsValidClient(listener))
-				continue;
-
-			if(SoundManualHas(listener))
-			{	
-				EmitSoundToClient(listener, "zr_manual/red_mist/card_apply.mp3", client, _, 70, _, 1.0, 100);
-			}
-			else
-			{
-				EmitSoundToClient(listener, ABNORM_EXIT_SOUND, client, _, 70, _, 1.0, 90);
-			}
+			EmitSoundToClient(client, ABNORM_EXIT_SOUND, client, _, 70, _, 1.0, 90);
 		}
 		EntityKilled_HitDetectionCooldown(client, RedMist_WasInAbnorm);
 		UTIL_ScreenFade(client, 1, 1, FFADE_PURGE, 0, 0, 0, 233);
@@ -1347,20 +1341,14 @@ void Abornmality_Page_Display(int client)
 	Set_HitDetectionCooldown(client,client, GetGameTime() + 0.25, RedMist_AbnormSelect);
 	if(!IsIn_HitDetectionCooldown(client,client, RedMist_WasInAbnorm))
 	{
-		for(int listener=1; listener<=MaxClients; listener++)//for special manual download sounds
+		if(SoundManualHas(client))
+		{	
+			EmitSoundToClient(client, "zr_manual/red_mist/abnormaility_overstart.mp3", client, _, 70, _, 1.0, 100);
+			EmitSoundToClient(client, "zr_manual/red_mist/abnormaility_overstart.mp3", client, _, 70, _, 1.0, 100);
+		}
+		else
 		{
-			if(!IsValidClient(listener))
-				continue;
-
-			if(SoundManualHas(listener))
-			{	
-				EmitSoundToClient(listener, "zr_manual/red_mist/abnormaility_overstart.mp3", client, _, 70, _, 1.0, 100);
-				EmitSoundToClient(listener, "zr_manual/red_mist/abnormaility_overstart.mp3", client, _, 70, _, 1.0, 100);
-			}
-			else
-			{
-				EmitSoundToClient(listener, ABNORM_ENTER_SOUND, client, _, 70, _, 1.0, 90);
-			}
+			EmitSoundToClient(client, ABNORM_ENTER_SOUND, client, _, 70, _, 1.0, 90);
 		}
 	}
 	Set_HitDetectionCooldown(client,client, FAR_FUTURE, RedMist_WasInAbnorm);
@@ -1595,7 +1583,7 @@ void Horrizontal_Draw_Greather_Slash_Effect(float Angles[3], int client, float b
 void RedMistSlashEffect(float belowBossEyes[3], float vecHit[3], float diameter = 0.0, int color[3] = {0,0,0})
 {	
 	
-	int r = 255; //Yellow. Edit: Actually Red
+	int r = 255; //Yellow. Edit: Actually Red  Edit2: then make it say red :bruh~1: ??
 	int g = 255;
 	int b = 65;
 	if(color[0] != 0)
