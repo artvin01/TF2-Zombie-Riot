@@ -19,6 +19,7 @@ TODO
 [ ] Include main music parts somehow
 """
 
+# General ================================
 PROPERTY_MAPPINGS = {
     "is_boss": {
         "0": "", # used in rogue??? why..
@@ -41,9 +42,8 @@ MULTIPLIER_MAPPINGS = {
     "extra_size": "⤡",
 }
 
-
 waveset_cache: dict[str,dict[str,Any]] = {}
-def parse_all_npcs() -> tuple[dict[str,modules.shared.TypeNPC],dict[str,list[modules.shared.TypeNPC]]]:
+def parse_all_npcs() -> tuple[dict[str, modules.shared.TypeNPC], dict[str, list[modules.shared.TypeNPC]]]:
     npc_by_file: dict[str,modules.shared.TypeNPC] = {}
     npc_by_category: dict[str,list[modules.shared.TypeNPC]] = {}
     for file in pathlib.Path(PATH_NPC).glob('**/*'):
@@ -82,7 +82,7 @@ def parse_default_cash():
 def parse_default_mission_client(): # Default for 'character_hired_by' entry
     return util.read("TF2-Zombie-Riot/addons/sourcemod/scripting/zombie_riot/zr_core.sp").split('#define DEFAULT_MISSION_CLIENT "')[1].split('"')[0]
 
-def unique_enemy_delays(w:str)->str:
+def unique_enemy_delays(w: str) -> str:
     # Make each wave delay unique as not to lose out on info (for example if 2 enemies have same wave delay)
     # https://stackoverflow.com/questions/41941116/replace-each-occurrence-of-sub-strings-in-the-string-with-randomly-generated-val
     space = "		"
@@ -94,7 +94,7 @@ def unique_enemy_delays(w:str)->str:
         w = w.format(*(" "*i + delay_str for i in range(delay_count)))
     return w
 
-def get_npc(plugin:str)->dict[str,str]:
+def get_npc(plugin: str) -> dict[str, str]:
     npc_data = NPCS_BY_FILENAME[plugin]
     assert type(npc_data.flags) is list
     if "0" not in npc_data.flags and "-1" not in npc_data.flags:
@@ -109,7 +109,7 @@ def get_npc(plugin:str)->dict[str,str]:
         "description": npc_data.description
     }
 
-def parse_wave(wave_idx: int, wave_data: dict[str,Any], auto_wave_cash:bool):
+def parse_wave(wave_idx: int, wave_data: dict[str, Any], auto_wave_cash: bool):
     output:list[dict[str,Any]] = []
     output_hashes: dict[str,int] = {}
     has_cash_entry = False
@@ -374,7 +374,7 @@ def parse_wave(wave_idx: int, wave_data: dict[str,Any], auto_wave_cash:bool):
 
     return output
 
-def parse_waveset(file: str, data: dict[str,Any], abslink: str, name: str, desc: str) -> dict[str,Any]:
+def parse_waveset(file: str, data: dict[str, Any], abslink: str, name: str, desc: str) -> dict[str, Any]:
     global waveset_cache
     if file in waveset_cache:
         util.debug(f"    -> Returning cache for {file}", "wavesets", "OKCYAN")
@@ -394,6 +394,13 @@ def parse_waveset(file: str, data: dict[str,Any], abslink: str, name: str, desc:
         "fakemaxwaves": wd["fakemaxwaves"],
         "character_hired_by": wd["character_hired_by"] or DEFAULT_MISSION_CLIENT
     }
+
+    """
+    if wd["complete_item"]:
+        if wd["complete_item"] in COMPLETE_ITEM_MAP:
+            util.log(f"Item {wd["complete_item"]} already in mapping! WV: {COMPLETE_ITEM_MAP[wd["complete_item"]]}","FAIL")
+        COMPLETE_ITEM_MAP[wd["complete_item"]] = file
+    """
 
     wave_idx = 0
 
@@ -427,7 +434,66 @@ def parse_waveset(file: str, data: dict[str,Any], abslink: str, name: str, desc:
     waveset_cache[file] = output
     return output
 
-def parse_waveset_list_cfg_common(cfg:dict[str,Any], filename:str, html_mapsets:str):
+
+# Core ================================
+def parse_waveset_list_cfg(filename: str, html_mapsets: str, html_otherset: dict[str, str], filename_md: str | None = None) -> tuple[str, dict[str, str]]:
+    if (filename not in util.WAVESETS_FILESCOPE) and len(util.WAVESETS_FILESCOPE)>0:
+        util.log(f"{filename} not in FILESCOPE", "OKBLUE")
+        return html_mapsets, html_otherset
+    WAVESETLIST_RAW = util.read(f"./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/{filename}")
+    WAVESETLIST_DATA: dict[str,Any] = vdf.loads(WAVESETLIST_RAW) # type:ignore[w]
+    WAVESETLIST_TYPE = list(WAVESETLIST_DATA.keys())[0]
+
+    if (WAVESETLIST_TYPE not in util.WAVESETS_TYPESCOPE) or "maps/zr_holdout.cfg" == filename: # Unsupported waveset cfg (Bunker, etc.)
+        util.log(f"Unsupported waveset cfg {filename}!","WARNING")
+        return html_mapsets, html_otherset
+
+    util.log(f"Parsing waveset list cfg: {filename}")
+
+    """
+    maps/zr_bunker_old_fish.cfg - currently disabled in zr? and has missing files
+    maps/zr_beastrooms.cfg - empty
+    maps/zr_holdout.cfg - scrapped
+
+    maps/zr_construction.cfg - const1
+    maps/zr_const2_headquarters.cfg - const2 (codename dungeon)
+
+    maps/zr_bettingwars.cfg - betting: delay defines budget/describes how powerful the NPCs are
+
+    maps/zr_integratedstrategies.cfg - rogue1
+    maps/zr_deepforest.cfg - rogue2
+    maps/zr_rift_between_fates.cfg - rogue3
+    """
+
+    if WAVESETLIST_TYPE in ["Setup", "Custom"]:
+        html_waveset, html_mapsets = parse_common(WAVESETLIST_DATA, filename, html_mapsets)
+    elif WAVESETLIST_TYPE == "Betting":
+        html_waveset, html_mapsets = parse_betting(filename, WAVESETLIST_RAW, html_mapsets)
+    else:
+        if WAVESETLIST_TYPE not in html_otherset:
+            html_otherset[WAVESETLIST_TYPE] = ""
+        if WAVESETLIST_TYPE == "Rogue":
+            html_waveset, html_otherset[WAVESETLIST_TYPE] = parse_rogue(filename, WAVESETLIST_DATA, html_otherset[WAVESETLIST_TYPE])
+        elif WAVESETLIST_TYPE == "Construction":
+            html_waveset, html_otherset[WAVESETLIST_TYPE] = parse_const(filename, WAVESETLIST_DATA, html_otherset[WAVESETLIST_TYPE])
+        else:
+            util.log(f"UNSUPPORTED WAVESETLIST_TYPE: {WAVESETLIST_TYPE}", "FAIL")
+            exit()
+
+    if not filename_md:
+        if "maps" in filename:
+            filename_md = f"gh-pages/{filename.split("/")[-1].replace(".cfg","")}.html"
+        else:
+            filename_md = f"gh-pages/wavesets_{filename}.html".replace("/","_")
+    name = filename_md.split("/")[-1].replace(".html","")
+    if "maps" not in filename:
+        name=name.title()
+    util.write(filename_md, util.fill_template(html_waveset,{"wavesetlistname":name}))
+    return html_mapsets, html_otherset
+
+# Parsing code for each waveset type ================================
+### Common ###
+def parse_common(cfg: dict[str, Any], filename: str, html_mapsets: str):
     map_mode = "maps" in filename # Is map specific config?
     waveset_list: dict[str,Any] = cfg[list(cfg.keys())[0]] # data of cfg file
     [(waveset_list := waveset_list["Setup"]) for _ in range(2) if "Setup" in waveset_list] # map-specific configs start with custom instead of setup, requiring an extra step to get to waveset/wave< data
@@ -499,63 +565,9 @@ def parse_waveset_list_cfg_common(cfg:dict[str,Any], filename:str, html_mapsets:
     HTML_WAVESET_LIST = util.fill_template(util.read(f"templates/waveset/{"mapset_overview" if map_mode else "waveset_list"}.html"),context)
     return HTML_WAVESET_LIST, html_mapsets
 
-def parse_waveset_list_cfg(filename:str, html_mapsets:str, html_otherset:dict[str,str], filename_md:str|None=None) -> tuple[str, dict[str,str]]:
-    if (filename not in util.WAVESETS_FILESCOPE) and len(util.WAVESETS_FILESCOPE)>0:
-        util.log(f"{filename} not in FILESCOPE", "OKBLUE")
-        return html_mapsets, html_otherset
-    WAVESETLIST_RAW = util.read(f"./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/{filename}")
-    WAVESETLIST_DATA: dict[str,Any] = vdf.loads(WAVESETLIST_RAW) # type:ignore[w]
-    WAVESETLIST_TYPE = list(WAVESETLIST_DATA.keys())[0]
-
-    if (WAVESETLIST_TYPE not in util.WAVESETS_TYPESCOPE) or "maps/zr_holdout.cfg" == filename: # Unsupported waveset cfg (Bunker, etc.)
-        util.log(f"Unsupported waveset cfg {filename}!","WARNING")
-        return html_mapsets, html_otherset
-
-    util.log(f"Parsing waveset list cfg: {filename}")
-
-    """
-    maps/zr_bunker_old_fish.cfg - currently disabled in zr? and has missing files
-    maps/zr_beastrooms.cfg - empty
-    maps/zr_holdout.cfg - scrapped
-
-    maps/zr_construction.cfg - const1
-    maps/zr_const2_headquarters.cfg - const2 (codename dungeon)
-
-    maps/zr_bettingwars.cfg - betting: delay defines budget/describes how powerful the NPCs are
-
-    maps/zr_integratedstrategies.cfg - rogue1
-    maps/zr_deepforest.cfg - rogue2
-    maps/zr_rift_between_fates.cfg - rogue3
-    """
-
-    if WAVESETLIST_TYPE in ["Setup", "Custom"]:
-        html_waveset, html_mapsets = parse_waveset_list_cfg_common(WAVESETLIST_DATA, filename, html_mapsets)
-    elif WAVESETLIST_TYPE == "Betting":
-        html_waveset, html_mapsets = parse_betting(filename, WAVESETLIST_RAW, html_mapsets)
-    else:
-        if WAVESETLIST_TYPE not in html_otherset:
-            html_otherset[WAVESETLIST_TYPE] = ""
-        if WAVESETLIST_TYPE == "Rogue":
-            html_waveset, html_otherset[WAVESETLIST_TYPE] = parse_rogue(filename, WAVESETLIST_DATA, html_otherset[WAVESETLIST_TYPE])
-        elif WAVESETLIST_TYPE == "Construction":
-            html_waveset, html_otherset[WAVESETLIST_TYPE] = parse_const(filename, WAVESETLIST_DATA, html_otherset[WAVESETLIST_TYPE])
-        else:
-            util.log(f"UNSUPPORTED WAVESETLIST_TYPE: {WAVESETLIST_TYPE}", "FAIL")
-            exit()
-
-    if not filename_md:
-        if "maps" in filename:
-            filename_md = f"gh-pages/{filename.split("/")[-1].replace(".cfg","")}.html"
-        else:
-            filename_md = f"gh-pages/wavesets_{filename}.html".replace("/","_")
-    name = filename_md.split("/")[-1].replace(".html","")
-    if "maps" not in filename:
-        name=name.title()
-    util.write(filename_md, util.fill_template(html_waveset,{"wavesetlistname":name}))
-    return html_mapsets, html_otherset
 
 #### ZR: Special Maps ####
-def parse_betting(name: str, data_raw: str, html_mapsets:str) -> tuple[str,str]: # zr_bettingwars
+def parse_betting(name: str, data_raw: str, html_mapsets:str) -> tuple[str, str]: # zr_bettingwars
     data: dict[str,Any] = vdf.loads(unique_enemy_delays(data_raw)) # type: ignore[w]
 
     # Generate a table out of data
@@ -588,8 +600,9 @@ def parse_betting(name: str, data_raw: str, html_mapsets:str) -> tuple[str,str]:
     }
     return util.fill_template(util.read("templates/betting/bettingdata.html"),context), html_mapsets
 
+
 #### ZR: Rogue ####
-def parse_rogue(name: str, data: dict[str,Any], html_mapsets:str) -> tuple[str,str]:
+def parse_rogue(name: str, data: dict[str, Any], html_mapsets: str) -> tuple[str, str]:
     data=data["Rogue"]
     wd = defaultdict(str,data)
     """
@@ -667,7 +680,7 @@ def parse_rogue(name: str, data: dict[str,Any], html_mapsets:str) -> tuple[str,s
     # html_mapsets ->
     return HTML_WAVESET_LIST, html_mapsets
 
-def rogue_item_modal(name: str, obj:dict[str,str]|str|None=None):
+def rogue_item_modal(name: str, obj: dict[str, str] | str | None = None):
     desc = util.divfornewline(util.apply_morecolors(util.get_key(f"{name} Desc")))
     if type(obj) is str: # keyonwin in const
         desc += f"\n<div>{obj}</div>\n"
@@ -681,7 +694,7 @@ def rogue_item_modal(name: str, obj:dict[str,str]|str|None=None):
     }
     return util.fill_template(util.read("templates/rogue/rogue_item.html"),context)
 
-def parse_rogue_stage(info_html:str,snameraw:str,sdata:dict[str,Any],name:str,floor_name:str,rogue_num:str) -> str:
+def parse_rogue_stage(info_html: str, snameraw: str, sdata: dict[str, Any], name: str, floor_name: str, rogue_num: str) -> str:
     sdesc=util.get_key(snameraw + " Desc",empty_on_fail=True,silent=True)
     if len(sdesc)>0:
         sdesc=f"<div>{sdesc}</div>"
@@ -718,7 +731,7 @@ def parse_rogue_stage(info_html:str,snameraw:str,sdata:dict[str,Any],name:str,fl
     return info_html
 
 ### ZR: Construction ###
-def parse_const(name:str, data: dict[str,Any], html_mapsets:str) -> tuple[str,str]:
+def parse_const(name: str, data: dict[str, Any], html_mapsets: str) -> tuple[str, str]:
     data=data["Construction"]
     if "dungeon" in data["Setup"]: # Const 2
         return parse_const2(name,data,html_mapsets)
@@ -726,7 +739,7 @@ def parse_const(name:str, data: dict[str,Any], html_mapsets:str) -> tuple[str,st
         return parse_const1(name,data,html_mapsets)
     raise NotImplementedError
 
-def parse_const_stage(info_html:str, cfgfile:str, keyonwin:str, attacknum:str, constnum:int) -> str:
+def parse_const_stage(info_html: str, cfgfile: str, keyonwin: str, attacknum: str, constnum: int) -> str:
     util.log(f"    Attack {attacknum}{" "*(35-len(f"Attack {attacknum}"))}| {cfgfile}")
 
     key_text = f"<div>Key on win: {keyonwin}</div>\n" if keyonwin!="" else ""
@@ -749,7 +762,7 @@ def parse_const_stage(info_html:str, cfgfile:str, keyonwin:str, attacknum:str, c
 
     return info_html
 
-def parse_random_music(obj:dict[str,Any]):
+def parse_random_music(obj: dict[str, Any]):
     """
     "0"
     {
@@ -786,8 +799,9 @@ def parse_random_music(obj:dict[str,Any]):
 
     return out
 
+
 ### CONST 1 ###
-def parse_const1(name:str, data:dict[str,Any], html_mapsets:str) -> tuple[str,str]:
+def parse_const1(name: str, data: dict[str, Any], html_mapsets: str) -> tuple[str, str]:
     """
     # Const1 Structure
     Construction
@@ -920,7 +934,7 @@ def parse_const1(name:str, data:dict[str,Any], html_mapsets:str) -> tuple[str,st
     # html_mapsets ->
     return HTML_WAVESET_LIST, html_mapsets
 
-def parse_const_research(name:str,obj:dict[str,Any]):
+def parse_const_research(name: str, obj: dict[str, Any]):
     dd=defaultdict(str,obj)
     key_text = f"<div>Required research: {dd["key"]}</div>\n" if dd["key"]!="" else ""
     fulldesc = key_text + util.get_key(f"{name} Desc")
@@ -935,7 +949,7 @@ def parse_const_research(name:str,obj:dict[str,Any]):
     }
     return util.fill_template(util.read("templates/const/const_item.html"),context)
 
-def parse_const_resource(name:str,obj:dict[str,str]):
+def parse_const_resource(name: str, obj: dict[str, str]):
     """
     "npc_material_wood"
     {
@@ -960,7 +974,7 @@ def parse_const_resource(name:str,obj:dict[str,str]):
 
 
 ### CONST 2 ###
-def parse_const2(name: str, data: dict[str,Any], html_mapsets: str) -> tuple[str,str]:
+def parse_const2(name: str, data: dict[str, Any], html_mapsets: str) -> tuple[str, str]:
     """
     # Const 2 Structure
     Construction
@@ -1129,7 +1143,8 @@ NPCS_BY_FILENAME, NPCS_BY_CATEGORY = parse_all_npcs()
 DEFAULT_CASH_BY_WAVE = parse_default_cash()
 DEFAULT_MISSION_CLIENT = parse_default_mission_client()
 MUSIC_BY_TITLE = {}
-util.write("npcs_by_category.json", json.dumps(NPCS_BY_CATEGORY,indent=2))
+# COMPLETE_ITEM_MAP = {} # map item name to a waveset
+util.write("debug/npcs_by_category.json", json.dumps(NPCS_BY_CATEGORY,indent=2))
 
 cfg_files = {
     "classic.cfg": "gh-pages/survival.html",
@@ -1144,8 +1159,8 @@ html_otherset = {}
 for f,n in cfg_files.items():
     html_specialmaps, html_otherset = parse_waveset_list_cfg(f, html_specialmaps, html_otherset, filename_md=n)
 
-util.write("html_otherset.json", json.dumps(html_otherset,indent=2))
 util.write("music_by_title.json", json.dumps(MUSIC_BY_TITLE,indent=2))
+# util.write("complete_item_map.json", json.dumps(MUSIC_BY_TITLE,indent=2))
 
 # Get current commit SHA for TF2-Zombie-Riot
 COMMIT_SHA = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd="TF2-Zombie-Riot").strip().decode("utf-8")

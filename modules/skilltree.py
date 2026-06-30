@@ -2,7 +2,6 @@
 import util
 import json
 import vdf
-import os
 from collections import defaultdict
 from ruamel.yaml import YAML
 from typing import Any
