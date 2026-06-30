@@ -21,7 +21,10 @@ MODULES = {
         "file": "modules.weapon",
         "paths": ["gh-pages/data"]
     },
-    "skilltree": {"file": "modules.skilltree"},
+    "skilltree": {
+        "file": "modules.skilltree",
+        "paths": ["gh-pages/data"]
+    },
     "statusfx": {
         "file": "modules.status_effects",
         "paths": ["gh-pages/data"]

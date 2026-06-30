@@ -405,10 +405,10 @@ function skilltree_filltree() {
 function skilltree_fullscreen(fullscreen_btn) {
   if (document.fullscreenElement) {
     document.exitFullscreen();
-    fullscreen_btn.src = "static/maximize.svg";
+    fullscreen_btn.src = "static/img/maximize.svg";
   } else {
     document.getElementsByClassName("overlay")[0].requestFullscreen();
-    fullscreen_btn.src = "static/minimize.svg";
+    fullscreen_btn.src = "static/img/minimize.svg";
   }
 }
 
