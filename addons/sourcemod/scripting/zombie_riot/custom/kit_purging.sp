@@ -67,7 +67,7 @@ static float BalanceBetweenShotgunAndRifle[MAXPLAYERS]={0.0, ...};
 #define PURGE_ANNAHILATOR_BONUS_DAMAGE_FADE 5.0
 
 #define PURGE_EQUIPMINIGUN "mvm/giant_heavy/giant_heavy_gunwindup.wav"
-#define PURGE_REMOVEMINIGUN "mvm/giant_heavy7giant_heavy_gunwinddown.wav"
+#define PURGE_REMOVEMINIGUN "mvm/giant_heavy/giant_heavy_gunwinddown.wav"
 #define PURGE_QUAD_LAUNCHER_SOUND "mvm/giant_demoman/giant_demoman_grenade_shoot.wav"
 #define PURGE_EXPLOSION_SOUND "mvm/mvm_tank_explode.wav"
 #define PURGE_SWITCH_SOUND "items/gunpickup2.wav"
