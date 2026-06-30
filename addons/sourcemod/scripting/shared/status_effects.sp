@@ -11596,7 +11596,7 @@ void StatusEffects_Fridge()
 static void FridgeFoodTimer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	//make it not as aggressive
-	if(f_TimeUntillNormalHeal[entity] > (GetGameTime() + 2.0))
+	if(f_TimeUntillNormalHeal[entity] > (GetGameTime() + 1.0))
 	{
 		int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
 		Apply_StatusEffect.TimeUntillOver = 0.0;
@@ -11604,6 +11604,6 @@ static void FridgeFoodTimer(int entity, StatusEffect Apply_MasterStatusEffect, E
 		return;
 	}
 	float MaxHealthPerc = float(ReturnEntityMaxHealth(entity));
-	MaxHealthPerc *= 0.025;
+	MaxHealthPerc *= 0.015;
 	HealEntityGlobal(entity, entity, MaxHealthPerc, _, 0.0, _);
 }

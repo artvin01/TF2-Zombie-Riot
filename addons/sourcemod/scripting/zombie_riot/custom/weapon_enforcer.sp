@@ -270,6 +270,7 @@ public bool Enforcer_TraceTargets(int entity, int contentsMask, int client)
 
 
 
+
 public void Enforcer_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int zr_custom_damage)
 {
 	if(CheckInHud())
@@ -277,6 +278,12 @@ public void Enforcer_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 
 	if((zr_custom_damage & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 		return;
+
+	if(IsIn_HitDetectionCooldown(weapon, weapon))
+	{
+		return;
+	}
+	Set_HitDetectionCooldown(weapon,weapon, GetGameTime() + 0.01);
 	float cooldown = Ability_Check_Cooldown(attacker, 2, weapon);
 	if(cooldown > 0.0)
 	{

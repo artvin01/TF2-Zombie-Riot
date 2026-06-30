@@ -559,7 +559,7 @@ void Music_EndLastmann(bool Reinforce=false)
 					case 4:
 						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/expidonsa_waves/wave_30_soldine.mp3", 2.0);
 					case 5:
-						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/purnell_lastman.mp3", 2.0);
+						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/purnell_lastman_1.mp3", 2.0);
 					case 6:
 						StopSound(client, SNDCHAN_STATIC, "#music/hl2_song23_suitsong3.mp3");
 					case 7:
