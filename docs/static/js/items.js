@@ -414,9 +414,11 @@ async function open_subweapon_modal(item) {
     insert_svg("static/img/x.svg", "#ccc8c1", "close_button", modal_content, {
         "args": [],
         "func": function(element){
-            element.addEventListener("click", (event) => {
-                modal = document.getElementById("sw_modal");
-                modal.remove();
+            element.addEventListener("click", function(){
+              modal = document.getElementById("sw_modal");
+              empty_element(modal)
+              modal.remove();
+              swr_canvas = undefined;
             });
         }
     });
@@ -612,6 +614,9 @@ function slider_oninput(event) {
         newval = [null,event.target.value];
     }
     document.getElementById("cost_slider").noUiSlider.set(newval);
+}
+function empty_element(el) {
+    while (el.firstChild) { el.removeChild(el.firstChild) };
 }
 
 

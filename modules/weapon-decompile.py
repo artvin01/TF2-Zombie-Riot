@@ -5,6 +5,7 @@ import subprocess
 import json
 from gamedata import modelmapping # type: ignore[w]
 from typing import Any
+type WeaponData = dict[str,str]
 
 def read(filename:str) -> str:
     # Windows-specific fix to: https://stackoverflow.com/questions/9233027/unicodedecodeerror-charmap-codec-cant-decode-byte-x-in-position-y-character
@@ -52,7 +53,7 @@ def decompile_model(path:str):
         write(f"{prefix}decompiled/{pure_filename}.json", json.dumps(bodygroup_map,indent=2))
 
 class Weapon:
-    def __init__(self, weapon_name, weapon_data):
+    def __init__(self, weapon_name: str, weapon_data: WeaponData):
         if weapon_name == "Wrench":
             decompile_model("models/weapons/c_models/c_wrench/c_wrench.mdl")
         elif "model_weapon_override" in weapon_data:
@@ -77,30 +78,29 @@ class Weapon:
                 pap_idx += 1
 
 class GenericItem:
-    def __init__(self, item_data):
-        self.is_item_category="enhanceweapon_click" not in item_data and "cost" not in item_data
-        self.is_weapon=(("desc" in item_data) or ("author" in item_data)) and not "weaponkit" in item_data
-        self.is_weapon_kit="weaponkit" in item_data
-        self.is_category="author" not in item_data and "filter" in item_data and "whiteout" not in item_data
+    def __init__(self, item_data: dict[str,Any]):
+        self.is_item_category:bool="enhanceweapon_click" not in item_data and "cost" not in item_data
+        self.is_weapon:bool=(("desc" in item_data) or ("author" in item_data)) and "weaponkit" not in item_data
+        self.is_weapon_kit:bool="weaponkit" in item_data
+        self.is_category:bool="author" not in item_data and "filter" in item_data and "whiteout" not in item_data
 
 print("Parsing Weapon List...")
 
-def item_block(key, data):
+def item_block(data:dict[str,Any]):
     if "hidden" not in data:
-        contents=""
         for item in data:
             item_data = data[item]
             itm = GenericItem(item_data)
             if itm.is_weapon:
-                wep = Weapon(item,item_data)
+                Weapon(item,item_data)
             elif itm.is_weapon_kit:
-                kit = Weapon(item,item_data)
+                Weapon(item,item_data)
                 for k,v in item_data.items():
                     if GenericItem(v).is_weapon:
-                        kitwep = Weapon(k,v)
+                        Weapon(k,v)
             elif item[0].isupper() and itm.is_category: # unneeded data is always lowercase...
-                item_block(item, item_data)
+                item_block(item_data)
 
-for item_category in CFG_WEAPONS:
-    if GenericItem(CFG_WEAPONS[item_category]).is_item_category:
-        item_block(item_category,CFG_WEAPONS[item_category])
+for item_category in CFG_WEAPONS: # type: ignore[w]
+    if GenericItem(CFG_WEAPONS[item_category]).is_item_category: # type: ignore[w]
+        item_block(CFG_WEAPONS[item_category]) # type: ignore[w]

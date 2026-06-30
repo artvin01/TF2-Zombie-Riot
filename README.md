@@ -77,8 +77,6 @@ Static ones are located in `docs/` and are copied to `gh-pages` upon generation.
   - [x] Waveset viewer
   - [x] Status effect page
   - [x] Clean up gh-pages dirs
-  - [ ] Finish defining types
-    - [ ] weapon-decompile
   - [ ] Waveset inspect mode
   - [ ] Fix embed inconsistencies
   - [ ] Subweapon permalinks?

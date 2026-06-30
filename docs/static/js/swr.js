@@ -26,17 +26,18 @@ function setPrimaryButtonState(event) {
   }
 };
 
+document.addEventListener('mousemove', function(event) {
+    bounds = ctx.canvas.getBoundingClientRect();
+    mousepos = [event.clientX-bounds.left, event.clientY-bounds.top];
+    if ((event.clientX < bounds.left) || (event.clientY < bounds.top) || (event.clientX > bounds.right) || (event.clientY > bounds.bottom)) {
+      mousedown = false;
+    }
+});
+
 function swr_setup() {
   ctx = swr_canvas.getContext("2d");
   swr_canvas.addEventListener("mousedown", setPrimaryButtonState);
   swr_canvas.addEventListener("touchstart", setPrimaryButtonState);
-  document.addEventListener('mousemove', function(event) {
-      bounds = ctx.canvas.getBoundingClientRect();
-      mousepos = [event.clientX-bounds.left, event.clientY-bounds.top];
-      if ((event.clientX < bounds.left) || (event.clientY < bounds.top) || (event.clientX > bounds.right) || (event.clientY > bounds.bottom)) {
-        mousedown = false;
-      }
-  });
   swr_canvas.oncontextmenu = function() {
     return false;
   }
@@ -46,6 +47,9 @@ function swr_setup() {
 
 // DRAW ===================================================
 function draw() {
+  if (swr_canvas === undefined) {
+      return;
+  }
   let bbox = ctx.canvas.getBoundingClientRect();
   ctx.canvas.width = bbox.width;
   ctx.canvas.height = bbox.height;
