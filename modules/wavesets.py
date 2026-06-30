@@ -1144,7 +1144,7 @@ DEFAULT_CASH_BY_WAVE = parse_default_cash()
 DEFAULT_MISSION_CLIENT = parse_default_mission_client()
 MUSIC_BY_TITLE = {}
 # COMPLETE_ITEM_MAP = {} # map item name to a waveset
-util.write("debug/npcs_by_category.json", json.dumps(NPCS_BY_CATEGORY,indent=2))
+util.write("npcs_by_category.json", json.dumps(NPCS_BY_CATEGORY,indent=2))
 
 cfg_files = {
     "classic.cfg": "gh-pages/survival.html",
