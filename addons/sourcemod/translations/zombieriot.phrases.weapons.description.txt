@@ -5621,15 +5621,15 @@
 	}
 	"Gunsaw Mercenary Desc"
 	{
-		"en"	"-Uses an random weapon\n-Can reroll and swap weapons by crouch abilities\n-Able to build buildings but not repair them"
+		"en"	"-Uses random weapons\n-Can reroll and swap weapons with crouch abilities\n-Gains ammo when swapping weapons (not during setup)\n-Able to build buildings but not repair them"
 	}
 	"Gunsaw Mercenary Pap 1"
 	{
-		"en"	"-Able to throw buildings using melee M1\n-Thrown buildings deal damage based on metal cost\n-Thrown buildings take damage when colliding\n-Thrown buildings salvage remaining health as metal"
+		"en"	"-Able to throw buildings using melee M1\n  -Deal damage based on metal cost\n  -Takes damage when colliding\n  -Have a timed lifespan but can be picked back up"
 	}
 	"Gunsaw Mercenary Pap 2"
 	{
-		"en"	"-Increased damage, building health, and weapon tier\n-Gain a second ranged weapon\n-Being revived body swaps you to the closest compatible enemy\n-Takes the health, resistance, speed, and perk of the body"
+		"en"	"-Increased damage, building health, and weapon tier\n-Gain a second ranged weapon\n-Being revived body swaps you to the closest compatible enemy\n  -Takes the health, resistance, speed, and perk of the body"
 	}
 	"Gunsaw Mercenary Pap 3"
 	{
@@ -5638,5 +5638,9 @@
 	"Gunsaw Mercenary Pap 6"
 	{
 		"en"	"-Increased damage\n-Increased maximum body swap health"
+	}
+	"Gunsaw Mercenary Pap 7"
+	{
+		"en"	"-Increased damage and building health\n-Increased maximum body swap health"
 	}
 }

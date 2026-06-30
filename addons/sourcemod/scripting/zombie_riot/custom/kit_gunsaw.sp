@@ -320,6 +320,14 @@ static void ApplyGunsawStats(int ref)
 				int entity = CreateEntityByName("tf_wearable");
 				if(entity != -1)
 				{
+					if(a == -1)
+					{
+						SetEntProp(entity, Prop_Send, "m_iItemDefinitionIndex", 31416);
+						SetEntProp(entity, Prop_Send, "m_bInitialized", true);
+						SetEntProp(entity, Prop_Send, "m_iEntityQuality", 1);
+						SetEntProp(entity, Prop_Send, "m_iEntityLevel", 1);
+					}
+					
 					SetEntProp(entity, Prop_Send, "m_nModelIndex", index);
 					SetEntProp(entity, Prop_Send, "m_fEffects", 129);
 					SetTeam(entity, team);
@@ -709,6 +717,9 @@ static void SwapGunSlot(int client, int slot, bool first = false)
 	{
 		Store_ApplyCooldownIndex(client, NextWeapons[client][slot][0], 3, 10.0);
 	}
+
+	// Bug: Using Store_Equip/Store_GiveSpecificItem on clipless weapons don't have their ammo set correctly
+	Manual_Impulse_101(client, GetClientHealth(client));
 }
 
 static Action GunsawHudTimer(Handle timer, DataPack pack)
@@ -884,13 +895,6 @@ public void Weapon_GunsawMelee_M1(int client, int weapon, bool &crit, int slot)
 	Rogue_OnAbilityUse(client, weapon);
 	Ability_Apply_Cooldown(client, slot, 30.0);
 
-	int metal = MetalSpendOnBuilding[building];
-
-	int Repair = 	GetEntProp(building, Prop_Data, "m_iRepair");
-	int MaxRepair = GetEntProp(building, Prop_Data, "m_iRepairMax");
-	int Health = 	GetEntProp(building, Prop_Data, "m_iHealth");
-	int MaxHealth = ReturnEntityMaxHealth(building);
-
 	float pos[3], ang[3];
 	GetEntPropVector(building, Prop_Data, "m_vecAbsOrigin", pos);
 	GetEntPropVector(building, Prop_Data, "m_angRotation", ang);
@@ -899,26 +903,20 @@ public void Weapon_GunsawMelee_M1(int client, int weapon, bool &crit, int slot)
 	char model[PLATFORM_MAX_PATH];
 	GetEntPropString(building, Prop_Data, "m_ModelName", model, sizeof(model));
 
-	Function special = INVALID_FUNCTION;
-	int specialI;
-	float specialF;
-	if(func_NPCThink[building] == ObjectVintulumBomb_ClotThink)
-	{
-		specialF = fl_AbilityOrAttack[building][0];
-		specialI = i_OverlordComboAttack[building];
-		if(specialI)
-			special = func_NPCThink[building];
-	}
-
-	RemoveEntity(building);
-
 	EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", client);
 	
 	// Spawn prop
 	int prop = CreateEntityByName("prop_physics_multiplayer");
 	if(prop != -1)
 	{
-		bool fakephy;
+		// Allow picking the building back up, ignore the physics prop in traces
+		SDKUnhook(building, SDKHook_Think, BuildingPickUp);
+		ResetPlayer_BuildingBeingCarried(client);
+		Building_BuildingBeingCarried[building] = 0;
+		b_ThisEntityIgnored[building] = false;
+
+		i_TraceToInstead[prop] = building;
+
 		char buffer[PLATFORM_MAX_PATH];
 		strcopy(buffer, sizeof(buffer), model);
 		ReplaceString(buffer, sizeof(buffer), ".mdl", ".phy", false);
@@ -929,33 +927,17 @@ public void Weapon_GunsawMelee_M1(int client, int weapon, bool &crit, int slot)
 		else
 		{
 			DispatchKeyValue(prop, "model", "models/props_spytech/computer_low.mdl");
-			fakephy = true;
 		}
 
 		DispatchKeyValueFloat(prop, "modelscale", scale);
 		DispatchKeyValue(prop, "physicsmode", "2");
 		DispatchKeyValue(prop, "massscale", "10000");
-		DispatchKeyValueInt(prop, "health", Health);
-		DispatchKeyValueInt(prop, "maxhealth", MaxHealth);
-		DispatchKeyValueInt(prop, "ExplodeDamage", Repair);
-		DispatchKeyValueInt(prop, "ExplodeRadius", MaxRepair);
 		DispatchSpawn(prop);
 
-		if(fakephy)
-		{
-			SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
-			SetEntityRenderColor(prop, _, _, _, 0);
-			
-			view_as<ObjectGeneric>(prop).m_iWearable1 = view_as<ObjectGeneric>(prop).EquipItemSeperate(model);
-		}
+		SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
+		SetEntityRenderColor(prop, _, _, _, 0);
 
-		SetEntProp(prop, Prop_Data, "m_iHealth", Health);
-		SetEntProp(prop, Prop_Data, "m_iMaxHealth", MaxHealth);
-		SetEntPropFloat(prop, Prop_Data, "m_explodeDamage", float(Repair));
-		SetEntPropFloat(prop, Prop_Data, "m_explodeRadius", float(MaxRepair));
 		SetEntPropEnt(prop, Prop_Send, "m_hOwnerEntity", client);
-
-		GiveBuildingMetalCostOnBuy(prop, metal);
 
 		// Throw prop
 		float vec[3], vel[3];
@@ -965,17 +947,16 @@ public void Weapon_GunsawMelee_M1(int client, int weapon, bool &crit, int slot)
 		ScaleVector(vel, 1000.0);
 
 		TeleportEntity(prop, pos, ang, vel);
+		
+		view_as<ObjectGeneric>(prop).m_iWearable1 = building;
+		SetParent(prop, building);
 
 		// Self knockback
 		ScaleVector(vel, -0.6);
 		TeleportEntity(client, _, _, vel);
 
-		func_NPCThink[prop] = special;
-		i_OverlordComboAttack[prop] = specialI;
-		fl_AbilityOrAttack[prop][0] = specialF;
-		fl_AbilityOrAttack[prop][1] = GetGameTime() + 6.0;
-
-		UpdatePropColor(prop);
+		// Delete timer
+		fl_AbilityOrAttack[prop][0] = GetGameTime() + 60.0;
 
 		GunsawPropThink(EntIndexToEntRef(prop));
 	}
@@ -999,28 +980,25 @@ static void GunsawPropThink(int ref)
 	if(entity == -1)
 		return;
 	
-	if(fl_AbilityOrAttack[entity][1] < GetGameTime())
+	int building = view_as<ObjectGeneric>(entity).m_iWearable1;
+	if(building == -1)
 	{
-		int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-		if(client != -1)
-		{
-			float Repair = 	GetEntPropFloat(entity, Prop_Data, "m_explodeDamage");
-			float MaxRepair = GetEntPropFloat(entity, Prop_Data, "m_explodeRadius");
-			int Health = 	GetEntProp(entity, Prop_Data, "m_iHealth");
-			int MaxHealth = ReturnEntityMaxHealth(entity);
-			
-			float MaxTotal = MaxRepair + float(MaxHealth);
-			float Total = Repair + float(Health);
+		RemoveEntity(entity);
+		return;
+	}
 
-			float RatioReturn = Total / MaxTotal;
-			
-			int MetalReturn = RoundToNearest(MetalSpendOnBuilding[entity] * RatioReturn * 0.8);
-			if(MetalReturn >= RoundToNearest(MetalSpendOnBuilding[entity] * 0.8))
-				MetalReturn = RoundToNearest(MetalSpendOnBuilding[entity] * 0.8);
-
-			SetAmmo(client, Ammo_Metal, GetAmmo(client, Ammo_Metal) + MetalReturn);
-			CurrentAmmo[client][3] = GetAmmo(client, 3);
-		}
+	if(BuildingIsBeingCarried(building))
+	{
+		AcceptEntityInput(building, "ClearParent");
+		RemoveEntity(entity);
+		return;
+	}
+	
+	if(fl_AbilityOrAttack[entity][0] < GetGameTime())
+	{
+		int builder = GetEntPropEnt(building, Prop_Send, "m_hOwnerEntity");
+		if(builder > 0 && builder <= MaxClients)
+			DeleteAndRefundBuilding(builder, building);
 
 		int dissolver = CreateEntityByName("env_entity_dissolver");
 		if(dissolver != -1)
@@ -1035,68 +1013,55 @@ static void GunsawPropThink(int ref)
 		return;
 	}
 	
-	if(func_NPCThink[entity] != INVALID_FUNCTION)
-	{
-		Call_StartFunction(null, func_NPCThink[entity]);
-		Call_PushCell(entity);
-		Call_Finish();
-
-		RequestFrame(GunsawPropThink, ref);
-		return;
-	}
-
 	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-	if(client == -1)
-		return;
-	
-	float vel[3];
-	SDKCall_GetSmoothedVelocity(entity, vel);
-
-	float damage;
-	
-	if(GetVectorLength(vel, true) > 49999.0)
+	if(client != -1)
 	{
-		float scale = ExtraDamageWaveScaling();
-		if(scale < 1.0 || CvarInfiniteCash.BoolValue)
-			scale = 1.0;
+		float vel[3];
+		SDKCall_GetSmoothedVelocity(entity, vel);
+
+		float damage;
 		
-		ZRRamMulti = Attributes_GetOnPlayer(client, 287, true) / Attributes_GetOnPlayer(client, 343, true, true);
-		
-		// 1000 Metal = 500 base damage
-		damage = MetalSpendOnBuilding[entity] * ZRRamMulti * PropDamage;
+		if(GetVectorLength(vel, true) > 49999.0)
+		{
+			ZRRamMulti = Attributes_GetOnPlayer(client, 287, true) / Attributes_GetOnPlayer(client, 343, true, true);
+			
+			// 1000 Metal = 500 base damage
+			damage = MetalSpendOnBuilding[building] * ZRRamMulti * PropDamage;
+		}
+		else
+		{
+			ZRRamMulti = 1.0;
+			damage = 0.0;
+		}
+
+		int type = i_ExplosiveProjectileHexArray[building];
+		i_ExplosiveProjectileHexArray[building] = EP_GENERIC;
+		Explode_Logic_Custom(damage, client, building, -1, _, 60.0, 1.0, 1.0, _, 99, false, 0.2, GunsawPropDamagePost, GunsawPropDamagePre);
+		i_ExplosiveProjectileHexArray[building] = type;
+
+		if(ZRRamMulti == -1.0)
+		{
+			// Building broke, explode
+			int repair = GetEntProp(building, Prop_Data, "m_iRepair");
+			int maxrepair = GetEntProp(building, Prop_Data, "m_iRepairMax");
+			if(maxrepair < 1)
+				maxrepair = 1;
+			
+			// Metal Cost * Damage * Repair HP Ratio
+			damage = MetalSpendOnBuilding[building] * PropDamage * 1.5 * Attributes_GetOnPlayer(client, 287, true) / Attributes_GetOnPlayer(client, 343, true, true) * float(repair) / float(maxrepair);
+			//PrintToChatAll("%f x (%d x %.2f) = %.0f", repair / maxrepair, MetalSpendOnBuilding[entity], Attributes_GetOnPlayer(client, 287, true), damage);
+
+			i_ExplosiveProjectileHexArray[building] = EP_GENERIC;
+			Explode_Logic_Custom(damage, client, building, -1, _, 150.0 * Attributes_GetOnPlayer(client, 344, true, true));
+			i_ExplosiveProjectileHexArray[building] = type;
+
+			DestroyBuildingDo(building);
+			RemoveEntity(entity);
+			return;
+		}
 	}
-	else
-	{
-		ZRRamMulti = 1.0;
-		damage = 0.0;
-	}
 
-	int type = i_ExplosiveProjectileHexArray[entity];
-	i_ExplosiveProjectileHexArray[entity] = EP_GENERIC;
-	Explode_Logic_Custom(damage, client, entity, -1, _, 60.0, 1.0, 1.0, _, 99, false, 0.2, GunsawPropDamagePost, GunsawPropDamagePre);
-	i_ExplosiveProjectileHexArray[entity] = type;
-
-	if(ZRRamMulti != -1.0)
-	{
-		RequestFrame(GunsawPropThink, ref);
-		return;
-	}
-
-	// Building broke, explode
-	float repair = GetEntPropFloat(entity, Prop_Data, "m_explodeDamage");
-	float maxrepair = GetEntPropFloat(entity, Prop_Data, "m_explodeRadius");
-	if(maxrepair < 1.0)
-		maxrepair = 1.0;
-	
-	// Metal Cost * Damage * Repair HP Ratio
-	damage = MetalSpendOnBuilding[entity] * PropDamage * 1.5 * Attributes_GetOnPlayer(client, 287, true) / Attributes_GetOnPlayer(client, 343, true, true) * repair / maxrepair;
-	//PrintToChatAll("%f x (%d x %.2f) = %.0f", repair / maxrepair, MetalSpendOnBuilding[entity], Attributes_GetOnPlayer(client, 287, true), damage);
-
-	i_ExplosiveProjectileHexArray[entity] = EP_GENERIC;
-	Explode_Logic_Custom(damage, client, entity, -1, _, 150.0 * Attributes_GetOnPlayer(client, 344, true, true));
-	i_ExplosiveProjectileHexArray[entity] = type;
-
-	DestroyBuildingDo(entity);
+	RequestFrame(GunsawPropThink, ref);
 }
 
 static float GunsawPropDamagePre(int prop, int victim, float &damage, int weapon)
@@ -1114,7 +1079,7 @@ static float GunsawPropDamagePre(int prop, int victim, float &damage, int weapon
 
 static void GunsawPropDamagePost(int prop, int victim, float damage, int weapon)
 {
-	Set_HitDetectionCooldown(prop, victim, GetGameTime() + 8.0);
+	Set_HitDetectionCooldown(prop, victim, GetGameTime() + 1.0);
 	if(damage < 1.0)
 		return;
 	
@@ -1142,29 +1107,7 @@ static void GunsawPropDamagePost(int prop, int victim, float damage, int weapon)
 		}
 		
 		SetEntProp(prop, Prop_Data, "m_iHealth", prophp);
-		UpdatePropColor(prop);
 	}
-}
-
-static void UpdatePropColor(int prop)
-{
-	int g = GetEntProp(prop, Prop_Data, "m_iHealth") * 255  / ReturnEntityMaxHealth(prop);
-	if(g > 255)
-	{
-		g = 255;
-	}
-	else if(g < 0)
-	{
-		g = 0;
-	}
-	
-	int r = 255 - g;
-
-	int entity = view_as<ObjectGeneric>(prop).m_iWearable1;
-	if(entity == -1)
-		entity = prop;
-	
-	SetEntityRenderColor(entity, r, g, 0, 255);
 }
 
 static void AddGun(int rank, int slot, const char[] name, int level)
