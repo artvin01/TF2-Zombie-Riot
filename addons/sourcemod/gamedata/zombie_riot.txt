@@ -1016,6 +1016,13 @@
 				"linux"		"22"
 				"linux64"		"22"
 			}
+			"CBaseEntity::GetSmoothedVelocity"
+			{
+				"windows"	"146"
+				"windows64"	"146"
+				"linux"		"147"
+				"linux64"	"147"
+			}
 			"CBaseAnimating::RefreshCollisionBounds"
 			{
 				"windows"	"219"

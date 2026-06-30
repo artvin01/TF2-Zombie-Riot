@@ -2,7 +2,8 @@
 #pragma newdecls required
 
 static const float MaxMulti = 3.0;	// Max health multi after cap (3.0 is x3 of HealthCap)
-static const float MaxSlow = 2.0;	// Max speed nerf at max health	(2.0 is -50% speed)
+static const float SlowStack = 0.25;	// Decrease speed by this much every max health over cap (0.25 gives -25% speed at x2 HP)
+static const float PropDamage = 0.5;	// Prop damage (Metal Cost * Building Damage * PropDamage)
 
 // Health cap before speed nerf
 static const int HealthCap[] =
@@ -34,20 +35,21 @@ static float ModelMeleeRes[MAXPLAYERS];
 static float ModelRangedRes[MAXPLAYERS];
 static bool ModelRobot[MAXPLAYERS];
 static ArrayList ModelModels[MAXPLAYERS];
+static ArrayList ModelWearables[MAXPLAYERS];
 static int WeaponLevel[MAXPLAYERS];
 static int EquippedWeapons[MAXPLAYERS][2][2];
 static int NextWeapons[MAXPLAYERS][2][2];
 static Function OgEntityFuncAttack[MAXENTITIES][2];
 static Handle WeaponTimer[MAXPLAYERS];
 static bool RecentlySwapped[MAXPLAYERS];
+static bool DoneLastmanSecret;
 
-static int LaserIndex;
 static bool Precached = false;
 
 void Gunsaw_MapStart()
 {
-	LaserIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
 	Precached = false;
+	DoneLastmanSecret = false;
 
 	for(int i; i < sizeof(ModelModels); i++)
 	{
@@ -59,7 +61,8 @@ void Gunsaw_Precache()
 {
 	if(!Precached)
 	{
-		PrecacheSoundCustom("#zombiesurvival/flaggilant_lastman.mp3",_,1);
+		PrecacheSound("weapons/physcannon/superphys_launch2.wav");
+		PrecacheSoundCustom("#zombiesurvival/gunsaw_lastman.mp3",_ , 1);
 		Precached = true;
 	}
 }
@@ -77,6 +80,7 @@ static void PrecacheStore()
 		}
 	}
 
+	// Can be existing weapons or custom weapons made just for this
 	AddGun(0, TFWeaponSlot_Primary, "Syringe Gun", 0);
 	AddGun(0, TFWeaponSlot_Secondary, "Flaregun", 0);
 	AddGun(0, TFWeaponSlot_Secondary, "USP", 0);
@@ -85,6 +89,8 @@ static void PrecacheStore()
 	AddGun(0, TFWeaponSlot_Primary, "Shotgun", 0);
 	AddGun(0, TFWeaponSlot_Secondary, "SMG", 0);
 	AddGun(0, TFWeaponSlot_Primary, "Deagle", 0);
+	AddGun(0, TFWeaponSlot_Secondary, "Nail Gun", 0);
+	AddGun(0, TFWeaponSlot_Secondary, "Level 15 Peashooter", 1);
 
 	AddGun(1, TFWeaponSlot_Primary, "Syringe Gun", 1);
 	AddGun(1, TFWeaponSlot_Secondary, "Flaregun", 1);
@@ -96,6 +102,7 @@ static void PrecacheStore()
 	AddGun(1, TFWeaponSlot_Secondary, "SMG", 1);
 	AddGun(1, TFWeaponSlot_Primary, "Huntsman", 1);
 	AddGun(1, TFWeaponSlot_Primary, "Deagle", 1);
+	AddGun(1, TFWeaponSlot_Secondary, "Level 15 Peashooter", 2);
 	AddGun(1, TFWeaponSlot_Primary, "Flamethrower", 0);
 	AddGun(1, TFWeaponSlot_Primary, "Grenade Launcher", 0);
 	AddGun(1, TFWeaponSlot_Primary, "Tommygun", 0);
@@ -113,11 +120,13 @@ static void PrecacheStore()
 	AddGun(2, TFWeaponSlot_Primary, "Huntsman", 1);
 	AddGun(2, TFWeaponSlot_Primary, "Deagle", 2);
 	AddGun(2, TFWeaponSlot_Primary, "Deagle", 4);
+	AddGun(2, TFWeaponSlot_Secondary, "Level 15 Peashooter", 3);
 	AddGun(2, TFWeaponSlot_Primary, "Flamethrower", 1);
 	AddGun(2, TFWeaponSlot_Primary, "Grenade Launcher", 1);
 	AddGun(2, TFWeaponSlot_Primary, "Tommygun", 1);
 	AddGun(2, TFWeaponSlot_Secondary, "Stickybomb Launcher", 1);
 	AddGun(2, TFWeaponSlot_Primary, "Double Barrel Shotgun", 1);
+	AddGun(2, TFWeaponSlot_Primary, "Chemical Spewer", 0);
 
 	AddGun(3, TFWeaponSlot_Primary, "Syringe Gun", 2);
 	AddGun(3, TFWeaponSlot_Secondary, "Flaregun", 3);
@@ -130,10 +139,12 @@ static void PrecacheStore()
 	AddGun(3, TFWeaponSlot_Primary, "Deagle", 3);
 	AddGun(3, TFWeaponSlot_Primary, "Deagle", 6);
 	AddGun(3, TFWeaponSlot_Primary, "Deagle", 8);
+	AddGun(3, TFWeaponSlot_Secondary, "Level 15 Peashooter", 4);
 	AddGun(3, TFWeaponSlot_Primary, "Grenade Launcher", 3);
 	AddGun(3, TFWeaponSlot_Primary, "Tommygun", 2);
 	AddGun(3, TFWeaponSlot_Secondary, "Stickybomb Launcher", 2);
 	AddGun(3, TFWeaponSlot_Primary, "Double Barrel Shotgun", 2);
+	AddGun(3, TFWeaponSlot_Primary, "Chemical Spewer", 1);
 
 	AddGun(4, TFWeaponSlot_Primary, "Syringe Gun", 3);
 	AddGun(4, TFWeaponSlot_Secondary, "Flaregun", 4);
@@ -149,6 +160,7 @@ static void PrecacheStore()
 	AddGun(4, TFWeaponSlot_Primary, "Deagle", 5);
 	AddGun(4, TFWeaponSlot_Primary, "Deagle", 7);
 	AddGun(4, TFWeaponSlot_Primary, "Deagle", 9);
+	AddGun(4, TFWeaponSlot_Secondary, "Level 15 Peashooter", 6);
 	AddGun(4, TFWeaponSlot_Primary, "Grenade Launcher", 4);
 	AddGun(4, TFWeaponSlot_Primary, "Tommygun", 3);
 	AddGun(4, TFWeaponSlot_Secondary, "Stickybomb Launcher", 3);
@@ -178,6 +190,11 @@ bool Gunsaw_CanPapItem(int client, int index)
 	return true;
 }
 
+int Gunsaw_Additional_SupportBuildings(int client)
+{
+	return WeaponTimer[client] ? (WeaponLevel[client] + 1) : 0;
+}
+
 void Gunsaw_Enable(int client, int weapon)
 {
 	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_GUNSAW)
@@ -194,29 +211,12 @@ void Gunsaw_Enable(int client, int weapon)
 
 		Gunsaw_Precache();
 
-		for(int i; i < sizeof(EquippedWeapons[]); i++)
-		{
-			if(i < WeaponLevel[client])
-				continue;
-			
-			if(!EquippedWeapons[client][i])
-			{
-				RollNextGun(client, i);
-				SwapGunSlot(client, i, true);
-				RollNextGun(client, i);
-			}
-			else if(!NextWeapons[client][i])
-			{
-				RollNextGun(client, i);
-			}
-		}
-
 		RequestFrame(ApplyGunsawStats, EntIndexToEntRef(weapon));
 
 		delete WeaponTimer[client];
 
 		DataPack pack;
-		WeaponTimer[client] = CreateDataTimer(0.2, GunsawHudTimer, pack, TIMER_REPEAT);
+		WeaponTimer[client] = CreateDataTimer(0.5, GunsawHudTimer, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 		pack.WriteCell(GetClientUserId(client));
 		pack.WriteCell(EntIndexToEntRef(weapon));
@@ -241,53 +241,122 @@ void Gunsaw_Enable(int client, int weapon)
 	}
 }
 
+void Gunsaw_RemoveWearables(int client)
+{
+	if(ModelWearables[client])
+	{
+		int length = ModelWearables[client].Length;
+		for(int i; i < length; i++)
+		{
+			int entity = EntRefToEntIndex(ModelWearables[client].Get(i));
+			if(entity != -1)
+				TF2_RemoveWearable(client, entity);
+		}
+
+		delete ModelWearables[client];
+	}
+}
+
 static void ApplyGunsawStats(int ref)
 {
 	int weapon = EntRefToEntIndex(ref);
 	if(weapon != -1)
 	{
 		int client = GetEntPropEnt(weapon, Prop_Send, "m_hOwnerEntity");
-		if(client != -1 && ModelModels[client])
+		if(client != -1)
 		{
-			char model[PLATFORM_MAX_PATH];
-
-			int entity, a, b;
-			while(TF2U_GetWearable(client, entity, a))
+			for(int i; i < sizeof(EquippedWeapons[]); i++)
 			{
-				if(ViewChange_IsViewmodelRef(EntIndexToEntRef(entity)))
+				if(i < 1 && WeaponLevel[client] < 1)
 					continue;
 				
-				int index = (b < ModelModels[client].Length) ? ModelModels[client].Get(b) : -1;
-				if(index > 0)
+				if(!EquippedWeapons[client][i][0])
 				{
-					GetEntPropString(entity, Prop_Data, "m_ModelName", model, sizeof(model));
-				}
-				else
-				{
-					model[0] = 0;
-				}
+					RollNextGun(client, i);
+					SwapGunSlot(client, i, true);
+					RollNextGun(client, i);
 
-				SetEntityModel(entity, model[0] ? model : "models/empty.mdl");
+					if(!EquippedWeapons[client][i][0])
+					{
+						LogStackTrace("No gun equipped?");
+						continue;
+					}
+				}
+				else if(!NextWeapons[client][i][0])
+				{
+					RollNextGun(client, i);
+				}
+			}
+
+			Gunsaw_RemoveWearables(client);
+			ModelWearables[client] = new ArrayList();
+
+			if(ModelModels[client] || WeaponLevel[client] > 0)
+			{
+				int entity, a;
+				while(TF2U_GetWearable(client, entity, a))
+				{
+					if(ViewChange_IsViewmodelRef(EntIndexToEntRef(entity)))
+						continue;
+					
+					TF2_RemoveWearable(client, a);
+				}
+			}
+
+			char model[PLATFORM_MAX_PATH];
+			Format(model, sizeof(model), "models/workshop/player/items/all_class/dec23_cozy_coverup_style3/dec23_cozy_coverup_style3_%s.mdl", g_RandomizerClasses[CurrentClass[client]]);
+			int device = PrecacheModel(model);
+
+			int team = 2;
+			ViewChange_TeamOverride(team);
+
+			int length = ModelModels[client] ? ModelModels[client].Length : 0;
+			for(int a = -1; a < length; a++)
+			{
+				int index = device;
+				if(a != -1)
+					index = ModelModels[client].Get(a);
+
+				int entity = CreateEntityByName("tf_wearable");
+				if(entity != -1)
+				{
+					SetEntProp(entity, Prop_Send, "m_nModelIndex", index);
+					SetEntProp(entity, Prop_Send, "m_fEffects", 129);
+					SetTeam(entity, team);
+					SetEntProp(entity, Prop_Send, "m_nSkin", a == -1 ? 0 : (team - 2));
+					SetEntProp(entity, Prop_Send, "m_usSolidFlags", 4);
+					SetEntityCollisionGroup(entity, 11);
+					SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", true);
+					DispatchSpawn(entity);
+					SetVariantString("!activator");
+					ActivateEntity(entity);
+					SDKCall_EquipWearable(client, entity);
+
+					ModelWearables[client].Push(EntIndexToEntRef(entity));
+				}
 			}
 			
-			float melee = ModelMeleeRes[client];
-			float ranged = ModelRangedRes[client];
+			if(ModelModels[client])
+			{
+				float melee = ModelMeleeRes[client];
+				float ranged = ModelRangedRes[client];
 
-			// Count resistances towards our health cap
-			float health = float(ModelHealth[client] - 100);
-			float cap = HealthCap[WeaponLevel[client]] * MaxMulti / (melee * ranged);
-			if(health > cap)
-				health = cap;
+				// Count resistances towards our health cap
+				float health = float(ModelHealth[client] - 100);
+				float cap = HealthCap[WeaponLevel[client]] * MaxMulti / (melee * ranged);
+				if(health > cap)
+					health = cap;
 
-			// More effective health = more fat
-			float fat = ((health / cap) * (MaxSlow / MaxMulti)) - 1.0;
-			if(fat < 1.0)
-				fat = 1.0;
-			
-			Attributes_Set(weapon, 26, health);
-			Attributes_Set(weapon, 107, 1.0 / fat);
-			Attributes_Set(weapon, 205, ranged);
-			Attributes_Set(weapon, 206, melee);
+				// More effective health = more fat
+				float fat = (health * MaxMulti / cap) - 1.0;
+				if(fat < 0.0)
+					fat = 0.0;
+				
+				Attributes_Set(weapon, 26, health);
+				Attributes_Set(weapon, 107, 1.0 - (fat * SlowStack));
+				Attributes_Set(weapon, 205, ranged);
+				Attributes_Set(weapon, 206, melee);
+			}
 		}
 	}
 }
@@ -305,9 +374,18 @@ bool Gunsaw_IsMerc(int client)
 	return view_as<bool>(WeaponTimer[client]);
 }
 
+bool Gunsaw_LastmanSecret()
+{
+	if(DoneLastmanSecret)
+		return false;
+	
+	DoneLastmanSecret = true;
+	return true;
+}
+
 void Gunsaw_TryBodySteal(int client, bool regen)
 {
-	if(WeaponTimer[client])
+	if(WeaponTimer[client] && WeaponLevel[client] > 0)
 	{
 		int target = GetClosestTarget(client, true, 1000.0, true, .fldistancelimitAllyNPC = 1000.0, .IgnorePlayers = true, .ExtraValidityFunction = StealBodyFunc);
 		if(target != -1)
@@ -317,6 +395,8 @@ void Gunsaw_TryBodySteal(int client, bool regen)
 			float pos[3], ang[3];
 			GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
 			GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
+			ang[0] = 0.0;
+			ang[2] = 0.0;
 
 			view_as<CClotBody>(target).m_iHealthBar = 0;
 			SetEntityHealth(target, 1);
@@ -325,6 +405,24 @@ void Gunsaw_TryBodySteal(int client, bool regen)
 			SDKHooks_TakeDamage(target, client, client, GetRandomFloat(99999.0,9999999.0), DMG_BLAST, -1, {0.1,0.1,0.1}, _, _, ZR_SLAY_DAMAGE);
 
 			TeleportEntity(client, pos, ang);
+			f_InBattleHudDisableDelay[client] = GetGameTime() + 1.0; 
+		}
+		else
+		{
+			delete ModelModels[client];
+
+			float SubjectAbsVelocity[3];
+			float clientvec[3];
+			float clientveceye[3];
+			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", clientvec);
+			GetEntPropVector(client, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
+			GetClientEyeAngles(client, clientveceye);
+			f_WasRecentlyRevivedViaNonWaveClassChange[client] = GetGameTime() + 0.5;
+			f_WasRecentlyRevivedViaNonWave[client] = GetGameTime() + 0.5;
+			DHook_RespawnPlayer(client);
+			Store_GiveAll(client, GetClientHealth(client));
+			TeleportEntity(client, clientvec, clientveceye, SubjectAbsVelocity);
+			f_InBattleHudDisableDelay[client] = GetGameTime() + 1.0; 
 		}
 		
 		if(regen)
@@ -356,8 +454,8 @@ static void StealBodyForm(int client, int entity)
 	if(ModelHealth[client] < 0)
 		ModelHealth[client] = 0;
 	
-	ModelMeleeRes[client] = clamp(fl_MeleeArmor[client] * fl_Extra_MeleeArmor[client], 0.5, 2.0);
-	ModelRangedRes[client] = clamp(fl_RangedArmor[client] * fl_Extra_RangedArmor[client], 0.5, 2.0);
+	ModelMeleeRes[client] = clamp(fl_MeleeArmor[entity] * fl_Extra_MeleeArmor[entity], 0.5, 2.0);
+	ModelRangedRes[client] = clamp(fl_RangedArmor[entity] * fl_Extra_RangedArmor[entity], 0.5, 2.0);
 
 	delete ModelModels[client];
 	ModelModels[client] = new ArrayList();
@@ -408,6 +506,10 @@ static void StealBodyForm(int client, int entity)
 
 		ModelRobot[client] = false;
 	}
+	else
+	{
+		ModelRobot[client] = false;
+	}
 
 	if(class == TFClass_Unknown)
 	{
@@ -448,17 +550,12 @@ static void StealBodyForm(int client, int entity)
 		i_CurrentEquippedPerkPreviously[client] = i_CurrentEquippedPerk[client];
 	}
 	
-	Format(model, sizeof(model), "models/workshop/player/items/all_class/dec23_cozy_coverup_style3/dec23_cozy_coverup_style3_%s.mdl", g_RandomizerClasses[class]);
-	int index = PrecacheModel(model);
-	if(index)
-		ModelModels[client].Push(index);
-
 	for(int i; i < sizeof(i_Wearable[]); i++)
 	{
 		int wearable = EntRefToEntIndex(i_Wearable[entity][i]);
 		if(wearable != -1)
 		{
-			index = GetEntProp(entity, Prop_Send, "m_nModelIndex");
+			int index = GetEntProp(wearable, Prop_Send, "m_nModelIndex");
 			ModelIndexToString(index, model, sizeof(model));
 			if(model[0] && StrContains(model, "player/items", false) != -1)
 			{
@@ -469,11 +566,13 @@ static void StealBodyForm(int client, int entity)
 
 	if(CurrentClass[client] != class)
 	{
-		CurrentClass[client] = class;
 		TF2_SetPlayerClass_ZR(client, class);
+		CurrentClass[client] = class;
 	}
 
-	Store_ApplyAttribs(client);
+	f_WasRecentlyRevivedViaNonWaveClassChange[client] = GetGameTime() + 0.5;
+	f_WasRecentlyRevivedViaNonWave[client] = GetGameTime() + 0.5;
+	DHook_RespawnPlayer(client);
 	Store_GiveAll(client, GetClientHealth(client));
 }
 
@@ -520,24 +619,30 @@ static void RollNextGun(int client, int slot)
 		rank = sizeof(GunListing[]) - 1;
 	
 	int length = GunListing[slot][rank].Length;
+	if(!length)
+	{
+		LogStackTrace("Gun list empty in slot %d for rank %d", slot, rank);
+		return;
+	}
+
 	int rand = GetURandomInt() % length;
 	int data[2];
 	GunListing[slot][rank].GetArray(rand, data);
-	
-	if(data[0] == EquippedWeapons[client][slot][0])
-	{
-		rand++;
-		if(rand >= length)
-			rand = length;
-		
-		GunListing[slot][rank].GetArray(rand, data);
-	}
 	
 	if(data[0] == NextWeapons[client][slot][0])
 	{
 		rand++;
 		if(rand >= length)
-			rand = length;
+			rand = length - 1;
+		
+		GunListing[slot][rank].GetArray(rand, data);
+	}
+	
+	if(data[0] == abs(EquippedWeapons[client][slot][0]))
+	{
+		rand++;
+		if(rand >= length)
+			rand = length - 1;
 		
 		GunListing[slot][rank].GetArray(rand, data);
 	}
@@ -551,9 +656,12 @@ static void SwapGunSlot(int client, int slot, bool first = false)
 	{
 		RecentlySwapped[client] = true;
 
-		int type = Store_GetAmmoType(client, NextWeapons[client][slot][0], NextWeapons[client][slot][1]);
+		int type = Store_GetAmmoType(NextWeapons[client][slot][0], NextWeapons[client][slot][1]);
 		if(type > 0 && type < sizeof(CurrentAmmo[]))
+		{
 			AddAmmoClient(client, type, _, 4.0, true);
+			CurrentAmmo[client][type] = GetAmmo(client, type);
+		}
 	}
 	
 	for(int i; i < sizeof(EquippedWeapons[]); i++)
@@ -572,26 +680,30 @@ static void SwapGunSlot(int client, int slot, bool first = false)
 		{
 			Store_Unequip(client, abs(EquippedWeapons[client][slot][0]));
 		}
+
+		int oldWeapon = GetPlayerWeaponSlot(client, slot);
+		if(oldWeapon != -1)
+			TF2_RemoveItem(client, oldWeapon);
 		
 		EquippedWeapons[client][slot][0] = 0;
 	}
 
 	if(Store_HasIndexItem(client, NextWeapons[client][slot][0]))
 	{
-		Store_Equip(client, NextWeapons[client][slot][0]);
 		EquippedWeapons[client][slot][0] = -NextWeapons[client][slot][0];
 		EquippedWeapons[client][slot][1] = 0;
+		Store_Equip(client, NextWeapons[client][slot][0], _, true);
 	}
 	else
 	{
-		Store_GiveSpecificItem(client, NULL_STRING, _, NextWeapons[client][slot][0], NextWeapons[client][slot][1] + 1);
 		EquippedWeapons[client][slot] = NextWeapons[client][slot];
+		Store_GiveSpecificItem(client, NULL_STRING, _, NextWeapons[client][slot][0], NextWeapons[client][slot][1] + 1, -2);
 	}
 
 	if(GameRules_GetRoundState() == RoundState_ZombieRiot)
 	{
-		Store_ApplyCooldownIndex(client, NextWeapons[client][slot][0], 3, 50.0 + (slot * 30.0));
-		RecentlySwapped[client] = !first;
+		Store_ApplyCooldownIndex(client, NextWeapons[client][slot][0], 3, 80.0 - (slot * 30.0));
+		RecentlySwapped[client] = first;
 	}
 	else
 	{
@@ -611,18 +723,18 @@ static Action GunsawHudTimer(Handle timer, DataPack pack)
 			int active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 			if(weapon == active)
 			{
-				PrintHintText(client, "");
+				PrintHintText(client, " ");
 			}
 			else
 			{
 				int slot = active == GetPlayerWeaponSlot(client, TFWeaponSlot_Primary) ? 0 : (active == GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary) ? 1 : 2);
-				if(slot < sizeof(EquippedWeapons))
+				if(slot < sizeof(EquippedWeapons[]))
 				{
 					char item1[64], item2[64];
 					Store_GetItemName(abs(EquippedWeapons[client][slot][0]), client, item1, sizeof(item1), _, EquippedWeapons[client][slot][1]);
 					Store_GetItemName(abs(NextWeapons[client][slot][0]), client, item2, sizeof(item2), _, NextWeapons[client][slot][1]);
 					
-					PrintHintText(client, "Current: %s\nNext: %s\nM2 to Change - R to Swap", item1, item2);
+					PrintHintText(client, "Current: %s\nNext: %s\nM2 to Reroll - R to Swap", item1, item2);
 				}	
 			}
 			
@@ -639,6 +751,8 @@ static Action GunsawHudTimer(Handle timer, DataPack pack)
 
 public void Weapon_GunsawMelee_Unequip(int client)
 {
+	Gunsaw_RemoveWearables(client);
+
 	delete WeaponTimer[client];
 	delete ModelModels[client];
 
@@ -651,6 +765,18 @@ public void Weapon_GunsawMelee_Unequip(int client)
 			
 			EquippedWeapons[client][i][0] = 0;
 		}
+	}
+
+	RequestFrame(ReequipFrame, GetClientUserId(client));
+}
+
+static void ReequipFrame(int userid)
+{
+	int client = GetClientOfUserId(userid);
+	if(client)
+	{
+		Store_ApplyAttribs(client);
+		Store_GiveAll(client, GetClientHealth(client));
 	}
 }
 
@@ -671,7 +797,7 @@ public void Weapon_GunsawRanged_M2(int client, int weapon, bool crit, int slot)
 
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client, SyncHud_Notifaction, "Hold crouch to switch the next gun");
+		ShowSyncHudText(client, SyncHud_Notifaction, "Hold crouch to reroll the next gun");
 		return;
 	}
 
@@ -688,7 +814,9 @@ public void Weapon_GunsawRanged_M2(int client, int weapon, bool crit, int slot)
 	if(GameRules_GetRoundState() == RoundState_ZombieRiot)
 		Ability_Apply_Cooldown(client, slot, 15.0);
 
-	RollNextGun(client, slot);
+	int wslot = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary) == weapon ? 0 : 1;
+	RollNextGun(client, wslot);
+	TriggerTimer(WeaponTimer[client], true);
 }
 
 public void Weapon_GunsawRanged_R(int client, int weapon, bool crit, int slot)
@@ -721,45 +849,322 @@ public void Weapon_GunsawRanged_R(int client, int weapon, bool crit, int slot)
 		return;
 	}
 	
+	ClientCommand(client, "playgamesound misc/halloween/spelltick_set.wav");
 	Rogue_OnAbilityUse(client, weapon);
 
 	int wslot = GetPlayerWeaponSlot(client, TFWeaponSlot_Primary) == weapon ? 0 : 1;
 	SwapGunSlot(client, wslot);
 	RollNextGun(client, wslot);
+	TriggerTimer(WeaponTimer[client], true);
 }
 
-public void Weapon_GunsawMelee_M1(int client, int weapon, bool crit, int slot)
+public void Weapon_GunsawMelee_M1(int client, int weapon, bool &crit, int slot)
 {
-	if(dieingstate[client] != 0 || Ability_Check_Cooldown(client, slot) > 0.0)
+	int building = GetCarryingObject(client);
+	if(building <= MaxClients)
+		return;
+	
+	if(view_as<ObjectGeneric>(building).m_bConstructBuilding)
+	{
+		ClientCommand(client, "playgamesound weapons/physcannon/physcannon_tooheavy.wav");
+		SetDefaultHudPosition(client);
+		ShowSyncHudText(client, SyncHud_Notifaction, "Can not throw constructs");
+		return;
+	}
+	
+	if(Ability_Check_Cooldown(client, slot) > 0.0)
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_Check_Cooldown(client, slot));
+		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_Check_Cooldown(client, slot));
 		return;
 	}
 
 	Rogue_OnAbilityUse(client, weapon);
-	Ability_Apply_Cooldown(client, slot, 44.0);
+	Ability_Apply_Cooldown(client, slot, 30.0);
 
-	// Throw prop
+	int metal = MetalSpendOnBuilding[building];
+
+	int Repair = 	GetEntProp(building, Prop_Data, "m_iRepair");
+	int MaxRepair = GetEntProp(building, Prop_Data, "m_iRepairMax");
+	int Health = 	GetEntProp(building, Prop_Data, "m_iHealth");
+	int MaxHealth = ReturnEntityMaxHealth(building);
+
+	float pos[3], ang[3];
+	GetEntPropVector(building, Prop_Data, "m_vecAbsOrigin", pos);
+	GetEntPropVector(building, Prop_Data, "m_angRotation", ang);
+
+	float scale = GetEntPropFloat(building, Prop_Send, "m_flModelScale");
+	char model[PLATFORM_MAX_PATH];
+	GetEntPropString(building, Prop_Data, "m_ModelName", model, sizeof(model));
+
+	Function special = INVALID_FUNCTION;
+	int specialI;
+	float specialF;
+	if(func_NPCThink[building] == ObjectVintulumBomb_ClotThink)
+	{
+		specialF = fl_AbilityOrAttack[building][0];
+		specialI = i_OverlordComboAttack[building];
+		if(specialI)
+			special = func_NPCThink[building];
+	}
+
+	RemoveEntity(building);
+
+	EmitSoundToAll("weapons/physcannon/superphys_launch2.wav", client);
+	
+	// Spawn prop
+	int prop = CreateEntityByName("prop_physics_multiplayer");
+	if(prop != -1)
+	{
+		bool fakephy;
+		char buffer[PLATFORM_MAX_PATH];
+		strcopy(buffer, sizeof(buffer), model);
+		ReplaceString(buffer, sizeof(buffer), ".mdl", ".phy", false);
+		if(FileExists(buffer, true))
+		{
+			DispatchKeyValue(prop, "model", model);
+		}
+		else
+		{
+			DispatchKeyValue(prop, "model", "models/props_spytech/computer_low.mdl");
+			fakephy = true;
+		}
+
+		DispatchKeyValueFloat(prop, "modelscale", scale);
+		DispatchKeyValue(prop, "physicsmode", "2");
+		DispatchKeyValue(prop, "massscale", "10000");
+		DispatchKeyValueInt(prop, "health", Health);
+		DispatchKeyValueInt(prop, "maxhealth", MaxHealth);
+		DispatchKeyValueInt(prop, "ExplodeDamage", Repair);
+		DispatchKeyValueInt(prop, "ExplodeRadius", MaxRepair);
+		DispatchSpawn(prop);
+
+		if(fakephy)
+		{
+			SetEntityRenderMode(prop, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(prop, _, _, _, 0);
+			
+			view_as<ObjectGeneric>(prop).m_iWearable1 = view_as<ObjectGeneric>(prop).EquipItemSeperate(model);
+		}
+
+		SetEntProp(prop, Prop_Data, "m_iHealth", Health);
+		SetEntProp(prop, Prop_Data, "m_iMaxHealth", MaxHealth);
+		SetEntPropFloat(prop, Prop_Data, "m_explodeDamage", float(Repair));
+		SetEntPropFloat(prop, Prop_Data, "m_explodeRadius", float(MaxRepair));
+		SetEntPropEnt(prop, Prop_Send, "m_hOwnerEntity", client);
+
+		GiveBuildingMetalCostOnBuy(prop, metal);
+
+		// Throw prop
+		float vec[3], vel[3];
+		GetClientEyePosition(client, vec);
+		GetClientEyeAngles(client, vel);
+		GetAngleVectors(vel, vel, NULL_VECTOR, NULL_VECTOR);
+		ScaleVector(vel, 1000.0);
+
+		TeleportEntity(prop, pos, ang, vel);
+
+		// Self knockback
+		ScaleVector(vel, -0.6);
+		TeleportEntity(client, _, _, vel);
+
+		func_NPCThink[prop] = special;
+		i_OverlordComboAttack[prop] = specialI;
+		fl_AbilityOrAttack[prop][0] = specialF;
+		fl_AbilityOrAttack[prop][1] = GetGameTime() + 6.0;
+
+		UpdatePropColor(prop);
+
+		GunsawPropThink(EntIndexToEntRef(prop));
+	}
 }
 
-public void Weapon_GunsawMelee_M2(int client, int weapon, bool crit, int slot)
+public void Weapon_GunsawMelee_M2(int client, int weapon, bool &crit, int slot)
 {
-	if(dieingstate[client] != 0 || Ability_Check_Cooldown(client, slot) > 0.0)
+	if(GetClientButtons(client) & IN_DUCK)
 	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
-		SetDefaultHudPosition(client);
-		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_Check_Cooldown(client, slot));
+		MountBuildingToBack(client, weapon, crit);
 		return;
 	}
 
-	Rogue_OnAbilityUse(client, weapon);
-	Ability_Apply_Cooldown(client, slot, 44.0);
+	Building_Pickup(client, 300.0);
+}
 
-	// Pickup prop
+static float ZRRamMulti;
+static void GunsawPropThink(int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(entity == -1)
+		return;
+	
+	if(fl_AbilityOrAttack[entity][1] < GetGameTime())
+	{
+		int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+		if(client != -1)
+		{
+			float Repair = 	GetEntPropFloat(entity, Prop_Data, "m_explodeDamage");
+			float MaxRepair = GetEntPropFloat(entity, Prop_Data, "m_explodeRadius");
+			int Health = 	GetEntProp(entity, Prop_Data, "m_iHealth");
+			int MaxHealth = ReturnEntityMaxHealth(entity);
+			
+			float MaxTotal = MaxRepair + float(MaxHealth);
+			float Total = Repair + float(Health);
+
+			float RatioReturn = Total / MaxTotal;
+			
+			int MetalReturn = RoundToNearest(MetalSpendOnBuilding[entity] * RatioReturn * 0.8);
+			if(MetalReturn >= RoundToNearest(MetalSpendOnBuilding[entity] * 0.8))
+				MetalReturn = RoundToNearest(MetalSpendOnBuilding[entity] * 0.8);
+
+			SetAmmo(client, Ammo_Metal, GetAmmo(client, Ammo_Metal) + MetalReturn);
+			CurrentAmmo[client][3] = GetAmmo(client, 3);
+		}
+
+		int dissolver = CreateEntityByName("env_entity_dissolver");
+		if(dissolver != -1)
+		{
+			DispatchKeyValue(dissolver, "dissolvetype", "1");
+			DispatchKeyValue(dissolver, "magnitude", "200");
+			DispatchKeyValue(dissolver, "target", "!activator");
+			
+			AcceptEntityInput(dissolver, "Dissolve", entity);
+			AcceptEntityInput(dissolver, "Kill");
+		}
+		return;
+	}
+	
+	if(func_NPCThink[entity] != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, func_NPCThink[entity]);
+		Call_PushCell(entity);
+		Call_Finish();
+
+		RequestFrame(GunsawPropThink, ref);
+		return;
+	}
+
+	int client = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(client == -1)
+		return;
+	
+	float vel[3];
+	SDKCall_GetSmoothedVelocity(entity, vel);
+
+	float damage;
+	
+	if(GetVectorLength(vel, true) > 49999.0)
+	{
+		float scale = ExtraDamageWaveScaling();
+		if(scale < 1.0 || CvarInfiniteCash.BoolValue)
+			scale = 1.0;
+		
+		ZRRamMulti = Attributes_GetOnPlayer(client, 287, true) / Attributes_GetOnPlayer(client, 343, true, true);
+		
+		// 1000 Metal = 500 base damage
+		damage = MetalSpendOnBuilding[entity] * ZRRamMulti * PropDamage;
+	}
+	else
+	{
+		ZRRamMulti = 1.0;
+		damage = 0.0;
+	}
+
+	int type = i_ExplosiveProjectileHexArray[entity];
+	i_ExplosiveProjectileHexArray[entity] = EP_GENERIC;
+	Explode_Logic_Custom(damage, client, entity, -1, _, 60.0, 1.0, 1.0, _, 99, false, 0.2, GunsawPropDamagePost, GunsawPropDamagePre);
+	i_ExplosiveProjectileHexArray[entity] = type;
+
+	if(ZRRamMulti != -1.0)
+	{
+		RequestFrame(GunsawPropThink, ref);
+		return;
+	}
+
+	// Building broke, explode
+	float repair = GetEntPropFloat(entity, Prop_Data, "m_explodeDamage");
+	float maxrepair = GetEntPropFloat(entity, Prop_Data, "m_explodeRadius");
+	if(maxrepair < 1.0)
+		maxrepair = 1.0;
+	
+	// Metal Cost * Damage * Repair HP Ratio
+	damage = MetalSpendOnBuilding[entity] * PropDamage * 1.5 * Attributes_GetOnPlayer(client, 287, true) / Attributes_GetOnPlayer(client, 343, true, true) * repair / maxrepair;
+	//PrintToChatAll("%f x (%d x %.2f) = %.0f", repair / maxrepair, MetalSpendOnBuilding[entity], Attributes_GetOnPlayer(client, 287, true), damage);
+
+	i_ExplosiveProjectileHexArray[entity] = EP_GENERIC;
+	Explode_Logic_Custom(damage, client, entity, -1, _, 150.0 * Attributes_GetOnPlayer(client, 344, true, true));
+	i_ExplosiveProjectileHexArray[entity] = type;
+
+	DestroyBuildingDo(entity);
+}
+
+static float GunsawPropDamagePre(int prop, int victim, float &damage, int weapon)
+{
+	if(damage < 1.0 || ZRRamMulti == -1.0 || IsIn_HitDetectionCooldown(prop, victim))
+	{
+		damage = 0.0;
+		return 0.0;
+	}
+
+	damage *= GetEntProp(prop, Prop_Data, "m_iHealth") / float(ReturnEntityMaxHealth(prop));
+	//PrintToChatAll("%f x (%d x ?) = %.0f", GetEntProp(prop, Prop_Data, "m_iHealth") / float(ReturnEntityMaxHealth(prop)), MetalSpendOnBuilding[prop], damage);
+	return 0.0;
+}
+
+static void GunsawPropDamagePost(int prop, int victim, float damage, int weapon)
+{
+	Set_HitDetectionCooldown(prop, victim, GetGameTime() + 8.0);
+	if(damage < 1.0)
+		return;
+	
+	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	if(health > 0)
+	{
+		// Victim still alive, break the prop
+		ZRRamMulti = -1.0;
+	}
+	else
+	{
+		// Victim died, lose prop health
+		int prophp = GetEntProp(prop, Prop_Data, "m_iHealth");
+		float propmax = float(ReturnEntityMaxHealth(prop));
+		float totalDamage = MetalSpendOnBuilding[prop] * PropDamage;
+
+		float dealt = (health + damage) / ZRRamMulti;
+		
+		// Example: Decrease health by 20% damage dealt
+		prophp -= RoundFloat(propmax * dealt / totalDamage);
+		if(prophp < 1)
+		{
+			ZRRamMulti = -1.0;
+			prophp = 0;
+		}
+		
+		SetEntProp(prop, Prop_Data, "m_iHealth", prophp);
+		UpdatePropColor(prop);
+	}
+}
+
+static void UpdatePropColor(int prop)
+{
+	int g = GetEntProp(prop, Prop_Data, "m_iHealth") * 255  / ReturnEntityMaxHealth(prop);
+	if(g > 255)
+	{
+		g = 255;
+	}
+	else if(g < 0)
+	{
+		g = 0;
+	}
+	
+	int r = 255 - g;
+
+	int entity = view_as<ObjectGeneric>(prop).m_iWearable1;
+	if(entity == -1)
+		entity = prop;
+	
+	SetEntityRenderColor(entity, r, g, 0, 255);
 }
 
 static void AddGun(int rank, int slot, const char[] name, int level)

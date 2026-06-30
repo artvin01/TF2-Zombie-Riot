@@ -198,7 +198,7 @@ void OverridePlayerModel(int client, int index = -1, bool DontShowCosmetics = fa
 }
 
 #if defined ZR
-static void GetTeamOverride(int &team)
+void ViewChange_TeamOverride(int &team)
 {
 	if(ZR_Get_Modifier() == SECONDARY_MERCS)
 		team = 3;
@@ -319,7 +319,7 @@ void ViewChange_PlayerModel(int client)
 		
 		SetEntProp(entity, Prop_Send, "m_fEffects", 129);
 #if defined ZR
-		GetTeamOverride(team);
+		ViewChange_TeamOverride(team);
 #endif
 		SetTeam(entity, team);
 		SetEntProp(entity, Prop_Send, "m_nSkin", SetSkin);
@@ -462,7 +462,7 @@ void ViewChange_Switch(int client, int active, const char[] classname)
 			
 			int team = GetClientTeam(client);
 #if defined ZR
-			GetTeamOverride(team);
+			ViewChange_TeamOverride(team);
 #endif
 			SetTeam(entity, team);
 			SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
@@ -528,7 +528,7 @@ void ViewChange_Switch(int client, int active, const char[] classname)
 
 				SetEntProp(entity, Prop_Send, "m_fEffects", 129);
 #if defined ZR
-				GetTeamOverride(team);
+				ViewChange_TeamOverride(team);
 #endif
 				SetTeam(entity, team);
 				SetEntProp(entity, Prop_Send, "m_nSkin", team-2);

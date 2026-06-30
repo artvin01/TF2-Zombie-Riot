@@ -2112,6 +2112,7 @@ void CheckAlivePlayersforward(int killed=0)
 
 void CheckLastMannStanding(int killed)
 {
+	int testLast;
 	int PlayersLeftNotDowned = 0;
 	LastMann_BeforeLastman = false;
 	for(int client=1; client<=MaxClients; client++)
@@ -2126,6 +2127,7 @@ void CheckLastMannStanding(int killed)
 				if(dieingstate[client] == 0)
 				{
 					PlayersLeftNotDowned++;
+					testLast = client;
 				}
 			}
 		}
@@ -2133,6 +2135,9 @@ void CheckLastMannStanding(int killed)
 	if(PlayersLeftNotDowned == 1)
 	{
 		LastMann_BeforeLastman = true;
+			
+		if(Gunsaw_IsMerc(testLast) && Gunsaw_LastmanSecret())
+			CPrintToChatAll("? - Sense of impending doom\n{crimson}You can't help but feel sudden, overwhelming fear. Your skin has goosebumps all over. It's as if the nature around you abruptly fell silent...");
 	}
 }
 void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = false, bool CheckDownedState = false)
@@ -2500,11 +2505,18 @@ void TriggerLastmanLogic(int killed, int Hurtviasdkhook)
 				{
 					if(RaidbossIgnoreBuildingsLogic(1))
 					{
-						CPrintToChatAll("{crimson}Both of us die today. One, just a little later than the other.");
+						if(Gunsaw_Additional_SupportBuildings(client) > 1)
+						{
+							CPrintToChatAll("‼ - FOCUSED\n{crimson}Both of us die today. One, just a little later than the other.");
+						}
+						else
+						{
+							CPrintToChatAll("‼ - HORRIFIED\n{crimson}CAN'T FOCUS. CAN'T THINK. NOTHING ELSE MATTERS. RUN FOR YOUR LIFE OR FIGHT FOR IT!");
+						}
 					}
 					else
 					{
-						CPrintToChatAll("{crimson}How does it feel, knowing you're not coming back up %N..?", client);
+						CPrintToChatAll("☠ - Miserable\n{crimson}How does it feel, knowing you're not coming back up %N..?", client);
 					}
 					
 					Yakuza_Lastman(18);

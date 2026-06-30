@@ -6077,4 +6077,8 @@
 		"en"	"Tiantui Star's Blade"
 		"ko"	"천퇴성도"
 	}
+	"The Mercenary"
+	{
+		"en"	"The Mercenary"
+	}
 }
