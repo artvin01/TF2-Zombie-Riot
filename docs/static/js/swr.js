@@ -26,12 +26,14 @@ function setPrimaryButtonState(event) {
   }
 };
 
-document.addEventListener('mousemove', function(event) {
+document.addEventListener('mousemove', function (event) {
+  if (ctx !== undefined) {
     bounds = ctx.canvas.getBoundingClientRect();
-    mousepos = [event.clientX-bounds.left, event.clientY-bounds.top];
+    mousepos = [event.clientX - bounds.left, event.clientY - bounds.top];
     if ((event.clientX < bounds.left) || (event.clientY < bounds.top) || (event.clientX > bounds.right) || (event.clientY > bounds.bottom)) {
       mousedown = false;
     }
+  }
 });
 
 function swr_setup() {

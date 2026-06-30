@@ -419,6 +419,7 @@ async function open_subweapon_modal(item) {
               empty_element(modal)
               modal.remove();
               swr_canvas = undefined;
+              ctx = undefined;
             });
         }
     });
