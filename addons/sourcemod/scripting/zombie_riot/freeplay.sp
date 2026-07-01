@@ -640,8 +640,9 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			{
 				enemy.Index = NPC_GetByPlugin("npc_kevinmery2009");
 				enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-				enemy.ExtraThinkSpeed = 0.80;
-				enemy.ExtraDamage = 1.10;
+				enemy.ExtraThinkSpeed = 0.60;
+				enemy.ExtraDamage = 1.20;
+				enemy.ExtraSpeed = 1.1;
 			}
 			default:
 			{
