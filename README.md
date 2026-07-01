@@ -69,7 +69,8 @@ To generate the wiki, simply run
 .venv\Scripts\python.exe main.py
 ```
 All generated files will be put in `gh-pages/`.  
-Static ones are located in `docs/` and are copied to `gh-pages` upon generation. The `tf_icons` directory is an exception to that.
+Static ones are located in `docs/` and are copied to `gh-pages` upon generation. The `tf_icons` directory is an exception to that.  
+Use the `clear_page.py` script to remove all automatically generated content in `gh-pages`.  
 
 # TODO
 - [ ] Front-end revamp
@@ -77,9 +78,7 @@ Static ones are located in `docs/` and are copied to `gh-pages` upon generation.
   - [x] Waveset viewer
   - [x] Status effect page
   - [x] Clean up gh-pages dirs
-  - [ ] Waveset inspect mode
-  - [ ] Fix embed inconsistencies
-  - [ ] Subweapon permalinks?
+  - [x] Fix embed inconsistencies
   - [ ] More embeds?
 - [ ] Improved NPC data parsing (low priority)
 - [x] Waveset data (low priority)

@@ -404,13 +404,17 @@ def parse_waveset(file: str, data: dict[str, Any], abslink: str, name: str, desc
 
     wave_idx = 0
 
-    max_waves = 0
-    for wave in data:
+    max_waves = 0 # Unused (except for assertion)
+    max_waves_idx = 0
+    for wave, wave_data in data.items():
         try:
             int(wave)
         except ValueError:
             continue
         max_waves=max(int(wave),max_waves)
+        if len(wave_data)==0 or sum([int(util.is_float(entry)) for entry in wave_data]) == 0: # second condition checks for npc amount
+            continue
+        max_waves_idx += 1
     assert max_waves!=0
 
     for wave, wave_data in data.items():
@@ -423,13 +427,11 @@ def parse_waveset(file: str, data: dict[str, Any], abslink: str, name: str, desc
                     output["music"][wave]= modal
             continue
 
-        wave_npc_amt = sum([int(util.is_float(entry)) for entry in wave_data])
-        if len(wave_data)==0 or wave_npc_amt == 0:
+        if len(wave_data)==0 or sum([int(util.is_float(entry)) for entry in wave_data]) == 0: # second condition checks for npc amount
             continue
         wave_idx += 1
-
         output["waves"][wave_idx] = parse_wave(wave_idx, wave_data, bool(util.cfgtoint(wd["auto_wave_cash"])))
-        embed.generate_waveset_embed(f"{abslink}_{wave_idx}", name, int(wave), max_waves, output["waves"][wave_idx])
+        embed.generate_waveset_embed(f"{abslink}_{wave_idx}", name, int(wave_idx), max_waves_idx, output["waves"][wave_idx])
 
     waveset_cache[file] = output
     return output

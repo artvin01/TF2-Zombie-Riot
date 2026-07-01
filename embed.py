@@ -5,7 +5,7 @@ from re import sub
 from collections import defaultdict
 from typing import Any
 
-# TODO Gladiator Arena 1 wave on wiki <-> 6 waves on embed
+# TODO define types
 
 color = {
     "viewer_bg": (38,41,43),
@@ -100,6 +100,8 @@ def generate_waveset_embed(filename: str, title: str, wave: int, wave_max: int, 
     if support_nlen>0:
         dx = 0
         dy += 115
+        if len(base_npc_list)==0:
+            dy -= 35
         for row in support_npc_list_chunks:
             row_w = (ICON_SIZE+ICON_PADDING)*len(row)
             dx = (WIDTH/2) - (row_w/2) + (ICON_SIZE+ICON_PADDING)/2
@@ -117,7 +119,7 @@ def generate_waveset_embed(filename: str, title: str, wave: int, wave_max: int, 
 
 
 def draw_text_centered(drawable, pos, text, fill, font, bold=False):
-    text=sub(r'[^a-zA-Z0-9 /\\-_]', '', text)
+    text=sub(r'[^a-zA-Z0-9 /\\-_[-]', '', text)
     left, _, right, _ = font.getbbox(text)
     width = right - left
     if bold:
