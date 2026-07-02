@@ -615,6 +615,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Index = NPC_GetByPlugin("npc_squad_master");
 				enemy.Health = RoundToFloor((1250000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "sc20";
+				enemy.ExtraThinkSpeed = 1.15;
 				enemy.ExtraSpeed = 0.85;
 			}
 			case 38:
