@@ -1551,54 +1551,6 @@ void NPCDeath(int entity)
 
 Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	CClotBody npc = view_as<CClotBody>(victim);
-	bool PreventHurtsound = false;
-	//Various checks to prevent hurt sounds and allat
-	if(attacker <= MaxClients && TeutonType[attacker] != TEUTON_NONE)
-	{
-		PreventHurtsound = true;
-	}
-	/*
-	if(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
-		PreventHurtsound = true;
-	//dont when bleeding
-	*/
-
-	int CheckHpThreshhold = ReturnEntityMaxHealth(victim);
-	int flHealth = GetEntProp(victim, Prop_Data, "m_iHealth");
-	if(flHealth >= CheckHpThreshhold)
-	{
-		CheckHpThreshhold = flHealth;
-	}
-	if(npc.m_iHealthBar > 0)
-	{
-		CheckHpThreshhold *= npc.m_iHealthBar;
-	}
-	float WhichThreshholdDamageAt = 0.075;
-	//normal enemies need to take atleast 7.5% of their hp as damage in 1 hit so it does the hurt animation
-	if(b_thisNpcIsARaid[victim])
-	{
-		WhichThreshholdDamageAt *= 0.025;
-	}
-	else if(b_thisNpcIsABoss[victim])
-	{
-		WhichThreshholdDamageAt *= 0.15;
-	}
-	WhichThreshholdDamageAt *= float(flHealth);
-	if(WhichThreshholdDamageAt >= damage)
-	{
-		PreventHurtsound = true;
-	}
-	
-	if(PreventHurtsound)
-	{
-		float gameTime = GetGameTime(npc.index);
-
-		if(npc.m_flHeadshotCooldown < (gameTime + 0.0001))
-		{
-			npc.m_flHeadshotCooldown = gameTime + 0.0001;
-		}
-	}
 	Function func = func_NPCOnTakeDamage[victim];
 	if(func && func != INVALID_FUNCTION)
 	{

@@ -480,9 +480,7 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 		}
 	}
 
-	if(iHit > 0 && iHit < sizeof(i_TraceToInstead) && i_TraceToInstead[iHit] > 0)
-		iHit = i_TraceToInstead[iHit];
-	
+
 	if(repeatsretry >= 2)
 		i_PreviousInteractedEntity[iClient] = iHit;
 
@@ -1808,9 +1806,6 @@ public bool Trace_OnlyPlayer(int entity, int mask, any data)
 
 public bool Trace_DontHitEntityOrPlayerOrAlliedNpc(int entity, int mask, any data)
 {
-	if(i_TraceToInstead[entity] > 0)
-		entity = i_TraceToInstead[entity];
-	
 	if(entity <= MaxClients)
 	{
 		
@@ -1876,9 +1871,6 @@ public bool Trace_DontHitEntityOrPlayerOrAlliedNpc(int entity, int mask, any dat
 
 public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 {
-	if(i_TraceToInstead[entity] > 0)
-		entity = i_TraceToInstead[entity];
-	
 	if(entity <= MaxClients)
 	{
 #if defined ZR
@@ -1942,7 +1934,7 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 			return false;
 		}
 	}
-#endif
+#endif	
 
 	if(b_ThisEntityIgnored[entity] && i_IsABuilding[entity])
 	{

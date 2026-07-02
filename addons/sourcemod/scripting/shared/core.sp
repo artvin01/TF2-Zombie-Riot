@@ -623,7 +623,6 @@ bool b_DisableSetupMusic[MAXENTITIES];
 bool b_DisableStatusEffectHints[MAXENTITIES];
 bool b_LastManDisable[MAXENTITIES];
 float f_HeadshotDamageMultiNpc[MAXENTITIES];
-int i_TraceToInstead[MAXENTITIES];
 
 int b_OnDeathExtraLogicNpc[MAXENTITIES];
 #define	ZRNPC_DEATH_NOHEALTH		( 1<<0 )	// Do not give health on kill!
@@ -2723,7 +2722,6 @@ public void OnEntityCreated(int entity, const char[] classname)
 		f_DuelStatus[entity] = 0.0;
 		b_BuildingHasDied[entity] = true;
 		b_is_a_brush[entity] = false;
-		i_TraceToInstead[entity] = -1;
 		i_IsVehicle[entity] = 0;
 		b_IsARespawnroomVisualiser[entity] = false;
 		b_ThisEntityIgnoredEntirelyFromAllCollisions[entity] = false;
@@ -3893,7 +3891,6 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 		SetEntityHealth(target, 50);
 		RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(target));
 		Rogue_TriggerFunction(Artifact::FuncRevive, target);
-		Gunsaw_TryBodySteal(target, false);
 		int entity, i;
 		while(TF2U_GetWearable(target, entity, i))
 		{

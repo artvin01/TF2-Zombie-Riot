@@ -19,7 +19,6 @@ bool SoundManualHas(int client)
 
 void SoundManualRequestFile(int client)
 {
-#if defined _filenetwork_included
 	char buffer[1028];
 	FormatEx(buffer, sizeof(buffer), "sound/zr_manual/manual_file_check_%i.txt", VERSION_NUMBER);
 	DataPack pack = new DataPack();
@@ -33,10 +32,8 @@ void SoundManualRequestFile(int client)
 		Format(filecheck, sizeof(filecheck), "download/%s", buffer);
 		DeleteFile(filecheck);
 	}
-	FileNet_RequestFile(client, buffer, SoundManualRequestResult, pack, 10)
-#endif
+	FileNet_RequestFile(client, buffer, SoundManualRequestResult, pack, 10);
 }
-#if defined _filenetwork_included
 
 public void SoundManualRequestResult(int client, const char[] file, int id, bool success, DataPack pack)
 {
@@ -56,4 +53,3 @@ public void SoundManualRequestResult(int client, const char[] file, int id, bool
 
 	delete pack;
 }
-#endif
