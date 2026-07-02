@@ -24,7 +24,7 @@ public void Weapon_Nailgun(int client, int weapon, bool crit)
 	float attack_speed;
 	attack_speed = 1.0 / Attributes_GetOnPlayer(client, 343, true, true); //Sentry attack speed bonus
 				
-	damage = attack_speed * damage * Attributes_GetOnPlayer(client, 287, true, true);			//Sentry damage bonus
+	damage = attack_speed * damage * Attributes_GetOnPlayer(client, 287, true);			//Sentry damage bonus
 	float sentry_range;	
 	sentry_range = Attributes_GetOnPlayer(client, 344, true, true);			//Sentry Range bonus
 			

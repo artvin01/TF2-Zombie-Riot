@@ -2288,6 +2288,9 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 					//We trigger lastman if we hit this
 				}
 			}
+
+			Gunsaw_TryBodySteal(victim, true);
+
 			damage = 0.0;
 			GiveCompleteInvul(victim, 3.0);
 			MorphineShotLogic(victim, true);
@@ -2980,6 +2983,11 @@ void ApplyLastmanOrDyingOverlay(int client)
 			case 8:
 			{
 				if(!HasSpecificBuff(client, "Death is comming."))
+					return;
+			}
+			case 18:
+			{
+				if(Gunsaw_IsMerc(client) && f_OneShotProtectionTimer[client] < GetGameTime())
 					return;
 			}
 		}

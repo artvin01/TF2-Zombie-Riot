@@ -41,7 +41,7 @@ static char g_CoffinClaim2[][] = {
 static char g_CoffinRevive[][] = {
 	"ui/halloween_boss_chosen_it.wav",
 };
-bool Precached = false;
+static bool Precached = false;
 public void HeartBroken_OnMapStart()
 {
 	PrecacheSoundArray(g_CoffinClaim);
