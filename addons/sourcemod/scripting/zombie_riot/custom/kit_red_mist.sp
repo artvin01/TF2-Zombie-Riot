@@ -330,6 +330,7 @@ void Disable_Everything_Red_Mist(int client)
 	RemoveSpecificBuff(client, "Ego Manifestation");
 	RemoveSpecificBuff(client, "Influence of the bodies");
 	RemoveSpecificBuff(client, "Red_Mist_Strength");
+	Special_Cooldowns[client][2] = GetGameTime() + (120.00 * CooldownReductionAmount(client));
 	Ego_Active[client] = false;
 }
 
