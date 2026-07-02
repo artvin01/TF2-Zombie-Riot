@@ -2958,10 +2958,18 @@ void PrintNPCMessageWithPrefixes(int entity, const char[] npcColor, const char[]
 		}
 		else
 		{
-			if (!b_NameNoTranslation[entity])
-				FormatEx(finalName, sizeof(finalName), "%T", c_NpcName[entity], client);
+			char globalCustomName[128];
+			if (NPCStats_GetCustomChatName(entity, globalCustomName, sizeof(globalCustomName)))
+			{
+				strcopy(finalName, sizeof(finalName), globalCustomName);
+			}
 			else
-				strcopy(finalName, sizeof(finalName), c_NpcName[entity]);
+			{
+				if (!b_NameNoTranslation[entity])
+					FormatEx(finalName, sizeof(finalName), "%T", c_NpcName[entity], client);
+				else
+					strcopy(finalName, sizeof(finalName), c_NpcName[entity]);
+			}
 		}
 		
 		char fullText[512];

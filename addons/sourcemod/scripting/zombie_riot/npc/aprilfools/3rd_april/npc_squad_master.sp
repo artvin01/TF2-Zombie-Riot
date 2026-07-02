@@ -63,6 +63,12 @@ methodmap SquadX_Master < CClotBody
 		public get()							{ return i_AttacksTillReload[this.index]; }
 		public set(int TempValueForProperty) 	{ i_AttacksTillReload[this.index] = TempValueForProperty; }
 	}
+	property float m_flSquadAttackSpeed
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
+	}
+	
 	public void PlayExplodeSound() 
 	{
 		int sound = GetRandomInt(0, sizeof(g_ExplosionSoundDo) - 1);
@@ -141,7 +147,8 @@ methodmap SquadX_Master < CClotBody
 		
 		if(amount_of_people < 1.0)
 			amount_of_people = 1.0;
-			
+		
+		npc.m_flSquadAttackSpeed = 1.0;
 		npc.m_flWaitOnTime = 1.0;
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 
@@ -179,6 +186,11 @@ methodmap SquadX_Master < CClotBody
 		}
 		return npc;
 	}
+}
+
+static void NPCTalkMessage(int entity, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(entity, "", message);
 }
 
 static void Internal_ClotThink(int iNPC)
@@ -222,6 +234,13 @@ static void Internal_ClotThink(int iNPC)
 		return;
 	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
+	
+	if (f_AttackSpeedNpcIncrease[npc.index] != 1.0)
+	{
+		// Attack speed is changed and we don't want to desync. Save the change so squad members can inherit it and set us back to default
+		npc.m_flSquadAttackSpeed = f_AttackSpeedNpcIncrease[npc.index];
+		f_AttackSpeedNpcIncrease[npc.index] = 1.0;
+	}
 
 	//delete all koulms
 	int inpcloop1, a1;
@@ -282,14 +301,14 @@ static void Internal_ClotThink(int iNPC)
 		{
 			func_NPCThink[npc.index] = INVALID_FUNCTION;
 			
-			CPrintToChatAll("{black}All at once{default}: Get Owned");
+			NPCTalkMessage(npc.index, "Get Owned");
 			return;
 		}	
 		
 		if(!BlockLoseSay && RaidModeTime < GetGameTime())
 		{
 			BlockLoseSay = true;
-			CPrintToChatAll("{black}All at once{default}: This is getting pretty serious.");
+			NPCTalkMessage(npc.index, "This is getting pretty serious.");
 			int inpcloop2, a2;
 			while((inpcloop2 = FindEntityByNPC(a2)) != -1)
 			{
@@ -563,6 +582,23 @@ static void Internal_ClotThink(int iNPC)
 			RaidAllowsBuildings = false;
 			RaidAllowLastman = true;
 			//revert cameras do
+			
+			NPCStats_AddCustomChatName(npc.index, "{red}Mazeat {green}Fabulous {purple}Squad {crimson}X {red}E{orange}l{yellow}i{green}t{blue}e{purple}");
+			
+			int a, entity1;
+			// Make the squad members inherit the squad's think speed after they're done posing
+			while((entity1 = FindEntityByNPC(a)) != -1)
+			{
+				if(IsValidEntity(entity1) && (
+					i_NpcInternalId[entity1] == SquadX_WhiteflowerIDReturn() ||
+					i_NpcInternalId[entity1] == SquadX_Shadowing_DarknessIDReturn() ||
+					i_NpcInternalId[entity1] == SquadX_OmegaIDReturn() ||
+					i_NpcInternalId[entity1] == SquadX_BobIDReturn()
+					))
+				{
+					f_AttackSpeedNpcIncrease[entity1] *= npc.m_flSquadAttackSpeed;
+				}
+			}
 		}
 	}
 	npc.m_iAppearState++;
