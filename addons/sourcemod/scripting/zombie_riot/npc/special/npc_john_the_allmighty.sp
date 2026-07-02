@@ -163,6 +163,7 @@ methodmap JohnTheAllmighty < CClotBody
 			RaidModeScaling = 0.0;
 			RaidAllowsBuildings = true;
 			RaidAllowLastman = false;
+			RaidTimerAlert = false;
 		}
 		npc.m_iHealthBar = 99999999;
 		npc.m_flBackupDespawnEmergency = GetGameTime() + 43.0;
@@ -374,6 +375,8 @@ public void JohnTheAllmighty_NPCDeath(int entity)
 
 	if(EntIndexToEntRef(entity) == RaidBossActive)
 		RaidBossActive = INVALID_ENT_REFERENCE;
+	
+	RaidTimerAlert = true;
 }
 
 void JohnTheAllmightySelfDefense(JohnTheAllmighty npc, float gameTime, float distance)

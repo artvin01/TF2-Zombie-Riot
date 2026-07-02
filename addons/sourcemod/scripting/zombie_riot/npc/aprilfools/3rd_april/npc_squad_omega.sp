@@ -163,6 +163,11 @@ methodmap SquadX_Omega < CClotBody
 	}
 }
 
+static void NPCTalkMessage(int entity, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(entity, "gold", message);
+}
+
 static void Internal_ClotThink(int iNPC)
 {
 	SquadX_Omega npc = view_as<SquadX_Omega>(iNPC);
@@ -207,23 +212,23 @@ static void Internal_ClotThink(int iNPC)
 		{
 			case 0:
 			{
-				CPrintToChatAll("{gold}Omega{default}: VINCENT!!!!! I SUMMON YOU!!!!.");
+				NPCTalkMessage(npc.index, "VINCENT!!!!! I SUMMON YOU!!!!.");
 			}
 			case 1:
 			{
-				CPrintToChatAll("{gold}Omega{default}: GO VINCENT, DUNK THEM");
+				NPCTalkMessage(npc.index, "GO VINCENT, DUNK THEM");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{gold}Omega{default}: I forgor my weapons :skull:, so i brought vincent");
+				NPCTalkMessage(npc.index, "I forgor my weapons :skull:, so i brought vincent");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{gold}Omega{default}: Go fetch!");
+				NPCTalkMessage(npc.index, "Go fetch!");
 			}
 			case 4:
 			{
-				CPrintToChatAll("{gold}Omega{default}: I SUMMON VINCENT, THE FORBIDDEN ONE!");
+				NPCTalkMessage(npc.index, "I SUMMON VINCENT, THE FORBIDDEN ONE!");
 			}
 		}
 	}

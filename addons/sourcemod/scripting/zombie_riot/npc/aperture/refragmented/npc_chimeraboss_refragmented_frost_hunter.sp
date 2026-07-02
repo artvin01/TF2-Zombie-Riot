@@ -41,6 +41,13 @@ static const char g_MeleeHitSounds[][] = {
 	"weapons/cleaver_hit_07.wav",
 };
 
+static int NPCID;
+
+int CHIMERARefragmentedFrostHunter_ID()
+{
+	return NPCID;
+}
+
 void RefragmentedWinterFrostHunter_OnMapStart_NPC()
 {
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
@@ -60,6 +67,7 @@ void RefragmentedWinterFrostHunter_OnMapStart_NPC()
 	data.Func = ClotSummon;
 	int id = NPC_Add(data);
 	Rogue_Paradox_AddWinterNPC(id);
+	NPCID = id;
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
