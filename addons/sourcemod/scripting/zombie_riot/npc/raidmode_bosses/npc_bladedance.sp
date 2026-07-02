@@ -70,6 +70,11 @@ methodmap RaidbossBladedance < CClotBody
 		public get()							{ return b_DuringHook[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_DuringHook[this.index] = TempValueForProperty; }
 	}
+	property float m_flHurtForAbility
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 	
 	public void PlayIdleSound()
 	{
@@ -478,6 +483,10 @@ public Action RaidbossBladedance_OnTakeDamage(int victim, int &attacker, int &in
 	{
 		npc.m_flHeadshotCooldown = gameTime + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
+	}
+	if(npc.m_flHurtForAbility < gameTime)
+	{
+		npc.m_flHurtForAbility = gameTime + DEFAULT_HURTDELAY;
 		if(!npc.Anger)
 			npc.m_iOverlordComboAttack++;
 	}
