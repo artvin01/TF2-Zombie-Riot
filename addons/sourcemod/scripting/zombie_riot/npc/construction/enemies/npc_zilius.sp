@@ -320,43 +320,43 @@ methodmap Construction_Raid_Zilius < CClotBody
 		{
 			case 1:
 			{
-				NPCTalkMessage(npc.index, "Chaos? If only {black}''Izan''{default} was still around to tell you himself.");
+				NPCTalkMessage(this.index, "Chaos? If only {black}''Izan''{default} was still around to tell you himself.");
 			}
 			case 2:
 			{
-				NPCTalkMessage(npc.index, "Ever think about what endless violence causes? Look at yourselves.");
+				NPCTalkMessage(this.index, "Ever think about what endless violence causes? Look at yourselves.");
 			}
 			case 3:
 			{
-				NPCTalkMessage(npc.index, "You are just as bad as the {violet}curtain{default} and {violet}void{default} was.");
+				NPCTalkMessage(this.index, "You are just as bad as the {violet}curtain{default} and {violet}void{default} was.");
 			}
 			case 4:
 			{
-				NPCTalkMessage(npc.index, "Expidonsa wasnt just an underground city, it was the very planet you live on, Parasites.");
+				NPCTalkMessage(this.index, "Expidonsa wasnt just an underground city, it was the very planet you live on, Parasites.");
 			}
 			case 5:
 			{
-				NPCTalkMessage(npc.index, "If only the other higherups and {black}''Izan''{default} agreed to not save those others.");
+				NPCTalkMessage(this.index, "If only the other higherups and {black}''Izan''{default} agreed to not save those others.");
 			}
 			case 6:
 			{
-				NPCTalkMessage(npc.index, "Whatever you think expidonsa doesn't have, it does.");
+				NPCTalkMessage(this.index, "Whatever you think expidonsa doesn't have, it does.");
 			}
 			case 7:
 			{
-				NPCTalkMessage(npc.index, "{blue}Sensal{default}, {gold}Silvester{default}, all those other expidonsans in that region are so clueless to whomever made chaos.");
+				NPCTalkMessage(this.index, "{blue}Sensal{default}, {gold}Silvester{default}, all those other expidonsans in that region are so clueless to whomever made chaos.");
 			}
 			case 8:
 			{
-				NPCTalkMessage(npc.index, "Alminans are the only ones I respect, Mazeat is an amalgam of failures.");
+				NPCTalkMessage(this.index, "Alminans are the only ones I respect, Mazeat is an amalgam of failures.");
 			}
 			case 9:
 			{
-				NPCTalkMessage(npc.index, "Kahmlstein is such a wasted person, sadly he wasnt apart of the {gold}prime race{default}.");
+				NPCTalkMessage(this.index, "Kahmlstein is such a wasted person, sadly he wasnt apart of the {gold}prime race{default}.");
 			}
 			case 10:
 			{
-				NPCTalkMessage(npc.index, "If you think very logically, extermination for all of you is the only to truly finish {violet}them{default}.");
+				NPCTalkMessage(this.index, "If you think very logically, extermination for all of you is the only to truly finish {violet}them{default}.");
 			}
 		}
 	}
@@ -1180,7 +1180,7 @@ static void Internal_Weapon_Lines(Construction_Raid_Zilius npc, int client)
 
 	if(valid)
 	{
-		NPCTalkMessage(npc.index, "%s", Text_Lines);
+		NPCTalkMessage(npc.index, Text_Lines);
 		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
 		b_said_player_weaponline[client] = true;
 	}
