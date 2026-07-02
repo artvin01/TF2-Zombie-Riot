@@ -405,6 +405,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Index = NPC_GetByPlugin("npc_bob_the_first_last_savior");
 				enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.65);
+				enemy.Data = "nobackup";
 			}
 			*/
 			case 9:	
@@ -1211,7 +1212,25 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		FUCK YOU, YOU FUCKING DICK, ALWAYS BUGGING OUT, ANYTIME YOU SPAWN
 		case 9:	
 		{
-			CPrintToChatAll("{white}BOB THE FIRST! {gold}- {red}Are you a god?");
+			switch(GetRandomInt(1, 3))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{white}BOB THE FIRST! {gold}- {lightcyan}You guys are stupid for going after the leader of that dweller clan all alone, even with Alaxios and his army holding off most of its forces. At least Bob came to uninfect you guys.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{white}BOB THE FIRST! {gold}- {red}wip, idk what to add here yet");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{white}BOB THE FIRST! {gold}- {red}Imagine fighting Bob and Bladedance at the same time before Blade was sent into the Curtain by Bob.");
+				}
+				default:
+				{
+					CPrintToChatAll("{white}BOB THE FIRST! {gold}- {red}Are you really a god? Also no army, it keeps bugging the simulation out somehow.");
+				}
+			}
 		}
 		*/
 		case 9:
