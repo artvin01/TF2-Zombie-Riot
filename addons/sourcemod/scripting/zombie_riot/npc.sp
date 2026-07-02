@@ -1558,9 +1558,11 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	{
 		PreventHurtsound = true;
 	}
+	/*
 	if(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
 		PreventHurtsound = true;
 	//dont when bleeding
+	*/
 
 	int CheckHpThreshhold = ReturnEntityMaxHealth(victim);
 	int flHealth = GetEntProp(victim, Prop_Data, "m_iHealth");
