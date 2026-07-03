@@ -6,8 +6,7 @@ static const char g_DeathSounds[][] = {
 	")vo/soldier_negativevocalization02.mp3",
 	")vo/soldier_negativevocalization03.mp3",
 	")vo/soldier_negativevocalization04.mp3",
-	")vo/soldier_negativevocalization05.mp3",
-	")vo/soldier_negativevocalization06.mp3",
+	")vo/soldier_negativevocalization05.mp3"
 };
 
 static const char g_HurtSounds[][] = {
@@ -27,19 +26,25 @@ static const char g_IdleAlertedSounds[][] = {
 	"vo/soldier_dominationsniper01.mp3",
 	"vo/compmode/cm_soldier_pregamefirst_04.mp3",
 	"vo/compmode/cm_soldier_pregamefirst_05.mp3",
-	"vo/compmode/cm_soldier_pregamefirst_06.mp3",
+	"vo/compmode/cm_soldier_pregamefirst_06.mp3"
+};
+
+static const char g_ExplosionSounds[][]= {
+	"weapons/explode1.wav",
+	"weapons/explode2.wav",
+	"weapons/explode3.wav"
 };
 
 static const char g_RangedAttackSounds[][] = {
 	"weapons/airstrike_fire_01.wav",
 	"weapons/airstrike_fire_02.wav",
-	"weapons/airstrike_fire_03.wav",
+	"weapons/airstrike_fire_03.wav"
 };
 static const char g_MeleeAttackSounds[] = "weapons/shotgun_shoot.wav";
 static const char g_ShotgunReloadingSounds[][] = {
 	")weapons/shotgun_cock_back.wav",
 	")weapons/shotgun_cock_forward.wav",
-	")weapons/shotgun_reload.wav",
+	")weapons/shotgun_reload.wav"
 };
 
 static int SaveSolidFlags;
@@ -66,6 +71,7 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_IdleAlertedSounds);
 	PrecacheSoundArray(g_RangedAttackSounds);
 	PrecacheSoundArray(g_ShotgunReloadingSounds);
+	PrecacheSoundArray(g_ExplosionSounds);
 	PrecacheSound(g_MeleeAttackSounds);
 	PrecacheModel("models/player/soldier.mdl");
 }
@@ -161,6 +167,8 @@ methodmap Airraider < CClotBody
 		Is_a_Medic[npc.index] = true;
 		npc.Anger = true;
 		npc.b_AirraiderRocketJump = true;
+		npc.m_bFUCKYOU = false;
+		npc.m_fbRangedSpecialOn = false;
 		
 		if(StrContains(data, "no_tp") != -1)
 			npc.i_TPMode=0;
@@ -171,6 +179,10 @@ methodmap Airraider < CClotBody
 			b_NoKnockbackFromSources[npc.index] = true;
 			b_ThisEntityIgnoredEntirelyFromAllCollisions[npc.index] = true;
 			npc.i_TPMode=2;
+		}
+		if(StrContains(data, "angry") != -1)
+		{
+			npc.m_fbRangedSpecialOn = true;
 		}
 		
 		int skin = 1;
@@ -309,7 +321,7 @@ static void Airraider_ClotThink(int iNPC)
 	}
 	else
 	{
-		if(npc.Anger && npc.f_AirraiderRocketJumpCD_Wearoff < GameTime)
+		if(npc.Anger && npc.f_AirraiderRocketJumpCD_Wearoff < GameTime && npc.m_bFUCKYOU == false)
 		{
 		//	b_NpcIsInvulnerable[npc.index] = false;
 			npc.m_bTeamGlowDefault = true;
@@ -356,12 +368,20 @@ static void Airraider_ClotThink(int iNPC)
 			SetEntPropFloat(npc.m_iWearable7, Prop_Send, "m_fadeMaxDist", 0.0);
 			if(npc.IsOnGround())
 			{
-				npc.Anger = false;
-				if(IsValidEntity(npc.m_iWearable1))
-					RemoveEntity(npc.m_iWearable1);
+				npc.m_bFUCKYOU = true;
+				if(!npc.m_fbRangedSpecialOn)
+				{
+					npc.Anger = false;
+					if(IsValidEntity(npc.m_iWearable1))
+						RemoveEntity(npc.m_iWearable1);
+					npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_reserve_shooter/c_reserve_shooter.mdl");
+
+					npc.m_iMaxAmmo = 6;
+					npc.m_iAmmo =6;
+					ApplyStatusEffect(npc.index, npc.index, "Ammo_TM Visualization", 999.0);
+				}
 				if(IsValidEntity(npc.m_iWearable2))
 					RemoveEntity(npc.m_iWearable2);
-				npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_reserve_shooter/c_reserve_shooter.mdl");
 				npc.m_flGravityMulti = 1.0;
 				npc.m_flSpeed = 250.0;
 				npc.m_flRangedArmor = 1.0;
@@ -370,9 +390,6 @@ static void Airraider_ClotThink(int iNPC)
 				b_DoNotUnStuck[npc.index] = false;
 				Is_a_Medic[npc.index] = false;
 				
-				npc.m_iMaxAmmo = 6;
-				npc.m_iAmmo =6;
-				ApplyStatusEffect(npc.index, npc.index, "Ammo_TM Visualization", 999.0);
 			}
 		}
 	}
@@ -520,7 +537,7 @@ static void AirraiderAnimationChange(Airraider npc)
 
 static void AirraiderSelfDefense(Airraider npc, float gameTime, int target, float distance)
 {
-	if(!npc.Anger)
+	if(!npc.Anger && npc.m_bFUCKYOU)
 	{
 		if(npc.m_flAttackHappens || !npc.m_iAmmo)
 		{
@@ -584,6 +601,27 @@ static void AirraiderSelfDefense(Airraider npc, float gameTime, int target, floa
 		}
 		return;
 	}
+	if(npc.Anger && npc.m_bFUCKYOU)
+	{
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 10.0))
+		{
+			npc.AddGesture("ACT_MP_THROW");
+			float EnemyPos[3];
+			WorldSpaceCenter(npc.m_iTarget, EnemyPos);
+			npc.FaceTowards(EnemyPos, 15000.0);
+			int projectile = npc.FireRocket(EnemyPos, 150.0, 1000.0, "models/workshop/weapons/c_models/c_atom_launcher/c_atom_launcher.mdl", 1.0);
+			SDKHook(projectile, SDKHook_StartTouch, Airraider_Eat_This_Shit_StartTouch);
+			npc.Anger = false;
+			if(IsValidEntity(npc.m_iWearable1))
+				RemoveEntity(npc.m_iWearable1);
+			npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_reserve_shooter/c_reserve_shooter.mdl");
+
+			npc.m_iMaxAmmo = 6;
+			npc.m_iAmmo =6;
+			ApplyStatusEffect(npc.index, npc.index, "Ammo_TM Visualization", 999.0);
+		}
+		return;
+	}
 	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 900.0))
 	{	
 		if(gameTime > npc.m_flNextRangedAttack)
@@ -641,4 +679,65 @@ static int GetRandomPlayer(Airraider npc)
 		Getclient = GetClosestTarget(npc.index);
 
 	return Getclient;
+}
+
+static Action Airraider_Eat_This_Shit_StartTouch(int entity, int target)
+{
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(!IsValidEntity(owner))
+		owner = 0;
+	int inflictor = h_ArrowInflictorRef[entity];
+	if(inflictor != -1)
+		inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
+
+	if(inflictor == -1)
+		inflictor = owner;
+
+	float ProjectileLoc[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+	Explode_Logic_Custom(0.0, owner, inflictor, -1, ProjectileLoc, EXPLOSION_RADIUS, _, _, true, _, false, _, AirStrikeBomb);
+	ParticleEffectAt(ProjectileLoc, "ExplosionCore_MidAir", 1.0);
+	EmitSoundToAll(g_ExplosionSounds[GetRandomInt(0, sizeof(g_ExplosionSounds) - 1)], 0, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, _, -1, ProjectileLoc);
+	RemoveEntity(entity);
+
+	for(int rocketcount ; rocketcount < 3 ; rocketcount++)
+	{
+		float RocketDamage = 10.0;
+		float RocketSpeed = 500.0;
+		float vecTargetrandombomb[3]; 
+		vecTargetrandombomb = ProjectileLoc;
+		vecTargetrandombomb[0] += GetRandomFloat(-50.0, 50.0);
+		vecTargetrandombomb[1] += GetRandomFloat(-50.0, 50.0);
+		vecTargetrandombomb[2] += GetRandomFloat(-30.0, 30.0);
+
+		float SpeedReturn[3];
+
+		int RocketGet = view_as<Airraider>(entity).FireRocket(vecTargetrandombomb, RocketDamage, RocketSpeed);
+		Attributes_Set(RocketGet, Attrib_MultiBuildingDamage, 2.0);
+		//Reducing gravity, reduces speed, lol.
+		SetEntityGravity(RocketGet, 1.0);
+		ArcToLocationViaSpeedProjectile(RocketGet, vecTargetrandombomb, SpeedReturn, 0.5, 1.0);
+		SetEntityMoveType(RocketGet, MOVETYPE_FLYGRAVITY);
+		TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
+	}
+
+	return Plugin_Handled;
+}
+
+static void AirStrikeBomb(int entity, int victim, float damage, int weapon)
+{
+	float vecHit[3]; WorldSpaceCenter(victim, vecHit);
+	if(GetTeam(entity) != GetTeam(victim))
+	{
+		int inflictor = h_ArrowInflictorRef[entity];
+		if(inflictor != -1)
+			inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
+
+		if(inflictor == -1)
+			inflictor = entity;
+		damage = 30.0;
+		if(ShouldNpcDealBonusDamage(victim))
+			damage *= 3.0;
+		SDKHooks_TakeDamage(victim, entity, inflictor, damage, DMG_BLAST, -1, _, vecHit);
+	}
 }

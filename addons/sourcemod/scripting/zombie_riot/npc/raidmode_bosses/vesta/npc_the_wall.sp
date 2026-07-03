@@ -121,6 +121,7 @@ static void ClotPrecache()
 	PrecacheSound(g_ThrowSounds);
 	PrecacheSound("ambient/alarms/doomsday_lift_alarm.wav", true);
 	PrecacheSound("mvm/mvm_cpoint_klaxon.wav", true);
+	PrecacheSound("mvm/mvm_tank_ping.wav", true);
 	PrecacheSound("weapons/medi_shield_deploy.wav", true);
 	PrecacheSound("mvm/mvm_tele_deliver.wav");
 	PrecacheSound("items/powerup_pickup_knockout.wav", true);
@@ -129,6 +130,7 @@ static void ClotPrecache()
 
 	PrecacheModel("models/props_mvm/mvm_player_shield.mdl", true);
 	PrecacheModel("models/props_mvm/mvm_player_shield2.mdl", true);
+	PrecacheModel("models/buildables/sentry_shield.mdl", true);
 	g_Laser = PrecacheModel(LASERBEAM);
 	g_RedPoint = PrecacheModel("sprites/redglow1.vmt");
 	
@@ -663,7 +665,7 @@ static void Clone_ClotThink(int iNPC)
 						static float vOrigin[3], vAngles[3];
 						GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAngles);
 						vAngles[0]=5.0;
-						HuscarlsLookPoint(npc.index, vAngles, VecSelfNpc, vOrigin);
+						EntityLookPoint(npc.index, vAngles, VecSelfNpc, vOrigin);
 						npc.SetGoalVector(vOrigin);
 					}
 				}
@@ -871,7 +873,7 @@ static int Support_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], float
 					else
 					{
 						float vAngles[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAngles);
-						HuscarlsLookPoint(npc.index, vAngles, VecSelfNpc, vecTarget);
+						EntityLookPoint(npc.index, vAngles, VecSelfNpc, vecTarget);
 						if(GetVectorDistance(VecSelfNpc, vecTarget, true)<15625.0)
 						{
 							npc.RemoveGesture("ACT_MP_PASSTIME_THROW_MIDDLE");
@@ -1228,7 +1230,7 @@ static void Huscarls_ClotThink(int iNPC)
 				static float vOrigin[3], vAngles[3];
 				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAngles);
 				vAngles[0]=5.0;
-				HuscarlsLookPoint(npc.index, vAngles, VecSelfNpc, vOrigin);
+				EntityLookPoint(npc.index, vAngles, VecSelfNpc, vOrigin);
 				npc.SetGoalVector(vOrigin);
 			}
 		}
@@ -1244,16 +1246,26 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 
 	if(npc.m_flHuscarlsAdaptiveArmorDuration && npc.m_flHuscarlsAdaptiveArmorDuration < gameTime)
 	{
+		if(IsValidEntity(npc.m_iWearable8))
+			RemoveEntity(npc.m_iWearable8);
 		if(fl_ruina_battery[npc.index])
 		{
 			NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_Ability1-2", false, false);
-			GrantEntityArmor(npc.index, false, 0.1, 0.5, 0, (float(ReturnEntityMaxHealth(npc.index))*0.07)*(fl_ruina_battery[npc.index]/fl_ruina_battery_max[npc.index]));
 		}
 		else
 			RemoveSpecificBuff(npc.index, "Battery_TM Charge");
 		npc.m_flHuscarlsAdaptiveArmorDuration=0.0;
 		npc.m_flHuscarlsAdaptiveArmorCoolDown = gameTime + (NpcStats_VestanCallToArms(npc.index) ? 20.0 : 30.0);
 	}
+	if(HasSpecificBuff(npc.index, "Battery_TM Charge") && IsValidEntity(npc.m_iWearable8))
+	{
+		SetEntityRenderColor(npc.m_iWearable8, 255, 255-(125*RoundToCeil(fl_ruina_battery[npc.index]/fl_ruina_battery_max[npc.index])), 255, 255);
+		VecSelfNpc[2] -= 100.0;
+		Custom_SDKCall_SetLocalOrigin(npc.m_iWearable8, VecSelfNpc);
+		VecSelfNpc[2] += 100.0;
+	}
+	else if(IsValidEntity(npc.m_iWearable8))
+		RemoveEntity(npc.m_iWearable8);
 	
 	if(b_angered_twice[npc.index] && npc.m_flHuscarlsRushCoolDown-(0.28 + DEFAULT_UPDATE_DELAY_FLOAT) > gameTime && npc.m_flHuscarlsRushCoolDown-3.6 < gameTime)
 		HuscarlsGrab(npc, gameTime);
@@ -1300,7 +1312,7 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 				else
 				{
 					float vAngles[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAngles);
-					HuscarlsLookPoint(npc.index, vAngles, VecSelfNpc, vecTarget);
+					EntityLookPoint(npc.index, vAngles, VecSelfNpc, vecTarget);
 					if(GetVectorDistance(VecSelfNpc, vecTarget, true)<15625.0)
 					{
 						npc.RemoveGesture("ACT_MP_PASSTIME_THROW_MIDDLE");
@@ -1445,6 +1457,14 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 						if(IgniteFist)
 							IgniteTargetEffect(npc.m_iWearable2);
 					}
+					if(IsValidEntity(npc.m_iWearable8))
+						RemoveEntity(npc.m_iWearable8);
+					npc.m_iWearable8 = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl",_,_,_,-100.0, true);
+					SetVariantString("2.0");
+					AcceptEntityInput(npc.m_iWearable8, "SetModelScale");
+					SetEntityRenderColor(npc.m_iWearable8, 255, 255, 255, 255);
+					SetEntProp(npc.m_iWearable8, Prop_Send, "m_nSkin", 1);
+					EmitSoundToAll("mvm/mvm_tank_ping.wav");
 					npc.m_flHuscarlsAdaptiveArmorDuration = gameTime + 5.0;
 				}
 				if(npc.m_flDoingAnimation < gameTime)
@@ -2665,18 +2685,4 @@ static void HuscarlsGrab(Huscarls npc, float gameTime)
 			b_angered_twice[npc.index] = false;
 		}
 	}
-}
-
-static bool HuscarlsLookPoint(int entity, float flAng[3], float flPos[3], float pos[3])
-{
-	Handle trace = TR_TraceRayFilterEx(flPos, flAng, MASK_PLAYERSOLID, RayType_Infinite, ONLYBSP, entity);
-	
-	if(TR_DidHit(trace))
-	{
-		TR_GetEndPosition(pos, trace);
-		CloseHandle(trace);
-		return true;
-	}
-	CloseHandle(trace);
-	return false;
 }

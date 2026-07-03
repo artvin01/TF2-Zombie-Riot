@@ -800,7 +800,7 @@ stock void AP_TakeDamage(int entity = 0, int inflictor = 0, int attacker = 0, fl
 		PreviousArmor = RoundToNearest(npcenemy.m_flArmorCount);
 		npcenemy.m_flArmorCount = 0.0;
 		SDKHooks_TakeDamage(entity, inflictor, attacker, damage, damageType, -1);
-		npcenemy.m_flArmorCount = PreviousArmor;
+		npcenemy.m_flArmorCount = float(PreviousArmor);
 	}
 }
 

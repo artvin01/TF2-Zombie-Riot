@@ -325,6 +325,7 @@ methodmap Harrison < CClotBody
 			npc.m_iOverlordComboAttack=0;
 			npc.m_flDoingAnimation=0.0;
 			npc.m_iOverrideOwner = 0;
+			npc.m_flExtraDMGForMG = 1.0;
 			static char countext[2][216];
 			int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
 			for(int i = 0; i < count; i++)
@@ -482,6 +483,18 @@ methodmap Harrison < CClotBody
 				strcopy(music.Artist, sizeof(music.Artist), "Serious Sam 4: Reborn mod");
 				Music_SetRaidMusic(music);
 			}
+
+			npc.m_iWearable1 = npc.EquipItemSeperate("models/weapons/w_models/w_drg_ball.mdl",_,1,1.001,_,true);
+			float Vec[3]; WorldSpaceCenter(npc.index, Vec);
+			TeleportEntity(npc.m_iWearable1, Vec, NULL_VECTOR, NULL_VECTOR);
+			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
+			SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMinDist", 1.0);
+			SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMaxDist", 1.0);
+			
+			SetVariantString("!activator");
+			AcceptEntityInput(npc.m_iWearable1, "SetParent", npc.index);
+			MakeObjectIntangeable(npc.m_iWearable1);
 			
 			npc.m_iChanged_WalkCycle = -1;
 		}
@@ -669,10 +682,10 @@ static void Clone_ClotThink(int iNPC)
 						npc.StartPathing();
 
 						npc.m_iMaxAmmo =  RoundToNearest(float(CountPlayersOnRed(2)) * 7.0);
-						if(npc.m_iMaxAmmo>100)
+						if(npc.m_iMaxAmmo>80)
 						{
 							npc.m_flExtraDMGForMG = 1.0*(npc.m_iMaxAmmo/80.0);
-							npc.m_iMaxAmmo=100;
+							npc.m_iMaxAmmo=80;
 						}
 						npc.m_iMaxAmmo += 20; //Extra Ammo!
 						npc.m_iAmmo = npc.m_iMaxAmmo;
@@ -1668,7 +1681,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 				damage *= 3.5;
 				damage *= npc.m_flExtraDMGForMG;
 				KillFeed_SetKillIcon(npc.index, "natascha");
-				FireBullet(npc.index, npc.m_iWearable2, vecMe, vecDir, damage, 3000.0, DMG_BULLET, "bullet_tracer02_blue_crit");
+				FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, damage, 3000.0, DMG_BULLET, "bullet_tracer02_blue_crit");
 				npc.m_flNextMeleeAttack = gameTime + 0.1;
 				npc.m_iAmmo -= 1;
 			}

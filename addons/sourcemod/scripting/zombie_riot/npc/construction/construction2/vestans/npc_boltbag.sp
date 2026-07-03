@@ -149,6 +149,7 @@ static void ResourceCollector_ClotThink(int iNPC)
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.PlayHurtSound();
+		npc.m_blPlayHurtAnimation = false;
 	}
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
@@ -202,10 +203,10 @@ static void ResourceCollector_ClotThink(int iNPC)
 static Action ResourceCollector_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	ResourceCollector npc = view_as<ResourceCollector>(victim);
-		
+	
 	if(attacker <= 0)
 		return Plugin_Continue;
-		
+	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;

@@ -189,7 +189,7 @@ static void ArmoredMedic_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
-			
+	
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
@@ -241,19 +241,19 @@ static void ArmoredMedic_ClotThink(int iNPC)
 		else
 			npc.StopPathing();
 		
-		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*14.8 && Can_I_See_Ally(npc.index, npc.m_iTargetAlly))
+		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*14.8 && !npc.m_bnew_target && Can_I_See_Ally(npc.index, npc.m_iTargetAlly))
 		{
-			if(!npc.m_bnew_target)
-			{
-				npc.StartHealing();
-				npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, npc.m_iTargetAlly, 255, 215, 0, 3.0, 3.0, 1.35, LASERBEAM);
-				npc.Healing = true;
-				npc.m_bnew_target = true;
-			}
+			npc.StartHealing();
+			npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, npc.m_iTargetAlly, 255, 215, 0, 3.0, 3.0, 1.35, LASERBEAM);
+			npc.Healing = true;
+			npc.m_bnew_target = true;
+		}
+		if(npc.Healing && npc.m_bnew_target)
+		{
 			int MaxHealth = ReturnEntityMaxHealth(npc.m_iTargetAlly);
 			HealEntityGlobal(npc.index, npc.m_iTargetAlly, (float(MaxHealth)*(b_thisNpcIsABoss[npc.m_iTargetAlly] ? 0.00001 : 1.0)), 1.0);
 			ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Buffweiser", 1.1);
-			if(NpcStats_VictorianCallToArms(npc.index))
+			if(NpcStats_VestanCallToArms(npc.index))
 				ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Taurine", 1.1);				
 			float WorldSpaceVec[3]; WorldSpaceCenter(npc.m_iTargetAlly, WorldSpaceVec);
 			
@@ -267,14 +267,6 @@ static void ArmoredMedic_ClotThink(int iNPC)
 		if(IsValidEntity(npc.m_iWearable4))
 			RemoveEntity(npc.m_iWearable4);
 		npc.m_bnew_target = false;	
-	}
-	
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
-	{
-		npc.m_iTargetAlly = GetClosestAlly(npc.index,_,_,ArmoredMedic_HealCheck);
-		if(!IsValidAlly(npc.index, npc.m_iTargetAlly))
-			npc.m_iTargetAlly = GetClosestAlly(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
 	npc.PlayIdleAlertSound();
 }

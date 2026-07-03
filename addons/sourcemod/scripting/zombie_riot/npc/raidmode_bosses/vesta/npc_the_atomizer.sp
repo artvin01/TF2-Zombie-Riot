@@ -539,7 +539,6 @@ static void Clone_ClotThink(int iNPC)
 		npc.g_TimesSummoned -= 1;
 	}
 	
-	
 	switch(npc.m_iOverlordComboAttack)
 	{
 		case 1:

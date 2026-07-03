@@ -108,7 +108,7 @@ methodmap ChemicalSpreader < CClotBody
 	
 	public ChemicalSpreader(float vecPos[3], float vecAng[3], int ally)
 	{
-		ChemicalSpreader npc = view_as<ChemicalSpreader>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "3000", ally));
+		ChemicalSpreader npc = view_as<ChemicalSpreader>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "5000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -116,8 +116,10 @@ methodmap ChemicalSpreader < CClotBody
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		SetVariantInt(0);
+		SetVariantInt(5);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
+
+		npc.m_bDissapearOnDeath = true;
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -139,10 +141,10 @@ methodmap ChemicalSpreader < CClotBody
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_drg_phlogistinator/c_drg_phlogistinator.mdl");
-		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/pyro/drg_pyro_fueltank.mdl");
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/all_class/dec15_patriot_peak/dec15_patriot_peak_pyro.mdl");
-		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/pyro/spr18_hot_case/spr18_hot_case.mdl");
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/pyro/dec25_veterans_visor/dec25_veterans_visor.mdl");
+		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/pyro/hw2013_the_creature_from_the_heap/hw2013_the_creature_from_the_heap.mdl");
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/pyro/hwn2025_air_exchanger/hwn2025_air_exchanger.mdl");
+		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/pyro/dec24_hot_spaniel/dec24_hot_spaniel.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/pyro/sum25_frogmanns/sum25_frogmanns.mdl");
 		
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
@@ -150,14 +152,12 @@ methodmap ChemicalSpreader < CClotBody
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 
+		NpcColourCosmetic_ViaPaint(npc.m_iWearable2, 2636109);
+
 		SetVariantString("1.5");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		SetVariantString("2.0");
+		SetVariantString("1.5");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		
-		NpcColourCosmetic_ViaPaint(npc.m_iWearable3, 6637376);
-		NpcColourCosmetic_ViaPaint(npc.m_iWearable4, 1581885);
-		NpcColourCosmetic_ViaPaint(npc.m_iWearable5, 15787660);
 
 		return npc;
 	}
@@ -259,6 +259,108 @@ static void ChemicalSpreader_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
 
+
+	int entity_death = CreateEntityByName("prop_dynamic_override");
+	if(IsValidEntity(entity_death))
+	{
+		ChemicalSpreader prop = view_as<ChemicalSpreader>(entity_death);
+		float pos[3];
+		float Angles[3];
+		GetEntPropVector(entity, Prop_Data, "m_angRotation", Angles);
+
+		GetEntPropVector(entity, Prop_Send, "m_vecOrigin", pos);
+		TeleportEntity(entity_death, pos, Angles, NULL_VECTOR);
+
+		DispatchKeyValue(entity_death, "model", "models/player/pyro.mdl");
+
+		DispatchSpawn(entity_death);
+		
+		prop.m_iWearable1 = prop.EquipItem("head", "models/workshop/player/items/pyro/hw2013_the_creature_from_the_heap/hw2013_the_creature_from_the_heap.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(prop.m_iWearable1, "SetModelScale");
+
+		prop.m_iWearable2 = prop.EquipItem("head", "models/workshop/player/items/pyro/hwn2025_air_exchanger/hwn2025_air_exchanger.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(prop.m_iWearable2, "SetModelScale");
+
+		prop.m_iWearable3 = prop.EquipItem("head", "models/workshop/player/items/pyro/dec24_hot_spaniel/dec24_hot_spaniel.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(prop.m_iWearable3, "SetModelScale");
+		
+		prop.m_iWearable4 = prop.EquipItem("head", "models/workshop/player/items/pyro/sum25_frogmanns/sum25_frogmanns.mdl");
+		SetVariantString("1.0");
+		AcceptEntityInput(prop.m_iWearable4, "SetModelScale");
+
+
+		DispatchKeyValue(entity_death, "skin", "1");
+		DispatchKeyValue(prop.m_iWearable1, "skin", "1");
+		DispatchKeyValue(prop.m_iWearable2, "skin", "1");
+		DispatchKeyValue(prop.m_iWearable3, "skin", "1");
+		DispatchKeyValue(prop.m_iWearable4, "skin", "1");
+
+		NpcColourCosmetic_ViaPaint(prop.m_iWearable1, 2636109);
+
+		SetVariantInt(5);
+		AcceptEntityInput(entity_death, "SetBodyGroup");
+ 
+		SetEntityCollisionGroup(entity_death, 2);
+		SetVariantString("dieviolent");
+		AcceptEntityInput(entity_death, "SetAnimation");
+		
+		CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(entity_death), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable1), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable2), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable3), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(prop.m_iWearable4), TIMER_FLAG_NO_MAPCHANGE);
+	}
+	
+	float startPosition[3];
+	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition); 
+	startPosition[2] += 45;
+
+	KillFeed_SetKillIcon(npc.index, "ullapool_caber_explosion");
+	b_NpcIsTeamkiller[npc.index] = true;
+	Explode_Logic_Custom(25.0, -1, npc.index, -1, startPosition, 100.0, _, _, true, _, true, 1.0, ChecmicalSpreader_ExplodePost);
+	b_NpcIsTeamkiller[npc.index] = false;
+
+	int health = ReturnEntityMaxHealth(npc.index) / 10;
+
+	float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+	float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+	
+	if(MaxEnemiesAllowedSpawnNext(1) > (EnemyNpcAlive - EnemyNpcAliveStatic))
+	{
+		int entityspawn = NPC_CreateByName("npc_searunner", -1, pos, ang, GetTeam(npc.index));
+		if(entityspawn > MaxClients)
+		{
+			if(GetTeam(npc.index) != TFTeam_Red)
+				Zombies_Currently_Still_Ongoing++;
+			
+			SetEntProp(entityspawn, Prop_Data, "m_iHealth", health);
+			SetEntProp(entityspawn, Prop_Data, "m_iMaxHealth", health);
+			
+			fl_Extra_MeleeArmor[entityspawn] = fl_Extra_MeleeArmor[npc.index];
+			fl_Extra_RangedArmor[entityspawn] = fl_Extra_RangedArmor[npc.index];
+			fl_Extra_Speed[entityspawn] = fl_Extra_Speed[npc.index];
+			fl_Extra_Damage[entityspawn] = fl_Extra_Damage[npc.index] * 2.0;
+		}
+	}
+
+	DataPack pack_boom = new DataPack();
+	pack_boom.WriteFloat(startPosition[0]);
+	pack_boom.WriteFloat(startPosition[1]);
+	pack_boom.WriteFloat(startPosition[2]);
+	pack_boom.WriteCell(1);
+	RequestFrame(MakeExplosionFrameLater, pack_boom);
+
+
+}
+
+public void ChecmicalSpreader_ExplodePost(int attacker, int victim, float damage, int weapon)
+{	
+	float EnemyVecPos[3]; WorldSpaceCenter(victim, EnemyVecPos);
+	ParticleEffectAt(EnemyVecPos, "water_bulletsplash01", 3.0);
+	Elemental_AddNervousDamage(victim, attacker, RoundToCeil(damage * 2.0));
 }
 
 static void ChemicalSpreaderSelfDefense(ChemicalSpreader npc)
@@ -276,12 +378,12 @@ static void ChemicalSpreaderSelfDefense(ChemicalSpreader npc)
 	bool SpinSound = true;
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
-	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
+	if(flDistanceToTarget < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 4.0))
 	{
 		npc.PlayMinigunSound(true);
 		SpinSound = false;
 		npc.FaceTowards(vecTarget, 20000.0);
-		int projectile = npc.FireParticleRocket(vecTarget, 8.0, 1000.0, 150.0, "unusual_icetornado_blue_parent", true);
+		int projectile = npc.FireParticleRocket(vecTarget, 12.0, 1250.0, 150.0, "unusual_electricfire_teamcolor_blue", true);
 		SDKUnhook(projectile, SDKHook_StartTouch, Rocket_Particle_StartTouch);
 		int particle = EntRefToEntIndex(i_WandParticle[projectile]);
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);

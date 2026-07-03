@@ -3347,7 +3347,7 @@ static float Armor_Melt_ResistanceFunc(int attacker, int victim, StatusEffect Ap
 	if(IsValidClient(victim))
 		Armor_Charge[victim]=Armor;
 	else
-		view_as<CClotBody>(victim).m_flArmorCount = Armor;
+		view_as<CClotBody>(victim).m_flArmorCount = float(Armor);
 	
 	return 1.0;
 }

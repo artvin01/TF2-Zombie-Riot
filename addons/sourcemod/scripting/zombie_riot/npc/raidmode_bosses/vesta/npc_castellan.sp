@@ -91,7 +91,7 @@ static bool HarrisonDesc;
 
 static bool CounterattackDesc;
 
-static int SupportTeamContinue;
+static int SupportTeamContinue[3];
 static int NextSupport;
 
 static float flPayback[MAXPLAYERS];
@@ -667,34 +667,35 @@ static void Castellan_FORVESTA(int iNPC)
 		}
 		case 2:
 		{
-			if(!IsValidEntity(SupportTeamContinue) || b_NpcHasDied[SupportTeamContinue] || GetTeam(npc.index) != GetTeam(SupportTeamContinue))
+			for(int i; i<3; i++)
 			{
-				NextSupport++;
-				if(NextSupport>3)NextSupport=1;
-				TeleportDiversioToRandLocation(npc.index,_,600.0, 250.0);
-				WorldSpaceCenter(npc.index, VecSelfNpc);
-				npc.m_iTarget = GetClosestTarget(npc.index);
-				int GetAbility;
-				switch(NextSupport)
+				if(!IsValidEntity(SupportTeamContinue[i]) || b_NpcHasDied[SupportTeamContinue[i]] || GetTeam(npc.index) != GetTeam(SupportTeamContinue[i]))
 				{
-					case 1:
+					TeleportDiversioToRandLocation(npc.index,_,600.0, 250.0);
+					WorldSpaceCenter(npc.index, VecSelfNpc);
+					npc.m_iTarget = GetClosestTarget(npc.index);
+					int GetAbility;
+					switch(i+1)
 					{
-						GetAbility=2;
-					}
-					case 2:
-					{
-						switch(GetRandomInt(1, 2))
+						case 1:
 						{
-							case 1:GetAbility=1;
-							case 2:GetAbility=4;
+							GetAbility=2;
+						}
+						case 2:
+						{
+							switch(GetRandomInt(1, 2))
+							{
+								case 1:GetAbility=1;
+								case 2:GetAbility=4;
+							}
 						}
 					}
+					SupportTeamContinue[0]=CreateSupport_Castellan(npc.index, npc.m_iTarget, VecSelfNpc, i+1, GetAbility);
+					if(IsValidEntity(npc.m_iWearable9))
+						RemoveEntity(npc.m_iWearable9);
+					GetAbsOrigin(npc.index, VecSelfNpc);
+					npc.m_iWearable9 = ParticleEffectAt_Parent(VecSelfNpc, "teleporter_mvm_bot_persist", npc.index, "", {0.0,0.0,0.0});
 				}
-				SupportTeamContinue=CreateSupport_Castellan(npc.index, npc.m_iTarget, VecSelfNpc, NextSupport, GetAbility);
-				if(IsValidEntity(npc.m_iWearable9))
-					RemoveEntity(npc.m_iWearable9);
-				GetAbsOrigin(npc.index, VecSelfNpc);
-				npc.m_iWearable9 = ParticleEffectAt_Parent(VecSelfNpc, "teleporter_mvm_bot_persist", npc.index, "", {0.0,0.0,0.0});
 			}
 			if(npc.m_flStealthDuration < gameTime)
 			{
@@ -1494,7 +1495,7 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 	bool SupportInOperation;
 	if(npc.m_flTimeUntillSupportSpawn < gameTime)
 	{
-		if(!SupportTeamContinue)
+		if(!SupportTeamContinue[0])
 		{
 			static int Tempindex;
 			switch(npc.m_iState)
@@ -1543,14 +1544,14 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 					if(npc.m_flDoingAnimation < gameTime)
 					{
 						ResetCastellanWeapon(npc, 0);
-						SupportTeamContinue=Tempindex;
+						SupportTeamContinue[0]=Tempindex;
 						npc.m_iState = -1;
 					}
 				}
 			}
 			return 2;
 		}
-		if(!IsValidEntity(SupportTeamContinue) || b_NpcHasDied[SupportTeamContinue] || GetTeam(npc.index) != GetTeam(SupportTeamContinue))
+		if(!IsValidEntity(SupportTeamContinue[0]) || b_NpcHasDied[SupportTeamContinue[0]] || GetTeam(npc.index) != GetTeam(SupportTeamContinue[0]))
 		{
 			switch(NextSupport)
 			{
@@ -1597,7 +1598,7 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 				default:PrintToChatAll("WTF dev!!!!!!!!!!!!!!!!!!");
 			}
 			npc.m_flTimeUntillSupportSpawn = gameTime + 20.0;
-			SupportTeamContinue=0;
+			SupportTeamContinue[0]=0;
 		}
 		else SupportInOperation=true;
 		npc.m_flTimeUntillHomingStrike += (0.12 + DEFAULT_UPDATE_DELAY_FLOAT);
