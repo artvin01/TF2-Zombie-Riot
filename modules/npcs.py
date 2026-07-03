@@ -33,16 +33,29 @@ for category, npc_list in sorted(NPCS_BY_CATEGORY.items()):
         if category == "Type_Raid":
             npc_list_html += '<div style="margin-bottom:1em;">This assumes you are on the final encounter unless stated otherwise.</div>\n'
         for npc in sorted(npc_list, key=lambda npc: npc["name"]):
+            context = {}
             music = ""
             for entry in npc["music_entries"]:
                 music += util.musicmodal_to_html(entry)
-            context = {
-                "npc_name": f"{util.html_img(modules.shared.get_npc_icon(npc["icon"]))} {npc["name"]}",
-                "plugin_name": npc["plugin"],
-                "flags": map_flags(npc["flags"]),
-                "desc": f"<div>{npc["description"].replace("\n","</div>\n<div>")}</div>\n{music}"
-            }
+
+            # SOURCES
+            src_icon = ("?",-1)
+            if "source" in npc:
+                if "icon" in npc["source"]:
+                    src_icon = npc["source"]["icon"]
+                context["SRC_NAME"] = util.html_src(npc["source"]["name"])
+                if "flags" in npc["source"]:
+                    context["SRC_FLAGS"] = util.html_src(npc["source"]["flags"])
+                context["SRC_DESC"] = util.html_src(npc["source"]["description"])
+
+            context["npc_icon"] = util.html_img(modules.shared.get_npc_icon(npc["icon"]), src_icon)
+            context["npc_name"] = npc["name"]
+            context["plugin_name"] = npc["plugin"]
+            context["flags"] = map_flags(npc["flags"])
+            context["desc"] = f"{npc["description"].replace("\n","<br>")}"
+            context["music"] =  music
             npc_list_html += util.fill_template(util.read("templates/npc/npc_preview.html"),context)
+
         npc_list_html += "</details>\n"
 
 context = {

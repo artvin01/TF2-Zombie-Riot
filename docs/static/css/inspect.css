@@ -1,0 +1,7 @@
+.inspectmode [data-src] {
+    background-color: #ff000033;
+}
+
+.inspectmode [data-src]:hover {
+    background-color: #ff000077;
+}

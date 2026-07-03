@@ -3,6 +3,9 @@ import json
 import os
 from ruamel.yaml import YAML
 
+# TODO source mapping: NPC shared.
+# Where we left off: NPC single and multi implemented fully, sources are available, nothing else sourcified yet, gotta do a proof of concept JS inspect script for the NPC page now.
+
 FLAG_MAPPINGS = {
     "MVM_CLASS_FLAG_NONE": "", #// Show Nothing
     "MVM_CLASS_FLAG_NORMAL": "", #// Normal
@@ -50,14 +53,31 @@ type TypeNPC = NPC | NPC_Dummy
 class NPC:
     def __init__(self, path: str):
         self.PATH: str=path
+        self.RELATIVE_PATH: str = path.replace(os.getcwd(),"").replace("/TF2-Zombie-Riot/","")
         util.debug(f"Init NPC {self.PATH}", "npcs", "OKCYAN")
         self.FILE_DATA: str = util.normalize_whitespace(
             util.remove_multiline_comments(
                 util.read(self.PATH)
             ).replace("\t"," ")
         )
+        self.FILE_DATA_RAW: str = util.readlines(self.PATH)
         self.HIDDEN: bool = not ("npc_donoteveruse" not in self.FILE_DATA and "NPC_Add" in self.FILE_DATA)
         if not self.HIDDEN:
+            self.source: dict[str, dict[str,tuple[int,int]] | tuple[str,int]] = {}
+            """
+            return {
+                "name": self.name, ✓
+                "category": self.category,2/3
+                "description": self.description, ✓
+                "plugin": self.plugin,2/3
+                "icon": self.icon, ✓
+                "flags": self.flags,2/3
+                "filetype": self.filetype,X
+                "has_prefix_logic": self.has_prefix_logic,X
+                "music_entries": self.music_entries, ✓
+                "source": self.source
+            }
+            """
             # Get NPC name
             # TODO multi-npc files can have different prefixes (part of NPC code rewrite todo)
             prefixes = [
@@ -90,7 +110,9 @@ class NPC:
 
             # Get icon
             try:
-                self.icon:str = self.FILE_DATA.split(f"strcopy({self.main_prefix}.Icon, sizeof({self.main_prefix}.Icon), \"")[1].split("\");")[0]
+                ICON_STR = f'strcopy({self.main_prefix}.Icon, sizeof({self.main_prefix}.Icon), \"'
+                self.icon:str = self.FILE_DATA.split(ICON_STR)[1].split("\");")[0]
+                self.source["icon"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_RAW,ICON_STR)[0])
             except IndexError:
                 self.icon = ""
 
@@ -98,10 +120,12 @@ class NPC:
             # get all music as cutouts, starting at MusicEnum music; and ending at Music_SetRaidMusic( {parameters can vary}
             music_cutouts = [item.split("Music_SetRaidMusic(")[0] for i,item in enumerate(self.FILE_DATA.split("MusicEnum music;")) if i > 0]
             self.music_entries: list[dict[str,str | bool]] = []
-            music_hashes: list[str] = []
             if len(music_cutouts) > 0:
+                music_hashes: list[str] = []
+                music_cutout_source_start = util.get_refs(self.FILE_DATA_RAW, "MusicEnum music;")
+                music_cutout_source_end = [util.get_refs(item, "Music_SetRaidMusic(", negative_on_fail=True)[0] for i,item in enumerate(self.FILE_DATA_RAW.split("MusicEnum music;")) if i > 0]
                 util.debug(f"NPC:__init__:music_cutouts\n{json.dumps(music_cutouts,indent=2)}","npcs", "OKBLUE")
-                for code in music_cutouts:
+                for i, code in enumerate(music_cutouts):
                     mfilename = self._get_music_val(code,"Path").replace("#","")
                     filepath = f"https://raw.githubusercontent.com/artvin01/TF2-Zombie-Riot/refs/heads/master/sound/{mfilename}"
                     file_exists = os.path.isfile(f"./TF2-Zombie-Riot/sound/{mfilename}")
@@ -116,14 +140,18 @@ class NPC:
                     music_hash = util.id_from_str(json.dumps(music_entry)) # same music data will output same hash
                     if music_hash not in music_hashes:
                         self.music_entries.append(music_entry)
+                        # music_cutout_source_end lines are relative to the starting lines!
+                        #self.source["music"][filepath] = (self.RELATIVE_PATH, (music_cutout_source_start[i], music_cutout_source_start[i]+music_cutout_source_end[i])) # type:ignore[basedpyright doesnt get it]
+                        music_entry["source"] = (self.RELATIVE_PATH, (music_cutout_source_start[i], (music_cutout_source_start[i]+music_cutout_source_end[i])-1)) # type:ignore[basedpyright doesnt get it]
                         music_hashes.append(music_hash)
 
             desc_key = f"{self.name} Desc"
             # Lots of NPCs with intentionally missing descriptions, hence silent=True
             self.description: str = util.get_key(desc_key, empty_on_fail=True, silent=True).replace("\\n", "<div class=\"flex_break\"></div>\n")
+            self.source["description"] = util.get_key_src(desc_key)
 
             # may be a problem if for example a file has multiple npcs with one that doesn't have the logic
-            self.has_prefix_logic: bool = PREFIX_STR in self.FILE_DATA
+            self.has_prefix_logic: bool = PREFIX_STR in self.FILE_DATA # TODO add source?
 
             """
             npc_obj = {
@@ -139,13 +167,16 @@ class NPC:
                 "music_entries": {
                     "name", "filepath", "file_exists"FILE_DATA
                 }
+                "source": [see util.py:get_sources()]
             }
             """
 
 
     def _get_name(self):
         try:
-            self.name = self.FILE_DATA.split(f"strcopy({self.main_prefix}.Name, sizeof({self.main_prefix}.Name), \"")[1].split("\");")[0]
+            NAME_STR = f'strcopy({self.main_prefix}.Name, sizeof({self.main_prefix}.Name), \"'
+            self.name = self.FILE_DATA.split(NAME_STR)[1].split("\");")[0]
+            self.source["name"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_RAW, NAME_STR)[0]) # TODO reference translations too?
         except IndexError:
             self.name = None
 
@@ -153,7 +184,9 @@ class NPC:
     def _get_music_val(self, code: str, property_name: str) -> str:
         # gets a property of music and fetches it from constants if needed
         # e.g. code.split("strcopy(music.Path, sizeof(music.Path), ")[1].split(");")[0]
-        val = code.split(f"strcopy(music.{property_name}, sizeof(music.{property_name}), ")[1].split(");")[0]
+        # also returns the line on which it is found
+        MUSIC_STR = f"strcopy(music.{property_name}, sizeof(music.{property_name}), "
+        val = code.split(MUSIC_STR)[1].split(");")[0]
         if val in self.npc_vars_dict:
             return self.npc_vars_dict[val]
         if val in global_vars:
@@ -287,21 +320,29 @@ class NPC:
 
     def _set_npc_data_single(self):
         # One instance of everything
-        self.plugin = self.FILE_DATA.split(f"strcopy({self.main_prefix}.Plugin, sizeof({self.main_prefix}.Plugin), \"")[1].split("\");")[0]
+        PLUGIN_STR = f'strcopy({self.main_prefix}.Plugin, sizeof({self.main_prefix}.Plugin), \"'
+        self.plugin = self.FILE_DATA.split(PLUGIN_STR)[1].split("\");")[0]
+        self.source["plugin"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_RAW,PLUGIN_STR)[0])
 
         try:
-            self.category = self.FILE_DATA.split(f"{self.main_prefix}.Category = ")[1].split(";")[0]
+            CAT_STR = f"{self.main_prefix}.Category = "
+            self.category = self.FILE_DATA.split(CAT_STR)[1].split(";")[0]
+            self.source["plugin"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_RAW,CAT_STR,negative_on_fail=True)[0])
         except IndexError:
             self.category = f"404 prefix: {self.main_prefix}" if "npcs" in util.DEBUG else "-1"
 
         try:
-            self.flags = self.FILE_DATA.split(f"{self.main_prefix}.Flags = ")[1]
+            FLAGS_STR = f"{self.main_prefix}.Flags = "
+            self.flags = self.FILE_DATA.split(FLAGS_STR)[1]
             self.flags = self.flags.split(";")[0].split("|")
+            self.source["flags"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_RAW,FLAGS_STR,negative_on_fail=True)[0])
         except IndexError:
             self.flags = []
 
         try:
-            self.health = self.FILE_DATA.split("CClotBody(vecPos, vecAng, ")[1].split("));")[0].split(',')[2].replace('"',"").replace(" ","")
+            HEALTH_STR = "CClotBody(vecPos, vecAng, "
+            self.health = self.FILE_DATA.split(HEALTH_STR)[1].split("));")[0].split(',')[2].replace('"',"").replace(" ","")
+            self.source["health"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_RAW,HEALTH_STR,negative_on_fail=True)[0])
             #if "MinibossHealthScaling" in self.health:
             #    self.health = f"Miniboss health scaling (Base {self.health.split("(")[1][:-1]}HP)"
             if ":" in self.health:
@@ -340,7 +381,8 @@ class NPC:
             "flags": self.flags,
             "filetype": self.filetype,
             "has_prefix_logic": self.has_prefix_logic,
-            "music_entries": self.music_entries
+            "music_entries": self.music_entries,
+            "source": self.source
         }
 
 class NPC_Dummy():

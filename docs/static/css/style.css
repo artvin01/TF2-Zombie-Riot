@@ -1,5 +1,6 @@
 /* currently used for rogue coloring only & niche music entries */
 @import url("morecolors.css");
+@import url("inspect.css");
 
 :root {
 /*    --ash-grey: #b4b8abff;
@@ -107,7 +108,7 @@ ul {
   padding-left: 0;
 }
 
-li {
+body > li {
   padding-left: 1em;
   text-indent: -1em;
 }

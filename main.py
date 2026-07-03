@@ -16,26 +16,42 @@ MODULES = {
     },
     "npcs": {
         "file": "modules.npcs",
-        "dependencies": ["static", "phrase", "wavesets"]
+        "dependencies": [
+            "static",
+            "phrase",
+            #"wavesets"
+        ]
     },
     "music": {
         "file": "modules.music",
-        "dependencies": ["static", "wavesets"],
+        "dependencies": [
+            "static",
+            "wavesets"
+        ],
         "paths": ["gh-pages/data"]
     },
     "items": {
         "file": "modules.weapon",
-        "dependencies": ["static", "phrase"],
+        "dependencies": [
+            "static",
+            "phrase"
+        ],
         "paths": ["gh-pages/data"]
     },
     "skilltree": {
         "file": "modules.skilltree",
-        "dependencies": ["static", "phrase"],
+        "dependencies": [
+            "static",
+            "phrase"
+        ],
         "paths": ["gh-pages/data"]
     },
     "statusfx": {
         "file": "modules.status_effects",
-        "dependencies": ["static", "phrase"],
+        "dependencies": [
+            "static",
+            "phrase"
+        ],
         "paths": ["gh-pages/data"]
     }
 }

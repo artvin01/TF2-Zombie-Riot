@@ -1,25 +1,12 @@
 import util
 import vdf
 from requests.structures import CaseInsensitiveDict
+from ruamel.yaml import YAML
 
 if "decompile" not in util.DEBUG:
-    PHRASES = [
-        # wavesets.py
-        "zombieriot.phrases.zombienames.txt",
-        "zombieriot.phrases.item.gift.desc.txt",
-        "zombieriot.phrases.txt",
-        "zombieriot.phrases.rogue.txt",
-        "zombieriot.phrases.rogue.paradox.txt",
-        "zombieriot.phrases.rogue.rift.txt",
-        "zombieriot.phrases.status_effects.txt", # + status_effects.py
-        "zombieriot.phrases.construction.txt",
-        "zombieriot.phrases.dungeon.txt",
-        # weapon.py
-        "zombieriot.phrases.weapons.description.txt",
-        "zombieriot.phrases.weapons.txt",
-        # skilltree.py
-        "zombieriot.phrases.skilltree.txt",
-    ]
+    yaml=YAML(typ='safe')
+    with open("./config/phrases.yml",'r') as file:
+        PHRASES = yaml.load(file) # type: ignore[w]
     util.log("Parsing phrases...")
     for p in PHRASES:
         util.log(f"> {p}")

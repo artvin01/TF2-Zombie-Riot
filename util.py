@@ -7,10 +7,12 @@ from collections import defaultdict
 from re import sub
 from bs4 import BeautifulSoup
 from bs4.formatter import Formatter
+from ruamel.yaml import YAML
+type TypeSourceObject = list[list[int] | str | int ]
 
 # https://stackoverflow.com/questions/3768895/how-to-make-a-class-json-serializable
 # Allow classes to define __json__ to be JSON serializable
-from json import JSONEncoder
+from json import JSONEncoder # noqa: E402
 def wrapped_default(self, obj): # type: ignore[all]
     return getattr(obj.__class__, "__json__", wrapped_default.default)(obj) # type: ignore[all]
 wrapped_default.default = JSONEncoder().default # type: ignore[all]
@@ -72,8 +74,14 @@ def musicmodal_to_html(modal: dict[str,str]) -> str:
     """
     context=modal.copy()
     file_exists = context.pop("file_exists")
-    context["musictitle"]=apply_morecolors(context["musictitle"]).replace("|","") # remove pipes (only the case for red sun songs)
-    context["musicartist"]=apply_morecolors(context["musicartist"])
+    context["musictitle"] = apply_morecolors(context["musictitle"]).replace("|","") # remove pipes (only the case for red sun songs)
+    context["musicartist"] = apply_morecolors(context["musicartist"])
+    if "source" in context:
+        context["source"] = html_src(modal["source"])
+    else:
+        log("Modal does not have 'source' set!","WARNING")
+        log(json.dumps(modal,indent=2),"FAIL")
+        context["source"] = "?"
     return fill_template(read(f"templates/music/music_modal{"_missing"*int(not file_exists)}.html"),context)
 
 def cfgtoint(val: str, default: int=0) -> int:
@@ -114,11 +122,11 @@ def id_from_str(string: str, hexdigest: int=2) -> str:
     return hashlib.shake_256(string.encode("utf-8")).hexdigest(hexdigest)
 
 
-def html_img(url: str, alt: str="") -> str:
+def html_img(url: str, src: TypeSourceObject = ("?",-1)) -> str:
     """
-    -> <img src="{url}" alt="{alt}"/>
+    -> <img src="{url}" data-src="{html_src(src)}"/>
     """
-    return f'<img src="{url}" alt="{alt}"/>'
+    return f'<img src="{url}" data-src="{html_src(src)}"/>'
 
 
 def vtftoimg(vtf_path: str, png_path: str) -> str:
@@ -164,7 +172,7 @@ def to_section_link(string: str) -> str:
     return sub(r'[^a-z0-9]', '-', string.lower())
 
 
-def remove_multiline_comments(code: str) -> str: # Fixes the script interpreting the comment in npc_headcrabzombie.sp as actual data
+def remove_multiline_comments(code: str, newline:bool=False) -> str: # Fixes the script interpreting the comment in npc_headcrabzombie.sp as actual data
     new_str = ""
     reading_comment = False
     for line in code.splitlines():
@@ -174,6 +182,8 @@ def remove_multiline_comments(code: str) -> str: # Fixes the script interpreting
             reading_comment=False
         if not reading_comment:
             new_str += line
+            if newline:
+                new_str += "\n"
     return new_str
 
 
@@ -272,6 +282,16 @@ def read(filename:str) -> str:
         with open(filename, 'r') as f:
             return f.read()
 
+def readlines(filename:str) -> str:
+    # Windows-specific fix to: https://stackoverflow.com/questions/9233027/unicodedecodeerror-charmap-codec-cant-decode-byte-x-in-position-y-character
+    # no idea if applying encoding="utf-8" everywhere changes anything, better be safe
+    if os.name == 'nt':
+        with open(filename, 'r', encoding="utf-8") as f:
+            return "".join(f.readlines())
+    else:
+        with open(filename, 'r') as f:
+            return "".join(f.readlines())
+
 
 def write(filename:str, val:str):
     if filename.endswith(".html"):
@@ -283,6 +303,10 @@ def write(filename:str, val:str):
 # --------------------------- PHRASES ---------------------------
 
 PHRASES: list[dict[str,str]] = []
+
+yaml=YAML(typ='safe')
+with open("./config/phrases.yml",'r') as file:
+    PHRASES_FILES = yaml.load(file) # type: ignore[w]
 
 def get_key(key:str,silent:bool=False,empty_on_fail:bool=False) -> str:
     silent = silent or "decompile" in DEBUG
@@ -317,3 +341,66 @@ def divfornewline(string:str):
     NOTE: Doesn't take \\\\n
     """
     return f"<div>{string.replace("\n","</div>\n<div>")}</div>\n"
+
+# --------------------------- SOURCE INSPECTOR ---------------------------
+
+def get_sources(files: dict[str,str], variables: dict[str,str | int]) -> dict[str,dict[str,str]]:
+    """
+    Get a source dictionary showing where content is located in a file.
+    Only use this if you cannot add sources in the parsing process itself!
+    files:
+        {
+            file_url:str : file_content:str,
+            [...]
+        }
+    variables:
+        {
+            variable_name:str : value:str|int
+            [...]
+        }
+
+    -> {
+            variable_name:str : {
+                filename:str : {
+                    "file_url": file_url:str,
+                    "refs": [10,20,30,...]
+                }
+                [...]
+            }
+            [...]
+        }
+    """
+    found: dict[str,dict[str,str]] = defaultdict(dict)
+
+    for file_url, file_content in files.items():
+        for variable_name,value in variables.items():
+            found[variable_name][file_url] = get_refs(file_content, value)
+
+    return found
+
+def get_refs(content: str, value: str | int, negative_on_fail:bool=False, print_:bool=False) -> list[int]:
+    if print_:
+        write("debug.json", json.dumps(content.split("\n"),indent=2))
+    result: list[int] = [i+1 for i,line in enumerate(content.split("\n")) if str(value) in line]
+    if len(result) > 0:
+        return result
+    elif negative_on_fail:
+        return [-1]
+    else:
+        raise ValueError(f"Could not find '{value}' in content!")
+
+#  util.get_key_src(desc_key, negative_on_fail=True)
+def get_key_src(key:str) -> tuple[str,int]: # part of phrases
+    for idx, phrase in enumerate(PHRASES):
+        if key in phrase:
+            # phrase[key]["en"]
+            filename = f"./TF2-Zombie-Riot/addons/sourcemod/translations/{PHRASES_FILES[idx]}"
+            filedata = read(filename)
+            return (filename.replace("./TF2-Zombie-Riot/",""), get_refs(filedata,key,negative_on_fail=True)[0])
+    return ("?",-1)
+
+def html_src(src_obj: TypeSourceObject):
+    if type(src_obj[1]) is list:
+        return f"{src_obj[0]}#L{src_obj[1][0]}-L{src_obj[1][1]}"
+    else:
+        return f"{src_obj[0]}#L{src_obj[1]}"
