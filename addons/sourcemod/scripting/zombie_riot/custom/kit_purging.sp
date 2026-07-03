@@ -32,6 +32,8 @@ static int attacks_mode[MAXPLAYERS]={12, ...};
 static int weapon_id[MAXPLAYERS]={0, ...};
 static float QuadSinceLastRemove[MAXPLAYERS]={0.0, ...};
 
+static float fl_KitPurge_HUD_ActiveTimeLeft[MAXPLAYERS]={0.0, ...};
+
 static float BalanceBetweenShotgunAndRifle[MAXPLAYERS]={0.0, ...};
 //	-2.0		-1.0					 -0.5		  	 0.0				+0.5					+1.0			+2.0
 //bonus max    rifile bonus min  		   >			  -   	   rifile skill deactivate  rifile penality min  	 max
@@ -165,6 +167,9 @@ public Action Timer_PurgeKit(Handle timer, DataPack pack)
 	}
 	PurgeKit_HUD(client, weapon, false);
 
+	if(fl_KitPurge_HUD_ActiveTimeLeft[client] - 0.1 > 0.0)
+		fl_KitPurge_HUD_ActiveTimeLeft[client] -= 0.1;
+
 	//close range indicator
 	//just copied it from npc_the_purge.sp 
 	float clientPos[3];WorldSpaceCenter(client, clientPos);
@@ -230,8 +235,11 @@ public void PurgeKit_HUD(int client, int weapon, bool forced)
 		mainStatus = "";
 		if(annahiCD > 0.0)
 		{
-			if(Annahilator_Remove_Timer[client] != null)
-				annahiStat = "Active";
+			if(IsValidHandle(Annahilator_Remove_Timer[client]))
+			{
+//				annahiStat = "Active";
+				Format(annahiStat, sizeof(annahiStat), "Active(%.1f)", fl_KitPurge_HUD_ActiveTimeLeft[client]);
+			}
 			else
 				annahiStat = "Offline";
 		}
@@ -239,8 +247,11 @@ public void PurgeKit_HUD(int client, int weapon, bool forced)
 			annahiStat = "Online";
 		if(quadCD > 0.0)
 		{
-			if(QuadLauncher_Remove_Timer[client] != null)
-				quadStat = "Active";
+			if(IsValidHandle(QuadLauncher_Remove_Timer[client]))
+			{
+//				quadStat = "Active"
+				Format(quadStat, sizeof(quadStat), "Active(%.1f)", fl_KitPurge_HUD_ActiveTimeLeft[client]);
+			}
 			else
 				quadStat = "Offline";
 		}
@@ -378,8 +389,6 @@ public void Weapon_Purging_Rampager(int client, int weapon, bool crit, int slot)
 
 public void Weapon_Purging_QuadLauncher(int client, int weapon, bool crit, int slot)
 {
-	if(!IsValidEntity(client))
-		return;
 	int pap = 0;
 	int KitWeaponMain = EntRefToEntIndex(i_KitPurge_Crusher_Ref[client]);
 	if(IsValidEntity(KitWeaponMain))
@@ -485,8 +494,6 @@ public void Weapon_Purging_Crusher_M2(int client, int weapon, bool crit, int slo
 public void Weapon_Purging_Rampager_R(int client, int weapon, bool crit, int slot)
 {
 	i_KitPurge_Rampager_Ref[client] = EntIndexToEntRef(weapon);
-	if(!IsValidEntity(client))
-		return;
 	if(Ability_Check_Cooldown(client, slot) > 0.0 && !CvarInfiniteCash.BoolValue)
 	{
 		float Ability_CD = Ability_Check_Cooldown(client, slot);
@@ -528,13 +535,13 @@ public void Weapon_Purging_Rampager_R(int client, int weapon, bool crit, int slo
 		EmitSoundToAll(PURGE_EQUIP_GRENADE, client, SNDCHAN_STATIC, 80, _, 0.8);
 		ResetClipOfWeaponStore(weaponN, client, 9999);
 		SetEntData(weaponN, FindSendPropInfo("CBaseCombatWeapon", "m_iClip1"), 100);
-		if(QuadLauncher_Remove_Timer[client] != null)
+		if(IsValidHandle(QuadLauncher_Remove_Timer[client]))
 		{
-			if(IsValidHandle(QuadLauncher_Remove_Timer[client]))
-				delete QuadLauncher_Remove_Timer[client];
+			delete QuadLauncher_Remove_Timer[client];
 			QuadLauncher_Remove_Timer[client] = null;
 		}
 		QuadSinceLastRemove[client] = GetGameTime() + PURGE_QUADLAUNCHER_MAX_HOLD;
+		fl_KitPurge_HUD_ActiveTimeLeft[client] = PURGE_QUADLAUNCHER_MAX_HOLD;
 		QuadLauncher_Remove_Timer[client] = 
 			CreateTimer(QuadSinceLastRemove[client] - GetGameTime(), Weapon_Purging_QuadLauncher_Remove_Later, EntIndexToEntRef(weaponN), TIMER_FLAG_NO_MAPCHANGE);
 
@@ -545,8 +552,6 @@ public void Weapon_Purging_Rampager_R(int client, int weapon, bool crit, int slo
 public void Weapon_Purging_Crusher_R(int client, int weapon, bool crit, int slot)
 {
 	i_KitPurge_Crusher_Ref[client] = EntIndexToEntRef(weapon);
-	if(!IsValidEntity(client))
-		return;
 	if(Ability_Check_Cooldown(client, slot) > 0.0 && !CvarInfiniteCash.BoolValue)
 	{
 		float Ability_CD = Ability_Check_Cooldown(client, slot);
@@ -588,14 +593,14 @@ public void Weapon_Purging_Crusher_R(int client, int weapon, bool crit, int slot
 		Ability_Apply_Cooldown(client, slot, 2.0, weaponN, true);
 		ResetClipOfWeaponStore(weaponN, client, 9999);
 		fl_KitPurge_Annahilator_Tookout_Time[client] = (GetGameTime() + fl_KitPurge_Annahilator_Max_Hold_Time[pap]);
-		if(Annahilator_Remove_Timer[client] != null)
+		if(IsValidHandle(Annahilator_Remove_Timer[client]))
 		{
-			if(IsValidHandle(Annahilator_Remove_Timer[client]))
-				delete Annahilator_Remove_Timer[client];
+			delete Annahilator_Remove_Timer[client];
 			Annahilator_Remove_Timer[client] = null;
 		}
 		EmitSoundToAll(PURGE_EQUIPMINIGUN, client, SNDCHAN_STATIC, 80, _, 0.8);
 		DataPack pack = new DataPack();
+		fl_KitPurge_HUD_ActiveTimeLeft[client] = fl_KitPurge_Annahilator_Max_Hold_Time[pap];
 		Annahilator_Remove_Timer[client] = 
 			CreateTimer(0.1, Weapon_Purging_Annahilator_Remove_Later, pack, TIMER_REPEAT | TIMER_FLAG_NO_MAPCHANGE);
 		pack.WriteCell(EntIndexToEntRef(weaponN));
@@ -619,7 +624,7 @@ public void Weapon_Purging_Annahilator_R(int client, int weapon, bool crit, int 
 	}
 	FakeClientCommandEx(client, "use tf_weapon_shotgun_hwg");
 	Store_RemoveSpecificItem(client, "Purging Annihilator");
-	
+	fl_KitPurge_Annahilator_Tookout_Time[client] = GetGameTime();
 	Weapon_Purging_Annahilator_Remove(EntIndexToEntRef(weapon), client);
 	TF2_RemoveItem(client, weapon);
 }
@@ -686,8 +691,8 @@ public Action Reset_weapon_purging_rampager(Handle cut_timer, int client)
 			Attributes_Set((EntRefToEntIndex(weapon_id[client])), 396, PurgingRampagerAttackSpeed(attacks_mode[client]));
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 		}
+		Revert_Weapon_Back_Timer[client] = null;
 	}
-	Revert_Weapon_Back_Timer[client] = null;
 	return Plugin_Handled;
 }
 
@@ -874,32 +879,28 @@ public Action Purging_Annahilator_damageBonus_Fade(Handle timer, DataPack pack)
 		{
 			fl_KitPurge_Annahilator_Bonus_Damage_Stack[client] = 0.0;
 		}
+		Annahilator_Damage_Revert_Timer[client] = null;
 	}
 	
-	Annahilator_Damage_Revert_Timer[client] = null;
 	return Plugin_Stop;
 }
 
 public Action Weapon_Purging_QuadLauncher_Remove_Later(Handle h,int ref)
 {
 	int weapon = EntRefToEntIndex(ref);
-	int owner = GetEntPropEnt(weapon, Prop_Send, "m_hOwnerEntity");
 	if(!IsValidEntity(weapon))
 	{
-		QuadLauncher_Remove_Timer[owner] = null;
 		return Plugin_Stop;
 	}
+	int owner = GetEntPropEnt(weapon, Prop_Send, "m_hOwnerEntity");
 	
 	bool IsDowned = (dieingstate[owner] != 0);
 	if(IsDowned || !IsPlayerAlive(owner))
 	{
-		if (IsValidEntity(weapon))
+		if(IsValidClient(owner))
 		{
-			if(IsValidClient(owner))
-			{
-				Store_RemoveSpecificItem(owner, "Purging QuadLauncher");
-				TF2_RemoveItem(owner, weapon);
-			}
+			Store_RemoveSpecificItem(owner, "Purging QuadLauncher");
+			TF2_RemoveItem(owner, weapon);
 		}
 		QuadLauncher_Remove_Timer[owner] = null;
 		return Plugin_Stop;
@@ -910,13 +911,10 @@ public Action Weapon_Purging_QuadLauncher_Remove_Later(Handle h,int ref)
 	int weaponN = -1;
 	weaponN = Store_GiveSpecificItem(owner, "Purging Grinder");
 	
-	if (IsValidEntity(weapon))
+	if(IsValidClient(owner))
 	{
-		if(IsValidClient(owner))
-		{
-			Store_RemoveSpecificItem(owner, "Purging QuadLauncher");
-			TF2_RemoveItem(owner, weapon);
-		}
+		Store_RemoveSpecificItem(owner, "Purging QuadLauncher");
+		TF2_RemoveItem(owner, weapon);
 	}
 
 	TE_Particle("hightower_explosion", ownerPos, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0, .clientspec = owner);
@@ -936,11 +934,9 @@ public Action Weapon_Purging_QuadLauncher_Remove_Later(Handle h,int ref)
 public void Weapon_Purging_Annahilator_Remove(int ref, int owner)
 {
 	int weapon = EntRefToEntIndex(ref);
-	
-	if(Annahilator_Remove_Timer[owner] != null)
+	if(IsValidHandle(Annahilator_Remove_Timer[owner]))
 	{
-		if(IsValidHandle(Annahilator_Remove_Timer[owner]))
-			delete Annahilator_Remove_Timer[owner];
+		delete Annahilator_Remove_Timer[owner];
 		Annahilator_Remove_Timer[owner] = null;
 	}
 	DataPack pack = new DataPack();
@@ -1042,7 +1038,7 @@ public Action Weapon_Purging_Crush_Think(Handle h, DataPack pack)
 	int paplvl;
 	if(IsValidEntity(weapon))
 		paplvl = RoundToFloor(Attributes_Get(weapon, Attrib_PapNumber, 1.0));
-	if(Time < crushStartTime + fl_KitPurge_Ram_Max_Time[paplvl] && IsValidEntity(weapon))
+	if(Time < crushStartTime + fl_KitPurge_Ram_Max_Time[paplvl] && IsValidEntity(weapon) && dieingstate[client] == 0)
 	{
 		int team = GetTeam(client);
 		SetEntPropFloat(client, Prop_Send, "m_flNextAttack", Time+0.75);
@@ -1182,10 +1178,9 @@ void KitPurgeGiveAttributesData(DataPack pack)
 			Attributes_SetMulti(weapon, 2, MeleeWeaponMulti);
 			Attributes_SetMulti(weapon, 6, fl_KitPurge_QuadLauncher_FireSpeed[pap]);
 			Attributes_Set(weapon, 698, 1.0);
-			if(QuadLauncher_Remove_Timer[client] != null)
+			if(IsValidHandle(QuadLauncher_Remove_Timer[client]))
 			{
-				if(IsValidHandle(QuadLauncher_Remove_Timer[client]))
-					delete QuadLauncher_Remove_Timer[client];
+				delete QuadLauncher_Remove_Timer[client];
 				QuadLauncher_Remove_Timer[client] = null;
 			}
 			QuadLauncher_Remove_Timer[client] = 
@@ -1205,6 +1200,8 @@ void KitPurgeGiveAttributesData(DataPack pack)
 		}
 	}
 }
+
+
 
 
 
