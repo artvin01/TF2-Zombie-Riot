@@ -872,6 +872,12 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 	else 
 		Base_HealingMaxPoints = RoundToCeil(1900.0 * Healing_Amount);
 	
+	if (IsBarracks(client))
+	{
+		float scale = 1.0 + (Barracks_GetInfo(client, 1) * 0.20);
+
+		Base_HealingMaxPoints = RoundToCeil(9000.0 * scale);	// Yes, it needs necessarily to scale with paps, otherwise it's still nowhere near enough
+	}
 	if(Base_HealingMaxPoints <= 3000)
 		Base_HealingMaxPoints = 3000;
 		
