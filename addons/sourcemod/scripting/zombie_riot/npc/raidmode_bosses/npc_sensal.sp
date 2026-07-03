@@ -2386,7 +2386,7 @@ bool Target_CrystalFalse(int entity, int target)
 	return true;
 }
 
-void Sensal_Cleanup(int entity)
+static void Sensal_Cleanup(int entity)
 {
 	for (int i = 1; i < MAXENTITIES; i++)
 	{
