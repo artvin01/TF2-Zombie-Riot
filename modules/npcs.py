@@ -43,10 +43,6 @@ for category, npc_list in sorted(NPCS_BY_CATEGORY.items()):
             if "source" in npc:
                 if "icon" in npc["source"]:
                     src_icon = npc["source"]["icon"]
-                context["SRC_NAME"] = util.html_src(npc["source"]["name"])
-                if "flags" in npc["source"]:
-                    context["SRC_FLAGS"] = util.html_src(npc["source"]["flags"])
-                context["SRC_DESC"] = util.html_src(npc["source"]["description"])
 
             context["npc_icon"] = util.html_img(modules.shared.get_npc_icon(npc["icon"]), src_icon)
             context["npc_name"] = npc["name"]
@@ -54,6 +50,13 @@ for category, npc_list in sorted(NPCS_BY_CATEGORY.items()):
             context["flags"] = map_flags(npc["flags"])
             context["desc"] = f"{npc["description"].replace("\n","<br>")}"
             context["music"] =  music
+
+            if "source" in npc: # order matters
+                context["SRC_NAME"] = util.html_src(npc["source"]["name"])
+                if "flags" in npc["source"]:
+                    context["SRC_FLAGS"] = util.html_src(npc["source"]["flags"])
+                context["SRC_DESC"] = util.html_src(npc["source"]["description"])
+
             npc_list_html += util.fill_template(util.read("templates/npc/npc_preview.html"),context)
 
         npc_list_html += "</details>\n"

@@ -108,11 +108,6 @@ ul {
   padding-left: 0;
 }
 
-body > li {
-  padding-left: 1em;
-  text-indent: -1em;
-}
-
 ul ul {
     margin-left: 10px;
 }
