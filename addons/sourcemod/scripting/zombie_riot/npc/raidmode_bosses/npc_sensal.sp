@@ -2390,7 +2390,7 @@ static void Sensal_Cleanup(int entity)
 {
 	for (int i = 1; i < MAXENTITIES; i++)
 	{
-		if (!b_IsAProjectile[i])
+		if (!IsValidEntity(i) || !b_IsAProjectile[i])
 			continue;
 		
 		if (GetEntPropEnt(i, Prop_Send, "m_hOwnerEntity") != entity)
