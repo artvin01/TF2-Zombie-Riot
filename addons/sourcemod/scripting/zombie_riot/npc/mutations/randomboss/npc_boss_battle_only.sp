@@ -461,7 +461,7 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			
 			enemy.ExtraDamage *= 0.75;
 			//no umbrals so buff hard
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.30); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.35); 
 		}
 		case 32:
 		{
