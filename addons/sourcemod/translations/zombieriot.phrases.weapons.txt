@@ -5553,36 +5553,6 @@
 		"it" "Kit Modernizzatore VI"
 		"ko" "키트 현대화 VI"
 	}
-	"Unit Reformator I"
-	{
-		"en" "Unit Reformator I"
-		"it" "Unità Riformatore I"
-		"ko" "유닛 개혁가 I"
-	}
-	"Unit Reformator II"
-	{
-		"en" "Unit Reformator II"
-		"it" "Unità Reformator II"
-		"ko" "유닛 개혁가 II"
-	}
-	"Unit Reformator III"
-	{
-		"en" "Unit Reformator III"
-		"it" "Unità Reformator III"
-		"ko" "유닛 개혁가 III"
-	}
-	"Unit Reformator IV"
-	{
-		"en" "Unit Reformator IV"
-		"it" "Unità Reformator IV"
-		"ko" "유닛 개혁가 IV"
-	}
-	"Unit Reformator V"
-	{
-		"en" "Unit Reformator V"
-		"it" "Unità Riformatore V"
-		"ko" "유닛 개혁가 V"
-	}
 	"Adaptive Medigun"
 	{
 		"en"		"Adaptive Medigun"
