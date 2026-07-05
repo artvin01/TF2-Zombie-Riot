@@ -413,10 +413,23 @@ public void Enable_ExploARWeapon(int client, int weapon)
 		h_TimerExploARWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_ExploAR, pack, TIMER_REPEAT);
 		pack.WriteCell(client);
 	}
+	if(Store_IsWeaponFaction(client, weapon, Faction_Vesta))	// Vesta
+	{
+		for(int i = 1; i <= MaxClients; i++)
+		{
+			if(h_TimerExploARWeaponManagement[i])
+			{
+				ApplyStatusEffect(weapon, weapon, "Explosault Rifle Buff", 9999999.0);
+				Attributes_SetMulti(weapon, 4013, 1.1);
+			}
+		}
+	}
 }
 
 public void Deploy_ExploARWeapon(int client, int weapon)
 {
+	if(i_CustomWeaponEquipLogic[weapon]!=WEAPON_BOMB_AR)
+		return;
 	if(IsValidEntity(weapon))
 	{
 		ExploAR_WeaponPap[client] = ExplosiveAR_Get_Pap(weapon);
@@ -442,17 +455,6 @@ public void Deploy_ExploARWeapon(int client, int weapon)
 	}
 	CreateExploAREffect(client);
 	IsDeploy[client]=true;
-	if(Store_IsWeaponFaction(client, weapon, Faction_Vesta))	// Vesta
-	{
-		for(int i = 1; i <= MaxClients; i++)
-		{
-			if(h_TimerExploARWeaponManagement[i])
-			{
-				ApplyStatusEffect(weapon, weapon, "Explosault Rifle Buff", 9999999.0);
-				Attributes_SetMulti(weapon, 4013, 1.1);
-			}
-		}
-	}
 	if(!IsExtraDesc_1[client] && ExploAR_WeaponPap[client]==3)
 	{
 		SetGlobalTransTarget(client);
@@ -615,23 +617,42 @@ static Action Timer_Management_ExploAR(Handle timer, DataPack pack)
 					bool TooFal;
 					GetAbsOrigin(Robot, Robotvec);
 					WorldSpaceCenter(client, RobotAng);
-					TooFal=(GetVectorDistance(RobotAng, Robotvec, true) > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.0));
-					SubtractVectors(RobotAng, Robotvec, Pathing);
-					NormalizeVector(Pathing, Pathing);
-					GetVectorAngles(Pathing, RobotAng);
-					GetAngleVectors(RobotAng, Pathing, NULL_VECTOR, NULL_VECTOR);
-					RobotAng[2]=0.0;
-					RobotAng[0]=0.0;
-					SetEntPropVector(Robot, Prop_Data, "m_angRotation", RobotAng);
-					Robotvec[0]=Pathing[0]*(TooFal ? 300.0 : 50.0);
-					Robotvec[1]=Pathing[1]*(TooFal ? 300.0 : 50.0);
-					Robotvec[2]=Pathing[2]*(TooFal ? 300.0 : 50.0);
-					SetEntPropVector(Robot, Prop_Data, "m_vInitialVelocity", Robotvec);
-					Custom_SetAbsVelocity(Robot, Robotvec);	
-					fl_JumpCooldown[weapon] = GameTime + 1.0;
+					float Dist = GetVectorDistance(RobotAng, Robotvec, true);
+					if(Dist > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 22.0))
+						TeleportEntity(Robot, RobotAng, NULL_VECTOR, NULL_VECTOR);
+					else
+					{
+						TooFal=(Dist > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 2.0));
+						SubtractVectors(RobotAng, Robotvec, Pathing);
+						NormalizeVector(Pathing, Pathing);
+						GetVectorAngles(Pathing, RobotAng);
+						GetAngleVectors(RobotAng, Pathing, NULL_VECTOR, NULL_VECTOR);
+						RobotAng[2]=0.0;
+						RobotAng[0]=0.0;
+						SetEntPropVector(Robot, Prop_Data, "m_angRotation", RobotAng);
+						Robotvec[0]=Pathing[0]*(TooFal ? 300.0 : 50.0);
+						Robotvec[1]=Pathing[1]*(TooFal ? 300.0 : 50.0);
+						Robotvec[2]=Pathing[2]*(TooFal ? 300.0 : 50.0);
+						SetEntPropVector(Robot, Prop_Data, "m_vInitialVelocity", Robotvec);
+						Custom_SetAbsVelocity(Robot, Robotvec);	
+						fl_JumpCooldown[weapon] = GameTime + 1.0;
+					}
 				}
 			}
 		}
+		//This is Very expensive.
+		/*for(int i = 1; i <= MaxClients; i++)
+		{
+			if(IsValidClient(i))
+			{
+				int active = GetEntPropEnt(i, Prop_Send, "m_hActiveWeapon");
+				if(Store_IsWeaponFaction(i, active, Faction_Vesta) && !HasSpecificBuff(active, "Explosault Rifle Buff"))
+				{
+					ApplyStatusEffect(active, active, "Explosault Rifle Buff", 9999999.0);
+					Attributes_SetMulti(active, 4013, 1.1);
+				}
+			}
+		}*/
 	}
 	else
 	{
@@ -768,7 +789,9 @@ static void ExploARWork(int client, int weapon, float GameTime)
 	}
 	if(ExploAR_WeaponPap[client]>2 && ExploAR_OverHit[client]>=100)
 	{
-		if(Armor_Charge[client] < 1)
+		int MaxArmor = MaxArmorCalculation(Armor_Level[client], client, 0.2);
+		int Armor=Armor_Charge[client];
+		if(Armor < 1)
 		{
 			if(dieingstate[client] > 0)
 				ForcePlayerSuicide(client);
@@ -780,7 +803,10 @@ static void ExploARWork(int client, int weapon, float GameTime)
 		}
 		else
 		{
-			Armor_Charge[client]=0;
+			Armor-=MaxArmor;
+			if(Armor<0)
+				Armor=0;
+			Armor_Charge[client]=Armor;
 			f_Armor_BreakSoundDelay[client] = GetGameTime() + 5.0;	
 			EmitSoundToClient(client, "npc/assassin/ball_zap1.wav", client, SNDCHAN_STATIC, 60, _, 1.0, GetRandomInt(95,105));
 		}
@@ -835,12 +861,10 @@ static void WindowsVistaNukeEngage(int client, int weapon)
 					int Robot = EntRefToEntIndex(ExploAR_Robot[client]);
 					if(IsValidEntity(Robot))
 					{
-						static float vecDron[3];
-						GetAbsOrigin(Robot, vecDron);
 						float SpeedReturn[3];
 						int RocketGet = view_as<CClotBody>(Robot).FireRocket(vOrigin, 0.0, 650.0,_,1.5);
 						SetEntProp(RocketGet, Prop_Send, "m_bCritical", true);
-						ArcToLocationViaSpeedProjectile(vecDron, vOrigin, SpeedReturn, 5.0, 2.0);
+						ArcToLocationViaSpeedProjectile(Robot, vOrigin, SpeedReturn, 5.0, 2.0);
 						float ang[3]; GetVectorAngles(SpeedReturn, ang);
 						SetEntPropVector(RocketGet, Prop_Data, "m_angRotation", ang);
 						TeleportEntity(RocketGet, NULL_VECTOR, NULL_VECTOR, SpeedReturn);
@@ -927,7 +951,7 @@ static void Firebullet(int client, int weapon, int Overheat, int GetPap)
 	float speed = 3000.0;
 	speed *= Attributes_Get(weapon, 103, 1.0);
 	if(Overheat>64)
-		damage -= (float(Overheat)/(GetPap==2 ? 130.0 : 100.0))*(damage/2.0);
+		damage -= (float(Overheat)/(GetPap==2 ? 130.0 : 100.0))*(damage/2.4);
 
 	float time = 5000.0/speed;
 	int Projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, "raygun_projectile_blue_trail");
@@ -1021,7 +1045,7 @@ static void VentTouch(int entity, int target)
 				if(!IsIn_HitDetectionCooldown(entity,AoE))
 				{
 					float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-					SDKHooks_TakeDamage(AoE, owner, owner, f_WandDamage[entity]*0.25, DMG_BULLET, weapon, Dmg_Force, targetpos, _ , ZR_DAMAGE_LASER_NO_BLAST);	
+					SDKHooks_TakeDamage(AoE, owner, owner, f_WandDamage[entity]*0.25, DMG_BULLET, weapon, Dmg_Force, targetpos, _ , ZR_DAMAGE_NONE);	
 				}
 				if(!b_NoKnockbackFromSources[AoE])
 				{
@@ -1098,7 +1122,7 @@ static void Gun_BombARTouch(int entity, int target)
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_BULLET, weapon, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_BULLET, weapon, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_NONE);	// 2048 is DMG_NOGIB?
 
 		if(!b_NpcIsInvulnerable[target])
 		{
