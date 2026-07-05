@@ -5020,7 +5020,7 @@
 	}
 	"Kit Modernizer I Desc"
 	{
-		"en" "+20％ Kit DMG | +5％ Kit Atkspd | +5 Kit HP on kill | +5％ Kit Overall Resist\n+25％ Repair Rate"
+		"en" "+20％ Kit DMG | +5％ Kit Atkspd | +5 Kit HP on kill | +5％ Kit Overall Resist\n+25％ Repair Rate\nBarrack units have more hp/dmg (further upgrades give more stats)"
 		"it" "+20％ Danno kit | +5％ Velocità attacco kit | +5 HP kit per uccisione | +5％ Resistenza complessiva kit\n+25％ Velocità riparazione"
 		"ko" "키트 무기 피해량 +20％ | 공격 속도 +5％ | 처치시 체력 +5 회복 | 모든 피해 저항력 +5％\n수리 효율 +25％"
 	}
@@ -5053,36 +5053,6 @@
 		"en" "+100％ Kit DMG | +20％ Kit Atkspd | +20 Kit HP on kill | +20％ Kit Overall Resist\n+10％ Max mana | +200％ Repair Rate | +10％ Buidling HP | +50％ Clip Size"
 		"it" "+100％ Danni kit | +20％ Velocità attacco kit | +20 HP kit per uccisione | +20％ Resistenza complessiva kit\n+10％ Mana massimo | +200％ Velocità riparazione | +10％ HP edificio | +50％ Capacità caricatore"
 		"ko" "키트 무기 피해량 +100％ | 공격 속도 +20％ | 처치 시 체력 +20 회복 | 모든 피해 저항력 +20％\n최대 마나 +10％ | 수리 효율 +200％ | 구조물 체력 +10％ | 장탄수 +50％"
-	}
-	"Unit Reformator I Desc"
-	{
-		"en" "Fret not, my buddy, for your Barracks won't be useless this time.\nIncreases barrack unit HP by +75％, and barrack unit damage by +30％."
-		"it" "Non preoccuparti, amico mio, perché questa volta la tua caserma non sarà inutile.\nAumenta i punti salute delle unità della caserma del +75％ e il danno delle unità della caserma del +30％."
-		"ko" "걱정하지마, 친구, 이번엔 네 배럭 유닛들이 유용할테니.\n-배럭 유닛 최대 체력 +75％\n-배럭 유닛 피해량 +30％"
-	}
-	"Unit Reformator II Desc"
-	{
-		"en" "Increases barrack unit HP by +75％, and barrack unit damage by +30％."
-		"it" "Aumenta i punti salute delle unità della caserma del +75％ e il danno delle unità della caserma del +30％."
-		"ko" "-배럭 유닛 최대 체력 +75％\n-배럭 유닛 피해량 +30％"
-	}
-	"Unit Reformator III Desc"
-	{
-		"en" "Doubles barrack unit HP and damage by +45％."
-		"it" "Raddoppia i punti salute e il danno delle unità caserma del +45％."
-		"ko" "-배럭 유닛의 최대 체력이 2배로 증가\n-배럭 유닛 피해량 +45％"
-	}
-	"Unit Reformator IV Desc"
-	{
-		"en" "Doubles barrack unit HP and increases barrack unit damage by +75％."
-		"it" "Raddoppia i punti salute delle unità della caserma e aumenta i danni inflitti dalle unità della caserma del +75％."
-		"ko" "-배럭 유닛의 최대 체력이 2배로 증가\n-배럭 유닛 피해량 +75％"
-	}
-	"Unit Reformator V Desc"
-	{
-		"en" "TRIPLES barrack unit HP and doubles barrack unit damage."
-		"it" "TRIPLICA i punti salute delle unità della caserma e raddoppia i danni delle unità della caserma."
-		"ko" "-배럭 유닛의 최대 체력이 3배로 증가\n-배럭 유닛의 피해량이 2배로 증가"
 	}
 	"Reinforce Desc"
 	{
