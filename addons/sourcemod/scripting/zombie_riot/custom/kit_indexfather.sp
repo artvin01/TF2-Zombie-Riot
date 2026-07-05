@@ -1475,7 +1475,7 @@ float Func_Dodge_TakeDamage(int attacker, int victim, StatusEffect Apply_MasterS
 {
 	if(CheckInHud())
 		return 1.0;
-	bool DoDodge = false;
+	bool DoDodge = true;
 	if(i_DodgesAvailable[victim] <= 0)
 		return 1.0;
 
@@ -1484,7 +1484,7 @@ float Func_Dodge_TakeDamage(int attacker, int victim, StatusEffect Apply_MasterS
 		return 1.0;
 	}
 	int DmgCapLvl = WeaponLevel[victim];
-	float RMC_damage_cap = 100.0 * float((DmgCapLvl + 1));
+	float RMC_damage_cap = 50.0 * float((DmgCapLvl + 1));
 
 	if(damage > RMC_damage_cap)
 	{
