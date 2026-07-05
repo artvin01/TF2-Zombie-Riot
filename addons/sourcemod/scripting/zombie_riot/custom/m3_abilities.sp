@@ -760,7 +760,8 @@ public void ReconstructiveTeleporter(int client)
 			{
 				char npc_classname[60];
 				NPC_GetPluginById(i_NpcInternalId[ally], npc_classname, sizeof(npc_classname));
-				if(BarrackOwner[ally] == GetClientUserId(client) && !(StrEqual(npc_classname, "npc_barrack_building")))
+				if(BarrackOwner[ally] == GetClientUserId(client) && !(StrEqual(npc_classname, "npc_barrack_building"))
+				&& !(StrEqual(npc_classname, "npc_barrack_villager")))
 				{
 					IsLiveBarrackUnits=true;
 					WorldSpaceCenter(ally, WorldSpaceVec);
