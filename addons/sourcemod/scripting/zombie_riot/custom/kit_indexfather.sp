@@ -144,19 +144,41 @@ enum struct ThePrescript
 	float Timelimit;
 }
 
-public void IndexFather_MapStart()
+public void IndexFather_ResetAllStats()
 {
 	Zero(HudCooldown);
 	Zero(PrescriptCooldown);
 	Zero(OptimiseCmd);
 	Zero(f_HoldBasicVialTime);
 	Zero(f_SwitchWeaponsRandomly);
+	Zero(i_PreviousWeapon);
+	Zero(f_HoldBasicVialTime);
+	Zero(i_CurrentWeaponSet);
+	Zero(i_DodgesAvailable);
+	Zero(f_DodgeCooldown);
+	Zero(f_DodgeBetweenDashes);
+	Zero(f_DodgeActive);
+	Zero(f_ResetMoveSpeedPenalty);
+	Zero(GraceOfPrescript);
+	Zero(UnlockedShin);
+	Zero(i_FuriosoReady);
+	Zero(f_FuriosoInUse);
+	Zero(i_FuriosoHits);
+	Zero(WeaponLevel);
+	Zero(OnBuyClear);
+	Zero(WasARaidboss);
+	Zero(OnBuyClear);
+	Zero(DashesBeforeHitMust);
+}
+public void IndexFather_MapStart()
+{
 	PrecacheSoundArray(g_RecieveNewPrescript);
 	PrecacheSoundArray(g_SuccessPrescript);
 	PrecacheSoundArray(g_FailPrescript);
 	PrecacheSoundArray(g_NewPrescriptAvailable);
 	PrecacheSoundArray(g_AquireNewWeapon);
 	PrecacheSoundArray(g_GenerateRandomWeapon);
+	IndexFather_ResetAllStats();
 }
 public void IndexFather_PluginStart()
 {
@@ -197,6 +219,23 @@ public Action Command_GiveForcePrescript(int client, int args)
 	return Plugin_Handled;
 }
 
+public void IndexFather_CheckValidity(int client, int weapon, bool &result, int slot)
+{
+	CreateTimer(0.5, TimerCheckValidMaster, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
+}
+static Action TimerCheckValidMaster(Handle timer, int ref)
+{
+	int Client = EntRefToEntIndex(ref);
+	if(!IsValidEntity(Client))
+		return Plugin_Stop;
+	if(Handle_Timer[client] == null)
+	{
+		IndexFather_DeleteAll(client);
+		Store_ApplyAttribs(client);
+		Store_GiveAll(client, GetClientHealth(client));
+	}
+	return Plugin_Stop;
+}
 public void IndexFather_NewPrescript(int client, int weapon, bool &result, int slot)
 {
 	if(CurrentPrescript[client] != null)

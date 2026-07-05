@@ -5991,40 +5991,4 @@
 		"en" 		"Card on cooldown ({1} seconds!)"
 		"ko"		"책장 쿨다운 상태 ({1}초)"
 	}
-	"The Index Nursefather Desc"
-    {
-        "en"    "The Will of Hermes.\n-Cycle between 9 weapons with varying damage.\n-Receive prescripts you MUST complete within a time limit to gain Grace.\n-Failing heavily debuffs you for a long time.\n-Press m2 to dash and dodge all attacks below a damage threshold"
-    }
-    "The Index Nursefather Desc 1"
-    {
-        "en"    "-+1 Grace cap and stat increases.\n-Hatchet gives extra poise.\n-Stiletto inflicts Sinking.\n-Rapier and Lance inflict Fragility.\n-Bastard Sword gives a damage buff. \n-Scythe deals far higher damage"
-    }
-    "The Index Nursefather Desc 2"
-    {
-        "en"    "-+1 Grace cap and stat increases.\n-All weapon hits now give poise.\n-Poise gives a higher chance to crit.(62％ chance at max poise)"
-    }
-    "The Index Nursefather Desc 3"
-    {
-        "en"    "-+1 Grace cap and stat increases.\n-Unlocks Furioso: a high damage combo ability.\n-Requires 6 Grace stacks and a hit from all weapons."
-    }
-    "The Index Nursefather Desc 4"
-    {
-        "en"    "-+1 Grace cap and stat increases.\n-Unlocks Shin.\n-Gain Shin permanently when obtaining your first Furioso.\n-Shin increases poise gain and duration."
-    }
-    "The Index Nursefather Desc 5"
-    {
-        "en"    "-+1 Grace cap and stat increases.\n-Unlocks Sizzling Wound.\n-Can Self Revive once every 6 minutes.\n-Self Reviving or using Furioso gives Sizzling Wound.\n-Sizzling Wound gives increased damage but randomly gives you burn and bleed."
-    }
-    "The Index Nursefather Desc 6"
-    {
-        "en"    "-+1 Grace cap and stat increases."
-    }
-    "The Index Nursefather Desc 7"
-    {
-        "en"    "-Stat increases"
-    }
-    "The Index Nursefather Desc 8"
-    {
-        "en"    "-Stat increases"
-    }
 }
