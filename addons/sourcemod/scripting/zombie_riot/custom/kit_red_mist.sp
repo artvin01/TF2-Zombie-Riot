@@ -17,6 +17,7 @@ static bool Prey_Mark_Cooldown[MAXPLAYERS];
 static bool Ego_Cooldown_given[MAXPLAYERS] = {true};
 static bool RM_Lastman_Buffs_applied[MAXPLAYERS] = {false};
 static bool Special_Damage_Boost[MAXPLAYERS] = {false};
+static bool Hori_Sound_Played[MAXPLAYERS];
 static int WeaponLevel[MAXPLAYERS];
 static int ref_MeleeWeapon[MAXPLAYERS];
 static int last_recorded_pap[MAXPLAYERS] = {0, ...};
@@ -280,7 +281,14 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 	}	
 	else if(IsIn_HitDetectionCooldown(client,client, RedMist_WasInAbnorm))
 	{
-		EmitSoundToClient(client, ABNORM_EXIT_SOUND, client, _, 70, _, 1.0, 90);
+		if(SoundManualHas(client))
+		{	
+			EmitSoundToClient(client, "zr_manual/red_mist/card_apply.mp3", client, _, 70, _, 1.0, 100);
+		}
+		else
+		{
+			EmitSoundToClient(client, ABNORM_EXIT_SOUND, client, _, 70, _, 1.0, 90);
+		}
 		EntityKilled_HitDetectionCooldown(client, RedMist_WasInAbnorm);
 		UTIL_ScreenFade(client, 1, 1, FFADE_PURGE, 0, 0, 0, 233);
 	//	UTIL_ScreenFade(client, 66, 66, FFADE_OUT, 0, 0, 0, 233);
@@ -322,6 +330,7 @@ void Disable_Everything_Red_Mist(int client)
 	RemoveSpecificBuff(client, "Ego Manifestation");
 	RemoveSpecificBuff(client, "Influence of the bodies");
 	RemoveSpecificBuff(client, "Red_Mist_Strength");
+	Special_Cooldowns[client][2] = GetGameTime() + (120.00 * CooldownReductionAmount(client));
 	Ego_Active[client] = false;
 }
 
@@ -390,12 +399,23 @@ public void Red_Mist_OnMapStart()
 	Zero(swing_type);
 	Zero(Special_Damage_Boost);
 	Zero(b_WeaponAttackSpeedModified);
+	Zero(Hori_Sound_Played);
 	RM_Precached = false;
 	BeamWand_Laser = PrecacheModel("materials/sprites/laser.vmt", false);
 	BeamWand_Glow = PrecacheModel("sprites/glow02.vmt", true);
 	PrecacheSound("physics/glass/glass_cup_break2.wav");
 	if(!FileNetwork_Enabled())
 		PrecacheRedMistMusic();
+
+	PrecacheSound("zr_manual/red_mist/kali_change.mp3");
+	PrecacheSound("zr_manual/red_mist/kali_special_hori_fin.mp3");
+	PrecacheSound("zr_manual/red_mist/kali_special_vert_fin.mp3");
+	PrecacheSound("zr_manual/red_mist/kali_special_cut.mp3");
+	PrecacheSound("zr_manual/red_mist/kali_special_hori_start.mp3");
+	PrecacheSound("zr_manual/red_mist/kali_special_hori_eyeon.mp3");
+	PrecacheSound("zr_manual/red_mist/abnormaility_overstart.mp3");
+	PrecacheSound("zr_manual/red_mist/card_apply.mp3");
+
 }
 public void Red_Mist_SwitchToMeleeWeapon(int client, int weapon)
 {
@@ -807,18 +827,59 @@ public void Red_Mist_OnTakeDamage_Deal(int victim, int &attacker, int &inflictor
 	{
 		if(current_card_selection[attacker] == 1)//vertical slash, single target, m1 ability
 		{
-			EmitSoundToAll(VERTICAL_SLASH_SOUND, attacker, _, 70, _, 1.0, 50);
 			damage *= 11.0;
 			Special_Active[attacker] = false;
 			Rogue_OnAbilityUse(attacker, weapon);
 			Special_Cooldowns[attacker][1] = GetGameTime() + (60.00 * CooldownReductionAmount(attacker));
 			WeaponSpawnGibForce(victim, weapon);
 			WeaponSpawnGibForce(victim, weapon);
+			for(int listener=1; listener<=MaxClients; listener++)//for special manual download sounds
+			{
+				if(!IsValidClient(listener))
+					continue;
+
+				if(SoundManualHas(listener))
+				{	
+					switch(GetRandomInt(1,2))
+					{
+						case 1:
+						{
+							EmitSoundToClient(listener, "zr_manual/red_mist/kali_special_vert_fin.mp3", attacker, _, 70, _, 1.0, 100);
+						}
+						case 2:
+						{
+							EmitSoundToClient(listener, "zr_manual/red_mist/kali_special_cut.mp3", attacker, _, 70, _, 1.0, 100);
+						}
+					}
+				}
+				else
+				{
+					EmitSoundToClient(listener, VERTICAL_SLASH_SOUND, attacker, _, 70, _, 1.0, 50);
+				}
+			}
 		}
 	}
 	if(Special_Damage_Boost[attacker]) //Horrizontal Slash, multi target, m2 ability
 	{
 		damage *= 6.0;
+		if(!Hori_Sound_Played[attacker])//only play once!!!!111!
+		{
+			for(int listener=1; listener<=MaxClients; listener++)//for special manual download sounds
+			{
+				if(!IsValidClient(listener))
+					continue;
+
+				if(SoundManualHas(listener))
+				{	
+					EmitSoundToClient(listener, "zr_manual/red_mist/kali_special_hori_fin.mp3", attacker, _, 70, _, 1.0, 100);
+					Hori_Sound_Played[attacker] = true;
+				}
+				else
+				{
+					//nothing
+				}
+			}
+		}
 		WeaponSpawnGibForce(victim, weapon);
 	}
 	AddEgoEnergy(attacker);
@@ -885,20 +946,50 @@ public void Red_Mist_Main_Attack(int client, int weapon)
 				Rogue_OnAbilityUse(client, weapon);
 				ApplyStatusEffect(client, client, "Ego Manifestation", 9999.0);
 				ApplyStatusEffect(client, client, "Ego Grace", 30.0);
-				EmitSoundToAll("weapons/buffed_on.wav", client, _, 70, _, 1.0, 100);
-				EmitSoundToAll("weapons/debris4.wav", client, _, 70, _, 1.0, 100);
 				Special_Active[client] = false;
+				for(int listener=1; listener<=MaxClients; listener++)//for special manual download sounds
+				{
+					if(!IsValidClient(listener))
+						continue;
+
+					if(SoundManualHas(listener))
+					{	
+						EmitSoundToClient(listener, "zr_manual/red_mist/kali_change.mp3", client, _, 70, _, 1.0, 100);
+						EmitSoundToClient(listener, "zr_manual/red_mist/kali_change.mp3", client, _, 70, _, 1.0, 100);
+					}
+					else
+					{
+						EmitSoundToClient(listener, "weapons/buffed_on.wav", client, _, 70, _, 1.0, 100);
+						EmitSoundToClient(listener, "weapons/debris4.wav", client, _, 70, _, 1.0, 100);
+					}
+				}
 			}
 			//Special_Cooldowns[client][2] = GetGameTime() + 20.00;
 		}
 		if(current_card_selection[client] == 3)//horizontal
 		{
+			for(int listener=1; listener<=MaxClients; listener++)//for special manual download sounds
+			{
+				if(!IsValidClient(listener))
+					continue;
+
+				if(SoundManualHas(listener))
+				{	
+					EmitSoundToClient(listener, "zr_manual/red_mist/kali_special_hori_start.mp3", client, _, 70, _, 1.0, 100);
+					EmitSoundToClient(listener, "zr_manual/red_mist/kali_special_hori_start.mp3", client, _, 70, _, 1.0, 100);
+					EmitSoundToClient(listener, "zr_manual/red_mist/kali_special_hori_eyeon.mp3", client, _, 70, _, 1.0, 100);
+				}
+				else
+				{
+					EmitSoundToClient(listener, HORIZONTAL_SLASH_SOUND, client, _, 70, _, 1.0, 50);
+				}
+			}
 			swing_type[client] = SWING_TYPE_SPECIAL;
 			Special_Damage_Boost[client] = true;
 			Special_Cooldowns[client][3] = GetGameTime() + (90.00 * CooldownReductionAmount(client));
 			Rogue_OnAbilityUse(client, weapon);
-			EmitSoundToAll(HORIZONTAL_SLASH_SOUND, client, _, 70, _, 1.0, 50);
 			DoHorrizontalSlashEffect(client);
+			Hori_Sound_Played[client] = false;
 			return;
 		}
 		
@@ -1109,7 +1200,7 @@ public Action Onrush_Check_Distance(Handle timer, DataPack Onrush_pack)
 
 public void Red_Mist_Special_M1(int client, int weapon)//for activating currently selected special
 {
-    if(last_recorded_pap[client] < WeaponLevel[client]) //abno page picking
+    if(last_recorded_pap[client] < WeaponLevel[client] && last_recorded_pap[client] <= 3) //abno page picking
     {
 		switch (last_recorded_pap[client])//checks current pap
 		{
@@ -1168,7 +1259,7 @@ public void Red_Mist_Special_M1(int client, int weapon)//for activating currentl
 
 public void Red_Mist_Special_M2(int client, int weapon)
 {
-	if(last_recorded_pap[client] < WeaponLevel[client]) //abno page picking
+	if(last_recorded_pap[client] < WeaponLevel[client] && last_recorded_pap[client] <= 3) //abno page picking
     {
 		switch (last_recorded_pap[client])//checks current pap
 		{
@@ -1251,7 +1342,15 @@ void Abornmality_Page_Display(int client)
 	Set_HitDetectionCooldown(client,client, GetGameTime() + 0.25, RedMist_AbnormSelect);
 	if(!IsIn_HitDetectionCooldown(client,client, RedMist_WasInAbnorm))
 	{
-		EmitSoundToClient(client, ABNORM_ENTER_SOUND, client, _, 70, _, 1.0, 90);
+		if(SoundManualHas(client))
+		{	
+			EmitSoundToClient(client, "zr_manual/red_mist/abnormaility_overstart.mp3", client, _, 70, _, 1.0, 100);
+			EmitSoundToClient(client, "zr_manual/red_mist/abnormaility_overstart.mp3", client, _, 70, _, 1.0, 100);
+		}
+		else
+		{
+			EmitSoundToClient(client, ABNORM_ENTER_SOUND, client, _, 70, _, 1.0, 90);
+		}
 	}
 	Set_HitDetectionCooldown(client,client, FAR_FUTURE, RedMist_WasInAbnorm);
 	int red = 255;
@@ -1260,7 +1359,7 @@ void Abornmality_Page_Display(int client)
 	//For each abnorm page, each side.
 	SetHudTextParams(0.15 + GetRandomFloat(-0.01, 0.01), 0.5 + GetRandomFloat(-0.01, 0.01), 0.25, red, green, blue, 255);
 	//ShowSyncHudText(client, SyncHud_WandMana, "%T\n [M1]","Ability has cooldown", client, 5.0);
-	if(last_recorded_pap[client] < WeaponLevel[client])
+	if(last_recorded_pap[client] < WeaponLevel[client] && last_recorded_pap[client] <= 3)
 	{
 		if(last_recorded_pap[client] == 0)
 		{
@@ -1302,7 +1401,7 @@ void Abornmality_Page_Display(int client)
 
 	SetHudTextParams(0.65 + GetRandomFloat(-0.01, 0.01), 0.5 + GetRandomFloat(-0.01, 0.01), 0.25, red, green, blue, 255);
 	//ShowSyncHudText(client, SyncHud_ArmorCounter, "%T\n [M2]", "Ability has cooldown", client, 5.0);
-	if(last_recorded_pap[client] < WeaponLevel[client])
+	if(last_recorded_pap[client] < WeaponLevel[client] && last_recorded_pap[client] <= 3)
 	{
 		if(last_recorded_pap[client] == 0)
 		{
@@ -1485,7 +1584,7 @@ void Horrizontal_Draw_Greather_Slash_Effect(float Angles[3], int client, float b
 void RedMistSlashEffect(float belowBossEyes[3], float vecHit[3], float diameter = 0.0, int color[3] = {0,0,0})
 {	
 	
-	int r = 255; //Yellow.
+	int r = 255; //Yellow. Edit: Actually Red  Edit2: then make it say red :bruh~1: ??
 	int g = 255;
 	int b = 65;
 	if(color[0] != 0)

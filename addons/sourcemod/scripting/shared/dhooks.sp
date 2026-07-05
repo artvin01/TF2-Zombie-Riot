@@ -1000,7 +1000,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				int EntityOwner = i_WandOwner[entity2];
 				if(ShieldDeleteProjectileCheck(EntityOwner, entity1))
 				{
-					if(func_WandOnTouchReturn(entity1))
+					if(func_WandOnTouchReturn(entity1) != INVALID_FUNCTION)
 					{
 						//make it act as if it collided with the world.
 						Wand_Base_StartTouch(entity1, 0);
@@ -1821,10 +1821,10 @@ void DHook_ScoutSecondaryFireAbilityDelay(int ref)
 			if(Active != entity)
 				return;
 #if defined ZR
-			Enforcer_AbilityM2(client, entity, 1, 5, 1.25, true);
+			Enforcer_AbilityM2(client, entity, 1, 5, 1.25, true, 1);
 #endif
-			SetEntPropFloat(entity, Prop_Send, "m_flNextSecondaryAttack", GetGameTime() + 4.0);
-			Ability_Apply_Cooldown(client, 2, 4.0);
+			SetEntPropFloat(entity, Prop_Send, "m_flNextSecondaryAttack", GetGameTime() + 2.5);
+			Ability_Apply_Cooldown(client, 2, 2.5);
 		}
 	}
 }

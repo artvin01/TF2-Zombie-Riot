@@ -2356,15 +2356,8 @@
 	}
 	"Credits After Selling"
 	{
-		"en" 		"Cash After Selling"
-		"fr" 		"Argent après Vente"
-		"ru" 		"After"
-		"de"		"Kredit nach verkauf"
-		"pt"		"Créditos após vender"
-		"nl"		"Krediet achter het verkopen"
-		"chi"       "出售后的积分"
-		"it"		"Contanti dopo la vendita"
-		"ko" 		"판매 후의 자금"
+		"en" 		"Post Sell"
+		"ko" 		"판매 후"
 	}
 	"MAX BARRICADES OUT CURRENTLY"
 	{

@@ -90,7 +90,7 @@ public void WepaonRiotgunFillerM2(int client, int weapon, bool crit, int slot)
 	//This is so it show up on hud for the m2 ability.
 	return;
 }
-void Enforcer_AbilityM2(int client, int weapon, int slot, int pushLevel, float pushforcemulti, bool IngoreAmmo = false)
+void Enforcer_AbilityM2(int client, int weapon, int slot, int pushLevel, float pushforcemulti, bool IngoreAmmo = false, int Special = 0)
 {
 //	if(IngoreAmmo)
 //		SetEntPropFloat(weapon, Prop_Send, "m_flNextSecondaryAttack", GetGameTime() + 3.0);
@@ -211,7 +211,11 @@ void Enforcer_AbilityM2(int client, int weapon, int slot, int pushLevel, float p
 			if(!IngoreAmmo)
 				EmitSoundToAll("weapons/shotgun/shotgun_dbl_fire.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
 			else
+			{
+				if(Special == 1)
+					GiveArmorViaPercentage(client, 0.125, 1.0);
 				EmitSoundToAll("weapons/push_impact.wav", client, SNDCHAN_STATIC, 80, _, 1.0);
+			}
 
 			if(!IngoreAmmo)
 			{
@@ -262,4 +266,27 @@ public bool Enforcer_TraceTargets(int entity, int contentsMask, int client)
 		}
 	}
 	return false;
+}
+
+
+
+
+public void Enforcer_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int zr_custom_damage)
+{
+	if(CheckInHud())
+		return;
+
+	if((zr_custom_damage & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+		return;
+
+	if(IsIn_HitDetectionCooldown(weapon, weapon))
+	{
+		return;
+	}
+	Set_HitDetectionCooldown(weapon,weapon, GetGameTime() + 0.01);
+	float cooldown = Ability_Check_Cooldown(attacker, 2, weapon);
+	if(cooldown > 0.0)
+	{
+		Ability_Apply_Cooldown(attacker, 2, cooldown - 0.9, weapon, true);
+	}
 }

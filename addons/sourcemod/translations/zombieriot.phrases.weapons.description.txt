@@ -1410,6 +1410,7 @@
 	"Wind Staff Desc"
 	{
 		"en"	"-Causes Aoe Wind Storms that damage over time.\nHolding m2 summons an aoe wind storm around you"
+		"ko"	"-시간에 걸쳐 광역 피해를 주는 토네이도를 생성합니다.\n-우클릭을 꾹 누르면 사용자 주위를 휘도는 광역 토네이도를 소환합니다."
 	}
 	
 	"Elemental Staff Desc"
@@ -2712,13 +2713,15 @@
 		"it"	"Le granate con equipaggiamento extra ora si attaccano istantaneamente al punto in cui atterrano invece di rotolare."
 		"ko"	"-추가 장비들의 수류탄 계열 장비가 더 이상 굴러가지 않습니다. 대신 닿거나 떨어진 곳에 접착됩니다."
 	}
+	"The Enforcer Desc Weak"
+	{
+		"en"	"-Increases damage.\n-Doubles damage falloff\n-Grants an ability that stuns and knockbacks 3 targets, consumes one clip per target hit.\n-On hit, reduce cooldown"
+		"ko"	"-피해량 증가\n-거리 비례 피해 감소량 2배\n-최대 3명의 적을 기절시키고 넉백시키는 능력 획득. 적중한 적 하나당 장탄 1 소모\n-적중 시, 능력 쿨다운 감소"
+	}
 	"The Enforcer Desc"
 	{
-		"en"	"-Increases damage.\n-Doubles damage falloff\n-Grants an ability that stuns and knockbacks 10 targets, consumes one clip per target hit."
-		"fr"	"Double la perte de dégats avec distance. Abilité étonne et recule 10 ennemis. Abilité utilise un chargeur par victime."
-		///"ru"	"Удваивает уменьш. урона на расстоянии, но даёт способность, которая оглушает и отбрасывает 10 цели, расходует одну обойму на каждую поражённую цель."
-		"it"	"Aumenta i danni.\nDoppia la caduta dei danni ma concede un'abilità che stordisce e colpisce 10 bersagli, consuma un caricatore per ogni bersaglio colpito."
-		"ko"	"-피해량 증가\n-거리 비례 피해 감소량 2배\n-최대 10명의 적을 기절시키고 넉백시키는 능력 획득. 적중한 적 하나당 장탄 1 소모"
+		"en"	"-Increases damage.\n-Increased ability knockback and can hit up to 10 targets"
+		"ko"	"-피해량 증가\n-능력의 넉백력이 증가하며 최대 10명의 적을 적중할 수 있음"
 	}
 	"The Enforcer Pap 1"
 	{
@@ -3810,21 +3813,13 @@
 
 	"Riot Gun Desc"
 	{
-		"en"	"-With Armor, 60％ (bosses 35％) damage resistance from attacks in front of you.\n-Ability stuns enemies in front of you and increases attack speed.\n-Be slower with shield on, When shield breaks, gain speed with a cooldown (sound)"
-		"it"	"Con l'armatura, 60％ (boss 35％) resistenza ai danni degli attacchi di fronte a voi.\nAbilità che stordisce i nemici di fronte a voi e aumenta la velocità di attacco.\nE' più lento con lo scudo attivato, quando lo scudo si rompe, guadagna velocità con un cooldown (suono)"
-		"ko"	"-아머 보유시 정면의 적에게 받는 피해가 60％ (보스일시 35％) 감소.\n-능력: 정면의 적 기절 및 공격 속도 증가\n-방패 전개시 이동 속도 감소. 방패 파괴시 이동 속도 증가(쿨타임 존재)"
-	}
-	"Riot Gun Pap 1"
-	{
-		"en"	"-Gain 10％ melee resistance.\n-Ability now stuns longer and has a decreased cooldown.\n- R -> M2\n-M2 Pushes enemies."
-		"it"	"+10％ Resistenza in mischia. Diventa un'arma primaria.\nL'abilità ora stordisce più a lungo e ha un cooldown ridotto."
-		"ko"	"-근접 피해 저항력 +10％\n-능력으로 부여하는 기절의 지속 시간 증가 및 쿨타임 감소.\n-R -> 우클릭\n-우클릭 사용시 적을 넉백시킴."
+		"en"	"-if Armor, resistance from front attacks.\n-15％ Res\n-R stuns targets in front of you and increases attack speed\n-slower with shield on\n-Shield Break: gain speed with a cooldown\n-M2 shoves enemies, gain armor on hit\n-on hurt, you + ally CD Reduced"
+		"ko"	"-아머 보유시 정면의 적에게 받는 피해가 감소\n-저항력 15％ 증가\n-R키 능력: 정면의 적 기절 및 공격 속도 증가\n-방패 전개시 이동 속도 감소\n-방패 파괴시 이동 속도 증가(쿨타임 존재)\n-M2 능력 사용 시 적을 밀쳐내며, 적중 시 아머 획득\n-피해를 입을 시 자신과 아군의 쿨다운 감소"
 	}
 	"Energized Riot Gun Desc"
 	{
-		"en"	"-Gain 10％ ranged resistance.\n-Ability now becomes slower multi-hit shotgun.\n-Hurt with shield on reduces CD by 0.5 Sec of you and ally.\n- R -> M2\n-M2 Pushes enemies."
-		"it"	"+10％ resistenza a distanza. Diventa un'arma primaria.\nL'abilità ora diventa un fucile a pompa multi-colpo più lento.\nFerire con lo scudo attivo riduce la CD di 0,5 secondi per te e per l'alleato.\nR -> M2\nM2 Spinge i nemici."
-		"ko"	"-근접 피해 저항력 +10％\n-이제 능력이 느리게 사격하는 다중 공격 산탄총이 됩니다.\n-방패가 있는 상태에서 피해를 받을때마다, 당신과 아군의 쿨타임이 0.5초 감소\n-R -> 우클릭\n-우클릭 사용시 적을 넉백시킴."
+		"en"	"-Gain 10％ ranged resistance.\n-Increased damage and overall resistance"
+		"ko"	"-원거리 피해 저항력 +10％\n-피해량 및 전반적인 피해 저항력 증가"
 	}
 	"Armor Visualiser Desc"
 	{
@@ -5471,7 +5466,7 @@
 	"The Heartbroken Desc 2"
 	{
 		"en"	"-Overall Stat Increases\n-Your R now can dash towards an enemy, next hit dealing big damage\nIf the enemy has not maxed sinking:\nReduce Dash Cooldown\n-Unlock Secondary weapon:\n-Crouch+R to temporarily revive players for 5 coffins\n-Gain coffins on hit, and from summoned allies, raids give 2x as much"
-		"ko"	"-전반적인 능력치 증가\n-R키로 적에게 돌진할 수 있으며, 다음에 적중하는 공격의 피해량이 크게 증가\n적이 보유한 침잠이 최대치가 아니라면:\n돌진 쿨다운 감소\n-보조 무기 해금:\n-웅크리기+R로 '관'을 5 소모하여 사망한 플레이어를 일시적으로 부활 가능\n-자신이나 부활한 아군이 피해를 가할 시 관을 얻음"
+		"ko"	"-전반적인 능력치 증가\n-R키로 적에게 돌진할 수 있으며, 다음에 적중하는 공격의 피해량이 크게 증가\n적이 보유한 침잠이 최대치가 아니라면:\n돌진 쿨다운 감소\n-보조 무기 해금:\n-웅크리기+R로 '관'을 5 소모하여 사망한 플레이어를 일시적으로 부활 가능\n-자신이나 부활한 아군의 공격 적중 시 관을 얻음"
 	}
 	"The Heartbroken Desc 3"
 	{
@@ -5506,6 +5501,7 @@
 	"Tiantui Star Blade Desc"
 	{
 		"en"	"\n-Abilities uses ammo and refills on wave end\n-M2 to charge forward, consuming ammo, gives 2x melee range and shield\n-Combos reset charge cooldown\n-R and crouch to reload special ammo and gain a buff (spend ammo for stronger, once per wave, revives downed)"
+		"ko"	"-능력이 탄환을 소모하며 웨이브 종료 시 재보급\n-우클릭으로 돌진하며 탄환을 소모: 사거리가 2배로 증가하며 보호막을 획득\n-콤보 적중 시 돌진 쿨다운 초기화\n-웅크리기+R로 특수 탄환 장전, 버프 획득(탄환 일정량 사용 시 버프 강화, 다운 중 사용 시 1회 부활)"
 	}
 	"Tiantui Star Blade Extra"
 	{
@@ -5590,105 +5586,146 @@
 	"The Commander"
 	{
 		"en"	"The Commander"
+		"ko"	"지휘관"
 	}
 	"The Commander Desc"
 	{
 		"en"	"A kit based on having your own army and supporting it, consists of:\n-A revolver for resources and support, a shotgun for dmg and healing and,later, buffing your troops\n-A wrench"
+		"ko"	"자신만의 군대를 양성하고 지원하는데 기반 키트입니다:\n-자원 및 지원을 위한 리볼버 보유\n-피해와 지원을 위한 산탄총 보유, 추후에 버프 역시 지원\n-렌치 보유"
+	}
+	"The Marker"
+	{
+		"en"	"The Marker"
+		"ko"	"표식자"
 	}
 	"The Marker Desc"
 	{
 		"en"	"A support gun for the Barracks Kit\n-Marks targets on hit and deals more damage to marked enemies\n-Generates resources (more on marked enemies)\n-More accurate but fires and reloads slower"
+		"ko"	"배럭 키트를 위한 지원용 총기입니다.\n-적중 시 대상에게 표적을 부여하며, 표적 상태인 대상에게 피해량 증가\n-적중 시 자원 생성(표적 상태인 적인 경우 증가)\n-더욱 정확하지만 발사 및 재장전이 느림"
 	}
 	"The Marker Desc 1"
 	{
 		"en"	"-More dmg, slightly more fire rate and reload rate\n-You gain 1 more bullet in the chamber\n-You gain a tiny bit of max hp"
+		"ko"	"-피해량 증가, 발사/재장전 속도 소폭 증가\n-장탄수 1발 증가\n-최대 체력 소폭 증가"
 	}
 	"The Marker Desc 2"
 	{
 		"en"	"-More dmg, slightly more fire rate and reload rate\n-You gain 1 more bullet in the chamber\n-You gain a tiny bit of max hp"
+		"ko"	"-피해량 증가, 발사/재장전 속도 소폭 증가\n-장탄수 1발 증가\n-최대 체력 소폭 증가"
 	}
 	"The Marker Desc 3"
 	{
 		"en"	"-More dmg, slightly more fire rate and reload rate\n-You gain 1 more bullet in the chamber\n-You gain a tiny bit of max hp"
+		"ko"	"-피해량 증가, 발사/재장전 속도 소폭 증가\n-장탄수 1발 증가\n-최대 체력 소폭 증가"
 	}
 	"The Marker Desc 4"
 	{
 		"en"	"More dmg, slightly more fire rate and reload rate\n-You gain 1 more bullet in the chamber\n-You gain a tiny bit of max hp"
+		"ko"	"-피해량 증가, 발사/재장전 속도 소폭 증가\n-장탄수 1발 증가\n-최대 체력 소폭 증가"
 	}
 	"The Marker Desc 5"
 	{
 		"en"	"-More dmg, slightly more fire rate and reload rate\n-You gain a tiny bit of max hp"
+		"ko"	"-피해량 증가, 발사/재장전 속도 소폭 증가\n-최대 체력 소폭 증가"
 	}
 	"The Marker Desc 6"
 	{
 		"en"	"-More dmg, slightly more fire rate and reload rate\n-You gain a tiny bit of max hp"
+		"ko"	"-피해량 증가, 발사/재장전 속도 소폭 증가\n-최대 체력 소폭 증가"
 	}
 	"The Marker Desc 7"
 	{
 		"en"	"-More dmg, slightly more fire rate and reload rate\n-You gain a tiny bit of max hp"
+		"ko"	"-피해량 증가, 발사/재장전 속도 소폭 증가\n-최대 체력 소폭 증가"
+	}
+	"Reconstructive Shotgun"
+	{
+		"en"	"Reconstructive Shotgun"
+		"ko"	"재구성 산탄총"
 	}
 	"Reconstructive Shotgun Desc"
 	{
 		"en"	"Deals more damage to marked enemies and heals (npcs) based off dmg dealt, M2 shows the cooldown\n-The healing nova currently heals 1 target\nYou heal for 5%% of that amount"
+		"ko"	"표적 상태인 대상에게 피해량이 증가하며, 가한 피해량에 따라 NPC들을 치유: 우클릭은 쿨다운을 표시\n-치유 노바는 1명의 대상을 치유할 수 있음\n-해당 효과로 치유 시 사용자도 해당 치유량의 5％를 치유"
 	}
 	"Reconstructive Shotgun Desc 1"
 	{
 		"en"	"-You fire slightly faster and deal more damage\n-Marked enemies take a bit more damage"
+		"ko"	"-발사 속도 소폭 증가, 피해량 증가\n-표적 상태인 적에 대한 피해 증가량 소폭 증가"
 	}
 	"Reconstructive Shotgun Desc 2"
 	{
 		"en"	"-You fire slightly faster and deal more damage\n-Your nova heals 2 targets\n-Marked enemies take a bit more damage"
+		"ko"	"-발사 속도 소폭 증가, 피해량 증가\n-치유 노바가 2명까지 치유 가능\n-표적 상태인 적에 대한 피해 증가량 소폭 증가"
 	}
 	"Reconstructive Shotgun Desc 3"
 	{
 		"en"	"-You fire slightly faster and deal more damage\n-Your nova heals 3 targets\n-Marked enemies take a bit more damage"
+		"ko"	"-발사 속도 소폭 증가, 피해량 증가\n-치유 노바가 3명까지 치유 가능\n-표적 상태인 적에 대한 피해 증가량 소폭 증가"
 	}
 	"Reconstructive Shotgun Desc 4"
 	{
 		"en"	"-You fire slightly faster and deal more damage\n-Your weapon now buffs npcs it heals\n-Pressing R allows you to swap between what type of buffs\n-Marked enemies take a bit more damage"
+		"ko"	"-발사 속도 소폭 증가, 피해량 증가\n-이제 치유하는 대상에게 버프를 부여\n-R키 사용 시 적용되는 버프를 전환 가능\n-표적 상태인 적에 대한 피해 증가량 소폭 증가"
 	}
 	"Reconstructive Shotgun Desc 5"
 	{
 		"en"	"-You fire slightly faster and deal more damage\n-You give stronger buffs\n-Marked enemies take a bit more damage"
+		"ko"	"-발사 속도 소폭 증가, 피해량 증가\n-제공하는 버프의 위력 증가\n-표적 상태인 적에 대한 피해 증가량 소폭 증가"
 	}
 	"Reconstructive Shotgun Desc 6"
 	{
 		"en"	"-You fire slightly faster and deal more damage\n-You give stronger buffs\n-Marked enemies take a bit more damage"
+		"ko"	"-발사 속도 소폭 증가, 피해량 증가\n-제공하는 버프의 위력 증가\n-표적 상태인 적에 대한 피해 증가량 소폭 증가"
 	}
 	"Reconstructive Shotgun Desc 7"
 	{
 		"en"	"-You fire slightly faster and deal more damage\n-You give stronger buffs\n-Marked enemies take a bit more damage"
+		"ko"	"-발사 속도 소폭 증가, 피해량 증가\n-제공하는 버프의 위력 증가\n-표적 상태인 적에 대한 피해 증가량 소폭 증가"
+	}
+	"The Italian Business"
+	{
+		"en"	"The Italian Business"
+		"ko"	"이탈리아식 사업"
 	}
 	"The Italian Business Desc"
 	{
 		"en"	"-A wrench made by an italian mafia girl (clearly)\n-Allows to repair buildings at hit enemies both\n-Gives barrack resources on hit\n-More effective on marked enemies"
+		"ko"	"-이탈리아인 마피아 소녀가 만든 렌치입니다(정말로요).\n-구조물을 수리하면서 적을 공격 가능\n-적중 시 배럭 지원 생성\n-표적 상태인 대상일 경우 효과 증가"
 	}
 	"The Italian Business Desc 1"
 	{
 		"en"	"-More damage, building hp, repair rate"
+		"ko"	"-피해량, 구조물 체력, 수리 효율 증가"
 	}
 	"The Italian Business Desc 2"
 	{
 		"en"	"More damage, building hp, repair rate\n-You are now able to do a Power-hit with Crouch + m1\n-The power hit briefly stuns enemies and knocks you backwards (and gives resources)"
+		"ko"	"-피해량, 구조물 체력, 수리 효율 증가\n-이제 웅크리기 + 좌클릭을 통해 강타를 사용할 수 있음\n-강타 적중 시 대상을 짧게 기절시키며, 사용자를 뒤로 밀어내고 자원을 생성"
 	}
 	"The Italian Business Desc 3"
 	{
 		"en"	"-More damage, building hp, repair rate"
+		"ko"	"-피해량, 구조물 체력, 수리 효율 증가"
 	}
 	"The Italian Business Desc 4"
 	{
 		"en"	"-More damage, building hp, repair rate\n-You can now do another Power-hit in a row\n-The HUD show if you still can, beware it has increased effect but also cooldown"
+		"ko"	"-피해량, 구조물 체력, 수리 효율 증가\n-이제 두번째 강타를 연속으로 사용할 수 있음\n-HUD에 사용 가능 여부가 표시되며, 연속 사용 시 위력이 증가하지만 쿨다운 역시 증가"
 	}
 	"The Italian Business Desc 5"
 	{
 		"en"	"-More damage, building hp, repair rate"
+		"ko"	"-피해량, 구조물 체력, 수리 효율 증가"
 	}
 	"The Italian Business Desc 6"
 	{
 		"en"	"-More damage, building hp, repair rate"
+		"ko"	"-피해량, 구조물 체력, 수리 효율 증가"
 	}
 	"The Italian Business Desc 7"
 	{
 		"en"	"-More damage, building hp, repair rate"
+		"ko"	"-피해량, 구조물 체력, 수리 효율 증가"
 	}
 }

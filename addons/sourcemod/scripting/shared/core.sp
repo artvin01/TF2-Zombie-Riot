@@ -954,7 +954,8 @@ public Action Timer_Temp(Handle timer)
 	}
 	
 #if defined ZR
-	if(RaidbossIgnoreBuildingsLogic())
+	bool raid = RaidbossIgnoreBuildingsLogic();
+	if(raid)
 	{
 		if(i_npcspawnprotection[EntRefToEntIndex(RaidBossActive)] > NPC_SPAWNPROT_INIT)
 		{
@@ -973,6 +974,25 @@ public Action Timer_Temp(Handle timer)
 			}
 		}
 	}
+	
+	for(int client=1; client<=MaxClients; client++)
+	{
+		if (!IsClientInGame(client) || IsFakeClient(client))
+			continue;
+		
+		// Always show the raid boss to everyone on the HUD
+		if (raid)
+			Calculate_And_Display_hp(client, EntRefToEntIndex(RaidBossActive), 0.0, true, .RaidHudForce = true);
+		
+		// Show the NPC a player is spectating on the HUD
+		if (IsClientObserver(client) && GetEntProp(client, Prop_Send, "m_iObserverMode") == OBS_MODE_CHASE)
+		{
+			int target = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
+			if (target > MaxClients && b_ThisWasAnNpc[target] && !b_NpcHasDied[target])
+				Calculate_And_Display_hp(client, target, 0.0, true);
+		}
+	}
+	
 	if (GetWaveSetupCooldown() > GetGameTime() && GetWaveSetupCooldown() < GetGameTime() + 10.0)
 	{
 		PlayTickSound(false, true);
@@ -1928,7 +1948,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 				Call_Finish(action);
 			}
 		}
-		
 	}
 	
 	//support in_use
@@ -2981,6 +3000,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
+			SDKHook(entity, SDKHook_SpawnPost, Set_Rocket_Team);
 			Hook_DHook_UpdateTransmitState(entity);
 			b_IsAProjectile[entity] = true;
 			func_WandOnTouch[entity] = INVALID_FUNCTION;
@@ -3110,6 +3130,28 @@ public Action SDKHook_Regenerate_Touch(int entity, int target)
 		return Plugin_Handled;
 
 	return Plugin_Continue;
+}
+
+void Set_Rocket_Team(int entity)
+{
+	RequestFrame(Set_Rocket_TeamFrame, EntRefToEntIndex(entity));
+}
+
+void Set_Rocket_TeamFrame(int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if (!IsValidEntity(entity))
+		return;
+
+	if (GetTeam(entity) != 0)
+		return;
+
+	// Team likely not yet setup, assume it's meant to be the same as the owner
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if (owner == -1)
+		return;
+	
+	SetTeam(entity, GetTeam(owner));
 }
 
 void Set_Projectile_Collision(int entity)

@@ -252,7 +252,7 @@ int Freeplay_GetDangerLevelCurrent()
 	int DangerLevel = 1;
 
 	float DefaultChance = 0.035 * float(EnemyChance);
-	for(int LoopMax = 1; LoopMax < 5 ; LoopMax++)
+	for(int LoopMax = 1; LoopMax < 6 ; LoopMax++)
 	{
 		//theres a default 10% chance to roll higher enemies.
 		if(GetRandomFloat(0.0, 1.0) <= (DefaultChance))
@@ -300,12 +300,45 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		{
 			case 2:
 			{
-				enemy.Index = NPC_GetByPlugin("npc_blitzkrieg");
-				enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-				if(GetRandomInt(1, 3) == 1)
-					enemy.Data = "wave_40;hyper";
-				else
-					enemy.Data = "wave_40";
+				switch(GetRandomInt(1, 12))
+				{
+					case 1:
+					{
+						enemy.Index = NPC_GetByPlugin("npc_blitzkrieg");
+						enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.Data = "wave_40;hyper";
+					}
+					case 2:
+					{
+						enemy.Index = NPC_GetByPlugin("npc_blitzkrieg");
+						enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.Data = "wave_40;hyper";
+					}
+					case 3:
+					{
+						enemy.Index = NPC_GetByPlugin("npc_blitzkrieg");
+						enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.Data = "wave_40;hyper";
+					}
+					case 4:
+					{
+						enemy.Index = NPC_GetByPlugin("npc_blitzkrieg");
+						enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.Data = "wave_40;hyper";
+					}
+					case 5:
+					{
+						enemy.Index = NPC_GetByPlugin("npc_blitzkrieg");
+						enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.Data = "wave_40;blitzmayhem";
+					}
+					default:
+					{
+						enemy.Index = NPC_GetByPlugin("npc_blitzkrieg");
+						enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.Data = "wave_40";
+					}
+				}
 			}
 			case 3:
 			{
@@ -428,6 +461,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Health = RoundToFloor((7000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraMeleeRes *= 3.0;
 				enemy.ExtraRangedRes *= 3.0;
+				enemy.ExtraDamage = 0.80;
 			}
 			case 14:
 			{
@@ -580,14 +614,14 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 36:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_squad_master");
-				enemy.Health = RoundToFloor((1000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((1250000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "wave_20";
 				enemy.ExtraSpeed = 0.85;
 			}
 			case 37:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_no_random_kranz");
-				enemy.Health = RoundToFloor((750000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((1000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "wave_40";
 				enemy.ExtraThinkSpeed = 1.15;
 				enemy.ExtraDamage = 0.6;
@@ -596,7 +630,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 38:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_black_heavy_soul");
-				enemy.Health = RoundToFloor((4000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "wave_40";
 				enemy.ExtraThinkSpeed = 1.15;
 				enemy.ExtraDamage = 0.7;
@@ -1036,15 +1070,15 @@ static Action Freeplay_RouletteMessage(Handle timer)
 				}
 				case 2:
 				{
-					CPrintToChatAll("{crimson}THE BLITZKRIEG! {gold}- {snow}That mission to send Blitz that abandoned lab was an huge mistake sadly...");
+					CPrintToChatAll("{crimson}THE BLITZKRIEG! {gold}- {lightcyan}That mission to send Blitz that abandoned lab was an huge mistake sadly...");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{crimson}THE BLITZKRIEG! {gold}- {snow}I remember Blitz before he was hacked. he was nice to us expidonsans.");
+					CPrintToChatAll("{crimson}THE BLITZKRIEG! {gold}- {lightcyan}I remember Blitz before he was hacked. He was nice to us Expidonsans and Ruanians.");
 				}
 				case 4:
 				{
-					CPrintToChatAll("{crimson}THE BLITZKRIEG! {gold}- {red}There was an original group of mercs that tired to stop Blitz at an expidonsan base. They did not succeed  ");
+					CPrintToChatAll("{crimson}THE BLITZKRIEG! {gold}- {red}There was an original group of mercs that tired to stop Blitz at an expidonsan base. They did not succeed...");
 				}
 				default:
 				{
@@ -1062,7 +1096,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 				}
 				case 2:
 				{
-					CPrintToChatAll("{darkblue}WALDCH {white}& {yellow}SILVESTER! {gold}- {red}Enjoy getting sniped from across the map");
+					CPrintToChatAll("{darkblue}WALDCH {white}& {yellow}SILVESTER! {gold}- {red}Enjoy getting sniped from across the map!");
 				}
 				case 3:
 				{
@@ -1092,7 +1126,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}GOD ALAXIOS! {gold}- {red}If Alaxios is the 'god of life', then who's the 'god of death'");
+					CPrintToChatAll("{lightblue}GOD ALAXIOS! {gold}- {red}If Alaxios is the {lightblue}''god of life''{red}, then who's the {green}''god of death''{red}?");
 				}
 				case 2:
 				{
@@ -1146,11 +1180,11 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-						CPrintToChatAll("{crimson}THE PURGE! {gold}- {snow}The only Ziberian that stood up to Kahml, Ivan Petrova. Now he's this cyborg after Kahml killed him with 1 punch.");
+						CPrintToChatAll("{crimson}THE PURGE! {gold}- {lightcyan}The only Ziberian that stood up to Kahml, Ivan Petrova. Now he's this cyborg after Kahml killed him with 1 punch.");
 				}
 				default:
 				{
-					CPrintToChatAll("{crimson}THE PURGE! {gold}- {red}Annihilation shall be absolute.");
+					CPrintToChatAll("{crimson}THE PURGE! {gold}- {red}Annihilation shall be absolute!");
 				}
 			}
 		}
@@ -1160,11 +1194,11 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}THE MESSENGER! {gold}- {snow}How do these people find the Void, ugh. At least Vhxis was holding it back.");
+					CPrintToChatAll("{lightblue}THE MESSENGER! {gold}- {lightcyan}How do these people find the Void, ugh. At least Vhxis was holding it back.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{lightblue}THE MESSENGER! {gold}- {red}shhhh, don't tell {lightblue}Nemal {red}what happened to him.");
+					CPrintToChatAll("{lightblue}THE MESSENGER! {gold}- {red}shhhh, don't tell Nemal what happened to him.");
 				}
 				default:
 				{
@@ -1185,7 +1219,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{darkblue}CHAOS KAHMLSTEIN! {gold}- {snow}He almost got as smart as one of us while Chaos afflicted. But you guys killed him before he got too smart.");
+					CPrintToChatAll("{darkblue}CHAOS KAHMLSTEIN! {gold}- {lightcyan}He almost got as smart as one of us while Chaos afflicted. But you guys got rid of his Chaos before he got too smart.");
 				}
 				case 2:
 				{
@@ -1219,7 +1253,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 				}*/
 				default:
 				{
-					CPrintToChatAll("{green}CALMATICUS! {gold}- {red}The source of the Xeno infection");
+					CPrintToChatAll("{green}CALMATICUS! {gold}- {red}The source of the Xeno infection.");
 				}
 			}
 		}
@@ -1277,7 +1311,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{purple}UNSPEAKABLE! {gold}- {red}Thankfully it's should be dead after the incident at the palace");
+					CPrintToChatAll("{purple}UNSPEAKABLE! {gold}- {red}Thankfully it's should be dead after the incident at the palace.");
 				}
 				case 2:
 				{
@@ -1415,19 +1449,19 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{darkgreen}Agent Smith. {red}Agent Stinky");
+					CPrintToChatAll("{darkgreen}Agent Smith. {red}Agent Stinky.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{darkgreen}Agent Smith. {red}Agent Stinker");
+					CPrintToChatAll("{darkgreen}Agent Smith. {red}Agent Stinker.");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{darkgreen}Agent Smith. {red}Agent Stinkiest");
+					CPrintToChatAll("{darkgreen}Agent Smith. {red}Agent Stinkiest.");
 				}
 				case 4:
 				{
-					CPrintToChatAll("{darkgreen}Agent Smith. {red}Agent St- {snow}Shut up Koshi. *sigh* That guy from the simulation movie.");
+					CPrintToChatAll("{darkgreen}Agent Smith. {red}Agent St- {lightcyan}Shut up Koshi! *sigh* That guy from the simulation movie.");
 				}
 				default:
 				{
@@ -1497,7 +1531,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{darkviolet}LELOUCH! {gold}- {red}How did Chaos give him info about that pocket dimension thing... {snow}The Curtain, it's called Koshi.");
+					CPrintToChatAll("{darkviolet}LELOUCH! {gold}- {red}How did Chaos give him info about that pocket dimension thing... {lightcyan}The Curtain, it's called Koshi.");
 				}
 				default:
 				{
@@ -1525,7 +1559,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{rare}C.A.T.! {gold}- {red}Zeina look, C.A.T. looks like you. :P {snow}And you look like one of those Glugs, Koshi.");
+					CPrintToChatAll("{rare}C.A.T.! {gold}- {red}Zeina look, C.A.T. looks like you. :P {lightcyan}And you look like one of those Glugs, Koshi.");
 				}
 				default:
 				{
@@ -1539,7 +1573,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{rare}A.R.I.S.! {gold}- {red}What if you had to fight both A.R.I.S. and C.A.T. at the same time. Naa.");
+					CPrintToChatAll("{rare}A.R.I.S.! {gold}- {red}What if you had to fight both A.R.I.S. and C.A.T. at the same time. Naaaa.");
 				}
 				default:
 				{
@@ -1617,7 +1651,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{darkgray}SHADOWING DARKNESS! {gold}- {snow}Good luck with her. Koshi made her the hardest challenge in the simulation");
+					CPrintToChatAll("{darkgray}SHADOWING DARKNESS! {gold}- {lightcyan}Good luck with her. Koshi made her the hardest challenge in the simulation");
 				}
 				default:
 				{
@@ -1631,7 +1665,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{black}ZILIUS! {gold}- {red}Sorry this caused him to imprison you Zeina. {snow}It's alright Koshi, at least these guys freed me from him.");
+					CPrintToChatAll("{black}ZILIUS! {gold}- {red}Sorry this caused him to imprison you Zeina. {lightcyan}It's alright Koshi, at least these guys freed me from him.");
 				}
 				case 2:
 				{
@@ -1643,7 +1677,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 				}
 				default:
 				{
-					CPrintToChatAll("{black}ZILIUS! {gold}- {snow}If you guys beat him, I'll join you as a thanks for saving me from him. {red}I made him stronger cause he doesn't have his army.");
+					CPrintToChatAll("{black}ZILIUS! {gold}- {lightcyan}If you guys beat him, I'll join you as a thanks for saving me from him. {red}I also made him stronger cause he doesn't have his army.");
 				}
 			}
 		}
