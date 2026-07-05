@@ -225,8 +225,8 @@ public void IndexFather_CheckValidity(int client, int weapon, bool &result, int 
 }
 static Action TimerCheckValidMaster(Handle timer, int ref)
 {
-	int Client = EntRefToEntIndex(ref);
-	if(!IsValidEntity(Client))
+	int client = EntRefToEntIndex(ref);
+	if(!IsValidEntity(client))
 		return Plugin_Stop;
 	if(Handle_Timer[client] == null)
 	{
