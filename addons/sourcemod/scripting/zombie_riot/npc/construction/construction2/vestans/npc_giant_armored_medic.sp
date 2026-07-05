@@ -24,14 +24,10 @@ static const char g_IdleAlertedSounds[][] = {
 
 void ArmoredMedic_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	for (int i = 0; i < (sizeof(g_IdleAlertedSounds)); i++) { PrecacheSound(g_IdleAlertedSounds[i]); }
-	PrecacheModel(LASERBEAM);
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Giant Armored Medibot");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_giant_armored_medic");
-	strcopy(data.Icon, sizeof(data.Icon), "medic_uber");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_hardener");
 	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Expidonsa; 
@@ -87,7 +83,7 @@ methodmap ArmoredMedic < CClotBody
 
 	public ArmoredMedic(float vecPos[3], float vecAng[3], int ally)
 	{
-		ArmoredMedic npc = view_as<ArmoredMedic>(CClotBody(vecPos, vecAng, "models/bots/medic/bot_medic.mdl", "1.35", "50000", ally, .isGiant = true));
+		ArmoredMedic npc = view_as<ArmoredMedic>(CClotBody(vecPos, vecAng, "models/bots/medic/bot_medic.mdl", "1.35", "150000", ally, .isGiant = true));
 		
 		i_NpcWeight[npc.index] = 3;
 		SetVariantInt(1);
@@ -162,32 +158,18 @@ methodmap ArmoredMedic < CClotBody
 	}
 	public void StartHealing()
 	{
-		int im_iWearable3 = this.m_iWearable3;
-		if(im_iWearable3 != INVALID_ENT_REFERENCE)
-		{
+		if(IsValidEntity(this.m_iWearable4))
 			this.Healing = true;
-			
-		//	EmitSoundToAll("m_iWearable3s/medigun_heal.wav", this.index, SNDCHAN_m_iWearable3);
-		}
 	}	
 	public void StopHealing()
 	{
-		int iBeam = this.m_iWearable5;
-		if(iBeam != INVALID_ENT_REFERENCE)
+		int iBeam = this.m_iWearable4;
+		if(IsValidEntity(iBeam))
 		{
-			int iBeamTarget = GetEntPropEnt(iBeam, Prop_Send, "m_hOwnerEntity");
-			if(IsValidEntity(iBeamTarget))
-			{
-				AcceptEntityInput(iBeamTarget, "ClearParent");
-				RemoveEntity(iBeamTarget);
-			}
-			
 			AcceptEntityInput(iBeam, "ClearParent");
 			RemoveEntity(iBeam);
 			
 			EmitSoundToAll("weapons/medigun_no_target.wav", this.index, SNDCHAN_WEAPON);
-			
-		//	StopSound(this.index, SNDCHAN_m_iWearable3, "m_iWearable3s/medigun_heal.wav");
 			
 			this.Healing = false;
 		}
@@ -195,7 +177,7 @@ methodmap ArmoredMedic < CClotBody
 }
 
 
-public void ArmoredMedic_ClotThink(int iNPC)
+static void ArmoredMedic_ClotThink(int iNPC)
 {
 	ArmoredMedic npc = view_as<ArmoredMedic>(iNPC);
 	
@@ -207,7 +189,7 @@ public void ArmoredMedic_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();
-			
+	
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
@@ -237,91 +219,59 @@ public void ArmoredMedic_ClotThink(int iNPC)
 			npc.m_iTargetAlly = GetClosestAlly(npc.index);
 
 		if(OldAlly != npc.m_iTargetAlly)
-			npc.m_bnew_target = false;	
+		{
+			npc.m_bnew_target = false;
+			npc.StopHealing();
+			if(IsValidEntity(npc.m_iWearable4))
+				RemoveEntity(npc.m_iWearable4);
+		}
 
 		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
 	
-	int PrimaryThreatIndex = npc.m_iTargetAlly;
-	if(IsValidAlly(npc.index, PrimaryThreatIndex))
+	if(IsValidAlly(npc.index, npc.m_iTargetAlly))
 	{
-		npc.SetGoalEntity(PrimaryThreatIndex);
-		float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
-	
+		npc.SetGoalEntity(npc.m_iTargetAlly);
+		float vecTarget[3]; WorldSpaceCenter(npc.m_iTargetAlly, vecTarget);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
 		
-		if(flDistanceToTarget < 400000 && Can_I_See_Enemy_Only(npc.index, PrimaryThreatIndex))
-		{
-			if(flDistanceToTarget < 72500)
-			{
-				npc.StopPathing();
-			}
-			else
-			{
-				npc.StartPathing();	
-			}
-			if(!npc.m_bnew_target)
-			{
-				if(IsValidEntity(npc.m_iWearable4))
-					RemoveEntity(npc.m_iWearable4);
-				npc.StartHealing();
-				npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, PrimaryThreatIndex, 255, 215, 0, 3.0, 3.0, 1.35, LASERBEAM);
-				npc.Healing = true;
-				npc.m_bnew_target = true;
-			}
-
-			if(IsValidEntity(npc.m_iWearable4))
-			{
-				SetEntityRenderColor(npc.m_iWearable4, 255, 215, 0, 255);
-			}
-			int MaxHealth = ReturnEntityMaxHealth(PrimaryThreatIndex);
-			if(b_thisNpcIsABoss[PrimaryThreatIndex])
-				MaxHealth = RoundToCeil(float(MaxHealth) * 0.00001);
-
-			HealEntityGlobal(npc.index, PrimaryThreatIndex, float(MaxHealth), 1.0);
-
-			ApplyStatusEffect(PrimaryThreatIndex, PrimaryThreatIndex, "Buffweiser", 1.1);
-			if(NpcStats_VestanCallToArms(npc.index))
-			{
-				ApplyStatusEffect(npc.index, PrimaryThreatIndex, "Taurine", 1.1);
-			}
-			float WorldSpaceVec[3]; WorldSpaceCenter(PrimaryThreatIndex, WorldSpaceVec);
-			npc.FaceTowards(WorldSpaceVec, 2000.0);
-		}
-		else
-		{
-			if(IsValidEntity(npc.m_iWearable4))
-				RemoveEntity(npc.m_iWearable4);
-				
+		if(!Can_I_See_Ally(npc.index, npc.m_iTargetAlly) || flDistanceToTarget > NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*3.7)
 			npc.StartPathing();
-
-			npc.m_bnew_target = false;					
+		else
+			npc.StopPathing();
+		
+		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED*14.8 && !npc.m_bnew_target && Can_I_See_Ally(npc.index, npc.m_iTargetAlly))
+		{
+			npc.StartHealing();
+			npc.m_iWearable4 = ConnectWithBeam(npc.m_iWearable3, npc.m_iTargetAlly, 255, 215, 0, 3.0, 3.0, 1.35, LASERBEAM);
+			npc.Healing = true;
+			npc.m_bnew_target = true;
+		}
+		if(npc.Healing && npc.m_bnew_target)
+		{
+			int MaxHealth = ReturnEntityMaxHealth(npc.m_iTargetAlly);
+			HealEntityGlobal(npc.index, npc.m_iTargetAlly, (float(MaxHealth)*(b_thisNpcIsABoss[npc.m_iTargetAlly] ? 0.00001 : 1.0)), 1.0);
+			ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Buffweiser", 1.1);
+			if(NpcStats_VestanCallToArms(npc.index))
+				ApplyStatusEffect(npc.index, npc.m_iTargetAlly, "Taurine", 1.1);				
+			float WorldSpaceVec[3]; WorldSpaceCenter(npc.m_iTargetAlly, WorldSpaceVec);
+			
+			npc.FaceTowards(WorldSpaceVec, 2000.0);
 		}
 	}
 	else
 	{
-		//find new target to heal rapidly
 		npc.m_flGetClosestTargetTime = 0.0;
+		npc.StopHealing();
 		if(IsValidEntity(npc.m_iWearable4))
 			RemoveEntity(npc.m_iWearable4);
-			
-		npc.StartPathing();
-
 		npc.m_bnew_target = false;	
-	}
-	
-	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
-	{
-		npc.m_iTargetAlly = GetClosestAlly(npc.index,_,_,ArmoredMedic_HealCheck);
-		if(!IsValidAlly(npc.index, npc.m_iTargetAlly))
-			npc.m_iTargetAlly = GetClosestAlly(npc.index);
-		npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + 1.0;
 	}
 	npc.PlayIdleAlertSound();
 }
 
-public Action ArmoredMedic_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &m_iWearable3, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action ArmoredMedic_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &m_iWearable3, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	ArmoredMedic npc = view_as<ArmoredMedic>(victim);
 		
@@ -337,7 +287,7 @@ public Action ArmoredMedic_OnTakeDamage(int victim, int &attacker, int &inflicto
 	return Plugin_Changed;
 }
 
-public void ArmoredMedic_NPCDeath(int entity)
+static void ArmoredMedic_NPCDeath(int entity)
 {
 	ArmoredMedic npc = view_as<ArmoredMedic>(entity);
 	if(!npc.m_bGib)
@@ -363,7 +313,7 @@ public void ArmoredMedic_NPCDeath(int entity)
 	npc.StopHealing();
 }
 
-public bool ArmoredMedic_HealCheck(int provider, int entity)
+static bool ArmoredMedic_HealCheck(int provider, int entity)
 {
 	int MaxHealth = ReturnEntityMaxHealth(entity);
 	MaxHealth = RoundToNearest(float(MaxHealth) * 1.49);

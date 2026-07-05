@@ -111,6 +111,11 @@ methodmap VestanAssaultVehicle < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][8]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][8] = TempValueForProperty; }
 	}
+	property int m_iMode
+	{
+		public get()							{ return i_AttacksTillMegahit[this.index]; }
+		public set(int TempValueForProperty) 	{ i_AttacksTillMegahit[this.index] = TempValueForProperty; }
+	}
 	
 	public VestanAssaultVehicle(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -127,6 +132,7 @@ methodmap VestanAssaultVehicle < CClotBody
 
 		KillFeed_SetKillIcon(npc.index, "resurfacer");
 		npc.m_iState = 0;
+		npc.m_iMode = 0;
 		npc.g_TimesSummoned = 0;
 		npc.m_iChanged_WalkCycle=-1;
 		npc.m_flReloadDelay = 0.0;
@@ -147,6 +153,7 @@ methodmap VestanAssaultVehicle < CClotBody
 		npc.m_flSpawnHealth = 1.0;
 		npc.m_flSpawnExtraDamage = 1.0;
 		f_NpcTurnPenalty[npc.index] = 0.6;
+		npc.m_iMaxAmmo=3;
 		npc.m_flSpawnTime = GetGameTime();
 		
 		npc.m_flMeleeArmor = 1.50;
@@ -154,7 +161,7 @@ methodmap VestanAssaultVehicle < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		b_DoNotChangeTargetTouchNpc[npc.index] = 1;
 		
-		static char countext[12][512];
+		static char countext[14][512];
 		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
 		for(int i = 0; i < count; i++)
 		{
@@ -212,6 +219,16 @@ methodmap VestanAssaultVehicle < CClotBody
 					npc.g_TimesSummoned = NPC_GetByPlugin(countext[i]);
 				//PrintToChatAll("NPC ID: %i", npc.g_TimesSummoned);
 			}
+			else if(StrContains(countext[i], "maxspawn") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "maxspawn", "");
+				npc.m_iMaxAmmo = StringToInt(countext[i]);
+			}
+			else if(StrContains(countext[i], "mode") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "mode", "");
+				npc.m_iMode = StringToInt(countext[i]);
+			}
 			else if(StrContains(countext[i], "spawner") != -1)
 			{
 				ReplaceString(countext[i], sizeof(countext[]), "spawner", "");
@@ -232,7 +249,8 @@ methodmap VestanAssaultVehicle < CClotBody
 		
 		fl_ruina_battery_max[npc.index] = 20.0;
 		fl_ruina_battery[npc.index] = 0.0;
-		
+		npc.m_iAmmo=npc.m_iMaxAmmo;
+		ApplyStatusEffect(npc.index, npc.index, "Ammo_TM Visualization", 999.0);
 		ApplyStatusEffect(npc.index, npc.index, "Battery_TM Charge", 999.0);
 		
 		float Vec[3], Ang[3]={0.0,0.0,0.0};
@@ -412,14 +430,14 @@ static void VestanAssaultVehicle_Work(VestanAssaultVehicle npc, float gameTime, 
 						if(damageDealt<100.0)
 							damageDealt=100.0;
 						if(ShouldNpcDealBonusDamage(target))
-							damageDealt*=4.0;
+							damageDealt*=33.0;
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 						npc.PlayMeleeHitSound();
-					} 
+					}
 				}
 				delete swingTrace;
 				
-				if(ShouldNpcDealBonusDamage(npc.m_iTarget) && npc.g_TimesSummoned)
+				if(npc.m_iAmmo && ShouldNpcDealBonusDamage(npc.m_iTarget) && npc.g_TimesSummoned)
 				{
 					float RNGPos[3]; WorldSpaceCenter(npc.index, RNGPos);
 					RNGPos[0] += GetRandomFloat(-5.0, 5.0);
@@ -442,6 +460,7 @@ static void VestanAssaultVehicle_Work(VestanAssaultVehicle npc, float gameTime, 
 							fl_Extra_Damage[entity] = npc.m_flSpawnExtraDamage;
 						}
 					}
+					npc.m_iAmmo--;
 				}
 				npc.m_flNextMeleeAttack = gameTime + (NpcStats_VestanCallToArms(npc.index) ? 1.0 : 1.5);
 				npc.m_flSpawnTime = gameTime;
@@ -481,10 +500,6 @@ static Action VestanAssaultVehicle_OnTakeDamage(int victim, int &attacker, int &
 static void VestanAssaultVehicle_NPCDeath(int entity)
 {
 	VestanAssaultVehicle npc = view_as<VestanAssaultVehicle>(entity);
-	if(!npc.m_bGib)
-	{
-//		npc.PlayDeathSound();	
-	}
 	
 	StopSound(npc.index, SNDCHAN_STATIC, g_LoopSounds);
 	StopSound(npc.index, SNDCHAN_STATIC, g_LoopSounds);
@@ -498,4 +513,35 @@ static void VestanAssaultVehicle_NPCDeath(int entity)
 	
 	float pos[3]; GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
 	TE_Particle("asplode_hoodoo", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+	
+	if(npc.m_iAmmo && npc.m_iMode==1 && npc.g_TimesSummoned)
+	{
+		for(int i; i < 3; i++)
+		{
+			pos[2] += 5.0;
+			pos[0] += GetRandomFloat(-5.0, 5.0);
+			pos[1] += GetRandomFloat(-5.0, 5.0);
+			float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+			
+			if(MaxEnemiesAllowedSpawnNext(1) > (EnemyNpcAlive - EnemyNpcAliveStatic))
+			{
+				int SpawnNPC = NPC_CreateById(npc.g_TimesSummoned, -1, pos, ang, GetTeam(npc.index));
+				if(SpawnNPC > MaxClients)
+				{
+					if(GetTeam(npc.index) != TFTeam_Red)
+						Zombies_Currently_Still_Ongoing++;
+					int health = RoundToCeil(float(ReturnEntityMaxHealth(npc.index))*npc.m_flSpawnHealth);
+					SetEntProp(SpawnNPC, Prop_Data, "m_iHealth", health);
+					SetEntProp(SpawnNPC, Prop_Data, "m_iMaxHealth", health);
+					
+					fl_Extra_MeleeArmor[SpawnNPC] = npc.m_flSpawnMeleeArmor;
+					fl_Extra_RangedArmor[SpawnNPC] = npc.m_flSpawnRangedArmor;
+					fl_Extra_Damage[SpawnNPC] = npc.m_flSpawnExtraDamage;
+					b_StaticNPC[SpawnNPC] = b_StaticNPC[npc.index];
+					if(b_StaticNPC[SpawnNPC])
+						AddNpcToAliveList(SpawnNPC, 1);
+				}
+			}
+		}
+	}
 }

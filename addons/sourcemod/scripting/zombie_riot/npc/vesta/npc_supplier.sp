@@ -307,9 +307,9 @@ static void VestanSupplier_ClotThink(int iNPC)
 	{
 		npc.m_flNextRangedAttack = GetGameTime(npc.index) + 1.00;
 		if(NpcStats_VestanCallToArms(npc.index))
-			ExpidonsaGroupHeal(npc.index, 100.0, 3, (50.0* fl_Extra_Damage[npc.index]), 1.0, false,SupplierGiveArmorSignalled);
+			ExpidonsaGroupHeal(npc.index, 200.0, 3, (100.0* fl_Extra_Damage[npc.index]), 1.0, false,SupplierGiveArmorSignalled);
 		else
-			ExpidonsaGroupHeal(npc.index, 100.0, 3, (25.0* fl_Extra_Damage[npc.index]), 1.0, false,SupplierGiveArmor);
+			ExpidonsaGroupHeal(npc.index, 100.0, 3, (50.0* fl_Extra_Damage[npc.index]), 1.0, false,SupplierGiveArmor);
 	}
 }
 
@@ -317,7 +317,7 @@ static int VestanSupplier_Work(VestanSupplier npc, float gameTime)
 {
 	//Ranged units will behave differently.
 	//Get the closest visible target via distance checks, not via pathing check.
-	float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+	float vecTarget[3];
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	int GetClosestEnemyToAttack = GetClosestTarget(npc.index, .CanSee=true);
 	if(IsValidEnemy(npc.index,GetClosestEnemyToAttack))
@@ -363,6 +363,7 @@ static int VestanSupplier_Work(VestanSupplier npc, float gameTime)
 	}
 	else if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
+		WorldSpaceCenter(npc.m_iTarget, vecTarget);
 		return (GetVectorDistance(vecTarget, VecSelfNpc, true) > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 6.0) && Can_I_See_Enemy_Only(npc.index, npc.m_iTarget)) ? 2 : 1;
 	}
 	else

@@ -5356,10 +5356,25 @@
 		"en"	"Enhancement: Overheating Protection Removed"
 		"ko"	"개조: 과열 보호 제거"
 	}
-	"Enhancement: Airstrike Beacon"
+	"Enhancement: Quad-Tech Chambers"
 	{
-		"en"	"Enhancement: Heat Sink Discharge"
-		"ko"	"개조: 폭격 유도 비콘"
+		"en"	"Enhancement: Quad-Tech Chambers"
+		"ko"	"개조: 4연발 신기술 약실"
+	}
+	"Enhancement: Cross-Platform Compatibility"
+	{
+		"en"	"Enhancement: Cross-Platform Compatibility"
+		"ko"	"개조: 크로스 플랫폼 호환성"
+	}
+	"Enhancement: Precision Strike Beacon"
+	{
+		"en"	"Enhancement: Precision Strike Beacon"
+		"ko"	"개조: 정밀 타격 비콘"
+	}
+	"ER Targeting Remote"
+	{
+		"en"	"Targeting Remote"
+		"ko"	"원격 조준기"
 	}
 	"Boomerang"
 	{
