@@ -4688,6 +4688,10 @@
 		"it"		"Non puoi scappare, devi colpire qualcuno con la tua rapiera almeno una volta!"
 		"ko" 		"현재 대쉬할 수 없습니다. 당신의 레이피어로 적을 최소 1회 이상 타격해야 합니다!"
 	}
+	"Father Dash Denie Spam"
+	{
+		"en" 		"You cant dash, you must hit someone with your weapon at least once!"
+	}
 	"Potion of Vigor"
 	{
 		"en"	"Potion of Vigor"

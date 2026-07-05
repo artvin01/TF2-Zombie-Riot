@@ -12,7 +12,7 @@ static int i_PreviousWeapon[MAXPLAYERS];
 static float f_SwitchWeaponsRandomly[MAXPLAYERS];
 static float f_HoldBasicVialTime[MAXPLAYERS];
 static int i_CurrentWeaponSet[MAXPLAYERS];
-static int i_DodgesAvailable[MAXPLAYERS] = {15, ...};
+static int i_DodgesAvailable[MAXPLAYERS] = {25, ...};
 static float f_DodgeCooldown[MAXPLAYERS];
 static float f_DodgeBetweenDashes[MAXPLAYERS];
 static float f_DodgeActive[MAXPLAYERS];
@@ -20,7 +20,13 @@ static float f_ResetMoveSpeedPenalty[MAXPLAYERS];
 static int GraceOfPrescript[MAXPLAYERS];
 static bool UnlockedShin[MAXPLAYERS];
 static int i_FuriosoReady[MAXPLAYERS];
-
+//static float f_FuriosoCooldown[MAXPLAYERS];
+static float f_FuriosoInUse[MAXPLAYERS];
+static int i_FuriosoHits[MAXPLAYERS];
+static int WeaponLevel[MAXPLAYERS];
+static float OnBuyClear[MAXPLAYERS];
+static bool WasARaidboss[MAXPLAYERS];
+static int DashesBeforeHitMust[MAXPLAYERS];
 #define IDX_FURI_WEAPON_1	 	(1 << 1)
 #define IDX_FURI_WEAPON_2		(1 << 2)
 #define IDX_FURI_WEAPON_3	 	(1 << 3)
@@ -210,8 +216,16 @@ public void IndexFather_NewPrescript(int client, int weapon, bool &result, int s
 }
 public void IndexFather_WeaponLoad(int client, int weapon)
 {
-	IndexFather_GeneratePrescript(client, false);
-
+	if(Waves_InSetup())
+	{
+		if(CurrentPrescript[client] != null)
+		{
+			delete CurrentPrescript[client];
+		}
+	}
+	OnBuyClear[client] = 1.0;
+	WeaponLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
+	
 	if(Handle_Timer[client] != null)
 		delete Handle_Timer[client];
 	Handle_Timer[client] = null;
@@ -232,6 +246,9 @@ public void IndexFather_WeaponVial(int client, int weapon)
 	i_PreviousWeapon[client] = EntIndexToEntRef(weapon);
 	f_HoldBasicVialTime[client] = GetGameTime() + 0.0;
 	f_SwitchWeaponsRandomly[client] = GetGameTime() + 1.0;
+	if(f_FuriosoInUse[client] > GetGameTime())
+		f_SwitchWeaponsRandomly[client] = GetGameTime() + 0.25;
+	SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", FAR_FUTURE);
 }
 
 static Action Timer_Base(Handle timer, DataPack pack)
@@ -244,48 +261,99 @@ static Action Timer_Base(Handle timer, DataPack pack)
 	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{
 		if(IsValidClient(client))
+		{
 			SDKUnhook(clientIDX, SDKHook_PreThink, IndexFather_DodgeLogic);
+			IndexFather_DeleteAll(client);
+			Store_ApplyAttribs(client);
+			Store_GiveAll(client, GetClientHealth(client));
+		}
 		Handle_Timer[clientIDX] = null;
 		return Plugin_Stop;
 	}
-	ApplyStatusEffect(client, client, "Index Father Dodge", 1.0);
+	if(OnBuyClear[client])
+	{
+		OnBuyClear[client] = 0.0;
+		IndexFather_DeleteAll(client);
+		if(i_CurrentWeaponSet[client] == -1)
+			IndexFather_GrantVial(client);
+		else
+			IndexFather_GrantRandomWeapon(client, weapon, i_CurrentWeaponSet[client]);
+	}
+	if(RaidbossIgnoreBuildingsLogic())
+	{
+		if(!WasARaidboss[client])
+		{
+			IndexFather_GeneratePrescript(client, true, view_as<int>(PT_DealDamage));
+			WasARaidboss[client] = true;
+		}
+	}
+	else
+	{
+		WasARaidboss[client] = false;
+	}
+
+	b_IsCannibal[client] = true;
+	ApplyStatusEffect(client, client, "Index Father Dodge", 1.0);	
+	if(FuriosoReady(client) >= IndexFather_MaxStacksForFurioso(client))
+	{
+		if(WeaponLevel[client] >= 4)
+			UnlockedShin[client] = true;
+	}
 	if(UnlockedShin[client])
 		ApplyStatusEffect(client, client, "Shin - Rien", 1.0);
 	if(GraceOfPrescript[client])
 		ApplyStatusEffect(client, client, "Grace Of Prescript", 1.0);
-	if(FuriosoReady(client))
+	if(GraceOfPrescript[client] >= 6)
+	{
 		ApplyStatusEffect(client, client, "Furioso Charges", 1.0);
-	if(f_HoldBasicVialTime[client] && f_HoldBasicVialTime[client] < GetGameTime())
-	{
-		IndexFather_GrantRandomWeapon(client, weapon);
-		f_HoldBasicVialTime[client] = 0.0;
-		f_SwitchWeaponsRandomly[client] = GetGameTime() + 10.0;
+		ApplyStatusEffect(client, client, "Grace Of Prescript Fancy", 1.0);
 	}
-	if(f_SwitchWeaponsRandomly[client] < GetGameTime())
+
+	bool DoSwitch = false;
+	int weaponActive = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weaponActive == EntRefToEntIndex(i_PreviousWeapon[client]))
+		DoSwitch = true;
+	if(!IsValidEntity(i_PreviousWeapon[client]))
+		DoSwitch = true;
+	if(weapon != weaponActive && DoSwitch)
 	{
-		IndexFather_GrantVial(client);
-		f_HoldBasicVialTime[client] = GetGameTime() + 1.0;
-		f_SwitchWeaponsRandomly[client] = GetGameTime() + 15.0;
-		int viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
-		if(IsValidEntity(viewmodelModel))
+		if(f_HoldBasicVialTime[client] && f_HoldBasicVialTime[client] < GetGameTime())
 		{
-			float flBasePos[3]; // original
-			float flAng[3]; // original
-			GetAttachment(viewmodelModel, "effect_hand_R", flBasePos, flAng);
-			int particle = ParticleEffectAt(flBasePos, "spell_teleport_black", 1.0);
-			SetParent(viewmodelModel, particle, "effect_hand_R");
-			AddEntityToThirdPersonTransitMode(client, particle);
+			IndexFather_GrantRandomWeapon(client, weapon);
+			f_HoldBasicVialTime[client] = 0.0;
+			f_SwitchWeaponsRandomly[client] = GetGameTime() + 10.0;
 		}
-		int EntityWeaponModel = EntRefToEntIndex(HandRef[client]);
-		if(IsValidEntity(EntityWeaponModel))
+		if(f_SwitchWeaponsRandomly[client] < GetGameTime())
 		{
-			float flBasePos[3]; // original
-			float flAng[3]; // original
-			GetAttachment(EntityWeaponModel, "weapon_bone", flBasePos, flAng);
-			int particle = ParticleEffectAt(flBasePos, "spell_teleport_black", 1.0);
-			SetParent(EntityWeaponModel, particle, "weapon_bone");
-			AddEntityToFirstPersonTransmitMode(client, particle);
+			IndexFather_GrantVial(client);
+			f_HoldBasicVialTime[client] = GetGameTime() + 0.5;
+			f_SwitchWeaponsRandomly[client] = GetGameTime() + 15.0;
+			if(f_FuriosoInUse[client] > GetGameTime())
+			{
+				f_HoldBasicVialTime[client] = GetGameTime() + 0.25;
+			}
+			int viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[client]);
+			if(IsValidEntity(viewmodelModel))
+			{
+				float flBasePos[3]; // original
+				float flAng[3]; // original
+				GetAttachment(viewmodelModel, "effect_hand_R", flBasePos, flAng);
+				int particle = ParticleEffectAt(flBasePos, "spell_teleport_black", 1.0);
+				SetParent(viewmodelModel, particle, "effect_hand_R");
+				AddEntityToThirdPersonTransitMode(client, particle);
+			}
+			int EntityWeaponModel = EntRefToEntIndex(HandRef[client]);
+			if(IsValidEntity(EntityWeaponModel))
+			{
+				float flBasePos[3]; // original
+				float flAng[3]; // original
+				GetAttachment(EntityWeaponModel, "weapon_bone", flBasePos, flAng);
+				int particle = ParticleEffectAt(flBasePos, "spell_teleport_black", 1.0);
+				SetParent(EntityWeaponModel, particle, "weapon_bone");
+				AddEntityToFirstPersonTransmitMode(client, particle);
+			}
 		}
+		
 	}
 	EntityOnBuildObject[client] = SaveEntityOnBuildObject[client][0];
 	EntityOnAllyInteract[client] = SaveEntityOnBuildObject[client][1];
@@ -300,9 +368,17 @@ static void KitHudShow(int client)
 	HudCooldown[client] = GetGameTime() + 0.4;
 	char WeaponHud[128];
 
+	if(Waves_InSetup())
+	{
+		PrescriptPunishPlayerIgnoring[client] = GetGameTime() + 60.0;
+		if(CurrentPrescript[client] != null)
+		{
+			delete CurrentPrescript[client];
+		}
+	}
 	if(CurrentPrescript[client] == null)
 	{
-		if(PrescriptCooldown[client] > GetGameTime())
+		if(Waves_InSetup() || PrescriptCooldown[client] > GetGameTime())
 		{
 			Format(WeaponHud, sizeof(WeaponHud), "%s%T",WeaponHud, "Prescript None Exist", client);
 		}
@@ -313,7 +389,7 @@ static void KitHudShow(int client)
 				EmitSoundToClient(client, g_NewPrescriptAvailable[GetRandomInt(0, sizeof(g_NewPrescriptAvailable) - 1)], client, SNDCHAN_STATIC, 80, _, 0.8, 110);
 				PrescriptCooldown[client] = 0.0;
 			}
-			Format(WeaponHud, sizeof(WeaponHud), "%s%T",WeaponHud, "Prescript Avaiable Check Device", client);
+			Format(WeaponHud, sizeof(WeaponHud), "%s%T\n[%0.1f]",WeaponHud, "Prescript Avaiable Check Device", client, PrescriptPunishPlayerIgnoring[client] - GetGameTime());
 			if(PrescriptPunishPlayerIgnoring[client] && PrescriptPunishPlayerIgnoring[client] < GetGameTime())
 			{
 				//ignored prescript
@@ -343,6 +419,8 @@ static void KitHudShow(int client)
 }
 void IndexFather_GeneratePrescript(int client, bool ForceNew, int PrescriptForce = 0)
 {
+	if(Waves_InSetup())
+		return;
 	if(CurrentPrescript[client] != null)
 	{
 		if(!ForceNew)
@@ -350,7 +428,7 @@ void IndexFather_GeneratePrescript(int client, bool ForceNew, int PrescriptForce
 		//Make a new script?
 		delete CurrentPrescript[client];
 	}
-	if(PrescriptForce != 0)
+	if(PrescriptForce == 0)
 	{
 		if(PrescriptCooldown[client] > GetGameTime())
 		{
@@ -361,7 +439,7 @@ void IndexFather_GeneratePrescript(int client, bool ForceNew, int PrescriptForce
 	CurrentPrescript[client] = new ArrayList(sizeof(ThePrescript));
 	ThePrescript data;
 
-	data.Timelimit = GetGameTime() + GetRandomFloat(45.0,75.0);
+	data.Timelimit = GetGameTime() + GetRandomFloat(75.0,120.0);
 	Prescript data2;
 	IndexFather_SelectRandomGoal(client, data2, PrescriptForce);
 	IndexFather_SelectRandomAddition(data2);
@@ -370,7 +448,7 @@ void IndexFather_GeneratePrescript(int client, bool ForceNew, int PrescriptForce
 	if(GetRandomInt(1,4) == 1 && !PrescriptForce)
 	{
 		Prescript data3;
-		IndexFather_SelectRandomGoal(client,data3,_, 1);
+		IndexFather_SelectRandomGoal(client,data3);
 		IndexFather_SelectRandomAddition(data3);
 		data.CurrentGoal_2 = data3;
 	}
@@ -479,7 +557,7 @@ void IndexFather_ReturnTextInfo(int client, Prescript data, char[] CharToEnter, 
 		}
 	}
 }
-void IndexFather_SelectRandomGoal(int client, Prescript data, int PrescriptForce = 0, int extra = 0)
+void IndexFather_SelectRandomGoal(int client, Prescript data, int PrescriptForce = 0)
 {
 	PrescriptType SelectRandom = view_as<PrescriptType>(GetRandomInt(1, view_as<int>(PT_MAX) - 1));
 	if(PrescriptForce)
@@ -529,13 +607,16 @@ void IndexFather_SelectRandomGoal(int client, Prescript data, int PrescriptForce
 		}
 		case PT_JumpSpecificTime:
 		{
-			if(extra == 1)
-			{
-				//cant have this as a 2nd one as it can result in impossible ones.
-				data.WhatPrescript = PT_Jump;
-				data.Goal = float(GetRandomInt(5, 20));
-			}
+			//bad prescript, sucks.
+			data.WhatPrescript = PT_Jump;
 			data.Goal = float(GetRandomInt(5, 10));
+		//	if(extra == 1)
+		//	{
+		//		//cant have this as a 2nd one as it can result in impossible ones.
+		//		data.WhatPrescript = PT_Jump;
+		//		data.Goal = float(GetRandomInt(5, 20));
+		//	}
+		//	data.Goal = float(GetRandomInt(5, 10));
 		}
 		case PT_HitEnemyFromBehind:
 		{
@@ -543,7 +624,7 @@ void IndexFather_SelectRandomGoal(int client, Prescript data, int PrescriptForce
 		}
 		case PT_StayAwayFromAllies:
 		{
-			data.Goal = GetRandomFloat(10.0, 15.0);
+			data.Goal = GetRandomFloat(5.0, 10.0);
 		}
 		case PT_TalkToAllies:
 		{
@@ -904,7 +985,7 @@ bool IndexFather_IsPrescriptfullfilled(Prescript WhatPrescript, bool manual = fa
 		{
 			case PT_JumpSpecificTime:
 			{
-				Allow = false;
+			//	Allow = false;
 			}
 		}
 	}
@@ -939,7 +1020,6 @@ public void IndexFather_TakeDamageDealTakePost(int victim, int attacker, int inf
 {
 	if(CheckInHud())
 		return;
-
 
 	if(CurrentPrescript[victim] == null)
 	{
@@ -977,61 +1057,100 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 	if(HasSpecificBuff(attacker, "Sizzling Wound"))
 		damage *= 1.1;
 
-	damage *= float(GraceOfPrescript[attacker]) * 0.1;
+	damage *= (float(GraceOfPrescript[attacker]) * 0.01) + 1.0;
+	if(f_FuriosoInUse[attacker] > GetGameTime())
+	{
+		damage *= 2.0;
+	}
 	if(CheckInHud())
 		return;
 
+
 	if(zr_custom_damage & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
 		return;
+	DashesBeforeHitMust[attacker] = 0;
 
-	StatusEffects_PoiseAddStuff(attacker, 1, 2.0);
-	switch(i_CurrentWeaponSet[attacker])
+
+	if(f_FuriosoInUse[attacker] > GetGameTime())
 	{
-		case PrescriptWeapon_Hatchet:
+		i_FuriosoHits[attacker]++;
+		f_SwitchWeaponsRandomly[attacker] = GetGameTime() + 0.25;
+		f_FuriosoInUse[attacker] = GetGameTime() + 5.0;
+		IndexFather_ScytheEffect(victim);
+		if(i_FuriosoHits[attacker] >= 9)
 		{
-			StatusEffects_PoiseAddStuff(attacker, 1, 1.5);
-			AddWeaponToFurioso(attacker, IDX_FURI_WEAPON_1);
+			char TextChar[255];
+			switch(GetRandomInt(1,2))
+			{
+				case 1:
+					TextChar = "Mirrored and executed. ";
+				case 2:
+					TextChar = "Hah... I hear the waves rolling in.";
+			}
+			NpcSpeechBubble(attacker, TextChar, 7, {255, 255, 255, 255}, {0.0,0.0,120.0}, "");
+			f_FuriosoInUse[attacker] = 0.0;
+			i_FuriosoHits[attacker] = 0;
+			ApplySizzlingWound(attacker);
+			damage *= 4.0;
+			IndexFather_ScytheEffect(victim , 3.0);
 		}
-		case PrescriptWeapon_Hammer:
+		f_DodgeCooldown[attacker] = 0.0;
+		i_DodgesAvailable[attacker] = IndexFather_DodgeMaxReturn(victim);
+	}
+	if(WeaponLevel[attacker] >= 1)
+	{
+		if(WeaponLevel[attacker] >= 2)
+			StatusEffects_PoiseAddStuff(attacker, 1, 2.0);
+		switch(i_CurrentWeaponSet[attacker])
 		{
-			AddWeaponToFurioso(attacker, IDX_FURI_WEAPON_2);
+			case PrescriptWeapon_Hatchet:
+			{
+				StatusEffects_PoiseAddStuff(attacker, 1, 1.5);
+				AddWeaponToFurioso(attacker, IDX_FURI_WEAPON_1);
+			}
+			case PrescriptWeapon_Hammer:
+			{
+				AddWeaponToFurioso(attacker, IDX_FURI_WEAPON_2);
 
+			}
+			case PrescriptWeapon_Whip:
+			{
+				AddWeaponToFurioso(attacker, IDX_FURI_WEAPON_3);
+				
+			}
+			case PrescriptWeapon_Stiletto:
+			{
+				ApplyStatusEffect(attacker, victim, "Sinking", 10.0);
+				StatusEffects_SinkingDebuffAdd(victim, 1);
+				AddWeaponToFurioso(attacker, IDX_FURI_WEAPON_4);
+			}
+			case PrescriptWeapon_Rapier:
+			{
+				StatusEffects_FragileAddStuff(attacker,victim, 1, 3.0);
+				AddWeaponToFurioso(attacker, IDX_FURI_WEAPON_5);
+			}
+			case PrescriptWeapon_Lance:
+			{
+				StatusEffects_FragileAddStuff(attacker, victim, 1, 3.0);
+				AddWeaponToFurioso(attacker, IDX_FURI_WEAPON_6);
+			}
+			case PrescriptWeapon_Bastardsword:
+			{
+				ApplyStatusEffect(attacker, attacker, "Oceanic Singing", 10.0);
+				AddWeaponToFurioso(attacker, IDX_FURI_WEAPON_7);
+			}
+			case PrescriptWeapon_Greatsword:
+			{
+				AddWeaponToFurioso(attacker, IDX_FURI_WEAPON_8);
+			}
+			case PrescriptWeapon_Sycthe:
+			{
+				AddWeaponToFurioso(attacker, IDX_FURI_WEAPON_9);
+				damage *= 1.5;
+				IndexFather_ScytheEffect(victim);
+			}
 		}
-		case PrescriptWeapon_Whip:
-		{
-			AddWeaponToFurioso(attacker, IDX_FURI_WEAPON_3);
-			
-		}
-		case PrescriptWeapon_Stiletto:
-		{
-			ApplyStatusEffect(victim, attacker, "Sinking", 10.0);
-			StatusEffects_SinkingDebuffAdd(victim, 1);
-			AddWeaponToFurioso(attacker, IDX_FURI_WEAPON_4);
-		}
-		case PrescriptWeapon_Rapier:
-		{
-			StatusEffects_FragileAddStuff(attacker,victim, 1, 1.5);
-			AddWeaponToFurioso(attacker, IDX_FURI_WEAPON_5);
-		}
-		case PrescriptWeapon_Lance:
-		{
-			StatusEffects_FragileAddStuff(attacker, victim, 1, 1.5);
-			AddWeaponToFurioso(attacker, IDX_FURI_WEAPON_6);
-		}
-		case PrescriptWeapon_Bastardsword:
-		{
-			ApplyStatusEffect(attacker, attacker, "Oceanic Singing", 1.0);
-			AddWeaponToFurioso(attacker, IDX_FURI_WEAPON_7);
-		}
-		case PrescriptWeapon_Greatsword:
-		{
-			AddWeaponToFurioso(attacker, IDX_FURI_WEAPON_8);
-		}
-		case PrescriptWeapon_Sycthe:
-		{
-			AddWeaponToFurioso(attacker, IDX_FURI_WEAPON_9);
-			damage *= 1.3;
-		}
+		
 	}
 	if(CurrentPrescript[attacker] == null)
 	{
@@ -1052,7 +1171,6 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 		{
 			data2.Current += damage;
 			ApplyChange = true;
-			CurrentPrescript[attacker].SetArray(0, data);
 		}
 		case PT_HitEnemyFromBehind:
 		{
@@ -1060,7 +1178,6 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 			{
 				data2.Current += damage;
 				ApplyChange = true;
-				CurrentPrescript[attacker].SetArray(0, data);
 			}
 		}
 	}
@@ -1072,17 +1189,19 @@ void IndexFather_PrescriptEnd(int client, bool Win)
 	if(Win)
 	{
 		EmitSoundToClient(client, g_SuccessPrescript[GetRandomInt(0, sizeof(g_SuccessPrescript) - 1)], client, SNDCHAN_STATIC, 80, _, 0.8, 110);
-		float NewScript = GetRandomFloat(180.0, 240.0);	
+		float NewScript = GetRandomFloat(120.0, 180.0);	
 		PrescriptCooldown[client] = NewScript + GetGameTime();
 		PrescriptPunishPlayerIgnoring[client] = (NewScript * 2.0) + GetGameTime();
 		GivePrescriptGrace(client);
+		RemoveSpecificBuff(client, "Karmic Consequence");
 	}
 	else
 	{
 		EmitSoundToClient(client, g_FailPrescript[GetRandomInt(0, sizeof(g_FailPrescript) - 1)], client, SNDCHAN_STATIC, 80, _, 0.8, 110);
-		float NewScript = GetRandomFloat(30.0, 50.0);
+		float NewScript = GetRandomFloat(80.0, 120.0);
 		PrescriptCooldown[client] = NewScript + GetGameTime();
 		PrescriptPunishPlayerIgnoring[client] = (NewScript * 2.0) + GetGameTime();
+		ApplyStatusEffect(client, client, "Karmic Consequence", 30.0);
 	}
 	if(CurrentPrescript[client] != null)
 	{
@@ -1092,12 +1211,11 @@ void IndexFather_PrescriptEnd(int client, bool Win)
 
 int IndexFather_NearAllies(int client, bool BehindAlly = false)
 {
-	int ally = GetClosestAlly(client, (300.0 * 300.0), client);
+	int ally = GetClosestAlly(client, (200.0 * 200.0), client);
 	if(BehindAlly && ally > 0)
 	{
 		if(IsBehindAndFacingTarget(client, ally))
 			return 1;
-
 	}
 	else if(ally <= 0)
 	{
@@ -1242,21 +1360,44 @@ void IndexFather_GrantVial(int client)
 	{
 		Store_RemoveSpecificItem(client, g_AllWeaponsExist[i]);
 	}
-	EmitSoundToAll(g_GenerateRandomWeapon[GetRandomInt(0, sizeof(g_GenerateRandomWeapon) - 1)], client, SNDCHAN_STATIC, 70, _, 0.8, 100);
+	i_CurrentWeaponSet[client] = -1;
+	EmitSoundToAll(g_GenerateRandomWeapon[GetRandomInt(0, sizeof(g_GenerateRandomWeapon) - 1)], client, SNDCHAN_STATIC, 70, _, 0.5, 100);
 }
 
-void IndexFather_GrantRandomWeapon(int client, int originalweapon)
+void IndexFather_DeleteAll(int client)
+{
+	Store_RemoveSpecificItem(client, "Golden Vial With a Chain", true);
+	for(int i; i < sizeof(g_AllWeaponsExist); i++)
+	{
+		Store_RemoveSpecificItem(client, g_AllWeaponsExist[i]);
+	}
+}
+void IndexFather_GrantRandomWeapon(int client, int originalweapon, int ForceWeapon = -1)
 {
 	Store_RemoveSpecificItem(client, "Golden Vial With a Chain", true);
 	if(IsValidEntity(i_PreviousWeapon[client]))
 	{
 		TF2_RemoveItem(client, EntRefToEntIndex(i_PreviousWeapon[client]));
 	}
-	int weapon_index = Store_GiveSpecificItem(client, g_AllWeaponsExist[GetRandomInt(0, sizeof(g_AllWeaponsExist) - 1)]);
+	i_CurrentWeaponSet[client] = GetRandomInt(0, sizeof(g_AllWeaponsExist) - 1);
+	if(i_FuriosoHits[client] == 8)
+	{
+		//Gurantee sycthe
+		i_CurrentWeaponSet[client] = 8;
+	}
+	if(ForceWeapon != -1)
+	{
+		i_CurrentWeaponSet[client] = ForceWeapon;
+	}
+	int weapon_index = Store_GiveSpecificItem(client, g_AllWeaponsExist[i_CurrentWeaponSet[client]]);
 
 	if(weapon_index == -1)
 		return;
 
+	EntityFuncAttack[weapon_index] 			=  EntityFuncAttack[originalweapon];		
+	EntityFuncAttack2[weapon_index] 		=  EntityFuncAttack2[originalweapon];
+	EntityFuncAttack3[weapon_index] 		=  EntityFuncAttack3[originalweapon];		
+	EntityFuncReload4[weapon_index]  		=  EntityFuncReload4[originalweapon];	
 	EntityFuncPlayerRunCmd[weapon_index]  	=  EntityFuncPlayerRunCmd[originalweapon];	
 	EntityFuncTakeDamage[weapon_index][0] 	=  EntityFuncTakeDamage[originalweapon][0];	
 	EntityFuncTakeDamage[weapon_index][1]  	=  EntityFuncTakeDamage[originalweapon][1];	
@@ -1265,12 +1406,22 @@ void IndexFather_GrantRandomWeapon(int client, int originalweapon)
 	EntityOnAllyInteract[weapon_index]  	=  EntityOnAllyInteract[originalweapon];	
 	EntityCustomTraceMelee[weapon_index] 	=  EntityCustomTraceMelee[originalweapon];	
 	EntityOnBuildObject[weapon_index] 		=  EntityOnBuildObject[originalweapon];	
-	i_CurrentWeaponSet[client] = GetRandomInt(0, sizeof(g_AquireNewWeapon) - 1);
-	EmitSoundToAll(g_AquireNewWeapon[i_CurrentWeaponSet[client]], client, SNDCHAN_STATIC, 70, _, 0.8, 100);
+	i_Hex_WeaponUsesTheseAbilities[weapon_index] |= ABILITY_M2;
+	i_Hex_WeaponUsesTheseAbilities[weapon_index] |= ABILITY_R;
+	Attributes_SetMulti(weapon_index, 2, Attributes_Get(originalweapon, 1, 1.0));
+	Attributes_SetMulti(weapon_index, 6, Attributes_Get(originalweapon, 5, 1.0));
+	Attributes_SetMulti(weapon_index, 205, Attributes_Get(originalweapon, 205, 1.0));
+	Attributes_SetMulti(weapon_index, 206, Attributes_Get(originalweapon, 206, 1.0));
+	Attributes_SetAdd(weapon_index, 180, Attributes_Get(originalweapon, 180, 1.0));
+	EmitSoundToAll(g_AquireNewWeapon[GetRandomInt(0, sizeof(g_AquireNewWeapon) - 1)], client, SNDCHAN_STATIC, 70, _, 0.5, 100);
 	i_PreviousWeapon[client] = EntIndexToEntRef(weapon_index);
 }
 void Func_DodgesHud(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
 {
+	if(i_DodgesAvailable[victim] <= 0)
+	{
+		f_DodgeCooldown[victim] = GetGameTime() + 15.0;
+	}
 	if(f_DodgeCooldown[victim] && f_DodgeCooldown[victim] < GetGameTime())
 	{
 		f_DodgeCooldown[victim] = 0.0;
@@ -1281,7 +1432,7 @@ void Func_DodgesHud(int attacker, int victim, StatusEffect Apply_MasterStatusEff
 	else
 		Format(HudToDisplay, SizeOfChar, "⮌(%i)", i_DodgesAvailable[victim]);
 }
-float Func_Dodge_TakeDamage(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
+float Func_Dodge_TakeDamage(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float damage)
 {
 	if(CheckInHud())
 		return 1.0;
@@ -1289,23 +1440,41 @@ float Func_Dodge_TakeDamage(int attacker, int victim, StatusEffect Apply_MasterS
 	if(i_DodgesAvailable[victim] <= 0)
 		return 1.0;
 
-	if(f_DodgeActive[victim] > GetGameTime())
+	if(f_DodgeActive[victim] < GetGameTime())
 	{
-		DoDodge = true;
+		return 1.0;
 	}
+	int DmgCapLvl = WeaponLevel[victim];
+	float RMC_damage_cap = 100.0 * float((DmgCapLvl + 1));
 
+	if(damage > RMC_damage_cap)
+	{
+		DoDodge = false;
+	}
 	if(DoDodge)
 	{
 		i_DodgesAvailable[victim]--;
+		IndexFather_AllyDodgedAttack(victim);
 		DoDodgeEffect(victim);
 		if(i_DodgesAvailable[victim] <= 0)
 		{
 			i_DodgesAvailable[victim] = 0;
-			f_DodgeCooldown[victim] = GetGameTime() + 25.0;
+			f_DodgeCooldown[victim] = GetGameTime() + 15.0;
 		}
 		return 0.0;
 	}
-	return 1.0;
+	else
+	{
+		//fail....
+		i_DodgesAvailable[victim] -= 2;
+		DoDodgeEffect(victim);
+		if(i_DodgesAvailable[victim] <= 0)
+		{
+			i_DodgesAvailable[victim] = 0;
+			f_DodgeCooldown[victim] = GetGameTime() + 15.0;
+		}
+		return 0.75;
+	}
 }	
 
 public void IndexFather_DodgeLogic(int client)
@@ -1318,7 +1487,8 @@ public void IndexFather_DodgeLogic(int client)
 	
 	if(f_ResetMoveSpeedPenalty[client] && f_ResetMoveSpeedPenalty[client] < GetGameTime())
 	{
-		f_Client_BackwardsWalkPenalty[client] = f_Weapon_BackwardsWalkPenalty[EntRefToEntIndex(i_PreviousWeapon[client])];
+		if(IsValidEntity(EntRefToEntIndex(i_PreviousWeapon[client])))
+			f_Client_BackwardsWalkPenalty[client] = f_Weapon_BackwardsWalkPenalty[EntRefToEntIndex(i_PreviousWeapon[client])];
 		f_ResetMoveSpeedPenalty[client] = 0.0;
 		f_Client_LostFriction[client] = 0.1;
 	}
@@ -1404,11 +1574,20 @@ public void IndexFather_DodgeLogic(int client)
 		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 		return;
 	}
+	if(DashesBeforeHitMust[client] >= 10)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Father Dash Denie Spam");
+		return;
+	}
+	DashesBeforeHitMust[client]++;
 	i_DodgesAvailable[client] -= 5;
 	if(i_DodgesAvailable[client] <= 0)
 	{
 		i_DodgesAvailable[client] = 0;
-		f_DodgeCooldown[client] = GetGameTime() + 25.0;
+		f_DodgeCooldown[client] = GetGameTime() + 15.0;
 	}
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(IsValidEntity(weapon))
@@ -1430,7 +1609,7 @@ public void IndexFather_DodgeLogic(int client)
 	f_Client_LostFriction[client] = 0.0;
 	f_ResetMoveSpeedPenalty[client] = GetGameTime() + 0.15;
 	f_DodgeBetweenDashes[client] = GetGameTime() + 0.15;
-	f_DodgeActive[client] = GetGameTime() + 0.25;
+	f_DodgeActive[client] = GetGameTime() + 0.5;
 
 	EmitSoundToAll("passtime/projectile_swoosh3.wav", client, SNDCHAN_STATIC,80,_,1.0, GetRandomInt(100, 105));
 	float WorldSpaceVec[3]; WorldSpaceCenter(client, WorldSpaceVec);
@@ -1440,25 +1619,40 @@ public void IndexFather_DodgeLogic(int client)
 	TE_Particle("pyro_blast_warp", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 	TE_Particle("pyro_blast_flash", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 	TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
+	int trail = Trail_Attach(client, ARROW_TRAIL, 130, 0.25, 40.0, 1.0, 5);
+	SetEntityRenderColor(trail, 65, 255, 255, 130);
+	SDKCall_SetLocalOrigin(trail, {0.0,0.0,50.0});
+	CreateTimer(0.15, Timer_RemoveEntityParent, EntIndexToEntRef(trail), TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(trail), TIMER_FLAG_NO_MAPCHANGE);
 	//Not holding Reload. block.
 }
 
 void GivePrescriptGrace(int client)
 {
 	GraceOfPrescript[client]++;
-
-	if(GraceOfPrescript[client] >= 9)
+	
+	if(GraceOfPrescript[client] >= MaxPrescriptGrace(client))
 	{
-		GraceOfPrescript[client] = 9;
+		GraceOfPrescript[client] = MaxPrescriptGrace(client);
 	}
 }
-
+int MaxPrescriptGrace(int client)
+{
+	int Base = 3;
+	Base += WeaponLevel[client];
+	if(Base >= 9)
+		Base = 9;
+	return Base;
+}
 public void IndexFather_AbilityR(int client, int weapon, bool &result, int slot)
 {
 	if(GetClientButtons(client) & IN_DUCK)
 	{
+		if(WeaponLevel[client] < 5)
+			return;
 		if(!HasSpecificBuff(client, "Sizzling Wound") && dieingstate[client] > 0)
 		{
+			NpcSpeechBubble(client, "Hah. Would my daughter remember this keepsake of a burn?", 7, {255, 255, 255, 255}, {0.0,0.0,120.0}, "");
 			//force revive yourself and gain the debuff sizzling wound
 			ApplySizzlingWound(client);
 			dieingstate[client] = 0;
@@ -1491,27 +1685,55 @@ public void IndexFather_AbilityR(int client, int weapon, bool &result, int slot)
 		}
 		return;
 	}
-	if(!FuriosoReady(client))
+	if(FuriosoReady(client) < IndexFather_MaxStacksForFurioso(client))
 		return;
+
+//	f_FuriosoCooldown[client] = GetGameTime() + 30.0;
+	if(CurrentPrescript[client] != null)
+	{
+		//no prescript, blank one.
+		delete CurrentPrescript[client];
+	}
+	i_FuriosoReady[client] = 0;
+	char TextChar[255];
+	switch(GetRandomInt(1,2))
+	{
+		case 1:
+			TextChar = "Simulate the fervor and the passion.";
+		case 2:
+			TextChar = "The Will of Hermes.";
+	}
+	NpcSpeechBubble(client, TextChar, 7, {255, 255, 255, 255}, {0.0,0.0,120.0}, "");
+	IndexFather_GrantRandomWeapon(client, weapon);
+	f_FuriosoInUse[client] = GetGameTime() + 6.0;
 }
 
 
 void ApplySizzlingWound(int client)
 {
+	if(WeaponLevel[client] < 5)
+		return;
 	ApplyStatusEffect(client, client, "Sizzling Wound", 60.0 * 6.0);
 }
 
 
 void Func_GraceOfPrescript(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
 {
-	Format(HudToDisplay, SizeOfChar, "༅(%i)", GraceOfPrescript[victim]);
+	Format(HudToDisplay, SizeOfChar, "ℬ(%i/%i)", GraceOfPrescript[victim], MaxPrescriptGrace(victim));
 }
 void Func_FuriosoHud(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
 {
-	Format(HudToDisplay, SizeOfChar, "ᚫ(%i/9)", FuriosoReady(victim));
+	if(f_FuriosoInUse[victim] > GetGameTime())
+		Format(HudToDisplay, SizeOfChar, "ℱ(%0.1f)", f_FuriosoInUse[victim] - GetGameTime());
+	else
+		Format(HudToDisplay, SizeOfChar, "ℱ(%i/%i)", FuriosoReady(victim), IndexFather_MaxStacksForFurioso(victim));
 }
 void AddWeaponToFurioso(int attacker, int flag)
 {
+//	if(f_FuriosoCooldown[attacker] > GetGameTime())
+//		return;
+	if(GraceOfPrescript[attacker] < 6)
+		return;
 	i_FuriosoReady[attacker] |= flag;
 }
 int FuriosoReady(int attacker)
@@ -1541,5 +1763,93 @@ int FuriosoReady(int attacker)
 
 int IndexFather_DodgeMaxReturn(int client)
 {
-	return 50;
+	int IncreaseBy = (WeaponLevel[client] * 7);
+	IncreaseBy += (GraceOfPrescript[client] * 3);
+	return 30 + IncreaseBy;
+}
+
+
+void IndexFather_ScytheEffect(int victim, float Multiplier = 1.0)
+{
+	float VicLoc[3];
+	WorldSpaceCenter(victim, VicLoc);
+
+	float Pos1[3];
+	float Pos2[3];
+	float PosRand[3];
+
+	Pos1 = VicLoc;
+	Pos2 = VicLoc;
+
+	PosRand[2] = GetRandomFloat(50.0,75.0);
+	PosRand[0] = GetRandomFloat(-25.0,25.0);
+	PosRand[1] = GetRandomFloat(-25.0,25.0);
+
+	if(b_IsGiant[victim])
+	{
+		PosRand[0] *= 1.5;
+		PosRand[1] *= 1.5;
+		PosRand[2] *= 1.5;
+	}
+	PosRand[0] *= (1.5 * Multiplier);
+	PosRand[1] *= (1.5 * Multiplier);
+	PosRand[2] *= (1.5 * Multiplier);
+
+	Pos1[0] += PosRand[0];
+	Pos1[1] += PosRand[1];
+	Pos1[2] += PosRand[2];
+
+	Pos2[0] -= PosRand[0];
+	Pos2[1] -= PosRand[1];
+	Pos2[2] -= PosRand[2];
+
+	int red = 125;
+	int green = 125;
+	int blue = 255;
+	int Alpha = 200;
+
+	int colorLayer4[4];
+	float diameter = 20.0 * Multiplier;
+	SetColorRGBA(colorLayer4, red, green, blue, Alpha);
+	//we set colours of the differnet laser effects to give it more of an effect
+	int colorLayer1[4];
+	SetColorRGBA(colorLayer1, colorLayer4[0] * 5 + 765 / 8, colorLayer4[1] * 5 + 765 / 8, colorLayer4[2] * 5 + 765 / 8, Alpha);
+	int glowColor[4];
+	SetColorRGBA(glowColor, red, green, blue, Alpha);
+	TE_SetupBeamPoints(Pos1, Pos2, Shared_BEAM_Laser, 0, 0, 0, 0.75, ClampBeamWidth(diameter * 0.5), ClampBeamWidth(diameter * 0.5), 0, 7.0, glowColor, 0);
+	TE_SendToAll(0.0);
+}
+
+
+int IndexFather_MaxStacksForFurioso(int client)
+{
+	int ReduceBy = GraceOfPrescript[client];
+	ReduceBy -= 6;
+	if(ReduceBy < 0)
+		ReduceBy = 1;
+
+	return 9 - ReduceBy;
+}
+
+void IndexFather_AllyDodgedAttack(int client)
+{
+	ThePrescript data;
+	CurrentPrescript[client].GetArray(0, data);
+	if(!IndexFather_PrescriptPassRestriction(client, data))
+	{
+		return;
+	}
+	Prescript data2;
+	IndexFather_WhichScriptCurrent(data, data2);
+	bool ApplyChange = false;
+	switch(data2.WhatPrescript)
+	{
+		case PT_DodgeSuccessfully:
+		{
+			data2.Current += 1.0;
+			ApplyChange = true;
+		}
+	}
+	if(ApplyChange)
+		IndexFather_SetScriptData(client, data, data2.Current);
 }

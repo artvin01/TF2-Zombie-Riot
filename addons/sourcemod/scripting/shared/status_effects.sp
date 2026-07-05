@@ -11604,6 +11604,8 @@ static void FridgeFoodTimer(int entity, StatusEffect Apply_MasterStatusEffect, E
 		E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
 		return;
 	}
+	if(dieingstate[entity] != 0)
+		return;
 	float MaxHealthPerc = float(ReturnEntityMaxHealth(entity));
 	MaxHealthPerc *= 0.015;
 	HealEntityGlobal(entity, entity, MaxHealthPerc, _, 0.0, _);
@@ -11656,12 +11658,12 @@ void StatusEffects_IndexNurseFather()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.HudDisplay_Func 			= Func_DodgesHud;
-	FragileIndex = StatusEffect_AddGlobal(data);
+	StatusEffect_AddGlobal(data);
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Shin - Rien");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "心");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
-	data.DamageDealMulti			= 0.0;
+	data.DamageDealMulti			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.ElementalLogic				= true;
@@ -11673,7 +11675,7 @@ void StatusEffects_IndexNurseFather()
 	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Grace Of Prescript");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "༅");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ℬ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	data.DamageDealMulti			= 0.0;
 	data.Positive 					= true;
@@ -11682,6 +11684,20 @@ void StatusEffects_IndexNurseFather()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0;
 	data.HudDisplay_Func 			= Func_GraceOfPrescript;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Grace Of Prescript Fancy");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageDealMulti			= 0.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0;
+	data.OnBuffStarted				= GraceStart;
+	data.OnBuffStoreRefresh			= GraceStart;
+	data.OnBuffEndOrDeleted			= GraceEnd;
 	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Sizzling Wound");
@@ -11697,7 +11713,7 @@ void StatusEffects_IndexNurseFather()
 	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Furioso Charges");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ᚫ");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ℱ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	data.DamageDealMulti			= 0.0;
 	data.Positive 					= true;
@@ -11706,6 +11722,18 @@ void StatusEffects_IndexNurseFather()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0;
 	data.HudDisplay_Func 			= Func_FuriosoHud;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Karmic Consequence");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⋁");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageDealMulti			= 0.9;
+	data.DamageTakenMulti			= 0.25;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0;
 	StatusEffect_AddGlobal(data);
 }
 
@@ -11838,4 +11866,28 @@ void DoDodgeEffect(int victim)
 	TE_SendToAll();
 	int Rand = GetRandomInt(0, sizeof(MissSound) - 1);
 	EmitSoundToAll(MissSound[Rand], victim, _, 80);
+}
+
+
+static void GraceStart(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	if(IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+
+	float flPos[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", flPos);
+	int ParticleEffect = ParticleEffectAt_Parent(flPos, "utaunt_poweraura_blue_base", victim, "", {0.0,0.0,0.0});
+	if(victim <= MaxClients)
+		AddEntityToThirdPersonTransitMode(victim, ParticleEffect);
+	
+	Apply_StatusEffect.WearableUse = EntIndexToEntRef(ParticleEffect);
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+}
+static void GraceEnd(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+
+	if(!IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+	RemoveEntity(Apply_StatusEffect.WearableUse);
 }
