@@ -1418,7 +1418,7 @@ void IndexFather_GrantRandomWeapon(int client, int originalweapon, int ForceWeap
 }
 void Func_DodgesHud(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
 {
-	if(i_DodgesAvailable[victim] <= 0)
+	if(!f_DodgeCooldown[victim] && i_DodgesAvailable[victim] <= 0)
 	{
 		f_DodgeCooldown[victim] = GetGameTime() + 15.0;
 	}
