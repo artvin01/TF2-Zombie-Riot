@@ -4710,6 +4710,30 @@ public Action ThirdersonTransmitEnvLaser(int entity, int client)
 	return Plugin_Stop;
 }
 
+void AddEntityToFirstPersonTransmitMode(int client, int entity)
+{
+	i_OwnerEntityEnvLaser[entity] = EntIndexToEntRef(client);
+	SDKHook(entity, SDKHook_SetTransmit, FirstPersonTransmitMode);
+}
+public Action FirstPersonTransmitMode(int entity, int client)
+{
+	if(client > 0 && client <= MaxClients)
+	{
+		int owner = EntRefToEntIndex(i_OwnerEntityEnvLaser[entity]);
+		if(owner == client)
+		{
+			if(TF2_IsPlayerInCondition(client, TFCond_Taunting) || GetEntProp(client, Prop_Send, "m_nForceTauntCam"))
+			{
+				return Plugin_Stop;
+			}
+		}
+		else if(GetEntPropEnt(client, Prop_Send, "m_hObserverTarget") != owner || GetEntProp(client, Prop_Send, "m_iObserverMode") != 4)
+		{
+			return Plugin_Stop;
+		}
+	}
+	return Plugin_Continue;
+}
 
 //bool identified if it went above max health or not.
 
@@ -6168,4 +6192,11 @@ stock void StringToUpper(char[] buffer)
 		buffer[i] = CharToUpper(buffer[i]);
 		i++;
 	}
+}
+
+float GetDifferenceBetweenAngles(float fA[3], float fB[3])
+{
+    float fFwdA[3]; GetAngleVectors(fA, fFwdA, NULL_VECTOR, NULL_VECTOR);
+    float fFwdB[3]; GetAngleVectors(fB, fFwdB, NULL_VECTOR, NULL_VECTOR);
+    return RadToDeg(ArcCosine(fFwdA[0] * fFwdB[0] + fFwdA[1] * fFwdB[1] + fFwdA[2] * fFwdB[2]));
 }

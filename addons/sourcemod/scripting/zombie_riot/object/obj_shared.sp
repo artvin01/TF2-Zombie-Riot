@@ -933,6 +933,13 @@ bool Object_Interact(int client, int weapon, int obj)
 		MountedObjectInteracted = true;
 	}
 
+	if(EntityOnAllyInteract[client] && EntityOnAllyInteract[client] != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, EntityOnAllyInteract[client]);
+		Call_PushCell(client);
+		Call_PushCell(obj);
+		Call_Finish();
+	}
 	Function func = func_NPCInteract[entity];
 	if((!func || func == INVALID_FUNCTION) && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != -1)
 		return false;

@@ -98,6 +98,8 @@ enum struct ItemInfo
 	Function Func_TakeDamage_Deal;
 	Function Func_TakeDamage_Post;
 	Function Func_CustomTraceMelee;
+	Function Func_OnInteractAlly;
+	Function Func_OnEntityBuild;
 
 	Function FuncOnPap;
 
@@ -381,6 +383,14 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sfunc_onkill", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.Func_OnKill = GetFunctionByName(null, buffer);
+
+		Format(buffer, sizeof(buffer), "%sfunc_oninteractally", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.Func_OnInteractAlly = GetFunctionByName(null, buffer);
+
+		Format(buffer, sizeof(buffer), "%sfunc_onbuildentity", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.Func_OnEntityBuild = GetFunctionByName(null, buffer);
 
 		Format(buffer, sizeof(buffer), "%sfunc_ontakedamage_deal", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
@@ -704,7 +714,9 @@ void Store_WeaponSwitch(int client, int weapon)
 
 	if(weapon != -1)
 	{
-		EntityFuncPlayerRunCmd[client] = EntityFuncPlayerRunCmd[weapon];
+		EntityFuncPlayerRunCmd[client] 	= EntityFuncPlayerRunCmd[weapon];
+		EntityOnAllyInteract[client] 		= EntityOnAllyInteract[weapon];
+		EntityOnBuildObject[client] 		= EntityOnBuildObject[weapon];
 		if(StoreWeapon[weapon] > 0)
 		{
 			static ItemInfo info;
@@ -6235,7 +6247,9 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					EntityFuncTakeDamage[entity][1]  = info.Func_TakeDamage_Take;
 					EntityFuncTakeDamage[entity][2]  = info.Func_TakeDamage_Post;
 					EntityFuncOnKill[entity]  		= info.Func_OnKill;
+					EntityOnAllyInteract[entity]  		= info.Func_OnInteractAlly;
 					EntityCustomTraceMelee[entity] = info.Func_CustomTraceMelee;
+					EntityOnBuildObject[entity] = info.Func_OnEntityBuild;
 					
 					b_Do_Not_Compensate[entity] 				= info.NoLagComp;
 					b_Only_Compensate_CollisionBox[entity] 		= info.OnlyLagCompCollision;

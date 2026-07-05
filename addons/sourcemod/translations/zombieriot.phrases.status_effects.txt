@@ -4033,4 +4033,52 @@
 		"en"	"Cannot be healed by a Healing Nova"
 		"ko"	"치유 노바를 통해 치유되지 않습니다."
 	}
+	"Poise"
+	{
+		"en"	"Poise"
+	}
+	"Poise Desc"
+	{
+		"en"	"Increases Critchance per stack by 0.31％, max cap at 100 stack.s"
+	}
+	"Fragile"
+	{
+		"en"	"Fragile"
+	}
+	"Fragile Desc"
+	{
+		"en"	"Increases Damage taken per stack by 2.5％, max cap at 25 stacks."
+	}
+	"Shin - Rien"
+	{
+		"en"	"Shin - Rien"
+	}
+	"Shin - Rien Desc"
+	{
+		"en"	"Increases Poise gain by 1 and duration everytime poise is gained."
+	}
+	"Grace Of Prescript"
+	{
+		"en"	"Grace Of Prescript"
+	}
+	"Grace Of Prescript Desc"
+	{
+		"en"	"Increases damage by 1.0％ multiplicatively at 7 and above, reduces furioso count needed by 1, max stack at 9"
+	}
+	"Sizzling Wound"
+	{
+		"en"	"Sizzling Wound"
+	}
+	"Sizzling Wound Desc"
+	{
+		"en"	"Increases damage by 10.0％ multiplicatively, Randomly take burn and bleed damage at the same time."
+	}
+	"Karmic Consequence"
+	{
+		"en"	"Karmic Consequence"
+	}
+	"Karmic Consequence Desc"
+	{
+		"en"	"Take 25.0％ more damage, deal 25.0％ less damage."
+	}
 }

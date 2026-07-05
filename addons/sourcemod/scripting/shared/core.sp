@@ -3492,7 +3492,7 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 	}
 }
 
-stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
+stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false, int& EntityAlly = 0)
 {
 	if(weapon != -1) //Just allow. || GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack")<GetGameTime())
 	{
@@ -3510,6 +3510,7 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false)
 				}
 			}
 #endif
+			EntityAlly = entity;
 
 #if defined ZR
 			if(Vehicle_Interact(client, weapon, entity))

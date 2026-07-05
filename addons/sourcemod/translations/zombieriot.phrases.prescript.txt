@@ -1,0 +1,115 @@
+"Phrases"
+{
+	"Prescript None Exist"
+	{
+		"en"		"Wait until the next prescript arrives."
+	}
+	"Prescript Avaiable Check Device"
+	{
+		"en"		"A new prescript is available, check your device.\nIgnoring this for too long will result in consequences."
+	}
+	"Prescript Addition While In Air"
+	{
+		"en"		"While in the air,"
+	}
+	"Prescript Addition Looking Down"
+	{
+		"en"		"While looking down,"
+	}
+	"Prescript Addition Looking Up"
+	{
+		"en"		"While looking up,"
+	}
+	"Prescript Addition While Crouching"
+	{
+		"en"		"While crouching,"
+	}
+	"Prescript Stand Still"
+	{
+		"#format"	"{1:.1f}"
+		"en"		"Stand still for {1} seconds."
+	}
+	"Prescript Kill Targets"
+	{
+		"#format"	"{1:d}"
+		"en"		"Kill atleast {1} enemies."
+	}
+	"Prescript Use Specific Building"
+	{
+		"#format"	"{1:d},{2:s}"
+		"en"		"Use {2} building atleast {1} times."
+	}
+	"Prescript Deal Damage"
+	{
+		"#format"	"{1:.0f}"
+		"en"		"Deal atleast {1} damage to enemies."
+	}
+	"Prescript Take Damage"
+	{
+		"#format"	"{1:.0f}"
+		"en"		"Take atleast {1} damage from enemies."
+	}
+	"Prescript Dont Take Damage"
+	{
+		"#format"	"{1:.1f}"
+		"en"		"Dont take damage for {1} seconds."
+	}
+	"Prescript Taunt"
+	{
+		"#format"	"{1:d}"
+		"en"		"Taunt atleast {1} times."
+	}
+	"Prescript Jump"
+	{
+		"#format"	"{1:d}"
+		"en"		"Jump atleast {1} times."
+	}
+	"Prescript Jump Specific Time"
+	{
+		"#format"	"{1:d}"
+		"en"		"Jump only {1} times until prescript time ends."
+	}
+	"Prescript Hit From Behind"
+	{
+		"#format"	"{1:d}"
+		"en"		"Hit a target from behind atleast {1} times."
+	}
+	"Prescript Stay Away From Allies"
+	{
+		"#format"	"{1:.1f}"
+		"en"		"Stay away from allies for {1} seconds."
+	}
+	"Prescript Talk To Ally"
+	{
+		"en"		"Talk to any ally."
+	}
+	"Prescript Build Specific Building"
+	{
+		"#format"	"{1:s}"
+		"en"		"Build a {1}."
+	}
+	"Prescript Dodge Successfully"
+	{
+		"#format"	"{1:d}"
+		"en"		"Dodge atleast {1} attacks from enemies."
+	}
+	"Prescript Spin In Place"
+	{
+		"#format"	"{1:.1f}"
+		"en"		"Spin in place for atleast {1} seconds."
+	}
+	"Prescript Hump Ally"
+	{
+		"#format"	"{1:.1f}"
+		"en"		"Stay behind your closest ally for {1} seconds."
+	}
+	"Prescript Continue"
+	{
+		"en"		"afterwards,"
+	}
+	"Prescript Time Limit"
+	{
+		"#format"	"{1:.1f},{2:N}"
+		"en"		"You have {1} seconds {2}."
+	}
+}
