@@ -670,6 +670,8 @@ Function EntityFuncAttack3[MAXENTITIES];
 Function EntityFuncReload4[MAXENTITIES];
 Function EntityFuncPlayerRunCmd[MAXENTITIES];
 Function EntityFuncOnKill[MAXENTITIES];
+Function EntityOnAllyInteract[MAXENTITIES];
+Function EntityOnBuildObject[MAXENTITIES];
 Function EntityFuncTakeDamage[MAXENTITIES][3];
 Function EntityCustomTraceMelee[MAXENTITIES];
 //Function EntityFuncReloadSingular5[MAXENTITIES];

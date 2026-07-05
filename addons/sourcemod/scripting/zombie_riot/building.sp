@@ -736,6 +736,13 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 										{
 											CooldownGive *= 0.5;
 										}
+										if(EntityOnBuildObject[client] && EntityOnBuildObject[client] != INVALID_FUNCTION)
+										{
+											Call_StartFunction(null, EntityOnBuildObject[client]);
+											Call_PushCell(client);
+											Call_PushCell(entity);
+											Call_Finish();
+										}
 										
 										info.Cooldowns[client] = GetGameTime() + CooldownGive;
 										BuildingList.SetArray(id, info);
@@ -2990,4 +2997,46 @@ bool Building_ValidSpaceEmpty(int buildingindx, float VecBottom[3], float HullMi
 		return false;
 	}
 	return true;
+}
+
+
+
+void RandomBuildingGet(int client, char[] Buildingch, int StringSize)
+{
+	int Buildings;
+	int[] iBuilding = new int[MaxClients];
+
+	BuildingInfo info;
+	int length = BuildingList.Length;
+	for(int i; i < length; i++)
+	{
+		char buffer1[196];
+		bool allowed = true;
+		int maxcount = 0;
+		BuildingList.GetArray(i, info);
+		if(info.Section == 2 || info.Section == 3)
+			continue;
+		
+		if(info.Func != INVALID_FUNCTION)
+			allowed = Object_CanBuild(info.Func, client,_,maxcount);
+		
+		// Hide if maxcount is 0
+		if(maxcount < 1)
+			continue;
+
+		if(!allowed)
+			continue;
+
+		
+		NPC_GetNameByPlugin(info.Plugin, buffer1, sizeof(buffer1));
+
+		iBuilding[Buildings++] = i;
+	}
+
+	if(Buildings)
+	{
+		int winner = iBuilding[GetURandomInt() % Buildings];
+		BuildingList.GetArray(winner, info);
+		Format(Buildingch, StringSize, "%s", info.Plugin);
+	}
 }

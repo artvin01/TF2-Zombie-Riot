@@ -256,7 +256,7 @@ public void Barracks_OnTakeDamage_Hunter(int victim, int &attacker, int &inflict
 public void Barracks_OnTakeDamage_Italian(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int zr_custom_damage)
 {
 	if(CheckInHud())
-	return;
+		return;
 	
 	if(HasSpecificBuff(victim, "Marked"))
 	{
@@ -621,3 +621,4 @@ static void Barracks_HUD(int client)
 	Barrack_HUDDelay[client] = GetGameTime() + 0.4;
 	PrintHintText(client, "%s", BarracksHud);
 }
+

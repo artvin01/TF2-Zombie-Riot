@@ -757,6 +757,7 @@ char s_MissionClient[64]; // Who hired us for the current job
 #include "custom/weapon_burningthumb.sp"
 #include "custom/kit_red_mist.sp"
 #include "custom/kit_barracks.sp"
+#include "custom/kit_indexfather.sp"
 
 void ZR_PluginLoad()
 {
@@ -854,6 +855,7 @@ void ZR_PluginStart()
 	BetWar_PluginStart();
 	Dungeon_PluginStart();
 	VScript_PluginStart();
+	IndexFather_PluginStart();
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	
