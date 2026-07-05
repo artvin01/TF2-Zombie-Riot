@@ -331,17 +331,17 @@ methodmap Huscarls < CClotBody
 		{
 			case 1:
 			{
-				npc.m_flMeleeArmor = 0.6;
+				npc.m_flMeleeArmor = 0.95;
 				npc.m_flRangedArmor = 1.0;
 			}
 			case 2:
 			{
-				npc.m_flMeleeArmor = 0.75;
+				npc.m_flMeleeArmor = 1.1;
 				npc.m_flRangedArmor = 0.85;
 			}
 			default:
 			{
-				npc.m_flMeleeArmor = 0.75;
+				npc.m_flMeleeArmor = 1.1;
 				npc.m_flRangedArmor = 1.0;
 			}
 		}
@@ -350,7 +350,8 @@ methodmap Huscarls < CClotBody
 		npc.m_flDoingAnimation=0.0;
 		float gametime = GetGameTime(npc.index);
 		npc.m_iOverrideOwner = 0;
-		static char countext[2][512];
+		bool STFU;
+		static char countext[3][512];
 		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
 		float MAXHitCharge=20000.0;
 		for(int i = 0; i < count; i++)
@@ -371,6 +372,11 @@ methodmap Huscarls < CClotBody
 				ReplaceString(countext[i], sizeof(countext[]), "max_hitcharge", "");
 				MAXHitCharge = StringToFloat(countext[i]);
 			}
+			else if(StrContains(countext[i], "stfu") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "stfu", "");
+				STFU=true;
+			}
 		}
 		if(npc.m_iOverlordComboAttack)
 		{
@@ -384,40 +390,42 @@ methodmap Huscarls < CClotBody
 			b_ThisEntityIgnored[npc.index] = true;
 			b_NoKillFeed[npc.index] = true;
 			npc.m_iChanged_WalkCycle = -1;
-
-			switch(npc.m_iOverlordComboAttack)
+			if(!STFU)
 			{
-				case 1:
+				switch(npc.m_iOverlordComboAttack)
 				{
-					switch(GetRandomInt(0, 2))
+					case 1:
 					{
-						case 0: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-1", false, true);
-						case 1: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-2", false, true);
-						case 2: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-9", false, true);
+						switch(GetRandomInt(0, 2))
+						{
+							case 0: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-1", false, true);
+							case 1: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-2", false, true);
+							case 2: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-9", false, true);
+						}
 					}
-				}
-				case 2:
-				{
-					switch(GetRandomInt(0, 1))
+					case 2:
 					{
-						case 0: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-3", false, true);
-						case 1: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-4", false, true);
+						switch(GetRandomInt(0, 1))
+						{
+							case 0: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-3", false, true);
+							case 1: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-4", false, true);
+						}
 					}
-				}
-				case 3:
-				{
-					switch(GetRandomInt(0, 1))
+					case 3:
 					{
-						case 0: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-5", false, true);
-						case 1: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-6", false, true);
+						switch(GetRandomInt(0, 1))
+						{
+							case 0: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-5", false, true);
+							case 1: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-6", false, true);
+						}
 					}
-				}
-				case 4:
-				{
-					switch(GetRandomInt(0, 1))
+					case 4:
 					{
-						case 0: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-7", false, true);
-						case 1: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-8", false, true);
+						switch(GetRandomInt(0, 1))
+						{
+							case 0: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-7", false, true);
+							case 1: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-8", false, true);
+						}
 					}
 				}
 			}
@@ -704,7 +712,7 @@ static void Clone_ClotThink(int iNPC)
 					{
 						float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 						float SlamDMG = 50.0;
-						float Range = 250.0;
+						float Range = 300.0;
 						ParticleEffectAt(WorldSpaceVec, "mvm_soldier_shockwave", 1.0);
 						ParticleEffectAt(WorldSpaceVec, "ExplosionCore_MidAir", 1.0);
 						CreateEarthquake(WorldSpaceVec, 1.0, Range * 1.25, 16.0, 255.0);
@@ -988,7 +996,8 @@ static int Support_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], float
 
 static Action Clone_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	return Plugin_Handled;
+	damage*=0.0;
+	return Plugin_Changed;
 }
 
 static void Clone_NPCDeath(int entity)
@@ -1230,7 +1239,9 @@ static void Huscarls_ClotThink(int iNPC)
 				static float vOrigin[3], vAngles[3];
 				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAngles);
 				vAngles[0]=5.0;
-				EntityLookPoint(npc.index, vAngles, VecSelfNpc, vOrigin);
+				if(!EntityLookPoint(npc.index, vAngles, VecSelfNpc, vOrigin))
+					npc.m_iState=3;
+				
 				npc.SetGoalVector(vOrigin);
 			}
 		}
@@ -1603,7 +1614,7 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 				{
 					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 					float SlamDMG = 50.0;
-					float Range = 250.0;
+					float Range = 300.0;
 					ParticleEffectAt(WorldSpaceVec, "mvm_soldier_shockwave", 1.0);
 					ParticleEffectAt(WorldSpaceVec, "ExplosionCore_MidAir", 1.0);
 					CreateEarthquake(WorldSpaceVec, 1.0, Range * 1.25, 16.0, 255.0);
@@ -1664,9 +1675,11 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 								
 								WorldSpaceCenter(targetTrace, vecHit);
 								float damage = 50.0 * RaidModeScaling;
+								float flKnockback = 750.0;
 								if(fl_ruina_battery[npc.index] && !npc.m_flHuscarlsAdaptiveArmorDuration)
 								{
 									damage+=fl_ruina_battery[npc.index]*0.1;
+									flKnockback+=fl_ruina_battery[npc.index]*0.1;
 									fl_ruina_battery[npc.index]=0.0;
 									ExtinguishTarget(npc.m_iWearable2);
 									CreateEarthquake(vecTarget, 0.5, 350.0, 16.0, 255.0);
@@ -1684,7 +1697,7 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 									if(IsInvuln(targetTrace) && !HasSpecificBuff(targetTrace, "Solid Stance"))
 									{
 										Knocked = true;
-										Custom_Knockback(npc.index, targetTrace, 750.0, true);
+										Custom_Knockback(npc.index, targetTrace, flKnockback, true);
 									}
 									if(!HasSpecificBuff(targetTrace, "Fluid Movement"))
 									{
@@ -1694,7 +1707,7 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 								}
 								
 								if(!Knocked && !HasSpecificBuff(targetTrace, "Solid Stance"))
-									Custom_Knockback(npc.index, targetTrace, 375.0, true);
+									Custom_Knockback(npc.index, targetTrace, flKnockback/2.0, true);
 							} 
 						}
 					}

@@ -169,6 +169,12 @@ static void Invisible_TRIGGER_ClotThink(int iNPC)
 				EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
 				SmiteNpcToDeath(npc.index);
 			}
+			i_AttacksTillMegahit[npc.index]++;
+			if(i_AttacksTillMegahit[npc.index]>50)
+			{
+				i_AttacksTillMegahit[npc.index]=0;
+				SmiteNpcToDeath(npc.index);
+			}
 		}
 		case 2:
 		{
@@ -214,6 +220,12 @@ static void Invisible_TRIGGER_ClotThink(int iNPC)
 				EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
 				SmiteNpcToDeath(npc.index);
 			}
+			i_AttacksTillMegahit[npc.index]++;
+			if(i_AttacksTillMegahit[npc.index]>50)
+			{
+				i_AttacksTillMegahit[npc.index]=0;
+				SmiteNpcToDeath(npc.index);
+			}
 		}
 		case 4:
 		{
@@ -241,6 +253,12 @@ static void Invisible_TRIGGER_ClotThink(int iNPC)
 						EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
 						EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
 						npc.m_iOverlordComboAttack=1;
+					}
+					i_AttacksTillMegahit[npc.index]++;
+					if(i_AttacksTillMegahit[npc.index]>50)
+					{
+						i_AttacksTillMegahit[npc.index]=0;
+						SmiteNpcToDeath(npc.index);
 					}
 				}
 				case 1:

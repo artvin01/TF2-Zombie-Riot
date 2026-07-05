@@ -317,7 +317,7 @@ static int VestanSupplier_Work(VestanSupplier npc, float gameTime)
 {
 	//Ranged units will behave differently.
 	//Get the closest visible target via distance checks, not via pathing check.
-	float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+	float vecTarget[3];
 	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 	int GetClosestEnemyToAttack = GetClosestTarget(npc.index, .CanSee=true);
 	if(IsValidEnemy(npc.index,GetClosestEnemyToAttack))
@@ -363,6 +363,7 @@ static int VestanSupplier_Work(VestanSupplier npc, float gameTime)
 	}
 	else if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
+		WorldSpaceCenter(npc.m_iTarget, vecTarget);
 		return (GetVectorDistance(vecTarget, VecSelfNpc, true) > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 6.0) && Can_I_See_Enemy_Only(npc.index, npc.m_iTarget)) ? 2 : 1;
 	}
 	else

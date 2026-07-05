@@ -937,10 +937,15 @@
 		"en"	"{crimson}Meanwhile, you realize Castellan was watching with mixed emotions as he was retreating…{default}"
 		"ko"	"{crimson}그리고 여러분은 카스텔란이 퇴각하면서 이를 노려보고 있음을 깨닫습니다…{default}"
 	}
-	"CaptinoMenius_Talk-1"
+	"CaptinoMenius_Talk-1-1"
 	{
-		"en"	"As a reminder, we are here to stop Victoria’s stealthy invasion towards Ziberia and it is up to me to collect evidences and report it to Sensal."
-		"ko"	"다시한번 자네들에게 우리 임무를 상기시켜주자면 우리는 자이베리아에서 일어나는 빅토리아인들의 비밀스러운 침공을 저지하는것이고 나는 그 증거들을 채증해 센살에게 전달하면 된다네."
+		"en"	"As a reminder, we are here to stop Vesta’s stealthy invasion towards Ziberia"
+		"ko"	"다시한번 자네들에게 우리 임무를 상기시켜주자면 우리는 자이베리아에서 일어나는 베스타인들의 비밀스러운 침공을 저지하는것이고"
+	}
+	"CaptinoMenius_Talk-1-2"
+	{
+		"en"	"and it is up to me to collect evidences and report it to Sensal."
+		"ko"	"나는 그 증거들을 채증해 센살에게 전달하면 된다네."
 	}
 	"CaptinoMenius_Talk-2-1"
 	{
@@ -960,7 +965,7 @@
 	"CaptinoMenius_Talk-3-2"
 	{
 		"en"	"We got another enemies to deal with named Trooper Team."
-		"ko"	"곧 상대한 적들은 트루퍼 팀 소속이라네."
+		"ko"	"곧 상대할 적들은 트루퍼 팀 소속이라네."
 	}
 	"CaptinoMenius_Talk-3-3"
 	{
@@ -975,7 +980,7 @@
 	"CaptinoMenius_Talk-4-2"
 	{
 		"en"	"The good news is that we are getting close to our target: the radiotower. The bad news is, the enemy will put out their maximum response upon us so beware."
-		"ko"	"내 장비에 따르면 우리의 목표인 라디오타워는 근처에 있다네. 적들은 이제 우리를 막기 위해 강한 본대를 투입할 예정이니 조심하게"
+		"ko"	"내 장비에 따르면 우리의 목표인 라디오타워는 근처에 있다네. 적들은 이제 우리를 막기 위해 강한 본대를 투입할 예정이니 조심하게."
 	}
 	"CaptinoMenius_Talk-5"
 	{

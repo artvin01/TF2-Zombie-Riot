@@ -223,7 +223,7 @@ methodmap CaptinoBaguettus < CClotBody
 	property float m_flNextTMITalk
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
-		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
 	}
 	property int m_iNextTMITalk
 	{
@@ -242,7 +242,7 @@ methodmap CaptinoBaguettus < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
 		npc.g_TimesSummoned = 0;
-		npc.m_iNextTMITalk = 0;
+		npc.m_iNextTMITalk = -1;
 		npc.m_iAttacksTillMegahit = 0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -704,69 +704,86 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 	
 	switch(npc.m_iNextTMITalk)
 	{
+		case -1:
+		{
+			npc.m_flNextTMITalk = GameTime + 1.0;
+			npc.m_iNextTMITalk=0;
+		}
 		case 0:
 		{
-			NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-1", false, false);
-			npc.m_iNextTMITalk=1;
+			if(npc.m_flNextTMITalk < GameTime)
+			{
+				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-1-1", false, false);
+				npc.m_flNextTMITalk = GameTime + 3.5;
+				npc.m_iNextTMITalk=1;
+			}
 		}
 		case 1:
 		{
-			if(Waves_GetRoundScale()+1==11)
+			if(npc.m_flNextTMITalk < GameTime)
 			{
-				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-2-1", false, false);
-				npc.m_flNextTMITalk = GameTime + 1.0;
+				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-1-2", false, false);
 				npc.m_iNextTMITalk=2;
 			}
 		}
 		case 2:
 		{
-			if(npc.m_flNextTMITalk > GameTime)
+			if(Waves_GetRoundScale()+1==11)
 			{
-				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-2-2", false, false);
+				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-2-1", false, false);
+				npc.m_flNextTMITalk = GameTime + 4.0;
 				npc.m_iNextTMITalk=3;
 			}
 		}
 		case 3:
 		{
-			if(Waves_GetRoundScale()+1==21)
+			if(npc.m_flNextTMITalk < GameTime)
 			{
-				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-3-1", false, false);
-				npc.m_flNextTMITalk = GameTime + 1.0;
+				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-2-2", false, false);
 				npc.m_iNextTMITalk=4;
 			}
 		}
 		case 4:
 		{
-			if(npc.m_flNextTMITalk > GameTime)
+			if(Waves_GetRoundScale()+1==21)
 			{
-				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-3-2", false, false);
-				npc.m_flNextTMITalk = GameTime + 1.0;
+				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-3-1", false, false);
+				npc.m_flNextTMITalk = GameTime + 4.0;
 				npc.m_iNextTMITalk=5;
 			}
 		}
 		case 5:
 		{
-			if(npc.m_flNextTMITalk > GameTime)
+			if(npc.m_flNextTMITalk < GameTime)
 			{
-				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-3-3", false, false);
+				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-3-2", false, false);
+				npc.m_flNextTMITalk = GameTime + 2.0;
 				npc.m_iNextTMITalk=6;
 			}
 		}
 		case 6:
 		{
-			if(Waves_GetRoundScale()+1==31)
+			if(npc.m_flNextTMITalk < GameTime)
 			{
-				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-4-1", false, false);
-				npc.m_flNextTMITalk = GameTime + 1.0;
+				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-3-3", false, false);
 				npc.m_iNextTMITalk=7;
 			}
 		}
 		case 7:
 		{
-			if(npc.m_flNextTMITalk > GameTime)
+			if(Waves_GetRoundScale()+1==31)
+			{
+				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-4-1", false, false);
+				npc.m_flNextTMITalk = GameTime + 4.0;
+				npc.m_iNextTMITalk=8;
+			}
+		}
+		case 8:
+		{
+			if(npc.m_flNextTMITalk < GameTime)
 			{
 				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-4-2", false, false);
-				npc.m_iNextTMITalk=8;
+				npc.m_iNextTMITalk=9;
 			}
 		}
 	}

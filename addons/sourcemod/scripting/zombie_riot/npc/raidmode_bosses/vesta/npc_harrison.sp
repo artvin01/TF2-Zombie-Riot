@@ -326,7 +326,8 @@ methodmap Harrison < CClotBody
 			npc.m_flDoingAnimation=0.0;
 			npc.m_iOverrideOwner = 0;
 			npc.m_flExtraDMGForMG = 1.0;
-			static char countext[2][216];
+			static char countext[3][216];
+			bool STFU;
 			int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
 			for(int i = 0; i < count; i++)
 			{
@@ -341,21 +342,29 @@ methodmap Harrison < CClotBody
 					ReplaceString(countext[i], sizeof(countext[]), "override_owner", "");
 					npc.m_iOverrideOwner = StringToInt(countext[i]);
 				}
+				else if(StrContains(countext[i], "stfu") != -1)
+				{
+					ReplaceString(countext[i], sizeof(countext[]), "stfu", "");
+					STFU=true;
+				}
 			}
 			
-			switch(npc.m_iOverlordComboAttack)
+			if(!STFU)
 			{
-				case 1: NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Support-2", false, true);
-				case 2:
+				switch(npc.m_iOverlordComboAttack)
 				{
-					switch(GetRandomInt(0, 1))
+					case 1: NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Support-2", false, true);
+					case 2:
 					{
-						case 0: NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Support-3", false, true);
-						case 1: NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Support-4", false, true);
+						switch(GetRandomInt(0, 1))
+						{
+							case 0: NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Support-3", false, true);
+							case 1: NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Support-4", false, true);
+						}
 					}
+					case 3: NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Support-6", false, true);
+					default: NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Support-2", false, true);
 				}
-				case 3: NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Support-6", false, true);
-				default: NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Support-2", false, true);
 			}
 		}
 		else
@@ -386,10 +395,10 @@ methodmap Harrison < CClotBody
 			npc.m_iAmountProjectiles = 0;
 			npc.m_flExtraDMGForMG = 1.0;
 			npc.m_iMaxAmmo =  RoundToNearest(float(CountPlayersOnRed(2)) * 5.0);
-			if(npc.m_iMaxAmmo>80)
+			if(npc.m_iMaxAmmo>50)
 			{
-				npc.m_flExtraDMGForMG = 1.0*(npc.m_iMaxAmmo/60.0);
-				npc.m_iMaxAmmo=80;
+				npc.m_flExtraDMGForMG = 1.0*(npc.m_iMaxAmmo/50.0);
+				npc.m_iMaxAmmo=50;
 			}
 			npc.m_iAmmo = 0;
 			ApplyStatusEffect(npc.index, npc.index, "Ammo_TM Visualization", 999.0);
@@ -682,10 +691,10 @@ static void Clone_ClotThink(int iNPC)
 						npc.StartPathing();
 
 						npc.m_iMaxAmmo =  RoundToNearest(float(CountPlayersOnRed(2)) * 7.0);
-						if(npc.m_iMaxAmmo>80)
+						if(npc.m_iMaxAmmo>50)
 						{
-							npc.m_flExtraDMGForMG = 1.0*(npc.m_iMaxAmmo/80.0);
-							npc.m_iMaxAmmo=80;
+							npc.m_flExtraDMGForMG = 1.0*(npc.m_iMaxAmmo/50.0);
+							npc.m_iMaxAmmo=50;
 						}
 						npc.m_iMaxAmmo += 20; //Extra Ammo!
 						npc.m_iAmmo = npc.m_iMaxAmmo;
@@ -806,7 +815,7 @@ static void Clone_ClotThink(int iNPC)
 								float damage = 5.0 * 0.2 * RaidModeScaling;
 								if(flDistanceToTarget > 100000.0)
 									damage *= 100000.0 / flDistanceToTarget;
-								damage *= 3.5;
+								damage *= 5.25;
 								damage *= npc.m_flExtraDMGForMG;
 								KillFeed_SetKillIcon(npc.index, "natascha");
 								FireBullet(npc.index, npc.m_iWearable8, VecSelfNpc, vecDir, damage, 3000.0, DMG_BULLET, "bullet_tracer02_blue_crit");
@@ -990,7 +999,8 @@ static void Clone_ClotThink(int iNPC)
 
 static Action Clone_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	return Plugin_Handled;
+	damage*=0.0;
+	return Plugin_Changed;
 }
 
 static void Clone_NPCDeath(int entity)
@@ -1678,7 +1688,7 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 				float damage = 5.0 * 0.2 * RaidModeScaling;
 				if(distance > 100000.0)	// 316 HU
 					damage *= 100000.0 / distance;	// Lower damage based on distance
-				damage *= 3.5;
+				damage *= 5.25;
 				damage *= npc.m_flExtraDMGForMG;
 				KillFeed_SetKillIcon(npc.index, "natascha");
 				FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, damage, 3000.0, DMG_BULLET, "bullet_tracer02_blue_crit");
@@ -1931,17 +1941,14 @@ static void HarrisonInitiateLaserAttack_DamagePart(DataPack pack)
 	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, Harrison_BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 	
-	float CloseDamage = 70.0 * RaidModeScaling;
-	float FarDamage = 60.0 * RaidModeScaling;
-	float MaxDistance = 5000.0;
+	float LaserDamage = 75.0 * RaidModeScaling;
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
 	{
 		if (LaserVarious_HitDetection[victim] && GetTeam(entity) != GetTeam(victim))
 		{
 			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
-			float distance = GetVectorDistance(VectorStart, playerPos, false);
-			float damage = CloseDamage + (FarDamage-CloseDamage) * (distance/MaxDistance);
+			float damage = LaserDamage;
 			if (damage < 0)
 				damage *= -1.0;
 			if(BIGShot)

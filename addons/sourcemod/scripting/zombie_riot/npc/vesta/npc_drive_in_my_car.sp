@@ -430,7 +430,7 @@ static void VestanAssaultVehicle_Work(VestanAssaultVehicle npc, float gameTime, 
 						if(damageDealt<100.0)
 							damageDealt=100.0;
 						if(ShouldNpcDealBonusDamage(target))
-							damageDealt*=55.0;
+							damageDealt*=33.0;
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_CLUB, -1, _, vecHit);
 						npc.PlayMeleeHitSound();
 					}

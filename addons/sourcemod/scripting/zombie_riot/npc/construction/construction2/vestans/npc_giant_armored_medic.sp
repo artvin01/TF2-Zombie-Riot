@@ -27,7 +27,7 @@ void ArmoredMedic_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Giant Armored Medibot");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_giant_armored_medic");
-	strcopy(data.Icon, sizeof(data.Icon), "medic_uber");
+	strcopy(data.Icon, sizeof(data.Icon), "victoria_hardener");
 	data.IconCustom = false;
 	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Expidonsa; 

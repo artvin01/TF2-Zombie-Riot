@@ -53,7 +53,7 @@ void Vestan_Protector_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Vestan Protector");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_protector");
-	strcopy(data.Icon, sizeof(data.Icon), "engineer");
+	strcopy(data.Icon, sizeof(data.Icon), "scout_stun_armored");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Vesta;
@@ -295,7 +295,7 @@ void Vestan_ProtectorBuildObject(Vestan_Protector npc, float distance)
 			SetVariantString("0.75");
 			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 			SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
-			float timeup = 5.0;
+			float timeup = 10.0;
 			if(NpcStats_VestanCallToArms(npc.index))
 				 timeup *= 2.0;
 			int TempEntity = npc.SpawnShield(timeup, "models/props_mvm/mvm_player_shield.mdl",40.0, false);

@@ -339,6 +339,7 @@ methodmap Castellan < CClotBody
 		npc.m_flSpeed = npc.m_flBaseMoveSpeed;
 		npc.m_flDoingAnimation = 0.0;
 		npc.m_iHealthBar = 1;
+		b_ThisEntityIgnoredByOtherNpcsAggro[npc.index]=false;
 		
 		npc.m_flMeleeArmor = 1.25;
 		
@@ -677,10 +678,7 @@ static void Castellan_FORVESTA(int iNPC)
 					int GetAbility;
 					switch(i+1)
 					{
-						case 1:
-						{
-							GetAbility=2;
-						}
+						case 1:GetAbility=2;
 						case 2:
 						{
 							switch(GetRandomInt(1, 2))
@@ -689,8 +687,9 @@ static void Castellan_FORVESTA(int iNPC)
 								case 2:GetAbility=4;
 							}
 						}
+						case 3:GetAbility=GetRandomInt(2, 3);
 					}
-					SupportTeamContinue[0]=CreateSupport_Castellan(npc.index, npc.m_iTarget, VecSelfNpc, i+1, GetAbility);
+					SupportTeamContinue[i]=CreateSupport_Castellan(npc.index, npc.m_iTarget, VecSelfNpc, i+1, GetAbility, true);
 					if(IsValidEntity(npc.m_iWearable9))
 						RemoveEntity(npc.m_iWearable9);
 					GetAbsOrigin(npc.index, VecSelfNpc);
@@ -1264,7 +1263,7 @@ static Action Castellan_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 			npc.m_bHalfRage=true;
 	}
 	
-	if(!npc.m_iHealthBar && i_RaidGrantExtra[npc.index] == 1)
+	if(!npc.m_iHealthBar && i_RaidGrantExtra[npc.index] == 1 && !b_ThisEntityIgnoredByOtherNpcsAggro[npc.index])
 	{
 		if(((ReturnEntityMaxHealth(npc.index)/40) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) || (RoundToCeil(damage) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")))
 		{
@@ -1309,6 +1308,7 @@ static Action Castellan_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 					{
 						VestanDroneFragments DroneCPU = view_as<VestanDroneFragments>(GetDrone);
 						DroneCPU.m_iState = 2;
+						DroneCPU.m_flAttackHappens_bullshit=gameTime+10.0;
 						NPCStats_RemoveAllDebuffs(GetDrone, 1.0);
 						SetTeam(GetDrone, TFTeam_Red);
 					}
@@ -1316,6 +1316,7 @@ static Action Castellan_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 					{
 						VestanDroneAnvil DroneCPU = view_as<VestanDroneAnvil>(GetDrone);
 						DroneCPU.m_iTarget = npc.index;
+						DroneCPU.m_flAttackHappens_bullshit=gameTime+10.0;
 						NPCStats_RemoveAllDebuffs(GetDrone, 1.0);
 						SetTeam(GetDrone, TFTeam_Red);
 					}
@@ -1706,19 +1707,19 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 				{
 					FormatEx(Adddeta, sizeof(Adddeta), "%soverridetarget%i", Adddeta, EntIndexToEntRef(npc.index));
 					DroneIndex = NPC_CreateByName("npc_vesta_anvil", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
-					maxhealth = RoundToCeil(RaidModeScaling * 21239.0);
+					maxhealth = RoundToCeil(RaidModeScaling * 10000.2);
 					red=45, green=237, blue=164;
 				}
 				else
 				{
 					FormatEx(Adddeta, sizeof(Adddeta), "%soverridetarget%i", Adddeta, EntIndexToEntRef(whattarget));
 					DroneIndex = NPC_CreateByName("npc_vesta_fragments", npc.index, VecSelfNpc, {0.0,0.0,0.0}, GetTeam(npc.index), Adddeta);
-					maxhealth = RoundToCeil(RaidModeScaling * 11278.0);
+					maxhealth = RoundToCeil(RaidModeScaling * 7500.4);
 					red=229, green=235, blue=52;
 				}
 				if(DroneIndex > MaxClients)
 				{
-					maxhealth += RoundToCeil(float(ReturnEntityMaxHealth(npc.index))*0.01);
+					//maxhealth += RoundToCeil(float(ReturnEntityMaxHealth(npc.index))*0.01);
 					NpcAddedToZombiesLeftCurrently(DroneIndex, true);
 					SetEntProp(DroneIndex, Prop_Data, "m_iHealth", maxhealth);
 					SetEntProp(DroneIndex, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1861,9 +1862,9 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 
 				Initiate_HomingProjectile(Projectile,
 				npc.index,
-				120.0,			// float lockonAngleMax,
-				9.0,			// float homingaSec,
-				false,			// bool LockOnlyOnce,
+				70.0,			// float lockonAngleMax,
+				5.0,			// float homingaSec,
+				true,			// bool LockOnlyOnce,
 				true,			// bool changeAngles,
 				vAnglesProj,
 				npc.m_iTarget);			// float AnglesInitiate[3]);
@@ -2032,7 +2033,7 @@ static void WhyNoFactory(int ref)
 	NPC_CreateByName("npc_vesta_factory", -1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, GetTeam(entity), "type-d");
 }
 
-static int CreateSupport_Castellan(int entity, int enemySelect, float SelfPos[3], int WhatBoss, int SetAbility=0)
+static int CreateSupport_Castellan(int entity, int enemySelect, float SelfPos[3], int WhatBoss, int SetAbility=0, bool STFU=false)
 {
 	int SupportTeam;
 	char Adddeta[512];
@@ -2044,6 +2045,8 @@ static int CreateSupport_Castellan(int entity, int enemySelect, float SelfPos[3]
 				FormatEx(Adddeta, sizeof(Adddeta), "support_ability%i", SetAbility);
 			else
 				FormatEx(Adddeta, sizeof(Adddeta), "support_ability%i", GetRandomInt(1, 2));
+			if(STFU)
+				FormatEx(Adddeta, sizeof(Adddeta), "%s;stfu", Adddeta);
 			SupportTeam = NPC_CreateByName("npc_atomizer", -1, SelfPos, {0.0,0.0,0.0}, GetTeam(entity), Adddeta);
 		}
 		case 2:
@@ -2053,6 +2056,8 @@ static int CreateSupport_Castellan(int entity, int enemySelect, float SelfPos[3]
 			else
 				FormatEx(Adddeta, sizeof(Adddeta), "support_ability%i", GetRandomInt(1, 4));
 			FormatEx(Adddeta, sizeof(Adddeta), "%s;override_owner%i", Adddeta, entity);
+			if(STFU)
+				FormatEx(Adddeta, sizeof(Adddeta), "%s;stfu", Adddeta);
 			SupportTeam = NPC_CreateByName("npc_the_wall", -1, SelfPos, {0.0,0.0,0.0}, GetTeam(entity), Adddeta);
 		}
 		case 3:
@@ -2062,6 +2067,8 @@ static int CreateSupport_Castellan(int entity, int enemySelect, float SelfPos[3]
 			else
 				FormatEx(Adddeta, sizeof(Adddeta), "support_ability%i", GetRandomInt(1, 3));
 			FormatEx(Adddeta, sizeof(Adddeta), "%s;override_owner%i", Adddeta, entity);
+			if(STFU)
+				FormatEx(Adddeta, sizeof(Adddeta), "%s;stfu", Adddeta);
 			SupportTeam = NPC_CreateByName("npc_harrison", -1, SelfPos, {0.0,0.0,0.0}, GetTeam(entity), Adddeta);
 		}
 		default: //This should not happen

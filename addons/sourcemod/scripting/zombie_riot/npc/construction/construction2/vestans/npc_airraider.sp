@@ -25,8 +25,7 @@ static const char g_IdleAlertedSounds[][] = {
 	"vo/soldier_dominationsniper13.mp3",
 	"vo/soldier_dominationsniper01.mp3",
 	"vo/compmode/cm_soldier_pregamefirst_04.mp3",
-	"vo/compmode/cm_soldier_pregamefirst_05.mp3",
-	"vo/compmode/cm_soldier_pregamefirst_06.mp3"
+	"vo/compmode/cm_soldier_pregamefirst_05.mp3"
 };
 
 static const char g_ExplosionSounds[][]= {
@@ -55,7 +54,7 @@ void Airraider_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Airraider");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_airraider");
-	strcopy(data.Icon, sizeof(data.Icon), "soldine");
+	strcopy(data.Icon, sizeof(data.Icon), "soldier_airstrike_para");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Vesta;
@@ -172,7 +171,7 @@ methodmap Airraider < CClotBody
 		
 		if(StrContains(data, "no_tp") != -1)
 			npc.i_TPMode=0;
-		if(StrContains(data, "tpye_b") != -1)
+		if(StrContains(data, "type_b") != -1)
 		{
 			SaveSolidFlags=GetEntProp(npc.index, Prop_Send, "m_usSolidFlags");
 			SaveSolidType=GetEntProp(npc.index, Prop_Send, "m_nSolidType");
@@ -389,7 +388,6 @@ static void Airraider_ClotThink(int iNPC)
 				f_NoUnstuckVariousReasons[npc.index] = GameTime + 1.0;
 				b_DoNotUnStuck[npc.index] = false;
 				Is_a_Medic[npc.index] = false;
-				
 			}
 		}
 	}
@@ -447,8 +445,10 @@ static Action Airraider_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		npc.m_blPlayHurtAnimation = true;
-	}		
+	}
 	
+	if(npc.b_AirraiderRocketJump)
+		damage*=0.0;
 	return Plugin_Changed;
 }
 

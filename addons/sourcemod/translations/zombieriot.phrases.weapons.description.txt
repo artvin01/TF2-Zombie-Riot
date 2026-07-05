@@ -4684,8 +4684,8 @@
 	}
 	"Explosault Rifle AB 2 Desc"
 	{
-		"en"	"It's a small auxiliary drone often used by Victorians, But it's different\nWhen drones exist: charge 'Plasma Swarm' with each attack.\nIncreased Damage&Clip"
-		"ko"	"빅토리아인들이 자주 사용하는 소형 보조 드론입니다, 다만 뭔가 다르군요\n드론이 존재할 때: 공격할 때마다 '플라스마 스웜'을 충전합니다.\n피해량과 장탄수 증가"
+		"en"	"It's a small auxiliary drone often used by Vestans, But it's different\nWhen drones exist: charge 'Plasma Swarm' with each attack.\nIncreased Damage&Clip"
+		"ko"	"베스타인들이 자주 사용하는 소형 보조 드론입니다, 다만 뭔가 다르군요\n드론이 존재할 때: 공격할 때마다 '플라스마 스웜'을 충전합니다.\n피해량과 장탄수 증가"
 	}
 	"Explosault Rifle AB 2 Desc Extra"
 	{

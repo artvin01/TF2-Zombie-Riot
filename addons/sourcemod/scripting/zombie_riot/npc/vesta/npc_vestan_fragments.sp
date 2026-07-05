@@ -358,7 +358,8 @@ static void VestanDroneFragments_ClotThink(int iNPC)
 	npc.m_flNextThinkTime = gameTime + 0.1;
 	
 	if((npc.m_flLifeTime>0.0 && npc.m_flAttackHappens_bullshit && gameTime > npc.m_flAttackHappens_bullshit)
-	||((npc.m_flLifeTime!=-1.0 && !npc.m_bFUCKYOU_move_anim) && !IsValidAlly(npc.index, GetClosestAlly(npc.index))))
+	||((npc.m_flLifeTime!=-1.0 && !npc.m_bFUCKYOU_move_anim) && !IsValidAlly(npc.index, GetClosestAlly(npc.index)))
+	||(npc.m_bFUCKYOU_move_anim && !IsValidEntity(RaidBossActive)))
 	{
 		b_NpcForcepowerupspawn[npc.index] = 0;
 		i_RaidGrantExtra[npc.index] = 0;
@@ -675,6 +676,8 @@ static void VestaFragmentsAssaultMode(VestanDroneFragments npc, float gameTime, 
 						}
 						Explode_Logic_Custom(damageDealt/(b_we_are_reloading[npc.index] ? 3.0: 5.0), npc.index, npc.index, -1, vecHit, (b_we_are_reloading[npc.index] ? 125.0 : 85.0),_,_,_,4, _, 1.0);
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
+						WorldSpaceCenter(target, vecHit);
+						ParticleEffectAt(vecHit, "eotl_pyro_pool_explosion_flash", 1.0);
 					}
 					npc.m_iAmmo--;
 				}
