@@ -295,6 +295,10 @@ public void IndexFather_WeaponLoad(int client, int weapon)
 }
 public void IndexFather_WeaponVial(int client, int weapon)
 {
+	if(IsValidEntity(i_PreviousWeapon[client]))
+	{
+		TF2_RemoveItem(client, EntRefToEntIndex(i_PreviousWeapon[client]));
+	}
 	i_PreviousWeapon[client] = EntIndexToEntRef(weapon);
 	f_HoldBasicVialTime[client] = GetGameTime() + 0.0;
 	f_SwitchWeaponsRandomly[client] = GetGameTime() + 1.0;
@@ -1893,6 +1897,8 @@ int IndexFather_MaxStacksForFurioso(int client)
 
 void IndexFather_AllyDodgedAttack(int client)
 {
+	if(CurrentPrescript[client] == null)
+		return;
 	ThePrescript data;
 	CurrentPrescript[client].GetArray(0, data);
 	if(!IndexFather_PrescriptPassRestriction(client, data))
