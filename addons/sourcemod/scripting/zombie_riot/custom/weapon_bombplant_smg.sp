@@ -1164,7 +1164,10 @@ static Action Dron_BombARTouch(int entity, int target)
 
 	int owner = EntRefToEntIndex(i_WandOwner[entity]);
 	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
-	Explode_Logic_Custom(f_WandDamage[entity], owner, owner, weapon, Entity_Position, _, Attributes_Get(weapon, 117, 1.0));
+	float Attrib = 1.0;
+	if(IsValidEntity(weapon))
+		Attrib = Attributes_Get(weapon, 117, 1.0);
+	Explode_Logic_Custom(f_WandDamage[entity], owner, owner, weapon, Entity_Position, _,Attrib);
 	if(CountPlayersOnRed(0) <= 12)
 		TE_Particle("mvm_soldier_shockwave", Entity_Position, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0, .clientspec = owner);
 	int particle = EntRefToEntIndex(i_WandParticle[entity]);

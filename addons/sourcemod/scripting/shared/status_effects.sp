@@ -11807,6 +11807,18 @@ void StatusEffects_IndexNurseFather()
 	data.SlotPriority				= 0;
 	data.HudDisplay_Func 			= Func_FuriosoHud;
 	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Furioso Ability");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ℱ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageDealMulti			= 0.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0;
+	data.HudDisplay_Func 			= Func_FuriosoHud;
+	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Karmic Consequence");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⋁");
@@ -11830,6 +11842,8 @@ static void SizzlingWound_Timer(int entity, StatusEffect Apply_MasterStatusEffec
 	Apply_StatusEffect.DataForUse = GetGameTime() + 25.0;
 	StartBleedingTimer(entity, 0,2.0, 3, -1, DMG_TRUEDAMAGE, 0);
 	NPC_Ignite(entity, 0,2.0, -1, 5.0);
+	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
 
 	//spray particles
 }

@@ -90,6 +90,16 @@ static char g_AquireNewWeapon[][] = {
 	"items/suitchargeok1.wav",
 };
 
+static char g_FuriosoSlashIndicator[][] = {
+	"items/powerup_pickup_reduced_damage.wav",
+};
+static char g_FuriosoStart[][] = {
+	"items/powerup_pickup_agility.wav",
+};
+static char g_FuriosoFinalHit[][] = {
+	"doors/heavy_metal_stop1.wav",
+};
+
 enum PrescriptAddition
 {
 	PA_WhileInAir = 1,
@@ -177,7 +187,10 @@ public void IndexFather_MapStart()
 	PrecacheSoundArray(g_FailPrescript);
 	PrecacheSoundArray(g_NewPrescriptAvailable);
 	PrecacheSoundArray(g_AquireNewWeapon);
+	PrecacheSoundArray(g_FuriosoSlashIndicator);
+	PrecacheSoundArray(g_FuriosoStart);
 	PrecacheSoundArray(g_GenerateRandomWeapon);
+	PrecacheSoundArray(g_FuriosoFinalHit);
 	IndexFather_ResetAllStats();
 }
 public void IndexFather_PluginStart()
@@ -1112,6 +1125,7 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 
 	if(f_FuriosoInUse[attacker] > GetGameTime())
 	{
+		EmitSoundToAll(g_FuriosoSlashIndicator[GetRandomInt(0, sizeof(g_FuriosoSlashIndicator) - 1)], victim, SNDCHAN_STATIC, 80, _, 0.8, 100);
 		i_FuriosoHits[attacker]++;
 		f_SwitchWeaponsRandomly[attacker] = GetGameTime() + 0.25;
 		f_FuriosoInUse[attacker] = GetGameTime() + 5.0;
@@ -1132,9 +1146,13 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 			ApplySizzlingWound(attacker);
 			damage *= 4.0;
 			IndexFather_ScytheEffect(victim , 3.0);
+			float partnerPos[3];
+			GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", partnerPos);
+			CreateEarthquake(partnerPos, 0.5, 350.0, 16.0, 255.0);
+			EmitSoundToAll(g_FuriosoFinalHit[GetRandomInt(0, sizeof(g_FuriosoFinalHit) - 1)], victim, SNDCHAN_STATIC, 90, _, 1.0, 100);
 		}
 		f_DodgeCooldown[attacker] = 0.0;
-		i_DodgesAvailable[attacker] = IndexFather_DodgeMaxReturn(victim);
+		i_DodgesAvailable[attacker] = IndexFather_DodgeMaxReturn(attacker);
 	}
 	if(WeaponLevel[attacker] >= 1)
 	{
@@ -1742,6 +1760,7 @@ public void IndexFather_AbilityR(int client, int weapon, bool &result, int slot)
 		case 2:
 			TextChar = "The Will of Hermes.";
 	}
+	EmitSoundToAll(g_FuriosoStart[GetRandomInt(0, sizeof(g_FuriosoStart) - 1)], client, SNDCHAN_STATIC, 80, _, 0.8, 100);
 	NpcSpeechBubble(client, TextChar, 7, {255, 255, 255, 255}, {0.0,0.0,120.0}, "");
 	IndexFather_GrantRandomWeapon(client, weapon);
 	f_FuriosoInUse[client] = GetGameTime() + 6.0;
@@ -1752,7 +1771,9 @@ void ApplySizzlingWound(int client)
 {
 	if(WeaponLevel[client] < 5)
 		return;
-	ApplyStatusEffect(client, client, "Sizzling Wound", 60.0 * 6.0);
+	if(HasSpecificBuff(client, "Sizzling Wound"))
+		return;
+	ApplyStatusEffect(client, client, "Sizzling Wound", 60.0 * 3.0);
 }
 
 

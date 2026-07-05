@@ -4039,7 +4039,7 @@
 	}
 	"Poise Desc"
 	{
-		"en"	"Increases Critchance per stack by 0.31％, max cap at 100 stack.s"
+		"en"	"Increases Critchance per stack by 0.62％, max cap at 100 stack."
 	}
 	"Fragile"
 	{
