@@ -2495,6 +2495,10 @@
 		"it"		"Assicuratevi di spendere tutti i vostri soldi iniziali!"
 		"ko"		"당신의 시작 자금을 전부 사용하는걸 추천합니다!"
 	}
+	"Free Roam Spec Notice"
+	{
+		"en"		"Left click an NPC while freeroaming to spectate it."
+	}
 	"Difficulty set to"
 	{
 		"en"		"Difficulty set to"

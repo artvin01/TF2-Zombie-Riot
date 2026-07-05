@@ -784,7 +784,7 @@ public MRESReturn DHook_RocketExplodePre(int entity, DHookParam params)
 		{
 			float explosionRadius = 80.0;
 			b_NpcIsTeamkiller[entity] = true;
-			Explode_Logic_Custom(1.0, entity, entity, -1,_,explosionRadius,1.0,1.0,_,99,_,_,RocketJumpManualDo);
+			Explode_Logic_Custom(0.0, entity, entity, -1,_,explosionRadius,1.0,1.0,_,99,_,_,RocketJumpManualDo);
 			b_NpcIsTeamkiller[entity] = false;
 		}
 #endif
@@ -843,10 +843,10 @@ static float RocketJumpManualDo(int attacker, int victim, float damage, int weap
 {
 	int owner = GetEntPropEnt(attacker, Prop_Send, "m_hOwnerEntity");
 	if(owner != victim)
-		return (-damage); //Remove dmg
+		return 0.0; //Remove dmg
 		
 	if((GetEntityFlags(owner) & FL_ONGROUND))
-		return (-damage); //Remove dmg
+		return 0.0; //Remove dmg
 		
 	float GrenadePos[3];
 	GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", GrenadePos);
@@ -863,7 +863,7 @@ static float RocketJumpManualDo(int attacker, int victim, float damage, int weap
 	TeleportEntity(owner, NULL_VECTOR, NULL_VECTOR, velocity);
 	TF2_AddCondition(owner, TFCond_BlastJumping, 1.0);
 	Wkit_Soldin_Effect(owner);
-	return (-damage); //Remove dmg
+	return 0.0; //Remove dmg
 }
 #endif
 

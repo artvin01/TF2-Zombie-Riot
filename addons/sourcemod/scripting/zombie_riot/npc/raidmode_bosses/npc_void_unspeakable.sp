@@ -889,10 +889,9 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 						CClotBody npc1 = view_as<CClotBody>(EnemyLoop);
 						npc1.SetVelocity(velocity);
 					}
-					else
+					else if (0 < EnemyLoop <= MaxClients)
 					{	
 						b_PlayersPulled[EnemyLoop] = true;
-						TeleportEntity(EnemyLoop, NULL_VECTOR, NULL_VECTOR, velocity);
 					}
 					if(!IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
 					{
@@ -999,7 +998,8 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 		npc.m_flVoidMatterAbosorbCooldown = gameTime + 35.0;
 		if(i_RaidGrantExtra[npc.index] >= 4)
 			npc.m_flVoidMatterAbosorbCooldown = gameTime + 28.0;
-
+		
+		Zero(b_PlayersPulled);
 		return true;
 	}
 
@@ -1019,11 +1019,15 @@ bool VoidUnspeakable_MatterAbsorber_Pull(VoidUnspeakable npc)
 	if(i_RaidGrantExtra[npc.index] >= 2)
 		ScaleVectorDoMulti = 400.0;
 	
+	ScaleVectorDoMulti *= 10.0;
 	ScaleVectorDoMulti *= GetTickInterval();
 	
 	for (int client = 1; client <= MaxClients; client++)
 	{
 		if (!b_PlayersPulled[client])
+			continue;
+		
+		if (!IsValidClient(client))
 			continue;
 		
 		GetAbsOrigin(client, cpos);

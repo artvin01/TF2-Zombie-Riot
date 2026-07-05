@@ -7699,7 +7699,8 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.OnBuffStarted				= Const2Modifs_Stalker_Start;
-	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
+	data.OnBuffEndOrDeleted			= Const2Modifs_Stalker_End;
+	data.TimerRepeatCall_Func 		= Const2Modifs_Stalker_Think;
 	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
 	data.TimerRepeatCall_Func 		= StalkerCheckRemove;
 	StatusEffect_AddGlobal(data);
@@ -7887,10 +7888,12 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.AttackspeedBuff			= -1.0;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
 	data.OnBuffStarted				= Const2Modifs_Fat_Start;
 	data.OnBuffEndOrDeleted			= Const2Modifs_Fat_End;
 	data.TimerRepeatCall_Func 		= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
+	data.ElementalLogic				= false;
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Modifier+ Prefix");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
@@ -8066,10 +8069,12 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.AttackspeedBuff			= -1.0;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
 	data.OnBuffStarted				= PartyPopperPrefix_Start;
 	data.OnBuffEndOrDeleted			= PartyPopperPrefix_End;
 	data.TimerRepeatCall_Func 		= PartyPopperPrefix_Think;
 	StatusEffect_AddGlobal(data);
+	data.ElementalLogic				= false;
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Gory Prefix");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
@@ -8082,11 +8087,13 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.AttackspeedBuff			= -1.0;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
 	data.OnBuffStarted				= INVALID_FUNCTION;
 	data.OnBuffEndOrDeleted			= Gore_Prefix_End;
 	data.TimerRepeatCall_Func 		= INVALID_FUNCTION
 	data.OnTakeDamage_PostVictim	= Gore_TakeDamageAttackerPost;
 	StatusEffect_AddGlobal(data);
+	data.ElementalLogic				= false;
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Aleph Prefix");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
@@ -8097,7 +8104,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= -1.0;
-	data.Positive 					= false;
+	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.OnBuffStarted				= INVALID_FUNCTION;
 	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
@@ -8162,10 +8169,10 @@ void Const2Modifs_Big_Start(int victim, StatusEffect Apply_MasterStatusEffect, E
 	if(!b_ThisWasAnNpc[victim])
 		return;
 
+	int maxhealth = ReturnEntityMaxHealth(victim);
+	maxhealth *= 2;
+	SetEntProp(victim, Prop_Data, "m_iMaxHealth", maxhealth);
 	SetEntPropFloat(victim, Prop_Send, "m_flModelScale", GetEntPropFloat(victim, Prop_Send, "m_flModelScale") * 1.25);
-	float maxhealth = float(ReturnEntityMaxHealth(victim));
-	maxhealth *= 2.0;
-	SetEntProp(victim, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
 }
 void Const2Modifs_Big_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
@@ -8173,10 +8180,10 @@ void Const2Modifs_Big_End(int victim, StatusEffect Apply_MasterStatusEffect, E_S
 	if(!IsValidEntity(victim) || !b_ThisWasAnNpc[victim])
 		return;
 
+	int maxhealth = ReturnEntityMaxHealth(victim);
+	maxhealth /= 2;
+	SetEntProp(victim, Prop_Data, "m_iMaxHealth", maxhealth);
 	SetEntPropFloat(victim, Prop_Send, "m_flModelScale", GetEntPropFloat(victim, Prop_Send, "m_flModelScale") * (1.0 / 1.25));
-	float maxhealth = float(ReturnEntityMaxHealth(victim));
-	maxhealth /= 2.0;
-	SetEntProp(victim, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
 }
 
 void Const2Modifs_Strong_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
@@ -9072,6 +9079,10 @@ void Const2Modifs_Stalker_Start(int victim, StatusEffect Apply_MasterStatusEffec
 	//not an npc, ignore.
 	if(!b_ThisWasAnNpc[victim])
 		return;
+	
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.WearableUse = b_StaticNPC[victim]; // Using this to check if the NPC was static or not before the buff was given
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 
 	float maxhealth = float(ReturnEntityMaxHealth(victim));
 	maxhealth *= 100.0;
@@ -9082,6 +9093,31 @@ void Const2Modifs_Stalker_Start(int victim, StatusEffect Apply_MasterStatusEffec
 	b_StaticNPC[victim] = true;
 	AddNpcToAliveList(victim, b_StaticNPC[victim] ? 1 : 0);
 	RequestFrame(RemoveAllNonStalkerPrefix, EntIndexToEntRef(victim));
+}
+
+void Const2Modifs_Stalker_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	//not an npc, ignore.
+	if(!b_ThisWasAnNpc[victim])
+		return;
+	
+	b_StaticNPC[victim] = Apply_StatusEffect.WearableUse != 0;
+	
+	SetEntityRenderColor_NpcAll(victim, 1.0, 1.0, 1.0);
+	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	int maxhealth = ReturnEntityMaxHealth(victim);
+	if (health > maxhealth)
+		SetEntProp(victim, Prop_Data, "m_iHealth", maxhealth);
+}
+
+void Const2Modifs_Stalker_Think(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	//not an npc, ignore.
+	if(!b_ThisWasAnNpc[victim])
+		return;
+	
+	ApplyStatusEffect(victim, victim, "Stalker Prefix Nerf", 1.0);
+	ApplyStatusEffect(victim, victim, "Anti-Waves", 1.0);
 }
 
 void RemoveAllNonStalkerPrefix(int ref)
@@ -9371,10 +9407,12 @@ void Const2Modifs_Fat_Start(int victim, StatusEffect Apply_MasterStatusEffect, E
 	if(!b_ThisWasAnNpc[victim])
 		return;
 
-	float maxhealth = float(ReturnEntityMaxHealth(victim));
-	maxhealth *= 2.0;
-	SetEntProp(victim, Prop_Data, "m_iHealth", RoundToNearest(maxhealth));
-	SetEntProp(victim, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
+	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	int maxhealth = ReturnEntityMaxHealth(victim);
+	health *= 2;
+	maxhealth *= 2;
+	SetEntProp(victim, Prop_Data, "m_iHealth", health);
+	SetEntProp(victim, Prop_Data, "m_iMaxHealth", maxhealth);
 	SetEntPropFloat(victim, Prop_Send, "m_flModelScale", GetEntPropFloat(victim, Prop_Send, "m_flModelScale") * 1.35);
 }
 void Const2Modifs_Fat_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
@@ -9383,10 +9421,12 @@ void Const2Modifs_Fat_End(int victim, StatusEffect Apply_MasterStatusEffect, E_S
 	if(!IsValidEntity(victim) || !b_ThisWasAnNpc[victim])
 		return;
 
-	float maxhealth = float(ReturnEntityMaxHealth(victim));
-	maxhealth /= 2.0;
-	SetEntProp(victim, Prop_Data, "m_iHealth", RoundToNearest(maxhealth));
-	SetEntProp(victim, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
+	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	int maxhealth = ReturnEntityMaxHealth(victim);
+	health /= 2;
+	maxhealth /= 2;
+	SetEntProp(victim, Prop_Data, "m_iHealth", health);
+	SetEntProp(victim, Prop_Data, "m_iMaxHealth", maxhealth);
 	SetEntPropFloat(victim, Prop_Send, "m_flModelScale", GetEntPropFloat(victim, Prop_Send, "m_flModelScale") * (1.0 / 1.35));
 }
 
@@ -9761,7 +9801,7 @@ static void ScrambledPrefix_Think(int entity, StatusEffect Apply_MasterStatusEff
 			
 			// skip blacklisted effects
 			bool blacklisted;
-			for (int j = 0; i < sizeof(ScrambledBlacklist); j++)
+			for (int j = 0; j < sizeof(ScrambledBlacklist); j++)
 			{
 				if (StrContains(effect.BuffName, ScrambledBlacklist[j]) == 0)
 				{

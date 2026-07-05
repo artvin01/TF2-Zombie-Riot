@@ -263,6 +263,8 @@ bool NPC_SpawnNext(bool panzer,
 		
 		if(Spawns_GetNextPos(pos, ang, name, boss.Delay + 2.0))
 		{
+			char data[128];
+			strcopy(data, sizeof(data), boss.Data);
 			DataPack pack;
 			CreateDataTimer(boss.Delay, Timer_Delay_BossSpawn, pack, TIMER_FLAG_NO_MAPCHANGE);
 
@@ -276,6 +278,7 @@ bool NPC_SpawnNext(bool panzer,
 			pack.WriteCell(boss.Index);
 			pack.WriteCell(deathforcepowerup);
 			pack.WriteFloat(boss.HealthMulti);
+			pack.WriteString(data);
 			return true;
 		}
 		else
@@ -621,7 +624,10 @@ public Action Timer_Delay_BossSpawn(Handle timer, DataPack pack)
 	int forcepowerup = pack.ReadCell();
 	float healthmulti = pack.ReadFloat();
 	
-	int entity = NPC_CreateById(index, -1, pos, ang, TFTeam_Blue,_,true);
+	char data[128];
+	pack.ReadString(data, sizeof(data));
+	
+	int entity = NPC_CreateById(index, -1, pos, ang, TFTeam_Blue, data, true);
 	if(entity != -1)
 	{
 		NpcAddedToZombiesLeftCurrently(entity, true);

@@ -1701,6 +1701,10 @@ public void OnPostThink(int client)
 			if(HudBuffer[0])
 				PrintKeyHintText(client,"%s", HudBuffer);
 		}
+		else if (IsClientObserver(client) && GetEntProp(client, Prop_Send, "m_iObserverMode") == OBS_MODE_ROAMING)
+		{
+			PrintKeyHintText(client, "%t", "Free Roam Spec Notice");
+		}
 #endif	// ZR
 	}
 #if defined ZR

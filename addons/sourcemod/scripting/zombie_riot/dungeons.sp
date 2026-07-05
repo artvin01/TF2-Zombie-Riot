@@ -2720,8 +2720,8 @@ public void ZRModifs_GiveRandomPrefix(int iNpc)
 					if(GetRandomInt(1,4) == 1)
 					{
 						ApplyStatusEffect(iNpc, iNpc, "Stalker Prefix", 999999.9);
-						ApplyStatusEffect(iNpc, iNpc, "Stalker Prefix Nerf", 999999.9);
-						ApplyStatusEffect(iNpc, iNpc, "Anti-Waves", 999999.9);
+						ApplyStatusEffect(iNpc, iNpc, "Stalker Prefix Nerf", 1.0);	// Constantly re-applied by the prefix
+						ApplyStatusEffect(iNpc, iNpc, "Anti-Waves", 1.0);			// Constantly re-applied by the prefix
 					}
 					else
 					{
