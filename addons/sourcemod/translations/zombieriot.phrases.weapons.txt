@@ -6075,7 +6075,7 @@
 	"Golden Vial With a Chain"
 	{
 		"en"    "Golden Vial With a Chain"
-		"ko"	"사슬이 달린 금빛 바이알"
+		"ko"	"신탁 단말기 [카두세우스]"
 	}
 	"Prescript Hatchet"
 	{
