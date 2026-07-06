@@ -5703,11 +5703,6 @@
 		"en"	"-More damage, building hp, repair rate"
 		"ko"	"-피해량, 구조물 체력, 수리 효율 증가"
 	}
-	"The Index Nursefather"
-	{
-		"en"    "The Index Nursefather"
-		"ko"	"검지 아비"
-	}
 	"The Index Nursefather Desc"
 	{
 		"en"    "The Will of Hermes.\n-Cycle between 9 weapons with varying damage.\n-Receive prescripts you MUST complete within a time limit to gain Grace.\n-Failing heavily debuffs you for a long time.\n-Press m2 to dash and dodge all attacks below a damage threshold"
