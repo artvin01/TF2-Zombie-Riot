@@ -1482,7 +1482,11 @@ void IndexFather_GrantVial(int client)
 }
 
 void IndexFather_DeleteAll(int client)
-{
+{	
+	if(IsValidEntity(i_PreviousWeapon[client]))
+	{
+		TF2_RemoveItem(client, EntRefToEntIndex(i_PreviousWeapon[client]));
+	}
 	Store_RemoveSpecificItem(client, "Golden Vial With a Chain", true);
 	for(int i; i < sizeof(g_AllWeaponsExist); i++)
 	{
@@ -1834,7 +1838,7 @@ void UseFurioso(int client)
 	EmitSoundToAll(g_FuriosoStart[GetRandomInt(0, sizeof(g_FuriosoStart) - 1)], client, SNDCHAN_STATIC, 80, _, 0.7, 100);
 	NpcSpeechBubble(client, TextChar, 7, {255, 255, 255, 255}, {0.0,0.0,120.0}, "");
 
-	IndexFather_GrantRandomWeapon(client, weapon);
+	IndexFather_GrantRandomWeapon(client, WeaponMaster);
 	f_FuriosoInUse[client] = GetGameTime() + 6.0;
 }
 
