@@ -6062,4 +6062,9 @@
 		"en"	"Tiantui Star's Blade"
 		"ko"	"천퇴성도"
 	}
+	"The Index Nursefather"
+	{
+		"en"    "The Index Nursefather"
+		"ko"	"검지 아비"
+	}
 }
