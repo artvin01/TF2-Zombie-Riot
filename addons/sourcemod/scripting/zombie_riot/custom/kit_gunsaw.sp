@@ -45,6 +45,7 @@ static bool RecentlySwapped[MAXPLAYERS];
 static bool DoneLastmanSecret;
 
 static bool Precached = false;
+static int RandomSeed;
 
 void Gunsaw_MapStart()
 {
@@ -55,6 +56,11 @@ void Gunsaw_MapStart()
 	{
 		delete ModelModels[i];
 	}
+}
+
+void Gunsaw_RoundStart()
+{
+	RandomSeed = GetURandomInt() / 2;
 }
 
 void Gunsaw_Precache()
@@ -223,6 +229,7 @@ void Gunsaw_Enable(int client, int weapon)
 	}
 	else if(EquippedWeapons[client][0][0] || EquippedWeapons[client][1][0])
 	{
+		/*
 		i_Hex_WeaponUsesTheseAbilities[weapon] |= ABILITY_M2;
 		OgEntityFuncAttack[weapon][0] = EntityFuncAttack2[weapon];
 		EntityFuncAttack2[weapon] = Weapon_GunsawRanged_M2;
@@ -230,6 +237,7 @@ void Gunsaw_Enable(int client, int weapon)
 		i_Hex_WeaponUsesTheseAbilities[weapon] |= ABILITY_R;
 		OgEntityFuncAttack[weapon][1] = EntityFuncAttack3[weapon];
 		EntityFuncAttack3[weapon] = Weapon_GunsawRanged_R;
+		*/
 
 		Attributes_SetMulti(weapon, 2, GunMulti[WeaponLevel[client]]);
 		
@@ -274,17 +282,12 @@ static void ApplyGunsawStats(int ref)
 				{
 					RollNextGun(client, i);
 					SwapGunSlot(client, i, true);
-					RollNextGun(client, i);
 
 					if(!EquippedWeapons[client][i][0])
 					{
 						LogStackTrace("No gun equipped?");
 						continue;
 					}
-				}
-				else if(!NextWeapons[client][i][0])
-				{
-					RollNextGun(client, i);
 				}
 			}
 
@@ -391,16 +394,16 @@ bool Gunsaw_LastmanSecret()
 	return true;
 }
 
-void Gunsaw_TryBodySteal(int client, bool regen)
+void Gunsaw_TryBodySteal(int client, bool regen, float pos[3] = {0.0,0.0,0.0})
 {
 	if(WeaponTimer[client] && WeaponLevel[client] > 0)
 	{
-		int target = GetClosestTarget(client, true, 1000.0, true, .fldistancelimitAllyNPC = 1000.0, .IgnorePlayers = true, .ExtraValidityFunction = StealBodyFunc);
+		int target = GetClosestTarget(client, true, 1000.0, true, .EntityLocation = pos, .fldistancelimitAllyNPC = 1000.0, .IgnorePlayers = true, .ExtraValidityFunction = StealBodyFunc);
 		if(target != -1)
 		{
 			StealBodyForm(client, target);
 
-			float pos[3], ang[3];
+			float ang[3];
 			GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
 			GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
 			ang[0] = 0.0;
@@ -468,7 +471,7 @@ static void StealBodyForm(int client, int entity)
 	delete ModelModels[client];
 	ModelModels[client] = new ArrayList();
 
-	TFClassType class;
+	TFClassType class, weapons;
 
 	char model[PLATFORM_MAX_PATH];
 	GetEntPropString(entity, Prop_Data, "m_ModelName", model, sizeof(model));
@@ -486,6 +489,7 @@ static void StealBodyForm(int client, int entity)
 			model[pos] = '\0';
 
 		class = TF2_GetClass(model);
+		weapons = class;
 		ModelRobot[client] = false;
 	}
 	else if(ReplaceStringEx(model, sizeof(model), "models/bots/", "", _, _, false) != -1)
@@ -495,6 +499,7 @@ static void StealBodyForm(int client, int entity)
 			model[pos] = '\0';
 
 		class = TF2_GetClass(model);
+		weapons = class;
 		ModelRobot[client] = true;
 	}
 	else if(StrContains(model, "models/zombie/", false) != -1)
@@ -572,6 +577,9 @@ static void StealBodyForm(int client, int entity)
 		}
 	}
 
+	RollNextGun(client, 0, entity, weapons);
+	RollNextGun(client, 1, entity, weapons);
+
 	if(CurrentClass[client] != class)
 	{
 		TF2_SetPlayerClass_ZR(client, class);
@@ -618,7 +626,7 @@ static bool ValidSwapTarget(int entity)
 	return false;
 }
 
-static void RollNextGun(int client, int slot)
+static void RollNextGun(int client, int slot, int entity = -1, TFClassType class = TFClass_Unknown)
 {
 	PrecacheStore();
 
@@ -633,29 +641,37 @@ static void RollNextGun(int client, int slot)
 		return;
 	}
 
-	int rand = GetURandomInt() % length;
 	int data[2];
-	GunListing[slot][rank].GetArray(rand, data);
-	
-	if(data[0] == NextWeapons[client][slot][0])
+
+	int rand = RandomSeed;
+	if(slot == 0 && class != TFClass_Unknown)
 	{
-		rand++;
-		if(rand >= length)
-			rand = length - 1;
-		
-		GunListing[slot][rank].GetArray(rand, data);
+		int start = rand % length;
+		for(int i = start + 1; i != start; i++)
+		{
+			if(i >= length)
+			{
+				i = -1;
+				continue;
+			}
+
+			GunListing[slot][rank].GetArray(i, data);
+			if(Store_WeaponClass(data[0], data[1]) == class)
+			{
+				NextWeapons[client][slot] = data;
+				return;
+			}
+		}
 	}
-	
-	if(data[0] == abs(EquippedWeapons[client][slot][0]))
+	else
 	{
-		rand++;
-		if(rand >= length)
-			rand = length - 1;
-		
-		GunListing[slot][rank].GetArray(rand, data);
+		rand += entity > MaxClients ? i_NpcInternalId[entity] : client;
 	}
 
+	GunListing[slot][rank].GetArray(rand % length, data);
+
 	NextWeapons[client][slot] = data;
+	SwapGunSlot(client, slot);
 }
 
 static void SwapGunSlot(int client, int slot, bool first = false)

@@ -7851,3 +7851,18 @@ bool RogueAlwaysSell(const Item item)
 	return item.RogueAlwaysSell;
 		
 }
+
+TFClassType Store_WeaponClass(int index, int level)
+{
+	static Item item;
+	StoreItems.GetArray(index, item);
+
+	static ItemInfo info;
+	if(!item.GetItemInfo(level, info))
+		return TFClass_Unknown;
+	
+	if(info.WeaponForceClass > 0 && info.WeaponForceClass < 11)
+		return info.WeaponForceClass;
+	
+	return TF2_GetWeaponClass(info.Index, _, TF2_GetClassnameSlot(info.Classname));
+}

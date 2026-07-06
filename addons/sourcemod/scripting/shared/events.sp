@@ -126,6 +126,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	Zealot_RoundStart();
 	Drops_ResetChances();
 	NPCStats_HandlePaintedWearables();
+	Gunsaw_RoundStart();
 
 	for(int client=1; client<=MaxClients; client++)
 	{
