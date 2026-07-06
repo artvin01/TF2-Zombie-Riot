@@ -3246,7 +3246,7 @@
 	"Vesta_Survival_Bob_Message"
 	{
 		"en"		"Bob the First and his army found us and decided to help us fight the Outpost. Bob needs our help after we're finished here. He hopes that the Vestans started this....."
-		"ko"		"지베리아 게릴라의 지원이 도착했습니다."
+		"ko"		"밥 1세와 그의 군대가 우리를 발견했으며, 전초기지와의 전투를 돕기로 결정합니다.\n이곳의 일이 끝나면 밥이 우리의 도움을 필요로 할 것입니다.\n그가 베스타인들이 먼저 이 상황을 시작했길 바라는군요..."
 		"it"		"I Guerriglieri Ziberiani sono qui per aiutare."
 	}
 	"RadioTower_here_Message"
@@ -3264,12 +3264,12 @@
 	"Void_Survival_Help_Message_1"
 	{
 		"en"		"Expidonsan scouts have located us. They’ve sent word for someone to arrive as soon as possible. Until then, they will aid us."
-		"ko"		"엑스피돈사가 공허 재앙을 막기 위해 당신에게 합류합니다."
+		"ko"		"엑스피돈사 정찰병들이 우리의 위치를 확인했습니다.\n어떤 이에게 최대한 빠르게 도착하라고 전달한 것 같군요.\n그때까지는, 이들이 우릴 도울 것입니다."
 	}
 	"Void_Survival_Help_Message_2"
 	{
 		"en"		"Sensal has finally reached us to defeat this void outbreak."
-		"ko"		"엑스피돈사가 공허 재앙을 막기 위해 당신에게 합류합니다."
+		"ko"		"센살이 공허 재앙을 막기 위해 드디어 당신에게 합류합니다."
 	}
 	"Umbral_Outbreak_Help_Message"
 	{
