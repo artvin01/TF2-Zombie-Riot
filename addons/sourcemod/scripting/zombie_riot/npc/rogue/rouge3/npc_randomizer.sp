@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static char g_RandomizerClasses[][] = {
+public const char g_RandomizerClasses[][] = {
 	"", // unknown
 	"scout",
 	"sniper",

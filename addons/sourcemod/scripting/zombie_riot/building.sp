@@ -969,13 +969,18 @@ public void Pickup_Building_Multi(int client, int weapon, bool crit)
 
 public void Pickup_Building_M2(int client, int weapon, bool crit)
 {
+	Building_Pickup(client, 150.0);
+}
+
+void Building_Pickup(int client, float dist = 150.0)
+{
 	if(IsValidEntity(Player_BuildingBeingCarried[client]))
 	{
 		int buildingindx = EntRefToEntIndex(Player_BuildingBeingCarried[client]);
 		Building_AttemptPlace(buildingindx, client);
 		return;
 	}
-	int entity = GetClientPointVisible(client, 150.0 , false, false,_,1);
+	int entity = GetClientPointVisible(client, dist , false, false,_,1);
 	if(entity <= MaxClients)	
 		return;
 
@@ -1223,13 +1228,14 @@ void BuildingPickUp(int BuildingNPC)
 	{
 		return;
 	}
-	GrabThrottle[BuildingNPC] = GetGameTime() + 0.1;
 	int client = EntRefToEntIndex(Building_BuildingBeingCarried[BuildingNPC]);
 	if(!IsValidClient(client))
 	{
 		RemoveEntity(BuildingNPC);
 		return;
 	}
+	bool gunsaw = Gunsaw_IsMerc(client);
+	GrabThrottle[BuildingNPC] = GetGameTime() + (gunsaw ? 0.01 : 0.1);
 	PlayerWasHoldingProp[client] = GetGameTime() + 0.2;
 	if(!IsPlayerAlive(client))
 	{
@@ -1237,6 +1243,11 @@ void BuildingPickUp(int BuildingNPC)
 		RemoveEntity(BuildingNPC);
 		return;
 	}
+
+	float distance = BUILDING_DISTANCE_GRAB;
+	if(gunsaw)
+		distance *= 2.0;
+
 	float vecView[3];
 	float vecView2[3];
 	float vecFwd[3];
@@ -1250,9 +1261,9 @@ void BuildingPickUp(int BuildingNPC)
 	GetClientEyePosition(client, vecPos);
 	vecPosbase = vecPos;
 	vecPosbase[2] -= 15.0;
-	vecPos[0]+=vecFwd[0]* BUILDING_DISTANCE_GRAB;
-	vecPos[1]+=vecFwd[1]* BUILDING_DISTANCE_GRAB;
-	vecPos[2]+=vecFwd[2]* BUILDING_DISTANCE_GRAB;
+	vecPos[0]+=vecFwd[0]* distance;
+	vecPos[1]+=vecFwd[1]* distance;
+	vecPos[2]+=vecFwd[2]* distance;
 
 	GetEntPropVector(BuildingNPC, Prop_Data, "m_vecAbsOrigin", vecFwd);
 
@@ -1273,14 +1284,23 @@ void BuildingPickUp(int BuildingNPC)
 	float VecCheckBottom[3];
 	TR_GetEndPosition(VecCheckBottom, hTrace);
 	delete hTrace;
-	
+
 	if(f3_CustomMinMaxBoundingBoxMinExtra[BuildingNPC][2])
 	{
 		//wierd offset.
 		VecCheckBottom[2] -= f3_CustomMinMaxBoundingBoxMinExtra[BuildingNPC][2];
 	}
 	TeleportEntity(BuildingNPC, VecCheckBottom, vecView2, NULL_VECTOR);
-	Building_AttemptPlace(BuildingNPC, client, true);
+	
+	if(gunsaw)
+	{
+		VecCheckBottom[2] += 20.0;
+		TE_SetupBeamPoints(vecPosbase, VecCheckBottom, Shared_BEAM_Laser, 0, 0, 0, 0.1, 1.5, 1.5, 0, 1.2, {100,100,250,200}, 2);
+		TE_SendToAll(0.0);
+	}
+
+	if(!gunsaw)
+		Building_AttemptPlace(BuildingNPC, client, true);
 }
 
 
