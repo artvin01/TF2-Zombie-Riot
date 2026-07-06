@@ -2498,6 +2498,7 @@
 	"Free Roam Spec Notice"
 	{
 		"en"		"Left click an NPC while freeroaming to spectate it."
+		"ko"		"자유 카메라 상태일 때 NPC를 보고 좌클릭하여 관전하세요."
 	}
 	"Difficulty set to"
 	{
