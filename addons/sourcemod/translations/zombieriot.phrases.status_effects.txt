@@ -4036,49 +4036,61 @@
 	"Poise"
 	{
 		"en"	"Poise"
+		"ko"	"호흡"
 	}
 	"Poise Desc"
 	{
 		"en"	"Increases Critchance per stack by 0.62％, max cap at 100 stack."
+		"ko"	"수치 당 치명타 확률이 0.62％ 증가합니다. 최대 100까지 누적 가능."
 	}
 	"Fragile"
 	{
 		"en"	"Fragile"
+		"ko"	"취약"
 	}
 	"Fragile Desc"
 	{
 		"en"	"Increases Damage taken per stack by 2.5％, max cap at 25 stacks."
+		"ko"	"수치 당 받는 피해량이 2.5％ 증가합니다. 최대 25까지 누적 가능."
 	}
 	"Shin - Rien"
 	{
 		"en"	"Shin - Rien"
+		"ko"	"신 - 뤼엔"
 	}
 	"Shin - Rien Desc"
 	{
 		"en"	"Increases Poise gain by 1 and duration everytime poise is gained."
+		"ko"	"얻는 호흡이 1 증가하며 호흡을 얻을 때마다 지속 시간이 증가합니다."
 	}
 	"Grace Of Prescript"
 	{
 		"en"	"Grace Of Prescript"
+		"ko"	"지령의 가호"
 	}
 	"Grace Of Prescript Desc"
 	{
 		"en"	"Increases damage by 1.0％ multiplicatively at 7 and above, reduces furioso count needed by 1, max stack at 9"
+		"ko"	"수치가 7 이상일 때 공격 피해량이 곱연산으로 1.0％ 증가합니다. Furioso 활성화에 필요한 수치가 1 감소합니다. 최대 9까지 누적 가능."
 	}
 	"Sizzling Wound"
 	{
 		"en"	"Sizzling Wound"
+		"ko"	"이글거리는 상처"
 	}
 	"Sizzling Wound Desc"
 	{
 		"en"	"Increases damage by 10.0％ multiplicatively, Randomly take burn and bleed damage at the same time."
+		"ko"	"공격 피해량이 곱연산으로 10.0％ 증가합니다. 무작위로 화상과 출혈 피해를 받습니다."
 	}
 	"Karmic Consequence"
 	{
 		"en"	"Karmic Consequence"
+		"ko"	"카르마"
 	}
 	"Karmic Consequence Desc"
 	{
 		"en"	"Take 25.0％ more damage, deal 25.0％ less damage."
+		"ko"	"받는 피해량이 25.0％ 증가합니다. 공격 피해량이 25.0％ 감소합니다."
 	}
 }
