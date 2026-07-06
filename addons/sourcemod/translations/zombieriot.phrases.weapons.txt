@@ -6067,4 +6067,59 @@
 		"en"    "The Index Nursefather"
 		"ko"	"검지 아비"
 	}
+	"Prescript Delivered on a device"
+	{
+		"en"    "Prescript Delivered on a device"
+		"ko"	"단말기로 전해진 지령"
+	}
+	"Golden Vial With a Chain"
+	{
+		"en"    "Golden Vial With a Chain"
+		"ko"	"사슬이 달린 금빛 바이알"
+	}
+	"Prescript Hatchet"
+	{
+		"en"    "Prescript Hatchet"
+		"ko"	"손도끼로 갈비뼈를 찍어 내릴 때는..."
+	}
+	"Prescript Hammer"
+	{
+		"en"    "Prescript Hammer"
+		"ko"	"망치로 뒤통수를 으깨야 할 때는..."
+	}
+	"Prescript Whip"
+	{
+		"en"    "Prescript Whip"
+		"ko"	"채찍으로 살점을 만 갈래 떼어내야 할 때는..."
+	}
+	"Prescript Lance"
+	{
+		"en"    "Prescript Lance"
+		"ko"	"랜스로 20인치의 구멍을 내야 할 때는..."
+	}
+	"Prescript Rapier"
+	{
+		"en"    "Prescript Rapier"
+		"ko"	"레이피어로 몸에 10개 이상의 구멍을 내야할 때는..."
+	}
+	"Prescript Stiletto"
+	{
+		"en"    "Prescript Stiletto"
+		"ko"	"스틸레토로 허파를 꿰뚫을 때는..."
+	}
+	"Prescript Bastardsword"
+	{
+		"en"    "Prescript Bastardsword"
+		"ko"	"바스타드 소드로 어깨와 머리를 짓이길 때는..."
+	}
+	"Prescript Greatsword"
+	{
+		"en"    "Prescript Greatsword"
+		"ko"	"커다란 검으로 몸통을 갈라야 할 때는..."
+	}
+	"Prescript Scythe"
+	{
+		"en"    "Prescript Scythe"
+		"ko"	"낫으로... 누군가처럼 공간을 따라 베어내야 할 때는..."
+	}
 }
