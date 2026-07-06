@@ -257,7 +257,7 @@ public bool Is_Prescript_User(int client)
 	return true;
 }
 
-public bool Prescript_LastmanBuff(int client)
+public void Prescript_LastmanBuff(int client)
 {
 	ApplyStatusEffect(client, client, "Indulgence in Prescripts", 60.0);
 	if(!b_IsAloneOnServer)
