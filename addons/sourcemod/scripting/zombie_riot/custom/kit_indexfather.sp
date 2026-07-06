@@ -259,9 +259,9 @@ public bool Is_Prescript_User(int client)
 
 public void Prescript_LastmanBuff(int client)
 {
-	ApplyStatusEffect(client, client, "Indulgence in Prescripts", 60.0);
+	ApplyStatusEffect(client, client, "Indulgence in Prescripts", 30.0);
 	if(!b_IsAloneOnServer)
-		f_FuriosoLastmanForce[client] = GetGameTime() + 60.0;
+		f_FuriosoLastmanForce[client] = GetGameTime() + 30.0;
 	IndexFather_GeneratePrescript(client, true, view_as<int>(PT_DealDamage));
 	UseFurioso(client);
 }
