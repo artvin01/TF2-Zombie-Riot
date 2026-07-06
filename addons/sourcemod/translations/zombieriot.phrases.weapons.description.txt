@@ -5706,7 +5706,7 @@
 	"The Index Nursefather Desc"
 	{
 		"en"    "The Will of Hermes.\n-Cycle between 9 weapons with varying damage.\n-Receive prescripts you MUST complete within a time limit to gain Grace.\n-Failing heavily debuffs you for a long time.\n-Press m2 to dash and dodge all attacks below a damage threshold"
-		"ko"	"헤르메스의 의지.\n-주기적으로 각기 다른 피해량을 가진 9개의 무기 사이에서 변경\n-제한 시간 내에 ''반드시'' 완료해야하는 지령을 받습니다.(완료 시 가호 획득)\n-실패 시 긴 시간 동안 큰 디버프를 받습니다.\n-우클릭으로 일정량 이하의 피해를 가하는 모든 공격을 회피"
+		"ko"	"헤르메스의 의지.\n-주기적으로 각기 다른 피해량을 가진 9개의 무기 사이를 전환\n-제한 시간 내에 ''반드시'' 수행해야하는 지령을 받습니다.(완료 시 가호 획득)\n-지령을 수행하지 못할 시 긴 시간 동안 큰 디버프를 받습니다.\n-우클릭 시 대쉬하며, 일정량 이하의 피해를 가하는 모든 공격을 회피"
 	}
 	"The Index Nursefather Desc 1"
 	{
