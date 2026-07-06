@@ -1130,7 +1130,7 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 	if(f_FuriosoInUse[attacker] > GetGameTime())
 	{
 		EmitSoundToAll(g_FuriosoSlashIndicator[GetRandomInt(0, sizeof(g_FuriosoSlashIndicator) - 1)], victim, SNDCHAN_STATIC, 80, _, 0.8, 100);
-		EmitSoundToAll(g_FuriosoSlashIndicator[GetRandomInt(0, sizeof(g_FuriosoSlashIndicator) - 1)], victim, SNDCHAN_STATIC, 80, _, 0.8, 100);
+		EmitSoundToClient(attacker, g_FuriosoSlashIndicator[GetRandomInt(0, sizeof(g_FuriosoSlashIndicator) - 1)], victim, SNDCHAN_STATIC, 80, _, 0.8, 100);
 		i_FuriosoHits[attacker]++;
 		f_SwitchWeaponsRandomly[attacker] = GetGameTime() + 0.25;
 		f_FuriosoInUse[attacker] = GetGameTime() + 5.0;
@@ -1155,7 +1155,7 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 			GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", partnerPos);
 			CreateEarthquake(partnerPos, 0.5, 350.0, 16.0, 255.0);
 			EmitSoundToAll(g_FuriosoFinalHit[GetRandomInt(0, sizeof(g_FuriosoFinalHit) - 1)], victim, SNDCHAN_STATIC, 90, _, 1.0, 100);
-			EmitSoundToAll(g_FuriosoFinalHit[GetRandomInt(0, sizeof(g_FuriosoFinalHit) - 1)], victim, SNDCHAN_STATIC, 90, _, 1.0, 100);
+			EmitSoundToClient(attacker, g_FuriosoFinalHit[GetRandomInt(0, sizeof(g_FuriosoFinalHit) - 1)], victim, SNDCHAN_STATIC, 90, _, 1.0, 100);
 		}
 		f_DodgeCooldown[attacker] = 0.0;
 		i_DodgesAvailable[attacker] = IndexFather_DodgeMaxReturn(attacker);
