@@ -1130,6 +1130,7 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 	if(f_FuriosoInUse[attacker] > GetGameTime())
 	{
 		EmitSoundToAll(g_FuriosoSlashIndicator[GetRandomInt(0, sizeof(g_FuriosoSlashIndicator) - 1)], victim, SNDCHAN_STATIC, 80, _, 0.8, 100);
+		EmitSoundToAll(g_FuriosoSlashIndicator[GetRandomInt(0, sizeof(g_FuriosoSlashIndicator) - 1)], victim, SNDCHAN_STATIC, 80, _, 0.8, 100);
 		i_FuriosoHits[attacker]++;
 		f_SwitchWeaponsRandomly[attacker] = GetGameTime() + 0.25;
 		f_FuriosoInUse[attacker] = GetGameTime() + 5.0;
@@ -1153,6 +1154,7 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 			float partnerPos[3];
 			GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", partnerPos);
 			CreateEarthquake(partnerPos, 0.5, 350.0, 16.0, 255.0);
+			EmitSoundToAll(g_FuriosoFinalHit[GetRandomInt(0, sizeof(g_FuriosoFinalHit) - 1)], victim, SNDCHAN_STATIC, 90, _, 1.0, 100);
 			EmitSoundToAll(g_FuriosoFinalHit[GetRandomInt(0, sizeof(g_FuriosoFinalHit) - 1)], victim, SNDCHAN_STATIC, 90, _, 1.0, 100);
 		}
 		f_DodgeCooldown[attacker] = 0.0;
@@ -1764,7 +1766,8 @@ public void IndexFather_AbilityR(int client, int weapon, bool &result, int slot)
 		case 2:
 			TextChar = "The Will of Hermes.";
 	}
-	EmitSoundToAll(g_FuriosoStart[GetRandomInt(0, sizeof(g_FuriosoStart) - 1)], client, SNDCHAN_STATIC, 80, _, 0.8, 100);
+	EmitSoundToAll(g_FuriosoStart[GetRandomInt(0, sizeof(g_FuriosoStart) - 1)], client, SNDCHAN_STATIC, 80, _, 0.7, 100);
+	EmitSoundToAll(g_FuriosoStart[GetRandomInt(0, sizeof(g_FuriosoStart) - 1)], client, SNDCHAN_STATIC, 80, _, 0.7, 100);
 	NpcSpeechBubble(client, TextChar, 7, {255, 255, 255, 255}, {0.0,0.0,120.0}, "");
 	IndexFather_GrantRandomWeapon(client, weapon);
 	f_FuriosoInUse[client] = GetGameTime() + 6.0;
