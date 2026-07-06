@@ -2109,7 +2109,7 @@ public Action OnBombDrop(const char [] output, int caller, int activator, float 
 			{
 				if(IsValidClient(PreviousOwner))
 				{
-					CPrintToChat(PreviousOwner, "%s {default}wasn't able to get any merc... the backup call was refunded.");
+					CPrintToChat(PreviousOwner, "%s {default}wasn't able to get any merc... the backup call was refunded.", s_MissionClient);
 					HealPointToReinforce(PreviousOwner, 0, 1.0);
 					i_MaxRevivesAWave--;
 				}
