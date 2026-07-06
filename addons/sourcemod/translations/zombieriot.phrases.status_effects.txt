@@ -4071,7 +4071,7 @@
 	"Grace Of Prescript Desc"
 	{
 		"en"	"Increases damage by 1.0％ multiplicatively at 7 and above, reduces furioso count needed by 1, max stack at 9"
-		"ko"	"수치가 7 이상일 때 공격 피해량이 곱연산으로 1.0％ 증가합니다. Furioso 활성화에 필요한 수치가 1 감소합니다. 최대 9까지 누적 가능."
+		"ko"	"수치가 7 이상일 때 공격 피해량이 곱연산으로 1.0％ 증가하며, Furioso 활성화에 필요한 카운터가 1 감소합니다. 최대 9까지 누적 가능."
 	}
 	"Sizzling Wound"
 	{
