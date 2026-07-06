@@ -12,6 +12,7 @@ static int i_PreviousWeapon[MAXPLAYERS];
 static float f_SwitchWeaponsRandomly[MAXPLAYERS];
 static float f_HoldBasicVialTime[MAXPLAYERS];
 static int i_CurrentWeaponSet[MAXPLAYERS];
+static int i_MasterWeapon[MAXPLAYERS];
 static int i_DodgesAvailable[MAXPLAYERS] = {25, ...};
 static float f_DodgeCooldown[MAXPLAYERS];
 static float f_DodgeBetweenDashes[MAXPLAYERS];
@@ -313,6 +314,7 @@ public void IndexFather_WeaponLoad(int client, int weapon)
 	if(Handle_Timer[client] != null)
 		delete Handle_Timer[client];
 	Handle_Timer[client] = null;
+	i_MasterWeapon[client] = EntIndexToEntRef(weapon);
 
 	SDKUnhook(client, SDKHook_PreThink, IndexFather_DodgeLogic);
 	SDKHook(client, SDKHook_PreThink, IndexFather_DodgeLogic);
@@ -1204,7 +1206,7 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 		f_DodgeCooldown[attacker] = 0.0;
 		i_DodgesAvailable[attacker] = IndexFather_DodgeMaxReturn(attacker);
 		if(f_FuriosoLastmanForce[attacker] > GetGameTime())
-			UseFurioso(client);
+			UseFurioso(attacker);
 			
 	}
 	if(WeaponLevel[attacker] >= 1)
@@ -1806,7 +1808,13 @@ public void IndexFather_AbilityR(int client, int weapon, bool &result, int slot)
 	UseFurioso(client);
 }
 void UseFurioso(int client)
-{
+{	
+	int WeaponMaster = EntRefToEntIndex(i_MasterWeapon[client]);
+	if(!IsValidEntity(WeaponMaster))
+	{
+		//fail
+		return;
+	}
 //	f_FuriosoCooldown[client] = GetGameTime() + 30.0;
 	if(CurrentPrescript[client] != null)
 	{
@@ -1825,6 +1833,7 @@ void UseFurioso(int client)
 	EmitSoundToAll(g_FuriosoStart[GetRandomInt(0, sizeof(g_FuriosoStart) - 1)], client, SNDCHAN_STATIC, 80, _, 0.7, 100);
 	EmitSoundToAll(g_FuriosoStart[GetRandomInt(0, sizeof(g_FuriosoStart) - 1)], client, SNDCHAN_STATIC, 80, _, 0.7, 100);
 	NpcSpeechBubble(client, TextChar, 7, {255, 255, 255, 255}, {0.0,0.0,120.0}, "");
+
 	IndexFather_GrantRandomWeapon(client, weapon);
 	f_FuriosoInUse[client] = GetGameTime() + 6.0;
 }
