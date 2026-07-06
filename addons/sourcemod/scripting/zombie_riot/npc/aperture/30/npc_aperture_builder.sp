@@ -461,7 +461,7 @@ public void ApertureBuilder_ClotThink(int iNPC)
 				if (!GetVectorLength(f3_NpcSavePos[npc.index], true))
 				{
 					float vecBuffer[3];
-					bool success = ApertureBuilder_TryToFindSpotInRadius(npc.index, npc.index, 200.0, true, true, vecBuffer);
+					bool success = ApertureBuilder_TryToFindSpotInRadius(npc.index, npc.index, 200.0, true, false, vecBuffer);
 					if (success)
 					{
 						// Congratulations little fella, you got a place to go
@@ -994,7 +994,7 @@ static bool ApertureBuilder_TryToFindSpotInRadius(int iNPC, int entity, float ra
 			continue;
 		
 		float vecMins[3], vecMaxs[3];
-			
+		
 		if (careAboutGiants)
 		{
 			// The teleporter might spawn giants!

@@ -380,14 +380,30 @@ bool DoInteractKeyLogic(float angles[3], int client)
 		if(IsValidEntity(entity))
 		{
 			Object_Interact(client, GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"), client);
+			if(EntityOnAllyInteract[client] && EntityOnAllyInteract[client] != INVALID_FUNCTION)
+			{
+				Call_StartFunction(null, EntityOnAllyInteract[client]);
+				Call_PushCell(client);
+				Call_PushCell(entity);
+				Call_Finish();
+			}
 		}
 	}
 #endif
 	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	StartPlayerOnlyLagComp(client, true);
-	if(InteractKey(client, weapon_holding, true))
+	int EntityAlly = false;
+	if(InteractKey(client, weapon_holding, true, EntityAlly))
 		Success = true;
 
+	
+	if(Success && EntityOnAllyInteract[client] && EntityOnAllyInteract[client] != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, EntityOnAllyInteract[client]);
+		Call_PushCell(client);
+		Call_PushCell(EntityAlly);
+		Call_Finish();
+	}
 	EndPlayerOnlyLagComp(client);
 	return Success;
 }

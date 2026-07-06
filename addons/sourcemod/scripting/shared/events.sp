@@ -127,6 +127,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	Drops_ResetChances();
 	NPCStats_HandlePaintedWearables();
 	Gunsaw_RoundStart();
+	IndexFather_ResetAllStats();
 
 	for(int client=1; client<=MaxClients; client++)
 	{

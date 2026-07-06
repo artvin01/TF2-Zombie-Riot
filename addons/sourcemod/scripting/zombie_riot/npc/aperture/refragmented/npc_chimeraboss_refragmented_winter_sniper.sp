@@ -16,6 +16,12 @@ static const char g_MeleeAttackSounds[][] = {
 	"weapons/sniper_rifle_classic_shoot.wav",
 };
 
+static int NPCID;
+
+int CHIMERARefragmentedWinterSniper_ID()
+{
+	return NPCID;
+}
 
 void RefragmentedWinterSniper_OnMapStart_NPC()
 {
@@ -34,6 +40,7 @@ void RefragmentedWinterSniper_OnMapStart_NPC()
 	data.Func = ClotSummon;
 	int id = NPC_Add(data);
 	Rogue_Paradox_AddWinterNPC(id);
+	NPCID = id;
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)

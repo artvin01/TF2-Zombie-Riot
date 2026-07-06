@@ -272,6 +272,7 @@ void InitStatusEffects()
 	StatusEffects_SkullServants();
 	StatusEffects_GamemodeMadnessSZF();
 	StatusEffects_Raigeki();
+	StatusEffects_Fridge();
 #endif
 	StatusEffects_Construction2();
 	StatusEffects_AllyInvulnDebuffs();
@@ -280,6 +281,7 @@ void InitStatusEffects()
 	StatusEffects_ShieldLogic();
 	StatusEffects_Red_Mist();
 	StatusEffects_Barracks();
+	StatusEffects_IndexNurseFather();
 }
 
 static int CategoryPage[MAXPLAYERS];
@@ -3249,6 +3251,26 @@ void StatusEffects_Vesta()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Armor Melt");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "½");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	data.DamageTakenMulti 			= 0.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.AttackspeedBuff			= -1.0;
+	
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	data.OnTakeDamage_TakenFunc 	= Armor_Melt_ResistanceFunc;
+	data.OnTakeDamage_DealFunc 	= INVALID_FUNCTION;
+	data.OnTakeDamage_PostVictim	= INVALID_FUNCTION;
+	data.OnTakeDamage_PostAttacker	= INVALID_FUNCTION;
+	data.Status_SpeedFunc 		= INVALID_FUNCTION;
+	data.HudDisplay_Func 			= INVALID_FUNCTION;
+	StatusEffect_AddGlobal(data);
 }
 
 stock bool NpcStats_VestanCallToArms(int victim)
@@ -3306,6 +3328,30 @@ void Charge_BatteryTM_Hud_Func(int attacker, int victim, StatusEffect Apply_Mast
 		Format(HudToDisplay, SizeOfChar, "[B™ %.0f％]", Ratio);
 	}
 	#endif
+}
+
+static float Armor_Melt_ResistanceFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, int basedamage)
+{
+	int Armor=0;
+	if(IsValidClient(victim))
+	{
+		Armor = Armor_Charge[victim];
+		if(Armor<1)
+			return 1.0;
+		int MaxArmor = MaxArmorCalculation(Armor_Level[victim], victim, 0.5);
+		if(Armor>MaxArmor)
+			Armor=MaxArmor;
+	}
+	else
+		Armor = RoundToNearest(view_as<CClotBody>(victim).m_flArmorCount);
+	Armor-RoundFloat(basedamage*0.33);
+	if(Armor<0)Armor=0;
+	if(IsValidClient(victim))
+		Armor_Charge[victim]=Armor;
+	else
+		view_as<CClotBody>(victim).m_flArmorCount = float(Armor);
+	
+	return 1.0;
 }
 
 void StatusEffects_Pernell()
@@ -7654,7 +7700,8 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.OnBuffStarted				= Const2Modifs_Stalker_Start;
-	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
+	data.OnBuffEndOrDeleted			= Const2Modifs_Stalker_End;
+	data.TimerRepeatCall_Func 		= Const2Modifs_Stalker_Think;
 	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
 	data.TimerRepeatCall_Func 		= StalkerCheckRemove;
 	StatusEffect_AddGlobal(data);
@@ -7842,10 +7889,12 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.AttackspeedBuff			= -1.0;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
 	data.OnBuffStarted				= Const2Modifs_Fat_Start;
 	data.OnBuffEndOrDeleted			= Const2Modifs_Fat_End;
 	data.TimerRepeatCall_Func 		= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
+	data.ElementalLogic				= false;
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Modifier+ Prefix");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
@@ -8021,10 +8070,12 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.AttackspeedBuff			= -1.0;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
 	data.OnBuffStarted				= PartyPopperPrefix_Start;
 	data.OnBuffEndOrDeleted			= PartyPopperPrefix_End;
 	data.TimerRepeatCall_Func 		= PartyPopperPrefix_Think;
 	StatusEffect_AddGlobal(data);
+	data.ElementalLogic				= false;
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Gory Prefix");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
@@ -8037,11 +8088,13 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.AttackspeedBuff			= -1.0;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
 	data.OnBuffStarted				= INVALID_FUNCTION;
 	data.OnBuffEndOrDeleted			= Gore_Prefix_End;
 	data.TimerRepeatCall_Func 		= INVALID_FUNCTION
 	data.OnTakeDamage_PostVictim	= Gore_TakeDamageAttackerPost;
 	StatusEffect_AddGlobal(data);
+	data.ElementalLogic				= false;
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Aleph Prefix");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
@@ -8052,7 +8105,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.DamageDealMulti			= -1.0;
 	data.MovementspeedModif			= -1.0;
 	data.AttackspeedBuff			= -1.0;
-	data.Positive 					= false;
+	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.OnBuffStarted				= INVALID_FUNCTION;
 	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
@@ -8117,10 +8170,10 @@ void Const2Modifs_Big_Start(int victim, StatusEffect Apply_MasterStatusEffect, E
 	if(!b_ThisWasAnNpc[victim])
 		return;
 
+	int maxhealth = ReturnEntityMaxHealth(victim);
+	maxhealth *= 2;
+	SetEntProp(victim, Prop_Data, "m_iMaxHealth", maxhealth);
 	SetEntPropFloat(victim, Prop_Send, "m_flModelScale", GetEntPropFloat(victim, Prop_Send, "m_flModelScale") * 1.25);
-	float maxhealth = float(ReturnEntityMaxHealth(victim));
-	maxhealth *= 2.0;
-	SetEntProp(victim, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
 }
 void Const2Modifs_Big_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
@@ -8128,10 +8181,10 @@ void Const2Modifs_Big_End(int victim, StatusEffect Apply_MasterStatusEffect, E_S
 	if(!IsValidEntity(victim) || !b_ThisWasAnNpc[victim])
 		return;
 
+	int maxhealth = ReturnEntityMaxHealth(victim);
+	maxhealth /= 2;
+	SetEntProp(victim, Prop_Data, "m_iMaxHealth", maxhealth);
 	SetEntPropFloat(victim, Prop_Send, "m_flModelScale", GetEntPropFloat(victim, Prop_Send, "m_flModelScale") * (1.0 / 1.25));
-	float maxhealth = float(ReturnEntityMaxHealth(victim));
-	maxhealth /= 2.0;
-	SetEntProp(victim, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
 }
 
 void Const2Modifs_Strong_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
@@ -9027,6 +9080,10 @@ void Const2Modifs_Stalker_Start(int victim, StatusEffect Apply_MasterStatusEffec
 	//not an npc, ignore.
 	if(!b_ThisWasAnNpc[victim])
 		return;
+	
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.WearableUse = b_StaticNPC[victim]; // Using this to check if the NPC was static or not before the buff was given
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 
 	float maxhealth = float(ReturnEntityMaxHealth(victim));
 	maxhealth *= 100.0;
@@ -9037,6 +9094,31 @@ void Const2Modifs_Stalker_Start(int victim, StatusEffect Apply_MasterStatusEffec
 	b_StaticNPC[victim] = true;
 	AddNpcToAliveList(victim, b_StaticNPC[victim] ? 1 : 0);
 	RequestFrame(RemoveAllNonStalkerPrefix, EntIndexToEntRef(victim));
+}
+
+void Const2Modifs_Stalker_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	//not an npc, ignore.
+	if(!b_ThisWasAnNpc[victim])
+		return;
+	
+	b_StaticNPC[victim] = Apply_StatusEffect.WearableUse != 0;
+	
+	SetEntityRenderColor_NpcAll(victim, 1.0, 1.0, 1.0);
+	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	int maxhealth = ReturnEntityMaxHealth(victim);
+	if (health > maxhealth)
+		SetEntProp(victim, Prop_Data, "m_iHealth", maxhealth);
+}
+
+void Const2Modifs_Stalker_Think(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	//not an npc, ignore.
+	if(!b_ThisWasAnNpc[victim])
+		return;
+	
+	ApplyStatusEffect(victim, victim, "Stalker Prefix Nerf", 1.0);
+	ApplyStatusEffect(victim, victim, "Anti-Waves", 1.0);
 }
 
 void RemoveAllNonStalkerPrefix(int ref)
@@ -9326,10 +9408,12 @@ void Const2Modifs_Fat_Start(int victim, StatusEffect Apply_MasterStatusEffect, E
 	if(!b_ThisWasAnNpc[victim])
 		return;
 
-	float maxhealth = float(ReturnEntityMaxHealth(victim));
-	maxhealth *= 2.0;
-	SetEntProp(victim, Prop_Data, "m_iHealth", RoundToNearest(maxhealth));
-	SetEntProp(victim, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
+	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	int maxhealth = ReturnEntityMaxHealth(victim);
+	health *= 2;
+	maxhealth *= 2;
+	SetEntProp(victim, Prop_Data, "m_iHealth", health);
+	SetEntProp(victim, Prop_Data, "m_iMaxHealth", maxhealth);
 	SetEntPropFloat(victim, Prop_Send, "m_flModelScale", GetEntPropFloat(victim, Prop_Send, "m_flModelScale") * 1.35);
 }
 void Const2Modifs_Fat_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
@@ -9338,10 +9422,12 @@ void Const2Modifs_Fat_End(int victim, StatusEffect Apply_MasterStatusEffect, E_S
 	if(!IsValidEntity(victim) || !b_ThisWasAnNpc[victim])
 		return;
 
-	float maxhealth = float(ReturnEntityMaxHealth(victim));
-	maxhealth /= 2.0;
-	SetEntProp(victim, Prop_Data, "m_iHealth", RoundToNearest(maxhealth));
-	SetEntProp(victim, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
+	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
+	int maxhealth = ReturnEntityMaxHealth(victim);
+	health /= 2;
+	maxhealth /= 2;
+	SetEntProp(victim, Prop_Data, "m_iHealth", health);
+	SetEntProp(victim, Prop_Data, "m_iMaxHealth", maxhealth);
 	SetEntPropFloat(victim, Prop_Send, "m_flModelScale", GetEntPropFloat(victim, Prop_Send, "m_flModelScale") * (1.0 / 1.35));
 }
 
@@ -9716,7 +9802,7 @@ static void ScrambledPrefix_Think(int entity, StatusEffect Apply_MasterStatusEff
 			
 			// skip blacklisted effects
 			bool blacklisted;
-			for (int j = 0; i < sizeof(ScrambledBlacklist); j++)
+			for (int j = 0; j < sizeof(ScrambledBlacklist); j++)
 			{
 				if (StrContains(effect.BuffName, ScrambledBlacklist[j]) == 0)
 				{
@@ -10078,9 +10164,12 @@ static void PartyPopperPrefix_BeforeExplosionHit(int entity, int victim, float &
 	{
 		damage = 0.0;
 		
-		ApplyStatusEffect(entity, victim, "Party Popper Prefix", buffDuration);
-		ApplyStatusEffect(entity, victim, "Nightmare Terror", buffDuration);
-		Client_Shake(victim, _, 8.0, 20.0, 1.5, false);
+		if (!VIPBuilding_Active())
+		{
+			ApplyStatusEffect(entity, victim, "Party Popper Prefix", buffDuration);
+			ApplyStatusEffect(entity, victim, "Nightmare Terror", buffDuration);
+			Client_Shake(victim, _, 8.0, 20.0, 1.5, false);
+		}
 	}
 	else if (GetTeam(victim) == 2)
 	{
@@ -11569,4 +11658,334 @@ void Aleph_TakeDamageAttackerPost(int attacker, int victim, float damage, Status
 	ApplyStatusEffect(victim, victim, "Aleph All Prefix", 99999.9);
 	RemoveSpecificBuff(victim, "Infinite Will");
 	ApplyStatusEffect(victim, victim, "Infinite Will", 10.0);
+}
+void StatusEffects_Fridge()
+{
+	StatusEffect data;
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Fridge Food");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "+");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.TimerRepeatCall_Func 		= FridgeFoodTimer;
+	StatusEffect_AddGlobal(data);
+}
+
+static void FridgeFoodTimer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	//make it not as aggressive
+	if(f_TimeUntillNormalHeal[entity] > (GetGameTime() + 1.0))
+	{
+		int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+		Apply_StatusEffect.TimeUntillOver = 0.0;
+		E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
+		return;
+	}
+	if(dieingstate[entity] != 0)
+		return;
+	float MaxHealthPerc = float(ReturnEntityMaxHealth(entity));
+	MaxHealthPerc *= 0.015;
+	HealEntityGlobal(entity, entity, MaxHealthPerc, _, 0.0, _);
+}
+int PoiseIndex;
+int FragileIndex;
+void StatusEffects_IndexNurseFather()
+{
+	StatusEffect data;
+	strcopy(data.BuffName, sizeof(data.BuffName), "Poise");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "℘");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.HudDisplay_Func 			= Func_PoiseShow;
+	PoiseIndex = StatusEffect_AddGlobal(data);
+
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Fragile");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⭙");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = true;
+	data.OnTakeDamage_TakenFunc 	= Fragile_DamageTakenFunc;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.HudDisplay_Func 			= Func_FragileAddStuff;
+	FragileIndex = StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Index Father Dodge");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⮌");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= 0.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.OnTakeDamage_TakenFunc 	= Func_Dodge_TakeDamage;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.HudDisplay_Func 			= Func_DodgesHud;
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Shin - Rien");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "心");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageDealMulti			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0;
+	data.OnBuffStarted				= TiantuiStart;
+	data.OnBuffStoreRefresh			= TiantuiStart;
+	data.OnBuffEndOrDeleted			= TiantuiEnd;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Grace Of Prescript");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ℬ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageDealMulti			= 0.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0;
+	data.HudDisplay_Func 			= Func_GraceOfPrescript;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Grace Of Prescript Fancy");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageDealMulti			= 0.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0;
+	data.OnBuffStarted				= GraceStart;
+	data.OnBuffStoreRefresh			= GraceStart;
+	data.OnBuffEndOrDeleted			= GraceEnd;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Sizzling Wound");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "๏");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageDealMulti			= 0.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0;
+	data.TimerRepeatCall_Func 		= SizzlingWound_Timer;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Furioso Charges");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ℱ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageDealMulti			= 0.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0;
+	data.HudDisplay_Func 			= Func_FuriosoHud;
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Furioso Ability");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ℱ");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageDealMulti			= 0.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0;
+	data.HudDisplay_Func 			= Func_FuriosoHud;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Karmic Consequence");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "⋁");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageDealMulti			= 0.9;
+	data.DamageTakenMulti			= 0.25;
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0;
+	StatusEffect_AddGlobal(data);
+}
+
+static void SizzlingWound_Timer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(Apply_StatusEffect.DataForUse > GetGameTime())
+	{
+		return;
+	}
+	Apply_StatusEffect.DataForUse = GetGameTime() + 25.0;
+	StartBleedingTimer(entity, 0,2.0, 3, -1, DMG_TRUEDAMAGE, 0);
+	NPC_Ignite(entity, 0,2.0, -1, 5.0);
+	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
+
+	//spray particles
+}
+
+float Fragile_DamageTakenFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
+{
+	return (Apply_StatusEffect.DataForUse * 0.025);
+}	
+#define MAXPOISE_COUNT 100
+#define MAXFRAGILITY_COUNT 25
+
+stock void StatusEffects_PoiseAddStuff(int victim, int value, float time)
+{
+	if(HasSpecificBuff(victim, "Shin - Rien"))
+		StatusEffects_PoiseAddStuff_Internal(victim, 1, 0.5);
+
+	StatusEffects_PoiseAddStuff_Internal(victim, value, time);
+}
+stock int StatusEffects_PoiseReturnCount(int victim)
+{
+	if(!E_AL_StatusEffects[victim])
+		return 0;
+	static StatusEffect Apply_MasterStatusEffect;
+	static E_StatusEffect Apply_StatusEffect;
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(PoiseIndex , E_StatusEffect::BuffIndex);
+	if(ArrayPosition != -1)
+	{
+		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
+		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
+		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
+		{
+			return RoundFloat(Apply_StatusEffect.DataForUse);
+		}
+	}
+	return 0;
+
+}
+stock void StatusEffects_PoiseAddStuff_Internal(int victim, int value, float time)
+{
+	ApplyStatusEffect(victim, victim, "Poise", 0.5);
+	if(!E_AL_StatusEffects[victim])
+		return;
+
+	static StatusEffect Apply_MasterStatusEffect;
+	static E_StatusEffect Apply_StatusEffect;
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(PoiseIndex , E_StatusEffect::BuffIndex);
+	if(ArrayPosition != -1)
+	{
+		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
+		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
+		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
+		{
+			Apply_StatusEffect.DataForUse += float(value);
+			if(RoundToNearest(Apply_StatusEffect.DataForUse) >= MAXPOISE_COUNT)
+			{
+				Apply_StatusEffect.DataForUse = float(MAXPOISE_COUNT);
+			}
+			Apply_StatusEffect.TimeUntillOver += time;
+			if(Apply_StatusEffect.TimeUntillOver - GetGameTime() >= 15.0)
+			{
+				Apply_StatusEffect.TimeUntillOver = GetGameTime() + 15.0;
+			}
+			E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+		}
+	}
+}
+
+void Func_PoiseShow(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	Format(HudToDisplay, SizeOfChar, "℘(%i/%.1f)", RoundFloat(Apply_StatusEffect.DataForUse) , Apply_StatusEffect.TimeUntillOver - GetGameTime());
+}
+
+
+stock void StatusEffects_FragileAddStuff(int applier, int victim, int value, float time)
+{
+	ApplyStatusEffect(applier, victim, "Fragile", 0.5);
+	if(!E_AL_StatusEffects[victim])
+		return;
+
+	static StatusEffect Apply_MasterStatusEffect;
+	static E_StatusEffect Apply_StatusEffect;
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(FragileIndex , E_StatusEffect::BuffIndex);
+	if(ArrayPosition != -1)
+	{
+		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
+		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
+		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
+		{
+			Apply_StatusEffect.DataForUse += float(value);
+			if(RoundToNearest(Apply_StatusEffect.DataForUse) >= MAXFRAGILITY_COUNT)
+			{
+				Apply_StatusEffect.DataForUse = float(MAXFRAGILITY_COUNT);
+			}
+			Apply_StatusEffect.TimeUntillOver += time;
+			if(Apply_StatusEffect.TimeUntillOver - GetGameTime() >= 30.0)
+			{
+				Apply_StatusEffect.TimeUntillOver = GetGameTime() + 30.0;
+			}
+			E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+		}
+	}
+}
+
+void Func_FragileAddStuff(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
+{
+	if(!Apply_StatusEffect.TotalOwners[attacker])
+		Format(HudToDisplay, SizeOfChar, "⭙");
+	else
+		Format(HudToDisplay, SizeOfChar, "⭙(%i/%.1f)", RoundFloat(Apply_StatusEffect.DataForUse) , Apply_StatusEffect.TimeUntillOver - GetGameTime());
+}
+
+void DoDodgeEffect(int victim)
+{
+	float chargerPos[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", chargerPos);
+	chargerPos[2] += 90.0;
+	TE_ParticleInt(g_particleMissText, chargerPos);
+	TE_SendToAll();
+	int Rand = GetRandomInt(0, sizeof(MissSound) - 1);
+	EmitSoundToAll(MissSound[Rand], victim, _, 80);
+}
+
+
+static void GraceStart(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	if(IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+
+	float flPos[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", flPos);
+	int ParticleEffect = ParticleEffectAt_Parent(flPos, "utaunt_poweraura_blue_base", victim, "", {0.0,0.0,0.0});
+	if(victim <= MaxClients)
+		AddEntityToThirdPersonTransitMode(victim, ParticleEffect);
+	
+	Apply_StatusEffect.WearableUse = EntIndexToEntRef(ParticleEffect);
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+}
+static void GraceEnd(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+
+	if(!IsValidEntity(Apply_StatusEffect.WearableUse))
+		return;
+	RemoveEntity(Apply_StatusEffect.WearableUse);
 }

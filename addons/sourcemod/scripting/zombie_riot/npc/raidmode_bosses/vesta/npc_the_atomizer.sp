@@ -266,6 +266,11 @@ methodmap Atomizer < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
+	property float m_flExtraDMGForBall
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
 	
 	public Atomizer(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -308,8 +313,8 @@ methodmap Atomizer < CClotBody
 			npc.m_flAngerDelay = 0.0;
 			npc.m_flDelay_Attribute = 0.0;
 			npc.m_iAmmo = 0;
-			
-			static char countext[2][216];
+			bool STFU;
+			static char countext[3][216];
 			int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
 			for(int i = 0; i < count; i++)
 			{
@@ -324,19 +329,30 @@ methodmap Atomizer < CClotBody
 					ReplaceString(countext[i], sizeof(countext[]), "override", "");
 					npc.m_iTargetAlly = StringToInt(countext[i]);
 				}
+				else if(StrContains(countext[i], "stfu") != -1)
+				{
+					ReplaceString(countext[i], sizeof(countext[]), "stfu", "");
+					STFU=true;
+				}
 			}
 			switch(npc.m_iOverlordComboAttack)
 			{
-				case 1: NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Support-1", false, true);
+				case 1:{if(!STFU){NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Support-1", false, true);}}
 				case 2:
 				{
+					npc.StartPathing();
 					npc.m_flSpeed = 400.0;
-					npc.m_iMaxAmmo = 30+RoundToNearest(float(CountPlayersOnRed(2)) * 2.5);
-					if(npc.m_iMaxAmmo>45)npc.m_iMaxAmmo=45;
+					npc.m_iMaxAmmo = 30+RoundToNearest(float(CountPlayersOnRed(2)) * 3.0);
+					if(npc.m_iMaxAmmo>45)
+					{
+						npc.m_flExtraDMGForBall = 1.0*(npc.m_iMaxAmmo/45.0);
+						npc.m_iMaxAmmo=45;
+					}
 					npc.m_iAmmo = npc.m_iMaxAmmo;
-					NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Support-2", false, true);
+					if(!STFU)
+						NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Support-2", false, true);
 				}
-				default: NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Support-1", false, true);
+				default:{if(!STFU){NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Support-1", false, true);}}
 			}
 			npc.PlaySupportSpawnSound();
 		}
@@ -359,6 +375,7 @@ methodmap Atomizer < CClotBody
 			ParticleSpawned[npc.index] = false;
 			SUPERHIT[npc.index] = false;
 			npc.m_flNiceMiss = 0.0;
+			npc.m_flExtraDMGForBall = 0.0;
 			Vs_Atomizer_To_Huscarls = 0;
 			npc.i_GunMode = 0;
 			npc.m_iOverlordComboAttack = 0;
@@ -366,8 +383,12 @@ methodmap Atomizer < CClotBody
 			npc.m_flNextRangedSpecialAttackHappens = GetGameTime(npc.index) + 5.0;
 			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 30.0;
 			npc.m_flAngerDelay = GetGameTime(npc.index) + 15.0;
-			npc.m_iMaxAmmo = 20+RoundToNearest(float(CountPlayersOnRed(2)) * 2.5);
-			if(npc.m_iMaxAmmo>45)npc.m_iMaxAmmo=45;
+			npc.m_iMaxAmmo = 10+RoundToNearest(float(CountPlayersOnRed(2)) * 3.0);
+			if(npc.m_iMaxAmmo>45)
+			{
+				npc.m_flExtraDMGForBall = 1.0*(npc.m_iMaxAmmo/36.0);
+				npc.m_iMaxAmmo=45;
+			}
 			npc.m_iAmmo = 0;
 			OnMiss[npc.index] = false;
 			npc.m_fbRangedSpecialOn = false;
@@ -524,7 +545,6 @@ static void Clone_ClotThink(int iNPC)
 	{
 		npc.g_TimesSummoned -= 1;
 	}
-	
 	
 	switch(npc.m_iOverlordComboAttack)
 	{
@@ -749,7 +769,7 @@ static int Support_Work(Atomizer npc, float gameTime, float distance)
 					if(npc.m_flAttackHappens < gameTime && npc.m_flAttackHappens_bullshit >= gameTime && npc.m_flAttackHappenswillhappen)
 					{
 						npc.PlayRangedSound();
-						float RocketDamage = 37.5;
+						float RocketDamage = 11.2;
 						float RocketSpeed = 1650.0;
 						float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 						float VecStart[3]; WorldSpaceCenter(npc.index, VecStart);
@@ -800,7 +820,8 @@ static int Support_Work(Atomizer npc, float gameTime, float distance)
 
 static Action Clone_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	return Plugin_Handled;
+	damage*=0.0;
+	return Plugin_Changed;
 }
 
 static void Clone_NPCDeath(int entity)
@@ -1470,8 +1491,12 @@ static int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float d
 			npc.m_flDoingAnimation = gameTime + 0.45;
 			npc.m_flNextRangedSpecialAttackHappens = gameTime + (DrinkPOWERUP[npc.index] ? 15.0 : 22.5);
 			npc.m_flNextRangedAttack += 1.0;
-			npc.m_iMaxAmmo = (DrinkPOWERUP[npc.index] ? 30 : 20)+RoundToNearest(float(CountPlayersOnRed(2)) * 2.5);
-			if(npc.m_iMaxAmmo>45)npc.m_iMaxAmmo=45;
+			npc.m_iMaxAmmo = (DrinkPOWERUP[npc.index] ? 20 : 10)+RoundToNearest(float(CountPlayersOnRed(2)) * 3.0);
+			if(npc.m_iMaxAmmo>45)
+			{
+				npc.m_flExtraDMGForBall = 1.0*(npc.m_iMaxAmmo/36.0);
+				npc.m_iMaxAmmo=45;
+			}
 			npc.m_iAmmo = npc.m_iMaxAmmo;
 		}
 	}
@@ -1576,10 +1601,17 @@ static int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float d
 								ExtinguishTarget(npc.m_iWearable2);
 							}
 							if(DrinkPOWERUP[npc.index])
-								RocketDamage*=1.25;
+							{
+								if(npc.m_flExtraDMGForBall>1.0)
+									RocketDamage*=npc.m_flExtraDMGForBall;
+								else
+									RocketDamage*=1.25;
+							}
+							else if(npc.m_flExtraDMGForBall>1.0)
+								RocketDamage*=npc.m_flExtraDMGForBall;
 							float RocketSpeed = 1650.0;
-							float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-							float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
+							float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+							float VecStart[3]; WorldSpaceCenter(npc.index, VecStart);
 							float vecDest[3];
 							vecDest = vecTarget;
 							float SpeedReturn[3];
@@ -1763,38 +1795,7 @@ static void SuperAttack(int entity, int victim, float damage, int weapon)
 		SUPERHIT[npc.index]=true;
 	}
 }
-/*
-static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
-{
-	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-	if(!IsValidEntity(owner))
-		owner = 0;
-	if(target > 0 && target < MAXENTITIES)	//did we hit something???
-	{
-		int inflictor = h_ArrowInflictorRef[entity];
-		if(inflictor != -1)
-			inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
 
-		if(inflictor == -1)
-			inflictor = owner;
-			
-		float DamageDeal = fl_rocket_particle_dmg[entity];
-		if(ShouldNpcDealBonusDamage(target))
-			DamageDeal *= h_BonusDmgToSpecialArrow[entity];
-		KillFeed_SetKillIcon(owner, "ball");
-		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
-		if(target <= MaxClients && !IsInvuln(target))
-			if(!HasSpecificBuff(target, "Fluid Movement"))
-				TF2_StunPlayer(target, 2.0, 0.4, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
-		ApplyStatusEffect(owner, target, "Teslar Shock", NpcStats_VestanCallToArms(owner) ? 7.5 : 5.0);
-	}
-	int particle = EntRefToEntIndex(i_WandParticle[entity]);
-	if(IsValidEntity(particle))
-		RemoveEntity(particle);
-	RemoveEntity(entity);
-	return Plugin_Handled;
-}
-*/
 static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 {
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
@@ -1911,6 +1912,12 @@ stock void SetVelocityAtomizerProjectile(DataPack pack)
 }
 static bool ONLYBSP(int entity, int contentsMask, any data)
 {
+	if(IsValidEdict(entity))
+	{
+		char sClassname[128];
+		GetEdictClassname(entity, sClassname, sizeof(sClassname));
+		return (StrContains(sClassname, "func_respawnroomvisualizer") != -1);
+	}
 	return !entity;
 }
 
@@ -1944,6 +1951,19 @@ public bool EntityLookPoint(int entity, float flAng[3], float flPos[3], float po
 	
 	if(TR_DidHit(trace))
 	{
+		static char classname[128];
+		int TRIndex = TR_GetEntityIndex(INVALID_HANDLE);
+		if(IsValidEdict(TRIndex))
+		{
+			GetEdictClassname(TRIndex, classname, sizeof(classname));
+			if(StrContains(classname, "func_respawnroomvisualizer") != -1)
+			{
+				TR_GetEndPosition(pos, trace);
+				CloseHandle(trace);
+				return false;
+			}
+		}
+	
 		TR_GetEndPosition(pos, trace);
 		CloseHandle(trace);
 		return true;
@@ -2024,6 +2044,7 @@ static bool Vesta_Support(Atomizer npc)
 	if(Vs_RechargeTime[npc.index] < Vs_RechargeTimeMax[npc.index])
 	{
 		float position[3];
+		int RGBColor[3]={255, 200, 80};
 		position[0] = vecTarget[0];
 		position[1] = vecTarget[1];
 		position[2] = vecTarget[2] + 3000.0;
@@ -2046,14 +2067,15 @@ static bool Vesta_Support(Atomizer npc)
 				if(IsValidClient(client) && !IsFakeClient(client))
 					Vs_LockOn[client]=false;
 			}
+			RGBColor={255, 120, 50};
 		}
 		spawnRing_Vectors(Vs_Temp_Pos[npc.index], (1000.0 - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*1000.0)), 0.0, 0.0, 0.0, LASERBEAM, 255, 255, 255, 150, 1, 0.1, 3.0, 0.1, 3);
 		float position2[3];
 		position2[0] = Vs_Temp_Pos[npc.index][0];
 		position2[1] = Vs_Temp_Pos[npc.index][1];
 		position2[2] = Vs_Temp_Pos[npc.index][2] + 40.0;
-		spawnRing_Vectors(position2, 1000.0, 0.0, 0.0, 0.0, LASERBEAM, 255, 200, 80, 150, 1, 0.1, 3.0, 0.1, 3);
-		spawnRing_Vectors(Vs_Temp_Pos[npc.index], 1000.0, 0.0, 0.0, 0.0, LASERBEAM, 255, 200, 80, 150, 1, 0.1, 3.0, 0.1, 3);
+		spawnRing_Vectors(position2, 1000.0, 0.0, 0.0, 0.0, LASERBEAM, RGBColor[0], RGBColor[1], RGBColor[2], 150, 1, 0.1, 3.0, 0.1, 3);
+		spawnRing_Vectors(Vs_Temp_Pos[npc.index], 1000.0, 0.0, 0.0, 0.0, LASERBEAM, RGBColor[0], RGBColor[1], RGBColor[2], 150, 1, 0.1, 3.0, 0.1, 3);
 		TE_SetupBeamPoints(Vs_Temp_Pos[npc.index], position, g_Laser, -1, 0, 0, 0.1, 0.0, 25.0, 0, 0.0, {145, 47, 47, 150}, 3);
 		TE_SendToAll();
 		TE_SetupGlowSprite(Vs_Temp_Pos[npc.index], g_RedPoint, 0.1, 1.0, 255);

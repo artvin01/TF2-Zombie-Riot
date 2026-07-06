@@ -78,6 +78,12 @@ static void ClotPrecache()
 
 
 }
+
+int NoRandomKranzV3_ID()
+{
+	return NPCID;
+}
+
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
 	return NoRandomKranz(vecPos, vecAng, team, data);
@@ -695,7 +701,21 @@ public void NoRandomKranz_NPCDeath(int entity)
 	EmitAmbientSound(g_DeathSounds[sound], flMyPos, _, 120, _,1.0);
 	EmitAmbientSound(g_DeathSounds[sound], flMyPos, _, 120, _,1.0);
 	
-
+	int a, entity1;
+	//slay clones
+	while((entity1 = FindEntityByNPC(a)) != -1)
+	{
+		if(IsValidEntity(entity1) && i_NpcInternalId[entity1] == NoRandomKranzV3_ID())
+		{
+			NoRandomKranz npcClone = view_as<NoRandomKranz>(entity1);
+			if (npcClone.m_TimeUntillsuicide)
+			{
+				b_DissapearOnDeath[entity1] = true;
+				b_DoGibThisNpc[entity1] = true;
+				SmiteNpcToDeath(entity1);
+			}
+		}
+	}
 }
 /*
 
@@ -793,10 +813,7 @@ int NoRandomKranzSelfDefense(NoRandomKranz npc, float gameTime, int target, floa
 						npc.PlayMeleeHitSound();
 						npc.DispatchParticleEffect(npc.index, "hightower_explosion", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("effect_hand_l"), PATTACH_POINT_FOLLOW, true);
 						
-						BlackHoleRocketDoPos(npc.index, vecHit);
-						BlackHoleRocketDoPos(npc.index, vecHit);
-						BlackHoleRocketDoPos(npc.index, vecHit);
-						BlackHoleRocketDoPos(npc.index, vecHit);
+						BlackHoleRocketDoPos(npc.index, vecHit, 4.0);
 
 						bool Knocked = false;
 									
@@ -1138,13 +1155,13 @@ static bool NpcClot_LifeLost(int iNPC, int LifeAfter)
 }
 
 
-public void BlackHoleRocketDo(int entity)
+static void BlackHoleRocketDo(int entity, float dmgMult = 1.0)
 {
 	static float flMyPos[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", flMyPos);
-	BlackHoleRocketDoPos(entity, flMyPos);
+	BlackHoleRocketDoPos(entity, flMyPos, dmgMult);
 }
-public void BlackHoleRocketDoPos(int entity, float Pos[3])
+static void BlackHoleRocketDoPos(int entity, float Pos[3], float dmgMult = 1.0)
 {
 	int Particle = ParticleEffectAt(Pos, "eyeboss_tp_vortex", 5.0);	
 	SetTeam(Particle, GetTeam(entity));
@@ -1152,8 +1169,9 @@ public void BlackHoleRocketDoPos(int entity, float Pos[3])
 	DataPack pack;
 	CreateDataTimer(0.25, BlackHoleRocketDo_DmgDo, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 
-	pack.WriteCell(EntIndexToEntRef(Particle)); 
-	pack.WriteFloat(4.0 * RaidModeScaling); 
+	pack.WriteCell(EntIndexToEntRef(Particle));
+	pack.WriteCell(EntIndexToEntRef(entity));
+	pack.WriteFloat(4.0 * RaidModeScaling * dmgMult); 
 }
 public Action BlackHoleRocketDo_DmgDo(Handle timer, DataPack pack)
 {
@@ -1161,6 +1179,14 @@ public Action BlackHoleRocketDo_DmgDo(Handle timer, DataPack pack)
 	int Particle = EntRefToEntIndex(pack.ReadCell());
 	if(!IsValidEntity(Particle))
 		return Plugin_Stop;
+	
+	int owner = EntRefToEntIndex(pack.ReadCell());
+	if (!IsValidEntity(owner) || b_NpcHasDied[owner])
+	{
+		RemoveEntity(Particle);
+		return Plugin_Stop;
+	}
+	
 	float DamageDeal = pack.ReadFloat();
 	float SpawnPos[3];
 	GetEntPropVector(Particle, Prop_Data, "m_vecAbsOrigin", SpawnPos);

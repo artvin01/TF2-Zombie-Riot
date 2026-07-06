@@ -244,6 +244,11 @@ methodmap KevinMery < CClotBody
 	}
 }
 
+static void NPCTalkMessage(int entity, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(entity, "collectors", message);
+}
+
 public void KevinMery_ClotThink(int iNPC)
 {
 	KevinMery npc = view_as<KevinMery>(iNPC);
@@ -272,7 +277,7 @@ public void KevinMery_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{collectors}kevinmery2009{default}: there's only one more left!!");
+					NPCTalkMessage(npc.index, "there's only one more left!!");
 					MusicEnum music;
 					strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aprilfools/plead.mp3");
 					music.Time = 90; //no loop usually 43 loop tho
@@ -285,7 +290,7 @@ public void KevinMery_ClotThink(int iNPC)
 				}
 				case 1:
 				{
-					CPrintToChatAll("{collectors}kevinmery2009{default}: artvin pls nerf");
+					NPCTalkMessage(npc.index, "artvin pls nerf");
 					MusicEnum music;
 					strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/aprilfools/plead.mp3");
 					music.Time = 90; //no loop usually 43 loop tho
@@ -304,7 +309,7 @@ public void KevinMery_ClotThink(int iNPC)
 	{
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		
-		CPrintToChatAll("{collectors}kevinmery2009{default}: !hop");
+		NPCTalkMessage(npc.index, "!hop");
 		return;
 	}
 
@@ -315,7 +320,7 @@ public void KevinMery_ClotThink(int iNPC)
 		{
 			ForcePlayerLoss();
 			RaidBossActive = INVALID_ENT_REFERENCE;
-			CPrintToChatAll("{collectors}kevinmery2009{default}: {default}gg{default}");
+			NPCTalkMessage(npc.index, "{default}gg{default}");
 			func_NPCThink[npc.index] = INVALID_FUNCTION;
 			return;
 		}
@@ -396,15 +401,15 @@ public void KevinMery_ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{collectors}kevinmery2009{default}: {default}my dad gave me this gun{default}");
+						NPCTalkMessage(npc.index, "{default}my dad gave me this gun{default}");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{collectors}kevinmery2009{default}: {default}i miss my dad :({default}");
+						NPCTalkMessage(npc.index, "{default}i miss my dad :({default}");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{collectors}kevinmery2009{default}: {default}this is so much fun :){default}");
+						NPCTalkMessage(npc.index, "{default}this is so much fun :){default}");
 					}
 				}
 			}
@@ -436,15 +441,15 @@ public void KevinMery_ClotThink(int iNPC)
 				{
 					case 0:
 					{
-						CPrintToChatAll("{collectors}kevinmery2009{default}: {default}fire!!!{default}");
+						NPCTalkMessage(npc.index, "{default}fire!!!{default}");
 					}
 					case 1:
 					{
-						CPrintToChatAll("{collectors}kevinmery2009{default}: {default}pow!!!{default}");
+						NPCTalkMessage(npc.index, "{default}pow!!!{default}");
 					}
 					case 2:
 					{
-						CPrintToChatAll("{collectors}kevinmery2009{default}: {default}boom!!!{default}");
+						NPCTalkMessage(npc.index, "{default}boom!!!{default}");
 					}
 				}
 				npc.m_flSwitchCooldown = gameTime + 10.0;

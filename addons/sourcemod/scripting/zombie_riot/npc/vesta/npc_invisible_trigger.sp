@@ -169,6 +169,12 @@ static void Invisible_TRIGGER_ClotThink(int iNPC)
 				EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
 				SmiteNpcToDeath(npc.index);
 			}
+			i_AttacksTillMegahit[npc.index]++;
+			if(i_AttacksTillMegahit[npc.index]>50)
+			{
+				i_AttacksTillMegahit[npc.index]=0;
+				SmiteNpcToDeath(npc.index);
+			}
 		}
 		case 2:
 		{
@@ -214,6 +220,12 @@ static void Invisible_TRIGGER_ClotThink(int iNPC)
 				EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
 				SmiteNpcToDeath(npc.index);
 			}
+			i_AttacksTillMegahit[npc.index]++;
+			if(i_AttacksTillMegahit[npc.index]>50)
+			{
+				i_AttacksTillMegahit[npc.index]=0;
+				SmiteNpcToDeath(npc.index);
+			}
 		}
 		case 4:
 		{
@@ -241,6 +253,12 @@ static void Invisible_TRIGGER_ClotThink(int iNPC)
 						EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
 						EmitSoundToAll("misc/doomsday_lift_start.wav", _, _, _, _, 1.0);
 						npc.m_iOverlordComboAttack=1;
+					}
+					i_AttacksTillMegahit[npc.index]++;
+					if(i_AttacksTillMegahit[npc.index]>50)
+					{
+						i_AttacksTillMegahit[npc.index]=0;
+						SmiteNpcToDeath(npc.index);
 					}
 				}
 				case 1:
@@ -285,7 +303,7 @@ static void Invisible_TRIGGER_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable1);
 }
 
-public void NPCPritToChat_Noname(const char[] text, bool NoTrans)
+stock void NPCPritToChat_Noname(const char[] text, bool NoTrans, any data=0)
 {
 	for(int Player=1; Player<=MaxClients; Player++)
 	{
@@ -294,14 +312,14 @@ public void NPCPritToChat_Noname(const char[] text, bool NoTrans)
 		if(!NoTrans)
 		{
 			SetGlobalTransTarget(Player);
-			CPrintToChat(Player, "%t", text);
+			CPrintToChat(Player, "%t", text, data);
 		}
 		else
 			CPrintToChat(Player, "%s", text);
 	}
 }
 
-public void NPCPritToChat_Override(const char[] name, const char[] namecolor, const char[] text, bool NoTrans)
+stock void NPCPritToChat_Override(const char[] name, const char[] namecolor, const char[] text, bool NoTrans=false, any data=0)
 {
 	for(int Player=1; Player<=MaxClients; Player++)
 	{
@@ -310,14 +328,14 @@ public void NPCPritToChat_Override(const char[] name, const char[] namecolor, co
 		if(!NoTrans)
 		{
 			SetGlobalTransTarget(Player);
-			CPrintToChat(Player, "%s%t{default}: %t", namecolor, name, text);
+			CPrintToChat(Player, "%s%t{default}: %t", namecolor, name, text, data);
 		}
 		else
 			CPrintToChat(Player, "%s%s{default}: %s", namecolor, name, text);
 	}
 }
 
-public void NPCPritToChat(int entity, const char[] namecolor, const char[] text, bool NoTrans, bool requestframe)
+stock void NPCPritToChat(int entity, const char[] namecolor, const char[] text, bool NoTrans=false, bool requestframe=false, any data=0)
 {
 	if(entity==-1||!IsValidEntity(entity))return;
 	if(requestframe)
@@ -343,7 +361,7 @@ public void NPCPritToChat(int entity, const char[] namecolor, const char[] text,
 				Format(NameReturn, sizeof(NameReturn), "%s", c_NpcName[entity]);
 			
 			if(!NoTrans)
-				CPrintToChat(Player, "%s%s{default}: %t", namecolor, NameReturn, text);
+				CPrintToChat(Player, "%s%s{default}: %t", namecolor, NameReturn, text, data);
 			else
 				CPrintToChat(Player, "%s%s{default}: %s", namecolor, NameReturn, text);
 		}

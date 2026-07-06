@@ -53,14 +53,13 @@ void Vestan_Protector_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Vestan Protector");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_protector");
-	strcopy(data.Icon, sizeof(data.Icon), "engineer");
+	strcopy(data.Icon, sizeof(data.Icon), "scout_stun_armored");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Vesta;
 	data.Func = ClotSummon;
 	NPC_Add(data);
 }
-
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
@@ -80,7 +79,6 @@ methodmap Vestan_Protector < CClotBody
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
 	}
 	
 	public void PlayHurtSound() 
@@ -89,7 +87,6 @@ methodmap Vestan_Protector < CClotBody
 			return;
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		
 	}
@@ -98,7 +95,6 @@ methodmap Vestan_Protector < CClotBody
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	
 	public void PlayMeleeSound()
 	{
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
@@ -112,7 +108,6 @@ methodmap Vestan_Protector < CClotBody
 		EmitSoundToAll(g_BuildSound[GetRandomInt(0, sizeof(g_BuildSound) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 		EmitSoundToAll(g_BuildSound[GetRandomInt(0, sizeof(g_BuildSound) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-	
 	
 	public Vestan_Protector(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -137,7 +132,6 @@ methodmap Vestan_Protector < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Vestan_Protector_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Vestan_Protector_ClotThink);
 		
-		
 		//IDLE
 		npc.m_iState = 0;
 		npc.m_iChanged_WalkCycle = 1;
@@ -149,9 +143,7 @@ methodmap Vestan_Protector < CClotBody
 		
 		int skin = 1;
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-	
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_toolbox/c_toolbox.mdl");
-
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/engineer/bet_pb.mdl");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/engineer/sbox2014_antarctic_researcher/sbox2014_antarctic_researcher.mdl");
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/sniper/dec2014_hunter_ushanka/dec2014_hunter_ushanka.mdl");
@@ -267,7 +259,7 @@ public void Vestan_Protector_NPCDeath(int entity)
 	{
 		npc.PlayDeathSound();	
 	}
-		
+	
 	if(IsValidEntity(npc.m_iWearable7))
 		RemoveEntity(npc.m_iWearable7);
 	if(IsValidEntity(npc.m_iWearable6))
@@ -303,17 +295,20 @@ void Vestan_ProtectorBuildObject(Vestan_Protector npc, float distance)
 			SetVariantString("0.75");
 			AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 			SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
-			float timeup = 5.0;
+			float timeup = 10.0;
 			if(NpcStats_VestanCallToArms(npc.index))
 				 timeup *= 2.0;
-			npc.m_iWearable7 = npc.SpawnShield(timeup, "models/props_mvm/mvm_player_shield.mdl",40.0, false);
-			SetEntProp(npc.m_iWearable7, Prop_Send, "m_nSkin", 1);
+			int TempEntity = npc.SpawnShield(timeup, "models/props_mvm/mvm_player_shield.mdl",40.0, false);
+			if(IsValidEntity(TempEntity))
+				SetEntProp(TempEntity, Prop_Send, "m_nSkin", 1);
 			npc.PlayBuildSound();
 			npc.m_flSpeed = 300.0;
 			npc.m_flArmorCount = 0.0;
 		}
 	}
 }
+
+
 void Vestan_ProtectorSelfDefense(Vestan_Protector npc, float gameTime, int target, float distance)
 {
 	if(npc.m_flAttackHappens)

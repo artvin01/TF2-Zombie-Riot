@@ -5356,10 +5356,25 @@
 		"en"	"Enhancement: Overheating Protection Removed"
 		"ko"	"개조: 과열 보호 제거"
 	}
-	"Enhancement: Airstrike Beacon"
+	"Enhancement: Quad-Tech Chambers"
 	{
-		"en"	"Enhancement: Heat Sink Discharge"
-		"ko"	"개조: 폭격 유도 비콘"
+		"en"	"Enhancement: Quad-Tech Chambers"
+		"ko"	"개조: 4연발 신기술 약실"
+	}
+	"Enhancement: Cross-Platform Compatibility"
+	{
+		"en"	"Enhancement: Cross-Platform Compatibility"
+		"ko"	"개조: 크로스 플랫폼 호환성"
+	}
+	"Enhancement: Precision Strike Beacon"
+	{
+		"en"	"Enhancement: Precision Strike Beacon"
+		"ko"	"개조: 정밀 타격 비콘"
+	}
+	"ER Targeting Remote"
+	{
+		"en"	"Targeting Remote"
+		"ko"	"원격 조준기"
 	}
 	"Boomerang"
 	{
@@ -5552,36 +5567,6 @@
 		"en" "Kit Modernizer VI"
 		"it" "Kit Modernizzatore VI"
 		"ko" "키트 현대화 VI"
-	}
-	"Unit Reformator I"
-	{
-		"en" "Unit Reformator I"
-		"it" "Unità Riformatore I"
-		"ko" "유닛 개혁가 I"
-	}
-	"Unit Reformator II"
-	{
-		"en" "Unit Reformator II"
-		"it" "Unità Reformator II"
-		"ko" "유닛 개혁가 II"
-	}
-	"Unit Reformator III"
-	{
-		"en" "Unit Reformator III"
-		"it" "Unità Reformator III"
-		"ko" "유닛 개혁가 III"
-	}
-	"Unit Reformator IV"
-	{
-		"en" "Unit Reformator IV"
-		"it" "Unità Reformator IV"
-		"ko" "유닛 개혁가 IV"
-	}
-	"Unit Reformator V"
-	{
-		"en" "Unit Reformator V"
-		"it" "Unità Riformatore V"
-		"ko" "유닛 개혁가 V"
 	}
 	"Adaptive Medigun"
 	{
@@ -6076,9 +6061,5 @@
 	{
 		"en"	"Tiantui Star's Blade"
 		"ko"	"천퇴성도"
-	}
-	"The Mercenary"
-	{
-		"en"	"The Mercenary"
 	}
 }

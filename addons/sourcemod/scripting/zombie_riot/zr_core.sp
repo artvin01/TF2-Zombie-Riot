@@ -336,8 +336,7 @@ enum
 	WEAPON_BOMB_AR = 164,
 	WEAPON_BRICK = 165,
 	WEAPON_BURNINGTHUMB = 166,
-	WEAPON_RED_MIST = 167,
-	WEAPON_GUNSAW = 168
+	WEAPON_RED_MIST = 167
 }
 
 enum
@@ -758,7 +757,7 @@ char s_MissionClient[64]; // Who hired us for the current job
 #include "custom/weapon_burningthumb.sp"
 #include "custom/kit_red_mist.sp"
 #include "custom/kit_barracks.sp"
-#include "custom/kit_gunsaw.sp"
+#include "custom/kit_indexfather.sp"
 
 void ZR_PluginLoad()
 {
@@ -856,6 +855,7 @@ void ZR_PluginStart()
 	BetWar_PluginStart();
 	Dungeon_PluginStart();
 	VScript_PluginStart();
+	IndexFather_PluginStart();
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");
 	
@@ -1121,7 +1121,6 @@ void ZR_MapStart()
 	Wand_Sigil_Blade_MapStart();
 	PurgeKit_MapStart();
 	ResetMapStartExploARWeapon();
-	Gunsaw_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -2112,7 +2111,6 @@ void CheckAlivePlayersforward(int killed=0)
 
 void CheckLastMannStanding(int killed)
 {
-	int testLast;
 	int PlayersLeftNotDowned = 0;
 	LastMann_BeforeLastman = false;
 	for(int client=1; client<=MaxClients; client++)
@@ -2127,7 +2125,6 @@ void CheckLastMannStanding(int killed)
 				if(dieingstate[client] == 0)
 				{
 					PlayersLeftNotDowned++;
-					testLast = client;
 				}
 			}
 		}
@@ -2135,9 +2132,6 @@ void CheckLastMannStanding(int killed)
 	if(PlayersLeftNotDowned == 1)
 	{
 		LastMann_BeforeLastman = true;
-			
-		if(Gunsaw_IsMerc(testLast) && Gunsaw_LastmanSecret())
-			CPrintToChatAll("? - Sense of impending doom\n{crimson}You can't help but feel sudden, overwhelming fear. Your skin has goosebumps all over. It's as if the nature around you abruptly fell silent...");
 	}
 }
 void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = false, bool CheckDownedState = false)
@@ -2500,26 +2494,6 @@ void TriggerLastmanLogic(int killed, int Hurtviasdkhook)
 						}
 					}
 					Yakuza_Lastman(17);
-				}
-				if(Gunsaw_IsMerc(client))
-				{
-					if(RaidbossIgnoreBuildingsLogic(1))
-					{
-						if(Gunsaw_Additional_SupportBuildings(client) > 1)
-						{
-							CPrintToChatAll("‼ - FOCUSED\n{crimson}Both of us die today. One, just a little later than the other.");
-						}
-						else
-						{
-							CPrintToChatAll("‼ - HORRIFIED\n{crimson}CAN'T FOCUS. CAN'T THINK. NOTHING ELSE MATTERS. RUN FOR YOUR LIFE OR FIGHT FOR IT!");
-						}
-					}
-					else
-					{
-						CPrintToChatAll("☠ - Miserable\n{crimson}How does it feel, knowing you're not coming back up %N..?", client);
-					}
-					
-					Yakuza_Lastman(18);
 				}
 				
 				for(int i=1; i<=MaxClients; i++)
@@ -3596,7 +3570,6 @@ void ZR_FastDownloadForce()
 	PrecacheMusicZr();
 	PrecacheRedMistMusic();
 	PrecacheBarracksMusic();
-	Gunsaw_Precache();
 }
 
 
@@ -3734,11 +3707,28 @@ void SetCustomFog(int fogType, int color1[4], int color2[4], float start, float 
 
 void ClearCustomFog(int fogType)
 {
+	bool changed;
 	int entity = EntRefToEntIndex(CustomFogEntity[fogType]);
 	if (IsValidEntity(entity))
+	{
 		RemoveEntity(entity);
+		changed = true;
+	}
 	
 	CustomFogEntity[fogType] = INVALID_ENT_REFERENCE;
+	
+	if (changed)
+	{
+		int skyEntity = FindEntityByClassname(-1, "sky_camera");
+		for (int client = 1; client <= MaxClients; client++)
+		{
+			if (!IsClientInGame(client) || IsFakeClient(client))
+				continue;
+			
+			Copy3DSkyboxFogDataToClientSkybox(skyEntity, client);
+		}
+	}
+	
 	UpdateCustomFog();
 }
 
@@ -3789,10 +3779,7 @@ void UpdateCustomFog()
 	for (int client = 1; client <= MaxClients; client++)
 	{
 		if (IsClientInGame(client))
-		{
-			SetVariantString(buffer);
-			AcceptEntityInput(client, "SetFogController");
-		}
+			SetClientFogController(client, entity);
 	}
 }
 
@@ -3803,13 +3790,53 @@ void ShowCustomFogToClient(int client)
 	
 	// This is used on late joins for specific clients, use UpdateCustomFog to update globally
 	int entity = EntRefToEntIndex(ActiveFogEntity);
-	char buffer[64];
-	GetEntPropString(entity, Prop_Data, "m_iName", buffer, sizeof(buffer)); // By this point, this should always have a name
-	
-	SetVariantString(buffer);
-	AcceptEntityInput(client, "SetFogController");
+	SetClientFogController(client, entity);
 }
 
+void SetClientFogController(int client, int entity)
+{
+	char name[64];
+	GetEntPropString(entity, Prop_Data, "m_iName", name, sizeof(name));
+	
+	SetVariantString(name);
+	AcceptEntityInput(client, "SetFogController");
+	
+	CopyFogControllerDataToClientSkybox(entity, client);
+}
+
+void CopyFogControllerDataToClientSkybox(int entity, int client)
+{
+	if (entity == -1 || !IsValidEntity(entity))
+	{
+		SetEntProp(client, Prop_Send, "m_skybox3d.fog.enable", 0);
+		return;
+	}
+	
+	SetEntProp(client, Prop_Send, "m_skybox3d.fog.enable", GetEntProp(entity, Prop_Data, "m_fog.enable"));
+	SetEntPropFloat(client, Prop_Send, "m_skybox3d.fog.start", GetEntPropFloat(entity, Prop_Data, "m_fog.start"));
+	SetEntPropFloat(client, Prop_Send, "m_skybox3d.fog.end", GetEntPropFloat(entity, Prop_Data, "m_fog.end"));
+	SetEntProp(client, Prop_Send, "m_skybox3d.fog.colorPrimary", GetEntProp(entity, Prop_Data, "m_fog.colorPrimary"));
+	SetEntProp(client, Prop_Send, "m_skybox3d.fog.colorSecondary", GetEntProp(entity, Prop_Data, "m_fog.colorSecondary"));
+	SetEntProp(client, Prop_Send, "m_skybox3d.fog.blend", GetEntProp(entity, Prop_Data, "m_fog.blend"));
+	SetEntProp(client, Prop_Send, "m_skybox3d.fog.radial", GetEntProp(entity, Prop_Data, "m_fog.radial"));
+}
+
+void Copy3DSkyboxFogDataToClientSkybox(int entity, int client)
+{
+	if (entity == -1 || !IsValidEntity(entity))
+	{
+		SetEntProp(client, Prop_Send, "m_skybox3d.fog.enable", 0);
+		return;
+	}
+	
+	SetEntProp(client, Prop_Send, "m_skybox3d.fog.enable", GetEntProp(entity, Prop_Data, "m_skyboxData.fog.enable"));
+	SetEntPropFloat(client, Prop_Send, "m_skybox3d.fog.start", GetEntPropFloat(entity, Prop_Data, "m_skyboxData.fog.start"));
+	SetEntPropFloat(client, Prop_Send, "m_skybox3d.fog.end", GetEntPropFloat(entity, Prop_Data, "m_skyboxData.fog.end"));
+	SetEntProp(client, Prop_Send, "m_skybox3d.fog.colorPrimary", GetEntProp(entity, Prop_Data, "m_skyboxData.fog.colorPrimary"));
+	SetEntProp(client, Prop_Send, "m_skybox3d.fog.colorSecondary", GetEntProp(entity, Prop_Data, "m_skyboxData.fog.colorSecondary"));
+	SetEntProp(client, Prop_Send, "m_skybox3d.fog.blend", GetEntProp(entity, Prop_Data, "m_skyboxData.fog.blend"));
+	SetEntProp(client, Prop_Send, "m_skybox3d.fog.radial", GetEntProp(entity, Prop_Data, "m_skyboxData.fog.radial"));
+}
 
 bool ZR_AllowLastman()
 {

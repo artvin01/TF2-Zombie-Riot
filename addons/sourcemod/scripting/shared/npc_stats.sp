@@ -86,6 +86,7 @@ Function func_NPCActorEmoted[MAXENTITIES];
 Function func_NPCInteract[MAXENTITIES];
 Function FuncShowInteractHud[MAXENTITIES];
 Function func_NPCLostHealthBar[MAXENTITIES];
+
 enum struct WearableColor
 {
 	int color;
@@ -93,7 +94,14 @@ enum struct WearableColor
 	ArrayList entities;
 }
 
+enum struct CustomNPCChatName
+{
+	int ref;
+	char name[128];
+}
+
 ArrayList h_ColoredWearables;
+ArrayList h_CustomNPCChatNames;
 
 #define PARTICLE_ROCKET_MODEL	"models/weapons/w_models/w_drg_ball.mdl" //This will accept particles and also hide itself.
 
@@ -394,7 +402,10 @@ static char m_cGibModelSkeleton[][] = {
 void NPCStats_PluginStart()
 {
 	h_ColoredWearables = new ArrayList(sizeof(WearableColor));
+	h_CustomNPCChatNames = new ArrayList(sizeof(CustomNPCChatName));
+	
 	CreateTimer(5.0, NPCStats_Timer_HandlePaintedWearables, _, TIMER_REPEAT);
+	CreateTimer(30.0, NPCStats_Timer_HandleCustomNPCChatNames, _, TIMER_REPEAT);
 }
 
 void OnMapStart_NPC_Base()
@@ -12408,4 +12419,52 @@ void NPCStats_HandlePaintedWearables()
 			h_ColoredWearables.Erase(i);
 		}
 	}
+}
+
+Action NPCStats_Timer_HandleCustomNPCChatNames(Handle timer)
+{
+	NPCStats_HandleCustomNPCChatNames();
+	return Plugin_Continue;
+}
+
+void NPCStats_HandleCustomNPCChatNames()
+{
+	// Done this way so we don't use like 200 kb worth of memory just for a silly hardly used thing
+	for (int i = h_CustomNPCChatNames.Length - 1; i >= 0; i--)
+	{
+		// Clear names from entities that are now invalid
+		CustomNPCChatName chatName;
+		h_CustomNPCChatNames.GetArray(i, chatName);
+		
+		int entity = EntRefToEntIndex(chatName.ref);
+		if (!IsValidEntity(entity))
+			h_CustomNPCChatNames.Erase(i);
+	}
+}
+
+void NPCStats_AddCustomChatName(int entity, const char[] name)
+{
+	CustomNPCChatName chatName;
+	chatName.ref = EntIndexToEntRef(entity);
+	strcopy(chatName.name, sizeof(chatName.name), name);
+	h_CustomNPCChatNames.PushArray(chatName);
+}
+
+bool NPCStats_GetCustomChatName(int entity, char[] buffer, int maxlen)
+{
+	int ref = EntIndexToEntRef(entity);
+	int length = h_CustomNPCChatNames.Length;
+	for (int i = 0; i < length; i++)
+	{
+		CustomNPCChatName chatName;
+		h_CustomNPCChatNames.GetArray(i, chatName);
+		
+		if (ref != chatName.ref)
+			continue;
+		
+		strcopy(buffer, maxlen, chatName.name);
+		return true;
+	}
+	
+	return false;
 }

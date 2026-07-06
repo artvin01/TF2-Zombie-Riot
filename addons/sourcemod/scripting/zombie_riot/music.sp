@@ -559,7 +559,7 @@ void Music_EndLastmann(bool Reinforce=false)
 					case 4:
 						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/expidonsa_waves/wave_30_soldine.mp3", 2.0);
 					case 5:
-						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/purnell_lastman.mp3", 2.0);
+						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/purnell_lastman_1.mp3", 2.0);
 					case 6:
 						StopSound(client, SNDCHAN_STATIC, "#music/hl2_song23_suitsong3.mp3");
 					case 7:
@@ -582,8 +582,6 @@ void Music_EndLastmann(bool Reinforce=false)
 						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/red_mist_lastman.mp3", 2.0);
 					case 17:
 						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/medieval_raid/kazimierz_boss.mp3", 2.0);
-					case 18:
-						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/gunsaw_lastman.mp3", 2.0);
 				}
 				SetMusicTimer(client, 0);
 				MusicLastmann.StopMusic(client);
@@ -1082,11 +1080,6 @@ void Music_Update(int client)
 				{
 					EmitCustomToClient(client, "#zombiesurvival/medieval_raid/kazimierz_boss.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.8);
 					SetMusicTimer(client, GetTime() + 189);
-				}
-				case 18:
-				{
-					EmitCustomToClient(client, "#zombiesurvival/gunsaw_lastman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.3);
-					SetMusicTimer(client, GetTime() + 220);
 				}
 				default:
 				{	

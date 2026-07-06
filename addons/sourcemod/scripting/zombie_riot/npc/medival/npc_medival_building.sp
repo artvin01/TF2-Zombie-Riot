@@ -521,3 +521,9 @@ public void MedivalBuilding_NPCDeath(int entity)
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 }
+
+void MedivalBuilding_MultiplyScaling(int entity, float mult)
+{
+	float newValue = float(i_currentwave[entity]) * mult;
+	i_currentwave[entity] = RoundToNearest(newValue);
+}

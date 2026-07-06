@@ -969,7 +969,7 @@ static void HEGrenade(int entity, int victim, float damage, int weapon)
 
 		if(inflictor == -1)
 			inflictor = entity;
-		damage = 450.0;
+		damage = 350.0;
 		if(ShouldNpcDealBonusDamage(victim))
 			damage *= 3.0;
 		SDKHooks_TakeDamage(victim, entity, inflictor, damage, DMG_BLAST, -1, _, vecHit);

@@ -37,6 +37,7 @@ enum struct MiniBoss
 	bool SoundCustom;
 	char Sound[128];
 	char Icon[128];
+	char Data[128];
 	char Text_1[128];
 	char Text_2[128];
 	char Text_3[128];
@@ -1222,6 +1223,7 @@ void Waves_SetupMiniBosses(KeyValues map)
 			}
 				
 			kv.GetString("icon", boss.Icon, sizeof(boss.Icon));
+			kv.GetString("data", boss.Data, sizeof(boss.Data));
 			
 			kv.GetString("text_1", boss.Text_1, sizeof(boss.Text_1));
 			kv.GetString("text_2", boss.Text_2, sizeof(boss.Text_2));

@@ -480,9 +480,7 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 		}
 	}
 
-	if(iHit > 0 && iHit < sizeof(i_TraceToInstead) && i_TraceToInstead[iHit] > 0)
-		iHit = i_TraceToInstead[iHit];
-	
+
 	if(repeatsretry >= 2)
 		i_PreviousInteractedEntity[iClient] = iHit;
 
@@ -1808,9 +1806,6 @@ public bool Trace_OnlyPlayer(int entity, int mask, any data)
 
 public bool Trace_DontHitEntityOrPlayerOrAlliedNpc(int entity, int mask, any data)
 {
-	if(i_TraceToInstead[entity] > 0)
-		entity = i_TraceToInstead[entity];
-	
 	if(entity <= MaxClients)
 	{
 		
@@ -1876,9 +1871,6 @@ public bool Trace_DontHitEntityOrPlayerOrAlliedNpc(int entity, int mask, any dat
 
 public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 {
-	if(i_TraceToInstead[entity] > 0)
-		entity = i_TraceToInstead[entity];
-	
 	if(entity <= MaxClients)
 	{
 #if defined ZR
@@ -1942,7 +1934,7 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 			return false;
 		}
 	}
-#endif
+#endif	
 
 	if(b_ThisEntityIgnored[entity] && i_IsABuilding[entity])
 	{
@@ -3436,7 +3428,7 @@ int inflictor = 0)
 	}
 	
 	bool AdditionalDistanceCheck = false;
-	if(explosionRadius >= 850.0)
+	if(explosionRadius >= 512.0)
 	{
 		AdditionalDistanceCheck = true;
 		//at such high ranges, AOE checks in tf2 become very inaccurate and become more of a box, this was noticed with twirl's
@@ -3444,21 +3436,23 @@ int inflictor = 0)
 		//it may not be fully accurate anymore, but its the best we can do.
 	}
 	int length = HitEntitiesSphereExplosionTrace.Length;
-	for (int i = 0; i < length; i++)
+	if (length > 0)
 	{
-		int entity_traced = HitEntitiesSphereExplosionTrace.Get(i);
-		
-		WorldSpaceCenter(entity_traced, VicPos[entity_traced]);
-		distance[entity_traced] = GetVectorDistance(VicPos[entity_traced], spawnLoc, true);
-		//Save their distances.
-		if(AdditionalDistanceCheck)
+		for (int i = length - 1; i >= 0; i--)
 		{
-			if(distance[entity_traced] > (explosionRadius * explosionRadius))
+			int entity_traced = HitEntitiesSphereExplosionTrace.Get(i);
+			
+			WorldSpaceCenter(entity_traced, VicPos[entity_traced]);
+			distance[entity_traced] = GetVectorDistance(VicPos[entity_traced], spawnLoc, true);
+			//Save their distances.
+			if(AdditionalDistanceCheck)
 			{
-				//the distance that was calculated was bigger then the distance check, remove.
-				HitEntitiesSphereExplosionTrace.Erase(i);
-				length--;
-				continue;
+				if(distance[entity_traced] > (explosionRadius * explosionRadius))
+				{
+					//the distance that was calculated was bigger then the distance check, remove.
+					HitEntitiesSphereExplosionTrace.Erase(i);
+					continue;
+				}
 			}
 		}
 	}
@@ -3466,7 +3460,7 @@ int inflictor = 0)
 	//do another check, this time we only need the amount of entities we actually hit.
 	//Im lazy and dumb, i dont know a better way.
 
-	
+	length = HitEntitiesSphereExplosionTrace.Length;
 	for (int repeatloop = 0; repeatloop < maxtargetshit && length > 0; repeatloop++)
 	{
 		float ClosestDistance;
@@ -4716,6 +4710,30 @@ public Action ThirdersonTransmitEnvLaser(int entity, int client)
 	return Plugin_Stop;
 }
 
+void AddEntityToFirstPersonTransmitMode(int client, int entity)
+{
+	i_OwnerEntityEnvLaser[entity] = EntIndexToEntRef(client);
+	SDKHook(entity, SDKHook_SetTransmit, FirstPersonTransmitMode);
+}
+public Action FirstPersonTransmitMode(int entity, int client)
+{
+	if(client > 0 && client <= MaxClients)
+	{
+		int owner = EntRefToEntIndex(i_OwnerEntityEnvLaser[entity]);
+		if(owner == client)
+		{
+			if(TF2_IsPlayerInCondition(client, TFCond_Taunting) || GetEntProp(client, Prop_Send, "m_nForceTauntCam"))
+			{
+				return Plugin_Stop;
+			}
+		}
+		else if(GetEntPropEnt(client, Prop_Send, "m_hObserverTarget") != owner || GetEntProp(client, Prop_Send, "m_iObserverMode") != 4)
+		{
+			return Plugin_Stop;
+		}
+	}
+	return Plugin_Continue;
+}
 
 //bool identified if it went above max health or not.
 
@@ -6174,4 +6192,11 @@ stock void StringToUpper(char[] buffer)
 		buffer[i] = CharToUpper(buffer[i]);
 		i++;
 	}
+}
+
+float GetDifferenceBetweenAngles(float fA[3], float fB[3])
+{
+    float fFwdA[3]; GetAngleVectors(fA, fFwdA, NULL_VECTOR, NULL_VECTOR);
+    float fFwdB[3]; GetAngleVectors(fB, fFwdB, NULL_VECTOR, NULL_VECTOR);
+    return RadToDeg(ArcCosine(fFwdA[0] * fFwdB[0] + fFwdA[1] * fFwdB[1] + fFwdA[2] * fFwdB[2]));
 }

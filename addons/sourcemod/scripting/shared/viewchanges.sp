@@ -198,7 +198,7 @@ void OverridePlayerModel(int client, int index = -1, bool DontShowCosmetics = fa
 }
 
 #if defined ZR
-void ViewChange_TeamOverride(int &team)
+static void GetTeamOverride(int &team)
 {
 	if(ZR_Get_Modifier() == SECONDARY_MERCS)
 		team = 3;
@@ -234,11 +234,7 @@ void ViewChange_PlayerModel(int client)
 		
 		if(TeutonType[client] == TEUTON_NONE)
 		{
-			bool robot = (i_HealthBeforeSuit[client] || Store_HasNamedItem(client, "Expidonsan Research Card"));
-			
-			Gunsaw_PlayerModel(client, robot);
-			
-			if(!robot)
+			if(i_HealthBeforeSuit[client] == 0 && Store_HasNamedItem(client, "Expidonsan Research Card") == 0)
 			{
 				int index;
 				int sound = -1;
@@ -319,7 +315,7 @@ void ViewChange_PlayerModel(int client)
 		
 		SetEntProp(entity, Prop_Send, "m_fEffects", 129);
 #if defined ZR
-		ViewChange_TeamOverride(team);
+		GetTeamOverride(team);
 #endif
 		SetTeam(entity, team);
 		SetEntProp(entity, Prop_Send, "m_nSkin", SetSkin);
@@ -462,7 +458,7 @@ void ViewChange_Switch(int client, int active, const char[] classname)
 			
 			int team = GetClientTeam(client);
 #if defined ZR
-			ViewChange_TeamOverride(team);
+			GetTeamOverride(team);
 #endif
 			SetTeam(entity, team);
 			SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
@@ -528,7 +524,7 @@ void ViewChange_Switch(int client, int active, const char[] classname)
 
 				SetEntProp(entity, Prop_Send, "m_fEffects", 129);
 #if defined ZR
-				ViewChange_TeamOverride(team);
+				GetTeamOverride(team);
 #endif
 				SetTeam(entity, team);
 				SetEntProp(entity, Prop_Send, "m_nSkin", team-2);

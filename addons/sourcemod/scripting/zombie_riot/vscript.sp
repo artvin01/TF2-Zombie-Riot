@@ -306,8 +306,10 @@ static void VGiveClientAmmo(ScriptContext context)
 		{
 			int index = context.GetArgInt(1);
 			int amount = context.GetArgInt(2);
-
-			AddAmmoClient(client, index, _, float(amount), true);
+			
+			int ammo = GetAmmo(client, index) + (AmmoData[index][1] * amount);
+			SetAmmo(client, index, ammo);
+			CurrentAmmo[client][index] = ammo;
 			return;
 		}
 	}

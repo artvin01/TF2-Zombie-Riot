@@ -38,7 +38,7 @@ public void Weapon_RiotShield_M2_PaP(int client, int weapon, bool crit, int slot
 
 public void Weapon_RiotShield_M2_Alt(int client, int weapon, bool crit, int slot)
 {
-	Weapon_RiotShield_M2_Base(client, weapon, slot, 2);
+	Weapon_RiotShield_M2_Base(client, weapon, slot, 1);
 }
 
 static void Weapon_RiotShield_M2_Base(int client, int weapon, int slot, int pap)
@@ -128,6 +128,7 @@ static void Weapon_RiotShield_M2_Base(int client, int weapon, int slot, int pap)
 			}
 			else
 			{
+				ApplyTempAttrib(weapon, 2, 0.65, 3.0);
 				ApplyTempAttrib(weapon, 6, 0.25, 3.0); //Make them attack WAY faster.
 			}
 			f_AbiltiyCooldownHidden[client] = GetGameTime() + 5.0;
@@ -368,12 +369,14 @@ public float Player_OnTakeDamage_Riot_Shield(int victim, float &damage, int atta
 	{
 		return damage;
 	}
+
+
 	// Require armor charge
 	if(Armor_Charge[victim] < 1)
+	{
 		return damage;
+	}
 
-	if(damagetype & DMG_TRUEDAMAGE)
-		return damage;
 
 	
 	// need position of either the inflictor or the attacker
@@ -433,8 +436,11 @@ public float Player_OnTakeDamage_Riot_Shield(int victim, float &damage, int atta
 
 		}
 
-		damage *= resist;
-		
+
+		if(!(damagetype & DMG_TRUEDAMAGE))
+		{
+			damage *= resist;
+		}
 		if(f_AniSoundSpam[victim] < GetGameTime())
 		{
 			f_AniSoundSpam[victim] = GetGameTime() + 0.2;
@@ -444,9 +450,22 @@ public float Player_OnTakeDamage_Riot_Shield(int victim, float &damage, int atta
 				ClientCommand(victim, "playgamesound ambient/energy/spark%d.wav", 1 + (GetURandomInt() % 6));
 				Saga_ChargeReduction(victim, weapon, 0.5);
 
-				int ally = GetClosestAlly(victim, 100000.0, victim, Saga_ChargeValidityFunction);
+				int ally = GetClosestAlly(victim, 300.0 * 300.0, victim, Saga_ChargeValidityFunction);
 				if(ally > 0)
 				{
+					float VicLoc[3];
+					WorldSpaceCenter(victim, VicLoc);
+					float VicLoc2[3];
+					WorldSpaceCenter(ally, VicLoc2);
+					int color[4];
+					color[0] = 125;
+					color[1] = 125;
+					color[2] = 255;
+					color[3] = 255;
+					float amp = 1.5;
+					TE_SetupBeamPoints(VicLoc, VicLoc2, AmphiReturnLaserSprite(), 0, 0, 0, 0.15, 1.0, 1.2, 1, amp, color, 0);
+					TE_SendToAll();
+
 					ClientCommand(ally, "playgamesound ambient/energy/spark%d.wav", 1 + (GetURandomInt() % 6));
 
 					int i, other;
@@ -456,12 +475,9 @@ public float Player_OnTakeDamage_Riot_Shield(int victim, float &damage, int atta
 					}
 				}
 			}
-			else
-			{
-				ClientCommand(victim, "playgamesound Wood_Box.BulletImpact");
-			}
 		}
 	}
+
 
 	return damage;
 }

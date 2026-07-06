@@ -325,7 +325,9 @@ methodmap Harrison < CClotBody
 			npc.m_iOverlordComboAttack=0;
 			npc.m_flDoingAnimation=0.0;
 			npc.m_iOverrideOwner = 0;
-			static char countext[2][216];
+			npc.m_flExtraDMGForMG = 1.0;
+			static char countext[3][216];
+			bool STFU;
 			int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
 			for(int i = 0; i < count; i++)
 			{
@@ -340,21 +342,29 @@ methodmap Harrison < CClotBody
 					ReplaceString(countext[i], sizeof(countext[]), "override_owner", "");
 					npc.m_iOverrideOwner = StringToInt(countext[i]);
 				}
+				else if(StrContains(countext[i], "stfu") != -1)
+				{
+					ReplaceString(countext[i], sizeof(countext[]), "stfu", "");
+					STFU=true;
+				}
 			}
 			
-			switch(npc.m_iOverlordComboAttack)
+			if(!STFU)
 			{
-				case 1: NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Support-2", false, true);
-				case 2:
+				switch(npc.m_iOverlordComboAttack)
 				{
-					switch(GetRandomInt(0, 1))
+					case 1: NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Support-2", false, true);
+					case 2:
 					{
-						case 0: NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Support-3", false, true);
-						case 1: NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Support-4", false, true);
+						switch(GetRandomInt(0, 1))
+						{
+							case 0: NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Support-3", false, true);
+							case 1: NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Support-4", false, true);
+						}
 					}
+					case 3: NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Support-6", false, true);
+					default: NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Support-2", false, true);
 				}
-				case 3: NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Support-6", false, true);
-				default: NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Support-2", false, true);
 			}
 		}
 		else
@@ -385,10 +395,10 @@ methodmap Harrison < CClotBody
 			npc.m_iAmountProjectiles = 0;
 			npc.m_flExtraDMGForMG = 1.0;
 			npc.m_iMaxAmmo =  RoundToNearest(float(CountPlayersOnRed(2)) * 5.0);
-			if(npc.m_iMaxAmmo>80)
+			if(npc.m_iMaxAmmo>50)
 			{
-				npc.m_flExtraDMGForMG = 1.0*(npc.m_iMaxAmmo/60.0);
-				npc.m_iMaxAmmo=80;
+				npc.m_flExtraDMGForMG = 1.0*(npc.m_iMaxAmmo/50.0);
+				npc.m_iMaxAmmo=50;
 			}
 			npc.m_iAmmo = 0;
 			ApplyStatusEffect(npc.index, npc.index, "Ammo_TM Visualization", 999.0);
@@ -482,6 +492,18 @@ methodmap Harrison < CClotBody
 				strcopy(music.Artist, sizeof(music.Artist), "Serious Sam 4: Reborn mod");
 				Music_SetRaidMusic(music);
 			}
+
+			npc.m_iWearable1 = npc.EquipItemSeperate("models/weapons/w_models/w_drg_ball.mdl",_,1,1.001,_,true);
+			float Vec[3]; WorldSpaceCenter(npc.index, Vec);
+			TeleportEntity(npc.m_iWearable1, Vec, NULL_VECTOR, NULL_VECTOR);
+			SetEntityRenderMode(npc.m_iWearable1, RENDER_TRANSCOLOR);
+			SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
+			SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMinDist", 1.0);
+			SetEntPropFloat(npc.m_iWearable1, Prop_Send, "m_fadeMaxDist", 1.0);
+			
+			SetVariantString("!activator");
+			AcceptEntityInput(npc.m_iWearable1, "SetParent", npc.index);
+			MakeObjectIntangeable(npc.m_iWearable1);
 			
 			npc.m_iChanged_WalkCycle = -1;
 		}
@@ -669,10 +691,10 @@ static void Clone_ClotThink(int iNPC)
 						npc.StartPathing();
 
 						npc.m_iMaxAmmo =  RoundToNearest(float(CountPlayersOnRed(2)) * 7.0);
-						if(npc.m_iMaxAmmo>100)
+						if(npc.m_iMaxAmmo>50)
 						{
-							npc.m_flExtraDMGForMG = 1.0*(npc.m_iMaxAmmo/80.0);
-							npc.m_iMaxAmmo=100;
+							npc.m_flExtraDMGForMG = 1.0*(npc.m_iMaxAmmo/50.0);
+							npc.m_iMaxAmmo=50;
 						}
 						npc.m_iMaxAmmo += 20; //Extra Ammo!
 						npc.m_iAmmo = npc.m_iMaxAmmo;
@@ -793,7 +815,7 @@ static void Clone_ClotThink(int iNPC)
 								float damage = 5.0 * 0.2 * RaidModeScaling;
 								if(flDistanceToTarget > 100000.0)
 									damage *= 100000.0 / flDistanceToTarget;
-								damage *= 3.5;
+								damage *= 5.25;
 								damage *= npc.m_flExtraDMGForMG;
 								KillFeed_SetKillIcon(npc.index, "natascha");
 								FireBullet(npc.index, npc.m_iWearable8, VecSelfNpc, vecDir, damage, 3000.0, DMG_BULLET, "bullet_tracer02_blue_crit");
@@ -977,7 +999,8 @@ static void Clone_ClotThink(int iNPC)
 
 static Action Clone_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	return Plugin_Handled;
+	damage*=0.0;
+	return Plugin_Changed;
 }
 
 static void Clone_NPCDeath(int entity)
@@ -1665,10 +1688,10 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 				float damage = 5.0 * 0.2 * RaidModeScaling;
 				if(distance > 100000.0)	// 316 HU
 					damage *= 100000.0 / distance;	// Lower damage based on distance
-				damage *= 3.5;
+				damage *= 5.25;
 				damage *= npc.m_flExtraDMGForMG;
 				KillFeed_SetKillIcon(npc.index, "natascha");
-				FireBullet(npc.index, npc.m_iWearable2, vecMe, vecDir, damage, 3000.0, DMG_BULLET, "bullet_tracer02_blue_crit");
+				FireBullet(npc.index, npc.m_iWearable1, vecMe, vecDir, damage, 3000.0, DMG_BULLET, "bullet_tracer02_blue_crit");
 				npc.m_flNextMeleeAttack = gameTime + 0.1;
 				npc.m_iAmmo -= 1;
 			}
@@ -1918,17 +1941,14 @@ static void HarrisonInitiateLaserAttack_DamagePart(DataPack pack)
 	trace = TR_TraceHullFilterEx(VectorStart, VectorTarget, hullMin, hullMax, 1073741824, Harrison_BEAM_TraceUsers, entity);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
 	
-	float CloseDamage = 70.0 * RaidModeScaling;
-	float FarDamage = 60.0 * RaidModeScaling;
-	float MaxDistance = 5000.0;
+	float LaserDamage = 75.0 * RaidModeScaling;
 	float playerPos[3];
 	for (int victim = 1; victim < MAXENTITIES; victim++)
 	{
 		if (LaserVarious_HitDetection[victim] && GetTeam(entity) != GetTeam(victim))
 		{
 			GetEntPropVector(victim, Prop_Send, "m_vecOrigin", playerPos, 0);
-			float distance = GetVectorDistance(VectorStart, playerPos, false);
-			float damage = CloseDamage + (FarDamage-CloseDamage) * (distance/MaxDistance);
+			float damage = LaserDamage;
 			if (damage < 0)
 				damage *= -1.0;
 			if(BIGShot)
@@ -2154,6 +2174,7 @@ static bool Vesta_Support(Harrison npc)
 		if(Vs_RechargeTime[npc.index] < Vs_RechargeTimeMax[npc.index])
 		{
 			float position[3];
+			int RGBColor[3]={255, 200, 80};
 			position[0] = vecTarget[0];
 			position[1] = vecTarget[1];
 			position[2] = vecTarget[2] + 3000.0;
@@ -2171,14 +2192,15 @@ static bool Vesta_Support(Harrison npc)
 					if(IsValidClient(client) && !IsFakeClient(client))
 						Vs_LockOn[client]=false;
 				}
+				RGBColor={255, 120, 50};
 			}
 			spawnRing_Vectors(Vs_Temp_Pos[enemy[i]], (Vs_Raged - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*Vs_Raged)), 0.0, 0.0, 0.0, LASERBEAM, 255, 255, 255, 150, 1, 0.1, 3.0, 0.1, 3);
 			float position2[3];
 			position2[0] = Vs_Temp_Pos[enemy[i]][0];
 			position2[1] = Vs_Temp_Pos[enemy[i]][1];
 			position2[2] = Vs_Temp_Pos[enemy[i]][2] + 40.0;
-			spawnRing_Vectors(position2, Vs_Raged, 0.0, 0.0, 0.0, LASERBEAM, 255, 200, 80, 150, 1, 0.1, 3.0, 0.1, 3);
-			spawnRing_Vectors(Vs_Temp_Pos[enemy[i]], Vs_Raged, 0.0, 0.0, 0.0, LASERBEAM, 255, 200, 80, 150, 1, 0.1, 3.0, 0.1, 3);
+			spawnRing_Vectors(position2, Vs_Raged, 0.0, 0.0, 0.0, LASERBEAM, RGBColor[0], RGBColor[1], RGBColor[2], 150, 1, 0.1, 3.0, 0.1, 3);
+			spawnRing_Vectors(Vs_Temp_Pos[enemy[i]], Vs_Raged, 0.0, 0.0, 0.0, LASERBEAM, RGBColor[0], RGBColor[1], RGBColor[2], 150, 1, 0.1, 3.0, 0.1, 3);
 			TE_SetupBeamPoints(Vs_Temp_Pos[enemy[i]], position, g_Laser, -1, 0, 0, 0.1, 0.0, 25.0, 0, 0.0, {145, 47, 47, 150}, 3);
 			TE_SendToAll();
 			TE_SetupGlowSprite(Vs_Temp_Pos[enemy[i]], g_RedPoint, 0.1, 1.0, 255);

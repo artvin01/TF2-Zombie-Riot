@@ -98,6 +98,8 @@ enum struct ItemInfo
 	Function Func_TakeDamage_Deal;
 	Function Func_TakeDamage_Post;
 	Function Func_CustomTraceMelee;
+	Function Func_OnInteractAlly;
+	Function Func_OnEntityBuild;
 
 	Function FuncOnPap;
 
@@ -381,6 +383,14 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%sfunc_onkill", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.Func_OnKill = GetFunctionByName(null, buffer);
+
+		Format(buffer, sizeof(buffer), "%sfunc_oninteractally", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.Func_OnInteractAlly = GetFunctionByName(null, buffer);
+
+		Format(buffer, sizeof(buffer), "%sfunc_onbuildentity", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.Func_OnEntityBuild = GetFunctionByName(null, buffer);
 
 		Format(buffer, sizeof(buffer), "%sfunc_ontakedamage_deal", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
@@ -704,7 +714,9 @@ void Store_WeaponSwitch(int client, int weapon)
 
 	if(weapon != -1)
 	{
-		EntityFuncPlayerRunCmd[client] = EntityFuncPlayerRunCmd[weapon];
+		EntityFuncPlayerRunCmd[client] 	= EntityFuncPlayerRunCmd[weapon];
+		EntityOnAllyInteract[client] 		= EntityOnAllyInteract[weapon];
+		EntityOnBuildObject[client] 		= EntityOnBuildObject[weapon];
 		if(StoreWeapon[weapon] > 0)
 		{
 			static ItemInfo info;
@@ -1147,8 +1159,6 @@ void Store_ConfigSetup()
 //	StoreBalanceLog.ImportFromFile(buffer);
 
 	AutoSaveTimer = CreateTimer(10.0, AutoSaveTime, 1);
-
-	Gunsaw_StoreReloaded();
 }
 
 static Action AutoSaveTime(Handle timer, int client)
@@ -1350,10 +1360,6 @@ bool Store_CanPapItem(int client, int index)
 			}
 		}
 		*/
-
-		if(!Gunsaw_CanPapItem(client, index))
-			return false;
-
 		if(item.Owned[client])
 		{
 			ItemInfo info;
@@ -1968,7 +1974,7 @@ bool Store_EquipSlotSuffix(int client, int slot, char[] buffer, int blength)
 
 void Store_EquipSlotCheck(int client, Item mainItem)
 {
-	if(mainItem.IgnoreSlots || mainItem.BuyWave[client] == -2)
+	if(mainItem.IgnoreSlots)
 		return;
 	
 	int slot = mainItem.Slot;
@@ -1982,7 +1988,7 @@ void Store_EquipSlotCheck(int client, Item mainItem)
 	for(int i; i < length; i++)
 	{
 		StoreItems.GetArray(i, subItem);
-		if(subItem.Equipped[client] && !subItem.IgnoreSlots && !subItem.ChildKit && mainItem.BuyWave[client] != -2)
+		if(subItem.Equipped[client] && !subItem.IgnoreSlots && !subItem.ChildKit)
 		{
 			subItem.GetItemInfo(0, info);
 			
@@ -4663,7 +4669,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 									if(CanBePapped)
 									{
 										DoNormal = 0;
-										Store_PackMenu(client, index1, level + 1, client, !Store_CanPapItem(client, index1));
+										Store_PackMenu(client, index1, -1, client);
 									}
 								}
 								else
@@ -5073,9 +5079,6 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 						level = 1;
 
 					if(PapModeDo == PAP_MODE_BUILDING_ONLY)
-						OwnedBefore = false;
-					
-					if(!Store_CanPapItem(client, index))
 						OwnedBefore = false;
 
 					//can be papped ? See if yes
@@ -6244,7 +6247,9 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 					EntityFuncTakeDamage[entity][1]  = info.Func_TakeDamage_Take;
 					EntityFuncTakeDamage[entity][2]  = info.Func_TakeDamage_Post;
 					EntityFuncOnKill[entity]  		= info.Func_OnKill;
+					EntityOnAllyInteract[entity]  		= info.Func_OnInteractAlly;
 					EntityCustomTraceMelee[entity] = info.Func_CustomTraceMelee;
+					EntityOnBuildObject[entity] = info.Func_OnEntityBuild;
 					
 					b_Do_Not_Compensate[entity] 				= info.NoLagComp;
 					b_Only_Compensate_CollisionBox[entity] 		= info.OnlyLagCompCollision;
@@ -6689,8 +6694,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 		GemCrafter_Enable(client, entity);
 		VehicleFullAPC_WeaponEnable(client, entity);
 		Enable_ExploARWeapon(client, entity);
-		Gunsaw_Enable(client, entity);
-
 		//give all revelant things back
 		WeaponSpawn_Reapply(client, entity, StoreWeapon[entity]);
 	}
@@ -6732,7 +6735,7 @@ void Store_GiveItemIndex(int client, int index, int owned = 1, bool equipped = t
 	}
 }
 
-int Store_GiveSpecificItem(int client, const char[] name, bool UpdateSlots = true, int CompareWeaponArray = -1, int ownedLevel = 1, int buywave = -1)
+int Store_GiveSpecificItem(int client, const char[] name, bool UpdateSlots = true, int CompareWeaponArray = -1)
 {
 	static Item item;
 	int length = StoreItems.Length;
@@ -6741,15 +6744,15 @@ int Store_GiveSpecificItem(int client, const char[] name, bool UpdateSlots = tru
 		StoreItems.GetArray(i, item);
 		if(StrEqual(name, item.Name, false) || CompareWeaponArray == i)
 		{
-			item.BuyWave[client] = buywave;
 			Store_EquipSlotCheck(client, item);
 
 			static ItemInfo info;
 			item.GetItemInfo(0, info);
 			
-			item.Owned[client] = ownedLevel;
+			item.Owned[client] = 1;
 			item.Equipped[client] = true;
 			item.Sell[client] = 0;
+			item.BuyWave[client] = -1;
 			StoreItems.SetArray(i, item);
 			
 			int entity = Store_GiveItem(client, i, item.Equipped[client]);
@@ -6781,7 +6784,6 @@ void Store_RemoveSpecificItem(int client, const char[] name, bool UpdateSlots = 
 			
 			item.Owned[client] = 0;
 			item.Equipped[client] = false;
-			item.BuyWave[client] = -1;
 			StoreItems.SetArray(i, item);
 			
 		//	int entity = Store_GiveItem(client, i, item.Equipped[client]);
@@ -6816,43 +6818,6 @@ stock void Store_ConsumeItem(int client, int index)
 	}
 }
 
-stock int Store_Equip(int client, int index, bool UpdateSlots = true, bool specialtempthing = false)
-{
-	static Item item;
-	StoreItems.GetArray(index, item);
-	if(specialtempthing)
-		item.BuyWave[client] = -2;
-	
-	Store_EquipSlotCheck(client, item);
-	item.Equipped[client] = true;
-	StoreItems.SetArray(index, item);
-	
-	int entity = Store_GiveItem(client, index, item.Equipped[client]);
-	if(UpdateSlots)
-		CheckMultiSlots(client);
-	
-	if(item.ParentKit)
-	{
-		static Item subItem;
-		int length = StoreItems.Length;
-		for(int i; i < length; i++)
-		{
-			StoreItems.GetArray(i, subItem);
-			if(subItem.Section == index)
-			{
-				Store_EquipSlotCheck(client, item);
-				subItem.Owned[client] = item.Owned[client];
-				subItem.Equipped[client] = true;
-				StoreItems.SetArray(i, subItem);
-				
-				LastBoughtWeapon[client] = subItem;
-			}
-		}
-	}
-	
-	return entity;
-}
-
 stock void Store_Unequip(int client, int index)
 {
 	static Item item;
@@ -6870,8 +6835,6 @@ stock void Store_Unequip(int client, int index)
 	}
 	
 	item.Equipped[client] = false;
-	if(item.BuyWave[client] == -2)
-		item.BuyWave[client] = -1;
 
 	StoreItems.SetArray(index, item);
 
@@ -6885,9 +6848,6 @@ stock void Store_Unequip(int client, int index)
 			{
 				item.Owned[client] = 0;
 				item.Equipped[client] = false;
-				if(item.BuyWave[client] == -2)
-					item.BuyWave[client] = -1;
-				
 				StoreItems.SetArray(i, item);
 			}
 		}
@@ -6919,7 +6879,7 @@ int Store_GetItemIndex(const char[] name)
 	return StoreItems.FindString(name, Item::Name);
 }
 
-int Store_GetItemName(int index, int client = 0, char[] buffer, int leng, bool translate = true, int forceLevel = -1)
+int Store_GetItemName(int index, int client = 0, char[] buffer, int leng, bool translate = true)
 {
 	static Item item;
 	StoreItems.GetArray(index, item);
@@ -6927,9 +6887,6 @@ int Store_GetItemName(int index, int client = 0, char[] buffer, int leng, bool t
 	int level = item.Owned[client] - 1;
 	if(level < 0)
 		level = 0;
-	
-	if(forceLevel != -1)
-		level = forceLevel;
 	
 	static ItemInfo info;
 	item.GetItemInfo(level, info);
@@ -7781,15 +7738,6 @@ void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip,
 			}
 		}
 	}
-}
-
-int Store_GetAmmoType(int index, int level)
-{
-	static Item item;
-	StoreItems.GetArray(index, item);
-	static ItemInfo info;
-	item.GetItemInfo(level, info);
-	return info.Ammo;
 }
 
 void ResetClipOfWeaponStore(int weapon, int client, int clipsizeSet)
