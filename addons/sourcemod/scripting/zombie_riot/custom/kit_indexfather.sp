@@ -20,6 +20,7 @@ static float f_ResetMoveSpeedPenalty[MAXPLAYERS];
 static int GraceOfPrescript[MAXPLAYERS];
 static bool UnlockedShin[MAXPLAYERS];
 static int i_FuriosoReady[MAXPLAYERS];
+static float f_FuriosoLastmanForce[MAXPLAYERS];
 //static float f_FuriosoCooldown[MAXPLAYERS];
 static float f_FuriosoInUse[MAXPLAYERS];
 static int i_FuriosoHits[MAXPLAYERS];
@@ -27,6 +28,7 @@ static int WeaponLevel[MAXPLAYERS];
 static float OnBuyClear[MAXPLAYERS];
 static bool WasARaidboss[MAXPLAYERS];
 static int DashesBeforeHitMust[MAXPLAYERS];
+static bool Precached;
 #define IDX_FURI_WEAPON_1	 	(1 << 1)
 #define IDX_FURI_WEAPON_2		(1 << 2)
 #define IDX_FURI_WEAPON_3	 	(1 << 3)
@@ -98,6 +100,9 @@ static char g_FuriosoStart[][] = {
 };
 static char g_FuriosoFinalHit[][] = {
 	"doors/heavy_metal_stop1.wav",
+};
+static char g_SizzlingWoundSound[][] = {
+	"weapons/flame_thrower_fire_hit.wav",
 };
 
 enum PrescriptAddition
@@ -179,6 +184,7 @@ public void IndexFather_ResetAllStats()
 	Zero(WasARaidboss);
 	Zero(OnBuyClear);
 	Zero(DashesBeforeHitMust);
+	Zero(f_FuriosoLastmanForce);
 }
 public void IndexFather_MapStart()
 {
@@ -191,7 +197,9 @@ public void IndexFather_MapStart()
 	PrecacheSoundArray(g_FuriosoStart);
 	PrecacheSoundArray(g_GenerateRandomWeapon);
 	PrecacheSoundArray(g_FuriosoFinalHit);
+	PrecacheSoundArray(g_SizzlingWoundSound);
 	IndexFather_ResetAllStats();
+	Precached = false;
 }
 public void IndexFather_PluginStart()
 {
@@ -199,6 +207,14 @@ public void IndexFather_PluginStart()
 	RegAdminCmd("sm_prescript_debug", Command_GiveForcePrescript, ADMFLAG_ROOT, "Enable PVP");
 }
 
+void PrecachePrescriptMusic()
+{
+	if(!Precached)
+	{
+		PrecacheSoundCustom("#zombiesurvival/prescript_lastman.mp3",_,1);
+		Precached = true;
+	}
+}
 public Action Command_GiveForcePrescript(int client, int args)
 {
 	//What are you.
@@ -232,6 +248,22 @@ public Action Command_GiveForcePrescript(int client, int args)
 	return Plugin_Handled;
 }
 
+public bool Is_Prescript_User(int client)
+{
+	if(Handle_Timer[client] == null)
+		return false;
+
+	return true;
+}
+
+public bool Prescript_LastmanBuff(int client)
+{
+	ApplyStatusEffect(client, client, "Indulgence in Prescripts", 60.0);
+	if(!b_IsAloneOnServer)
+		f_FuriosoLastmanForce[client] = GetGameTime() + 60.0;
+	IndexFather_GeneratePrescript(client, true, view_as<int>(PT_DealDamage));
+	UseFurioso(client);
+}
 public void IndexFather_CheckValidity(int client, int weapon, bool &result, int slot)
 {
 	CreateTimer(0.5, TimerCheckValidMaster, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
@@ -367,6 +399,12 @@ static Action Timer_Base(Handle timer, DataPack pack)
 
 	bool DoSwitch = false;
 	int weaponActive = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(f_FuriosoInUse[client] && f_FuriosoInUse[client] <= GetGameTime())
+	{
+		i_FuriosoHits[client] = 0;
+	}
+	if(!LastMann)
+		f_FuriosoLastmanForce[client] = 0.0;
 	if(weaponActive == EntRefToEntIndex(i_PreviousWeapon[client]))
 		DoSwitch = true;
 	if(!IsValidEntity(i_PreviousWeapon[client]))
@@ -490,6 +528,10 @@ void IndexFather_GeneratePrescript(int client, bool ForceNew, int PrescriptForce
 		{
 			return;
 		}
+	}
+	if(RaidbossIgnoreBuildingsLogic())
+	{
+		PrescriptForce = 4;
 	}
 	EmitSoundToClient(client, g_RecieveNewPrescript[GetRandomInt(0, sizeof(g_RecieveNewPrescript) - 1)], client, SNDCHAN_STATIC, 80, _, 0.8, 110);
 	CurrentPrescript[client] = new ArrayList(sizeof(ThePrescript));
@@ -742,7 +784,7 @@ void IndexFather_SelectRandomAddition(Prescript data)
 		{
 			switch(data.WhatPrescript)
 			{
-				case PT_Taunt:
+				case PT_Taunt, PT_HitEnemyFromBehind:
 				{
 					Allow = false;
 					//disallow
@@ -754,7 +796,7 @@ void IndexFather_SelectRandomAddition(Prescript data)
 			
 			switch(data.WhatPrescript)
 			{
-				case PT_Taunt:
+				case PT_Taunt, PT_HitEnemyFromBehind:
 				{
 					Allow = false;
 					//disallow
@@ -1112,7 +1154,8 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 {
 	if(HasSpecificBuff(attacker, "Sizzling Wound"))
 		damage *= 1.1;
-
+	if(HasSpecificBuff(attacker, "Indulgence in Prescripts"))
+		damage *= 1.1;
 	damage *= (float(GraceOfPrescript[attacker]) * 0.01) + 1.0;
 	if(f_FuriosoInUse[attacker] > GetGameTime())
 	{
@@ -1126,7 +1169,7 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 		return;
 	DashesBeforeHitMust[attacker] = 0;
 
-
+	bool ResetFurioso = false;
 	if(f_FuriosoInUse[attacker] > GetGameTime())
 	{
 		EmitSoundToAll(g_FuriosoSlashIndicator[GetRandomInt(0, sizeof(g_FuriosoSlashIndicator) - 1)], victim, SNDCHAN_STATIC, 80, _, 0.8, 100);
@@ -1157,8 +1200,12 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 			EmitSoundToAll(g_FuriosoFinalHit[GetRandomInt(0, sizeof(g_FuriosoFinalHit) - 1)], victim, SNDCHAN_STATIC, 90, _, 1.0, 100);
 			EmitSoundToClient(attacker, g_FuriosoFinalHit[GetRandomInt(0, sizeof(g_FuriosoFinalHit) - 1)], victim, SNDCHAN_STATIC, 90, _, 1.0, 100);
 		}
+		ResetFurioso = true;
 		f_DodgeCooldown[attacker] = 0.0;
 		i_DodgesAvailable[attacker] = IndexFather_DodgeMaxReturn(attacker);
+		if(f_FuriosoLastmanForce[attacker] > GetGameTime())
+			UseFurioso(client);
+			
 	}
 	if(WeaponLevel[attacker] >= 1)
 	{
@@ -1213,7 +1260,10 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 				IndexFather_ScytheEffect(victim);
 			}
 		}
-		
+	}
+	if(ResetFurioso)
+	{
+		i_FuriosoReady[attacker] = 0;
 	}
 	if(CurrentPrescript[attacker] == null)
 	{
@@ -1251,8 +1301,10 @@ void IndexFather_PrescriptEnd(int client, bool Win)
 {
 	if(Win)
 	{
-		EmitSoundToClient(client, g_SuccessPrescript[GetRandomInt(0, sizeof(g_SuccessPrescript) - 1)], client, SNDCHAN_STATIC, 80, _, 0.8, 110);
 		float NewScript = GetRandomFloat(120.0, 180.0);	
+		if(GraceOfPrescript[client] >= 9)
+			ApplyStatusEffect(client, client, "Indulgence in Prescripts", NewScript);
+		EmitSoundToClient(client, g_SuccessPrescript[GetRandomInt(0, sizeof(g_SuccessPrescript) - 1)], client, SNDCHAN_STATIC, 80, _, 0.8, 110);
 		PrescriptCooldown[client] = NewScript + GetGameTime();
 		PrescriptPunishPlayerIgnoring[client] = (NewScript * 2.0) + GetGameTime();
 		GivePrescriptGrace(client);
@@ -1264,7 +1316,7 @@ void IndexFather_PrescriptEnd(int client, bool Win)
 		float NewScript = GetRandomFloat(80.0, 120.0);
 		PrescriptCooldown[client] = NewScript + GetGameTime();
 		PrescriptPunishPlayerIgnoring[client] = (NewScript * 2.0) + GetGameTime();
-		ApplyStatusEffect(client, client, "Karmic Consequence", 30.0);
+		ApplyStatusEffect(client, client, "Karmic Consequence", 45.0);
 	}
 	if(CurrentPrescript[client] != null)
 	{
@@ -1315,7 +1367,7 @@ int IndexFather_Spinning(int client, float angles[3])
 	OptimiseCmd[client] = GetGameTime() + 0.15;
 	static float PreviousVectors[MAXPLAYERS][3];
 
-	if(GetDifferenceBetweenAngles(PreviousVectors[client], angles) >= 35.0)
+	if(GetDifferenceBetweenAngles(PreviousVectors[client], angles) >= 15.0)
 	{
 		PreviousVectors[client] = angles;
 		return 1;
@@ -1750,7 +1802,11 @@ public void IndexFather_AbilityR(int client, int weapon, bool &result, int slot)
 	}
 	if(FuriosoReady(client) < IndexFather_MaxStacksForFurioso(client))
 		return;
-
+	
+	UseFurioso(client);
+}
+void UseFurioso(int client)
+{
 //	f_FuriosoCooldown[client] = GetGameTime() + 30.0;
 	if(CurrentPrescript[client] != null)
 	{
@@ -1773,7 +1829,6 @@ public void IndexFather_AbilityR(int client, int weapon, bool &result, int slot)
 	f_FuriosoInUse[client] = GetGameTime() + 6.0;
 }
 
-
 void ApplySizzlingWound(int client)
 {
 	if(WeaponLevel[client] < 5)
@@ -1781,6 +1836,7 @@ void ApplySizzlingWound(int client)
 	if(HasSpecificBuff(client, "Sizzling Wound"))
 		return;
 	ApplyStatusEffect(client, client, "Sizzling Wound", 60.0 * 3.0);
+	EmitSoundToAll(g_SizzlingWoundSound[GetRandomInt(0, sizeof(g_SizzlingWoundSound) - 1)], client, SNDCHAN_STATIC, 80, _, 1.0, 100);
 }
 
 

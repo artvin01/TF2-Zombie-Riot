@@ -4073,6 +4073,14 @@
 	{
 		"en"	"Increases damage by 10.0％ multiplicatively, Randomly take burn and bleed damage at the same time."
 	}
+	"Indulgence in Prescripts"
+	{
+		"en"	"Indulgence in Prescripts"
+	}
+	"Indulgence in Prescripts Desc"
+	{
+		"en"	"Increases damage by 10.0％ multiplicatively, Removed upon losing a prescript"
+	}
 	"Karmic Consequence"
 	{
 		"en"	"Karmic Consequence"
