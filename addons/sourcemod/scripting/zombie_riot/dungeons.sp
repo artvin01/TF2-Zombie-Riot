@@ -685,7 +685,7 @@ void Dungeon_StartSetup()
 {
 	Zero(PlayerVotedForThis);
 	Rogue_StartSetup();
-	Construction_RoundEnd();
+	Construction_Reset();
 
 	s_MissionClient = "{white}Bob the First";
 	NextAttackAt = 0.0;

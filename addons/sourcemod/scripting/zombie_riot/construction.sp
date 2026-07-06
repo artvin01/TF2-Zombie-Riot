@@ -187,7 +187,7 @@ void Construction_PluginStart()
 void Construction_MapStart()
 {
 	InConstMode = false;
-	Construction_RoundEnd();
+	Construction_Reset();
 	BackgroundMusic.Clear();
 }
 
@@ -196,6 +196,7 @@ void Construction_SetupVote(KeyValues kv)
 	PrecacheMvMIconCustom("classic_defend", false);
 
 	InConstMode = true;
+	Construction_Reset();
 
 	Rogue_SetupVote(kv, "Construction");
 
@@ -408,7 +409,7 @@ void Construction_StartSetup()
 {
 	Zero(PlayerVotedForThis);
 	Rogue_StartSetup();
-	Construction_RoundEnd();
+	Construction_Reset();
 
 	NextAttackAt = 0.0;
 
@@ -448,14 +449,14 @@ void Construction_StartSetup()
 	*/
 }
 
-void Construction_RoundEnd()
+void Construction_Reset()
 {
 	CurrentRisk = 0;
 	CurrentAttacks = 0;
 	delete GameTimer;
 	delete CurrentMaterials;
 	delete CurrentResearch;
-//	InResearch = -1;
+	InResearch = -1;
 	AttackType = 0;
 }
 
