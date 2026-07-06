@@ -5566,7 +5566,7 @@
 	"The Commander Desc"
 	{
 		"en"	"A kit based on having your own army and supporting it, consists of:\n-A revolver for resources and support, a shotgun for dmg and healing and,later, buffing your troops\n-A wrench"
-		"ko"	"자신만의 군대를 양성하고 지원하는데 기반 키트입니다:\n-자원 및 지원을 위한 리볼버 보유\n-피해와 지원을 위한 산탄총 보유, 추후에 버프 역시 지원\n-렌치 보유"
+		"ko"	"자신만의 군대를 양성하고 지원하는데 기반한 키트입니다:\n-자원 및 지원을 위한 리볼버 보유\n-피해와 지원을 위한 산탄총 보유, 추후에 버프 역시 지원\n-렌치 보유"
 	}
 	"The Marker"
 	{
