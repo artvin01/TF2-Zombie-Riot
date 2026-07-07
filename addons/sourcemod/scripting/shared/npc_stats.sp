@@ -11515,7 +11515,7 @@ Handle Timer_Ingition_Settings[MAXENTITIES] = {INVALID_HANDLE, ...};
 Handle Timer_Ingition_ReApply[MAXENTITIES] = {INVALID_HANDLE, ...};
 float Reapply_BurningCorpse[MAXENTITIES];
 
-void IgniteTargetEffect(int target, int ViewmodelSetting = 0, int viewmodelClient = 0, bool type = false)
+void IgniteTargetEffect(int target, int ViewmodelSetting = 0, int viewmodelClient = 0, int type = 0, char typeoverride[255] = "")
 {
 	Reapply_BurningCorpse[target] = GetGameTime() + 5.0;
 	if(ViewmodelSetting > 0)
@@ -11536,7 +11536,19 @@ void IgniteTargetEffect(int target, int ViewmodelSetting = 0, int viewmodelClien
 	}
 	else
 	{
-		TE_SetupParticleEffect(type ? "halloween_burningplayer_flyingbits" : "burningplayer_corpse", PATTACH_ABSORIGIN_FOLLOW, target);
+		char typeEffect[255];
+		switch(type)
+		{
+			case 0:
+				typeEffect = "burningplayer_corpse";
+			case 1:
+				typeEffect = "halloween_burningplayer_flyingbits";
+			case 2:
+				typeEffect = "utaunt_voidcrawlers_smoke_player";
+		}
+		if(typeoverride[0])
+			typeEffect = typeoverride;
+		TE_SetupParticleEffect(typeEffect, PATTACH_ABSORIGIN_FOLLOW, target);
 		TE_WriteNum("m_bControlPoint1", target);	
 		TE_SendToAll();
 		if(Timer_Ingition_ReApply[target] != null)
@@ -11544,8 +11556,18 @@ void IgniteTargetEffect(int target, int ViewmodelSetting = 0, int viewmodelClien
 			delete Timer_Ingition_ReApply[target];
 			Timer_Ingition_ReApply[target] = null;
 		}		
+		float DurationReapply = 1.5;
+		switch(type)
+		{
+			case 0:
+				DurationReapply = 1.5;
+			case 1:
+				DurationReapply = 5.0;
+			case 2:
+				DurationReapply = 5.0;
+		}
 		DataPack pack;
-		Timer_Ingition_ReApply[target] = CreateDataTimer(type ? 1.5 : 5.0, IgniteTimerVisual_Reignite, pack);
+		Timer_Ingition_ReApply[target] = CreateDataTimer(DurationReapply, IgniteTimerVisual_Reignite, pack);
 		pack.WriteCell(target);
 		pack.WriteCell(EntIndexToEntRef(target));
 		pack.WriteCell(type);
@@ -11580,7 +11602,7 @@ public Action IgniteTimerVisual(Handle timer, DataPack pack)
 	}	
 	int InvisMode = pack.ReadCell();
 	int ownerclient = pack.ReadCell();
-	bool type = pack.ReadCell();
+	int type = pack.ReadCell();
 	for( int client = 1; client <= MaxClients; client++ ) 
 	{
 		if (IsValidClient(client))
@@ -11663,12 +11685,22 @@ public Action IgniteTimerVisual(Handle timer, DataPack pack)
 
 
 
-void IngiteTargetClientside(int target, int client, bool ingite, bool type)
+void IngiteTargetClientside(int target, int client, bool ingite, int type)
 {
+	char typeEffect[255];
+	switch(type)
+	{
+		case 0:
+			typeEffect = "halloween_burningplayer_flyingbits";
+		case 1:
+			typeEffect = "burningplayer_corpse";
+		case 2:
+			typeEffect = "utaunt_voidcrawlers_smoke_player";
+	}
 	if(ingite && !IsIn_HitDetectionCooldown(target,client, IgniteClientside))
 	{
 		Set_HitDetectionCooldown(target,client, FAR_FUTURE, IgniteClientside);
-		TE_SetupParticleEffect(type ? "halloween_burningplayer_flyingbits" : "burningplayer_corpse", PATTACH_ABSORIGIN_FOLLOW, target);
+		TE_SetupParticleEffect(typeEffect, PATTACH_ABSORIGIN_FOLLOW, target);
 		TE_WriteNum("m_bControlPoint1", target);	
 		TE_SendToClient(client);
 	}
@@ -11680,7 +11712,7 @@ void IngiteTargetClientside(int target, int client, bool ingite, bool type)
 		if(target > 0)
 			TE_WriteNum("entindex", target);
 		
-		TE_WriteNum("m_nHitBox", GetParticleEffectIndex(type ? "halloween_burningplayer_flyingbits" : "burningplayer_corpse"));
+		TE_WriteNum("m_nHitBox", GetParticleEffectIndex(typeEffect));
 		TE_WriteNum("m_iEffectName", GetEffectIndex("ParticleEffectStop"));
 		TE_SendToClient(client);	
 	}
