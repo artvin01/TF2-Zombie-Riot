@@ -302,7 +302,7 @@ public void IndexFather_NewPrescript(int client, int weapon, bool &result, int s
 }
 public void IndexFather_WeaponLoad(int client, int weapon)
 {
-	if(Waves_InSetup())
+	if(IndexFather_BlockPrescripts())
 	{
 		if(CurrentPrescript[client] != null)
 		{
@@ -481,7 +481,7 @@ static void KitHudShow(int client)
 	HudCooldown[client] = GetGameTime() + 0.4;
 	char WeaponHud[128];
 
-	if(Waves_InSetup())
+	if(IndexFather_BlockPrescripts())
 	{
 		PrescriptPunishPlayerIgnoring[client] = GetGameTime() + 60.0;
 		if(CurrentPrescript[client] != null)
@@ -491,7 +491,7 @@ static void KitHudShow(int client)
 	}
 	if(CurrentPrescript[client] == null)
 	{
-		if(Waves_InSetup() || PrescriptCooldown[client] > GetGameTime())
+		if(IndexFather_BlockPrescripts() || PrescriptCooldown[client] > GetGameTime())
 		{
 			Format(WeaponHud, sizeof(WeaponHud), "%s%T",WeaponHud, "Prescript None Exist", client);
 		}
@@ -532,7 +532,7 @@ static void KitHudShow(int client)
 }
 void IndexFather_GeneratePrescript(int client, bool ForceNew, int PrescriptForce = 0)
 {
-	if(Waves_InSetup())
+	if(IndexFather_BlockPrescripts())
 		return;
 	if(CurrentPrescript[client] != null)
 	{
@@ -1601,7 +1601,7 @@ float Func_Dodge_TakeDamage(int attacker, int victim, StatusEffect Apply_MasterS
 	}
 	if(DoDodge)
 	{
-		i_DodgesAvailable[victim]--;
+		i_DodgesAvailable[victim] -= DrainDashes;
 		IndexFather_AllyDodgedAttack(victim);
 		DoDodgeEffect(victim);
 		if(i_DodgesAvailable[victim] <= 0)
@@ -1614,7 +1614,7 @@ float Func_Dodge_TakeDamage(int attacker, int victim, StatusEffect Apply_MasterS
 	else
 	{
 		//fail....
-		i_DodgesAvailable[victim] -= 2;
+		i_DodgesAvailable[victim] -= DrainDashes;
 		DoDodgeEffect(victim);
 		if(i_DodgesAvailable[victim] <= 0)
 		{
@@ -2025,4 +2025,15 @@ void IndexFather_AllyDodgedAttack(int client)
 	}
 	if(ApplyChange)
 		IndexFather_SetScriptData(client, data, data2.Current);
+}
+
+
+bool IndexFather_BlockPrescripts()
+{
+	if(!Waves_Started())
+		return true;
+	if(Dungeon_Mode() || Construction_Mode() || Rogue_Mode())
+		return false;
+
+	return Waves_InSetup();
 }

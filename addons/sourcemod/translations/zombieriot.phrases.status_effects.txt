@@ -4089,7 +4089,7 @@
 	}
 	"Indulgence in Prescripts Desc"
 	{
-		"en"	"Increases damage by 10.0％ multiplicatively, Removed upon losing a prescript"
+		"en"	"Increases damage by 10.0％ multiplicatively, Removed upon losing a prescript\nGained when doing a prescript while already at max grace."
 	}
 	"Karmic Consequence"
 	{
