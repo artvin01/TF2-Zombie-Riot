@@ -19,7 +19,7 @@ MODULES = {
         "dependencies": [
             "static",
             "phrase",
-            #"wavesets"
+            "wavesets"
         ]
     },
     "music": {

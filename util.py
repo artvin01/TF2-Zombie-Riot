@@ -77,11 +77,12 @@ def musicmodal_to_html(modal: dict[str,str]) -> str:
     context["musictitle"] = apply_morecolors(context["musictitle"]).replace("|","") # remove pipes (only the case for red sun songs)
     context["musicartist"] = apply_morecolors(context["musicartist"])
     if "source" in context:
-        context["source"] = html_src(modal["source"])
+        context["SRC"] = html_src(modal["source"])
+        del context["source"]
     else:
         log("Modal does not have 'source' set!","WARNING")
         log(json.dumps(modal,indent=2),"FAIL")
-        context["source"] = "?"
+        context["SRC"] = "?"
     return fill_template(read(f"templates/music/music_modal{"_missing"*int(not file_exists)}.html"),context)
 
 def cfgtoint(val: str, default: int=0) -> int:
