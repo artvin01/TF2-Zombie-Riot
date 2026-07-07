@@ -5996,7 +5996,7 @@ stock void Store_RemoveNullWeapons(int client)
 	}
 }
 
-int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
+int Store_GiveItem(int client, int index, bool &use=false, bool &found=false, bool force = false)
 {
 	if(!StoreItems)
 	{
@@ -6018,9 +6018,14 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 	if(index > 0 && index < length)
 	{
 		StoreItems.GetArray(index, item);
-		if(item.Owned[client] > 0 && !item.ParentKit)	
+		if(force || (item.Owned[client] > 0 && !item.ParentKit))	
 		{
-			item.GetItemInfo(item.Owned[client]-1, info);
+			int ItemOwned = item.Owned[client]-1;
+			if(force)
+			{
+				ItemOwned = 0;
+			}
+			item.GetItemInfo(ItemOwned, info);
 			if(info.Classname[0])
 			{
 				int saveslot = TF2_GetClassnameSlot(info.Classname);
@@ -6766,6 +6771,27 @@ int Store_GiveSpecificItem(int client, const char[] name, bool UpdateSlots = tru
 			int entity = Store_GiveItem(client, i, item.Equipped[client]);
 			if(UpdateSlots)
 				CheckMultiSlots(client);
+			
+			return entity;
+		}
+	}
+	
+	ThrowError("Unknown item name %s", name);
+	return -1;
+}
+int Store_SpawnSpecificItem(int client, const char[] name)
+{
+	static Item item;
+	int length = StoreItems.Length;
+	for(int i; i<length; i++)
+	{
+		StoreItems.GetArray(i, item);
+		if(StrEqual(name, item.Name, false))
+		{
+			static ItemInfo info;
+			item.GetItemInfo(0, info);
+			
+			int entity = Store_GiveItem(client, i,_,_, true);
 			
 			return entity;
 		}
