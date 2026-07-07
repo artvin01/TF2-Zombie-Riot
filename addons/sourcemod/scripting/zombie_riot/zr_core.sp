@@ -2160,7 +2160,7 @@ void CheckLastMannStanding(int killed)
 		{
 			if(IndexExpi_LastmanSecret())
 			{
-				CPrintToChatAll("{blue}The Nursefather lets out an agitated 'tsk'{crimson}The Expi seems to be in heavy distress, need of comfort from the only remaining {blue}ally{crimson}.");
+				CPrintToChatAll("{blue}The Nursefather lets out an agitated 'tsk'{crimson}The ''Mercenary'' seems to be in heavy distress, need of comfort from the only remaining {blue}ally{crimson}.");
 			}
 		}
 

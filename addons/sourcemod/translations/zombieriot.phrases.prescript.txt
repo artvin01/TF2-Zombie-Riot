@@ -127,7 +127,7 @@
 	}
 	"Prescript Pat Expi"
 	{
-		"en"		"Pat an Expi or simular."
+		"en"		"Pat an ''Mercenary'', Expi or simular."
 	}
 	"Prescript Continue"
 	{
