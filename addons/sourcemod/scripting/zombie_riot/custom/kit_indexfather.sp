@@ -476,7 +476,7 @@ static Action Timer_Base(Handle timer, DataPack pack)
 		ApplyStatusEffect(client, client, "Grace Of Prescript Fancy", 1.0);
 	}
 
-	bool DoSwitch = false;
+	int DoSwitch = 0;
 	int weaponActive = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(f_FuriosoInUse[client] && f_FuriosoInUse[client] <= GetGameTime())
 	{
@@ -485,16 +485,26 @@ static Action Timer_Base(Handle timer, DataPack pack)
 	if(!LastMann)
 		f_FuriosoLastmanForce[client] = 0.0;
 	if(weaponActive == EntRefToEntIndex(i_PreviousWeapon[client]))
-		DoSwitch = true;
+		DoSwitch = 1;
 	if(!IsValidEntity(i_PreviousWeapon[client]))
-		DoSwitch = true;
-	if(weapon != weaponActive && DoSwitch)
+		DoSwitch = 2;
+	if((weapon != weaponActive && DoSwitch == 1) || DoSwitch == 2)
 	{
-		if(f_HoldBasicVialTime[client] && f_HoldBasicVialTime[client] < GetGameTime())
+		if(DoSwitch == 2 || f_HoldBasicVialTime[client] && f_HoldBasicVialTime[client] < GetGameTime())
 		{
-			IndexFather_GrantRandomWeapon(client, weapon);
-			f_HoldBasicVialTime[client] = 0.0;
-			f_SwitchWeaponsRandomly[client] = GetGameTime() + 10.0;
+			if(DoSwitch == 2)
+			{
+				if(i_CurrentWeaponSet[client] == -1)
+					IndexFather_GrantVial(client);
+				else
+					IndexFather_GrantRandomWeapon(client, weapon, i_CurrentWeaponSet[client]);
+			}
+			else
+			{
+				f_HoldBasicVialTime[client] = 0.0;
+				f_SwitchWeaponsRandomly[client] = GetGameTime() + 10.0;
+				IndexFather_GrantRandomWeapon(client, weapon);
+			}
 		}
 		if(f_SwitchWeaponsRandomly[client] < GetGameTime())
 		{
@@ -2205,7 +2215,7 @@ bool DoSpecialPrescript()
 	}
 	if(WasAExpi)
 	{
-		if(GetRandomInt(1,50))
+		if(GetRandomInt(1,50) == 1)
 			return true;
 	}
 	return false;

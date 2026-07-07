@@ -4113,7 +4113,7 @@
 	}
 	"Comfort in Hard Times"
 	{
-		"en"	"Indulgence in Prescripts"
+		"en"	"Comfort in Hard Times"
 	}
 	"Comfort in Hard Times Desc"
 	{
