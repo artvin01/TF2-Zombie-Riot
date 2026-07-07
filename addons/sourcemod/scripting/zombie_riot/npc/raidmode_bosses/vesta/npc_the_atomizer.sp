@@ -1945,9 +1945,9 @@ static int Vesta_Melee_or_Ranged(Atomizer npc)
 		return 2;
 }
 
-public bool EntityLookPoint(int entity, float flAng[3], float flPos[3], float pos[3])
+bool EntityLookPoint(int entity, float flAng[3], float flPos[3], float pos[3], int mask = MASK_SHOT)
 {
-	Handle trace = TR_TraceRayFilterEx(flPos, flAng, MASK_SHOT, RayType_Infinite, ONLYBSP, entity);
+	Handle trace = TR_TraceRayFilterEx(flPos, flAng, mask, RayType_Infinite, ONLYBSP, entity);
 	
 	if(TR_DidHit(trace))
 	{

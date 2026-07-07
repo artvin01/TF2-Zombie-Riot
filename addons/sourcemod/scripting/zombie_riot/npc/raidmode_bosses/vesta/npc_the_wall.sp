@@ -881,7 +881,7 @@ static int Support_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], float
 					else
 					{
 						float vAngles[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAngles);
-						EntityLookPoint(npc.index, vAngles, VecSelfNpc, vecTarget);
+						EntityLookPoint(npc.index, vAngles, VecSelfNpc, vecTarget, MASK_PLAYERSOLID);
 						if(GetVectorDistance(VecSelfNpc, vecTarget, true)<15625.0)
 						{
 							npc.RemoveGesture("ACT_MP_PASSTIME_THROW_MIDDLE");
@@ -1323,7 +1323,7 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 				else
 				{
 					float vAngles[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAngles);
-					EntityLookPoint(npc.index, vAngles, VecSelfNpc, vecTarget);
+					EntityLookPoint(npc.index, vAngles, VecSelfNpc, vecTarget, MASK_PLAYERSOLID);
 					if(GetVectorDistance(VecSelfNpc, vecTarget, true)<15625.0)
 					{
 						npc.RemoveGesture("ACT_MP_PASSTIME_THROW_MIDDLE");
