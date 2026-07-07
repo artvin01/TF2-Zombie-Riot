@@ -4765,6 +4765,10 @@
 		"en" 		"You cant dash, you must hit someone with your weapon at least once!"
 		"ko" 		"현재 대쉬할 수 없습니다. 당신의 무기로 적을 최소 1회 이상 타격해야 합니다!"
 	}
+	"Father Near Enemy Dodge"
+	{
+		"en" 		"You have to be near enemies to dodge!"
+	}
 	"Potion of Vigor"
 	{
 		"en"	"Potion of Vigor"

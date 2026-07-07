@@ -30,6 +30,7 @@ static float OnBuyClear[MAXPLAYERS];
 static bool WasARaidboss[MAXPLAYERS];
 static int DashesBeforeHitMust[MAXPLAYERS];
 static bool Precached;
+static bool AllowedToDodge[MAXPLAYERS];
 #define IDX_FURI_WEAPON_1	 	(1 << 1)
 #define IDX_FURI_WEAPON_2		(1 << 2)
 #define IDX_FURI_WEAPON_3	 	(1 << 3)
@@ -360,6 +361,12 @@ static Action Timer_Base(Handle timer, DataPack pack)
 		Handle_Timer[clientIDX] = null;
 		return Plugin_Stop;
 	}
+	
+	float ClientPos[3];
+	WorldSpaceCenter(client, ClientPos);
+	//using this as its less expensive
+	AllowedToDodge[filterentity] = false;
+	TR_EnumerateEntitiesSphere(ClientPos, 400.0, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_IndexFather, client);
 	if(OnBuyClear[client])
 	{
 		OnBuyClear[client] = 0.0;
@@ -457,6 +464,16 @@ static Action Timer_Base(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
+public bool TraceEntityEnumerator_IndexFather(int entity, int filterentity)
+{
+	if(IsValidEnemy(filterentity, entity, true, true)) //Must detect camo.
+	{
+		AllowedToDodge[filterentity] = true;
+		return false; //stop.
+	}
+	//always keep going!
+	return true;
+}
 static void KitHudShow(int client)
 {
 	if(HudCooldown[client] > GetGameTime())
@@ -1204,7 +1221,8 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 		}
 		ResetFurioso = true;
 		f_DodgeCooldown[attacker] = 0.0;
-		i_DodgesAvailable[attacker] = IndexFather_DodgeMaxReturn(attacker);
+		if(i_DodgesAvailable[attacker] <= (IndexFather_DodgeMaxReturn(attacker) / 2))
+			i_DodgesAvailable[attacker] = IndexFather_DodgeMaxReturn(attacker) / 2;
 		if(f_FuriosoLastmanForce[attacker] > GetGameTime())
 			UseFurioso(attacker);
 			
@@ -1304,7 +1322,7 @@ void IndexFather_PrescriptEnd(int client, bool Win)
 	if(Win)
 	{
 		float NewScript = GetRandomFloat(120.0, 180.0);	
-		if(GraceOfPrescript[client] >= 9)
+		if(GraceOfPrescript[client] >= MaxPrescriptGrace(client))
 			ApplyStatusEffect(client, client, "Indulgence in Prescripts", NewScript);
 		EmitSoundToClient(client, g_SuccessPrescript[GetRandomInt(0, sizeof(g_SuccessPrescript) - 1)], client, SNDCHAN_STATIC, 80, _, 0.8, 110);
 		PrescriptCooldown[client] = NewScript + GetGameTime();
@@ -1568,6 +1586,15 @@ float Func_Dodge_TakeDamage(int attacker, int victim, StatusEffect Apply_MasterS
 	int DmgCapLvl = WeaponLevel[victim];
 	float RMC_damage_cap = 50.0 * float((DmgCapLvl + 1));
 
+	int DrainDashes = 1;
+	if(b_thisNpcIsARaid[attacker])
+	{
+		DrainDashes = 5;
+	}
+	else if(b_thisNpcIsABoss[attacker])
+	{
+		DrainDashes = 2;
+	}
 	if(damage > RMC_damage_cap)
 	{
 		DoDodge = false;
@@ -1693,6 +1720,14 @@ public void IndexFather_DodgeLogic(int client)
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
+		return;
+	}
+	if(!AllowedToDodge[filterentity])
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Father Near Enemy Dodge");
 		return;
 	}
 	if(DashesBeforeHitMust[client] >= 10)
