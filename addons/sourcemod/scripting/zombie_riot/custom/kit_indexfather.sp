@@ -1722,7 +1722,7 @@ public void IndexFather_DodgeLogic(int client)
 		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
 		return;
 	}
-	if(!AllowedToDodge[filterentity])
+	if(!AllowedToDodge[client])
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
