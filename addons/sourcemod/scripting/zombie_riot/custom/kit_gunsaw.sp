@@ -3,7 +3,7 @@
 
 static const float MaxMulti = 3.0;	// Max health multi after cap (3.0 is x3 of HealthCap)
 static const float SlowStack = 0.1;	// Decrease speed by this much every max health over cap (0.25 gives -25% speed at x2 HP)
-static const float PropDamage = 1.5;	// Prop damage (Metal Cost * Building Damage * PropDamage)
+static const float PropDamage = 2.5;	// Prop damage (Metal Cost * Building Damage * PropDamage)
 
 // Health cap before speed nerf
 static const int HealthCap[] =
@@ -493,7 +493,9 @@ static void ApplyGunsawStats(int ref)
 				}
 				
 				Attributes_Set(weapon, 26, health);
-				Attributes_Set(weapon, 107, 1.0 - (fat * SlowStack));
+				if(!LastMann)
+					Attributes_Set(weapon, 107, 1.0 - (fat * SlowStack));
+				
 				Attributes_Set(weapon, 205, ranged);
 				Attributes_Set(weapon, 206, melee);
 				Attributes_Set(weapon, 252, 1.0 / light);
@@ -1335,7 +1337,6 @@ public void Weapon_GunsawMelee_M1(int client, int weapon, bool &crit, int slot)
 		SDKUnhook(building, SDKHook_Think, BuildingPickUp);
 		ResetPlayer_BuildingBeingCarried(client);
 		Building_BuildingBeingCarried[building] = 0;
-		b_ThisEntityIgnored[building] = false;
 
 		i_TraceToInstead[prop] = building;
 
