@@ -1234,7 +1234,7 @@ public void Weapon_GunsawShotgun_M1(int client, int weapon, bool crit, int slot)
 		GetClientEyePosition(client, vec);
 		GetClientEyeAngles(client, vel);
 		GetAngleVectors(vel, vel, NULL_VECTOR, NULL_VECTOR);
-		float knockback = 30.0 * ratio * KnockbackRes(client);
+		float knockback = 35.0 * ratio * KnockbackRes(client);
 		float stun = knockback / 100.0;
 
 		if(knockback > 600.0)
@@ -1337,6 +1337,7 @@ public void Weapon_GunsawMelee_M1(int client, int weapon, bool &crit, int slot)
 		SDKUnhook(building, SDKHook_Think, BuildingPickUp);
 		ResetPlayer_BuildingBeingCarried(client);
 		Building_BuildingBeingCarried[building] = 0;
+		b_ThisEntityIgnored[building] = false;
 
 		i_TraceToInstead[prop] = building;
 
