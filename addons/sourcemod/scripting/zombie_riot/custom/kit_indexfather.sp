@@ -1561,11 +1561,11 @@ void IndexFather_GrantVial(int client)
 	{
 		TF2_RemoveItem(client, EntRefToEntIndex(i_PreviousWeapon[client]));
 	}
-	Store_GiveSpecificItem(client, "Golden Vial With a Chain");
-	for(int i; i < sizeof(g_AllWeaponsExist); i++)
-	{
-		Store_RemoveSpecificItem(client, g_AllWeaponsExist[i]);
-	}
+	Store_SwapToItem(client, Store_SpawnSpecificItem(client, "Golden Vial With a Chain"));
+//	for(int i; i < sizeof(g_AllWeaponsExist); i++)
+//	{
+//		Store_RemoveSpecificItem(client, g_AllWeaponsExist[i]);
+//	}
 	i_CurrentWeaponSet[client] = -1;
 	EmitSoundToAll(g_GenerateRandomWeapon[GetRandomInt(0, sizeof(g_GenerateRandomWeapon) - 1)], client, SNDCHAN_STATIC, 70, _, 0.5, 100);
 }
@@ -1576,15 +1576,15 @@ void IndexFather_DeleteAll(int client)
 	{
 		TF2_RemoveItem(client, EntRefToEntIndex(i_PreviousWeapon[client]));
 	}
-	Store_RemoveSpecificItem(client, "Golden Vial With a Chain", true);
-	for(int i; i < sizeof(g_AllWeaponsExist); i++)
-	{
-		Store_RemoveSpecificItem(client, g_AllWeaponsExist[i]);
-	}
+//	Store_RemoveSpecificItem(client, "Golden Vial With a Chain", true);
+//	for(int i; i < sizeof(g_AllWeaponsExist); i++)
+//	{
+//		Store_RemoveSpecificItem(client, g_AllWeaponsExist[i]);
+//	}
 }
 void IndexFather_GrantRandomWeapon(int client, int originalweapon, int ForceWeapon = -1)
 {
-	Store_RemoveSpecificItem(client, "Golden Vial With a Chain", true);
+//	Store_RemoveSpecificItem(client, "Golden Vial With a Chain", true);
 	if(IsValidEntity(i_PreviousWeapon[client]))
 	{
 		TF2_RemoveItem(client, EntRefToEntIndex(i_PreviousWeapon[client]));
@@ -1599,7 +1599,7 @@ void IndexFather_GrantRandomWeapon(int client, int originalweapon, int ForceWeap
 	{
 		i_CurrentWeaponSet[client] = ForceWeapon;
 	}
-	int weapon_index = Store_GiveSpecificItem(client, g_AllWeaponsExist[i_CurrentWeaponSet[client]]);
+	int weapon_index = Store_SpawnSpecificItem(client, g_AllWeaponsExist[i_CurrentWeaponSet[client]]);
 
 	if(weapon_index == -1)
 		return;
@@ -1626,6 +1626,7 @@ void IndexFather_GrantRandomWeapon(int client, int originalweapon, int ForceWeap
 	Attributes_SetAdd(weapon_index, 180, Attributes_Get(originalweapon, 180, 1.0));
 	EmitSoundToAll(g_AquireNewWeapon[GetRandomInt(0, sizeof(g_AquireNewWeapon) - 1)], client, SNDCHAN_STATIC, 70, _, 0.5, 100);
 	i_PreviousWeapon[client] = EntIndexToEntRef(weapon_index);
+	Store_SwapToItem(client, weapon_index);
 }
 void Func_DodgesHud(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
 {
