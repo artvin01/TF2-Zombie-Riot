@@ -104,7 +104,7 @@ static char g_FuriosoFinalHit[][] = {
 	"doors/heavy_metal_stop1.wav",
 };
 static char g_SizzlingWoundSound[][] = {
-	"weapons/flame_thrower_fire_hit.wav",
+	"misc/flame_engulf.wav",
 };
 
 enum PrescriptAddition
@@ -207,6 +207,8 @@ public void IndexFather_PluginStart()
 {
 	LoadTranslations("zombieriot.phrases.prescript"); 
 	RegAdminCmd("sm_prescript_debug", Command_GiveForcePrescript, ADMFLAG_ROOT, "Enable PVP");
+	RegAdminCmd("sm_prescript_furioso", Command_GiveForceFurioso, ADMFLAG_ROOT, "Enable PVP");
+	RegAdminCmd("sm_prescript_burntest", Command_GiveBurntest, ADMFLAG_ROOT, "Enable PVP");
 }
 
 void PrecachePrescriptMusic()
@@ -216,6 +218,69 @@ void PrecachePrescriptMusic()
 		PrecacheSoundCustom("#zombiesurvival/prescript_lastman.mp3",_,1);
 		Precached = true;
 	}
+}
+
+public Action Command_GiveBurntest(int client, int args)
+{
+	//What are you.
+	if(args < 2)
+    {
+        ReplyToCommand(client, "[SM] Usage: sm_prescript_burntest <Target> <charof burn>");
+        return Plugin_Handled;
+    }
+    
+	static char targetName[MAX_TARGET_LENGTH];
+    
+	static char pattern[PLATFORM_MAX_PATH];
+	GetCmdArg(1, pattern, sizeof(pattern));
+	
+	static char nameburn[255];
+	GetCmdArg(2, nameburn, sizeof(nameburn));
+
+	int targets[MAXPLAYERS], matches;
+	bool targetNounIsMultiLanguage;
+	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
+	{
+		ReplyToTargetError(client, matches);
+		return Plugin_Handled;
+	}
+	
+	for(int target; target<matches; target++)
+	{
+		IgniteTargetEffect(targets[target], _,_,_,nameburn);
+	}
+	
+	return Plugin_Handled;
+}
+public Action Command_GiveForceFurioso(int client, int args)
+{
+	//What are you.
+	if(args < 1)
+    {
+        ReplyToCommand(client, "[SM] Usage: sm_prescript_furioso <Target>");
+        return Plugin_Handled;
+    }
+    
+	static char targetName[MAX_TARGET_LENGTH];
+    
+	static char pattern[PLATFORM_MAX_PATH];
+	GetCmdArg(1, pattern, sizeof(pattern));
+	
+
+	int targets[MAXPLAYERS], matches;
+	bool targetNounIsMultiLanguage;
+	if((matches=ProcessTargetString(pattern, client, targets, sizeof(targets), 0, targetName, sizeof(targetName), targetNounIsMultiLanguage)) < 1)
+	{
+		ReplyToTargetError(client, matches);
+		return Plugin_Handled;
+	}
+	
+	for(int target; target<matches; target++)
+	{
+		UseFurioso(targets[target]);
+	}
+	
+	return Plugin_Handled;
 }
 public Action Command_GiveForcePrescript(int client, int args)
 {
@@ -362,6 +427,8 @@ static Action Timer_Base(Handle timer, DataPack pack)
 		return Plugin_Stop;
 	}
 	
+	if(f_FuriosoInUse[client] > GetGameTime())
+		ApplyStatusEffect(client, client, "Furioso Ability", 1.0);	
 	float ClientPos[3];
 	WorldSpaceCenter(client, ClientPos);
 	//using this as its less expensive
@@ -1191,8 +1258,6 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 	bool ResetFurioso = false;
 	if(f_FuriosoInUse[attacker] > GetGameTime())
 	{
-		EmitSoundToAll(g_FuriosoSlashIndicator[GetRandomInt(0, sizeof(g_FuriosoSlashIndicator) - 1)], victim, SNDCHAN_STATIC, 80, _, 0.8, 100);
-		EmitSoundToClient(attacker, g_FuriosoSlashIndicator[GetRandomInt(0, sizeof(g_FuriosoSlashIndicator) - 1)], victim, SNDCHAN_STATIC, 80, _, 0.8, 100);
 		i_FuriosoHits[attacker]++;
 		f_SwitchWeaponsRandomly[attacker] = GetGameTime() + 0.25;
 		f_FuriosoInUse[attacker] = GetGameTime() + 5.0;
@@ -1217,7 +1282,13 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 			GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", partnerPos);
 			CreateEarthquake(partnerPos, 0.5, 350.0, 16.0, 255.0);
 			EmitSoundToAll(g_FuriosoFinalHit[GetRandomInt(0, sizeof(g_FuriosoFinalHit) - 1)], victim, SNDCHAN_STATIC, 90, _, 1.0, 100);
+			EmitSoundToAll(g_FuriosoFinalHit[GetRandomInt(0, sizeof(g_FuriosoFinalHit) - 1)], victim, SNDCHAN_STATIC, 90, _, 1.0, 100);
 			EmitSoundToClient(attacker, g_FuriosoFinalHit[GetRandomInt(0, sizeof(g_FuriosoFinalHit) - 1)], victim, SNDCHAN_STATIC, 90, _, 1.0, 100);
+		}
+		else
+		{
+			EmitSoundToAll(g_FuriosoSlashIndicator[GetRandomInt(0, sizeof(g_FuriosoSlashIndicator) - 1)], victim, SNDCHAN_STATIC, 80, _, 1.0, 100 + (i_FuriosoHits[attacker] * 5));
+			EmitSoundToClient(attacker, g_FuriosoSlashIndicator[GetRandomInt(0, sizeof(g_FuriosoSlashIndicator) - 1)], victim, SNDCHAN_STATIC, 80, _, 1.0, 100 + (i_FuriosoHits[attacker] * 5));
 		}
 		ResetFurioso = true;
 		f_DodgeCooldown[attacker] = 0.0;
@@ -1546,7 +1617,8 @@ void IndexFather_GrantRandomWeapon(int client, int originalweapon, int ForceWeap
 	EntityCustomTraceMelee[weapon_index] 	=  EntityCustomTraceMelee[originalweapon];	
 	EntityOnBuildObject[weapon_index] 		=  EntityOnBuildObject[originalweapon];	
 	i_Hex_WeaponUsesTheseAbilities[weapon_index] |= ABILITY_M2;
-	i_Hex_WeaponUsesTheseAbilities[weapon_index] |= ABILITY_R;
+	if(WeaponLevel[client] >= 3)
+		i_Hex_WeaponUsesTheseAbilities[weapon_index] |= ABILITY_R;
 	Attributes_SetMulti(weapon_index, 2, Attributes_Get(originalweapon, 1, 1.0));
 	Attributes_SetMulti(weapon_index, 6, Attributes_Get(originalweapon, 5, 1.0));
 	Attributes_SetMulti(weapon_index, 205, Attributes_Get(originalweapon, 205, 1.0));
@@ -1584,7 +1656,8 @@ float Func_Dodge_TakeDamage(int attacker, int victim, StatusEffect Apply_MasterS
 		return 1.0;
 	}
 	int DmgCapLvl = WeaponLevel[victim];
-	float RMC_damage_cap = 50.0 * float((DmgCapLvl + 1));
+	float RMC_damage_cap = 50.0 + float(DmgCapLvl) * 5.0;
+
 
 	int DrainDashes = 1;
 	if(b_thisNpcIsARaid[attacker])
@@ -1604,6 +1677,8 @@ float Func_Dodge_TakeDamage(int attacker, int victim, StatusEffect Apply_MasterS
 		i_DodgesAvailable[victim] -= DrainDashes;
 		IndexFather_AllyDodgedAttack(victim);
 		DoDodgeEffect(victim);
+		if(WeaponLevel[victim] >= 2)
+			StatusEffects_PoiseAddStuff(victim, 1, 2.0);
 		if(i_DodgesAvailable[victim] <= 0)
 		{
 			i_DodgesAvailable[victim] = 0;
@@ -1616,6 +1691,8 @@ float Func_Dodge_TakeDamage(int attacker, int victim, StatusEffect Apply_MasterS
 		//fail....
 		i_DodgesAvailable[victim] -= DrainDashes;
 		DoDodgeEffect(victim);
+		if(WeaponLevel[victim] >= 2)
+			StatusEffects_PoiseAddStuff(victim, 1, 2.0);
 		if(i_DodgesAvailable[victim] <= 0)
 		{
 			i_DodgesAvailable[victim] = 0;
@@ -1884,6 +1961,8 @@ void ApplySizzlingWound(int client)
 	if(HasSpecificBuff(client, "Sizzling Wound"))
 		return;
 	ApplyStatusEffect(client, client, "Sizzling Wound", 60.0 * 3.0);
+	EmitSoundToAll(g_SizzlingWoundSound[GetRandomInt(0, sizeof(g_SizzlingWoundSound) - 1)], client, SNDCHAN_STATIC, 80, _, 1.0, 100);
+	EmitSoundToAll(g_SizzlingWoundSound[GetRandomInt(0, sizeof(g_SizzlingWoundSound) - 1)], client, SNDCHAN_STATIC, 80, _, 1.0, 100);
 	EmitSoundToAll(g_SizzlingWoundSound[GetRandomInt(0, sizeof(g_SizzlingWoundSound) - 1)], client, SNDCHAN_STATIC, 80, _, 1.0, 100);
 }
 

@@ -89,8 +89,7 @@ static const char Categories[][] =
 	"Negative",
 	"Prefixes",
 };
-#define MAXBUFFSEXPLAIN 500
-//thres never gonna be more then 500 lol
+#define MAXBUFFSEXPLAIN 750
 bool DisplayBuffHintToClient[MAXPLAYERS][MAXBUFFSEXPLAIN];
 float DisplayChatBuffCD[MAXPLAYERS];
 
@@ -11809,7 +11808,7 @@ void StatusEffects_IndexNurseFather()
 	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Furioso Charges");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ℱ");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	data.DamageDealMulti			= 0.0;
 	data.Positive 					= true;
@@ -11829,7 +11828,9 @@ void StatusEffects_IndexNurseFather()
 	data.ElementalLogic				= true;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0;
-	data.HudDisplay_Func 			= Func_FuriosoHud;
+	data.OnBuffStarted				= FuriosoAbilityStart;
+	data.OnBuffStoreRefresh			= FuriosoAbilityStart;
+	data.OnBuffEndOrDeleted			= FuriosoAbilityEnd;
 	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Karmic Consequence");
@@ -11987,7 +11988,7 @@ static void GraceStart(int victim, StatusEffect Apply_MasterStatusEffect, E_Stat
 
 	float flPos[3];
 	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", flPos);
-	int ParticleEffect = ParticleEffectAt_Parent(flPos, "utaunt_poweraura_blue_base", victim, "", {0.0,0.0,0.0});
+	int ParticleEffect = ParticleEffectAt_Parent(flPos, "utaunt_roses_blue_003", victim, "", {0.0,0.0,0.0});
 	if(victim <= MaxClients)
 		AddEntityToThirdPersonTransitMode(victim, ParticleEffect);
 	
@@ -12001,6 +12002,7 @@ static void GraceEnd(int victim, StatusEffect Apply_MasterStatusEffect, E_Status
 		return;
 	RemoveEntity(Apply_StatusEffect.WearableUse);
 }
+
 
 void StatusEffects_Gunsaw()
 {
@@ -12021,4 +12023,13 @@ static float ShrapnelDamageTaken(int attacker, int victim, StatusEffect Apply_Ma
 		StartBleedingTimer(victim, attacker, damage * 0.15, 6, -1, damagetype);
 
 	return 1.0;
+}
+static void FuriosoAbilityStart(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	IgniteTargetEffect(victim, FIRSTPERSON, victim, 2);
+}
+static void FuriosoAbilityEnd(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	ExtinguishTarget(victim);
+
 }

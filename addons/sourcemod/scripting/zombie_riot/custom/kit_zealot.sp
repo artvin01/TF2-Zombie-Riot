@@ -654,9 +654,9 @@ public void Client_ZealotThink(int client)
 
 	MaxDodgeCount[client]--;
 
-	//Punishment for dodging forwards.
-	if((buttons & IN_FORWARD))
-		MaxDodgeCount[client]--;
+//	//Punishment for dodging forwards.
+//	if((buttons & IN_FORWARD))
+//		MaxDodgeCount[client]--;
 	static float anglesB[3];
 	GetClientEyeAngles(client, anglesB);
 	anglesB[1] += AngleDeviate;
