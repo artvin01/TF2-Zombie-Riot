@@ -5719,8 +5719,7 @@
 	}
 	"The Index Nursefather Desc 2"
 	{
-		"en"    "-+1 Grace cap and stat increases.\n-All weapon hits now give poise.\n-Poise gives a higher chance to crit.(31％ chance at max poise)"
-		"ko"	"-가호 최대치 +1 및 능력치 증가\n-적중 시 호흡 획득이 모든 무기에 적용\n-호흡은 치명타 확률을 증가시킴(최대 누적 시 31％)"
+		"en"    "-+1 Grace cap and stat increases.\n-All weapon hits now give poise.\n-Dodges gives poise\n-Poise gives a higher chance to crit.(31％ chance at max poise)"
 	}
 	"The Index Nursefather Desc 3"
 	{
@@ -5751,5 +5750,13 @@
 	{
 		"en"    "-Stat increases"
 		"ko"	"-능력치 증가"
+	}
+	"Index Father Dodge"
+	{
+		"en" "Index Father Dodge"
+	}
+	"Index Father Dodge Desc"
+	{
+		"en" "When dashing, you dodge attacks for the next 0.5 seconds\nDodge attacks fully upto a damage treshhold (upgrades)\nIf damage is too high, you take 0.75x dmg instead."
 	}
 }
