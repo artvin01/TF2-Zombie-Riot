@@ -86,6 +86,8 @@ static int GrabPlayer[MAXPLAYERS];
 static bool ParticleSpawned[MAXENTITIES];
 static bool Frozen_Player[MAXPLAYERS];
 
+static int NPCID;
+
 void Huscarls_OnMapStart_NPC()
 {
 	NPCData data;
@@ -97,7 +99,12 @@ void Huscarls_OnMapStart_NPC()
 	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	NPC_Add(data);
+	NPCID = NPC_Add(data);
+}
+
+int VestaHuscarls_NPCID()
+{
+	return NPCID;
 }
 
 static void ClotPrecache()
@@ -398,33 +405,33 @@ methodmap Huscarls < CClotBody
 					{
 						switch(GetRandomInt(0, 2))
 						{
-							case 0: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-1", false, true);
-							case 1: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-2", false, true);
-							case 2: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-9", false, true);
+							case 0: VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Support-1");
+							case 1: VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Support-2");
+							case 2: VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Support-9");
 						}
 					}
 					case 2:
 					{
 						switch(GetRandomInt(0, 1))
 						{
-							case 0: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-3", false, true);
-							case 1: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-4", false, true);
+							case 0: VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Support-3");
+							case 1: VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Support-4");
 						}
 					}
 					case 3:
 					{
 						switch(GetRandomInt(0, 1))
 						{
-							case 0: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-5", false, true);
-							case 1: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-6", false, true);
+							case 0: VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Support-5");
+							case 1: VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Support-6");
 						}
 					}
 					case 4:
 					{
 						switch(GetRandomInt(0, 1))
 						{
-							case 0: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-7", false, true);
-							case 1: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-8", false, true);
+							case 0: VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Support-7");
+							case 1: VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Support-8");
 						}
 					}
 				}
@@ -505,7 +512,7 @@ methodmap Huscarls < CClotBody
 				Music_SetRaidMusic(music);
 			}
 
-			NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_Intro", false, true);
+			VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Intro");
 			
 			char buffers[3][64];
 			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
@@ -587,6 +594,11 @@ methodmap Huscarls < CClotBody
 		
 		return npc;
 	}
+}
+
+void VestaHuscarls_NPCTalkMessage(int entity, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(entity, "lightblue", message, true);
 }
 
 static void Clone_ClotThink(int iNPC)
@@ -1053,9 +1065,9 @@ static void Huscarls_ClotThink(int iNPC)
 			npc.m_fbGunout = true;
 			switch(GetRandomInt(0, 2))
 			{
-				case 0:NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_Lastman-1", false, false);
-				case 1:NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_Lastman-2", false, false);
-				case 2:NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_Lastman-3", false, false);
+				case 0:VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Lastman-1");
+				case 1:VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Lastman-2");
+				case 2:VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Lastman-3");
 			}
 		}
 	}
@@ -1069,7 +1081,7 @@ static void Huscarls_ClotThink(int iNPC)
 		BlockLoseSay = true;
 		AlreadySaidWin = true;
 		
-		NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_GameEnd", false, false);
+		VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_GameEnd");
 		return;
 	}
 	if(RaidModeTime < GetGameTime())
@@ -1088,8 +1100,8 @@ static void Huscarls_ClotThink(int iNPC)
 			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", MaxHealth);
 			switch(GetRandomInt(0, 1))
 			{
-				case 0:NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_TimeUp-1", false, false);
-				case 1:NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_TimeUp-2", false, false);
+				case 0:VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_TimeUp-1");
+				case 1:VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_TimeUp-2");
 				//case 2:CPrintToChatAll("{lightblue}Huscarls{default}: {blue}Harrison{default}? The situation is over. Let's go back.");
 			}
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
@@ -1261,7 +1273,7 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 			RemoveEntity(npc.m_iWearable8);
 		if(fl_ruina_battery[npc.index])
 		{
-			NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_Ability1-2", false, false);
+			VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Ability1-2");
 		}
 		else
 			RemoveSpecificBuff(npc.index, "Battery_TM Charge");
@@ -1436,7 +1448,7 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 		{
 			case 0:
 			{
-				NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_Ability1-1", false, false);
+				VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Ability1-1");
 				
 				npc.AddActivityViaSequence("layer_taunt_unleashed_rage_heavy");
 				npc.SetCycle(0.5);
@@ -1788,17 +1800,17 @@ static Action Huscarls_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		{
 			case 0:
 			{
-				NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_BlastArmor", false, false);
+				VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_BlastArmor");
 				BlastArmor[npc.index]=true;
 			}
 			case 1:
 			{
-				NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_MagicArmor", false, false);
+				VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_MagicArmor");
 				MagicArmor[npc.index]=true;
 			}
 			default:
 			{
-				NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_BulletArmor", false, false);
+				VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_BulletArmor");
 				BulletArmor[npc.index]=true;
 			}
 		}
@@ -1880,7 +1892,13 @@ static Action Huscarls_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		if(!npc.m_bLostHalfHealth)
 		{
 			EmitSoundToAll("ambient/alarms/doomsday_lift_alarm.wav");
-			NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-1", false);
+			
+			int support = Vesta_GetSupport(VESTA_HARRISON);
+			if (support)
+				VestaHarrison_NPCTalkMessage(support, "Harrison_Talk_Support-1");
+			else
+				NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-1", false);
+			
 			npc.m_bLostHalfHealth = true;
 		}
 		if(!npc.Anger)
@@ -1896,7 +1914,13 @@ static Action Huscarls_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		if(!npc.m_bLostHalfHealth)
 		{
 			EmitSoundToAll("ambient/alarms/doomsday_lift_alarm.wav");
-			NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-1", false);
+			
+			int support = Vesta_GetSupport(VESTA_HARRISON);
+			if (support)
+				VestaHarrison_NPCTalkMessage(support, "Harrison_Talk_Support-1");
+			else
+				NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-1", false);
+			
 			npc.m_bLostHalfHealth = true;
 		}
 	}
@@ -1988,9 +2012,9 @@ static void Huscarls_NPCDeath(int entity)
 		return;
 	switch(GetRandomInt(0,2))
 	{
-		case 0:NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_EscapePlan-1", false, false);
-		case 1:NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_EscapePlan-2", false, false);
-		case 2:NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_EscapePlan-3", false, false);
+		case 0:VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_EscapePlan-1");
+		case 1:VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_EscapePlan-2");
+		case 2:VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_EscapePlan-3");
 	}
 }
 
@@ -2417,7 +2441,7 @@ static bool TinCan_Raid(Huscarls npc, float gameTime)
 		{
 			case 0:
 			{
-				NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_Pre_2_Phase", false, false);
+				VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Pre_2_Phase");
 				npc.AddActivityViaSequence("tauntrussian_rubdown");
 				npc.m_flAttackHappens = 0.0;
 				npc.SetCycle(0.5);
@@ -2549,8 +2573,8 @@ static bool TinCan_Raid(Huscarls npc, float gameTime)
 				npc.m_flDoingAnimation = gameTime + 1.0;
 				switch(GetRandomInt(0, 1))
 				{
-					case 0:NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_2_Phase-1", false, false);
-					case 1:NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_2_Phase-2", false, false);
+					case 0:VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_2_Phase-1");
+					case 1:VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_2_Phase-2");
 				}
 				npc.RemoveGesture("ACT_MP_PASSTIME_THROW_MIDDLE");
 				npc.AddActivityViaSequence("layer_taunt_soviet_showoff");
