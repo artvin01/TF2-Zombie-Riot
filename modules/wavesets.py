@@ -86,12 +86,23 @@ def unique_enemy_delays(w: str) -> str:
     # Make each wave delay unique as not to lose out on info (for example if 2 enemies have same wave delay)
     # https://stackoverflow.com/questions/41941116/replace-each-occurrence-of-sub-strings-in-the-string-with-randomly-generated-val
     space = "		"
+
+    # .1f
     for i in range(0,301):
         delay_str = f'{i/10:.1f}'
         delay_count = w.count(delay_str)
         w = w.replace("{","{{").replace("}","}}") # double curly brackets get ignored by .format
         w = w.replace(f'{space}"{delay_str}"', space+'"{}"')
         w = w.format(*(" "*i + delay_str for i in range(delay_count)))
+    
+    # .2f
+    for i in range(0,3001):
+        delay_str = f'{i/100:.2f}'
+        delay_count = w.count(delay_str)
+        w = w.replace("{","{{").replace("}","}}") # double curly brackets get ignored by .format
+        w = w.replace(f'{space}"{delay_str}"', space+'"{}"')
+        w = w.format(*(" "*i + delay_str for i in range(delay_count)))
+
     return w
 
 def get_npc(plugin: str) -> dict[str, str]:
