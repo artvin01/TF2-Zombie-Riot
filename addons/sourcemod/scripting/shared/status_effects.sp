@@ -282,6 +282,7 @@ void InitStatusEffects()
 	StatusEffects_Red_Mist();
 	StatusEffects_Barracks();
 	StatusEffects_IndexNurseFather();
+	StatusEffects_Gunsaw();
 }
 
 static int CategoryPage[MAXPLAYERS];
@@ -11988,4 +11989,25 @@ static void GraceEnd(int victim, StatusEffect Apply_MasterStatusEffect, E_Status
 	if(!IsValidEntity(Apply_StatusEffect.WearableUse))
 		return;
 	RemoveEntity(Apply_StatusEffect.WearableUse);
+}
+
+void StatusEffects_Gunsaw()
+{
+	StatusEffect data;
+	data.Blank();
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Shrapnel");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "*");
+	data.Positive 					= false;
+	data.ShouldScaleWithPlayerCount = false;
+	data.OnTakeDamage_TakenFunc		= ShrapnelDamageTaken;
+	StatusEffect_AddGlobal(data);
+}
+
+static float ShrapnelDamageTaken(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float damage)
+{
+	if(Apply_StatusEffect.TotalOwners[attacker])
+		StartBleedingTimer(victim, attacker, damage * 0.15, 6, -1, damagetype);
+
+	return 1.0;
 }

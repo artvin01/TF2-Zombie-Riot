@@ -1257,8 +1257,6 @@ void ZR_ClientPutInServer(int client)
 	b_HasBeenHereSinceStartOfWave[client] = false;
 	Queue_PutInServer(client);
 	i_AmountDowned[client] = 0;
-	if(ZR_Get_Modifier() == 3 || ZR_Get_Modifier() == 8)
-		i_AmountDowned[client] = 1;
 	Waves_TrySpawnBarney(); 
 		
 	dieingstate[client] = 0;
@@ -1960,7 +1958,7 @@ public Action Timer_Dieing(Handle timer, int client)
 				SetEntityHealth(client, 50);
 				RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(client));
 				Rogue_TriggerFunction(Artifact::FuncRevive, client);
-				Gunsaw_TryBodySteal(client, false, pos);
+				//Gunsaw_TryBodySteal(client, false, pos);
 				int entity, i;
 				while(TF2U_GetWearable(client, entity, i))
 				{
@@ -2505,9 +2503,9 @@ void TriggerLastmanLogic(int killed, int Hurtviasdkhook)
 				}
 				if(Gunsaw_IsMerc(client))
 				{
-					if(RaidbossIgnoreBuildingsLogic(1))
+					if(IsValidEntity(EntRefToEntIndex(RaidBossActive)))
 					{
-						if(Gunsaw_Additional_SupportBuildings(client) > 1)
+						if(RaidModeTime > GetGameTime())
 						{
 							CPrintToChatAll("‼ - FOCUSED\n{crimson}Both of us die today. One, just a little later than the other.");
 						}
@@ -3011,8 +3009,6 @@ void ReviveAll(bool raidspawned = false,
 
 			if(i_AmountDowned[client] > 0)
 				i_AmountDowned[client] = 0;
-			if(ZR_Get_Modifier() == 3)
-				i_AmountDowned[client] = 1;
 
 			DoOverlay(client, "", 2);
 			if(raidspawned)

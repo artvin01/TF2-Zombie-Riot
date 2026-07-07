@@ -610,6 +610,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	PurnellDeathsound(client);
 	Vehicle_Exit(client, true);
 	SdkHooks_SetAndUpdateArmorClientText(client);
+	Gunsaw_PlayerDeath(client);
 #endif
 
 #if defined RPG

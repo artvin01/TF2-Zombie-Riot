@@ -4081,4 +4081,12 @@
 	{
 		"en"	"Take 25.0％ more damage, deal 25.0％ less damage."
 	}
+	"Shrapnel"
+	{
+		"en"	"Shrapnel"
+	}
+	"Shrapnel Desc"
+	{
+		"en"	"Inflictor deals 15％ of damage dealt as bleed over 3 seconds."
+	}
 }

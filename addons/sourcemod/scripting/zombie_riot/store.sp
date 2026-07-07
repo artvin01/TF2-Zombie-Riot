@@ -1160,7 +1160,7 @@ void Store_ConfigSetup()
 
 	AutoSaveTimer = CreateTimer(10.0, AutoSaveTime, 1);
 
-	Gunsaw_StoreReloaded();
+//	Gunsaw_StoreReloaded();
 }
 
 static Action AutoSaveTime(Handle timer, int client)
@@ -1363,8 +1363,8 @@ bool Store_CanPapItem(int client, int index)
 		}
 		*/
 
-		if(!Gunsaw_CanPapItem(client, index))
-			return false;
+//		if(!Gunsaw_CanPapItem(client, index))
+//			return false;
 
 		if(item.Owned[client])
 		{
@@ -6338,9 +6338,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false)
 			SetEntProp(entity, Prop_Send, "m_bValidatedAttachedEntity", true);
 			SetEntProp(entity, Prop_Send, "m_iAccountID", GetSteamAccountID(client, false));
 			i_InternalMeleeTrace[entity] = true;
-
-			Attributes_Set(entity, 1, 0.623);
-		//	Attributes_Set(entity, 124, 1.0); //Mini sentry
 			
 			if(CurrentClass[client] != TFClass_Spy)
 				Attributes_Set(entity, 15, 0.0);
@@ -7797,7 +7794,7 @@ void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip,
 	}
 }
 
-int Store_GetAmmoType(int index, int level)
+stock int Store_GetAmmoType(int index, int level)
 {
 	static Item item;
 	StoreItems.GetArray(index, item);
@@ -7866,7 +7863,7 @@ bool RogueAlwaysSell(const Item item)
 		
 }
 
-TFClassType Store_WeaponClass(int index, int level)
+stock TFClassType Store_WeaponClass(int index, int level)
 {
 	static Item item;
 	StoreItems.GetArray(index, item);
@@ -7876,7 +7873,7 @@ TFClassType Store_WeaponClass(int index, int level)
 		return TFClass_Unknown;
 	
 	if(info.WeaponForceClass > 0 && info.WeaponForceClass < 11)
-		return info.WeaponForceClass;
+		return view_as<TFClassType>(info.WeaponForceClass);
 	
 	return TF2_GetWeaponClass(info.Index, _, TF2_GetClassnameSlot(info.Classname));
 }

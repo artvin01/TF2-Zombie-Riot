@@ -1657,10 +1657,7 @@ public void OnPostThink(int client)
 			char HudBuffer[256];
 			if(!TeutonType[client])
 			{
-				int downsleft;
-				downsleft = 2;
-				if(ZR_Get_Modifier() == PREFIX_ONESTAND)
-					downsleft = 3;
+				int downsleft = TotalDowns();
 
 				downsleft -= i_AmountDowned[client];
 				SDKHooks_UpdateMarkForDeath(client);
@@ -2323,10 +2320,8 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			Rogue_PlayerDowned(victim);	
 			
 			//there are players still left, down them.
-			int DownsLeft = 2;
-			if(ZR_Get_Modifier() == PREFIX_ONESTAND)
-				DownsLeft = 3;
-			if((SpecterCheckIfAutoRevive(victim) || i_AmountDowned[victim] < (DownsLeft + Dungeon_DownedBonus())) && !HasSpecificBuff(victim, "Nightmare Terror"))
+			int DownsLeft = TotalDowns();
+			if(((SpecterCheckIfAutoRevive(victim) || i_AmountDowned[victim] < DownsLeft)) && !HasSpecificBuff(victim, "Nightmare Terror"))
 			{
 				if(i_CurrentEquippedPerk[victim] & PERK_WHO)
 					Citizen_PlayerReplacement(victim, false);
@@ -3053,12 +3048,8 @@ void SDKHooks_UpdateMarkForDeath(int client, bool force_Clear = false)
 	if (TeutonType[client] != TEUTON_NONE)
 		force_Clear = true;
 
-	int downsleft;
-	downsleft = 2;
-	if(ZR_Get_Modifier() == PREFIX_ONESTAND)
-		downsleft = 3;
+	int downsleft = TotalDowns();
 	downsleft -= i_AmountDowned[client];
-	downsleft += Dungeon_DownedBonus();
 	if(HasSpecificBuff(client, "Nightmare Terror"))
 		downsleft = 0;
 	if(!force_Clear && downsleft <= 0 && !SpecterCheckIfAutoRevive(client))

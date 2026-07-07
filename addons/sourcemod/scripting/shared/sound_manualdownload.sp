@@ -33,7 +33,9 @@ void SoundManualRequestFile(int client)
 		Format(filecheck, sizeof(filecheck), "download/%s", buffer);
 		DeleteFile(filecheck);
 	}
-	FileNet_RequestFile(client, buffer, SoundManualRequestResult, pack, 10)
+	FileNet_RequestFile(client, buffer, SoundManualRequestResult, pack, 10);
+#else
+	if(client) { }
 #endif
 }
 #if defined _filenetwork_included

@@ -3850,93 +3850,114 @@ void ReviveClientFromOrToEntity(int target, int client, int extralogic = 0, int 
 	
 	if(dieingstate[target] <= 0)
 	{
-		if(WasClientReviving)
-		{
-			AddHealthToUbersaw(client, 1, 0.065);
-			HealPointToReinforce(client, 1, 0.065);
-			i_Reviving_This_Client[client] = 0;
-			f_Reviving_This_Client[client] = 0.0;
-			Native_OnRevivingPlayer(client, target);
-		}
-		if(extralogic)
-		{
-			i_AmountDowned[target]--;
-			b_BobsCuringHand_Revived[target] = -9999;
-		}
-		SetEntityMoveType(target, MOVETYPE_WALK);
-		RequestFrame(Movetype_walk, EntRefToEntIndex(target));
-		dieingstate[target] = 0;
-		ClientSaveUber(target);
-		ClientSaveRageMeterStatus(target);
-		
-		SetEntPropEnt(target, Prop_Send, "m_hObserverTarget", client);
-		f_WasRecentlyRevivedViaNonWave[target] = GameTime + 1.0;
-		DHook_RespawnPlayer(target);
-		
-		float pos[3], ang[3];
-		GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos);
-		GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
-		ang[2] = 0.0;
-		SetEntProp(target, Prop_Send, "m_bDucked", true);
-		SetEntityFlags(target, GetEntityFlags(target)|FL_DUCKING);
-		CClotBody npc = view_as<CClotBody>(target);
-		npc.m_bThisEntityIgnored = false;
-		
+		FullyReviveClient(target, client, extralogic);
+	}
+}
+
+void FullyReviveClient(int target, int client, int extralogic = 0, bool teleport = true)
+{
+	if(client <= MaxClients)
+	{
+		AddHealthToUbersaw(client, 1, 0.065);
+		HealPointToReinforce(client, 1, 0.065);
+		i_Reviving_This_Client[client] = 0;
+		f_Reviving_This_Client[client] = 0.0;
+		Native_OnRevivingPlayer(client, target);
+	}
+	if(extralogic)
+	{
+		i_AmountDowned[target]--;
+		b_BobsCuringHand_Revived[target] = -9999;
+	}
+	SetEntityMoveType(target, MOVETYPE_WALK);
+	RequestFrame(Movetype_walk, EntRefToEntIndex(target));
+	dieingstate[target] = 0;
+	ClientSaveUber(target);
+	ClientSaveRageMeterStatus(target);
+	
+	SetEntPropEnt(target, Prop_Send, "m_hObserverTarget", client);
+	f_WasRecentlyRevivedViaNonWave[target] = GetGameTime() + 1.0;
+	DHook_RespawnPlayer(target);
+	
+	float pos[3], ang[3];
+	GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos);
+	GetEntPropVector(client, Prop_Data, "m_angRotation", ang);
+	ang[2] = 0.0;
+	SetEntProp(target, Prop_Send, "m_bDucked", true);
+	SetEntityFlags(target, GetEntityFlags(target)|FL_DUCKING);
+	CClotBody npc = view_as<CClotBody>(target);
+	npc.m_bThisEntityIgnored = false;
+	
+	if(teleport)
+	{
 		Player_Teleport_Safe(target,pos, true, true);
 		TeleportEntity(target, NULL_VECTOR, ang, NULL_VECTOR);
-		SetEntityCollisionGroup(target, 5);
+	}
+	SetEntityCollisionGroup(target, 5);
 
-		if(WasClientReviving)
-			PrintCenterText(client, "");
+	if(client <= MaxClients)
+		PrintCenterText(client, "");
 
-		PrintCenterText(target, "");
-		DoOverlay(target, "", 2);
-		SetEntityHealth(target, 50);
-		RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(target));
-		Rogue_TriggerFunction(Artifact::FuncRevive, target);
-		Gunsaw_TryBodySteal(target, false, pos);
-		int entity, i;
-		while(TF2U_GetWearable(target, entity, i))
+	PrintCenterText(target, "");
+	DoOverlay(target, "", 2);
+	SetEntityHealth(target, 50);
+	RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(target));
+	Rogue_TriggerFunction(Artifact::FuncRevive, target);
+	//Gunsaw_TryBodySteal(target, false, pos);
+	int entity, i;
+	while(TF2U_GetWearable(target, entity, i))
+	{
+		if(i_WeaponVMTExtraSetting[entity] != -1)
+			continue;
+
+		SetEntityRenderMode(entity, RENDER_NORMAL);
+		SetEntityRenderColor(entity, 255, 255, 255, 255);
+	}
+	if(client <= MaxClients && (i_CurrentEquippedPerk[client] & PERK_REGENE))
+	{
+		HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.2, 1.0, 1.0);
+		HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)) * 0.2, 1.0, 1.0, HEAL_ABSOLUTE);
+	}
+	else
+	{
+		if(client <= MaxClients)
+			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.1, 1.0, 1.0);
+		if(extralogic)
 		{
-			if(i_WeaponVMTExtraSetting[entity] != -1)
-				continue;
-
-			SetEntityRenderMode(entity, RENDER_NORMAL);
-			SetEntityRenderColor(entity, 255, 255, 255, 255);
-		}
-		if(WasClientReviving && (i_CurrentEquippedPerk[client] & PERK_REGENE))
-		{
-			HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.2, 1.0, 1.0);
-			HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)) * 0.2, 1.0, 1.0, HEAL_ABSOLUTE);
+			HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)) * 1.0, 1.0, 1.0, HEAL_ABSOLUTE);
 		}
 		else
-		{
-			if(WasClientReviving)
-				HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)) * 0.1, 1.0, 1.0);
-			if(extralogic)
-			{
-				HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)) * 1.0, 1.0, 1.0, HEAL_ABSOLUTE);
-			}
-			else
-			{	
-				HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)), 0.1, 1.0, HEAL_ABSOLUTE);
-			}
+		{	
+			HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)), 0.1, 1.0, HEAL_ABSOLUTE);
 		}
-		
-		SetEntityRenderMode(target, RENDER_NORMAL);
-		SetEntityRenderColor(target, 255, 255, 255, 255);
-		EmitSoundToAll("mvm/mvm_revive.wav", target, SNDCHAN_AUTO, 90, _, 1.0);
-		MakePlayerGiveResponseVoice(target, 3); //Revived response!
-		f_ClientBeingReviveDelay[target] = 0.0;
-	//	if(b_KahmlLastWish[target])
-		{
-			HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)) * 0.1, 0.1, 1.0, HEAL_ABSOLUTE);
-			GiveArmorViaPercentage(target, 0.1, 1.0, false);
-			IncreaseEntityDamageTakenBy(target, 0.85, 5.0);
-		}
-		CreateTimer(0.25, ReviveDisplayMessageDelay, EntIndexToEntRef(target), TIMER_FLAG_NO_MAPCHANGE);
-		CheckLastMannStanding(0);
 	}
+	
+	SetEntityRenderMode(target, RENDER_NORMAL);
+	SetEntityRenderColor(target, 255, 255, 255, 255);
+	EmitSoundToAll("mvm/mvm_revive.wav", target, SNDCHAN_AUTO, 90, _, 1.0);
+	MakePlayerGiveResponseVoice(target, 3); //Revived response!
+	f_ClientBeingReviveDelay[target] = 0.0;
+//	if(b_KahmlLastWish[target])
+	{
+		HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)) * 0.1, 0.1, 1.0, HEAL_ABSOLUTE);
+		GiveArmorViaPercentage(target, 0.1, 1.0, false);
+		IncreaseEntityDamageTakenBy(target, 0.85, 5.0);
+	}
+	CreateTimer(0.25, ReviveDisplayMessageDelay, EntIndexToEntRef(target), TIMER_FLAG_NO_MAPCHANGE);
+	CheckLastMannStanding(0);
+}
+
+int TotalDowns()
+{
+	int downsleft = 2;
+	if(ZR_Get_Modifier() == PREFIX_ONESTAND)
+		downsleft++;
+	
+	if(ZR_Get_Modifier() == OLD_TIMES || ZR_Get_Modifier() == NOSTALGICA)
+		downsleft--;
+	
+	downsleft += Dungeon_DownedBonus();
+	return downsleft;
 }
 
 public Action ReviveDisplayMessageDelay(Handle timer, int ref)
@@ -3944,10 +3965,7 @@ public Action ReviveDisplayMessageDelay(Handle timer, int ref)
 	int target = EntRefToEntIndex(ref);
 	if(IsValidClient(target))
 	{
-		int downsleft;
-		downsleft = 2;
-		if(ZR_Get_Modifier() == PREFIX_ONESTAND)
-			downsleft = 3;
+		int downsleft = TotalDowns();
 
 		downsleft -= i_AmountDowned[target];
 		if(downsleft <= 0)

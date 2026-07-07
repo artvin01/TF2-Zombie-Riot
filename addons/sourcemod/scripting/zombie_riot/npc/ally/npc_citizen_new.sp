@@ -3659,6 +3659,7 @@ public void Citizen_ClotThink(int iNPC)
 
 								if(TryPlace)
 								{
+									GiveBuildingMetalCostOnBuy(entity, 100);
 									BuildOrderedByPlayer[npc.index] = 0.0;
 									if(view_as<ObjectGeneric>(entity).SentryBuilding)
 									{

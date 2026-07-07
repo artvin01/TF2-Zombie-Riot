@@ -5740,26 +5740,86 @@
 	}
 	"Gunsaw Mercenary Desc"
 	{
-		"en"	"-Uses random weapons\n-Can reroll and swap weapons with crouch abilities\n-Gains ammo when swapping weapons (not during setup)\n-Able to build buildings but not repair them"
+		"en"	"-Shotgun and pistol, build cheap buildings, but no repairing\n-Able to body swap you to an enemy's body\n  -Takes the stats and weapons of the enemy\n  -Swap by killing a nearby enemy while downed"
 	}
 	"Gunsaw Mercenary Pap 1"
 	{
-		"en"	"-Able to throw buildings using melee M1\n  -Deal damage based on metal cost\n  -Takes damage when colliding\n  -Have a timed lifespan but can be picked back up"
+		"en"	"-Able to throw buildings using melee M1\n  -Deal damage based on metal cost\n  -Takes damage when colliding\n  -Has a timed lifespan if not picked back up"
 	}
 	"Gunsaw Mercenary Pap 2"
 	{
-		"en"	"-Increased damage, building health, and weapon tier\n-Gain a second ranged weapon\n-Being revived body swaps you to the closest compatible enemy\n  -Takes the health, resistance, speed, and perk of the body"
-	}
-	"Gunsaw Mercenary Pap 3"
-	{
-		"en"	"-Increased damage, building health, and weapon tier\n-Increased maximum body swap health"
+		"en"	"-Increased damage and building health\n-Increased maximum body swap health"
 	}
 	"Gunsaw Mercenary Pap 6"
 	{
 		"en"	"-Increased damage\n-Increased maximum body swap health"
 	}
-	"Gunsaw Mercenary Pap 7"
+	"Gunsaw Mercenary Effect 0"
 	{
-		"en"	"-Increased damage and building health\n-Increased maximum body swap health"
+		"en"	"Low stats"
+	}
+	"Gunsaw Mercenary Effect 1"
+	{
+		"en"	"Reloads shotguns faster"
+	}
+	"Gunsaw Mercenary Effect 2"
+	{
+		"en"	"Accurate pistol and increased headshot damage"
+	}
+	"Gunsaw Mercenary Effect 3"
+	{
+		"en"	"Melee fire rate increases with less health"
+	}
+	"Gunsaw Mercenary Effect 4"
+	{
+		"en"	"Thrown buildings explode for more damage"
+	}
+	"Gunsaw Mercenary Effect 5"
+	{
+		"en"	"Built Healing Station grants more healing"
+	}
+	"Gunsaw Mercenary Effect 6"
+	{
+		"en"	"Increased resistance and knockback reduction"
+	}
+	"Gunsaw Mercenary Effect 7"
+	{
+		"en"	"Immune to burn and inflicts burn with thrown buildings"
+	}
+	"Gunsaw Mercenary Effect 8"
+	{
+		"en"	"Melee can backstab"
+	}
+	"Gunsaw Mercenary Effect 9"
+	{
+		"en"	"Increased building attack speed"
+	}
+	"Gunsaw Mercenary Effect 10"
+	{
+		"en"	"Switches and fires guns faster"
+	}
+	"Gunsaw Mercenary Effect 11"
+	{
+		"en"	"Moves faster and jumps higher"
+	}
+	"Gunsaw Mercenary Effect 12"
+	{
+		"en"	"Don't remind me of them"
+	}
+	"Gunsaw Mercenary Effect 13"
+	{
+		"en"	"Regenerates health over time"
+	}
+	"Gunsaw Mercenary Effect 14"
+	{
+		"en"	"Regenerates armor over time"
+	}
+	"Gunsaw Mercenary Effect 15"
+	{
+		"en"	"Higher stats, degrades over time"
+	}
+	"Explosive Barrel Desc"
+	{
+		"en"	"Explodes when destroyed"
 	}
 }
