@@ -1208,6 +1208,89 @@ public void Weapon_GunsawRanged_R(int client, int weapon, bool crit, int slot)
 }
 */
 
+static float KnockbackRes(int client)
+{
+	int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Melee);
+	if(weapon != -1)
+		return Attributes_Get(client, 252, 1.0);
+	
+	return 1.0;
+}
+
+public void Weapon_GunsawShotgun_M1(int client, int weapon, bool crit, int slot)
+{
+	if(TF2_IsPlayerInCondition(client, TFCond_FocusBuff))
+	{
+		Rogue_OnAbilityUse(client, weapon);
+		TF2_RemoveCondition(client, TFCond_FocusBuff);
+
+		float ratio = BoomstickAdjustDamageAndAmmoCount(weapon, 1);
+		float cooldown = 1.0 + (ratio * 0.5);
+		Ability_Apply_Cooldown(client, 2, 1.25 * cooldown * cooldown);
+		
+		float vec[3], vel[3];
+		GetClientEyePosition(client, vec);
+		GetClientEyeAngles(client, vel);
+		GetAngleVectors(vel, vel, NULL_VECTOR, NULL_VECTOR);
+		float knockback = 100.0 * ratio * KnockbackRes(client);
+		float stun = knockback / 100.0;
+
+		if(knockback > 600.0)
+			knockback = 600.0;
+		
+		ScaleVector(vel, -knockback);
+		
+		vec[0] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[0]");
+		vec[1] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[1]");
+		vec[2] = GetEntPropFloat(client, Prop_Send, "m_vecVelocity[2]");
+		AddVectors(vel, vec, vel);
+		TeleportEntity(client, _, _, vel);
+
+		if(stun > 4.0)
+		{
+			SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime() + stun);
+			ApplyStatusEffect(client, client, "Ragdolled", stun);
+			FreezeNpcInTime(client, stun);
+		}
+
+		float SoundRatio = 0.05 * ratio;
+		if(SoundRatio > 1.0)
+			SoundRatio = 1.0;
+
+		EmitSoundToAll("weapons/shotgun/shotgun_dbl_fire.wav", client, SNDCHAN_STATIC, 80, _, SoundRatio);
+		EmitSoundToAll("weapons/shotgun/shotgun_dbl_fire.wav", client, SNDCHAN_STATIC, 80, _, SoundRatio);
+		float ShakeRatio = 0.5 * stun;
+		if(ShakeRatio > 2.6)
+			ShakeRatio = 2.6;
+		Client_Shake(client, 0, 45.0 * ShakeRatio, 30.0 * ShakeRatio, 0.4 * stun);
+	}
+	else
+	{
+		Attributes_Set(weapon, 1, 1.0);
+	}
+}
+
+public void Weapon_GunsawShotgun_M2(int client, int weapon, bool crit, int slot)
+{
+	if(Ability_Check_Cooldown(client, slot) > 0.0)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_Check_Cooldown(client, slot));
+		return;
+	}
+	
+	if(TF2_IsPlayerInCondition(client, TFCond_FocusBuff))
+	{
+		TF2_RemoveCondition(client, TFCond_FocusBuff);
+	}
+	else
+	{
+		TF2_AddCondition(client, TFCond_FocusBuff, 4.0);
+	}
+}
+
 public void Weapon_GunsawMelee_M1(int client, int weapon, bool &crit, int slot)
 {
 	int building = GetCarryingObject(client);
@@ -1291,7 +1374,7 @@ public void Weapon_GunsawMelee_M1(int client, int weapon, bool &crit, int slot)
 		SetParent(prop, building);
 
 		// Self knockback
-		ScaleVector(vel, -0.3 * Attributes_GetOnPlayer(client, 252, true, _, 1.0));
+		ScaleVector(vel, -0.3 * KnockbackRes(client));
 		TeleportEntity(client, _, _, vel);
 
 		// Delete timer

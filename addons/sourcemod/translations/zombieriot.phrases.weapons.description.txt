@@ -5758,9 +5758,13 @@
 	}
 	"Gunsaw Mercenary Pap 1"
 	{
-		"en"	"-Able to throw buildings using melee M1\n  -Deal damage based on metal cost\n  -Takes damage when colliding\n  -Has a timed lifespan if not picked back up"
+		"en"	"-Increased damage and building health\n-Able to throw buildings using melee M1\n  -Deal damage based on metal cost\n  -Takes damage when colliding\n  -Has a timed lifespan if not picked back up"
 	}
 	"Gunsaw Mercenary Pap 2"
+	{
+		"en"	"-Increased damage and building health\n-Increased maximum body swap health\n-Shotgun can now fire all bullets in clip using M2\n  -Damage based on bullets in clip\n  -Knockbacks user, can be lethal"
+	}
+	"Gunsaw Mercenary Pap 3"
 	{
 		"en"	"-Increased damage and building health\n-Increased maximum body swap health"
 	}
