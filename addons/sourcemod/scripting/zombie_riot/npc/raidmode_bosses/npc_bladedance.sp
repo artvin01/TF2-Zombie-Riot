@@ -490,6 +490,12 @@ public Action RaidbossBladedance_OnTakeDamage(int victim, int &attacker, int &in
 		if(!npc.Anger)
 			npc.m_iOverlordComboAttack++;
 	}
+	if(npc.m_flHurtForAbility < gameTime)
+	{
+		npc.m_flHurtForAbility = gameTime + DEFAULT_HURTDELAY;
+		if(!npc.Anger)
+			npc.m_iOverlordComboAttack++;
+	}
 	if(!npc.m_flBladedanceAngerResistance)
 	{
 		if((ReturnEntityMaxHealth(npc.index)/2) >= GetEntProp(npc.index, Prop_Data, "m_iHealth")) //Anger after half hp/400 hp

@@ -4101,4 +4101,12 @@
 		"en"	"Take 25.0％ more damage, deal 25.0％ less damage."
 		"ko"	"받는 피해량이 25.0％ 증가합니다. 공격 피해량이 25.0％ 감소합니다."
 	}
+	"Shrapnel"
+	{
+		"en"	"Shrapnel"
+	}
+	"Shrapnel Desc"
+	{
+		"en"	"Inflictor deals 15％ of damage dealt as bleed over 3 seconds."
+	}
 }

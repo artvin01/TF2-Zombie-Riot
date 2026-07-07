@@ -91,7 +91,7 @@ public void Weapon_ChemicalThrower_M1(int client, int weapon, bool crit, int slo
 	BEAM_Targets_Hit = 1.0;
 
 	LastDamageCalc[client] = Attributes_Get(weapon, 868, 1.0);	// Base Damage
-	LastDamageCalc[client] *= Attributes_GetOnPlayer(client, 287, true, true);	// Sentry damage bonus
+	LastDamageCalc[client] *= Attributes_GetOnPlayer(client, 287, true);	// Sentry damage bonus
 	float AttackspeedValue = Attributes_GetOnPlayer(client, 343, true, true);	// Sentry attack speed bonus
 	if(AttackspeedValue < 1.0)
 	{

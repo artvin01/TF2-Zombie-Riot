@@ -1284,6 +1284,8 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 			EmitSoundToAll(g_FuriosoFinalHit[GetRandomInt(0, sizeof(g_FuriosoFinalHit) - 1)], victim, SNDCHAN_STATIC, 90, _, 1.0, 100);
 			EmitSoundToAll(g_FuriosoFinalHit[GetRandomInt(0, sizeof(g_FuriosoFinalHit) - 1)], victim, SNDCHAN_STATIC, 90, _, 1.0, 100);
 			EmitSoundToClient(attacker, g_FuriosoFinalHit[GetRandomInt(0, sizeof(g_FuriosoFinalHit) - 1)], victim, SNDCHAN_STATIC, 90, _, 1.0, 100);
+			if(f_FuriosoLastmanForce[attacker] > GetGameTime())
+				UseFurioso(attacker);
 		}
 		else
 		{
@@ -1294,8 +1296,6 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 		f_DodgeCooldown[attacker] = 0.0;
 		if(i_DodgesAvailable[attacker] <= (IndexFather_DodgeMaxReturn(attacker) / 2))
 			i_DodgesAvailable[attacker] = IndexFather_DodgeMaxReturn(attacker) / 2;
-		if(f_FuriosoLastmanForce[attacker] > GetGameTime())
-			UseFurioso(attacker);
 			
 	}
 	if(WeaponLevel[attacker] >= 1)

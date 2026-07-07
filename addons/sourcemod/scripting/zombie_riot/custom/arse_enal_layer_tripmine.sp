@@ -75,7 +75,7 @@ public void Weapon_Arsenal_Trap(int client, int weapon, bool crit, int slot)
 		
 			attack_speed = 1.0 / Attributes_GetOnPlayer(client, 343, true, true); //Sentry attack speed bonus
 				
-			Bonus_damage = attack_speed * Attributes_GetOnPlayer(client, 287, true, true);			//Sentry damage bonus
+			Bonus_damage = attack_speed * Attributes_GetOnPlayer(client, 287, true);			//Sentry damage bonus
 
 			Bonus_damage *= BuildingWeaponDamageModif(1);
 			

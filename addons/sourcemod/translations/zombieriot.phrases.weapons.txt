@@ -6062,6 +6062,26 @@
 		"en"	"Tiantui Star's Blade"
 		"ko"	"천퇴성도"
 	}
+	"The Mercenary"
+	{
+		"en"	"The Mercenary"
+	}
+	"Lost Gadgets"
+	{
+		"en"	"Lost Gadgets"
+	}
+	"Gunsaw Pistol"
+	{
+		"en"	"Gunsaw Pistol"
+	}
+	"Gunsaw Saw-Off"
+	{
+		"en"	"Gunsaw Saw-Off"
+	}
+	"Explosive Barrel"
+	{
+		"en"	"Explosive Barrel"
+	}
 	"The Index Nursefather"
 	{
 		"en"    "The Index Nursefather"

@@ -1100,6 +1100,7 @@ int Object_MaxSupportBuildings(int client, bool ingore_glass = false)
 	maxAllowed += Building_health_attribute; 
 	maxAllowed += Blacksmith_Additional_SupportBuildings(client); 
 	maxAllowed += Merchant_Additional_SupportBuildings(client); 
+	maxAllowed += Gunsaw_Additional_SupportBuildings(client);
 	if(CvarInfiniteCash.BoolValue)
 	{
 		maxAllowed += 999;

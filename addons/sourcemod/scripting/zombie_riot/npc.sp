@@ -73,6 +73,7 @@ void NPC_ConfigSetup()
 	// Buildings
 	ObjectBarricade_MapStart();
 	ObjectDecorative_MapStart();
+	ObjectExplosive_MapStart();
 	ObjectAmmobox_MapStart();
 	ObjectArmorTable_MapStart();
 	ObjectPerkMachine_MapStart();
@@ -1481,6 +1482,7 @@ void NPCDeath(int entity)
 {
 	Freeplay_OnNPCDeath(entity);
 	Cheese_OnNPCDeath(entity);
+	Gunsaw_NPCDeath(entity);
 	if(view_as<CClotBody>(entity).m_fCreditsOnKill)
 	{
 		int GiveMoney = 0;
@@ -1644,6 +1646,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "object/obj_brewing_stand.sp"
 #include "object/obj_revenant.sp"
 #include "object/obj_grill.sp"
+#include "object/obj_explosivebarrel.sp"
 #include "object/construction/obj_giant_lighthouse.sp"
 #include "object/construction/obj_const_stove.sp"
 #include "object/construction/obj_const_factory.sp"
