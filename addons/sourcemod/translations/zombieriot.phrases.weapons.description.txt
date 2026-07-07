@@ -4768,6 +4768,7 @@
 	"Father Near Enemy Dodge"
 	{
 		"en" 		"You have to be near enemies to dodge!"
+		"ko" 		"적 근처에 있을 때 회피할 수 있습니다!"
 	}
 	"Potion of Vigor"
 	{
