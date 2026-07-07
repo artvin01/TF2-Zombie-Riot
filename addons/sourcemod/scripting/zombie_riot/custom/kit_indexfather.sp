@@ -32,6 +32,7 @@ static bool WasARaidboss[MAXPLAYERS];
 static int DashesBeforeHitMust[MAXPLAYERS];
 static bool Precached;
 static bool AllowedToDodge[MAXPLAYERS];
+static bool DoneLastmanSecret;
 #define IDX_FURI_WEAPON_1	 	(1 << 1)
 #define IDX_FURI_WEAPON_2		(1 << 2)
 #define IDX_FURI_WEAPON_3	 	(1 << 3)
@@ -204,6 +205,7 @@ public void IndexFather_MapStart()
 	PrecacheSoundArray(g_FuriosoFinalHit);
 	PrecacheSoundArray(g_SizzlingWoundSound);
 	IndexFather_ResetAllStats();
+	DoneLastmanSecret = false;
 	Precached = false;
 }
 public void IndexFather_PluginStart()
@@ -214,6 +216,14 @@ public void IndexFather_PluginStart()
 	RegAdminCmd("sm_prescript_burntest", Command_GiveBurntest, ADMFLAG_ROOT, "Enable PVP");
 }
 
+bool IndexExpi_LastmanSecret()
+{
+	if(DoneLastmanSecret)
+		return false;
+	
+	DoneLastmanSecret = true;
+	return true;
+}
 void PrecachePrescriptMusic()
 {
 	if(!Precached)
@@ -644,7 +654,7 @@ void IndexFather_GeneratePrescript(int client, bool ForceNew, int PrescriptForce
 	data.Timelimit = GetGameTime() + GetRandomFloat(75.0,120.0);
 	Prescript data2;
 	IndexFather_SelectRandomGoal(client, data2, PrescriptForce);
-	if(WasSpecial)
+	if(!WasSpecial)
 		IndexFather_SelectRandomAddition(data2);
 	data.CurrentGoal_1 = data2;
 	
@@ -1064,7 +1074,7 @@ public void IndexFather_InteractAlly(int client, int InteractedEntity)
 			if(IsValidEntity(viewmodelModel))
 			{
 				GetAttachment(viewmodelModel, "head", flPos, flAng);
-				flPos[2] -= 12.0;
+				flPos[2] -= 8.0;
 				flAng[0] += GetRandomFloat(-10.0,10.0);
 				flAng[1] += GetRandomFloat(-10.0,10.0);
 				flAng[2] += GetRandomFloat(-10.0,10.0);

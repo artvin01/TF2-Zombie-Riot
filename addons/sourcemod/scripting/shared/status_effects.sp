@@ -11846,8 +11846,8 @@ void StatusEffects_IndexNurseFather()
 	strcopy(data.BuffName, sizeof(data.BuffName), "Comfort in Hard Times");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "^^");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
-	data.DamageDealMulti			= 0.1;
-	data.DamageTakenMulti			= 0.9;
+	data.DamageDealMulti			= 0.05;
+	data.DamageTakenMulti			= 0.95;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.ElementalLogic				= true;

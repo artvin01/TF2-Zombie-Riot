@@ -4117,6 +4117,6 @@
 	}
 	"Comfort in Hard Times Desc"
 	{
-		"en"	"Recived or given pats by the Index Nursefather after losing someone else...\nIncreases damage by 10.0％, reduces damage taken by 10.0％"
+		"en"	"Recived or given pats by the Index Nursefather after losing someone else...\nIncreases damage by 5.0％, reduces damage taken by 5.0％"
 	}
 }

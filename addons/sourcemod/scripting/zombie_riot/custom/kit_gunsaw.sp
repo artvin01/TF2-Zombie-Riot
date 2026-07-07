@@ -1532,7 +1532,7 @@ static void GunsawPropDamagePost(int prop, int victim, float damage, int weapon)
 static void GunsawPropDebuff(int prop, int victim, float damage, int weapon)
 {
 	int client = GetEntPropEnt(prop, Prop_Send, "m_hOwnerEntity");
-	if(client != -1)
+	if(IsValidClient(client))
 	{
 		ApplyStatusEffect(client, victim, "Shrapnel", 4.0);
 

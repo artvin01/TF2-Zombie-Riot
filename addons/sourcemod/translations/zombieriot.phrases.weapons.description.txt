@@ -5720,7 +5720,7 @@
 	}
 	"The Index Nursefather Desc 2"
 	{
-		"en"    "-+1 Grace cap and stat increases.\n-All weapon hits now give poise.\n-Dodges gives poise\n-Poise gives a higher chance to crit.(31％ chance at max poise)"
+		"en"    "-+1 Grace cap and stat increases.\n-All weapon hits now give poise.\n-Dodges gives poise\n-Poise gives a higher chance to crit.(62％ chance at max poise)"
 	}
 	"The Index Nursefather Desc 3"
 	{

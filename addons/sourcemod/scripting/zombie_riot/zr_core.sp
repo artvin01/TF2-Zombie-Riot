@@ -2115,6 +2115,9 @@ void CheckLastMannStanding(int killed)
 	int testLast;
 	int PlayersLeftNotDowned = 0;
 	LastMann_BeforeLastman = false;
+	int Remaining;
+	int[] PeopleRemain = new int[MaxClients];
+
 	for(int client=1; client<=MaxClients; client++)
 	{
 		if(IsClientInGame(client) && GetClientTeam(client)==2 && !IsFakeClient(client) && TeutonType[client] != TEUTON_WAITING)
@@ -2126,6 +2129,7 @@ void CheckLastMannStanding(int killed)
 					continue;
 				if(dieingstate[client] == 0)
 				{
+					PeopleRemain[Remaining++] = client;
 					PlayersLeftNotDowned++;
 					testLast = client;
 				}
@@ -2138,6 +2142,28 @@ void CheckLastMannStanding(int killed)
 			
 		if(Gunsaw_IsMerc(testLast) && Gunsaw_LastmanSecret())
 			CPrintToChatAll("? - Sense of impending doom\n{crimson}You can't help but feel sudden, overwhelming fear. Your skin has goosebumps all over. It's as if the nature around you abruptly fell silent...");
+
+	}
+	if(PlayersLeftNotDowned == 2)
+	{
+		bool NurseFather = false;
+		bool Expi = false;
+		for(int ClientsLeft = 1; ClientsLeft <= Remaining; ClientsLeft++)
+		{
+			if(Gunsaw_IsMerc(testLast))
+				Expi = true;
+			if(Is_Prescript_User(testLast))
+				NurseFather = true;
+
+		}
+		if(Expi || NurseFather)
+		{
+			if(IndexExpi_LastmanSecret())
+			{
+				CPrintToChatAll("{blue}The Nursefather lets out an agitated 'tsk'{crimson}The Expi seems to be in heavy distress, need of comfort from the only remaining {blue}ally{crimson}.");
+			}
+		}
+
 	}
 }
 void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = false, bool CheckDownedState = false)
