@@ -11632,7 +11632,7 @@ void Gore_TakeDamageAttackerPost(int attacker, int victim, float damage, StatusE
 
 void AlephPrefix_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
-	if (!b_ThisWasAnNpc[victim] || IsEntityAlive(victim))
+	if (!b_ThisWasAnNpc[victim] || !IsEntityAlive(victim))
 		return;
 	
 	RemoveSpecificBuff(victim, "Infinite Will");
