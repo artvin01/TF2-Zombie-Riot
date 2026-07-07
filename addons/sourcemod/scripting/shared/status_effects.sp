@@ -7703,7 +7703,6 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.OnBuffEndOrDeleted			= Const2Modifs_Stalker_End;
 	data.TimerRepeatCall_Func 		= Const2Modifs_Stalker_Think;
 	data.OnTakeDamage_TakenFunc 	= INVALID_FUNCTION;
-	data.TimerRepeatCall_Func 		= StalkerCheckRemove;
 	StatusEffect_AddGlobal(data);
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Stalker Prefix Nerf");
@@ -8108,7 +8107,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	data.OnBuffStarted				= INVALID_FUNCTION;
-	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
+	data.OnBuffEndOrDeleted			= AlephPrefix_End;
 	data.TimerRepeatCall_Func 		= INVALID_FUNCTION;
 	data.OnTakeDamage_PostVictim	= Aleph_TakeDamageAttackerPost;
 	StatusEffect_AddGlobal(data);
@@ -9099,7 +9098,7 @@ void Const2Modifs_Stalker_Start(int victim, StatusEffect Apply_MasterStatusEffec
 void Const2Modifs_Stalker_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	//not an npc, ignore.
-	if(!b_ThisWasAnNpc[victim])
+	if(!b_ThisWasAnNpc[victim] || !IsEntityAlive(victim))
 		return;
 	
 	b_StaticNPC[victim] = Apply_StatusEffect.WearableUse != 0;
@@ -9109,6 +9108,9 @@ void Const2Modifs_Stalker_End(int victim, StatusEffect Apply_MasterStatusEffect,
 	int maxhealth = ReturnEntityMaxHealth(victim);
 	if (health > maxhealth)
 		SetEntProp(victim, Prop_Data, "m_iHealth", maxhealth);
+	
+	RemoveSpecificBuff(victim, "Stalker Prefix Nerf");
+	RemoveSpecificBuff(victim, "Anti-Waves");
 }
 
 void Const2Modifs_Stalker_Think(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
@@ -9117,8 +9119,10 @@ void Const2Modifs_Stalker_Think(int victim, StatusEffect Apply_MasterStatusEffec
 	if(!b_ThisWasAnNpc[victim])
 		return;
 	
-	ApplyStatusEffect(victim, victim, "Stalker Prefix Nerf", 1.0);
-	ApplyStatusEffect(victim, victim, "Anti-Waves", 1.0);
+	ApplyStatusEffect(victim, victim, "Stalker Prefix Nerf", 10.0);
+	ApplyStatusEffect(victim, victim, "Anti-Waves", 10.0);
+	
+	RequestFrame(RemoveAllNonStalkerPrefix, EntIndexToEntRef(victim));
 }
 
 void RemoveAllNonStalkerPrefix(int ref)
@@ -11605,20 +11609,6 @@ float EgoLastman_DamageDealFunc(int attacker, int victim, StatusEffect Apply_Mas
 	return 0.3;
 }
 
-
-static void StalkerCheckRemove(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
-{
-	if(Apply_StatusEffect.DataForUse > GetGameTime())
-	{
-		return;
-	}
-	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
-	Apply_StatusEffect.DataForUse = GetGameTime() + 0.5;
-	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
-	RequestFrame(RemoveAllNonStalkerPrefix, EntIndexToEntRef(entity));
-
-}
-
 void Gore_Prefix_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	if (!b_ThisWasAnNpc[victim] || IsEntityAlive(victim))
@@ -11638,6 +11628,14 @@ void Gore_TakeDamageAttackerPost(int attacker, int victim, float damage, StatusE
 	Apply_StatusEffect.DataForUse = GetGameTime() + 0.35;
 	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 	Npc_DoGibLogic(victim, 1.0, true);
+}
+
+void AlephPrefix_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if (!b_ThisWasAnNpc[victim] || !IsEntityAlive(victim))
+		return;
+	
+	RemoveSpecificBuff(victim, "Infinite Will");
 }
 
 void Aleph_TakeDamageAttackerPost(int attacker, int victim, float damage, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)

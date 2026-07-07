@@ -99,6 +99,8 @@ static float Vs_IncomingBoom_Its_Too_Loud;
 static int g_RedPoint;
 static int g_Laser;
 
+static int NPCID;
+
 void Harrison_OnMapStart_NPC()
 {
 	NPCData data;
@@ -110,7 +112,12 @@ void Harrison_OnMapStart_NPC()
 	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	NPC_Add(data);
+	NPCID = NPC_Add(data);
+}
+
+int VestaHarrison_NPCID()
+{
+	return NPCID;
 }
 
 static void ClotPrecache()
@@ -353,17 +360,17 @@ methodmap Harrison < CClotBody
 			{
 				switch(npc.m_iOverlordComboAttack)
 				{
-					case 1: NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Support-2", false, true);
+					case 1: VestaHarrison_NPCTalkMessage(npc.index, "Harrison_Talk_Support-2");
 					case 2:
 					{
 						switch(GetRandomInt(0, 1))
 						{
-							case 0: NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Support-3", false, true);
-							case 1: NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Support-4", false, true);
+							case 0: VestaHarrison_NPCTalkMessage(npc.index, "Harrison_Talk_Support-3");
+							case 1: VestaHarrison_NPCTalkMessage(npc.index, "Harrison_Talk_Support-4");
 						}
 					}
-					case 3: NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Support-6", false, true);
-					default: NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Support-2", false, true);
+					case 3: VestaHarrison_NPCTalkMessage(npc.index, "Harrison_Talk_Support-6");
+					default: VestaHarrison_NPCTalkMessage(npc.index, "Harrison_Talk_Support-2");
 				}
 			}
 		}
@@ -431,7 +438,7 @@ methodmap Harrison < CClotBody
 			RaidBossActive = EntIndexToEntRef(npc.index);
 			RaidAllowsBuildings = false;
 			RaidAllowLastman = true;
-			NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Intro", false, true);
+			VestaHarrison_NPCTalkMessage(npc.index, "Harrison_Talk_Intro");
 			
 			char buffers[3][64];
 			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
@@ -553,6 +560,11 @@ methodmap Harrison < CClotBody
 		
 		return npc;
 	}
+}
+
+void VestaHarrison_NPCTalkMessage(int entity, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(entity, "skyblue", message, true);
 }
 
 static void Clone_ClotThink(int iNPC)
@@ -835,7 +847,7 @@ static void Clone_ClotThink(int iNPC)
 				{
 					if(npc.m_flDoingAnimation < gameTime)
 					{
-						NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Support-5", false, false);
+						VestaHarrison_NPCTalkMessage(npc.index, "Harrison_Talk_Support-5");
 						npc.m_iState = -1;
 						npc.m_iOverlordComboAttack = 0;
 					}
@@ -1068,9 +1080,9 @@ static void Harrison_ClotThink(int iNPC)
 			npc.m_fbGunout = true;
 			switch(GetRandomInt(0,2))
 			{
-				case 0:NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Lastman-1", false, false);
-				case 1:NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Lastman-2", false, false);
-				case 2:NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Lastman-3", false, false);
+				case 0:VestaHarrison_NPCTalkMessage(npc.index, "Harrison_Talk_Lastman-1");
+				case 1:VestaHarrison_NPCTalkMessage(npc.index, "Harrison_Talk_Lastman-2");
+				case 2:VestaHarrison_NPCTalkMessage(npc.index, "Harrison_Talk_Lastman-3");
 			}
 		}
 	}
@@ -1084,7 +1096,7 @@ static void Harrison_ClotThink(int iNPC)
 		BlockLoseSay = true;
 		AlreadySaidWin = true;
 		
-		NPCPritToChat(npc.index, "{lightblue}", "Harrison_Talk_GameEnd", false, false);
+		VestaHarrison_NPCTalkMessage(npc.index, "Harrison_Talk_GameEnd");
 		return;
 	}
 	if(!YaWeFxxked[npc.index] && RaidBossActive != INVALID_ENT_REFERENCE && IsValidEntity(RaidBossActive) && RaidModeTime < GetGameTime())
@@ -1094,10 +1106,10 @@ static void Harrison_ClotThink(int iNPC)
 		BlockLoseSay = true;
 		switch(GetRandomInt(1, 4))
 		{
-			case 1:NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_TimeUp-1", false, false);
-			case 2:NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_TimeUp-2", false, false);
-			case 3:NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_TimeUp-3", false, false);
-			case 4:NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_TimeUp-4", false, false);
+			case 1:VestaHarrison_NPCTalkMessage(npc.index, "Harrison_Talk_TimeUp-1");
+			case 2:VestaHarrison_NPCTalkMessage(npc.index, "Harrison_Talk_TimeUp-2");
+			case 3:VestaHarrison_NPCTalkMessage(npc.index, "Harrison_Talk_TimeUp-3");
+			case 4:VestaHarrison_NPCTalkMessage(npc.index, "Harrison_Talk_TimeUp-4");
 		}
 		YaWeFxxked[npc.index] = true;
 		Vs_RechargeTimeMax[npc.index] = 3.0;
@@ -1157,7 +1169,7 @@ static void Harrison_ClotThink(int iNPC)
 					npc.StartPathing();
 				}
 				*/
-				NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Pre_2_Phase", false, false);
+				VestaHarrison_NPCTalkMessage(npc.index, "Harrison_Talk_Pre_2_Phase");
 				npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/sniper/taunt_most_wanted/taunt_most_wanted.mdl");
 				SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 				npc.StopPathing();
@@ -1393,9 +1405,9 @@ static void Harrison_NPCDeath(int entity)
 
 	switch(GetRandomInt(0,2))
 	{
-		case 0:NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_EscapePlan-1", false, false);
-		case 1:NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_EscapePlan-2", false, false);
-		case 2:NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_EscapePlan-3", false, false);
+		case 0:VestaHarrison_NPCTalkMessage(npc.index, "Harrison_Talk_EscapePlan-1");
+		case 1:VestaHarrison_NPCTalkMessage(npc.index, "Harrison_Talk_EscapePlan-2");
+		case 2:VestaHarrison_NPCTalkMessage(npc.index, "Harrison_Talk_EscapePlan-3");
 	}
 }
 
@@ -1495,10 +1507,10 @@ static int HarrisonSelfDefense(Harrison npc, float gameTime, int target, float d
 				npc.m_iCurrentAbilityDo = 1;
 				switch(GetRandomInt(1, 4))
 				{
-					case 1:NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Ability1-1", false, false);
-					case 2:NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Ability1-2", false, false);
-					case 3:NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Ability1-3", false, false);
-					case 4:NPCPritToChat(npc.index, "{skyblue}", "Harrison_Talk_Ability1-4", false, false);
+					case 1:VestaHarrison_NPCTalkMessage(npc.index, "Harrison_Talk_Ability1-1");
+					case 2:VestaHarrison_NPCTalkMessage(npc.index, "Harrison_Talk_Ability1-2");
+					case 3:VestaHarrison_NPCTalkMessage(npc.index, "Harrison_Talk_Ability1-3");
+					case 4:VestaHarrison_NPCTalkMessage(npc.index, "Harrison_Talk_Ability1-4");
 				}
 				npc.StopPathing();
 				

@@ -100,6 +100,8 @@ static int AirStrikeTalk[MAXENTITIES];
 
 static bool ParticleSpawned[MAXENTITIES];
 
+static int NPCID;
+
 void Castellan_OnMapStart_NPC()
 {
 	NPCData data;
@@ -111,7 +113,12 @@ void Castellan_OnMapStart_NPC()
 	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	NPC_Add(data);
+	NPCID = NPC_Add(data);
+}
+
+int VestaCastellan_NPCID()
+{
+	return NPCID;
 }
 
 static void ClotPrecache()
@@ -464,17 +471,17 @@ methodmap Castellan < CClotBody
 			b_NpcUnableToDie[npc.index] = true;
 			switch(GetRandomInt(0,2))
 			{
-				case 0:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_Intro-1", false, true);
-				case 1:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_Intro-2", false, true);
-				case 2:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_Intro-3", false, true);
+				case 0:VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_Intro-1");
+				case 1:VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_Intro-2");
+				case 2:VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_Intro-3");
 			}
 		}
 		else
 		{
 			if(Construction_Mode())
-				NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_Intro-5", false, true);
+				VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_Intro-5");
 			else
-				NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_Intro-4", false, true);
+				VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_Intro-4");
 			RequestFrame(WhyNoFactory, EntIndexToEntRef(npc.index));
 		}
 
@@ -545,6 +552,11 @@ methodmap Castellan < CClotBody
 	}
 }
 
+void VestaCastellan_NPCTalkMessage(int entity, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(entity, "steelblue", message, true);
+}
+
 static void Castellan_FORVESTA(int iNPC)
 {
 	Castellan npc = view_as<Castellan>(iNPC);
@@ -564,8 +576,8 @@ static void Castellan_FORVESTA(int iNPC)
 			npc.m_fbGunout = true;
 			switch(GetRandomInt(0,1))
 			{
-				case 0:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_Lastman-1", false, false);
-				case 1:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_Lastman-2", false, false);
+				case 0:VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_Lastman-1");
+				case 1:VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_Lastman-2");
 			}
 		}
 	}
@@ -578,8 +590,8 @@ static void Castellan_FORVESTA(int iNPC)
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		switch(GetRandomInt(0, 1))
 		{
-			case 0:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_TimeUp-1", false, false);
-			case 1:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_TimeUp-2", false, false);
+			case 0:VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_TimeUp-1");
+			case 1:VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_TimeUp-2");
 		}
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		for(int i; i<10; i++)
@@ -644,8 +656,8 @@ static void Castellan_FORVESTA(int iNPC)
 			npc.SetPlaybackRate(1.0);
 			switch(GetRandomInt(0,1))
 			{
-				case 0:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_GetLifeLost-1", false, false);
-				case 1:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_GetLifeLost-2", false, false);
+				case 0:VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_GetLifeLost-1");
+				case 1:VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_GetLifeLost-2");
 			}
 			npc.m_flDoingAnimation = gameTime + 1.25;
 			npc.m_iState = 1;
@@ -739,9 +751,9 @@ static void Castellan_FORVESTA(int iNPC)
 				npc.PlayAngerSound();
 				switch(GetRandomInt(0,2))
 				{
-					case 0:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_LifeLost-1", false, false);
-					case 1:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_LifeLost-2", false, false);
-					case 2:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_LifeLost-3", false, false);
+					case 0:VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_LifeLost-1");
+					case 1:VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_LifeLost-2");
+					case 2:VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_LifeLost-3");
 				}
 				npc.m_iTarget = Vesta_GetTargetDistance(npc.index, true, false);
 				GetAbsOrigin(npc.m_iTarget, VecSelfNpc);
@@ -894,8 +906,8 @@ static void Castellan_ClotThink(int iNPC)
 			npc.m_fbGunout = true;
 			switch(GetRandomInt(0,1))
 			{
-				case 0:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_Lastman-1", false, false);
-				case 1:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_Lastman-2", false, false);
+				case 0:VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_Lastman-1");
+				case 1:VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_Lastman-2");
 			}
 		}
 	}
@@ -908,8 +920,8 @@ static void Castellan_ClotThink(int iNPC)
 		RaidBossActive = INVALID_ENT_REFERENCE;
 		switch(GetRandomInt(0, 1))
 		{
-			case 0:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_TimeUp-1", false, false);
-			case 1:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_TimeUp-2", false, false);
+			case 0:VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_TimeUp-1");
+			case 1:VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_TimeUp-2");
 		}
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		for(int i; i<10; i++)
@@ -955,8 +967,8 @@ static void Castellan_ClotThink(int iNPC)
 		
 		switch(GetRandomInt(0,1))
 		{
-			case 0:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_GameEnd-1", false, false);
-			case 1:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_GameEnd-2", false, false);
+			case 0:VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_GameEnd-1");
+			case 1:VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_GameEnd-2");
 		}
 		return;
 	}
@@ -1245,7 +1257,7 @@ static Action Castellan_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 		{
 			if(!CounterattackDesc)
 			{
-				NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_Counterattack", false, false);
+				VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_Counterattack");
 				CounterattackDesc=true;
 			}
 			float vecTarget[3]; WorldSpaceCenter(attacker, vecTarget);
@@ -1402,7 +1414,7 @@ static void Castellan_NPCDeath(int entity)
 	if(BlockLoseSay)
 		return;
 
-	NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_EscapePlan", false, false);
+	VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_EscapePlan");
 
 }
 static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float vecTarget[3], float distance, bool CastellanInvis)
@@ -1506,9 +1518,9 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 					ResetCastellanWeapon(npc, 3);
 					switch(GetRandomInt(0,2))
 					{
-						case 0:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_Ability1-1", false, false);
-						case 1:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_Ability1-2", false, false);
-						case 2:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_Ability1-3", false, false);
+						case 0:VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_Ability1-1");
+						case 1:VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_Ability1-2");
+						case 2:VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_Ability1-3");
 					}
 					npc.AddActivityViaSequence("layer_taunt_flag_soldier");
 					npc.SetCycle(0.01);
@@ -1620,8 +1632,8 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 				npc.m_flDoingAnimation = gameTime + 1.0;
 				switch(GetRandomInt(0,1))
 				{
-					case 0:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_Ability3-1", false, false);
-					case 1:NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_Ability3-2", false, false);
+					case 0:VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_Ability3-1");
+					case 1:VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_Ability3-2");
 				}
 				npc.m_iState = 1;
 			}
@@ -2158,19 +2170,19 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 		{
 			if(!npc.m_iHealthBar)
 			{
-				NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_Ability2-3", false, false);
+				VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_Ability2-3");
 				npc.m_flAttackHappens_2 = gameTime + 1.35;
 				npc.m_bAirStrikeTalk = 6;
 			}
 			else if(npc.m_bHalfRage)
 			{
-				NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_Ability2-2", false, false);
+				VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_Ability2-2");
 				npc.m_flAttackHappens_2 = gameTime + 1.35;
 				npc.m_bAirStrikeTalk = 3;
 			}
 			else
 			{
-				NPCPritToChat(npc.index, "{steelblue}", "Castellan_Talk_Ability2-1", false, false);
+				VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_Ability2-1");
 				npc.m_flAttackHappens_2 = gameTime + 1.65;
 				npc.m_bAirStrikeTalk = 2;
 			}
@@ -2179,7 +2191,12 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 		{
 			if(npc.m_flAttackHappens_2 < gameTime)
 			{
-				NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-7", false);
+				int support = Vesta_GetSupport(VESTA_HARRISON);
+				if (support)
+					VestaHarrison_NPCTalkMessage(support, "Harrison_Talk_Support-7");
+				else
+					NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-7", false);
+				
 				npc.m_bAirStrikeTalk=0;
 				npc.m_flAttackHappens_2=0.0;
 			}
@@ -2188,7 +2205,12 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 		{
 			if(npc.m_flAttackHappens_2 < gameTime)
 			{
-				NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-8", false);
+				int support = Vesta_GetSupport(VESTA_HARRISON);
+				if (support)
+					VestaHarrison_NPCTalkMessage(support, "Harrison_Talk_Support-8");
+				else
+					NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-8", false);
+				
 				npc.m_flAttackHappens_2 = gameTime + 0.8;
 				npc.m_bAirStrikeTalk=4;
 			}
@@ -2197,7 +2219,12 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 		{
 			if(npc.m_flAttackHappens_2 < gameTime)
 			{
-				NPCPritToChat_Override("Vesta Atomizer", "{blue}", "Atomizer_Talk_Support-3", false);
+				int support = Vesta_GetSupport(VESTA_ATOMIZER);
+				if (support)
+					VestaAtomizer_NPCTalkMessage(support, "Atomizer_Talk_Support-3");
+				else
+					NPCPritToChat_Override("Vesta Atomizer", "{blue}", "Atomizer_Talk_Support-3", false);
+				
 				npc.m_flAttackHappens_2 = gameTime + 0.6;
 				npc.m_bAirStrikeTalk=5;
 			}
@@ -2206,7 +2233,12 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 		{
 			if(npc.m_flAttackHappens_2 < gameTime)
 			{
-				NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-9", false);
+				int support = Vesta_GetSupport(VESTA_HARRISON);
+				if (support)
+					VestaHarrison_NPCTalkMessage(support, "Harrison_Talk_Support-9");
+				else
+					NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-9", false);
+				
 				npc.m_bAirStrikeTalk=0;
 				npc.m_flAttackHappens_2=0.0;
 			}
@@ -2215,7 +2247,12 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 		{
 			if(npc.m_flAttackHappens_2 < gameTime)
 			{
-				NPCPritToChat_Override("Vesta Atomizer", "{blue}", "Atomizer_Talk_Support-4", false);
+				int support = Vesta_GetSupport(VESTA_ATOMIZER);
+				if (support)
+					VestaAtomizer_NPCTalkMessage(support, "Atomizer_Talk_Support-4");
+				else
+					NPCPritToChat_Override("Vesta Atomizer", "{blue}", "Atomizer_Talk_Support-4", false);
+				
 				npc.m_flAttackHappens_2 = gameTime + 0.8;
 				npc.m_bAirStrikeTalk=7;
 			}
@@ -2224,7 +2261,12 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 		{
 			if(npc.m_flAttackHappens_2 < gameTime)
 			{
-				NPCPritToChat_Override("Vesta Huscarls", "{lightblue}", "Huscarls_Talk_Support-10", false);
+				int support = Vesta_GetSupport(VESTA_HUSCARLS);
+				if (support)
+					VestaHuscarls_NPCTalkMessage(support, "Huscarls_Talk_Support-10");
+				else
+					NPCPritToChat_Override("Vesta Huscarls", "{lightblue}", "Huscarls_Talk_Support-10", false);
+				
 				npc.m_flAttackHappens_2 = gameTime + 0.8;
 				npc.m_bAirStrikeTalk=8;
 			}
@@ -2233,7 +2275,12 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 		{
 			if(npc.m_flAttackHappens_2 < gameTime)
 			{
-				NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-10", false);
+				int support = Vesta_GetSupport(VESTA_HARRISON);
+				if (support)
+					VestaHarrison_NPCTalkMessage(support, "Harrison_Talk_Support-10");
+				else
+					NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-10", false);
+				
 				npc.m_bAirStrikeTalk=0;
 				npc.m_flAttackHappens_2=0.0;
 			}
