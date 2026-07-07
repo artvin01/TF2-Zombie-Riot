@@ -1232,7 +1232,7 @@ public void Weapon_GunsawShotgun_M1(int client, int weapon, bool crit, int slot)
 		GetClientEyePosition(client, vec);
 		GetClientEyeAngles(client, vel);
 		GetAngleVectors(vel, vel, NULL_VECTOR, NULL_VECTOR);
-		float knockback = 100.0 * ratio * KnockbackRes(client);
+		float knockback = 30.0 * ratio * KnockbackRes(client);
 		float stun = knockback / 100.0;
 
 		if(knockback > 600.0)
