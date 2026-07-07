@@ -4061,7 +4061,7 @@
 	"Shin - Rien Desc"
 	{
 		"en"	"Increases Poise gain by 1 and duration everytime poise is gained."
-		"ko"	"얻는 호흡이 1 증가하며 호흡을 얻을 때마다 지속 시간이 증가합니다."
+		"ko"	"얻는 호흡이 1 증가하며 호흡을 얻을 시 연장되는 지속 시간의 양이 증가합니다."
 	}
 	"Grace Of Prescript"
 	{
