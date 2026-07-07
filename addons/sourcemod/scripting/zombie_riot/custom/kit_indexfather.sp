@@ -365,7 +365,7 @@ static Action Timer_Base(Handle timer, DataPack pack)
 	float ClientPos[3];
 	WorldSpaceCenter(client, ClientPos);
 	//using this as its less expensive
-	AllowedToDodge[filterentity] = false;
+	AllowedToDodge[client] = false;
 	TR_EnumerateEntitiesSphere(ClientPos, 400.0, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_IndexFather, client);
 	if(OnBuyClear[client])
 	{
