@@ -11796,6 +11796,17 @@ void StatusEffects_IndexNurseFather()
 	data.SlotPriority				= 0;
 	data.TimerRepeatCall_Func 		= SizzlingWound_Timer;
 	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Indulgence in Prescripts");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "[ℬ]");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageDealMulti			= 0.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0;
+	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Furioso Charges");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ℱ");

@@ -2521,6 +2521,12 @@ void TriggerLastmanLogic(int killed, int Hurtviasdkhook)
 					
 					Yakuza_Lastman(18);
 				}
+				if(Is_Prescript_User(client))
+				{
+					CPrintToChatAll("{blue}The Prescript demands you kill everyone in your sight who apposes you {crimson}%N.",client);
+					Yakuza_Lastman(19);
+					Prescript_LastmanBuff(client);
+				}
 				
 				for(int i=1; i<=MaxClients; i++)
 				{
@@ -3580,6 +3586,7 @@ void ZR_FastDownloadForce()
 		return;
 
 	PrecacheHeartbrokenMusic();
+	PrecachePrescriptMusic();
 	PrecacheSharedDarkestMusic();
 	PrecacheTwirlMusic();
 	DwellerMusicDo();

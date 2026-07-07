@@ -3,113 +3,137 @@
 	"Prescript None Exist"
 	{
 		"en"		"Wait until the next prescript arrives."
+		"ko"		"다음 지령이 올 때까지 기다린다."
 	}
 	"Prescript Avaiable Check Device"
 	{
 		"en"		"A new prescript is available, check your device.\nIgnoring this for too long will result in consequences."
+		"ko"		"새로운 지령 도착. 단말기를 확인할 것.\n해당 사항을 오랫동안 무시할 시 결과가 따를 것임."
 	}
 	"Prescript Addition While In Air"
 	{
 		"en"		"While in the air,"
+		"ko"		"공중에 떠 있을 때,"
 	}
 	"Prescript Addition Looking Down"
 	{
 		"en"		"While looking down,"
+		"ko"		"아래를 보고 있을 때,"
 	}
 	"Prescript Addition Looking Up"
 	{
 		"en"		"While looking up,"
+		"ko"		"위를 보고 있을 때,"
 	}
 	"Prescript Addition While Crouching"
 	{
 		"en"		"While crouching,"
+		"ko"		"웅크리고 있을 때,"
 	}
 	"Prescript Stand Still"
 	{
 		"#format"	"{1:.1f}"
 		"en"		"Stand still for {1} seconds."
+		"ko"		"{1}초 동안 가만히 있는다."
 	}
 	"Prescript Kill Targets"
 	{
 		"#format"	"{1:d}"
 		"en"		"Kill atleast {1} enemies."
+		"ko"		"적을 최소 {1}명 처치한다."
 	}
 	"Prescript Use Specific Building"
 	{
 		"#format"	"{1:d},{2:s}"
 		"en"		"Use {2} building atleast {1} times."
+		"ko"		"{2} 구조물을 최소 {1}번 사용한다."
 	}
 	"Prescript Deal Damage"
 	{
 		"#format"	"{1:.0f}"
 		"en"		"Deal atleast {1} damage to enemies."
+		"ko"		"적에게 피해를 최소 {1} 가한다."
 	}
 	"Prescript Take Damage"
 	{
 		"#format"	"{1:.0f}"
 		"en"		"Take atleast {1} damage from enemies."
+		"ko"		"적에게 피해를 최소 {1} 받는다."
 	}
 	"Prescript Dont Take Damage"
 	{
 		"#format"	"{1:.1f}"
 		"en"		"Dont take damage for {1} seconds."
+		"ko"		"{1}초 동안 피해를 받지 않는다."
 	}
 	"Prescript Taunt"
 	{
 		"#format"	"{1:d}"
 		"en"		"Taunt atleast {1} times."
+		"ko"		"도발을 최소 {1}번 한다."
 	}
 	"Prescript Jump"
 	{
 		"#format"	"{1:d}"
 		"en"		"Jump atleast {1} times."
+		"ko"		"점프를 최소 {1}번 한다."
 	}
 	"Prescript Jump Specific Time"
 	{
 		"#format"	"{1:d}"
 		"en"		"Jump only {1} times until prescript time ends."
+		"ko"		"지령의 기한이 끝날 때까지 점프를 {1}번만 한다."
 	}
 	"Prescript Hit From Behind"
 	{
 		"#format"	"{1:d}"
 		"en"		"Hit a target from behind atleast {1} times."
+		"ko"		"적을 뒤에서 최소 {1}번 적중한다."
 	}
 	"Prescript Stay Away From Allies"
 	{
 		"#format"	"{1:.1f}"
 		"en"		"Stay away from allies for {1} seconds."
+		"ko"		"아군에게서 {1}초 동안 떨어져 있을 것."
 	}
 	"Prescript Talk To Ally"
 	{
 		"en"		"Talk to any ally."
+		"ko"		"아무 아군에게 말을 건다."
 	}
 	"Prescript Build Specific Building"
 	{
 		"#format"	"{1:s}"
 		"en"		"Build a {1}."
+		"ko"		"{1}를 건설한다."
 	}
 	"Prescript Dodge Successfully"
 	{
 		"#format"	"{1:d}"
 		"en"		"Dodge atleast {1} attacks from enemies."
+		"ko"		"적의 공격을 최소 {1}번 회피한다."
 	}
 	"Prescript Spin In Place"
 	{
 		"#format"	"{1:.1f}"
 		"en"		"Spin in place for atleast {1} seconds."
+		"ko"		"제자리에서 최소 {1}초 동안 회전한다."
 	}
 	"Prescript Hump Ally"
 	{
 		"#format"	"{1:.1f}"
 		"en"		"Stay behind your closest ally for {1} seconds."
+		"ko"		"가장 근접한 아군의 뒤에서 {1}초 동안 있는다."
 	}
 	"Prescript Continue"
 	{
 		"en"		"afterwards,"
+		"ko"		"그 후,"
 	}
 	"Prescript Time Limit"
 	{
 		"#format"	"{1:.1f},{2:N}"
 		"en"		"You have {1} seconds {2}."
+		"ko"		"남은 기한은 {1}초. {2}."
 	}
 }

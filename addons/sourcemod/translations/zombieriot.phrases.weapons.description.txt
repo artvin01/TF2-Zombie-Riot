@@ -3194,9 +3194,9 @@
 	}
 	"Zealot Desc"
 	{
-		"en"	"Become a workshipper of sigmar!\nRapier: headshots, m2 blocks with a healthbar.\nR: Dashes in any direction except forwards.\nHold R with revolver for rapid fire\nHitting reduces cooldowns (headshots more).\nLess backwalk penalty (0.9)\nSlow immunity."
-		"it"	"Diventa uno spedizioniere di Sigmar!\nRapier: colpi alla testa, blocchi m2 con una barra della salute.\nR: si sposta in qualsiasi direzione tranne che in avanti.\nTenere premuto R con il revolver per il fuoco rapido.\nColpire riduce i cooldown (più colpi alla testa).\nMinore penalità all'indietro (0,9)\nImmunità alla lentezza."
-		"ko"	"-레이피어: 헤드샷 가능, 우클릭을 꾹 누르면 스태미나를 소모해 방어\n-R: 아무 방향으로나 대쉬 가능.\n-R을 꾹 누른채 리볼버로 사격시 고속으로 사격\n-적중시, 쿨타임 감소(헤드샷시 추가 감소)\n-후진의 이동 속도 감소량이 10％로 감소\n-둔화 효과에 면역"
+		"en"	"Become a workshipper of sigmar!\nRapier: m2 blocks with a healthbar.\nR: Dashes in any direction except forwards.\nHold R with revolver for rapid fire\nHitting reduces cooldowns (headshots more).\nLess backwalk penalty (0.9)\nSlow immunity."
+		"it"	"Diventa uno spedizioniere di Sigmar!\nRapier:blocchi m2 con una barra della salute.\nR: si sposta in qualsiasi direzione tranne che in avanti.\nTenere premuto R con il revolver per il fuoco rapido.\nColpire riduce i cooldown (più colpi alla testa).\nMinore penalità all'indietro (0,9)\nImmunità alla lentezza."
+		"ko"	"-레이피어: 우클릭을 꾹 누르면 스태미나를 소모해 방어\n-R: 아무 방향으로나 대쉬 가능.\n-R을 꾹 누른채 리볼버로 사격시 고속으로 사격\n-적중시, 쿨타임 감소(헤드샷시 추가 감소)\n-후진의 이동 속도 감소량이 10％로 감소\n-둔화 효과에 면역"
 	}
 	"Zealot Pap 1 Desc"
 	{
@@ -4763,6 +4763,11 @@
 	"Father Dash Denie Spam"
 	{
 		"en" 		"You cant dash, you must hit someone with your weapon at least once!"
+		"ko" 		"현재 대쉬할 수 없습니다. 당신의 무기로 적을 최소 1회 이상 타격해야 합니다!"
+	}
+	"Father Near Enemy Dodge"
+	{
+		"en" 		"You have to be near enemies to dodge!"
 	}
 	"Potion of Vigor"
 	{
@@ -5565,7 +5570,7 @@
 	"The Commander Desc"
 	{
 		"en"	"A kit based on having your own army and supporting it, consists of:\n-A revolver for resources and support, a shotgun for dmg and healing and,later, buffing your troops\n-A wrench"
-		"ko"	"자신만의 군대를 양성하고 지원하는데 기반 키트입니다:\n-자원 및 지원을 위한 리볼버 보유\n-피해와 지원을 위한 산탄총 보유, 추후에 버프 역시 지원\n-렌치 보유"
+		"ko"	"자신만의 군대를 양성하고 지원하는데 기반한 키트입니다:\n-자원 및 지원을 위한 리볼버 보유\n-피해와 지원을 위한 산탄총 보유, 추후에 버프 역시 지원\n-렌치 보유"
 	}
 	"The Marker"
 	{
@@ -5705,38 +5710,47 @@
 	"The Index Nursefather Desc"
 	{
 		"en"    "The Will of Hermes.\n-Cycle between 9 weapons with varying damage.\n-Receive prescripts you MUST complete within a time limit to gain Grace.\n-Failing heavily debuffs you for a long time.\n-Press m2 to dash and dodge all attacks below a damage threshold"
+		"ko"	"헤르메스의 의지.\n-주기적으로 각기 다른 피해량을 가진 9개의 무기 사이를 전환\n-제한 시간 내에 ''반드시'' 수행해야하는 지령을 받습니다.(완료 시 가호 획득)\n-지령을 수행하지 못할 시 긴 시간 동안 큰 디버프를 받습니다.\n-우클릭 시 대쉬하며, 일정량 이하의 피해를 가하는 모든 공격을 회피"
 	}
 	"The Index Nursefather Desc 1"
 	{
 		"en"    "-+1 Grace cap and stat increases.\n-Hatchet gives extra poise.\n-Stiletto inflicts Sinking.\n-Rapier and Lance inflict Fragility.\n-Bastard Sword gives a damage buff. \n-Scythe deals far higher damage"
+		"ko"	"-가호 최대치 +1 및 능력치 증가\n-손도끼 적중 시 호흡 획득량 증가\n-스틸레토가 침잠을 부여\n-레이피어와 랜스가 취약 부여\n-바스타드 소드가 피해량 버프 부여\n-낫이 더 높은 피해를 가함"
 	}
 	"The Index Nursefather Desc 2"
 	{
 		"en"    "-+1 Grace cap and stat increases.\n-All weapon hits now give poise.\n-Poise gives a higher chance to crit.(31％ chance at max poise)"
+		"ko"	"-가호 최대치 +1 및 능력치 증가\n-적중 시 호흡 획득이 모든 무기에 적용\n-호흡은 치명타 확률을 증가시킴(최대 누적 시 31％)"
 	}
 	"The Index Nursefather Desc 3"
 	{
 		"en"    "-+1 Grace cap and stat increases.\n-Unlocks Furioso(R): a high damage combo ability.\n-Requires 6 Grace stacks and a hit from all weapons."
+		"ko"	"-가호 최대치 +1 및 능력치 증가\n-'Furioso' 해금(R키): 높은 피해량을 가진 콤보 능력\n-지령의 가호가 6 이상이어야 하며 모든 무기로 공격이 1번은 적중해야 함"
 	}
 	"The Index Nursefather Desc 4"
 	{
 		"en"    "-+1 Grace cap and stat increases.\n-Unlocks Shin.\n-Gain Shin permanently when obtaining your first Furioso.\n-Shin increases poise gain and duration."
+		"ko"	"-가호 최대치 +1 및 능력치 증가\n-'신' 해금\n-처음으로 Furioso 사용이 가능해질 시 영구적으로 신을 얻음\n-신은 호흡 획득량과 지속시간을 증가시킴"
 	}
 	"The Index Nursefather Desc 5"
 	{
 		"en"    "-+1 Grace cap and stat increases.\n-Unlocks Sizzling Wound.\n-Can Self Revive once every 6 minutes (R).\n-Self Reviving or using Furioso gives Sizzling Wound.\n-Sizzling Wound gives increased damage but randomly gives you burn and bleed."
+		"ko"	"-가호 최대치 +1 및 능력치 증가\n-'이글거리는 상처' 해금\n-다운 시 R키로 자가 부활 가능(쿨다운 6분)\n-자가 부활 시, 혹은 Furioso 사용 시 이글거리는 상처 획득\n-이글거리는 상처는 피해량 증가를 제공하나 무작위로 화상과 출혈을 부여"
 	}
 	"The Index Nursefather Desc 6"
 	{
 		"en"    "-+1 Grace cap and stat increases."
+		"ko"	"-가호 최대치 +1 및 능력치 증가"
 	}
 	"The Index Nursefather Desc 7"
 	{
 		"en"    "-Stat increases"
+		"ko"	"-능력치 증가"
 	}
 	"The Index Nursefather Desc 8"
 	{
 		"en"    "-Stat increases"
+		"ko"	"-능력치 증가"
 	}
 	"Gunsaw Mercenary Desc"
 	{

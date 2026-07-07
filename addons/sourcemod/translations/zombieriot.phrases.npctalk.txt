@@ -940,7 +940,7 @@
 	"CaptinoMenius_Talk-1-1"
 	{
 		"en"	"As a reminder, we are here to stop Vesta’s stealthy invasion towards Ziberia"
-		"ko"	"다시한번 자네들에게 우리 임무를 상기시켜주자면 우리는 자이베리아에서 일어나는 베스타인들의 비밀스러운 침공을 저지하는것이고"
+		"ko"	"다시한번 자네들에게 우리 임무를 상기시켜주자면 우리는 지베리아에서 일어나는 베스타인들의 비밀스러운 침공을 저지하는것이고"
 	}
 	"CaptinoMenius_Talk-1-2"
 	{

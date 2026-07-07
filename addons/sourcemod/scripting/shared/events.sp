@@ -277,7 +277,6 @@ public Action OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 	Waves_RoundEnd();
 	Escape_RoundEnd();
 	Rogue_RoundEnd();
-	Construction_RoundEnd();
 	BetWar_RoundEnd();
 	CurrentGame = 0;
 	RoundStartTime = 0.0;
