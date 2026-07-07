@@ -24,6 +24,7 @@ static int i_FuriosoReady[MAXPLAYERS];
 static float f_FuriosoLastmanForce[MAXPLAYERS];
 //static float f_FuriosoCooldown[MAXPLAYERS];
 static float f_FuriosoInUse[MAXPLAYERS];
+static float f_PatCooldown[MAXPLAYERS];
 static int i_FuriosoHits[MAXPLAYERS];
 static int WeaponLevel[MAXPLAYERS];
 static float OnBuyClear[MAXPLAYERS];
@@ -143,6 +144,7 @@ enum PrescriptType
 	PT_HumpAlly,			//Spam W and S behind an ally
 
 	PT_MAX,
+	PT_PatExpi,				//Press R on an allied expi user
 }
 enum struct Prescript
 {
@@ -187,6 +189,7 @@ public void IndexFather_ResetAllStats()
 	Zero(OnBuyClear);
 	Zero(DashesBeforeHitMust);
 	Zero(f_FuriosoLastmanForce);
+	Zero(f_PatCooldown);
 }
 public void IndexFather_MapStart()
 {
@@ -622,11 +625,17 @@ void IndexFather_GeneratePrescript(int client, bool ForceNew, int PrescriptForce
 	EmitSoundToClient(client, g_RecieveNewPrescript[GetRandomInt(0, sizeof(g_RecieveNewPrescript) - 1)], client, SNDCHAN_STATIC, 80, _, 0.8, 110);
 	CurrentPrescript[client] = new ArrayList(sizeof(ThePrescript));
 	ThePrescript data;
-
+	bool WasSpecial = false;
+	if(DoSpecialPrescript() && PrescriptForce == 0)
+	{
+		PrescriptForce = view_as<int>(PT_PatExpi);
+		WasSpecial = true;
+	}
 	data.Timelimit = GetGameTime() + GetRandomFloat(75.0,120.0);
 	Prescript data2;
 	IndexFather_SelectRandomGoal(client, data2, PrescriptForce);
-	IndexFather_SelectRandomAddition(data2);
+	if(WasSpecial)
+		IndexFather_SelectRandomAddition(data2);
 	data.CurrentGoal_1 = data2;
 	
 	if(GetRandomInt(1,4) == 1 && !PrescriptForce)
@@ -739,6 +748,10 @@ void IndexFather_ReturnTextInfo(int client, Prescript data, char[] CharToEnter, 
 		{
 			Format(CharToEnter, SizeofChar, "%s%T",CharToEnter, "Prescript Hump Ally", client, data.Goal);
 		}
+		case PT_PatExpi:
+		{
+			Format(CharToEnter, SizeofChar, "%s%T",CharToEnter, "Prescript Pat Expi", client);
+		}
 	}
 }
 void IndexFather_SelectRandomGoal(int client, Prescript data, int PrescriptForce = 0)
@@ -832,6 +845,10 @@ void IndexFather_SelectRandomGoal(int client, Prescript data, int PrescriptForce
 		case PT_HumpAlly:
 		{
 			data.Goal = float(GetRandomInt(2, 3));
+		}
+		case PT_PatExpi:
+		{
+			data.Goal = float(1);
 		}
 		default:
 		{
@@ -1023,6 +1040,47 @@ public void IndexFather_BuildEntity(int client, int buildobject)
 }
 public void IndexFather_InteractAlly(int client, int InteractedEntity)
 {
+	bool WasExpiInteract = false;
+	if(IsValidClient(InteractedEntity) && Gunsaw_IsMerc(InteractedEntity))
+	{
+		if(f_PatCooldown[client] < GetGameTime())
+		{
+			f_PatCooldown[client] = GetGameTime() + 0.15;
+			WasExpiInteract = true;
+			float flPos[3];
+			float flAng[3];
+			int viewmodelModel;
+			viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[InteractedEntity]);
+			if(IsValidEntity(viewmodelModel))
+			{
+				GetAttachment(viewmodelModel, "head", flPos, flAng);
+				flPos[2] -= 12.0;
+				flAng[0] += GetRandomFloat(-10.0,10.0);
+				flAng[1] += GetRandomFloat(-10.0,10.0);
+				flAng[2] += GetRandomFloat(-10.0,10.0);
+				int projectile = Wand_Projectile_Spawn(client, 25.0, 3.0, 0.0, -1, -1, "",flAng,true, flPos);
+				float Velocity[3];
+				Velocity[0] = GetRandomFloat(-10.0,10.0);
+				Velocity[1] = GetRandomFloat(-10.0,10.0);
+				Velocity[2] = 25.0;
+				TeleportEntity(projectile, _, _, Velocity);
+				int Text_Entity = SpawnFormattedWorldText("*pat*", {0.0,0.0,1.0}, 4,{65,65,255,255}, projectile);
+				SDKCall_SetLocalAngles(Text_Entity, flAng);
+				SetEntityRenderMode(Text_Entity, RENDER_TRANSCOLOR);
+				//re-use
+				i_EntityRenderColourSave[Text_Entity][0] = 65;
+				i_EntityRenderColourSave[Text_Entity][1] = 65;
+				i_EntityRenderColourSave[Text_Entity][2] = 255;
+				i_EntityRenderColourSave[Text_Entity][3] = 255;
+				CreateTimer(0.3, PropFadeManual, EntIndexToEntRef(Text_Entity), TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(3.0, Timer_RemoveEntity, EntIndexToEntRef(Text_Entity), TIMER_FLAG_NO_MAPCHANGE);
+
+			}
+			ApplyStatusEffect(client, InteractedEntity, "Comfort in Hard Times", 90.0);
+			ApplyStatusEffect(client, client, "Comfort in Hard Times", 90.0);
+			
+		}
+	}
 	if(CurrentPrescript[client] == null)
 	{
 		return;
@@ -1058,6 +1116,14 @@ public void IndexFather_InteractAlly(int client, int InteractedEntity)
 					ApplyChange = true;
 					data2.Current += 1.0;
 				}
+			}
+		}
+		case PT_PatExpi:
+		{
+			if(WasExpiInteract)
+			{
+				ApplyChange = true;
+				data2.Current += 1.0;
 			}
 		}
 	}
@@ -1738,6 +1804,13 @@ public void IndexFather_DodgeLogic(int client)
 			return;
 
 		holding[client] |= IN_ATTACK2;
+		
+		float pos[3];
+		StartPlayerOnlyLagComp(client, true);
+		int target = GetClientPointVisiblePlayersNPCs(client, 100.0, pos, false);
+		EndPlayerOnlyLagComp(client);
+		if(IsValidEntity(target))
+			IndexFather_InteractAlly(client, target);
 	}
 
 	//only continune if they tapped reload.
@@ -2116,4 +2189,43 @@ bool IndexFather_BlockPrescripts()
 		return false;
 
 	return Waves_InSetup();
+}
+
+
+bool DoSpecialPrescript()
+{
+	bool WasAExpi = false;
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsEntityAlive(client) && Gunsaw_IsMerc(client))
+		{
+			WasAExpi = true;
+			break;
+		}
+	}
+	if(WasAExpi)
+	{
+		if(GetRandomInt(1,50))
+			return true;
+	}
+	return false;
+}
+public Action PropFadeManual(Handle timer, any entid)
+{
+	int entity = EntRefToEntIndex(entid);
+	if(IsValidEntity(entity) && entity>MaxClients)
+	{
+		char sColor[32];
+		i_EntityRenderColourSave[entity][3] -= 25;
+		if(i_EntityRenderColourSave[entity][3] <= 0)
+			i_EntityRenderColourSave[entity][3] = 0;
+		Format(sColor, sizeof(sColor), " %d %d %d %d ",
+		 i_EntityRenderColourSave[entity][0],
+		  i_EntityRenderColourSave[entity][1],
+		   i_EntityRenderColourSave[entity][2],
+		    i_EntityRenderColourSave[entity][3]);
+		DispatchKeyValue(entity,	 "color", sColor);
+		CreateTimer(0.1, PropFadeManual, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+	}
+	return Plugin_Stop;
 }

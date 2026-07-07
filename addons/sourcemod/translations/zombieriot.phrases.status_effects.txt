@@ -4111,4 +4111,12 @@
 	{
 		"en"	"Inflictor deals 15％ of damage dealt as bleed over 3 seconds."
 	}
+	"Comfort in Hard Times"
+	{
+		"en"	"Indulgence in Prescripts"
+	}
+	"Comfort in Hard Times Desc"
+	{
+		"en"	"Recived or given pats by the Index Nursefather after losing someone else...\nIncreases damage by 10.0％, reduces damage taken by 10.0％"
+	}
 }

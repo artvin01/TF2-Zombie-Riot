@@ -11842,6 +11842,18 @@ void StatusEffects_IndexNurseFather()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0;
 	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Comfort in Hard Times");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "^^");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageDealMulti			= 0.1;
+	data.DamageTakenMulti			= 0.9;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= true;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0;
+	StatusEffect_AddGlobal(data);
 }
 
 static void SizzlingWound_Timer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)

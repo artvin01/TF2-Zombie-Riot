@@ -125,6 +125,10 @@
 		"en"		"Stay behind your closest ally for {1} seconds."
 		"ko"		"가장 근접한 아군의 뒤에서 {1}초 동안 있는다."
 	}
+	"Prescript Pat Expi"
+	{
+		"en"		"Pat an Expi or simular."
+	}
 	"Prescript Continue"
 	{
 		"en"		"afterwards,"
