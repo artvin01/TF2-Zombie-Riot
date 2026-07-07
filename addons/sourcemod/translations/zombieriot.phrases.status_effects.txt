@@ -4086,10 +4086,12 @@
 	"Indulgence in Prescripts"
 	{
 		"en"	"Indulgence in Prescripts"
+		"ko"	"지령 탐닉"
 	}
 	"Indulgence in Prescripts Desc"
 	{
 		"en"	"Increases damage by 10.0％ multiplicatively, Removed upon losing a prescript\nGained when doing a prescript while already at max grace."
+		"ko"	"공격 피해량이 곱연산으로 10.0% 증가합니다. 지령 수행 실패 시 사라집니다.\n지령 수행 횟수가 최대에 도달한 상태에서 지령 수행 시 이 버프를 얻습니다."
 	}
 	"Karmic Consequence"
 	{
