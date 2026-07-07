@@ -11808,7 +11808,7 @@ void StatusEffects_IndexNurseFather()
 	StatusEffect_AddGlobal(data);
 
 	strcopy(data.BuffName, sizeof(data.BuffName), "Furioso Charges");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ℱ");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	data.DamageDealMulti			= 0.0;
 	data.Positive 					= true;
@@ -11820,7 +11820,7 @@ void StatusEffects_IndexNurseFather()
 	StatusEffect_AddGlobal(data);
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Furioso Ability");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "ℱ");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	data.DamageDealMulti			= 0.0;
 	data.Positive 					= true;
