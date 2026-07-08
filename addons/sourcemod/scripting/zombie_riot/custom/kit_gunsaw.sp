@@ -1403,7 +1403,7 @@ public void Weapon_GunsawPistol_M2(int client, int weapon, bool crit, int slot)
 	}
 
 	int health = ReturnEntityMaxHealth(client);
-	HealEntityGlobal(client, client, health, 5.0, 1.5, HEAL_SELFHEAL);
+	HealEntityGlobal(client, client, float(health), 5.0, 1.5, HEAL_SELFHEAL);
 	DrugNerf[client] += 200;
 	Monologue_Drug(client);
 }
