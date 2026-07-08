@@ -1552,6 +1552,13 @@ public void ConVarCallback_r_teeth(QueryCookie cookie, int client, ConVarQueryRe
 	}
 }
 
+public void OnClientConnected(int client)
+{
+#if defined ZR
+	Store_ResetClient(client);
+#endif
+}
+
 public void OnClientPostAdminCheck(int client)
 {
 #if defined ZR
