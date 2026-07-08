@@ -10767,7 +10767,7 @@ void CallOfHeartBroken_Start(int victim, StatusEffect Apply_MasterStatusEffect, 
 	//
 	//no downs
 	i_AmountDowned[victim] = 55;
-	if(OwnerAttach == -1 || !IsEntityAlive(OwnerAttach))
+	if(OwnerAttach == -1 || !IsEntityAlive(OwnerAttach, _, true))
 	{
 		SDKHooks_TakeDamage(victim, victim, victim, 99999.0, DMG_TRUEDAMAGE, _, _, _, true);
 		ForcePlayerSuicide(victim);
