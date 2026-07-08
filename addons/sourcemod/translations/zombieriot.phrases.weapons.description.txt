@@ -5721,7 +5721,7 @@
 	"The Index Nursefather Desc 2"
 	{
 		"en"    "-+1 Grace cap and stat increases.\n-All weapon hits now give poise.\n-Dodges gives poise\n-Poise gives a higher chance to crit.(62％ chance at max poise)"
-		"ko"	"-가호 최대치 +1 및 능력치 증가\n-적중 시 호흡 획득이 모든 무기에 적용\n-공격 회피 시 호흡 획득\n-호흡은 치명타 확률을 증가시킴(최대 누적 시 31％)"
+		"ko"	"-가호 최대치 +1 및 능력치 증가\n-적중 시 호흡 획득이 모든 무기에 적용\n-공격 회피 시 호흡 획득\n-호흡은 치명타 확률을 증가시킴(최대 누적 시 62％)"
 	}
 	"The Index Nursefather Desc 3"
 	{
