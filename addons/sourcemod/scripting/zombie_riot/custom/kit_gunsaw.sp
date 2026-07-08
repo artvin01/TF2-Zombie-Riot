@@ -1161,6 +1161,9 @@ static Action GunsawHudTimer(Handle timer, DataPack pack)
 
 			return Plugin_Continue;
 		}
+		//dont do timer stuff when player is dead
+		if(!IsEntityAlive(client, false, true))
+			return Plugin_Continue;
 
 		WeaponTimer[client] = null;
 		Weapon_GunsawMelee_Unequip(client);
@@ -1658,6 +1661,8 @@ static void AddGun(int rank, int slot, const char[] name, int level)
 
 static void PlayMonologue(int client, const char[] text, bool fast = false, bool shake = false)
 {
+	if(!IsEntityAlive(client, false, true))
+		return;
 	float pain = 1.0 - (GetClientHealth(client) / float(ReturnEntityMaxHealth(client)));
 
 	char buffer[256];
