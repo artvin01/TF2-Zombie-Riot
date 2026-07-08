@@ -14,10 +14,8 @@
 #if !defined RTS
 #include <tf2attributes>
 #endif
-//#include <lambda>
 #include <morecolors>
 #include <cbasenpc>
-//#include <tf2utils>
 #include <profiler>
 #include <collisionhook>
 #include <sourcescramble>
@@ -3433,7 +3431,6 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	else if (condition == TFCond_Slowed && IsPlayerAlive(client))
 	{
 		SDKCall_SetSpeed(client);
-		ViewChange_Update(client);
 	}
 #if defined ZR
 	else if (condition == TFCond_Taunting && (BetWar_Mode() || f_PreventMovementClient[client] > GetGameTime()))
@@ -3463,6 +3460,12 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 			case TFCond_Slowed:
 			{
 				SDKCall_SetSpeed(client);
+				Viewchange_UpdateDelay(client);
+			}
+			case TFCond_Dazed:
+			{
+				//a sec is 66, and after 33 it should be done
+				Viewchange_UpdateDelay(client, 33);
 			}
 			case TFCond_Taunting:
 			{

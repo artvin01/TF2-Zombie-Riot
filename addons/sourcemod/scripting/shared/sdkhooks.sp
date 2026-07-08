@@ -2481,7 +2481,6 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 		if(!CheckInHud())
 		{
 			i_WasInJarate[victim] = VS_GetPlayerCondDuration(victim, TFCond_Jarated);
-			PrintToChatAll("i_WasInJarate[victim] %.f",i_WasInJarate[victim]);
 			TF2_RemoveCondition(victim, TFCond_Jarated);
 		}
 		damage *= 1.35;

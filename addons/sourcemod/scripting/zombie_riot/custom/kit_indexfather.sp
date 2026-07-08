@@ -1748,8 +1748,12 @@ float Func_Dodge_TakeDamage(int attacker, int victim, StatusEffect Apply_MasterS
 		return 1.0;
 	}
 	int DmgCapLvl = WeaponLevel[victim];
-	float RMC_damage_cap = 50.0 + (float(DmgCapLvl) * 5.0);
-
+	float RMC_damage_cap = 75.0 + (float(DmgCapLvl) * 40.0);
+	if(damagetype & DMG_CLUB)
+	{
+		//if its melee damage, you dodge 2x as harder attacks
+		RMC_damage_cap *= 2.0;
+	}
 	int DrainDashes = 1;
 	if(b_thisNpcIsARaid[attacker])
 	{

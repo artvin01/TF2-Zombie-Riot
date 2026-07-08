@@ -5843,13 +5843,13 @@
 	"Explosive Barrel Desc"
 	{
 		"en"	"Explodes when destroyed"
-  }
+	}
 	"Index Father Dodge"
 	{
 		"en" "Index Father Dodge"
 	}
 	"Index Father Dodge Desc"
 	{
-		"en" "When dashing, you dodge attacks for the next 0.5 seconds\nDodge attacks fully upto a damage treshhold (upgrades)\nIf damage is too high, you take 0.75x dmg instead."
+		"en" "When dashing, you dodge attacks for the next 0.5 seconds\nDodge attacks fully upto a damage treshhold (upgrades, melee dmg is 2x more lenient)\nIf damage is too high, you take 0.75x dmg instead."
 	}
 }

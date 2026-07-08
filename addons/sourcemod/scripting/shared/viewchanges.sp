@@ -358,15 +358,15 @@ public void AntiSameFrameUpdateRemove0(int client)
 }
 
 
-void Viewchange_UpdateDelay(int client)
+void Viewchange_UpdateDelay(int client, int frames = 1)
 {
-	RequestFrame(Viewchange_UpdateDelay_Internal, EntIndexToEntRef(client));
+	RequestFrames(Viewchange_UpdateDelay_Internal, frames, EntIndexToEntRef(client));
 }
 
 void Viewchange_UpdateDelay_Internal(int ref)
 {
 	int client = EntRefToEntIndex(ref);
-	if(IsValidClient(client))
+	if(!IsValidClient(client))
 		return;
 
 	ViewChange_Update(client);
