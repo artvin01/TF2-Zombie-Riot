@@ -1448,7 +1448,7 @@ public void Weapon_GunsawMelee_M1(int client, int weapon, bool &crit, int slot)
 		SDKUnhook(building, SDKHook_Think, BuildingPickUp);
 		ResetPlayer_BuildingBeingCarried(client);
 		Building_BuildingBeingCarried[building] = 0;
-		b_ThisEntityIgnored[building] = true;
+		b_ThisEntityIgnored[building] = false;
 		b_ThisEntityIgnoredByOtherNpcsAggro[building] = true;
 
 		i_TraceToInstead[prop] = building;
