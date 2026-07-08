@@ -2730,7 +2730,7 @@ static void Monologue_Idle(int client)
 
 void Gunsaw_Monologue_OnTakeDamage(int client, float damage)
 {
-	if(damage < 100.0 || !Gunsaw_IsMerc(client))
+	if(CheckInHud() || damage < 100.0 || !Gunsaw_IsMerc(client))
 		return;
 	
 	int maxhealth = ReturnEntityMaxHealth(client);
