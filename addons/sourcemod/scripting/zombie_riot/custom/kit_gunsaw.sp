@@ -2954,3 +2954,42 @@ static void Monologue_BodySwap(int client)
 
 	PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
 }
+
+bool Gunsaw_KillBind(int client)
+{
+	if(!Gunsaw_IsMerc(client))
+		return false;
+	
+	static float cooldown[MAXPLAYERS];
+	if(fabs(cooldown[client] - GetGameTime()) < 3.0)
+		return false;
+
+	static const char dialogue[][] =
+	{
+		"...Uuuhh... ...What is this beeping...?",
+		"...Oh. Oh. OH. OH! NO. NO NO NO. WAIT. WHY? WHAT DID I DO!?",
+		"...A-ah... Alright... W-well... G-goodbye, t-then..."
+	};
+
+	PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)], true);
+
+	EmitSoundToAll("mvm/sentrybuster/mvm_sentrybuster_spin.wav", client, _, 50, _, 0.7, 75);
+	CreateTimer(2.3, Timer_Explode, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
+	return true;
+}
+
+static Action Timer_Explode(Handle timer, int userid)
+{
+	int client = GetClientOfUserId(userid);
+	if(client && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
+	{
+		ClientCommand(client, "dsp_player %d", 32 + (GetURandomInt() % 3));
+
+		float pos[3];
+		WorldSpaceCenter(client, pos);
+		TE_Particle("ExplosionCore_buildings", pos, NULL_VECTOR, NULL_VECTOR, _, _, _, _, _, _, _, _, _, _, 0.0);
+		ForcePlayerSuicide(client, true);
+	}
+
+	return Plugin_Continue;
+}
