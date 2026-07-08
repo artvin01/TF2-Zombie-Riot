@@ -2924,16 +2924,11 @@ public void OnEntityCreated(int entity, const char[] classname)
 			b_IsARespawnroomVisualiser[entity] = true;
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
 		}
-		else if(!StrContains(classname, "prop_physics_multiplayer"))
+		else if(!StrContains(classname, "prop_soccer_ball") ||
+		!StrContains(classname, "prop_physics_multiplayer")||
+		!StrContains(classname, "prop_physics_override"))
 		{
 			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
-			npc.bCantCollidie = true;
-			npc.bCantCollidieAlly = true;
-		}
-		else if(!StrContains(classname, "prop_physics_override"))
-		{
-			b_ThisEntityIsAProjectileForUpdateContraints[entity] = true;
-			
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 		}
@@ -3465,7 +3460,7 @@ public void TF2_OnConditionRemoved(int client, TFCond condition)
 			case TFCond_Dazed:
 			{
 				//a sec is 66, and after 33 it should be done
-				Viewchange_UpdateDelay(client, 33);
+				Viewchange_UpdateDelay(client, 25);
 			}
 			case TFCond_Taunting:
 			{

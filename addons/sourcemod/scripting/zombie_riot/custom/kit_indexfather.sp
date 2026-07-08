@@ -1654,7 +1654,7 @@ void IndexFather_GrantVial(int client)
 	{
 		TF2_RemoveItem(client, EntRefToEntIndex(i_PreviousWeapon[client]));
 	}
-	Store_SwapToItem(client, Store_SpawnSpecificItem(client, "Golden Vial With a Chain"));
+	Store_SwapToItem(client, Store_SpawnSpecificItem(client, "Golden Vial With a Chain"), true);
 //	for(int i; i < sizeof(g_AllWeaponsExist); i++)
 //	{
 //		Store_RemoveSpecificItem(client, g_AllWeaponsExist[i]);
@@ -1719,7 +1719,7 @@ void IndexFather_GrantRandomWeapon(int client, int originalweapon, int ForceWeap
 	Attributes_SetAdd(weapon_index, 180, Attributes_Get(originalweapon, 180, 1.0));
 	EmitSoundToAll(g_AquireNewWeapon[GetRandomInt(0, sizeof(g_AquireNewWeapon) - 1)], client, SNDCHAN_STATIC, 70, _, 0.5, 100);
 	i_PreviousWeapon[client] = EntIndexToEntRef(weapon_index);
-	Store_SwapToItem(client, weapon_index);
+	Store_SwapToItem(client, weapon_index, true);
 }
 void Func_DodgesHud(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
 {
