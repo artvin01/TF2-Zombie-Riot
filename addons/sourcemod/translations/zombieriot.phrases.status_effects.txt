@@ -4121,6 +4121,6 @@
 	"Comfort in Hard Times Desc"
 	{
 		"en"	"Received or given pats by the Index Nursefather after losing someone else...\nIncreases damage by 5.0％, reduces damage taken by 5.0％"
-		"ko"	"다른 누군가를 잃은 후 검지 아비에게 쓰다듬을 받았습니다...\n공격 피해량이 5％ 증가합니다. 받는 피해량이 5％ 감소합니다."
+		"ko"	"어느 누군가를 잃은 후, 검지 아비에게(로써) 쓰다듬을 받았습니다(해주었습니다)...\n공격 피해량이 5％ 증가합니다. 받는 피해량이 5％ 감소합니다."
 	}
 }
