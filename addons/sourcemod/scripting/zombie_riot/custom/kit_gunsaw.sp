@@ -1720,7 +1720,7 @@ static void PlayMonologue(int client, const char[] text, bool fast = false, bool
 
 	if(pain > 0.5)
 	{
-		MonologueSpeed[client] = 0.5 * pain * pain;
+		MonologueSpeed[client] = 0.2 * pain;
 
 		if(fast)
 			MonologueSpeed[client] *= 0.4;
@@ -2949,7 +2949,7 @@ void Gunsaw_Monologue_LoudPrefix()
 
 static void Monologue_BodySwap(int client)
 {
-	if(!Gunsaw_IsMerc(client) || (LastMonologue[client] + 20.0) > GetGameTime())
+	if(!Gunsaw_IsMerc(client) || (LastMonologue[client] + 10.0) > GetGameTime())
 		return;
 	
 	static const char dialogue[][] =
