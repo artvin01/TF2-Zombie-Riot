@@ -2086,7 +2086,10 @@ void Store_ClientDisconnect(int client)
 	Store_WeaponSwitch(client, -1);
 	
 	Database_SaveGameData(client, DBPrio_High);
+}
 
+void Store_ResetClient(int client)
+{
 	CashSpent[client] = 0;
 	CashSpentGivePostSetup[client] = 0;
 	CashSpentGivePostSetupWarning[client] = false;
