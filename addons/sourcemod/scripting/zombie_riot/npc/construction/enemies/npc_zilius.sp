@@ -80,7 +80,7 @@ static const char g_SlicerHitSound[][] = {
 	"ambient/machines/slicer4.wav",
 };
 
-
+static int NPCID;
 public void Construction_Raid_Zilius_OnMapStart()
 {
 	NPCData data;
@@ -92,10 +92,13 @@ public void Construction_Raid_Zilius_OnMapStart()
 	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = Zilius_TBB_Precahce;
-	NPC_Add(data);
+	NPCID = NPC_Add(data);
 }
 
-
+int Zilius_ID()
+{
+	return NPCID;
+}
 
 void Zilius_TBB_Precahce()
 {
@@ -310,6 +313,11 @@ methodmap Construction_Raid_Zilius < CClotBody
 		public get()		{	return this.m_iMedkitAnnoyance;	}
 		public set(int value) 	{	this.m_iMedkitAnnoyance = value;	}
 	}
+	property bool m_bBossRush
+	{
+		public get()							{ return b_FUCKYOU[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_FUCKYOU[this.index] = TempValueForProperty; }
+	}
 	public void SayStuffZilius()
 	{
 		//one in 3 chance.
@@ -433,6 +441,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 			i_RaidGrantExtra[npc.index] = 1;
 		}
 		
+		npc.m_bBossRush = bossrush;
 		if (bossrush)
 		{
 			RaidAllowsBuildings = false;
@@ -1065,6 +1074,7 @@ void Zilius_SpawnAllyDuoRaid(int ref)
 	int entity = EntRefToEntIndex(ref);
 	if(IsValidEntity(entity))
 	{
+		Construction_Raid_Zilius npc = view_as<Construction_Raid_Zilius>(entity);
 		float pos[3]; GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 		int maxhealth;
@@ -1076,9 +1086,10 @@ void Zilius_SpawnAllyDuoRaid(int ref)
 		int spawn_index = NPC_CreateByName("npc_zeina_prisoner", -1, pos, ang, GetTeam(entity));
 		if(spawn_index > MaxClients)
 		{
-			Construction_Raid_Zilius npc = view_as<Construction_Raid_Zilius>(spawn_index);
-			npc.m_iTargetAlly = entity;
+			ZeinaPrisoner npcSummon = view_as<ZeinaPrisoner>(spawn_index);
+			npcSummon.m_iTargetAlly = entity;
 			NpcStats_CopyStats(entity, spawn_index);
+			npcSummon.m_bBossRush = npc.m_bBossRush;
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);

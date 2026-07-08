@@ -85,6 +85,12 @@ methodmap ZeinaPrisoner < CClotBody
 		
 		
 	}
+	property bool m_bBossRush
+	{
+		public get()							{ return b_FUCKYOU[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_FUCKYOU[this.index] = TempValueForProperty; }
+	}
+	
 	public ZeinaPrisoner(float vecPos[3], float vecAng[3], int ally)
 	{
 		ZeinaPrisoner npc = view_as<ZeinaPrisoner>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "50000", ally));
@@ -118,15 +124,15 @@ methodmap ZeinaPrisoner < CClotBody
 		{
 			case 1:
 			{
-				NPCTalkMessage(npc.index, "He took me as a prisoner, help!");
+				Zeina_NPCTalkMessage(npc.index, "He took me as a prisoner, help!");
 			}
 			case 2:
 			{
-				NPCTalkMessage(npc.index, "I never liked your side of expidonsa...");
+				Zeina_NPCTalkMessage(npc.index, "I never liked your side of expidonsa...");
 			}
 			case 3:
 			{
-				NPCTalkMessage(npc.index, "This is not the solution..! {black}Zilius{default}!");
+				Zeina_NPCTalkMessage(npc.index, "This is not the solution..! {black}Zilius{default}!");
 			}
 		}
 		
@@ -201,7 +207,7 @@ methodmap ZeinaPrisoner < CClotBody
 	}
 }
 
-static void NPCTalkMessage(int entity, const char[] message)
+void Zeina_NPCTalkMessage(int entity, const char[] message)
 {
 	PrintNPCMessageWithPrefixes(entity, "snow", message);
 }
@@ -296,22 +302,29 @@ public void ZeinaPrisoner_NPCDeath(int entity)
 	{
 		case 1:
 		{
-			NPCTalkMessage(npc.index, "You freed me..!");
+			Zeina_NPCTalkMessage(npc.index, "You freed me..!");
 		}
 		case 2:
 		{
-			NPCTalkMessage(npc.index, "Thank you!! Ill help you!");
+			Zeina_NPCTalkMessage(npc.index, "Thank you!! Ill help you!");
 		}
 		case 3:
 		{
-			NPCTalkMessage(npc.index, "Face this {black}Zilius{default}!");
+			Zeina_NPCTalkMessage(npc.index, "Face this {black}Zilius{default}!");
 		}
 	}
 	CPrintToChatAll("{black}Zilius{default}...");
 	float pos[3]; GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
 	float ang[3]; GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 
-	NPC_CreateByName("npc_zeinafree", -1, pos, ang, TFTeam_Red);
+	int spawn_index = NPC_CreateByName("npc_zeinafree", -1, pos, ang, TFTeam_Red);
+	if(spawn_index > MaxClients)
+	{
+		ZeinaFreeFollower npcSummon = view_as<ZeinaFreeFollower>(spawn_index);
+		npcSummon.m_iTargetAlly = entity;
+		NpcStats_CopyStats(entity, spawn_index);
+		npcSummon.m_bBossRush = npc.m_bBossRush;
+	}
 	
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 	ParticleEffectAt(WorldSpaceVec, "teleported_blue", 0.5);

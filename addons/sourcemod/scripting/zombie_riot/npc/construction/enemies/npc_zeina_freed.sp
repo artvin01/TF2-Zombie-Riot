@@ -66,7 +66,11 @@ methodmap ZeinaFreeFollower < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
 	}
-	
+	property bool m_bBossRush
+	{
+		public get()							{ return b_FUCKYOU[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_FUCKYOU[this.index] = TempValueForProperty; }
+	}
 	public ZeinaFreeFollower(float vecPos[3], float vecAng[3],int ally, const char[] data)
 	{
 		ZeinaFreeFollower npc = view_as<ZeinaFreeFollower>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "50000", ally, true));
@@ -154,6 +158,35 @@ static void ClotThink(int iNPC)
 		return;
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
+	
+	if (npc.m_bBossRush)
+	{
+		bool escape = true;
+		int a, entity1;
+		// Go away when there's no Zilius
+		while((entity1 = FindEntityByNPC(a)) != -1)
+		{
+			if(IsValidEntity(entity1) && i_NpcInternalId[entity1] == Zilius_ID())
+			{
+				escape = false;
+				break;
+			}
+		}
+		
+		if (escape)
+		{
+			RequestFrame(KillNpc, EntIndexToEntRef(npc.index));
+			switch (GetURandomInt() % 2)
+			{
+				case 0:
+					Zeina_NPCTalkMessage(npc.index, "I'm off! Thank you for rescuing me!");
+				
+				case 1:
+					Zeina_NPCTalkMessage(npc.index, "Thank you everyone! Good luck with the simulation!");
+			}
+			return;
+		}
+	}
 
 	float VecSelfNpcabs[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", VecSelfNpcabs);
 	ZeinaFreed_ApplyBuffInLocation(VecSelfNpcabs, GetTeam(npc.index), npc.index);
@@ -268,6 +301,9 @@ static void ClotThink(int iNPC)
 static void ClotDeath(int entity)
 {
 	ZeinaFreeFollower npc = view_as<ZeinaFreeFollower>(entity);
+	
+	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
+	ParticleEffectAt(WorldSpaceVec, "teleported_red", 0.5);
 
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
