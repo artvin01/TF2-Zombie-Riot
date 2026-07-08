@@ -14,6 +14,7 @@ static float f_HoldBasicVialTime[MAXPLAYERS];
 static int i_CurrentWeaponSet[MAXPLAYERS];
 static int i_MasterWeapon[MAXPLAYERS];
 static int i_DodgesAvailable[MAXPLAYERS] = {25, ...};
+static float f_MinimumDashCD[MAXPLAYERS];
 static float f_DodgeCooldown[MAXPLAYERS];
 static float f_DodgeBetweenDashes[MAXPLAYERS];
 static float f_DodgeActive[MAXPLAYERS];
@@ -24,6 +25,7 @@ static int i_FuriosoReady[MAXPLAYERS];
 static float f_FuriosoLastmanForce[MAXPLAYERS];
 //static float f_FuriosoCooldown[MAXPLAYERS];
 static float f_FuriosoInUse[MAXPLAYERS];
+static float f_PatCooldown[MAXPLAYERS];
 static int i_FuriosoHits[MAXPLAYERS];
 static int WeaponLevel[MAXPLAYERS];
 static float OnBuyClear[MAXPLAYERS];
@@ -31,6 +33,7 @@ static bool WasARaidboss[MAXPLAYERS];
 static int DashesBeforeHitMust[MAXPLAYERS];
 static bool Precached;
 static bool AllowedToDodge[MAXPLAYERS];
+static bool DoneLastmanSecret;
 #define IDX_FURI_WEAPON_1	 	(1 << 1)
 #define IDX_FURI_WEAPON_2		(1 << 2)
 #define IDX_FURI_WEAPON_3	 	(1 << 3)
@@ -143,6 +146,7 @@ enum PrescriptType
 	PT_HumpAlly,			//Spam W and S behind an ally
 
 	PT_MAX,
+	PT_PatExpi,				//Press R on an allied expi user
 }
 enum struct Prescript
 {
@@ -173,6 +177,7 @@ public void IndexFather_ResetAllStats()
 	Zero(i_CurrentWeaponSet);
 	Zero(i_DodgesAvailable);
 	Zero(f_DodgeCooldown);
+	Zero(f_MinimumDashCD);
 	Zero(f_DodgeBetweenDashes);
 	Zero(f_DodgeActive);
 	Zero(f_ResetMoveSpeedPenalty);
@@ -187,6 +192,7 @@ public void IndexFather_ResetAllStats()
 	Zero(OnBuyClear);
 	Zero(DashesBeforeHitMust);
 	Zero(f_FuriosoLastmanForce);
+	Zero(f_PatCooldown);
 }
 public void IndexFather_MapStart()
 {
@@ -201,6 +207,7 @@ public void IndexFather_MapStart()
 	PrecacheSoundArray(g_FuriosoFinalHit);
 	PrecacheSoundArray(g_SizzlingWoundSound);
 	IndexFather_ResetAllStats();
+	DoneLastmanSecret = false;
 	Precached = false;
 }
 public void IndexFather_PluginStart()
@@ -211,6 +218,14 @@ public void IndexFather_PluginStart()
 	RegAdminCmd("sm_prescript_burntest", Command_GiveBurntest, ADMFLAG_ROOT, "Enable PVP");
 }
 
+bool IndexExpi_LastmanSecret()
+{
+	if(DoneLastmanSecret)
+		return false;
+	
+	DoneLastmanSecret = true;
+	return true;
+}
 void PrecachePrescriptMusic()
 {
 	if(!Precached)
@@ -473,7 +488,7 @@ static Action Timer_Base(Handle timer, DataPack pack)
 		ApplyStatusEffect(client, client, "Grace Of Prescript Fancy", 1.0);
 	}
 
-	bool DoSwitch = false;
+	int DoSwitch = 0;
 	int weaponActive = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(f_FuriosoInUse[client] && f_FuriosoInUse[client] <= GetGameTime())
 	{
@@ -482,16 +497,26 @@ static Action Timer_Base(Handle timer, DataPack pack)
 	if(!LastMann)
 		f_FuriosoLastmanForce[client] = 0.0;
 	if(weaponActive == EntRefToEntIndex(i_PreviousWeapon[client]))
-		DoSwitch = true;
+		DoSwitch = 1;
 	if(!IsValidEntity(i_PreviousWeapon[client]))
-		DoSwitch = true;
-	if(weapon != weaponActive && DoSwitch)
+		DoSwitch = 2;
+	if((weapon != weaponActive && DoSwitch == 1) || DoSwitch == 2)
 	{
-		if(f_HoldBasicVialTime[client] && f_HoldBasicVialTime[client] < GetGameTime())
+		if(DoSwitch == 2 || f_HoldBasicVialTime[client] && f_HoldBasicVialTime[client] < GetGameTime())
 		{
-			IndexFather_GrantRandomWeapon(client, weapon);
-			f_HoldBasicVialTime[client] = 0.0;
-			f_SwitchWeaponsRandomly[client] = GetGameTime() + 10.0;
+			if(DoSwitch == 2)
+			{
+				if(i_CurrentWeaponSet[client] == -1)
+					IndexFather_GrantVial(client);
+				else
+					IndexFather_GrantRandomWeapon(client, weapon, i_CurrentWeaponSet[client]);
+			}
+			else
+			{
+				f_HoldBasicVialTime[client] = 0.0;
+				f_SwitchWeaponsRandomly[client] = GetGameTime() + 10.0;
+				IndexFather_GrantRandomWeapon(client, weapon);
+			}
 		}
 		if(f_SwitchWeaponsRandomly[client] < GetGameTime())
 		{
@@ -622,11 +647,17 @@ void IndexFather_GeneratePrescript(int client, bool ForceNew, int PrescriptForce
 	EmitSoundToClient(client, g_RecieveNewPrescript[GetRandomInt(0, sizeof(g_RecieveNewPrescript) - 1)], client, SNDCHAN_STATIC, 80, _, 0.8, 110);
 	CurrentPrescript[client] = new ArrayList(sizeof(ThePrescript));
 	ThePrescript data;
-
+	bool WasSpecial = false;
+	if(DoSpecialPrescript() && PrescriptForce == 0)
+	{
+		PrescriptForce = view_as<int>(PT_PatExpi);
+		WasSpecial = true;
+	}
 	data.Timelimit = GetGameTime() + GetRandomFloat(75.0,120.0);
 	Prescript data2;
 	IndexFather_SelectRandomGoal(client, data2, PrescriptForce);
-	IndexFather_SelectRandomAddition(data2);
+	if(!WasSpecial)
+		IndexFather_SelectRandomAddition(data2);
 	data.CurrentGoal_1 = data2;
 	
 	if(GetRandomInt(1,4) == 1 && !PrescriptForce)
@@ -739,6 +770,10 @@ void IndexFather_ReturnTextInfo(int client, Prescript data, char[] CharToEnter, 
 		{
 			Format(CharToEnter, SizeofChar, "%s%T",CharToEnter, "Prescript Hump Ally", client, data.Goal);
 		}
+		case PT_PatExpi:
+		{
+			Format(CharToEnter, SizeofChar, "%s%T",CharToEnter, "Prescript Pat Expi", client);
+		}
 	}
 }
 void IndexFather_SelectRandomGoal(int client, Prescript data, int PrescriptForce = 0)
@@ -832,6 +867,10 @@ void IndexFather_SelectRandomGoal(int client, Prescript data, int PrescriptForce
 		case PT_HumpAlly:
 		{
 			data.Goal = float(GetRandomInt(2, 3));
+		}
+		case PT_PatExpi:
+		{
+			data.Goal = float(1);
 		}
 		default:
 		{
@@ -1023,6 +1062,48 @@ public void IndexFather_BuildEntity(int client, int buildobject)
 }
 public void IndexFather_InteractAlly(int client, int InteractedEntity)
 {
+	bool WasExpiInteract = false;
+	if(IsValidClient(InteractedEntity) && Gunsaw_IsMerc(InteractedEntity))
+	{
+		if(f_PatCooldown[client] < GetGameTime())
+		{
+			f_PatCooldown[client] = GetGameTime() + 0.15;
+			WasExpiInteract = true;
+			float flPos[3];
+			float flAng[3];
+			int viewmodelModel;
+			viewmodelModel = EntRefToEntIndex(i_Viewmodel_PlayerModel[InteractedEntity]);
+			if(IsValidEntity(viewmodelModel))
+			{
+				GetAttachment(viewmodelModel, "head", flPos, flAng);
+				flPos[2] -= 8.0;
+				flAng[0] += GetRandomFloat(-10.0,10.0);
+				flAng[1] += GetRandomFloat(-10.0,10.0);
+				flAng[2] += GetRandomFloat(-10.0,10.0);
+				int projectile = Wand_Projectile_Spawn(client, 25.0, 3.0, 0.0, -1, -1, "",flAng,true, flPos);
+				float Velocity[3];
+				Velocity[0] = GetRandomFloat(-10.0,10.0);
+				Velocity[1] = GetRandomFloat(-10.0,10.0);
+				Velocity[2] = 25.0;
+				TeleportEntity(projectile, _, _, Velocity);
+				int Text_Entity = SpawnFormattedWorldText("*pat*", {0.0,0.0,1.0}, 4,{65,65,255,255}, projectile);
+				SDKCall_SetLocalAngles(Text_Entity, flAng);
+				SetEntityRenderMode(Text_Entity, RENDER_TRANSCOLOR);
+				//re-use
+				i_EntityRenderColourSave[Text_Entity][0] = 65;
+				i_EntityRenderColourSave[Text_Entity][1] = 65;
+				i_EntityRenderColourSave[Text_Entity][2] = 255;
+				i_EntityRenderColourSave[Text_Entity][3] = 255;
+				CreateTimer(0.3, PropFadeManual, EntIndexToEntRef(Text_Entity), TIMER_FLAG_NO_MAPCHANGE);
+				CreateTimer(3.0, Timer_RemoveEntity, EntIndexToEntRef(Text_Entity), TIMER_FLAG_NO_MAPCHANGE);
+
+			}
+			ApplyStatusEffect(client, InteractedEntity, "Comfort in Hard Times", 90.0);
+			ApplyStatusEffect(client, client, "Comfort in Hard Times", 90.0);
+			Gunsaw_Monologue_Pet(InteractedEntity);
+			
+		}
+	}
 	if(CurrentPrescript[client] == null)
 	{
 		return;
@@ -1058,6 +1139,14 @@ public void IndexFather_InteractAlly(int client, int InteractedEntity)
 					ApplyChange = true;
 					data2.Current += 1.0;
 				}
+			}
+		}
+		case PT_PatExpi:
+		{
+			if(WasExpiInteract)
+			{
+				ApplyChange = true;
+				data2.Current += 1.0;
 			}
 		}
 	}
@@ -1293,7 +1382,7 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 			EmitSoundToClient(attacker, g_FuriosoSlashIndicator[GetRandomInt(0, sizeof(g_FuriosoSlashIndicator) - 1)], victim, SNDCHAN_STATIC, 80, _, 1.0, 100 + (i_FuriosoHits[attacker] * 5));
 		}
 		ResetFurioso = true;
-		f_DodgeCooldown[attacker] = 0.0;
+		f_DodgeCooldown[attacker] = GetGameTime() + IndexFather_DashCooldown(attacker);
 		if(i_DodgesAvailable[attacker] <= (IndexFather_DodgeMaxReturn(attacker) / 2))
 			i_DodgesAvailable[attacker] = IndexFather_DodgeMaxReturn(attacker) / 2;
 			
@@ -1393,6 +1482,8 @@ void IndexFather_PrescriptEnd(int client, bool Win)
 	if(Win)
 	{
 		float NewScript = GetRandomFloat(120.0, 180.0);	
+		if(MaxPrescriptGrace(client)-3 > GraceOfPrescript[client])
+			NewScript *= 0.25;
 		if(GraceOfPrescript[client] >= MaxPrescriptGrace(client))
 			ApplyStatusEffect(client, client, "Indulgence in Prescripts", NewScript);
 		EmitSoundToClient(client, g_SuccessPrescript[GetRandomInt(0, sizeof(g_SuccessPrescript) - 1)], client, SNDCHAN_STATIC, 80, _, 0.8, 110);
@@ -1405,6 +1496,8 @@ void IndexFather_PrescriptEnd(int client, bool Win)
 	{
 		EmitSoundToClient(client, g_FailPrescript[GetRandomInt(0, sizeof(g_FailPrescript) - 1)], client, SNDCHAN_STATIC, 80, _, 0.8, 110);
 		float NewScript = GetRandomFloat(80.0, 120.0);
+		if(MaxPrescriptGrace(client)-3 > GraceOfPrescript[client])
+			NewScript *= 0.25;
 		PrescriptCooldown[client] = NewScript + GetGameTime();
 		PrescriptPunishPlayerIgnoring[client] = (NewScript * 2.0) + GetGameTime();
 		ApplyStatusEffect(client, client, "Karmic Consequence", 45.0);
@@ -1561,7 +1654,7 @@ void IndexFather_GrantVial(int client)
 	{
 		TF2_RemoveItem(client, EntRefToEntIndex(i_PreviousWeapon[client]));
 	}
-	Store_SwapToItem(client, Store_SpawnSpecificItem(client, "Golden Vial With a Chain"));
+	Store_SwapToItem(client, Store_SpawnSpecificItem(client, "Golden Vial With a Chain"), true);
 //	for(int i; i < sizeof(g_AllWeaponsExist); i++)
 //	{
 //		Store_RemoveSpecificItem(client, g_AllWeaponsExist[i]);
@@ -1626,23 +1719,21 @@ void IndexFather_GrantRandomWeapon(int client, int originalweapon, int ForceWeap
 	Attributes_SetAdd(weapon_index, 180, Attributes_Get(originalweapon, 180, 1.0));
 	EmitSoundToAll(g_AquireNewWeapon[GetRandomInt(0, sizeof(g_AquireNewWeapon) - 1)], client, SNDCHAN_STATIC, 70, _, 0.5, 100);
 	i_PreviousWeapon[client] = EntIndexToEntRef(weapon_index);
-	Store_SwapToItem(client, weapon_index);
+	Store_SwapToItem(client, weapon_index, true);
 }
 void Func_DodgesHud(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
 {
-	if(!f_DodgeCooldown[victim] && i_DodgesAvailable[victim] <= 0)
+	if(f_DodgeCooldown[victim] < GetGameTime())
 	{
-		f_DodgeCooldown[victim] = GetGameTime() + 15.0;
-	}
-	if(f_DodgeCooldown[victim] && f_DodgeCooldown[victim] < GetGameTime())
-	{
-		f_DodgeCooldown[victim] = 0.0;
+		f_DodgeCooldown[victim] = GetGameTime() + IndexFather_DashCooldown(victim);
 		i_DodgesAvailable[victim] = IndexFather_DodgeMaxReturn(victim);
 	}
-	if(f_DodgeCooldown[victim] > GetGameTime())
+	if(i_DodgesAvailable[victim] >= IndexFather_DodgeMaxReturn(victim))
+		Format(HudToDisplay, SizeOfChar, "⮌(%i)", i_DodgesAvailable[victim]);
+	else if(i_DodgesAvailable[victim] <= 0)
 		Format(HudToDisplay, SizeOfChar, "⮌(%.1fs)", f_DodgeCooldown[victim] - GetGameTime());
 	else
-		Format(HudToDisplay, SizeOfChar, "⮌(%i)", i_DodgesAvailable[victim]);
+		Format(HudToDisplay, SizeOfChar, "⮌(%i / %.1fs)", i_DodgesAvailable[victim], f_DodgeCooldown[victim] - GetGameTime());
 }
 float Func_Dodge_TakeDamage(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float damage)
 {
@@ -1657,9 +1748,12 @@ float Func_Dodge_TakeDamage(int attacker, int victim, StatusEffect Apply_MasterS
 		return 1.0;
 	}
 	int DmgCapLvl = WeaponLevel[victim];
-	float RMC_damage_cap = 50.0 + float(DmgCapLvl) * 5.0;
-
-
+	float RMC_damage_cap = 75.0 + (float(DmgCapLvl) * 40.0);
+	if(damagetype & DMG_CLUB)
+	{
+		//if its melee damage, you dodge 2x as harder attacks
+		RMC_damage_cap *= 2.0;
+	}
 	int DrainDashes = 1;
 	if(b_thisNpcIsARaid[attacker])
 	{
@@ -1675,30 +1769,37 @@ float Func_Dodge_TakeDamage(int attacker, int victim, StatusEffect Apply_MasterS
 	}
 	if(DoDodge)
 	{
-		i_DodgesAvailable[victim] -= DrainDashes;
+		if(f_MinimumDashCD[victim] < GetGameTime())
+			i_DodgesAvailable[victim] -= DrainDashes;
 		IndexFather_AllyDodgedAttack(victim);
 		DoDodgeEffect(victim);
 		if(WeaponLevel[victim] >= 2)
 			StatusEffects_PoiseAddStuff(victim, 1, 2.0);
+
+		//prevent losing all dahes in a nano second
+		f_MinimumDashCD[victim] = GetGameTime() + 0.05;
 		if(i_DodgesAvailable[victim] <= 0)
 		{
 			i_DodgesAvailable[victim] = 0;
-			f_DodgeCooldown[victim] = GetGameTime() + 15.0;
 		}
+		f_DodgeCooldown[victim] = GetGameTime() + IndexFather_DashCooldown(victim);
 		return 0.0;
 	}
 	else
 	{
 		//fail....
-		i_DodgesAvailable[victim] -= DrainDashes;
+		if(f_MinimumDashCD[victim] < GetGameTime())
+			i_DodgesAvailable[victim] -= DrainDashes;
 		DoDodgeEffect(victim);
 		if(WeaponLevel[victim] >= 2)
 			StatusEffects_PoiseAddStuff(victim, 1, 2.0);
+
+		f_MinimumDashCD[victim] = GetGameTime() + 0.05;
 		if(i_DodgesAvailable[victim] <= 0)
 		{
 			i_DodgesAvailable[victim] = 0;
-			f_DodgeCooldown[victim] = GetGameTime() + 15.0;
 		}
+		f_DodgeCooldown[victim] = GetGameTime() + IndexFather_DashCooldown(victim);
 		return 0.75;
 	}
 }	
@@ -1738,6 +1839,13 @@ public void IndexFather_DodgeLogic(int client)
 			return;
 
 		holding[client] |= IN_ATTACK2;
+		
+		float pos[3];
+		StartPlayerOnlyLagComp(client, true);
+		int target = GetClientPointVisiblePlayersNPCs(client, 100.0, pos, false);
+		EndPlayerOnlyLagComp(client);
+		if(IsValidEntity(target))
+			IndexFather_InteractAlly(client, target);
 	}
 
 	//only continune if they tapped reload.
@@ -1821,8 +1929,8 @@ public void IndexFather_DodgeLogic(int client)
 	if(i_DodgesAvailable[client] <= 0)
 	{
 		i_DodgesAvailable[client] = 0;
-		f_DodgeCooldown[client] = GetGameTime() + 15.0;
 	}
+	f_DodgeCooldown[client] = GetGameTime() + IndexFather_DashCooldown(client);
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(IsValidEntity(weapon))
 		Rogue_OnAbilityUse(client, weapon);
@@ -2077,9 +2185,8 @@ int IndexFather_MaxStacksForFurioso(int client)
 	int ReduceBy = GraceOfPrescript[client];
 	ReduceBy -= 6;
 	if(ReduceBy < 0)
-		ReduceBy = 1;
-
-	return 9 - ReduceBy;
+		ReduceBy = 0;
+	return 8 - ReduceBy;
 }
 
 void IndexFather_AllyDodgedAttack(int client)
@@ -2116,4 +2223,49 @@ bool IndexFather_BlockPrescripts()
 		return false;
 
 	return Waves_InSetup();
+}
+
+
+bool DoSpecialPrescript()
+{
+	bool WasAExpi = false;
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsEntityAlive(client) && Gunsaw_IsMerc(client))
+		{
+			WasAExpi = true;
+			break;
+		}
+	}
+	if(WasAExpi)
+	{
+		if(GetRandomInt(1,50) == 1)
+			return true;
+	}
+	return false;
+}
+public Action PropFadeManual(Handle timer, any entid)
+{
+	int entity = EntRefToEntIndex(entid);
+	if(IsValidEntity(entity) && entity>MaxClients)
+	{
+		char sColor[32];
+		i_EntityRenderColourSave[entity][3] -= 25;
+		if(i_EntityRenderColourSave[entity][3] <= 0)
+			i_EntityRenderColourSave[entity][3] = 0;
+		Format(sColor, sizeof(sColor), " %d %d %d %d ",
+		 i_EntityRenderColourSave[entity][0],
+		  i_EntityRenderColourSave[entity][1],
+		   i_EntityRenderColourSave[entity][2],
+		    i_EntityRenderColourSave[entity][3]);
+		DispatchKeyValue(entity,	 "color", sColor);
+		CreateTimer(0.1, PropFadeManual, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+	}
+	return Plugin_Stop;
+}
+
+
+float IndexFather_DashCooldown(int client)
+{
+	return (15.0 * CooldownReductionAmount(client));
 }

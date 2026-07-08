@@ -25,6 +25,11 @@ void Commands_PluginStart()
 	AddCommandListener(OnJoinClass, "joinclass");
 #endif
 
+#if defined ZR
+	AddCommandListener(OnKillBind, "kill");
+	AddCommandListener(OnKillBind, "explode");
+#endif
+
 } 
 
 public Action OnClientCommandKeyValues(int client, KeyValues kv)
@@ -407,3 +412,10 @@ bool DoInteractKeyLogic(float angles[3], int client)
 	EndPlayerOnlyLagComp(client);
 	return Success;
 }
+
+#if defined ZR
+static Action OnKillBind(int client, const char[] command, int args)
+{
+	return Gunsaw_KillBind(client) ? Plugin_Handled : Plugin_Continue;
+}
+#endif

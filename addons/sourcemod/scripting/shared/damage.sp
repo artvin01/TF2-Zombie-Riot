@@ -1092,6 +1092,8 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 				return Player_OnTakeDamage_Fractal(victim, damage, damagePosition,attacker);
 		}
 	}
+
+	Gunsaw_Monologue_OnTakeDamage(victim, damage);
 	return damage;
 }
 

@@ -506,7 +506,7 @@ int ReplicateClient_RollAngle[MAXPLAYERS];
 bool b_StickyIsSticking[MAXENTITIES];
 
 float f_EntityRenderColour[MAXENTITIES][3];
-int i_EntityRenderColourSave[MAXENTITIES][3];
+int i_EntityRenderColourSave[MAXENTITIES][4];
 
 int i_Wearable[MAXENTITIES][10];
 int i_FreezeWearable[MAXENTITIES];

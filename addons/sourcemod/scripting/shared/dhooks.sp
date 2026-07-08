@@ -1461,7 +1461,8 @@ public MRESReturn DHook_ForceRespawn(int client)
 		if(GetClientTeam(client) != 3)
 			SetTeam(client, 3);
 #endif
-		TF2Util_SetPlayerRespawnTimeOverride(client, FAR_FUTURE);
+	//	TF2Util_SetPlayerRespawnTimeOverride(client, FAR_FUTURE);
+	//for what reason?
 		return MRES_Supercede;
 	}
 	
@@ -1903,7 +1904,7 @@ public MRESReturn Dhook_BlowHorn_Post(int entity)
 */
 public MRESReturn Dhook_PulseFlagBuff(Address pPlayerShared)
 {
-	int client = TF2Util_GetPlayerFromSharedAddress(pPlayerShared);
+	int client = GetPlayerFromShared(pPlayerShared);
 
 	if(PersonInitiatedHornBlow[client])
 	{

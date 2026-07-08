@@ -110,5 +110,6 @@ static bool ClotInteract(int client, int weapon, ObjectHealingStation npc)
 
 	HealEntityGlobal(owner, client, HealAmmount, _, 3.0, _);
 	ApplyStatusEffect(owner, client, "Fridge Food", 5.0);
+	Gunsaw_Monologue_UseFridge(client);
 	return true;
 }

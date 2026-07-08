@@ -4879,7 +4879,10 @@ public void Citizen_ClotThink(int iNPC)
 				{
 					WorldSpaceCenter(client, vecTarget);
 					if(GetVectorDistance(vecTarget, vecMe, true) < distance)
+					{
 						talkingTo = client;
+						Gunsaw_Monologue_LiveExpieReaction(talkingTo, npc.index);
+					}
 				}
 				
 				if(talkingTo)
@@ -5021,6 +5024,10 @@ void Citizen_LiveCitizenReaction(int entity)
 			view_as<Citizen>(talkingTo).m_flidle_talk = 0.0;
 			CreateTimer(3.0, Citizen_ReactionTimer, EntIndexToEntRef(talkingTo), TIMER_FLAG_NO_MAPCHANGE);
 		}
+		else
+		{
+			Gunsaw_Monologue_LiveExpieReaction(talkingTo, entity);
+		}
 	}
 }
 
@@ -5074,6 +5081,10 @@ void Citizen_PlayerDeath(int client)
 			view_as<Citizen>(talker).PlaySound(Cit_AllyDeathQuestion);
 			if(talkingTo)
 				CreateTimer(2.0, Citizen_DeathTimer, EntIndexToEntRef(talkingTo), TIMER_FLAG_NO_MAPCHANGE);
+		}
+		else
+		{
+			Gunsaw_Monologue_PlayerDeath(vecMe);
 		}
 	}
 }

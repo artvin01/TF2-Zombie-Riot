@@ -382,7 +382,7 @@ void WeaponZealot_OnTakeDamage(int attacker, int victim, float &damage)
 	//Anti delay
 	if(Zealot_BonusMeleeDamageDuration[attacker] > GetGameTime())
 	{
-		Zealot_BonusMeleeDamage[attacker] += 0.05;
+		Zealot_BonusMeleeDamage[attacker] += 0.1;
 		if(Zealot_BonusMeleeDamage[attacker] >= 1.5)
 		{	
 			Zealot_BonusMeleeDamage[attacker] = 1.5;

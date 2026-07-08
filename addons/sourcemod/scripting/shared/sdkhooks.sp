@@ -2344,6 +2344,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				*/
 
 				Dungeon_PlayerDowned(victim);
+				Gunsaw_Monologue_OnDowned(victim);
 				
 				ApplyRapidSuturing(victim);
 				ExtinguishTargetDebuff(victim);
@@ -2467,19 +2468,19 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 {
 	if(!CheckInHud() && TF2_IsPlayerInCondition(victim, TFCond_MarkedForDeath))
 	{
-		i_WasInMarkedForDeath[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_MarkedForDeath);
+		i_WasInMarkedForDeath[victim] = VS_GetPlayerCondDuration(victim, TFCond_MarkedForDeath);
 		TF2_RemoveCondition(victim, TFCond_MarkedForDeath);
 	}
 	if(!CheckInHud() && TF2_IsPlayerInCondition(victim, TFCond_MarkedForDeathSilent))
 	{
-		i_WasInMarkedForDeathSilent[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_MarkedForDeathSilent);
+		i_WasInMarkedForDeathSilent[victim] = VS_GetPlayerCondDuration(victim, TFCond_MarkedForDeathSilent);
 		TF2_RemoveCondition(victim, TFCond_MarkedForDeathSilent);
 	}
 	if(TF2_IsPlayerInCondition(victim, TFCond_Jarated))
 	{
 		if(!CheckInHud())
 		{
-			i_WasInJarate[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_Jarated);
+			i_WasInJarate[victim] = VS_GetPlayerCondDuration(victim, TFCond_Jarated);
 			TF2_RemoveCondition(victim, TFCond_Jarated);
 		}
 		damage *= 1.35;
@@ -2488,7 +2489,7 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 	{
 		if(!CheckInHud())
 		{
-			i_WasInDefenseBuff[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_DefenseBuffed);
+			i_WasInDefenseBuff[victim] = VS_GetPlayerCondDuration(victim, TFCond_DefenseBuffed);
 			TF2_RemoveCondition(victim, TFCond_DefenseBuffed);
 		}
 		if(!(damagetype & DMG_TRUEDAMAGE))
@@ -2496,7 +2497,7 @@ void Replicate_Damage_Medications(int victim, float &damage, int damagetype)
 	}
 	if(!CheckInHud() && TF2_IsPlayerInCondition(victim, TFCond_RuneResist))
 	{
-		i_WasInResPowerup[victim] = TF2Util_GetPlayerConditionDuration(victim, TFCond_RuneResist);
+		i_WasInResPowerup[victim] = VS_GetPlayerCondDuration(victim, TFCond_RuneResist);
 		TF2_RemoveCondition(victim, TFCond_RuneResist);
 		//This is purely visual, it doesnt grant anything by itself.
 	}
@@ -2638,6 +2639,8 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 				}
 			}
 			LouderSoundStop = false;
+
+			Gunsaw_Monologue_LoudPrefix();
 		}
 	}
 /*

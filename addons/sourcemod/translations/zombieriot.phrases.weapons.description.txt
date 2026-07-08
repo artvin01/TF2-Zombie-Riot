@@ -5720,7 +5720,7 @@
 	}
 	"The Index Nursefather Desc 2"
 	{
-		"en"    "-+1 Grace cap and stat increases.\n-All weapon hits now give poise.\n-Dodges gives poise\n-Poise gives a higher chance to crit.(31％ chance at max poise)"
+		"en"    "-+1 Grace cap and stat increases.\n-All weapon hits now give poise.\n-Dodges gives poise\n-Poise gives a higher chance to crit.(62％ chance at max poise)"
 	}
 	"The Index Nursefather Desc 3"
 	{
@@ -5765,6 +5765,10 @@
 		"en"	"-Increased damage and building health\n-Increased maximum body swap health\n-Shotgun can now fire all bullets in clip using M2\n  -Damage based on bullets in clip\n  -Knockbacks user, can be lethal"
 	}
 	"Gunsaw Mercenary Pap 3"
+	{
+		"en"	"-Increased damage and building health\n-Increased maximum body swap health\n-Can inject self with opiate while holding the pistol using M2\n  -Provides x2 your max health as barrier that decays over time\n  -Reduces your max health that slowly regenerates back over time"
+	}
+	"Gunsaw Mercenary Pap 4"
 	{
 		"en"	"-Increased damage and building health\n-Increased maximum body swap health"
 	}
@@ -5839,13 +5843,13 @@
 	"Explosive Barrel Desc"
 	{
 		"en"	"Explodes when destroyed"
-  }
+	}
 	"Index Father Dodge"
 	{
 		"en" "Index Father Dodge"
 	}
 	"Index Father Dodge Desc"
 	{
-		"en" "When dashing, you dodge attacks for the next 0.5 seconds\nDodge attacks fully upto a damage treshhold (upgrades)\nIf damage is too high, you take 0.75x dmg instead."
+		"en" "When dashing, you dodge attacks for the next 0.5 seconds\nDodge attacks fully upto a damage treshhold (upgrades, melee dmg is 2x more lenient)\nIf damage is too high, you take 0.75x dmg instead."
 	}
 }
