@@ -453,7 +453,7 @@ static void ApplyGunsawStats(int ref)
 					health = cap;
 				
 				if(ModelEffect[client] == Body_Boss)
-					cap *= 1.2;
+					cap *= 1.4;
 
 				// More effective health = more fat
 				float fat = (health * MaxMulti / cap) - 1.0;
@@ -1095,17 +1095,16 @@ static Action GunsawHudTimer(Handle timer, DataPack pack)
 						if(Armor_Charge[client] < maxarmor)
 							GiveArmorViaPercentage(client, 0.01, 1.0);
 					}
-					/*
 					case Body_Boss:
 					{
 						int maxhealth = ReturnEntityMaxHealth(client);
-						float decrease = (LastSwap[client] - GetGameTime()) / 1000.0;
-						if(decrease < 0.5)
+						float decrease = (GetGameTime() - LastSwap[client]) / 1000.0;
+						if(decrease > 0.5)
 							decrease = 0.5;
 						
 						int health = GetClientHealth(client);
 						int cap = RoundToCeil(maxhealth * (1.0 - decrease));
-						if(cap > health)
+						if(health > cap)
 						{
 							health -= RoundToCeil(maxhealth * decrease * decrease);
 							if(health < cap)
@@ -1114,7 +1113,6 @@ static Action GunsawHudTimer(Handle timer, DataPack pack)
 							SetEntityHealth(client, health);
 						}
 					}
-					*/
 				}
 			}
 
@@ -1127,7 +1125,7 @@ static Action GunsawHudTimer(Handle timer, DataPack pack)
 				int overheal = maxhealth;// * 3 / 2;
 				if(health > overheal)
 				{
-					health -= (maxhealth * (health / maxhealth) / 100);
+					health -= (maxhealth * (health / maxhealth) / 50);
 					if(health < overheal)
 						health = overheal;
 					
@@ -1393,13 +1391,19 @@ public void Weapon_GunsawPistol_M2(int client, int weapon, bool crit, int slot)
 		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_Check_Cooldown(client, slot));
 		return;
 	}
-	
+
 	Rogue_OnAbilityUse(client, weapon);
 	ClientCommand(client, "playgamesound items/powerup_pickup_plague_infected.wav");
 	Ability_Apply_Cooldown(client, slot, 20.0);
 
+	if(DrugNerf[client] > 798)
+	{
+		SDKHooks_TakeDamage(client, 0, 0, 999999.9, DMG_TRUEDAMAGE);
+		return;
+	}
+
 	int health = ReturnEntityMaxHealth(client);
-	HealEntityGlobal(client, client, health * 2.0, 5.0, 1.5, HEAL_SELFHEAL);
+	HealEntityGlobal(client, client, float(health), 5.0, 1.5, HEAL_SELFHEAL);
 	DrugNerf[client] += 200;
 	Monologue_Drug(client);
 }
@@ -1840,9 +1844,9 @@ static void MonologueThink(int client)
 		
 		float pos[3];
 		GetEntPropVector(text, Prop_Data, "m_vecOrigin", pos);
-		pos[0] += GetRandomFloat(-MonologueShake[client], MonologueShake[client]) * 10.0;
-		pos[1] += GetRandomFloat(-MonologueShake[client], MonologueShake[client]) * 10.0;
-		pos[2] += y * 10.0;
+		pos[0] += GetRandomFloat(-MonologueShake[client], MonologueShake[client]) * 40.0;
+		pos[1] += GetRandomFloat(-MonologueShake[client], MonologueShake[client]) * 40.0;
+		pos[2] += y * 40.0;
 		TeleportEntity(text, pos);
 	}
 
