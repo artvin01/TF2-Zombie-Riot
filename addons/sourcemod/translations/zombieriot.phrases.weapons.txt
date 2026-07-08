@@ -6075,12 +6075,12 @@
 	"Gunsaw Pistol"
 	{
 		"en"	"Gunsaw Pistol"
-		"ko"	"건쏘우 권총"
+		"ko"	"건소우 권총"
 	}
 	"Gunsaw Saw-Off"
 	{
 		"en"	"Gunsaw Saw-Off"
-		"ko"	"건쏘우 소드 오프"
+		"ko"	"건소우 소드 오프"
 	}
 	"Explosive Barrel"
 	{
