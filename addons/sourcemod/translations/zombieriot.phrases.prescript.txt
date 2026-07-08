@@ -127,7 +127,8 @@
 	}
 	"Prescript Pat Expi"
 	{
-		"en"		"Pat an ''Mercenary'', Expi or simular."
+		"en"		"Pat an ''Mercenary'', Expi or similar."
+		"ko"		"''용병'', 엑스피돈사인 혹은 그와 비슷한 무언가를 쓰다듬는다."
 	}
 	"Prescript Continue"
 	{
