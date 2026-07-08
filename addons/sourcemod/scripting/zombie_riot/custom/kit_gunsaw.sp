@@ -696,7 +696,7 @@ static void StealBodyForm(int client, int entity)
 	GetEntPropString(entity, Prop_Data, "m_ModelName", model, sizeof(model));
 	ReplaceString(model, sizeof(model), "\\", "/");
 
-	if(StrContains(model, "combine_attachment_police", false) != -1)
+	if(StrContains(model, "combine_", false) != -1 || StrContains(model, "police.mdl", false) != -1)
 	{
 		class = TFClass_Pyro;
 		ModelRobot[client] = false;
@@ -863,7 +863,7 @@ static bool ValidSwapTarget(int entity, bool ignoreSome = false)
 	GetEntPropString(entity, Prop_Data, "m_ModelName", model, sizeof(model));
 	ReplaceString(model, sizeof(model), "\\", "/");
 
-	if(StrContains(model, "combine_attachment_police", false) != -1)
+	if(StrContains(model, "combine_", false) != -1 || StrContains(model, "police.mdl", false) != -1)
 		return true;
 	
 	if(StrContains(model, "models/player/", false) != -1)
@@ -1720,7 +1720,7 @@ static void PlayMonologue(int client, const char[] text, bool fast = false, bool
 
 	if(pain > 0.5)
 	{
-		MonologueSpeed[client] = 0.5 * pain * pain;
+		MonologueSpeed[client] = 0.2 * pain;
 
 		if(fast)
 			MonologueSpeed[client] *= 0.4;
@@ -2949,7 +2949,7 @@ void Gunsaw_Monologue_LoudPrefix()
 
 static void Monologue_BodySwap(int client)
 {
-	if(!Gunsaw_IsMerc(client) || (LastMonologue[client] + 20.0) > GetGameTime())
+	if(!Gunsaw_IsMerc(client) || (LastMonologue[client] + 10.0) > GetGameTime())
 		return;
 	
 	static const char dialogue[][] =
