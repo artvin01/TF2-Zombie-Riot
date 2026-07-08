@@ -1686,7 +1686,7 @@ static void PlayMonologue(int client, const char[] text, bool fast = false, bool
 			{
 				if(GetURandomFloat() < 0.12)
 				{
-					int rand = GetURandomInt();
+					int rand = 1 + (GetURandomInt() % 3);
 					for(int b; b < rand; b++)
 					{
 						Format(buffer, sizeof(buffer), "%s%s", buffer, text[i]);
