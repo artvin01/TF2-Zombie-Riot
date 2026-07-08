@@ -1112,7 +1112,7 @@ static Action GunsawHudTimer(Handle timer, DataPack pack)
 
 				int health = GetClientHealth(client);
 				int maxhealth = ReturnEntityMaxHealth(client);
-				int overheal = maxhealth * 3 / 2;
+				int overheal = maxhealth;// * 3 / 2;
 				if(health > overheal)
 				{
 					health -= (maxhealth * (health / maxhealth) / 100);
@@ -1129,7 +1129,7 @@ static Action GunsawHudTimer(Handle timer, DataPack pack)
 				}
 
 				maxhealth -= RoundFloat(Attributes_Get(weapon, 125, 0.0));
-				Attributes_Set(weapon, 125, -(maxhealth * DrugNerf[client] / 2000.0));
+				Attributes_Set(weapon, 125, -(maxhealth * DrugNerf[client] / 1000.0));
 			}
 			
 			if(MonologueMoodBonus[client] > 0.0)
@@ -2349,7 +2349,7 @@ static void Monologue_Idle(int client)
 
 		PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
 	}
-	else if(DrugNerf[client] > 1199)
+	else if(DrugNerf[client] > 799)
 	{
 		static const char dialogue[][] =
 		{
@@ -2380,7 +2380,7 @@ static void Monologue_Idle(int client)
 
 		PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)], _, true);
 	}
-	else if(DrugNerf[client] > 499)
+	else if(DrugNerf[client] > 399)
 	{
 		static const char dialogue[][] =
 		{
