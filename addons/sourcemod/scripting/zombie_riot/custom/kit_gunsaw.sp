@@ -1689,15 +1689,15 @@ static void PlayMonologue(int client, const char[] text, bool fast = false, bool
 					int rand = 1 + (GetURandomInt() % 3);
 					for(int b; b < rand; b++)
 					{
-						Format(buffer, sizeof(buffer), "%s%s", buffer, text[i]);
+						Format(buffer, sizeof(buffer), "%s%c", buffer, text[i]);
 					}
 				}
 
 				if(GetURandomFloat() < 0.12)
-					Format(buffer, sizeof(buffer), "%s%s-", buffer, text[i]);
+					Format(buffer, sizeof(buffer), "%s%c-", buffer, text[i]);
 			}
 
-			Format(buffer, sizeof(buffer), "%s%s", buffer, text[i]);
+			Format(buffer, sizeof(buffer), "%s%c", buffer, text[i]);
 		}
 	}
 	else
@@ -2992,7 +2992,7 @@ static Action Timer_Explode(Handle timer, int userid)
 	int client = GetClientOfUserId(userid);
 	if(client && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
 	{
-		ClientCommand(client, "dsp_player %d", 32 + (GetURandomInt() % 3));
+		ClientCommand(client, "dsp_player %d", 35 + (GetURandomInt() % 3));
 
 		float pos[3];
 		WorldSpaceCenter(client, pos);
