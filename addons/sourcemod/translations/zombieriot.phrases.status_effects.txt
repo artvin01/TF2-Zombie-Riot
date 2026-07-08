@@ -4106,17 +4106,21 @@
 	"Shrapnel"
 	{
 		"en"	"Shrapnel"
+		"ko"	"금속 파편"
 	}
 	"Shrapnel Desc"
 	{
 		"en"	"Inflictor deals 15％ of damage dealt as bleed over 3 seconds."
+		"ko"	"부여자가 가한 피해량의 15％를 3초 가량의 출혈로 부여합니다."
 	}
 	"Comfort in Hard Times"
 	{
 		"en"	"Comfort in Hard Times"
+		"ko"	"고난 속의 위로"
 	}
 	"Comfort in Hard Times Desc"
 	{
-		"en"	"Recived or given pats by the Index Nursefather after losing someone else...\nIncreases damage by 5.0％, reduces damage taken by 5.0％"
+		"en"	"Received or given pats by the Index Nursefather after losing someone else...\nIncreases damage by 5.0％, reduces damage taken by 5.0％"
+		"ko"	"어느 누군가를 잃은 후, 검지 아비에게(로써) 쓰다듬을 받았습니다(해주었습니다)...\n공격 피해량이 5％ 증가합니다. 받는 피해량이 5％ 감소합니다."
 	}
 }

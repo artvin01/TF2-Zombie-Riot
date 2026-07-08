@@ -8,7 +8,7 @@
 	"Prescript Avaiable Check Device"
 	{
 		"en"		"A new prescript is available, check your device.\nIgnoring this for too long will result in consequences."
-		"ko"		"새로운 지령 도착. 단말기를 확인할 것.\n해당 사항을 오랫동안 무시할 시 결과가 따를 것임."
+		"ko"		"새로운 지령 도착. 단말기를 확인할 것.\n해당 사항을 무시할 시 결과가 따를 것임."
 	}
 	"Prescript Addition While In Air"
 	{
@@ -127,7 +127,8 @@
 	}
 	"Prescript Pat Expi"
 	{
-		"en"		"Pat an ''Mercenary'', Expi or simular."
+		"en"		"Pat an ''Mercenary'', Expi or similar."
+		"ko"		"''용병'', 익스피 혹은 그와 비슷한 것을 쓰다듬는다."
 	}
 	"Prescript Continue"
 	{
