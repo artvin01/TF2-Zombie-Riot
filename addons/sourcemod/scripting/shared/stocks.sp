@@ -4001,6 +4001,7 @@ stock int SpawnFormattedWorldText(const char[] format, float origin[3], int text
 	int worldtext = CreateEntityByName("point_worldtext");
 	if(IsValidEntity(worldtext))
 	{
+		SetEntProp(worldtext, Prop_Data, "m_bForcePurgeFixedupStrings", true);
 		DispatchKeyValue(worldtext, "targetname", "rpg_fortress");
 		DispatchKeyValue(worldtext, "message", format);
 		char intstring[8];
