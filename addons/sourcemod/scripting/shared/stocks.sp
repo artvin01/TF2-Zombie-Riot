@@ -3923,6 +3923,10 @@ public void TeleportEntityLocalPos_FrameDelayDo(DataPack pack)
 }
 stock void SetPlayerActiveWeapon(int client, int weapon)
 {
+	if(!IsValidClient(client))
+		return;
+	if(!IsValidEntity(weapon))
+		return;
 //	TF2Util_SetPlayerActiveWeapon(client, weapon);
 #if defined ZR
 //	WeaponSwtichToWarningPostDestroyed(weapon);

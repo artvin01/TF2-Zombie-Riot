@@ -1732,7 +1732,7 @@ static void PlayMonologue(int client, const char[] text, bool fast = false, bool
 
 	LastMonologue[client] = GetGameTime();
 
-	int entity = NpcSpeechBubble(client, buffer, 7, {255, 255, 200, 255}, {0.0, 0.0, 80.0}, "");
+	int entity = NpcSpeechBubble(client, buffer, 3, {255, 255, 200, 200}, {0.0, 0.0, 80.0}, "");
 	if(entity != -1)
 	{
 		AddEntityToThirdPersonTransitMode(client, entity);
