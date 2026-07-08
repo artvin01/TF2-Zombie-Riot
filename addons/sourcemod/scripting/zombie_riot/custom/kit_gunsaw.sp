@@ -2965,6 +2965,7 @@ bool Gunsaw_KillBind(int client)
 	if(fabs(cooldown[client] - GetGameTime()) < 3.0)
 		return false;
 
+	cooldown[client] = GetGameTime();
 	static const char dialogue[][] =
 	{
 		"...Uuuhh... ...What is this beeping...?",
