@@ -17,7 +17,7 @@
 //#include <lambda>
 #include <morecolors>
 #include <cbasenpc>
-#include <tf2utils>
+//#include <tf2utils>
 #include <profiler>
 #include <collisionhook>
 #include <sourcescramble>
@@ -3433,6 +3433,7 @@ public void TF2_OnConditionAdded(int client, TFCond condition)
 	else if (condition == TFCond_Slowed && IsPlayerAlive(client))
 	{
 		SDKCall_SetSpeed(client);
+		ViewChange_Update(client);
 	}
 #if defined ZR
 	else if (condition == TFCond_Taunting && (BetWar_Mode() || f_PreventMovementClient[client] > GetGameTime()))

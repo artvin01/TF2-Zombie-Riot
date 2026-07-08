@@ -1284,7 +1284,7 @@ void StatusEffects_HudHurt(int victim, int attacker, char[] Debuff_Adder_left, c
 			
 		if(Apply_MasterStatusEffect.HudDisplay_Func != INVALID_FUNCTION && Apply_MasterStatusEffect.HudDisplay_Func)
 		{
-			char HudDisplayCustom[14];
+			char HudDisplayCustom[16];
 			//We have a valid function ignore the original value.
 			Call_StartFunction(null, Apply_MasterStatusEffect.HudDisplay_Func);
 			Call_PushCell(attacker);

@@ -3923,7 +3923,7 @@ public void TeleportEntityLocalPos_FrameDelayDo(DataPack pack)
 }
 stock void SetPlayerActiveWeapon(int client, int weapon)
 {
-	TF2Util_SetPlayerActiveWeapon(client, weapon);
+//	TF2Util_SetPlayerActiveWeapon(client, weapon);
 #if defined ZR
 //	WeaponSwtichToWarningPostDestroyed(weapon);
 #endif
@@ -3933,6 +3933,8 @@ stock void SetPlayerActiveWeapon(int client, int weapon)
 	FakeClientCommand(client, "use %s", buffer); 					//allow client to change
 	SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);	//Force client to change.
 	OnWeaponSwitchPost(client, weapon);
+	
+	RunScriptCode(client, -1, -1, "self.Weapon_Switch(EntIndexToHScript(%d))", weapon);
 	
 }
 
@@ -6209,4 +6211,21 @@ float GetDifferenceBetweenAngles(float fA[3], float fB[3])
     float fFwdA[3]; GetAngleVectors(fA, fFwdA, NULL_VECTOR, NULL_VECTOR);
     float fFwdB[3]; GetAngleVectors(fB, fFwdB, NULL_VECTOR, NULL_VECTOR);
     return RadToDeg(ArcCosine(fFwdA[0] * fFwdB[0] + fFwdA[1] * fFwdB[1] + fFwdA[2] * fFwdB[2]));
+}
+Address GetPlayerShared(int client)
+{
+	static int s_sharedOffset = -1;
+	if (s_sharedOffset == -1)
+		s_sharedOffset = GetEntSendPropOffs(client, "m_Shared", true);
+	return GetEntityAddress(client) + view_as<Address>(s_sharedOffset);
+}
+
+int GetPlayerFromShared(Address pShared)
+{
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if (IsClientInGame(client) && GetPlayerShared(client) == pShared)
+			return client;
+	}
+	return -1;
 }

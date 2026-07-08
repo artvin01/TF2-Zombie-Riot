@@ -14,6 +14,7 @@ static float f_HoldBasicVialTime[MAXPLAYERS];
 static int i_CurrentWeaponSet[MAXPLAYERS];
 static int i_MasterWeapon[MAXPLAYERS];
 static int i_DodgesAvailable[MAXPLAYERS] = {25, ...};
+static float f_MinimumDashCD[MAXPLAYERS];
 static float f_DodgeCooldown[MAXPLAYERS];
 static float f_DodgeBetweenDashes[MAXPLAYERS];
 static float f_DodgeActive[MAXPLAYERS];
@@ -176,6 +177,7 @@ public void IndexFather_ResetAllStats()
 	Zero(i_CurrentWeaponSet);
 	Zero(i_DodgesAvailable);
 	Zero(f_DodgeCooldown);
+	Zero(f_MinimumDashCD);
 	Zero(f_DodgeBetweenDashes);
 	Zero(f_DodgeActive);
 	Zero(f_ResetMoveSpeedPenalty);
@@ -1380,7 +1382,7 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 			EmitSoundToClient(attacker, g_FuriosoSlashIndicator[GetRandomInt(0, sizeof(g_FuriosoSlashIndicator) - 1)], victim, SNDCHAN_STATIC, 80, _, 1.0, 100 + (i_FuriosoHits[attacker] * 5));
 		}
 		ResetFurioso = true;
-		f_DodgeCooldown[attacker] = 0.0;
+		f_DodgeCooldown[attacker] = GetGameTime() + IndexFather_DashCooldown(attacker);
 		if(i_DodgesAvailable[attacker] <= (IndexFather_DodgeMaxReturn(attacker) / 2))
 			i_DodgesAvailable[attacker] = IndexFather_DodgeMaxReturn(attacker) / 2;
 			
@@ -1480,6 +1482,8 @@ void IndexFather_PrescriptEnd(int client, bool Win)
 	if(Win)
 	{
 		float NewScript = GetRandomFloat(120.0, 180.0);	
+		if(MaxPrescriptGrace(client)-3 > GraceOfPrescript[client])
+			NewScript *= 0.25;
 		if(GraceOfPrescript[client] >= MaxPrescriptGrace(client))
 			ApplyStatusEffect(client, client, "Indulgence in Prescripts", NewScript);
 		EmitSoundToClient(client, g_SuccessPrescript[GetRandomInt(0, sizeof(g_SuccessPrescript) - 1)], client, SNDCHAN_STATIC, 80, _, 0.8, 110);
@@ -1492,6 +1496,8 @@ void IndexFather_PrescriptEnd(int client, bool Win)
 	{
 		EmitSoundToClient(client, g_FailPrescript[GetRandomInt(0, sizeof(g_FailPrescript) - 1)], client, SNDCHAN_STATIC, 80, _, 0.8, 110);
 		float NewScript = GetRandomFloat(80.0, 120.0);
+		if(MaxPrescriptGrace(client)-3 > GraceOfPrescript[client])
+			NewScript *= 0.25;
 		PrescriptCooldown[client] = NewScript + GetGameTime();
 		PrescriptPunishPlayerIgnoring[client] = (NewScript * 2.0) + GetGameTime();
 		ApplyStatusEffect(client, client, "Karmic Consequence", 45.0);
@@ -1717,19 +1723,17 @@ void IndexFather_GrantRandomWeapon(int client, int originalweapon, int ForceWeap
 }
 void Func_DodgesHud(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
 {
-	if(!f_DodgeCooldown[victim] && i_DodgesAvailable[victim] <= 0)
+	if(f_DodgeCooldown[victim] < GetGameTime())
 	{
-		f_DodgeCooldown[victim] = GetGameTime() + 15.0;
-	}
-	if(f_DodgeCooldown[victim] && f_DodgeCooldown[victim] < GetGameTime())
-	{
-		f_DodgeCooldown[victim] = 0.0;
+		f_DodgeCooldown[victim] = GetGameTime() + IndexFather_DashCooldown(victim);
 		i_DodgesAvailable[victim] = IndexFather_DodgeMaxReturn(victim);
 	}
-	if(f_DodgeCooldown[victim] > GetGameTime())
+	if(i_DodgesAvailable[victim] >= IndexFather_DodgeMaxReturn(victim))
+		Format(HudToDisplay, SizeOfChar, "⮌(%i)", i_DodgesAvailable[victim]);
+	else if(i_DodgesAvailable[victim] <= 0)
 		Format(HudToDisplay, SizeOfChar, "⮌(%.1fs)", f_DodgeCooldown[victim] - GetGameTime());
 	else
-		Format(HudToDisplay, SizeOfChar, "⮌(%i)", i_DodgesAvailable[victim]);
+		Format(HudToDisplay, SizeOfChar, "⮌(%i / %.1fs)", i_DodgesAvailable[victim], f_DodgeCooldown[victim] - GetGameTime());
 }
 float Func_Dodge_TakeDamage(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float damage)
 {
@@ -1744,8 +1748,7 @@ float Func_Dodge_TakeDamage(int attacker, int victim, StatusEffect Apply_MasterS
 		return 1.0;
 	}
 	int DmgCapLvl = WeaponLevel[victim];
-	float RMC_damage_cap = 50.0 + float(DmgCapLvl) * 5.0;
-
+	float RMC_damage_cap = 50.0 + (float(DmgCapLvl) * 5.0);
 
 	int DrainDashes = 1;
 	if(b_thisNpcIsARaid[attacker])
@@ -1762,30 +1765,37 @@ float Func_Dodge_TakeDamage(int attacker, int victim, StatusEffect Apply_MasterS
 	}
 	if(DoDodge)
 	{
-		i_DodgesAvailable[victim] -= DrainDashes;
+		if(f_MinimumDashCD[victim] < GetGameTime())
+			i_DodgesAvailable[victim] -= DrainDashes;
 		IndexFather_AllyDodgedAttack(victim);
 		DoDodgeEffect(victim);
 		if(WeaponLevel[victim] >= 2)
 			StatusEffects_PoiseAddStuff(victim, 1, 2.0);
+
+		//prevent losing all dahes in a nano second
+		f_MinimumDashCD[victim] = GetGameTime() + 0.05;
 		if(i_DodgesAvailable[victim] <= 0)
 		{
 			i_DodgesAvailable[victim] = 0;
-			f_DodgeCooldown[victim] = GetGameTime() + 15.0;
 		}
+		f_DodgeCooldown[victim] = GetGameTime() + IndexFather_DashCooldown(victim);
 		return 0.0;
 	}
 	else
 	{
 		//fail....
-		i_DodgesAvailable[victim] -= DrainDashes;
+		if(f_MinimumDashCD[victim] < GetGameTime())
+			i_DodgesAvailable[victim] -= DrainDashes;
 		DoDodgeEffect(victim);
 		if(WeaponLevel[victim] >= 2)
 			StatusEffects_PoiseAddStuff(victim, 1, 2.0);
+
+		f_MinimumDashCD[victim] = GetGameTime() + 0.05;
 		if(i_DodgesAvailable[victim] <= 0)
 		{
 			i_DodgesAvailable[victim] = 0;
-			f_DodgeCooldown[victim] = GetGameTime() + 15.0;
 		}
+		f_DodgeCooldown[victim] = GetGameTime() + IndexFather_DashCooldown(victim);
 		return 0.75;
 	}
 }	
@@ -1915,8 +1925,8 @@ public void IndexFather_DodgeLogic(int client)
 	if(i_DodgesAvailable[client] <= 0)
 	{
 		i_DodgesAvailable[client] = 0;
-		f_DodgeCooldown[client] = GetGameTime() + 15.0;
 	}
+	f_DodgeCooldown[client] = GetGameTime() + IndexFather_DashCooldown(client);
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 	if(IsValidEntity(weapon))
 		Rogue_OnAbilityUse(client, weapon);
@@ -2171,9 +2181,8 @@ int IndexFather_MaxStacksForFurioso(int client)
 	int ReduceBy = GraceOfPrescript[client];
 	ReduceBy -= 6;
 	if(ReduceBy < 0)
-		ReduceBy = 1;
-
-	return 9 - ReduceBy;
+		ReduceBy = 0;
+	return 8 - ReduceBy;
 }
 
 void IndexFather_AllyDodgedAttack(int client)
@@ -2249,4 +2258,10 @@ public Action PropFadeManual(Handle timer, any entid)
 		CreateTimer(0.1, PropFadeManual, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 	}
 	return Plugin_Stop;
+}
+
+
+float IndexFather_DashCooldown(int client)
+{
+	return (15.0 * CooldownReductionAmount(client));
 }
