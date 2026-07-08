@@ -4106,10 +4106,12 @@
 	"Shrapnel"
 	{
 		"en"	"Shrapnel"
+		"ko"	"금속 파편"
 	}
 	"Shrapnel Desc"
 	{
 		"en"	"Inflictor deals 15％ of damage dealt as bleed over 3 seconds."
+		"ko"	"부여자가 가한 피해량의 15％를 3초 가량의 출혈로 부여합니다."
 	}
 	"Comfort in Hard Times"
 	{
