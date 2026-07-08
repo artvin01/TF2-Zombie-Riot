@@ -5766,6 +5766,10 @@
 	}
 	"Gunsaw Mercenary Pap 3"
 	{
+		"en"	"-Increased damage and building health\n-Increased maximum body swap health\n-Can inject self with opiate while holding the pistol using M2\n  -Provides x2 your max health as barrier that decays over time\n  -Reduces your max health that slowly regenerates back over time"
+	}
+	"Gunsaw Mercenary Pap 4"
+	{
 		"en"	"-Increased damage and building health\n-Increased maximum body swap health"
 	}
 	"Gunsaw Mercenary Pap 6"

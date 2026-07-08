@@ -1245,6 +1245,8 @@ stock void StartBleedingTimer(int victim, int attacker, float damage, int amount
 		else if(victim > 0 && victim <= MaxClients)
 			Force_ExplainBuffToClient(victim, "Bleed");
 
+		Gunsaw_Monologue_OnBleed(victim);
+
 		BleedAmountCountStack[victim] += 1;
 		DataPack pack;
 		CreateDataTimer(0.5, Timer_Bleeding, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);

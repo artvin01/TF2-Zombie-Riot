@@ -3,7 +3,7 @@
 
 static const float MaxMulti = 3.0;	// Max health multi after cap (3.0 is x3 of HealthCap)
 static const float SlowStack = 0.1;	// Decrease speed by this much every max health over cap (0.25 gives -25% speed at x2 HP)
-static const float PropDamage = 2.5;	// Prop damage (Metal Cost * Building Damage * PropDamage)
+static const float PropDamage = 3.0;	// Prop damage (Metal Cost * Building Damage * PropDamage)
 
 // Health cap before speed nerf
 static const int HealthCap[] =
@@ -69,6 +69,10 @@ static ArrayList ModelWearables[MAXPLAYERS];
 static int WeaponLevel[MAXPLAYERS];
 static float LastSwap[MAXPLAYERS];
 static float LastMonologue[MAXPLAYERS];
+static float MonologueSpeed[MAXPLAYERS];
+static float MonologueShake[MAXPLAYERS];
+static float MonologueMoodBonus[MAXPLAYERS];
+static int DrugNerf[MAXPLAYERS];
 //static int EquippedWeapons[MAXPLAYERS][2][2];
 //static int NextWeapons[MAXPLAYERS][2][2];
 //static Function OgEntityFuncAttack[MAXENTITIES][2];
@@ -86,6 +90,7 @@ void Gunsaw_MapStart()
 
 	for(int i; i < MAXPLAYERS; i++)
 	{
+		LastMonologue[i] = 0.0;
 		delete ModelModels[i];
 		delete ModelNPCName[i];
 	}
@@ -260,6 +265,8 @@ void Gunsaw_Enable(int client, int weapon)
 		pack.WriteCell(client);
 		pack.WriteCell(GetClientUserId(client));
 		pack.WriteCell(EntIndexToEntRef(weapon));
+
+		Monologue_Intro(client);
 	}
 	else
 	{
@@ -531,7 +538,7 @@ void Gunsaw_PlayerModel(int client, bool &robot)
 
 bool Gunsaw_IsMerc(int client)
 {
-	return view_as<bool>(WeaponTimer[client]);
+	return (client > 0 && client <= MaxClients && WeaponTimer[client]);
 }
 
 bool Gunsaw_LastmanSecret()
@@ -818,6 +825,8 @@ static void StealBodyForm(int client, int entity)
 	f_WasRecentlyRevivedViaNonWave[client] = GetGameTime() + 0.5;
 	DHook_RespawnPlayer(client);
 	Store_GiveAll(client, GetClientHealth(client));
+
+	Monologue_BodySwap(client);
 }
 
 static bool ValidSwapTarget(int entity, bool ignoreSome = false)
@@ -1096,6 +1105,60 @@ static Action GunsawHudTimer(Handle timer, DataPack pack)
 					}
 				}
 			}
+
+			if(DrugNerf[client] > 0)
+			{
+				DrugNerf[client]--;
+
+				int health = GetClientHealth(client);
+				int maxhealth = ReturnEntityMaxHealth(client);
+				int overheal = maxhealth * 3 / 2;
+				if(health > overheal)
+				{
+					health -= (maxhealth * (health / maxhealth) / 100);
+					if(health < overheal)
+						health = overheal;
+					
+					SetEntityHealth(client, health);
+				}
+				else if(GameRules_GetRoundState() != RoundState_ZombieRiot)
+				{
+					DrugNerf[client] -= 20;
+					if(DrugNerf[client] < 0)
+						DrugNerf[client] = 0;
+				}
+
+				maxhealth -= RoundFloat(Attributes_Get(weapon, 125, 0.0));
+				Attributes_Set(weapon, 125, -(maxhealth * DrugNerf[client] / 2000.0));
+			}
+			
+			if(MonologueMoodBonus[client] > 0.0)
+			{
+				MonologueMoodBonus[client] -= 0.01;
+			}
+			else if(MonologueMoodBonus[client] < 0.0)
+			{
+				MonologueMoodBonus[client] += 0.01;
+			}
+
+			if(dieingstate[client])
+			{
+				if(MonologueMoodBonus[client] > -50.0)
+					MonologueMoodBonus[client] -= 0.1;
+			}
+			else if(GetClientHealth(client) >= ReturnEntityMaxHealth(client))
+			{
+				if(MonologueMoodBonus[client] < 100.0)
+					MonologueMoodBonus[client] += 0.05;
+			}
+			else if(GetClientHealth(client) < (ReturnEntityMaxHealth(client) / 3))
+			{
+				if(MonologueMoodBonus[client] > -50.0)
+					MonologueMoodBonus[client] -= 0.05;
+			}
+
+			Monologue_Idle(client);
+
 			return Plugin_Continue;
 		}
 
@@ -1244,7 +1307,7 @@ public void Weapon_GunsawShotgun_M1(int client, int weapon, bool crit, int slot)
 		GetClientEyeAngles(client, vel);
 		GetAngleVectors(vel, vel, NULL_VECTOR, NULL_VECTOR);
 		float knockback = 35.0 * ratio * KnockbackRes(client);
-		float stun = knockback / 100.0;
+		float stun = knockback / 150.0;
 
 		if(knockback > 600.0)
 			knockback = 600.0;
@@ -1257,11 +1320,12 @@ public void Weapon_GunsawShotgun_M1(int client, int weapon, bool crit, int slot)
 		AddVectors(vel, vec, vel);
 		TeleportEntity(client, _, _, vel);
 
-		if(stun > 4.0)
+		if(stun > 3.0)
 		{
 			SetEntPropFloat(client, Prop_Send, "m_flNextAttack", GetGameTime() + stun);
 			ApplyStatusEffect(client, client, "Ragdolled", stun);
 			FreezeNpcInTime(client, stun);
+			Gunsaw_Monologue_OnTakeDamage(client, 999999.9);
 		}
 
 		float SoundRatio = 0.05 * ratio;
@@ -1300,6 +1364,27 @@ public void Weapon_GunsawShotgun_M2(int client, int weapon, bool crit, int slot)
 	{
 		TF2_AddCondition(client, TFCond_FocusBuff, 4.0);
 	}
+}
+
+public void Weapon_GunsawPistol_M2(int client, int weapon, bool crit, int slot)
+{
+	if(Ability_Check_Cooldown(client, slot) > 0.0)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_Check_Cooldown(client, slot));
+		return;
+	}
+	
+	Rogue_OnAbilityUse(client, weapon);
+	ClientCommand(client, "playgamesound items/powerup_pickup_plague_infected.wav");
+	Ability_Apply_Cooldown(client, slot, 20.0);
+
+	int health = ReturnEntityMaxHealth(client);
+	HealEntityGlobal(client, client, health * 2.0, 5.0, 1.5, HEAL_SELFHEAL);
+	DrugNerf[client] += 200;
+	Monologue_Drug(client);
 }
 
 public void Weapon_GunsawMelee_M1(int client, int weapon, bool &crit, int slot)
@@ -1571,10 +1656,12 @@ static void AddGun(int rank, int slot, const char[] name, int level)
 }
 */
 
-static void PlayMonologue(int client, const char[] text)
+static void PlayMonologue(int client, const char[] text, bool fast = false, bool shake = false)
 {
+	float pain = 1.0 - (GetClientHealth(client) / float(ReturnEntityMaxHealth(client)));
+
 	char buffer[256];
-	if(GetClientHealth(client) < (ReturnEntityMaxHealth(client) / 8))
+	if(pain > 0.85)
 	{
 		// Brain damage
 		int size = strlen(text);
@@ -1611,13 +1698,99 @@ static void PlayMonologue(int client, const char[] text)
 		strcopy(buffer, sizeof(buffer), text);
 	}
 
-	int entity = NpcSpeechBubble(client, buffer, 7, {255, 255, 255, 255}, {0.0, 0.0, 120.0}, "");
+	if(shake)
+	{
+		MonologueShake[client] = 0.05;
+	}
+	else if(pain > 0.75)
+	{
+		MonologueShake[client] = pain * 0.05;
+	}
+	else
+	{
+		MonologueShake[client] = 0.0;
+	}
+
+	if(pain > 0.5)
+	{
+		MonologueSpeed[client] = 0.5 * pain * pain;
+
+		if(fast)
+			MonologueSpeed[client] *= 0.4;
+	}
+	else
+	{
+		MonologueSpeed[client] = fast ? 0.035 : 0.05;
+	}
+
+	LastMonologue[client] = GetGameTime();
+
+	int entity = NpcSpeechBubble(client, buffer, 7, {255, 255, 200, 255}, {0.0, 0.0, 80.0}, "");
 	if(entity != -1)
 	{
 		SDKUnhook(client, SDKHook_PreThink, NpcSpeechBubbleTalk);
 		SDKUnhook(client, SDKHook_PreThink, MonologueThink);
 		SDKHook(client, SDKHook_PreThink, MonologueThink);
 	}
+}
+
+static int MonologueMood(int client)
+{
+	int mood;
+	
+	if(LastMann)
+	{
+		if(!IsValidEntity(EntRefToEntIndex(RaidBossActive)))
+			mood = -100;
+	}
+	else
+	{
+		int alive, total;
+		for(int target = 1; target <= MaxClients; target++)
+		{
+			if(IsClientInGame(target) && GetClientTeam(target) == 2 && TeutonType[target] != TEUTON_WAITING)
+			{
+				total += 2;
+
+				if(IsPlayerAlive(target) && TeutonType[target] == TEUTON_NONE)
+				{
+					alive += dieingstate[target] ? 1 : 2;
+				}
+			}
+		}
+		
+		mood = (alive * 50 / total) - 30;
+	}
+	
+	if(dieingstate[client])
+		mood -= 30;
+
+	return iClamp(RoundFloat(MonologueMoodBonus[client] + mood), -100, 100);
+}
+
+static int MonologueMoodLevel(int client)
+{
+	int mood = MonologueMood(client);
+
+	if(mood > -10.0)
+		return 0;
+	
+	if(mood > -30.0)
+		return -1;
+	
+	if(mood > -50.0)
+		return -2;
+	
+	if(mood > -75.0)
+		return -3;
+	
+	return -4;
+}
+
+// 100 max, -100 min
+void Gunsaw_Monologue_AddMood(int client, float amount)
+{
+	MonologueMoodBonus[client] += amount;
 }
 
 static void MonologueThink(int client)
@@ -1637,27 +1810,21 @@ static void MonologueThink(int client)
 		EmitSoundToAll(TextSound[GetURandomInt() % sizeof(TextSound)], client, _, 60, _, 0.8);
 	}
 
-	float pain = 1.0 - (GetClientHealth(client) / float(ReturnEntityMaxHealth(client)));
-	float x = 0.5;
-	float y = 0.1;
-	if(pain > 0.75)
+	float y = 0.2;
+	if(MonologueShake[client] > 0.75)
 	{
-		x += GetRandomFloat(pain * -0.05, pain * 0.05);
-		y += GetRandomFloat(pain * -0.05, pain * 0.05);
+		y += GetRandomFloat(-MonologueShake[client], MonologueShake[client]);
 		
 		float pos[3];
 		GetEntPropVector(text, Prop_Data, "m_vecOrigin", pos);
-		pos[0] += x;
-		pos[1] += GetRandomFloat(pain * -0.05, pain * 0.05);
-		pos[2] += y;
+		pos[0] += GetRandomFloat(-MonologueShake[client], MonologueShake[client]) * 10.0;
+		pos[1] += GetRandomFloat(-MonologueShake[client], MonologueShake[client]) * 10.0;
+		pos[2] += y * 10.0;
 		TeleportEntity(text, pos);
 	}
 
-	if(pain < 0.2)
-		pain = 0.2;
-
 	NpcSpeechBubbleTalk(client);
-	f_SpeechTickDelay[client] = GetGameTime() + 0.25 * pain;
+	f_SpeechTickDelay[client] = GetGameTime() + MonologueSpeed[client];
 
 	static Handle MonologueHud;
 	if(!MonologueHud)
@@ -1666,11 +1833,1124 @@ static void MonologueThink(int client)
 	int size = i_SpeechBubbleTotalText_ScrollingPart[client];
 	char[] buffer = new char[size + 1];
 	Format(buffer, size, c_NpcName[text]);
-	SetHudTextParams(x, y, 0.05, 255, 255, 200, 255);
+	SetHudTextParams(-1.0, y, MonologueSpeed[client], 255, 255, 200, 255);
 	ShowSyncHudText(client, MonologueHud, buffer);
 }
 
-static void Monologue_()
+static void Monologue_Intro(int client)
 {
+	if(!LastMonologue[client])
+	{
+		static const char dialogue[][] =
+		{
+			"We're here...",
+			"Okay... Let's do this.",
+			"I'm ready...",
+			"I didn't want to do this...",
+			"Let's go.",
+			"Alright. Let's move fast.",
+			"Ooh!",
+			"I'm not ready for this...",
+			"I hope this'll go well.",
+			"Looks scary.",
+			"Where am I now...?",
+			"I'm not sure about this...",
+			"...Hmmh...",
+			"Alright...",
+			"Let's move. Quickly.",
+			"Aye! Let's not waste any time.",
+			"*worried frown*",
+			"I'm excited!",
+			"Not excited for this.",
+			"Better here than there...",
+			"At least I had food and shelter up there...",
+			"I'm already missing my peers from up there.",
+			"I don't think they can monitor me down here... Right...?",
+			"Awwa...?",
+			"Hmm...",
+			"Welp. I guess that's it.",
+			"Aaannd we've arrived!",
+			"It's nice not seeing white tiles around for once...",
+			"At least I'm alive...",
+			"..Mm. What a peculiar landscape...",
+			"Let's hope I remember my training...",
+			"My parent would be proud...",
+			"Haven't seen those open in a while.",
+			"God. This is going to be fucking horrible.",
+			"This is gonna be fun."
+		};
+
+		PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
+	}
+	else if((LastMonologue[client] + 50.0) < GetGameTime())
+	{
+		static const char dialogue[][] =
+		{
+			"What's happening...?",
+			"Stay alert...",
+			"Good morning...",
+			"Here we go...",
+			"Mmmmhhm...",
+			"Alright...",
+			"Back to it...",
+			"Another day...",
+			"Here we go again...",
+			"Eyes open...",
+			"Awake and alert...",
+			"Hello, world...",
+			"Again..."
+		};
+
+		PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
+	}
+}
+
+void Gunsaw_Monologue_UseFridge(int client)
+{
+	if(!Gunsaw_IsMerc(client))
+		return;
 	
+	if(GetClientHealth(client) >= ReturnEntityMaxHealth(client))
+	{
+		static const char dialogue[][] =
+		{
+			"That's enough.",
+			"Any more and I'll be sick.",
+			"I'm full.",
+			"I don't want to eat more.",
+			"My belly's full.",
+			"My stomach's full.",
+			"I can't eat another bite...",
+			"I feel like I'm about to burst.",
+			"I can't eat any more...",
+			"I need to stop eating.",
+			"I'm going to gain weight at this point...",
+			"I need to stop eating.",
+			"No more!",
+			"I'm gonna be sick at this rate.",
+			"That's enough food.",
+			"I'm gonna be sick...",
+			"I think I'm gonna throw up...",
+			"I'm full!"
+		};
+		
+		PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
+	}
+	else
+	{
+		static const char dialogue[][] =
+		{
+			"Mmm!",
+			"Tasty.",
+			"Tasty!",
+			"Yum!",
+			"Yummy.",
+			"Mm...",
+			"Neat!",
+			"Yummy!",
+			"Nice!",
+			"Tasty treat...",
+			"Delicious bite...",
+			"Tastes great.",
+			"Satisfying...",
+			"That's the stuff...",
+			"Fueling up...",
+			"Yummy...",
+			"That's pretty good...",
+			"Not bad!...",
+			"Yummers...",
+			"Good for me...",
+			"Mmmmm...",
+			"Never enough of that...",
+			"Yum! I feel better!",
+			"Nom nom nom.",
+			"That was amazing!",
+			"Such good flavor...",
+			"Flavourful!",
+			"Enjoying this...",
+			"More of this...",
+			"Good food...",
+			"Love this taste...",
+			"Delicious...",
+			"Mmm, nice...",
+			"Just what I needed...",
+			"Mmmmm..."
+		};
+		
+		Gunsaw_Monologue_AddMood(client, 1.0);
+		PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
+	}
+}
+
+void Gunsaw_Monologue_OnBleed(int client)
+{
+	if(!Gunsaw_IsMerc(client) || (LastMonologue[client] + 20.0) > GetGameTime())
+		return;
+	
+	if(GetClientHealth(client) < ReturnEntityMaxHealth(client))
+	{
+		static const char dialogue[][] =
+		{
+			"I'm bleeding!",
+			"Help! I'm bleeding!",
+			"I'm losing blood!",
+			"I'm spilling blood all over the place!",
+			"I'm wounded!",
+			"I need to patch myself up!",
+			"Bleeding!",
+			"This isn't great...",
+			"Losing blood...",
+			"I'm losin' my life juice!",
+			"I'm bleeding.",
+			"I'm bleeding! Help!",
+			"Need a bandage!",
+			"I don't like bleeding...",
+			"I'm oozing blood...",
+			"My blood... ",
+			"That's my blood...",
+			"Oh... that's blood...",
+			"I need a patch-up.",
+			"Oh! Blood! Shoot!",
+			"Uh... blood? Not good...",
+			"My blood, no!",
+			"I need this bandaged. Fast...",
+			"Crap, I'm bleeding!",
+			"Bleeding...",
+			"That's my blood... ouch..."
+		};
+		
+		PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
+	}
+}
+
+void Gunsaw_Monologue_OnDowned(int client)
+{
+	if(!Gunsaw_IsMerc(client) || (LastMonologue[client] + 10.0) > GetGameTime())
+		return;
+	
+	static const char dialogue[][] =
+	{
+		"There's so much blood...",
+		"Fuck... I'm dying...",
+		"Agghh...",
+		"Help me! ...Please...",
+		"Fuck, fuck, fuck... This is bad...",
+		"Help me... Please...",
+		"Shit. Oh no. Oh GOD.",
+		"No no no no no. Oh my god...",
+		"I don't want it to end like this... Help me...",
+		"This requires urgent attention...",
+		"HELP ME! PLEASE!",
+		"I am bleeding the FUCK out...",
+		"I-I'm not ready for t-this...",
+		"This is bad. This is bad. This is BAD.",
+		"Ain't this going... A-amazing...",
+		"This is h-horrifying...",
+		"Why... Why is... I... Need help...",
+		"FUCK! FUCK! BANDAGE!",
+		"HELP ME! I'M... Bleeding... Please...",
+		"Are... Are these my last moments..?",
+		"Focus... Focus... We can fix this...",
+		"I can fix this... Come on... Fuck...",
+		"This is a... fucking... nightmare...",
+		"AHHHH! AAAAAHHHH!",
+		"No, no no. No. Please. Fuck. FUCK. H-help me...",
+		"*terrified*",
+		"I-I-I... Oh... N-No... I... Oh g-god...",
+		"I-is this it...",
+		"F-fuck... Focus... I can s-salvage this...",
+		"Oh god. Shit. I... I'm scared...",
+		"My vision is all blurry...",
+		"Bandage! U-urgent..."
+	};
+	
+	PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)], _, true);
+}
+
+void Gunsaw_Monologue_PlayerDeath(const float pos[3])
+{
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(!Gunsaw_IsMerc(client) || (LastMonologue[client] + 20.0) > GetGameTime())
+			continue;
+
+		float pos2[3];
+		if(GetVectorDistance(pos, pos2, true) > 150000.0)
+			continue;
+		
+		int mood = MonologueMoodLevel(client);
+		if(mood < -3)
+		{
+			static const char dialogue[][] =
+			{
+                "I'll join you soon.",
+                "Not long until I end up like that.",
+                "I wish I was in their place.",
+                "Everything will end soon.",
+                "Maybe I wont be so miserable on the other side.",
+                "God, I want to be fucking dead too...",
+                "Being a corpse sounds very attractive right about now.",
+                "At least you managed to escape...",
+                "You've found your escape.",
+                "I don't blame you.",
+                "Any room for me...?",
+                "Yeah, fuck this place, buddy. I'll be with you soon enough.",
+                "I fucking hate this world.",
+                "I'll end up like this soon enough.",
+                "This brings me comfort. A reminder that it'll all end soon.",
+                "You got lucky.",
+                "I wish I was as lucky as you are.",
+                "I agree.",
+                "Yeah. This is a burden not worth carrying.",
+                "I can't wait for when I get the guts to end it.",
+                "I'm jealous."
+			};
+			
+			PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
+		}
+		else if(mood < -2)
+		{
+			static const char dialogue[][] =
+			{
+                "And another...",
+                "Mhm.",
+                "There's so many...",
+                "I think I'm getting used to the sight.",
+                "I think this counts as genocide at this point...",
+                "So many innocent lives lost...",
+                "This one looks funny.",
+                "I've seen a lot of these by now.",
+                "This place is FILLED with corpses!",
+                "That's gotta hurt.",
+                "Not a good mortality rate in here.",
+                "This place has taken so many lives...",
+                "I'm better than this...",
+                "That looks like it hurt.",
+                "This one is still smiling!",
+                "I already lost count.",
+                "Someone ought to arrange a funeral for 'em...",
+                "That sucks...",
+                "I wonder if any of them can be saved.",
+                "Hahaha...",
+                "Hey! You! ...Yeah, they're not any different.",
+                "Man, these guys must REALLY not like me... Not a single one even looked at me!",
+                "Let's just move on.",
+                "Survival of the fittest, I guess...",
+                "Eugh.",
+                "And another one.",
+                "And another!",
+                "Aaaannnd another one...",
+                "So many dead guys...",
+                "This is getting boring by now.",
+                "I'm astonished how many of us have died here.",
+                "....",
+                "It's that time of the day again...",
+                "I have a sneaking suspicion this one is dead.",
+                "Fuck.",
+                "Hey, little dead fella.",
+                "This one looks funny. Haha!",
+                "This one looks silly...",
+                "They're smiling at me!",
+                "Hey.",
+                "Hello there!",
+                "Such generosity.",
+                "...And. That, ladies and gentlemen... Is another corpse.",
+                "Ooh.",
+                "That's not sanitary.",
+                "I don't think they enjoyed their stay.",
+                "Ough, you smell! Go take a shower...",
+                "Mmh...",
+                "Aaaanother...",
+                "Seeing all of these is saddening.",
+                "I'd make a joke, but I don't like disrespecting the dead.",
+                "Yeah...",
+                "Someone got unlucky."
+			};
+			
+			PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
+		}
+		else
+		{
+			static const char dialogue[][] =
+			{
+                "Oh... Oh god.",
+                "Shit.",
+                "Better you than me, buddy...",
+                "That's not very reassuring.",
+                "Hey! Are you... O-oh...",
+                "Fuck me man... That's a bad sight.",
+                "No no no no. Oh god...",
+                "I feel bad for them...",
+                "I hope I won't end up like this.",
+                "Yikes... Ew... Man.",
+                "I don't think they're breathing...",
+                "Yep, that's a corpse alright...",
+                "I can't help but stare...",
+                "Fuck that... Ough... That sucks.",
+                "Poor little guy.",
+                "Fuck...",
+                "Awww... That's a sad sight.",
+                "I knew there were more of us here...",
+                "It's gonna be okay... It's gonna be okay.",
+                "Oh fuck. They're dead...",
+                "*gasp*",
+                "*frown*",
+                "Someone should give them a proper burial.",
+                "I shouldn't touch them...",
+                "God fucking damn it. Ugh. They're dead.",
+                "I better not end up like this.",
+                "...",
+                "...!",
+                "Oh damn it. Fuck. I hate that...",
+                "I wish I could've given this guy a hug before they passed away.",
+                "God...",
+                "I want to leave this place... Fuck...",
+                "That's a dead guy...",
+                "I hope it wasn't painful, at least...",
+                "Awww... Poor thing...",
+                "I'm scared I'll meet the same fate...",
+                "AHH! That's a corpse! Fuck...",
+                "Oh fuck... That's one of our own... Ooohhh no...",
+                "Well, that's demotivating.",
+                "They're... They're not breathing..."
+			};
+			
+			PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
+		}
+	}
+}
+
+static void Monologue_Drug(int client)
+{
+	int mood = MonologueMoodLevel(client);
+	if(mood < -2)
+	{
+		static const char dialogue[][] =
+		{
+			"That's... much better.",
+			"I can... relax now...",
+			"Finally... a sense of peace...",
+			"I really... needed that...",
+			"I just need to relax... I just need to relax...",
+			"This'll calm me down... this'll... oogh...",
+			"I really need this.",
+			"I feel at... ease...",
+			"Distract me...",
+			"I feel so much... better...",
+			"That'll shut... me up...",
+			"I feel better... Ohh... yes...",
+			"Enough thinking...",
+			"I could... do this more!...",
+			"Freeeedooooommm...",
+			"Thank you, silly stuff...",
+			"I need to stop thinking... stop thinking...",
+			"Just to... Get my mind off of these things...",
+			"Clear my mind... clear my mind...",
+			"No more... suffering...",
+			"Ahhhhhh... good..."
+		};
+
+		PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
+	}
+	else
+	{
+		static const char dialogue[][] =
+		{
+			"I think I'm drugged...",
+			"I feel woooooozzzyyy...",
+			"It's hard to focus...",
+			"This feels gggreeatttt...",
+			"This can't be good for me but I feel great.",
+			"Ha-ha... I like this...",
+			"What did I just put into my body...",
+			"I feel... Sleepy...?",
+			"I... Can't focus...",
+			"I feel like something's in my lungs...",
+			"It's a bit hard to breathe...",
+			"I feel like I'm gonna pass out... And I love it...",
+			"I feel funny...",
+			"Ooggh... yeaaaahhh...",
+			"I'm tingling...",
+			"I love this... feeling?...",
+			"I want more of this...",
+			"I want more of whatever this is..."
+		};
+
+		PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
+	}
+}
+
+static void Monologue_Idle(int client)
+{
+	if(!Gunsaw_IsMerc(client) || (LastMonologue[client] + 80.0) > GetGameTime())
+		return;
+	
+	int mood = MonologueMoodLevel(client);
+	if(dieingstate[client])
+	{
+		static const char dialogue[][] =
+		{
+			"I don't... want to die... I don't want to die...",
+			"Please... Please... Someone save... Save me...",
+			"I don't want to die... Please... Please...",
+			"Not... Not like this... Please... Help me...",
+			"H-help... Someone... I don't w-want to die...",
+			"I don't... I don't want to leave this world...",
+			"Save me... Save me... S-save me... Please...",
+			"This.. Is... H-h... Is this how... How it ends...",
+			"All... Everything I've done... To... To lead up to t-this... Save m-me...",
+			"No.. No.... N-no... Please... Please... I don't... I-I don't want to d-die... Help me...",
+			"Ffhh... Gh.... Help me... Please... Anyone...",
+			"Nhh... Not like t-this... Please... P-please... Save me...",
+			"Please... I don't... I don't want to die... Save me... Anyone... Anything... I-I'm not r-ready...",
+			"W-Will it be.. Over s-soon..?",
+			"Stop... Stop... Stop... Please... S-stop... Not l-like this... Save me...",
+			"Fuck... Fuck... Help me... I don't... Want to d-die... H-h.."
+		};
+
+		PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)], _, true);
+	}
+	else if(GetClientHealth(client) < (ReturnEntityMaxHealth(client) / 6))
+	{
+		static const char dialogue[][] =
+		{
+			"I taste metal.",
+			"Did I eat something metallic?",
+			"I didn't know metal had a smell.",
+			"There's a metal taste in my mouth...",
+			"...Metal...?",
+			"What     is  happening",
+			"This      this  is    wrong .",
+			"I'm smelling something REALLY weird...",
+			"This isn't right. I feel a metallic taste...",
+			"Nor something angrily nor blissfully few?",
+			"An no one ourselves dry for invent by means of a most.",
+			"Very Well! Dynamics two zero nine fourty-two thre two two eight two seven.",
+			"Villa hastily the oho! Onto no one?",
+			"Good! Certainty someone itself I urgently!",
+			"For as oddly whom urgently him mate rats! Miner herself right on.",
+			"Expand ptui!",
+			"Travel truthfully deflation the improve which one another an a?",
+			"I see shadows in my eyes...",
+			"The colors of everything... It all tastes wrong...",
+			"...Wh... ...What... Yeah... Yes!",
+			"I smell copper.",
+			"This smell does not smell possible...",
+			"Si tir ti vucot svaklar si mi.",
+			"The",
+			"Ough! I taste metal... So much metal...",
+			"Kovgam varmunch persvek sia narod!",
+			"Since when does everything smell like this..?",
+			"This tastes wrong. Very wrong... Am I sick..?",
+			"Gh... Hh-h...",
+			"What was that!?",
+			"Am... Am I imagining things..?"
+		};
+
+		PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
+	}
+	else if(DrugNerf[client] > 1199)
+	{
+		static const char dialogue[][] =
+		{
+			"I can't breathe!",
+			"I... can't breathe...",
+			"Help... I'm suffocating...",
+			"Cough! Cough! Ack!",
+			"I'm passing out...",
+			"What's happening... Help...",
+			"Cough- H-help...",
+			"I c-can't breathe...!",
+			"I'm-... Suffocating!...",
+			"Ahk! Cough!",
+			"Need... Air!...",
+			"M-My... neck!...",
+			"I can't.... Cough! Hack!",
+			"Help- Ack! Cough!",
+			"H-help...",
+			"My... chest...",
+			"My... chest- Cough! Hack!",
+			"My lungs...",
+			"*gasping*",
+			"I feel like I'm dying...",
+			"I'm gonna... pass out...",
+			"Can't... breathe...",
+			"My insides..."
+		};
+
+		PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)], _, true);
+	}
+	else if(DrugNerf[client] > 499)
+	{
+		static const char dialogue[][] =
+		{
+			"I... I need drugs...",
+			"Opiates... Please...",
+			"I-I really n-need more opiates...",
+			"I'm all shaky...",
+			"I could chug an entire b-bottle of painkillers...",
+			"I think I'm going t-through withdrawal...",
+			"I-I really n-need another shot...",
+			"F-fuck... I feel terrible... I really need... something...",
+			"I'm... I'm so shaky... I need some more...",
+			"I feel terrible- I need... I need more of that stuff...",
+			"It's getting to me... I'm shaky... Fuck.",
+			"Need... more... opioids.",
+			"I'm f-feeling so... terrible... I-I need more...",
+			"Painkillers...",
+			"I... I need something... I need that high...",
+			"F-Fuck... uuggh... withdrawal...",
+			"I'm- f-feeling like shit... I need a dose- NOW.",
+			"I-I could use a dose right about now.",
+			"I could u-use a dose.",
+			"I'm... getting the shakes...",
+			"I need to stop using this crap...",
+			"All I can think a-about is another shot...",
+			"Opioids...",
+			"I'm so shaky and lightheaded... I-I need more opioids...",
+			"Need more... D-drugs..."
+		};
+
+		PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
+	}
+	else if(mood < -3)
+	{
+		static const char dialogue[][] =
+		{
+			"...Why am I trying this?",
+			"I can't do this. I just can't.",
+			"Was I born, to only feel pain?",
+			"They won't get away with this.",
+			"Make it stop... Make it stop...",
+			"I am about to FUCKING snap.",
+			"I'm completely hollow.",
+			"This is not worth living through.",
+			"STOP. THIS.",
+			"I DON'T WANT TO FUCKING CONTINUE THIS.",
+			"I am so fucking done with all of this.",
+			"I'm not willing to walk another step.",
+			"I'm going to DEVOUR whoever put me here.",
+			"Is this a fucking joke?",
+			"I. Am. Going. To. FUCKING. SNAP.",
+			"WHY!?",
+			"AAAHHHHHHH!",
+			"HEELPPP!!! PLEASE!",
+			"THIS IS TOO FUCKING MUCH.",
+			"Ahahahah...",
+			"Hmph.",
+			"Ain't this just fucking lovely?",
+			"Mhm.",
+			"Okay.",
+			"...",
+			"FUCK. This.",
+			"W-what's happening again?",
+			"Hahaha...",
+			"Ooohhh boy...",
+			"I died the moment I arrived here."
+		};
+
+		PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
+	}
+	else if(mood < -2)
+	{
+		static const char dialogue[][] =
+		{
+			"I can't take this anymore.",
+			"...Why am I trying this?",
+			"I should... just... let go...",
+			"I can't keep going on like this...",
+			"Should I... keep trying?",
+			"There's no point to this...",
+			"Please... anything to make me feel better...",
+			"Can something ease my suffering? Anything?",
+			"I just want this to stop.",
+			"This is my life now... Great.",
+			"I'm too pathetic for this...",
+			"This place is going to tear me apart.",
+			"I'm not going to make it through this.",
+			"What am I going to do...",
+			"I'll never get out of this.",
+			"Fuck this.",
+			"What's even the point anymore.",
+			"I can't do this... much longer.",
+			"I need something to help me forget this.",
+			"I feel. Terrible.",
+			"Why did they do this to me?",
+			"Who dumped me here, just for me to suffer?...",
+			"I wish I could just... understand this more.",
+			"I need to distract myself.",
+			"...Not....Okay....",
+			"I feel genuinely horrible.",
+			"DAMN it!",
+			"I want to cry...",
+			"Maaaannnnn...",
+			"I'm struggling really bad...",
+			"I'm going to fucking kill whoever is putting me through this.",
+			"I am going to fucking snap.",
+			"Oh... Oh no.",
+			"...",
+			"Damn it... DAMN IT!!! Why the FUCK am I HERE???",
+			"Don't push me any fucking further.",
+			"I don't... I don't want to die here...",
+			"Someone... Anyone... Please, help me...",
+			"HEEELPPP!!! ANYONE!? PLEASE!!!...",
+			"There's no point to this, is there?",
+			"All of this is fucking revolting.",
+			"Life hates me.",
+			"AAAHHH!!",
+			"Hahahaha..."
+		};
+
+		PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
+	}
+	else if(mood < -1)
+	{
+		static const char dialogue[][] =
+		{
+			"Things could be better.",
+			"This is just... terrible.",
+			"I hope things get better. Quick.",
+			"This is going down hill...",
+			"I'm getting tired of this.",
+			"Ugh... this sucks...",
+			"I'm not content with this.",
+			"This can't get any worse.",
+			"My patience is being tested...",
+			"What's gonna happen now?...",
+			"Can't give up yet...",
+			"I have no luck at this point.",
+			"I don't like where this is going.",
+			"I hate this. Ugh.",
+			"Feeling a bit under the weather.",
+			"Recent events have been terrible.",
+			"I wouldn't mind something fun right now.",
+			"I need entertainment or something... ugh...",
+			"Absolutely tired of this.",
+			"Terrible. just... terrible...",
+			"From one thing to another...",
+			"Things better straighten up...",
+			"Fuck this... Ugh!",
+			"Morale's low.",
+			"Ugh!",
+			"I'm in the dumps.",
+			"I feel really down.",
+			"Man...",
+			"I'm really scared...",
+			"Fuck this, man... Ugh...",
+			"I really want out of here.",
+			"I'm unhappy."
+		};
+
+		PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
+	}
+	else if(mood < 0)
+	{
+		static const char dialogue[][] =
+		{
+			"Things could be worse.",
+			"Hmm...",
+			"Am I doing things right?...",
+			"I must keep going.",
+			"Just need to keep going...",
+			"This probably isn't so bad...",
+			"What else could go wrong?",
+			"Uhm... hmm...",
+			"Ugh. C'mon...",
+			"I've been through worse...",
+			"Just worse than usual...",
+			"I can do this... I can do this...",
+			"Just breathe in, and breathe out...",
+			"I could do better...",
+			"Can't give up yet...",
+			"This is my life now.",
+			"Just keep moving.",
+			"Getting a little tired of this.",
+			"Not my lucky day.",
+			"I can't let all of this get to me...",
+			"Things are just rough sometimes... Yeah...",
+			"Ugh.",
+			"I feel down.",
+			"I don't like what's happening.",
+			"W-why am I even here?",
+			"Why me?",
+			"I'm scared.",
+			"Is this what my life is going to be now?"
+		};
+
+		PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
+	}
+	else
+	{
+		static const char dialogue[][] =
+		{
+			"*yawn*",
+			"What time is it?",
+			"I feel drowsy...",
+			"I'm a little tired.",
+			"I could go for a nap.",
+			"Nap time is coming...",
+			"I'm kinda tired.",
+			"I'm getting sleepy.",
+			"Resting myself sounds nice.",
+			"Sleep sounds great right now.",
+			"I should rest my head soon.",
+			"Nap time...",
+			"I'm sleepy.",
+			"I need to sleep soon.",
+			"Getting rest isn't a bad idea right now...",
+			"I need a nice nap.",
+			"Mmmm... tired...",
+			"Getting a little drowsy.",
+			"I kind-of want to lay down.",
+			"Could do with a lay-down.",
+			"I'm sleepy...",
+			"Maybe that's enough for today...?",
+			"Sleepy...",
+			"I'm thirsty.",
+			"I'd love a drink.",
+			"I feel thirsty.",
+			"I'm thirsty!",
+			"Thirsty.",
+			"Need water.",
+			"I need water.",
+			"I want a drink.",
+			"My mouth's dry.",
+			"Water would hit the spot.",
+			"Mouth's a little dry.",
+			"Bah... thirsty...",
+			"I need a drink.",
+			"Never enough water.",
+			"Any water?",
+			"Water?",
+			"Could do with a drink.",
+			"I'd love to quench my thirst.",
+			"Could do with some water.",
+			"It's cold in here.",
+			"It's chilly!",
+			"I feel cold.",
+			"It's chilly in here.",
+			"Just a hint... cold here.",
+			"I'm starting to shiver.",
+			"Hmph... cold.",
+			"Is it me or is it cold?",
+			"Feeling a little cold.",
+			"Cold in here...",
+			"I should try to stay warm.",
+			"Brrr.",
+			"I feel a little chilly.",
+			"It's nippy in here!",
+			"I'm cold.",
+			"It's a little hot in here.",
+			"I feel warm.",
+			"I'm a little too warm.",
+			"Too warm for comfort.",
+			"I'd like to cool down.",
+			"I'm starting to sweat a bunch.",
+			"I need to cool off.",
+			"I'm uncomfortably hot.",
+			"I need to chill out- literally.",
+			"Something to cool me off would be nice...",
+			"I'm burning up...",
+			"It's a little warm here...",
+			"I'm sweating!",
+			"I'd like to stop for a moment.",
+			"What an exercise!",
+			"Can we pause...",
+			"I need a pause...",
+			"Whew... i'm exhausted...",
+			"I'm a bit drained...",
+			"I need a break.",
+			"I should stop a bit... I feel all flimsy.",
+			"I need to take a moment...",
+			"I need a moment to sit.",
+			"I'm a little exerted...",
+			"Gosh... so much work...",
+			"I'm worn out...",
+			"Taking a break sounds good...",
+			"I feel exerted...",
+			"Real workout over here!",
+			"I want to rest!",
+			"Let's sit down for a moment.",
+			"Ugh... I'm so dirty!",
+			"I really need a bath.",
+			"I'm covered in bog.",
+			"I'm all covered in dirt.",
+			"I think I need a shower.",
+			"It might just be me, but I think I'm starting to smell.",
+			"All this dirt on me... I feel like an animal.",
+			"This is not very hygienic...",
+			"Can't I take a quick bath?",
+			"I should clean myself.",
+			"I need to clean off all this dirt.",
+			"Way too dirty.",
+			"Really should wash all the dirt off...",
+			"Let's not get THIS unclean...",
+			"Time for a bath!",
+			"How'd I get so dirty?",
+			"Gosh, I am COVERED in gunk!",
+			"My fur is so yucky!",
+			"Guh! I'm completely covered in filth.",
+			"I feel filthy. I really need a bath, or something...",
+			"Could do with a shower!",
+			"Carrying a bit much.",
+			"Do I need this much on me..?",
+			"I'm kind of weighed down...",
+			"I should drop some things...",
+			"I should leave some of my belongings, they're really heavy...",
+			"Ough, I'm way too weighed down.",
+			"Carrying too much...",
+			"I'm hoarding too much...",
+			"As much as I feel like all of these things will be useful, I'm really weighed down...",
+			"The load is a little much...",
+			"I feel weighed down by all I am carrying.",
+			"Let's lighten the load a little.",
+			"I'm a bit overloaded with gear.",
+			"Carrying uncomfortably much...",
+			"I'd love to lessen the load a little...",
+			"I need to leave some stuff behind, there's too much on me.",
+			"I really should free up a hand or two. I'm carrying a lot...",
+			"Ugh! Too much gear on me. I feel weighed down.",
+			"Hoarding a little too much... All this gear is heavy."
+		};
+
+		PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
+		LastMonologue[client] = GetGameTime();
+	}
+
+	Citizen_LiveCitizenReaction(client);
+}
+
+void Gunsaw_Monologue_OnTakeDamage(int client, float damage)
+{
+	if(damage < 100.0 || !Gunsaw_IsMerc(client))
+		return;
+	
+	int maxhealth = ReturnEntityMaxHealth(client);
+	if(maxhealth < 300)
+		maxhealth = 300;
+	
+	if(damage > maxhealth)
+	{
+		static const char dialogue[][] =
+		{
+			"OW!!!",
+			"AGH!!!",
+			"AUUGHH!",
+			"AUUGHNN!",
+			"OOAUAUGHHH!",
+			"NHHGHH!",
+			"FUUUCK!",
+			"OOOWHHG!",
+			"NHHGFFF!",
+			"GAAH!",
+			"HELP! AAHG!",
+			"OWW!!!!",
+			"OOUUUUCH!",
+			"GGHHHBN...",
+			"HEELPPP!",
+			"AAAH!",
+			"FUCK!",
+			"CRAP!!!",
+			"AHHH!!!",
+			"HELP!!!",
+			"NGHH!",
+			"AGH...",
+			"PLEASE!!",
+			"STOP!!!",
+			"DAMN IT!!!"
+		};
+
+		PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)], true, true);
+	}
+	else if(damage > (maxhealth / 3))
+	{
+		static const char dialogue[][] =
+		{
+			"Agh!",
+			"Gack!",
+			"Fuck!",
+			"Augh!",
+			"Ghagh!",
+			"Ugh!",
+			"Ngghh!",
+			"Ow!",
+			"Gggouch!",
+			"Argh!",
+			"Nffgh...",
+			"Aaawgh!",
+			"Ngghhh...",
+			"Ough!"
+		};
+
+		PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)], true, true);
+	}
+}
+
+void Gunsaw_Monologue_Pet(int client)
+{
+	if(!Gunsaw_IsMerc(client) || (LastMonologue[client] + 10.0) > GetGameTime())
+		return;
+	
+	static const char dialogue[][] =
+	{
+		"Ahhh... Thank you, buddy.",
+		"Ah! Mmhh... Thank you...",
+		"Aw! You're so nice!",
+		"...Thank you, I needed that."
+	};
+
+	PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
+	Gunsaw_Monologue_AddMood(client, 10.0);
+}
+
+void Gunsaw_Monologue_LiveExpieReaction(int client, int entity)
+{
+	if(!Gunsaw_IsMerc(client) || (LastMonologue[client] + 5.0) > GetGameTime())
+		return;
+	
+	if(entity <= MaxClients && Gunsaw_IsMerc(entity))
+	{
+		if(MonologueMoodLevel(entity) < 0)
+		{
+			static const char dialogue[][] =
+			{
+                "...Uh... ...Are you okay? You look a little... Disgruntled...?",
+                "...? ...Um...  ...Hello..? ...You there..?",
+                "...You look terrified. Are you okay? Hello...?",
+                "Hey! How are yooouuuu......you don't look so well there, buddy... Uhm...",
+                "Hey! ...What's with that piercing look? Uhm...",
+                "...Calm down, please... It'll be fine...",
+                "Hey, it's okay... You're still alive and kicking, right..."
+			};
+
+			PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
+			return;
+		}
+		else if(!(GetURandomInt() % 9))
+		{
+			static const char dialogue[][] =
+			{
+                "There's a bunch of food out there, you know...",
+                "I'd wager you can find some water out...",
+                "Last I heard you can only go for three \"days\" without water, haha...",
+                "...What?"
+			};
+
+			PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
+			return;
+		}
+	}
+
+	int mood = MonologueMoodLevel(client);
+	if(mood > 1)
+	{
+		static const char dialogue[][] =
+		{
+			"Ah! Hi!!",
+			"Hello! How are ya?",
+			"Aah! Hello!! Hi!",
+			"...Okay!",
+			"Mmmmhmmm... Got it.",
+			"I'll think about it.",
+			"I'll consider...",
+			"Y-yeah... Sure...",
+			"Makes sense to me!",
+			"Uh huh.",
+			"Hmm... Okay."
+		};
+
+		PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
+	}
+	else if(mood > -2)
+	{
+		static const char dialogue[][] =
+		{
+			"Hey!",
+			"Hello!",
+			"Oh! Heya.",
+			"Hey, buddy.",
+			"...Okay!",
+			"Mmmmhmmm... Got it.",
+			"I'll think about it.",
+			"I'll consider...",
+			"Y-yeah... Sure...",
+			"Makes sense to me!",
+			"Uh huh.",
+			"Hmm... Okay.",
+			"You didn't sound very convincing there.",
+			"...No, thanks.",
+			"Nuh uh.",
+			"Not interested.",
+			"What? Why would I do that..?",
+			"Meeehhh... Another time.",
+			"Meh.",
+			"...Nhh...",
+			"...Ugh. Sorry.",
+			"...Huh? What? Is there something in your mouth? I can't understand you...",
+			"Mmmff mff mmmmfff mhfff! That's what you sound like.",
+			"I get that this is a bad scenario we're in, but you can\nat least put in some effort into speaking clearly..."
+		};
+
+		PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
+	}
+	else
+	{
+		static const char dialogue[][] =
+		{
+			"Hheeyy...I dislike your presence..?",
+			"H... Hello... Uhh...",
+			"...Hey.",
+			"...Hm. Hello.",
+			"You didn't sound very convincing there.",
+			"...No, thanks.",
+			"Nuh uh.",
+			"Not interested.",
+			"What? Why would I do that..?",
+			"Meeehhh... Another time.",
+			"Meh.",
+			"...Nhh...",
+			"...Ugh. Sorry.",
+			"...Huh? What? Is there something in your mouth? I can't understand you...",
+			"Mmmff mff mmmmfff mhfff! That's what you sound like.",
+			"I get that this is a bad scenario we're in, but you can\nat least put in some effort into speaking clearly..."
+		};
+
+		PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
+	}
+}
+
+void Gunsaw_Monologue_LoudPrefix()
+{
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(!Gunsaw_IsMerc(client) || (LastMonologue[client] + 20.0) > GetGameTime())
+			continue;
+
+		static const char dialogue[][] =
+		{
+			"FUCK! That was loud...",
+			"GAH! Crap! My ears!",
+			"AHHH! Fuck... My ears are ringing...",
+			"CRAP! ... Ouuchhh... That was so loud...",
+			"NO!!! Fuck me, man... Aghhh, that was loud..."
+		};
+		
+		PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
+	}
+}
+
+static void Monologue_BodySwap(int client)
+{
+	if(!Gunsaw_IsMerc(client) || (LastMonologue[client] + 20.0) > GetGameTime())
+		return;
+	
+	static const char dialogue[][] =
+	{
+		"A feel a piece of my soul being left behind...",
+		"This can't be good for me...",
+		"Something gets left behind each time...",
+		"Is this really worth it..?"
+	};
+
+	PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
 }

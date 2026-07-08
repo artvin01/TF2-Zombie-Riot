@@ -2344,6 +2344,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				*/
 
 				Dungeon_PlayerDowned(victim);
+				Gunsaw_Monologue_OnDowned(victim);
 				
 				ApplyRapidSuturing(victim);
 				ExtinguishTargetDebuff(victim);
@@ -2638,6 +2639,8 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 				}
 			}
 			LouderSoundStop = false;
+
+			Gunsaw_Monologue_LoudPrefix();
 		}
 	}
 /*

@@ -198,6 +198,7 @@ static void GrillingUse(int client, int entity)
 		HealEntityGlobal(owner, client, healing, _, 3.0);
 		Building_GiveRewardsUse(client, owner, 15, true, 0.4, true);
 		ObjectTinkerGrill_UpdateWearables(entity, Selling[owner].Length);
+		Gunsaw_Monologue_UseFridge(client);
 
 		ClientCommand(client, "playgamesound items/smallmedkit1.wav");
 		ClientCommand(client, "playgamesound vo/sandwicheat09.mp3");

@@ -1098,6 +1098,7 @@ public void IndexFather_InteractAlly(int client, int InteractedEntity)
 			}
 			ApplyStatusEffect(client, InteractedEntity, "Comfort in Hard Times", 90.0);
 			ApplyStatusEffect(client, client, "Comfort in Hard Times", 90.0);
+			Gunsaw_Monologue_Pet(InteractedEntity);
 			
 		}
 	}
