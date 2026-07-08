@@ -3066,6 +3066,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			Hook_DHook_UpdateTransmitState(entity);
 			b_ThisEntityIgnored[entity] = true;
 			b_ThisEntityIgnored_NoTeam[entity] = true;
+			SetEntProp(entity, Prop_Data, "m_bForcePurgeFixedupStrings", true);
 		}
 		else if(!StrContains(classname, "info_particle_system"))
 		{
