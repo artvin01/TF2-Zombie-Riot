@@ -453,7 +453,7 @@ static void ApplyGunsawStats(int ref)
 					health = cap;
 				
 				if(ModelEffect[client] == Body_Boss)
-					cap *= 1.4;
+					cap *= 1.2;
 
 				// More effective health = more fat
 				float fat = (health * MaxMulti / cap) - 1.0;
@@ -552,6 +552,15 @@ bool Gunsaw_LastmanSecret()
 
 void Gunsaw_NPCDeath(int entity)
 {
+	//prevent crashes on attack as it happens inside on takedamage
+	RequestFrame(GunsawNpcDeath_Internal, EntIndexToEntRef(entity));
+}
+//Revival raid spam
+public void GunsawNpcDeath_Internal(int ref)
+{
+	int entity = EntRefToEntIndex(ref);
+	if(!IsValidEntity(entity))
+		return;
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(WeaponTimer[client] && dieingstate[client])
@@ -596,6 +605,7 @@ void Gunsaw_NPCDeath(int entity)
 		}
 	}
 }
+
 
 void Gunsaw_TryBodySteal(int client, bool regen, float pos[3] = {0.0,0.0,0.0})
 {
@@ -696,7 +706,7 @@ static void StealBodyForm(int client, int entity)
 	GetEntPropString(entity, Prop_Data, "m_ModelName", model, sizeof(model));
 	ReplaceString(model, sizeof(model), "\\", "/");
 
-	if(StrContains(model, "combine_attachment_police", false) != -1)
+	if(StrContains(model, "combine_", false) != -1 || StrContains(model, "police.mdl", false) != -1)
 	{
 		class = TFClass_Pyro;
 		ModelRobot[client] = false;
@@ -863,7 +873,7 @@ static bool ValidSwapTarget(int entity, bool ignoreSome = false)
 	GetEntPropString(entity, Prop_Data, "m_ModelName", model, sizeof(model));
 	ReplaceString(model, sizeof(model), "\\", "/");
 
-	if(StrContains(model, "combine_attachment_police", false) != -1)
+	if(StrContains(model, "combine_", false) != -1 || StrContains(model, "police.mdl", false) != -1)
 		return true;
 	
 	if(StrContains(model, "models/player/", false) != -1)
@@ -1085,6 +1095,7 @@ static Action GunsawHudTimer(Handle timer, DataPack pack)
 						if(Armor_Charge[client] < maxarmor)
 							GiveArmorViaPercentage(client, 0.01, 1.0);
 					}
+					/*
 					case Body_Boss:
 					{
 						int maxhealth = ReturnEntityMaxHealth(client);
@@ -1103,6 +1114,7 @@ static Action GunsawHudTimer(Handle timer, DataPack pack)
 							SetEntityHealth(client, health);
 						}
 					}
+					*/
 				}
 			}
 
@@ -1720,7 +1732,7 @@ static void PlayMonologue(int client, const char[] text, bool fast = false, bool
 
 	if(pain > 0.5)
 	{
-		MonologueSpeed[client] = 0.5 * pain * pain;
+		MonologueSpeed[client] = 0.2 * pain;
 
 		if(fast)
 			MonologueSpeed[client] *= 0.4;
@@ -1732,7 +1744,7 @@ static void PlayMonologue(int client, const char[] text, bool fast = false, bool
 
 	LastMonologue[client] = GetGameTime();
 
-	int entity = NpcSpeechBubble(client, buffer, 7, {255, 255, 200, 255}, {0.0, 0.0, 80.0}, "");
+	int entity = NpcSpeechBubble(client, buffer, 3, {255, 255, 200, 200}, {0.0, 0.0, 80.0}, "");
 	if(entity != -1)
 	{
 		AddEntityToThirdPersonTransitMode(client, entity);
@@ -2949,7 +2961,7 @@ void Gunsaw_Monologue_LoudPrefix()
 
 static void Monologue_BodySwap(int client)
 {
-	if(!Gunsaw_IsMerc(client) || (LastMonologue[client] + 20.0) > GetGameTime())
+	if(!Gunsaw_IsMerc(client) || (LastMonologue[client] + 10.0) > GetGameTime())
 		return;
 	
 	static const char dialogue[][] =

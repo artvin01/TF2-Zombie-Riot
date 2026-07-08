@@ -3923,19 +3923,19 @@ public void TeleportEntityLocalPos_FrameDelayDo(DataPack pack)
 }
 stock void SetPlayerActiveWeapon(int client, int weapon)
 {
+	if(!IsValidClient(client))
+		return;
+	if(!IsValidEntity(weapon))
+		return;
 //	TF2Util_SetPlayerActiveWeapon(client, weapon);
 #if defined ZR
 //	WeaponSwtichToWarningPostDestroyed(weapon);
 #endif
-	//incase the above fails, do this instead.
-	char buffer[64];
-	GetEntityClassname(weapon, buffer, sizeof(buffer));
-	FakeClientCommand(client, "use %s", buffer); 					//allow client to change
-	SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);	//Force client to change.
-	OnWeaponSwitchPost(client, weapon);
-	
 	RunScriptCode(client, -1, -1, "self.Weapon_Switch(EntIndexToHScript(%d))", weapon);
-	
+
+	//incase the above fails, do this instead.
+	//SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);	//Force client to change.
+	//OnWeaponSwitchPost(client, weapon);
 }
 
 stock void DHook_CreateDetour(GameData gamedata, const char[] name, DHookCallback preCallback = INVALID_FUNCTION, DHookCallback postCallback = INVALID_FUNCTION)
