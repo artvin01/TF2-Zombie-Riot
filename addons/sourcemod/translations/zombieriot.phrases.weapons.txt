@@ -6070,7 +6070,7 @@
 	"Lost Gadgets"
 	{
 		"en"	"Lost Gadgets"
-		"ko"	"유실된 가젯"
+		"ko"	"유실된 소형 도구"
 	}
 	"Gunsaw Pistol"
 	{
