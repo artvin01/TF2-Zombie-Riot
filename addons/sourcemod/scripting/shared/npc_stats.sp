@@ -11414,7 +11414,7 @@ float f_SpeechDeleteAfter[MAXENTITIES];
 /**
  * @param endingtextscroll	Is end text that loops "" -> "." -> ".." -> "..." -> ""
  */
-stock void NpcSpeechBubble(int entity, const char[] speechtext, int fontsize, int colour[4], float extra_offset[3], const char[] endingtextscroll)
+stock int NpcSpeechBubble(int entity, const char[] speechtext, int fontsize, int colour[4], float extra_offset[3], const char[] endingtextscroll)
 {
 	int Text_Entity;
 	Text_Entity = EntRefToEntIndex(i_SpeechBubbleEntity[entity]);
@@ -11442,6 +11442,8 @@ stock void NpcSpeechBubble(int entity, const char[] speechtext, int fontsize, in
 		SDKUnhook(entity, SDKHook_PreThink, NpcSpeechBubbleTalk);
 		SDKHook(entity, SDKHook_PreThink, NpcSpeechBubbleTalk);
 	}
+
+	return Text_Entity;
 }
 
 void NpcSpeechBubbleTalk(int iNPC)

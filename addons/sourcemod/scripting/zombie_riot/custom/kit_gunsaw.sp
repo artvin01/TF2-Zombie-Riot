@@ -29,6 +29,13 @@ static const int HealthCap[] =
 	9.0
 };*/
 
+static const char TextSound[][] =
+{
+	"ui/buttonclick.wav",
+	"ui/buttonclickrelease.wav",
+	"ui/buttonrollover.wav"
+};
+
 enum
 {
 	Body_None = 0,
@@ -61,6 +68,7 @@ static ArrayList ModelModels[MAXPLAYERS];
 static ArrayList ModelWearables[MAXPLAYERS];
 static int WeaponLevel[MAXPLAYERS];
 static float LastSwap[MAXPLAYERS];
+static float LastMonologue[MAXPLAYERS];
 //static int EquippedWeapons[MAXPLAYERS][2][2];
 //static int NextWeapons[MAXPLAYERS][2][2];
 //static Function OgEntityFuncAttack[MAXENTITIES][2];
@@ -92,6 +100,7 @@ void Gunsaw_Precache()
 {
 	if(!Precached)
 	{
+		PrecacheSoundArray(TextSound);
 		PrecacheSound("weapons/physcannon/superphys_launch2.wav");
 		PrecacheSoundCustom("#zombiesurvival/gunsaw_lastman.mp3",_ , 1);
 		Precached = true;
@@ -1562,3 +1571,107 @@ static void AddGun(int rank, int slot, const char[] name, int level)
 	}
 }
 */
+
+static void PlayMonologue(int client, const char[] text)
+{
+	char buffer[256];
+	if(GetClientHealth(client) < (ReturnEntityMaxHealth(client) / 8))
+	{
+		// Brain damage
+		int size = strlen(text);
+		for(int i; i < size; i++)
+		{
+			if(IsCharSpace(text[i]))
+			{
+				if(GetURandomFloat() < 0.18)
+				{
+					Format(buffer, sizeof(buffer), "%s.... ", buffer);
+					continue;
+				}
+			}
+			else
+			{
+				if(GetURandomFloat() < 0.12)
+				{
+					int rand = GetURandomInt();
+					for(int b; b < rand; b++)
+					{
+						Format(buffer, sizeof(buffer), "%s%s", buffer, text[i]);
+					}
+				}
+
+				if(GetURandomFloat() < 0.12)
+					Format(buffer, sizeof(buffer), "%s%s-", buffer, text[i]);
+			}
+
+			Format(buffer, sizeof(buffer), "%s%s", buffer, text[i]);
+		}
+	}
+	else
+	{
+		strcopy(buffer, sizeof(buffer), text);
+	}
+
+	int entity = NpcSpeechBubble(client, buffer, 7, {255, 255, 255, 255}, {0.0, 0.0, 120.0}, "");
+	if(entity != -1)
+	{
+		SDKUnhook(client, SDKHook_PreThink, NpcSpeechBubbleTalk);
+		SDKUnhook(client, SDKHook_PreThink, MonologueThink);
+		SDKHook(client, SDKHook_PreThink, MonologueThink);
+	}
+}
+
+static void MonologueThink(int client)
+{
+	int text = EntRefToEntIndex(i_SpeechBubbleEntity[client]);
+	if(text == -1)
+	{
+		SDKUnhook(client, SDKHook_PreThink, MonologueThink);
+		return;
+	}
+
+	if(f_SpeechTickDelay[client] > GetGameTime())
+		return;
+	
+	if(!f_SpeechDeleteAfter[client])
+	{
+		EmitSoundToAll(TextSound[GetURandomInt() % sizeof(TextSound)], client, _, 60, _, 0.8);
+	}
+
+	float pain = 1.0 - (GetClientHealth(client) / float(ReturnEntityMaxHealth(client)));
+	float x = 0.5;
+	float y = 0.1;
+	if(pain > 0.75)
+	{
+		x += GetRandomFloat(pain * -0.05, pain * 0.05);
+		y += GetRandomFloat(pain * -0.05, pain * 0.05);
+		
+		float pos[3];
+		GetEntPropVector(text, Prop_Data, "m_vecOrigin", pos);
+		pos[0] += x;
+		pos[1] += GetRandomFloat(pain * -0.05, pain * 0.05);
+		pos[2] += y;
+		TeleportEntity(text, pos);
+	}
+
+	if(pain < 0.2)
+		pain = 0.2;
+
+	NpcSpeechBubbleTalk(client);
+	f_SpeechTickDelay[client] = GetGameTime() + 0.25 * pain;
+
+	static Handle MonologueHud;
+	if(!MonologueHud)
+		MonologueHud = CreateHudSynchronizer();
+	
+	int size = i_SpeechBubbleTotalText_ScrollingPart[client];
+	char[] buffer = new char[size + 1];
+	Format(buffer, size, c_NpcName[text]);
+	SetHudTextParams(x, y, 0.05, 255, 255, 200, 255);
+	ShowSyncHudText(client, MonologueHud, buffer);
+}
+
+static void Monologue_()
+{
+	
+}
