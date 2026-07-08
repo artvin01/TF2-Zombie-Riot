@@ -1164,6 +1164,8 @@ static Action GunsawHudTimer(Handle timer, DataPack pack)
 		//dont do timer stuff when player is dead
 		if(!IsEntityAlive(client, false, true))
 			return Plugin_Continue;
+		if(TeutonType[client] != TEUTON_NONE)
+			return Plugin_Continue;
 
 		WeaponTimer[client] = null;
 		Weapon_GunsawMelee_Unequip(client);
