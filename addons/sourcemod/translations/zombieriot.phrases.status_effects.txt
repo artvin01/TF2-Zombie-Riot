@@ -4061,7 +4061,7 @@
 	"Shin - Rien Desc"
 	{
 		"en"	"Increases Poise gain by 1 and duration everytime poise is gained."
-		"ko"	"얻는 호흡이 1 증가하며 호흡을 얻을 때마다 지속 시간이 증가합니다."
+		"ko"	"얻는 호흡이 1 증가하며 호흡을 얻을 시 연장되는 지속 시간의 양이 증가합니다."
 	}
 	"Grace Of Prescript"
 	{
@@ -4086,10 +4086,12 @@
 	"Indulgence in Prescripts"
 	{
 		"en"	"Indulgence in Prescripts"
+		"ko"	"지령 탐닉"
 	}
 	"Indulgence in Prescripts Desc"
 	{
 		"en"	"Increases damage by 10.0％ multiplicatively, Removed upon losing a prescript\nGained when doing a prescript while already at max grace."
+		"ko"	"공격 피해량이 곱연산으로 10.0％ 증가합니다.(지령 수행 실패 시 효과 제거)\n지령의 가호가 최대일 때 지령 수행 시 획득할 수 있습니다."
 	}
 	"Karmic Consequence"
 	{
@@ -4108,5 +4110,13 @@
 	"Shrapnel Desc"
 	{
 		"en"	"Inflictor deals 15％ of damage dealt as bleed over 3 seconds."
+	}
+	"Comfort in Hard Times"
+	{
+		"en"	"Comfort in Hard Times"
+	}
+	"Comfort in Hard Times Desc"
+	{
+		"en"	"Recived or given pats by the Index Nursefather after losing someone else...\nIncreases damage by 5.0％, reduces damage taken by 5.0％"
 	}
 }

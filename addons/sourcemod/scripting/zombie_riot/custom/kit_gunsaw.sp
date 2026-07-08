@@ -1346,7 +1346,6 @@ public void Weapon_GunsawMelee_M1(int client, int weapon, bool &crit, int slot)
 		SDKUnhook(building, SDKHook_Think, BuildingPickUp);
 		ResetPlayer_BuildingBeingCarried(client);
 		Building_BuildingBeingCarried[building] = 0;
-		b_ThisEntityIgnored[building] = false;
 
 		i_TraceToInstead[prop] = building;
 
@@ -1542,7 +1541,7 @@ static void GunsawPropDamagePost(int prop, int victim, float damage, int weapon)
 static void GunsawPropDebuff(int prop, int victim, float damage, int weapon)
 {
 	int client = GetEntPropEnt(prop, Prop_Send, "m_hOwnerEntity");
-	if(client != -1)
+	if(IsValidClient(client))
 	{
 		ApplyStatusEffect(client, victim, "Shrapnel", 4.0);
 

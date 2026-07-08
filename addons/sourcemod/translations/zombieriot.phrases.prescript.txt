@@ -105,7 +105,7 @@
 	{
 		"#format"	"{1:s}"
 		"en"		"Build a {1}."
-		"ko"		"{1}를 건설한다."
+		"ko"		"{1}을(를) 건설한다."
 	}
 	"Prescript Dodge Successfully"
 	{
@@ -124,6 +124,10 @@
 		"#format"	"{1:.1f}"
 		"en"		"Stay behind your closest ally for {1} seconds."
 		"ko"		"가장 근접한 아군의 뒤에서 {1}초 동안 있는다."
+	}
+	"Prescript Pat Expi"
+	{
+		"en"		"Pat an ''Mercenary'', Expi or simular."
 	}
 	"Prescript Continue"
 	{
