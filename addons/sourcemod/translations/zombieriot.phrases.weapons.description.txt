@@ -5756,94 +5756,117 @@
 	"Gunsaw Mercenary Desc"
 	{
 		"en"	"-Shotgun and pistol, build cheap buildings, but no repairing\n-Able to body swap you to an enemy's body\n  -Takes the stats and weapons of the enemy\n  -Swap by killing a nearby enemy while downed"
+		"ko"	"-산탄총과 권총 보유, 저렴한 구조물을 건축할 수 있으나 수리 불가\n-적의 몸으로 육체를 치환 할 수 있음:\n   적의 능력치와 무기를 보유\n   다운 상태일 때 적을 처치하여 치환"
 	}
 	"Gunsaw Mercenary Pap 1"
 	{
 		"en"	"-Increased damage and building health\n-Able to throw buildings using melee M1\n  -Deal damage based on metal cost\n  -Takes damage when colliding\n  -Has a timed lifespan if not picked back up"
+		"ko"	"-피해량, 구조물 체력 증가\n-근접 무기 좌클릭으로 구조물을 던질 수 있음:\n  -금속 소모량에 따라 피해를 가함\n   충돌 시 피해를 받음\n   다시 회수하지 않을 경우 일정 시간 후 파괴"
 	}
 	"Gunsaw Mercenary Pap 2"
 	{
 		"en"	"-Increased damage and building health\n-Increased maximum body swap health\n-Shotgun can now fire all bullets in clip using M2\n  -Damage based on bullets in clip\n  -Knockbacks user, can be lethal"
+		"ko"	"-피해량, 구조물 체력 증가\n-치환한 육체의 최대 체력 증가\n-산탄총 사용 시 우클릭으로 전탄 발사 가능:\n   탄창에 있던 탄약량에 따라 피해를 가함\n   사용자를 넉백시키며, 피해를 입을 수 있음"
 	}
 	"Gunsaw Mercenary Pap 3"
 	{
 		"en"	"-Increased damage and building health\n-Increased maximum body swap health\n-Can inject self with opiate while holding the pistol using M2\n  -Provides x2 your max health as barrier that decays over time\n  -Reduces your max health that slowly regenerates back over time"
+		"ko"	"-피해량, 구조물 체력 증가\n-치환한 육체의 최대 체력 증가\n-권총 사용시 우클릭으로 스스로에게 오피오이드 주입 가능:\n   최대 체력의 2배에 한하는 배리어를 획득, 배리어는 지속적으로 감소\n   최대 체력이 감소하며, 지속적으로 다시 회복됨"
 	}
 	"Gunsaw Mercenary Pap 4"
 	{
 		"en"	"-Increased damage and building health\n-Increased maximum body swap health"
+		"ko"	"-피해량, 구조물 체력 증가\n-치환한 육체의 최대 체력 증가"
 	}
 	"Gunsaw Mercenary Pap 6"
 	{
 		"en"	"-Increased damage\n-Increased maximum body swap health"
+		"ko"	"-피해량 증가\n-치환한 육체의 최대 체력 증가"
 	}
 	"Gunsaw Mercenary Effect 0"
 	{
 		"en"	"Low stats"
+		"ko"	"낮은 능력치"
 	}
 	"Gunsaw Mercenary Effect 1"
 	{
 		"en"	"Reloads shotguns faster"
+		"ko"	"산탄총 장전 속도 증가"
 	}
 	"Gunsaw Mercenary Effect 2"
 	{
 		"en"	"Accurate pistol and increased headshot damage"
+		"ko"	"권총 정확도 및 헤드샷 피해량 증가"
 	}
 	"Gunsaw Mercenary Effect 3"
 	{
 		"en"	"Melee fire rate increases with less health"
+		"ko"	"체력이 감소할 수록 근접 무기 공격 속도 증가"
 	}
 	"Gunsaw Mercenary Effect 4"
 	{
 		"en"	"Thrown buildings explode for more damage"
+		"ko"	"던진 구조물이 폭발하며 추가 피해를 가함"
 	}
 	"Gunsaw Mercenary Effect 5"
 	{
 		"en"	"Built Healing Station grants more healing"
+		"ko"	"건설한 치유 스테이션의 치유량 증가"
 	}
 	"Gunsaw Mercenary Effect 6"
 	{
 		"en"	"Increased resistance and knockback reduction"
+		"ko"	"피해 저항력 증가 및 받는 넉백 감소"
 	}
 	"Gunsaw Mercenary Effect 7"
 	{
 		"en"	"Immune to burn and inflicts burn with thrown buildings"
+		"ko"	"화상에 면역이 되며 던진 구조물이 화상을 부여함"
 	}
 	"Gunsaw Mercenary Effect 8"
 	{
 		"en"	"Melee can backstab"
+		"ko"	"근접 무기로 백스탭 가능"
 	}
 	"Gunsaw Mercenary Effect 9"
 	{
 		"en"	"Increased building attack speed"
+		"ko"	"구조물의 공격 속도 증가"
 	}
 	"Gunsaw Mercenary Effect 10"
 	{
 		"en"	"Switches and fires guns faster"
+		"ko"	"총기의 전환 및 발사 속도 증가"
 	}
 	"Gunsaw Mercenary Effect 11"
 	{
 		"en"	"Moves faster and jumps higher"
+		"ko"	"이동 속도 및 점프 높이 증가"
 	}
 	"Gunsaw Mercenary Effect 12"
 	{
 		"en"	"Don't remind me of them"
+		"ko"	"''다시 상기시켜줄 필요 없어''"
 	}
 	"Gunsaw Mercenary Effect 13"
 	{
 		"en"	"Regenerates health over time"
+		"ko"	"지속적으로 체력 재생"
 	}
 	"Gunsaw Mercenary Effect 14"
 	{
 		"en"	"Regenerates armor over time"
+		"ko"	"지속적으로 아머 재생"
 	}
 	"Gunsaw Mercenary Effect 15"
 	{
 		"en"	"Higher stats, degrades over time"
+		"ko"	"더 높은 능력치를 보유, 시간이 지나며 약화"
 	}
 	"Explosive Barrel Desc"
 	{
 		"en"	"Explodes when destroyed"
+		"ko"	"파괴될 시 폭발합니다."
 	}
 	"Index Father Dodge"
 	{
