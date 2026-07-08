@@ -1728,6 +1728,7 @@ static void PlayMonologue(int client, const char[] text, bool fast = false, bool
 	int entity = NpcSpeechBubble(client, buffer, 7, {255, 255, 200, 255}, {0.0, 0.0, 80.0}, "");
 	if(entity != -1)
 	{
+		AddEntityToThirdPersonTransitMode(client, entity);
 		SDKUnhook(client, SDKHook_PreThink, NpcSpeechBubbleTalk);
 		SDKUnhook(client, SDKHook_PreThink, MonologueThink);
 		SDKHook(client, SDKHook_PreThink, MonologueThink);
