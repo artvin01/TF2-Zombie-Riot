@@ -1444,7 +1444,7 @@ void Store_PackMenu(int client, int index, int owneditemlevel = -1, int owner, b
 					int skip = info.PackSkip;
 					count += skip;
 
-					char data[64], buffer[64];
+					char data[64], buffer[128];
 					/*
 					if(count > 1)
 					{
@@ -1473,7 +1473,7 @@ void Store_PackMenu(int client, int index, int owneditemlevel = -1, int owner, b
 							TranslateItemName(client, item.Name, info.Custom_Name, info.Custom_Name, sizeof(info.Custom_Name));
 							Format(buffer, sizeof(buffer), "%s [$%d]", info.Custom_Name, info.Cost);
 							if (Store_IsItemInClientAutoPapList(client, index, OwnedItemIndex + i))
-								Format(buffer, sizeof(buffer), "%s [Will be bought automatically]", buffer);
+								Format(buffer, sizeof(buffer), "%s [%T]", buffer, "Pap Auto Enhancement Standby", client);
 							
 							menu.AddItem(data, buffer, /*cash < info.Cost ? ITEMDRAW_DISABLED : */ITEMDRAW_DEFAULT);
 
