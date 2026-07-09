@@ -2150,13 +2150,13 @@ void CheckLastMannStanding(int killed)
 		bool Expi = false;
 		for(int ClientsLeft = 1; ClientsLeft <= Remaining; ClientsLeft++)
 		{
-			if(Gunsaw_IsMerc(testLast))
+			if(Gunsaw_IsMerc(ClientsLeft))
 				Expi = true;
-			if(Is_Prescript_User(testLast))
+			if(Is_Prescript_User(ClientsLeft))
 				NurseFather = true;
 
 		}
-		if(Expi || NurseFather)
+		if(Expi && NurseFather)
 		{
 			if(IndexExpi_LastmanSecret())
 			{
