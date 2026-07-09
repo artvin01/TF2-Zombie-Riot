@@ -1439,7 +1439,7 @@ void Store_PackMenu(int client, int index, int owneditemlevel = -1, int owner, b
 						Format(buf, sizeof(buf), "%T", "Credits",client, cash);
 
 					TranslateItemName(client, item.Name, info.Custom_Name, info.Custom_Name, sizeof(info.Custom_Name));
-					menu.SetTitle("%T\n \n%s\n \n%s\n ", "TF2: Zombie Riot", client, buf, info.Custom_Name);
+					menu.SetTitle("%T\n \n%T\n \n%s\n \n%s\n ", "TF2: Zombie Riot", client, "Pap Auto Enhancement Notice", client, buf, info.Custom_Name);
 					
 					int skip = info.PackSkip;
 					count += skip;
@@ -1473,9 +1473,9 @@ void Store_PackMenu(int client, int index, int owneditemlevel = -1, int owner, b
 							TranslateItemName(client, item.Name, info.Custom_Name, info.Custom_Name, sizeof(info.Custom_Name));
 							Format(buffer, sizeof(buffer), "%s [$%d]", info.Custom_Name, info.Cost);
 							if (Store_IsItemInClientAutoPapList(client, index, OwnedItemIndex + i))
-								Format(buffer, sizeof(buffer), "%s [%T]", buffer, "Pap Auto Enhancement Standby", client);
+								Format(buffer, sizeof(buffer), "%s (%T)", buffer, "Pap Auto Enhancement Standby", client);
 							
-							menu.AddItem(data, buffer, /*cash < info.Cost ? ITEMDRAW_DISABLED : */ITEMDRAW_DEFAULT);
+							menu.AddItem(data, buffer, ITEMDRAW_DEFAULT);
 
 							if(info.Desc[0])
 							{
@@ -7932,7 +7932,6 @@ void Store_AddToClientAutoPapList(int client, int index, int level)
 	if (!AutoPapList[client])
 		AutoPapList[client] = new ArrayList(sizeof(AutoPapInfo));
 	
-	PrintToChatAll("added id %d level %d", index, level);
 	AutoPapInfo info;
 	info.index = index;
 	info.level = level;

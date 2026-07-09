@@ -2077,6 +2077,10 @@
 	{
 		"en"		"Selected for Purchase"
 	}
+	"Pap Auto Enhancement Notice"
+	{
+		"en"		"Selecting enhancements you can't afford will\nqueue them for purchase when possible."
+	}
 	"Revive Teammate tooltip"
 	{
 		"en" 		"to revive this dying teammate."
