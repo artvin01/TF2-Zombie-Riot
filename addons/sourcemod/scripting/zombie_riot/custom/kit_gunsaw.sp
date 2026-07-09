@@ -2052,7 +2052,7 @@ void Gunsaw_Monologue_OnBleed(int client)
 
 void Gunsaw_Monologue_OnDowned(int client)
 {
-	if(!Gunsaw_IsMerc(client) || (LastMonologue[client] + 10.0) > GetGameTime())
+	if(!Gunsaw_IsMerc(client) || (LastMonologue[client] + 50.0) > GetGameTime())
 		return;
 	
 	static const char dialogue[][] =
