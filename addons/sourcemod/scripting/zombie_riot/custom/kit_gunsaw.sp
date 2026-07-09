@@ -552,15 +552,6 @@ bool Gunsaw_LastmanSecret()
 
 void Gunsaw_NPCDeath(int entity)
 {
-	//prevent crashes on attack as it happens inside on takedamage
-	RequestFrame(GunsawNpcDeath_Internal, EntIndexToEntRef(entity));
-}
-//Revival raid spam
-public void GunsawNpcDeath_Internal(int ref)
-{
-	int entity = EntRefToEntIndex(ref);
-	if(!IsValidEntity(entity))
-		return;
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(WeaponTimer[client] && dieingstate[client])
@@ -592,14 +583,7 @@ public void GunsawNpcDeath_Internal(int ref)
 			
 			if(TheNavMesh.BuildPath(startArea, endArea, pos1, .teamID = 2))
 			{
-				FullyReviveClient(client, client);
 				StealBodyForm(client, entity);
-				
-				float ang[3];
-				GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
-				ang[0] = 0.0;
-				ang[2] = 0.0;
-				TeleportEntity(client, pos1, ang);
 				return;
 			}
 		}
@@ -616,19 +600,12 @@ void Gunsaw_TryBodySteal(int client, bool regen, float pos[3] = {0.0,0.0,0.0})
 		{
 			StealBodyForm(client, target);
 
-			float ang[3];
-			GetEntPropVector(target, Prop_Data, "m_vecOrigin", pos);
-			GetEntPropVector(target, Prop_Data, "m_angRotation", ang);
-			ang[0] = 0.0;
-			ang[2] = 0.0;
-
 			view_as<CClotBody>(target).m_iHealthBar = 0;
 			SetEntityHealth(target, 1);
 			b_DissapearOnDeath[target] = true;
 			RemoveSpecificBuff(target, "Infinite Will");
 			SDKHooks_TakeDamage(target, client, client, GetRandomFloat(99999.0,9999999.0), DMG_BLAST, -1, {0.1,0.1,0.1}, _, _, ZR_SLAY_DAMAGE);
 
-			TeleportEntity(client, pos, ang);
 			f_InBattleHudDisableDelay[client] = GetGameTime() + 1.0; 
 		}
 		else
@@ -830,13 +807,39 @@ static void StealBodyForm(int client, int entity)
 		TF2_SetPlayerClass_ZR(client, class);
 		CurrentClass[client] = class;
 	}
+	
+	float pos[3], ang[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
+	GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 
-	f_WasRecentlyRevivedViaNonWaveClassChange[client] = GetGameTime() + 0.5;
-	f_WasRecentlyRevivedViaNonWave[client] = GetGameTime() + 0.5;
-	DHook_RespawnPlayer(client);
-	Store_GiveAll(client, GetClientHealth(client));
+	DataPack pack = new DataPack();
+	pack.WriteCell(GetClientUserId(client));
+	pack.WriteFloatArray(pos, sizeof(pos));
+	pack.WriteFloat(ang[1]);
+	RequestFrame(StealBodyFrame, pack);
+}
 
-	Monologue_BodySwap(client);
+static void StealBodyFrame(DataPack pack)
+{
+	pack.Reset();
+	int client = GetClientOfUserId(pack.ReadCell());
+	if(client)
+	{
+		FullyReviveClient(client, client);
+		
+		float pos[3], ang[3];
+		pack.ReadFloatArray(pos, sizeof(pos));
+		ang[1] = pack.ReadFloat();
+
+		f_WasRecentlyRevivedViaNonWaveClassChange[client] = GetGameTime() + 0.5;
+		f_WasRecentlyRevivedViaNonWave[client] = GetGameTime() + 0.5;
+
+		TeleportEntity(client, pos, ang);
+
+		Monologue_BodySwap(client);
+	}
+
+	delete pack;
 }
 
 static bool ValidSwapTarget(int entity, bool ignoreSome = false)
@@ -1158,10 +1161,10 @@ static Action GunsawHudTimer(Handle timer, DataPack pack)
 			}
 			else if(GetClientHealth(client) >= ReturnEntityMaxHealth(client))
 			{
-				if(MonologueMoodBonus[client] < 100.0)
+				if(MonologueMoodBonus[client] < 50.0)
 					MonologueMoodBonus[client] += 0.05;
 			}
-			else if(GetClientHealth(client) < (ReturnEntityMaxHealth(client) / 3))
+			else if(GetClientHealth(client) < (ReturnEntityMaxHealth(client) / 2))
 			{
 				if(MonologueMoodBonus[client] > -50.0)
 					MonologueMoodBonus[client] -= 0.05;
@@ -1739,10 +1742,10 @@ static void PlayMonologue(int client, const char[] text, bool fast = false, bool
 
 	if(pain > 0.5)
 	{
-		MonologueSpeed[client] = 0.2 * pain;
+		MonologueSpeed[client] = 0.1 * pain;
 
 		if(fast)
-			MonologueSpeed[client] *= 0.4;
+			MonologueSpeed[client] *= 0.7;
 	}
 	else
 	{
@@ -2052,7 +2055,7 @@ void Gunsaw_Monologue_OnBleed(int client)
 
 void Gunsaw_Monologue_OnDowned(int client)
 {
-	if(!Gunsaw_IsMerc(client) || (LastMonologue[client] + 10.0) > GetGameTime())
+	if(!Gunsaw_IsMerc(client) || (LastMonologue[client] + 50.0) > GetGameTime())
 		return;
 	
 	static const char dialogue[][] =

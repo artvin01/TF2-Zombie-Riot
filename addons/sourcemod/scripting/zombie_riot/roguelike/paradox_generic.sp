@@ -138,7 +138,7 @@ static void StartShopVote(bool first)
 			vote.Locked = ingots < cost;
 			list.PushArray(vote);
 		}
-		if(length)
+		if(length && Rogue_GetFloor() != 2)
 		{
 			if(ShopSetting == 0)
 			{

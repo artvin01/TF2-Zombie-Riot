@@ -872,6 +872,9 @@ void Construction_BattleVictory()
 
 	if(type > 1)
 	{
+		// Reset next attack, give full time after a raid
+		NextAttackAt = GetGameTime() + AttackTime;
+		
 		mp_disable_respawn_times.BoolValue = false;
 		
 		int cash = 300;
