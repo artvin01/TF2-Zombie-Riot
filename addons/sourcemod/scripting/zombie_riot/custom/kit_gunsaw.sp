@@ -1161,10 +1161,10 @@ static Action GunsawHudTimer(Handle timer, DataPack pack)
 			}
 			else if(GetClientHealth(client) >= ReturnEntityMaxHealth(client))
 			{
-				if(MonologueMoodBonus[client] < 100.0)
+				if(MonologueMoodBonus[client] < 50.0)
 					MonologueMoodBonus[client] += 0.05;
 			}
-			else if(GetClientHealth(client) < (ReturnEntityMaxHealth(client) / 3))
+			else if(GetClientHealth(client) < (ReturnEntityMaxHealth(client) / 2))
 			{
 				if(MonologueMoodBonus[client] > -50.0)
 					MonologueMoodBonus[client] -= 0.05;
