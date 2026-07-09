@@ -1739,10 +1739,10 @@ static void PlayMonologue(int client, const char[] text, bool fast = false, bool
 
 	if(pain > 0.5)
 	{
-		MonologueSpeed[client] = 0.2 * pain;
+		MonologueSpeed[client] = 0.1 * pain;
 
 		if(fast)
-			MonologueSpeed[client] *= 0.4;
+			MonologueSpeed[client] *= 0.7;
 	}
 	else
 	{
