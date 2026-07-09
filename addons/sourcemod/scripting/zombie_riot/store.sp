@@ -4722,7 +4722,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 									if(CanBePapped)
 									{
 										DoNormal = 0;
-										Store_PackMenu(client, index1, level + 1, client, !Store_CanPapItem(client, index1));
+										Store_PackMenu(client, index1, level + 1, client);
 									}
 								}
 								else
