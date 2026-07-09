@@ -2053,12 +2053,29 @@
 		"it"		"La tua arma è stata potenziata a {1}:"
 		"ko"		"당신의 무기가 {1} 로 강화됨:"
 	}
+	"Pap Weapon Auto Upgraded"
+	{
+		"#format"	"{1:s}"
+		"en"		"Your weapon has been automatically enhanced to {1}:"
+	}
 	"Pap Weapon Preview"
 	{
 		"#format"	"{1:s}"
 		"en"		"Enchancement preview for {1}:"
 		"ru"		"Превью улучшений для {1}:"
 		"ko"		"{1} 의 강화 미리보기:"
+	}
+	"Pap Auto Enhancement Selected"
+	{
+		"en"		"This weapon will be automatically enhanced once you can afford it."
+	}
+	"Pap Auto Enhancement Deselected"
+	{
+		"en"		"This weapon will no longer be automatically enhanced."
+	}
+	"Pap Auto Enhancement Standby"
+	{
+		"en"		"Selected for Purchase"
 	}
 	"Revive Teammate tooltip"
 	{

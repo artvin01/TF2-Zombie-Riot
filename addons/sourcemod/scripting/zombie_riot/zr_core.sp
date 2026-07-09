@@ -1225,6 +1225,8 @@ public Action GlobalTimer(Handle timer)
 	
 	Zombie_Delay_Warning();
 	Spawners_Timer();
+	Store_HandleAutoPapList();
+	
 	if(frame % 100)
 		return Plugin_Continue;
 
