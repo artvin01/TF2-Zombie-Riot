@@ -261,13 +261,8 @@ void AutobuyMetal(int client)
 			if(metal >= MetalToMaxBuy)
 				return;
 
-			int cash = (CurrentCash + GlobalExtraCash) - CashSpent[client];
-			if(StarterCashMode[client])
-			{
-				int maxCash = StartCash;
-				maxCash -= CashSpentLoadout[client];
-				cash = maxCash;
-			}
+			int cash = Store_GetPlayerCash(client, false);
+
 			//metal to cost ratio
 			MetalToMaxBuy -= metal;
 
@@ -276,9 +271,7 @@ void AutobuyMetal(int client)
 			if((TimesToBuy * AmmoData[Ammo_Metal][0]) >= cash)
 				return;
 			
-			CashSpent[client] += AmmoData[Ammo_Metal][0] * TimesToBuy;
-			CashSpentTotal[client] += AmmoData[Ammo_Metal][0] * TimesToBuy;
-			CashSpentLoadout[client] += AmmoData[Ammo_Metal][0] * TimesToBuy;
+			Store_SpendPlayerCash(client, AmmoData[Ammo_Metal][0] * TimesToBuy);
 			
 			int ammo = GetAmmo(client, Ammo_Metal) + (AmmoData[Ammo_Metal][1] * TimesToBuy);
 			SetAmmo(client, Ammo_Metal, ammo);
@@ -349,13 +342,7 @@ static void BuildingMenu(int client)
 	}
 	
 	int metal = GetAmmo(client, Ammo_Metal);
-	int cash = (CurrentCash + GlobalExtraCash) - CashSpent[client];
-	if(StarterCashMode[client])
-	{
-		int maxCash = StartCash;
-		maxCash -= CashSpentLoadout[client];
-		cash = maxCash;
-	}
+	int cash = Store_GetPlayerCash(client, false);
 	float multi = Object_GetMaxHealthMulti(client);
 	float gameTime = GetGameTime();
 	bool ducking = view_as<bool>(GetClientButtons(client) & IN_DUCK);
@@ -629,9 +616,7 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 						}
 						case 1:
 						{
-							CashSpent[client] += AmmoData[Ammo_Metal][0] * 10;
-							CashSpentTotal[client] += AmmoData[Ammo_Metal][0] * 10;
-							CashSpentLoadout[client] += AmmoData[Ammo_Metal][0] * 10;
+							Store_SpendPlayerCash(client, AmmoData[Ammo_Metal][0] * 10);
 							ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
 							
 							int ammo = GetAmmo(client, Ammo_Metal) + (AmmoData[Ammo_Metal][1] * 10);
@@ -667,9 +652,7 @@ static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 						}
 						case 1:
 						{
-							CashSpent[client] += AmmoData[Ammo_Metal][0] * 10;
-							CashSpentTotal[client] += AmmoData[Ammo_Metal][0] * 10;
-							CashSpentLoadout[client] += AmmoData[Ammo_Metal][0] * 10;
+							Store_SpendPlayerCash(client, AmmoData[Ammo_Metal][0] * 10);
 							ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
 							
 							int ammo = GetAmmo(client, Ammo_Metal) + (AmmoData[Ammo_Metal][1] * 10);
