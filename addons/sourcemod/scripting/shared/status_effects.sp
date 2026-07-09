@@ -11871,9 +11871,9 @@ static void SizzlingWound_Timer(int entity, StatusEffect Apply_MasterStatusEffec
 	//spray particles
 }
 
-float Fragile_DamageTakenFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
+float Fragile_DamageTakenFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float basedamage, float DamageBuffExtraScaling)
 {
-	return (Apply_StatusEffect.DataForUse * 0.025);
+	return (basedamage * ((Apply_StatusEffect.DataForUse * 0.025) * DamageBuffExtraScaling));
 }	
 #define MAXPOISE_COUNT 100
 #define MAXFRAGILITY_COUNT 25

@@ -5725,8 +5725,7 @@
 	}
 	"The Index Nursefather Desc 3"
 	{
-		"en"    "-+1 Grace cap and stat increases.\n-Unlocks Furioso(R): a high damage combo ability.\n-Requires 6 Grace stacks and a hit from all weapons."
-		"ko"	"-가호 최대치 +1 및 능력치 증가\n-'Furioso' 해금(R키): 높은 피해량을 가진 콤보 능력\n-지령의 가호가 6 이상이어야 하며 모든 무기로 공격이 1번은 적중해야 함"
+		"en"    "-+1 Grace cap and stat increases.\n-Unlocks Furioso(R): a high damage combo ability.\n-Requires 6 Grace stacks,need to hit enemies a number of times to use."
 	}
 	"The Index Nursefather Desc 4"
 	{

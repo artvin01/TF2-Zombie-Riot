@@ -34,15 +34,6 @@ static int DashesBeforeHitMust[MAXPLAYERS];
 static bool Precached;
 static bool AllowedToDodge[MAXPLAYERS];
 static bool DoneLastmanSecret;
-#define IDX_FURI_WEAPON_1	 	(1 << 1)
-#define IDX_FURI_WEAPON_2		(1 << 2)
-#define IDX_FURI_WEAPON_3	 	(1 << 3)
-#define IDX_FURI_WEAPON_4	 	(1 << 4)
-#define IDX_FURI_WEAPON_5	 	(1 << 5)
-#define IDX_FURI_WEAPON_6		(1 << 6)
-#define IDX_FURI_WEAPON_7		(1 << 7)
-#define IDX_FURI_WEAPON_8	 	(1 << 8)
-#define IDX_FURI_WEAPON_9	 	(1 << 9)
 
 static char g_AllWeaponsExist[][] = {
 	
@@ -382,6 +373,10 @@ public void IndexFather_NewPrescript(int client, int weapon, bool &result, int s
 }
 public void IndexFather_WeaponLoad(int client, int weapon)
 {
+	if(Barracks_InstaResearchEverything)
+	{
+		GraceOfPrescript[client] = MaxPrescriptGrace(client);
+	}
 	if(IndexFather_BlockPrescripts())
 	{
 		if(CurrentPrescript[client] != null)
@@ -473,7 +468,7 @@ static Action Timer_Base(Handle timer, DataPack pack)
 
 	b_IsCannibal[client] = true;
 	ApplyStatusEffect(client, client, "Index Father Dodge", 1.0);	
-	if(FuriosoReady(client) >= IndexFather_MaxStacksForFurioso(client))
+	if(FuriosoReady(client))
 	{
 		if(WeaponLevel[client] >= 4)
 			UnlockedShin[client] = true;
@@ -1396,50 +1391,43 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 			case PrescriptWeapon_Hatchet:
 			{
 				StatusEffects_PoiseAddStuff(attacker, 1, 1.5);
-				AddWeaponToFurioso(attacker, IDX_FURI_WEAPON_1);
 			}
 			case PrescriptWeapon_Hammer:
 			{
-				AddWeaponToFurioso(attacker, IDX_FURI_WEAPON_2);
 
 			}
 			case PrescriptWeapon_Whip:
 			{
-				AddWeaponToFurioso(attacker, IDX_FURI_WEAPON_3);
 				
 			}
 			case PrescriptWeapon_Stiletto:
 			{
 				ApplyStatusEffect(attacker, victim, "Sinking", 10.0);
 				StatusEffects_SinkingDebuffAdd(victim, 1);
-				AddWeaponToFurioso(attacker, IDX_FURI_WEAPON_4);
 			}
 			case PrescriptWeapon_Rapier:
 			{
 				StatusEffects_FragileAddStuff(attacker,victim, 1, 3.0);
-				AddWeaponToFurioso(attacker, IDX_FURI_WEAPON_5);
 			}
 			case PrescriptWeapon_Lance:
 			{
 				StatusEffects_FragileAddStuff(attacker, victim, 1, 3.0);
-				AddWeaponToFurioso(attacker, IDX_FURI_WEAPON_6);
 			}
 			case PrescriptWeapon_Bastardsword:
 			{
 				ApplyStatusEffect(attacker, attacker, "Oceanic Singing", 10.0);
-				AddWeaponToFurioso(attacker, IDX_FURI_WEAPON_7);
 			}
 			case PrescriptWeapon_Greatsword:
 			{
-				AddWeaponToFurioso(attacker, IDX_FURI_WEAPON_8);
+
 			}
 			case PrescriptWeapon_Sycthe:
 			{
-				AddWeaponToFurioso(attacker, IDX_FURI_WEAPON_9);
 				damage *= 1.5;
 				IndexFather_ScytheEffect(victim);
 			}
 		}
+		AddWeaponToFurioso(attacker, 1);
 	}
 	if(ResetFurioso)
 	{
@@ -1485,7 +1473,7 @@ void IndexFather_PrescriptEnd(int client, bool Win)
 		if(MaxPrescriptGrace(client)-3 > GraceOfPrescript[client])
 			NewScript *= 0.25;
 		if(GraceOfPrescript[client] >= MaxPrescriptGrace(client))
-			ApplyStatusEffect(client, client, "Indulgence in Prescripts", NewScript);
+			ApplyStatusEffect(client, client, "Indulgence in Prescripts", (NewScript * 1.5));
 		EmitSoundToClient(client, g_SuccessPrescript[GetRandomInt(0, sizeof(g_SuccessPrescript) - 1)], client, SNDCHAN_STATIC, 80, _, 0.8, 110);
 		PrescriptCooldown[client] = NewScript + GetGameTime();
 		PrescriptPunishPlayerIgnoring[client] = (NewScript * 2.0) + GetGameTime();
@@ -2027,7 +2015,7 @@ public void IndexFather_AbilityR(int client, int weapon, bool &result, int slot)
 		}
 		return;
 	}
-	if(FuriosoReady(client) < IndexFather_MaxStacksForFurioso(client))
+	if(!FuriosoReady(client))
 		return;
 	
 	UseFurioso(client);
@@ -2085,39 +2073,17 @@ void Func_FuriosoHud(int attacker, int victim, StatusEffect Apply_MasterStatusEf
 	if(f_FuriosoInUse[victim] > GetGameTime())
 		Format(HudToDisplay, SizeOfChar, "ℱ(%0.1f)", f_FuriosoInUse[victim] - GetGameTime());
 	else
-		Format(HudToDisplay, SizeOfChar, "ℱ(%i/%i)", FuriosoReady(victim), IndexFather_MaxStacksForFurioso(victim));
+		Format(HudToDisplay, SizeOfChar, "ℱ(%i/%i)", i_FuriosoReady[victim], IndexFather_MaxStacksForFurioso(victim));
 }
-void AddWeaponToFurioso(int attacker, int flag)
+void AddWeaponToFurioso(int attacker, int amount)
 {
-//	if(f_FuriosoCooldown[attacker] > GetGameTime())
-//		return;
-	if(GraceOfPrescript[attacker] < 6)
-		return;
-	i_FuriosoReady[attacker] |= flag;
+	i_FuriosoReady[attacker] += amount;
+	if(i_FuriosoReady[attacker] >= IndexFather_MaxStacksForFurioso(attacker))
+		i_FuriosoReady[attacker] = IndexFather_MaxStacksForFurioso(attacker);
 }
-int FuriosoReady(int attacker)
+bool FuriosoReady(int attacker)
 {
-	int ReadyFurioso = 0;
-	if(i_FuriosoReady[attacker] & IDX_FURI_WEAPON_1)
-		ReadyFurioso++;
-	if(i_FuriosoReady[attacker] & IDX_FURI_WEAPON_2)
-		ReadyFurioso++;
-	if(i_FuriosoReady[attacker] & IDX_FURI_WEAPON_3)
-		ReadyFurioso++;
-	if(i_FuriosoReady[attacker] & IDX_FURI_WEAPON_4)
-		ReadyFurioso++;
-	if(i_FuriosoReady[attacker] & IDX_FURI_WEAPON_5)
-		ReadyFurioso++;
-	if(i_FuriosoReady[attacker] & IDX_FURI_WEAPON_6)
-		ReadyFurioso++;
-	if(i_FuriosoReady[attacker] & IDX_FURI_WEAPON_7)
-		ReadyFurioso++;
-	if(i_FuriosoReady[attacker] & IDX_FURI_WEAPON_8)
-		ReadyFurioso++;
-	if(i_FuriosoReady[attacker] & IDX_FURI_WEAPON_9)
-		ReadyFurioso++;
-
-	return ReadyFurioso;
+	return i_FuriosoReady[attacker] >= IndexFather_MaxStacksForFurioso(attacker);
 }
 
 int IndexFather_DodgeMaxReturn(int client)
@@ -2183,10 +2149,17 @@ void IndexFather_ScytheEffect(int victim, float Multiplier = 1.0)
 int IndexFather_MaxStacksForFurioso(int client)
 {
 	int ReduceBy = GraceOfPrescript[client];
+	
+	//first 3 dont count
 	ReduceBy -= 6;
-	if(ReduceBy < 0)
+	if(ReduceBy <= 0)
 		ReduceBy = 0;
-	return 8 - ReduceBy;
+	if(HasSpecificBuff(client, "Indulgence in Prescripts"))
+		ReduceBy += 2;
+
+	//each grace reduces by 10
+	ReduceBy *= 10;
+	return 100 - ReduceBy;
 }
 
 void IndexFather_AllyDodgedAttack(int client)

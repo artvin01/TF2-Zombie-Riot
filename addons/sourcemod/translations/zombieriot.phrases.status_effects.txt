@@ -4070,8 +4070,7 @@
 	}
 	"Grace Of Prescript Desc"
 	{
-		"en"	"Increases damage by 1.0％ multiplicatively at 7 and above, reduces furioso count needed by 1, max stack at 9"
-		"ko"	"수치가 7 이상일 때 공격 피해량이 곱연산으로 1.0％ 증가하며, Furioso 활성화에 필요한 카운터가 1 감소합니다. 최대 9까지 누적 가능."
+		"en"	"Increases damage by 1.0％ multiplicatively, at 7 and above, reduces furioso count needed by 10"
 	}
 	"Sizzling Wound"
 	{
@@ -4090,8 +4089,7 @@
 	}
 	"Indulgence in Prescripts Desc"
 	{
-		"en"	"Increases damage by 10.0％ multiplicatively, Removed upon losing a prescript\nGained when doing a prescript while already at max grace."
-		"ko"	"공격 피해량이 곱연산으로 10.0％ 증가합니다.(지령 수행 실패 시 효과 제거)\n지령의 가호가 최대일 때 지령 수행 시 획득할 수 있습니다."
+		"en"	"Increases damage by 10.0％ multiplicatively, Removed upon losing a prescript\nGained when doing a prescript while already at max grace.\nReduces Furioso count by 20"
 	}
 	"Karmic Consequence"
 	{
