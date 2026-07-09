@@ -5058,15 +5058,16 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 
 					item.GetItemInfo(0, info);
 					int level = item.Owned[client];
-					bool OwnedBefore = view_as<bool>(item.Owned[client]);
+					bool OwnedBefore = item.Owned[client] != 0;
 					if(level < 1 || NPCOnly[client] == 2 || NPCOnly[client] == 3)
 						level = 1;
 
 					if(PapModeDo == PAP_MODE_BUILDING_ONLY)
 						OwnedBefore = false;
-					
+					/*
 					if(!Store_CanPapItem(client, index))
 						OwnedBefore = false;
+					*/
 
 					//can be papped ? See if yes
 					ItemInfo info2;
