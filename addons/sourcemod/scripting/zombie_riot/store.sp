@@ -1411,13 +1411,7 @@ void Store_PackMenu(int client, int index, int owneditemlevel = -1, int owner, b
 					CancelClientMenu(client);
 					SetStoreMenuLogic(client, false);
 
-					int cash = (CurrentCash + GlobalExtraCash)-CashSpent[client];
-					if(StarterCashMode[client])
-					{
-						int maxCash = StartCash;
-						maxCash -= CashSpentLoadout[client];
-						cash = maxCash;
-					}
+					int cash = Store_GetPlayerCash(client, false);
 					char buf[84];
 					if(PapPreviewMode[client])
 					{
@@ -1565,11 +1559,9 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 						//If client clicks on anything, view that pap instead.
 						values[1] = values[1] + 1;
 					}
-					else if(((CurrentCash + GlobalExtraCash)-CashSpent[client]) >= info.Cost)
+					else if(Store_GetPlayerCash(client, false) >= info.Cost)
 					{
-						CashSpent[client] += info.Cost;
-						CashSpentTotal[client] += info.Cost;
-						CashSpentLoadout[client] += info.Cost;
+						Store_SpendPlayerCash(client, info.Cost);
 						item.Owned[client] = values[1] + 1;
 						item.CurrentClipSaved[client] = -5;
 
@@ -1914,9 +1906,7 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 					
 					if(MoneyTake)
 					{
-						CashSpent[client] += info.Cost;
-						CashSpentTotal[client] += info.Cost;
-						CashSpentLoadout[client] += info.Cost;
+						Store_SpendPlayerCash(client, info.Cost);
 						item.BuyPrice[client] = info.Cost;
 
 						item.Sell[client] = ItemSell(base, info.Cost);
@@ -2116,6 +2106,24 @@ void Store_ResetClient(int client)
 
 	UsingChoosenTags[client] = false;
 	delete ChoosenTags[client];
+}
+
+int Store_GetPlayerCash(int client, bool ignoreStarterStore)
+{
+	if (ignoreStarterStore || !StarterCashMode[client])
+		return (CurrentCash + GlobalExtraCash) - CashSpent[client];
+	
+	// Starter Store
+	int maxCash = StartCash;
+	maxCash -= CashSpentLoadout[client];
+	return maxCash;
+}
+
+void Store_SpendPlayerCash(int client, int amount)
+{
+	CashSpent[client] += amount;
+	CashSpentTotal[client] += amount;
+	CashSpentLoadout[client] += amount;
 }
 
 public void ReShowSettingsHud(int client)
@@ -3348,18 +3356,12 @@ static void MenuPage(int client, int section)
 		LastMenuPage[client] = 0;
 	}
 	
-	int cash = (CurrentCash + GlobalExtraCash)-CashSpent[client];
-	if(StarterCashMode[client])
+	int cash = Store_GetPlayerCash(client, false);
+	if(StarterCashMode[client] && cash <= 0)
 	{
-		int maxCash = StartCash;
-		maxCash -= CashSpentLoadout[client];
-		cash = maxCash;
-		if(cash < 0)
-		{
-			StarterCashMode[client] = false;
-			MenuPage(client, section);
-			return;
-		}
+		StarterCashMode[client] = false;
+		MenuPage(client, section);
+		return;
 	}
 	
 	static Item item;
@@ -4766,14 +4768,7 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 			{
 				case 0:
 				{
-					int cash = (CurrentCash + GlobalExtraCash) - CashSpent[client];
-					
-					if(StarterCashMode[client])
-					{
-						int maxCash = StartCash;
-						maxCash -= CashSpentLoadout[client];
-						cash = maxCash;
-					}
+					int cash = Store_GetPlayerCash(client, false);
 					if(ClientTutorialStep(client) == 2)
 					{
 						SetClientTutorialStep(client, 3);
@@ -4812,9 +4807,7 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 					{
 						if(info.AmmoBuyMenuOnly && info.AmmoBuyMenuOnly < Ammo_MAX)	// Weapon with A2735mmo, buyable only
 						{
-							CashSpent[client] += AmmoData[info.AmmoBuyMenuOnly][0];
-							CashSpentTotal[client] += AmmoData[info.AmmoBuyMenuOnly][0];
-							CashSpentLoadout[client] += AmmoData[info.AmmoBuyMenuOnly][0];
+							Store_SpendPlayerCash(client, AmmoData[info.AmmoBuyMenuOnly][0]);
 							ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
 							
 							int ammo = GetAmmo(client, info.AmmoBuyMenuOnly) + AmmoData[info.AmmoBuyMenuOnly][1];
@@ -4823,9 +4816,7 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 						}
 						else if(info.Ammo && info.Ammo < Ammo_MAX && AmmoData[info.Ammo][0] <= cash)
 						{
-							CashSpent[client] += AmmoData[info.Ammo][0];
-							CashSpentTotal[client] += AmmoData[info.Ammo][0];
-							CashSpentLoadout[client] += AmmoData[info.Ammo][0];
+							Store_SpendPlayerCash(client, AmmoData[info.Ammo][0]);
 							ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
 							
 							int ammo = GetAmmo(client, info.Ammo) + AmmoData[info.Ammo][1];
@@ -4841,9 +4832,7 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 							ItemCost(client, item, info.Cost);
 							if(info.Cost <= cash)
 							{
-								CashSpent[client] += info.Cost;
-								CashSpentTotal[client] += info.Cost;
-								CashSpentLoadout[client] += info.Cost;
+								Store_SpendPlayerCash(client, info.Cost);
 								Store_BuyClientItem(client, index, item, info);
 								item.BuyPrice[client] = info.Cost;
 								item.RogueBoughtRecently[client] += 1;
@@ -4909,9 +4898,7 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 							ItemCost(client, item, info.Cost);
 							if(info.Cost <= cash)
 							{
-								CashSpent[client] += info.Cost;
-								CashSpentTotal[client] += info.Cost;
-								CashSpentLoadout[client] += info.Cost;
+								Store_SpendPlayerCash(client, info.Cost);
 								Store_BuyClientItem(client, index, item, info);
 								item.BuyPrice[client] = info.Cost;
 								item.RogueBoughtRecently[client] += 1;
@@ -4966,9 +4953,7 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 						ItemCost(client, item, info.Cost);
 						if(info.Cost <= cash)
 						{
-							CashSpent[client] += info.Cost;
-							CashSpentTotal[client] += info.Cost;
-							CashSpentLoadout[client] += info.Cost;
+							Store_SpendPlayerCash(client, info.Cost);
 							Store_BuyClientItem(client, index, item, info);
 							item.BuyPrice[client] = info.Cost;
 							item.RogueBoughtRecently[client] += 1;
@@ -5022,13 +5007,7 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 				{
 					if(item.Owned[client])
 					{
-						int cash = (CurrentCash + GlobalExtraCash) - CashSpent[client];
-						if(StarterCashMode[client])
-						{
-							int maxCash = StartCash;
-							maxCash -= CashSpentLoadout[client];
-							cash = maxCash;
-						}
+						int cash = Store_GetPlayerCash(client, false);
 						int level = item.Owned[client] - 1;
 						if(item.ParentKit || level < 0)
 							level = 0;
@@ -5039,9 +5018,7 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 							int cost = AmmoData[info.AmmoBuyMenuOnly][0] * 10;
 							if(cost <= cash)
 							{
-								CashSpent[client] += cost;
-								CashSpentTotal[client] += cost;
-								CashSpentLoadout[client] += cost;
+								Store_SpendPlayerCash(client, cost);
 								ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
 								int ammo = GetAmmo(client, info.AmmoBuyMenuOnly) + AmmoData[info.AmmoBuyMenuOnly][1]*10;
 								SetAmmo(client, info.AmmoBuyMenuOnly, ammo);
@@ -5053,9 +5030,7 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 							int cost = AmmoData[info.Ammo][0] * 10;
 							if(cost <= cash)
 							{
-								CashSpent[client] += cost;
-								CashSpentTotal[client] += cost;
-								CashSpentLoadout[client] += cost;
+								Store_SpendPlayerCash(client, cost);
 								ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
 								int ammo = GetAmmo(client, info.Ammo) + AmmoData[info.Ammo][1]*10;
 								SetAmmo(client, info.Ammo, ammo);
@@ -5083,15 +5058,16 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 
 					item.GetItemInfo(0, info);
 					int level = item.Owned[client];
-					bool OwnedBefore = view_as<bool>(item.Owned[client]);
+					bool OwnedBefore = item.Owned[client] != 0;
 					if(level < 1 || NPCOnly[client] == 2 || NPCOnly[client] == 3)
 						level = 1;
 
 					if(PapModeDo == PAP_MODE_BUILDING_ONLY)
 						OwnedBefore = false;
-					
+					/*
 					if(!Store_CanPapItem(client, index))
 						OwnedBefore = false;
+					*/
 
 					//can be papped ? See if yes
 					ItemInfo info2;

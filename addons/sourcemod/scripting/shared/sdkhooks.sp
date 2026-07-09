@@ -145,7 +145,7 @@ public void SDKHook_ScoreThink(int entity)
 	for(int client=1; client<=MaxClients; client++)
 	{
 	#if defined ZR
-		CashCurrentlyOwned[client] = (CurrentCash + GlobalExtraCash)-CashSpent[client];
+		CashCurrentlyOwned[client] = Store_GetPlayerCash(client, true);
 		alive[client] = (TeutonType[client] == TEUTON_NONE && IsClientInGame(client) && IsPlayerAlive(client));
 	#else
 		CashCurrentlyOwned[client] = TextStore_Cash(client);
@@ -1693,7 +1693,7 @@ public void OnPostThink(int client)
 				Format(HudBuffer, sizeof(HudBuffer), "%s %t",HudBuffer, "You Wait Teuton"
 				);
 			}
-			SetEntProp(client, Prop_Send, "m_nCurrency", (CurrentCash + GlobalExtraCash)-CashSpent[client]);
+			SetEntProp(client, Prop_Send, "m_nCurrency", Store_GetPlayerCash(client, true));
 			
 			if(HudBuffer[0])
 				PrintKeyHintText(client,"%s", HudBuffer);
