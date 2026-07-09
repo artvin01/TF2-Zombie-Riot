@@ -815,7 +815,7 @@ static void StealBodyForm(int client, int entity)
 	DataPack pack = new DataPack();
 	pack.WriteCell(GetClientUserId(client));
 	pack.WriteFloatArray(pos, sizeof(pos));
-	pack.WriteFloat(ang);
+	pack.WriteFloat(ang[1]);
 	RequestFrame(StealBodyFrame, pack);
 }
 
