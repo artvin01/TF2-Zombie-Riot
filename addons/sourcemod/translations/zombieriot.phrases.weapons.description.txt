@@ -5663,7 +5663,7 @@
 		"en"	"-You fire slightly faster and deal more damage\n-You give stronger buffs\n-Marked enemies take a bit more damage"
 		"ko"	"-발사 속도 소폭 증가, 피해량 증가\n-제공하는 버프의 위력 증가\n-표적 상태인 적에 대한 피해 증가량 소폭 증가"
 	}
-	"The Italian Business"
+	"Italian Business"
 	{
 		"en"	"The Italian Business"
 		"ko"	"이탈리아식 사업"
@@ -5726,6 +5726,7 @@
 	"The Index Nursefather Desc 3"
 	{
 		"en"    "-+1 Grace cap and stat increases.\n-Unlocks Furioso(R): a high damage combo ability.\n-Requires 6 Grace stacks,need to hit enemies a number of times to use."
+		"ko"	"-가호 최대치 +1 및 능력치 증가\n-'Furioso' 해금(R키): 높은 피해량을 가진 콤보 능력\n-지령의 가호가 6 이상이어야 하며 충분한 횟수의 공격을 적중해야 함"
 	}
 	"The Index Nursefather Desc 4"
 	{
@@ -5755,12 +5756,12 @@
 	"Gunsaw Mercenary Desc"
 	{
 		"en"	"-Shotgun and pistol, build cheap buildings, but no repairing\n-Able to body swap you to an enemy's body\n  -Takes the stats and weapons of the enemy\n  -Swap by killing a nearby enemy while downed"
-		"ko"	"-산탄총과 권총 보유, 저렴한 구조물을 건축할 수 있으나 수리 불가\n-적의 몸으로 육체를 치환 할 수 있음:\n   적의 능력치와 무기를 보유\n   다운 상태일 때 적을 처치하여 치환"
+		"ko"	"-산탄총과 권총 보유, 저렴한 구조물을 건설할 수 있으나 수리 불가\n-적의 몸으로 육체를 치환 할 수 있음:\n   적의 능력치와 무기를 탈취\n   다운 상태일 때 적을 처치하여 치환"
 	}
 	"Gunsaw Mercenary Pap 1"
 	{
 		"en"	"-Increased damage and building health\n-Able to throw buildings using melee M1\n  -Deal damage based on metal cost\n  -Takes damage when colliding\n  -Has a timed lifespan if not picked back up"
-		"ko"	"-피해량, 구조물 체력 증가\n-근접 무기 좌클릭으로 구조물을 던질 수 있음:\n  -금속 소모량에 따라 피해를 가함\n   충돌 시 피해를 받음\n   다시 회수하지 않을 경우 일정 시간 후 파괴"
+		"ko"	"-피해량, 구조물 체력 증가\n-근접 무기 좌클릭으로 구조물을 던질 수 있음:\n   금속 소모량에 따라 피해를 가함\n   충돌 시 피해를 받음\n   다시 회수하지 않을 경우 일정 시간 후 파괴"
 	}
 	"Gunsaw Mercenary Pap 2"
 	{
