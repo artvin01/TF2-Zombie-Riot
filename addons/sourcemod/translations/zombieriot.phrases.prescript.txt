@@ -132,7 +132,7 @@
 	}
 	"Prescript Continue"
 	{
-		"en"		"Afterwards, "
+		"en"		"Then, "
 		"ko"		"그 후, "
 	}
 	"Prescript Time Limit"
