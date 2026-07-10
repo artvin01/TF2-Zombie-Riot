@@ -2076,6 +2076,10 @@
 		"en"		"This weapon will no longer be automatically enhanced."
 		"ko"		"이 무기는 이제 더 이상 자동으로 강화되지 않습니다."
 	}
+	"Pap Auto Enhancement Denied Multiple"
+	{
+		"en"		"Automatic enhancements for this weapon have been paused as it has multiple enhancement paths, you must choose one."
+	}
 	"Pap Auto Enhancement Standby"
 	{
 		"en"		"Selected for Purchase"
@@ -3131,17 +3135,21 @@
 	}
 	"Cant Display"
 	{
-		"en"		"Your Holding weapon cant be shown in the shop..."
+		"en"		"Your active weapon can't be shown in the shop..."
 		"ru"		"Ваше Оружие в руках нельзя показать в магазине..."
 		"it"		"L'arma di mantenimento non può essere mostrata nel negozio..."
 		"ko"		"당신이 들고 있는 무기는 상점에 표시될 수 없습니다..."
 	}
-	"Cant Display Enhance"
+	"Cant Display Active Enhance"
 	{
-		"en"		"Your Holding weapon cant be enhanced..."
+		"en"		"Your active weapon can't be enhanced..."
 		"ru"		"Ваше Оружие в руках не может быть улучшено..."
 		"it"		"L'arma di mantenimento non può essere mostrata nel negozio..."
 		"ko"		"당신이 들고 있는 무기는 강화가 불가능합니다..."
+	}
+	"Cant Display Last Bought Enhance"
+	{
+		"en"		"Your last bought weapon can't be enhanced (or you haven't bought a weapon yet)..."
 	}
 	"Move Hud Down"
 	{

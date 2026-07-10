@@ -614,6 +614,8 @@ static void KitHudShow(int client)
 		{
 			IndexFather_PrescriptEnd(client, IndexFather_IsPrescriptfullfilledAll(data, false));
 		}
+		
+		WeaponHud[0] = CharToUpper(WeaponHud[0]);
 	}
 	PrintHintText(client,"%s", WeaponHud);
 }
@@ -668,7 +670,6 @@ void IndexFather_GeneratePrescript(int client, bool ForceNew, int PrescriptForce
 
 void IndexFather_ReturnTextInfo(int client, Prescript data, char[] CharToEnter, int SizeofChar)
 {
-
 	switch(data.Addition)
 	{
 		case PA_WhileInAir:
@@ -711,11 +712,11 @@ void IndexFather_ReturnTextInfo(int client, Prescript data, char[] CharToEnter, 
 		}
 		case PT_DealDamage:
 		{
-			Format(CharToEnter, SizeofChar, "%s%T",CharToEnter, "Prescript Deal Damage", client, data.Goal);
+			Format(CharToEnter, SizeofChar, "%s%T",CharToEnter, "Prescript Deal Damage", client, RoundToCeil(data.Goal));
 		}
 		case PT_TakeDamage:
 		{
-			Format(CharToEnter, SizeofChar, "%s%T",CharToEnter, "Prescript Take Damage", client, data.Goal);
+			Format(CharToEnter, SizeofChar, "%s%T",CharToEnter, "Prescript Take Damage", client, RoundToCeil(data.Goal));
 		}
 		case PT_DontTakeDamage:
 		{

@@ -2179,7 +2179,7 @@ bool CanPlayerBeSummoned(int client, int summoner)
 	if(!IsValidClient(client))
 		return false;
 
-	if(TeutonType[client] != TEUTON_DEAD)
+	if(IsEntityAlive(client, _, true))
 		return false;
 
 	if(!b_AntiLateSpawn_Allow[client])

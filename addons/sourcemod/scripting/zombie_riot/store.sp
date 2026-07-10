@@ -4637,7 +4637,7 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 					}
 					default:
 					{
-						int DoNormal = 1;
+						int menuType = 1;
 						static Item item;
 						menu.GetItem(choice, item.Name, sizeof(item.Name));
 						int index = StringToInt(item.Name);
@@ -4647,12 +4647,11 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 							
 							if(item.Internal_ClickEnhance)
 							{
-								DoNormal = 0;
-								
 								int index1;
 								static Item item1;
 								
-								if (TeutonType[client])
+								bool alive = IsEntityAlive(client, _, true);
+								if (!alive)
 								{
 									// We can't hold any weapon as a teuton, so we search for our last-purchased weapon instead
 									Item itemLastBought;
@@ -4670,10 +4669,6 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 											}
 										}
 									}
-									
-									// Couldn't find our last weapon... likely because we don't own it anymore (or never owned one at all)
-									if (index1 <= 0)
-										DoNormal = 2;
 								}
 								else
 								{
@@ -4721,24 +4716,39 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 									}
 									if(CanBePapped)
 									{
-										DoNormal = 0;
+										menuType = 0; // do nothing at the end, we're menuing here
 										Store_PackMenu(client, index1, level + 1, client);
 									}
 								}
 								else
-									DoNormal = 2;
+								{
+									// Couldn't find a weapon...
+									if (alive)
+										menuType = 2;
+									else
+										menuType = 3;
+								}
 							}
 						}
-						if(DoNormal == 1 || DoNormal == 2)
+						
+						switch (menuType)
 						{
-							if(DoNormal == 2)
+							case 1:
 							{
-								SPrintToChat(client,"%t", "Cant Display Enhance");
+								// go through
+								MenuPage(client, CurrentMenuItem[client]);
+							}
+							
+							case 2:
+							{
+								SPrintToChat(client,"%t", "Cant Display Active Enhance");
 								MenuPage(client, -1);
 							}
-							else
+							
+							case 3:
 							{
-								MenuPage(client, CurrentMenuItem[client]);
+								SPrintToChat(client,"%t", "Cant Display Last Bought Enhance");
+								MenuPage(client, -1);
 							}
 						}
 					}
@@ -8026,7 +8036,7 @@ void Store_HandleAutoPapList()
 					break;
 				}
 				
-				autoInfo.level += 1;
+				autoInfo.level += info.PackSkip;
 				AutoPapList[client].SetArray(i, autoInfo);
 				break; // Only allow 1 enhancement per timer tick
 			}
