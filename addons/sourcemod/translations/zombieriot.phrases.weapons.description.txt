@@ -5663,7 +5663,7 @@
 		"en"	"-You fire slightly faster and deal more damage\n-You give stronger buffs\n-Marked enemies take a bit more damage"
 		"ko"	"-발사 속도 소폭 증가, 피해량 증가\n-제공하는 버프의 위력 증가\n-표적 상태인 적에 대한 피해 증가량 소폭 증가"
 	}
-	"The Italian Business"
+	"Italian Business"
 	{
 		"en"	"The Italian Business"
 		"ko"	"이탈리아식 사업"
