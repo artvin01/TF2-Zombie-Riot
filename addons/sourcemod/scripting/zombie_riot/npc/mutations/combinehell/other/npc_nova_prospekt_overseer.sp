@@ -226,13 +226,13 @@ public void NovaProspektOverseer_ClotThink(int iNPC)
 
 	if(npc.m_flOverseerSelfBuff < GetGameTime(npc.index))
 	{
-		if(npc.m_flMeleeArmor < 0.2)
+		if(npc.m_flMeleeArmor < 0.21)
 		{
-			npc.m_flMeleeArmor = 0.2;
+			npc.m_flMeleeArmor = 0.21;
 		}
-		if(npc.m_flRangedArmor < 0.2)
+		if(npc.m_flRangedArmor < 0.21)
 		{
-			npc.m_flRangedArmor = 0.2;
+			npc.m_flRangedArmor = 0.21;
 		}
 		EmitSoundToAll("items/battery_pickup.wav", npc.index, _, _, _, 0.85, 100);	
 		float vecOverseer[3]; WorldSpaceCenter(iNPC, vecOverseer);
