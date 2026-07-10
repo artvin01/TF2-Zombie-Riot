@@ -2057,6 +2057,7 @@
 	{
 		"#format"	"{1:s}"
 		"en"		"Your weapon has been automatically enhanced to {1}:"
+		"ko"		"당신의 무기가 {1} 로 자동 강화됨:"
 	}
 	"Pap Weapon Preview"
 	{
@@ -2068,18 +2069,22 @@
 	"Pap Auto Enhancement Selected"
 	{
 		"en"		"This weapon will be automatically enhanced once you can afford it."
+		"ko"		"이 무기는 이제 가능할 때 자동으로 강화됩니다."
 	}
 	"Pap Auto Enhancement Deselected"
 	{
 		"en"		"This weapon will no longer be automatically enhanced."
+		"ko"		"이 무기는 이제 더 이상 자동으로 강화되지 않습니다."
 	}
 	"Pap Auto Enhancement Standby"
 	{
 		"en"		"Selected for Purchase"
+		"ko"		"구매를 위해 선택됨"
 	}
 	"Pap Auto Enhancement Notice"
 	{
 		"en"		"Selecting enhancements you can't afford will\nqueue them for purchase when possible."
+		"ko"		"현재 구매할 수 없는 강화를 선택 시\n가능할 때 자동 구매하도록 예약합니다."
 	}
 	"Revive Teammate tooltip"
 	{
