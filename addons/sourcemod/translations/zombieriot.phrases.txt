@@ -2073,6 +2073,10 @@
 	{
 		"en"		"This weapon will no longer be automatically enhanced."
 	}
+	"Pap Auto Enhancement Denied Multiple"
+	{
+		"en"		"Automatic enhancements for this weapon have been paused as it has multiple enhancement paths, you must choose one."
+	}
 	"Pap Auto Enhancement Standby"
 	{
 		"en"		"Selected for Purchase"

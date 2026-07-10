@@ -486,7 +486,7 @@ public void Rogue_ThoughtsCatcher_Remove()
 
 public void Rogue_AvariceScales_StageStart()
 {
-	if(Rogue_GetUmbralLevel() < 2)
+	if(Rogue_GetUmbral() > 61)
 		Rogue_AddIngots(2);
 }
 
