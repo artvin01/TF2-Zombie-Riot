@@ -224,7 +224,7 @@ public void BombAR_ICE_Inject(int client, int weapon, bool crit, int slot)
 			float range = (ExploAR_WeaponPap[client]==2 ? 130.0 : 65.0);
 			float damage = 500.0;
 			damage *= Attributes_Get(weapon, 2, 1.0);
-			damage += (float(ExploAR_OverHit[client])/65.0)*(damage/2.0);
+			damage *= (float(ExploAR_OverHit[client])/65.0)*1.5;
 			if(ExploAR_WeaponPap[client]==2 && ExploAR_OverHit[client]>99)
 			{
 				range *= 1.5;
@@ -602,7 +602,7 @@ static Action Timer_Management_ExploAR(Handle timer, DataPack pack)
 									int DronShot = view_as<CClotBody>(Robot).FireParticleRocket(vecDest, 0.0, 1200.0, 0.0, "raygun_projectile_red_crit", true,_, true, RobotPos);
 									i_WandOwner[DronShot]=EntIndexToEntRef(client);
 									i_WandWeapon[DronShot]=EntIndexToEntRef(weapon);
-									f_WandDamage[DronShot]=750.0*Attributes_Get(weapon, 2, 1.0);
+									f_WandDamage[DronShot]=750.0*Attributes_Get(weapon, 2, 1.0)*1.2;
 									WandProjectile_ApplyFunctionToEntity(DronShot, Dron_BombARTouch);	
 									fl_NextRangedAttack[Robot] = GameTime + 0.2;
 									i_State[Robot]++;
@@ -807,7 +807,9 @@ static void ExploARWork(int client, int weapon, float GameTime)
 			if(Armor<0)
 				Armor=0;
 			Armor_Charge[client]=Armor;
-			f_Armor_BreakSoundDelay[client] = GetGameTime() + 5.0;	
+			if((Attributes_Get(client, Attrib_Armor_AliveMode, 0.0) != 0.0))
+				f_LivingArmorPenalty[client] = GameTime + 8.0;
+			f_Armor_BreakSoundDelay[client] = GameTime + 5.0;	
 			EmitSoundToClient(client, "npc/assassin/ball_zap1.wav", client, SNDCHAN_STATIC, 60, _, 1.0, GetRandomInt(95,105));
 		}
 		float position[3];
@@ -1040,48 +1042,50 @@ static void VentTouch(int entity, int target)
 			if(!(fabs(EntAng[1] - targetang[1]) <= 90.0 || (fabs(EntAng[1] - targetang[1]) >= (360.0-90.0))))
 				continue;
 			
-			if(Can_I_See_Enemy_Only(entity, AoE) && !HasSpecificBuff(AoE, "Solid Stance"))
+			if(Can_I_See_Enemy_Only(entity, AoE))
 			{
 				if(!IsIn_HitDetectionCooldown(entity,AoE))
 				{
 					float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
 					SDKHooks_TakeDamage(AoE, owner, owner, f_WandDamage[entity]*0.25, DMG_BULLET, weapon, Dmg_Force, targetpos, _ , ZR_DAMAGE_NONE);	
 				}
-				if(!b_NoKnockbackFromSources[AoE])
+				bool Canthandlethis=false;
+				float TempKnockback=6500.0;
+				switch(i_NpcWeight[AoE])
 				{
-					bool Canthandlethis=false;
-					float TempKnockback=5000.0;
-					switch(i_NpcWeight[AoE])
+					case 0:
 					{
-						case 0:
-						{
-							//None
-						}
-						case 1:TempKnockback*=0.9;
-						case 2:TempKnockback*=0.75;
-						case 3:TempKnockback*=0.6;
-						case 4:{TempKnockback*=1.0;Canthandlethis=true;}
-						default:{TempKnockback=0.0;Canthandlethis=true;}
+						//None
 					}
-					if(TempKnockback)
-					{
-						targetang=EntAng;
-						CClotBody npc = view_as<CClotBody>(AoE);
-						if(TheNPCs.IsValidNPC(npc.GetBaseNPC()) && !npc.IsOnGround())
-							TempKnockback=25.0;
-						else
-							targetang[0]=1.0;
-						Custom_Knockback(entity, AoE, TempKnockback, true, true, true, .OverrideLookAng=targetang);
-					}
-					if(Canthandlethis)
-					{
-						float ProjectilePos[3];GetAbsOrigin(entity, ProjectilePos);
-						makeexplosion(entity, ProjectilePos, 0, 0);
-						Explode_Logic_Custom(f_WandDamage[entity], owner, owner, weapon, ProjectilePos, _, Attributes_Get(weapon, 117, 1.0), _, _, _, _, _, IM_ON_FIREEEEE);
-						if(IsValidEntity(particle))
-							RemoveEntity(particle);
-						RemoveEntity(entity);
-					}
+					case 1:TempKnockback*=0.95;
+					case 2:TempKnockback*=0.8;
+					case 3:TempKnockback*=0.7;
+					case 4:{TempKnockback*=0.5;Canthandlethis=true;}
+					default:{TempKnockback=0.0;Canthandlethis=true;}
+				}
+				if(b_NoKnockbackFromSources[AoE] || HasSpecificBuff(AoE, "Solid Stance"))
+				{
+					TempKnockback=0.0;
+					Canthandlethis=true;
+				}
+				if(TempKnockback)
+				{
+					targetang=EntAng;
+					CClotBody npc = view_as<CClotBody>(AoE);
+					if(TheNPCs.IsValidNPC(npc.GetBaseNPC()) && !npc.IsOnGround())
+						TempKnockback*=0.1;
+					else
+						targetang[0]=-1.0;
+					Custom_Knockback(entity, AoE, TempKnockback, true, true, true, .OverrideLookAng=targetang);
+				}
+				if(Canthandlethis)
+				{
+					float ProjectilePos[3];GetAbsOrigin(entity, ProjectilePos);
+					makeexplosion(entity, ProjectilePos, 0, 0);
+					Explode_Logic_Custom(f_WandDamage[entity], owner, owner, weapon, ProjectilePos, _, Attributes_Get(weapon, 117, 1.0), _, _, _, _, _, IM_ON_FIREEEEE);
+					if(IsValidEntity(particle))
+						RemoveEntity(particle);
+					RemoveEntity(entity);
 				}
 				Set_HitDetectionCooldown(entity,AoE, FAR_FUTURE);
 			}
@@ -1231,7 +1235,7 @@ public void ERTargetingRemote_M1_Attack(int client, int weapon, bool crit, int s
 		SetEntPropFloat(Props, Prop_Send, "m_fadeMinDist", 1.0);
 		SetEntPropFloat(Props, Prop_Send, "m_fadeMaxDist", 1.0);
 		MakeObjectIntangeable(Props);
-		fl_Charge_delay[Props] = 925.0*Attributes_Get(slot, 2, 1.0)*1.15;
+		fl_Charge_delay[Props] = 925.0*Attributes_Get(slot, 2, 1.0)*1.38;
 		fl_Charge_Duration[Props] = 3.0/Attributes_Get(slot, 103, 1.0);
 		fl_Dead_Ringer[Props] = EXPLOSION_RADIUS*Attributes_Get(slot, 99, 1.0);
 		XYZ.m_iAttacksTillMegahit++;
