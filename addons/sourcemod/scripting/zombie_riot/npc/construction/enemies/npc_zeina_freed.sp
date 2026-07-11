@@ -66,7 +66,7 @@ methodmap ZeinaFreeFollower < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][6]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][6] = TempValueForProperty; }
 	}
-	property bool m_bBossRush
+	property bool m_bClearFollower
 	{
 		public get()							{ return b_FUCKYOU[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_FUCKYOU[this.index] = TempValueForProperty; }
@@ -159,7 +159,7 @@ static void ClotThink(int iNPC)
 	
 	npc.m_flNextThinkTime = gameTime + 0.1;
 	
-	if (npc.m_bBossRush)
+	if (npc.m_bClearFollower)
 	{
 		bool escape = true;
 		int a, entity1;
