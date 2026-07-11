@@ -184,6 +184,10 @@ public void IndexFather_ResetAllStats()
 	Zero(DashesBeforeHitMust);
 	Zero(f_FuriosoLastmanForce);
 	Zero(f_PatCooldown);
+	
+	// timer is killed on map change but not set to null by sm
+	for (int client = 1; client <= MaxClients; client++)
+		Handle_Timer[client] = null;
 }
 public void IndexFather_MapStart()
 {
