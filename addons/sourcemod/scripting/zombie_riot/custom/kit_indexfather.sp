@@ -184,10 +184,6 @@ public void IndexFather_ResetAllStats()
 	Zero(DashesBeforeHitMust);
 	Zero(f_FuriosoLastmanForce);
 	Zero(f_PatCooldown);
-	
-	// timer is killed on map change but not set to null by sm
-	for (int client = 1; client <= MaxClients; client++)
-		Handle_Timer[client] = null;
 }
 public void IndexFather_MapStart()
 {
@@ -400,7 +396,7 @@ public void IndexFather_WeaponLoad(int client, int weapon)
 	SDKHook(client, SDKHook_PreThink, IndexFather_DodgeLogic);
 
 	DataPack pack;
-	Handle_Timer[client] = CreateDataTimer(0.1, Timer_Base, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	Handle_Timer[client] = CreateDataTimer(0.1, Timer_Base, pack, TIMER_REPEAT);
 	pack.WriteCell(client);
 	pack.WriteCell(EntIndexToEntRef(client));
 	pack.WriteCell(EntIndexToEntRef(weapon));
