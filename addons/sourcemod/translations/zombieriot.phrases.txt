@@ -2079,6 +2079,7 @@
 	"Pap Auto Enhancement Denied Multiple"
 	{
 		"en"		"Automatic enhancements for this weapon have been paused as it has multiple enhancement paths, you must choose one."
+		"ko"		"다수의 강화 경로로 인해 이 무기의 자동 강화가 중단되었습니다: 하나를 선택해야 합니다."
 	}
 	"Pap Auto Enhancement Standby"
 	{
@@ -3150,6 +3151,7 @@
 	"Cant Display Last Bought Enhance"
 	{
 		"en"		"Your last bought weapon can't be enhanced (or you haven't bought a weapon yet)..."
+		"ko"		"당신이 마지막으로 구매한 무기는 강화가 불가능합니다(혹은 아직 아무 것도 사지 않았거나요)..."
 	}
 	"Move Hud Down"
 	{
