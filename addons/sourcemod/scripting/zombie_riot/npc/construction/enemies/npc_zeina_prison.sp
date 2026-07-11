@@ -85,7 +85,7 @@ methodmap ZeinaPrisoner < CClotBody
 		
 		
 	}
-	property bool m_bBossRush
+	property bool m_bClearFollower
 	{
 		public get()							{ return b_FUCKYOU[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_FUCKYOU[this.index] = TempValueForProperty; }
@@ -323,7 +323,7 @@ public void ZeinaPrisoner_NPCDeath(int entity)
 		ZeinaFreeFollower npcSummon = view_as<ZeinaFreeFollower>(spawn_index);
 		npcSummon.m_iTargetAlly = entity;
 		NpcStats_CopyStats(entity, spawn_index);
-		npcSummon.m_bBossRush = npc.m_bBossRush;
+		npcSummon.m_bClearFollower = npc.m_bClearFollower;
 	}
 	
 	float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);

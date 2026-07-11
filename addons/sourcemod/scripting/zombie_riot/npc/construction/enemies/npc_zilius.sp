@@ -313,7 +313,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 		public get()		{	return this.m_iMedkitAnnoyance;	}
 		public set(int value) 	{	this.m_iMedkitAnnoyance = value;	}
 	}
-	property bool m_bBossRush
+	property bool m_bClearFollower
 	{
 		public get()							{ return b_FUCKYOU[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_FUCKYOU[this.index] = TempValueForProperty; }
@@ -431,6 +431,7 @@ methodmap Construction_Raid_Zilius < CClotBody
 		RemoveAllDamageAddition();
 		bool final = StrContains(data, "final_item") != -1;
 		bool bossrush = StrContains(data, "bossrush") != -1;
+		npc.m_bClearFollower = StrContains(data, "free_zeina") != -1;
 		
 		Zero(b_said_player_weaponline);
 		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
@@ -441,7 +442,6 @@ methodmap Construction_Raid_Zilius < CClotBody
 			i_RaidGrantExtra[npc.index] = 1;
 		}
 		
-		npc.m_bBossRush = bossrush;
 		if (bossrush)
 		{
 			RaidAllowsBuildings = false;
@@ -1089,7 +1089,7 @@ void Zilius_SpawnAllyDuoRaid(int ref)
 			ZeinaPrisoner npcSummon = view_as<ZeinaPrisoner>(spawn_index);
 			npcSummon.m_iTargetAlly = entity;
 			NpcStats_CopyStats(entity, spawn_index);
-			npcSummon.m_bBossRush = npc.m_bBossRush;
+			npcSummon.m_bClearFollower = npc.m_bClearFollower;
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);

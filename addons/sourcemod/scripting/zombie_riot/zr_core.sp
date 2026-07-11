@@ -1124,6 +1124,7 @@ void ZR_MapStart()
 	PurgeKit_MapStart();
 	ResetMapStartExploARWeapon();
 	Gunsaw_MapStart();
+	IndexFather_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
