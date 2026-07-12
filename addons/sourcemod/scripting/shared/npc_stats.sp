@@ -4353,6 +4353,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 			else
 			{
 				Npc_DoGibLogic(pThis, GibEnemyGive,_,client);
+				EmitSoundToAll("vo/null.mp3", pThis, SNDCHAN_VOICE, 10, _, 0.1);	
 				SetNpcToDeadViaGib(pThis);
 			}
 		}
@@ -4380,7 +4381,6 @@ public void SetNpcToDeadViaGib(int pThis)
 	SetEntityRenderMode(pThis, RENDER_NONE);
 	SetEdictFlags(pThis, SetEntityTransmitState(pThis, FL_EDICT_DONTSEND));
 	//cancel any voice they have rn
-	EmitSoundToAll("vo/null.mp3", pThis, SNDCHAN_VOICE, 10, _, 0.1);	
 	CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(pThis), TIMER_FLAG_NO_MAPCHANGE);	
 	Update_TransmitState(pThis);
 }
