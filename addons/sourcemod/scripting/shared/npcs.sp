@@ -1355,7 +1355,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		{
 			npcBase.m_bGib = true;
 		}
-		else if((damage * fl_GibVulnerablity[victim]) > (ReturnEntityMaxHealth(victim) * 1.5))
+		else if((damage * fl_GibVulnerablity[victim]) > (ReturnEntityMaxHealth(victim) * 0.8))
 		{
 			npcBase.m_bGib = true;
 		}
@@ -3040,5 +3040,5 @@ void AdjustDamageForce(float Damageforce[3])
 	{
 		ScaleVector(Damageforce, 10.0);
 	}
-	ScaleVector(Damageforce, 0.6);
+	ScaleVector(Damageforce, 0.5);
 }

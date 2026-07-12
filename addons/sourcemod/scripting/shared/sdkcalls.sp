@@ -9,8 +9,6 @@ Handle g_hSDKStartTouch;
 static Handle g_hSetAbsOrigin;
 static Handle g_hSetAbsAngle;
 static Handle g_hInvalidateBoneCache;
-static Handle m_hGetBonePosition;
-static Handle m_hLookupBone;
 static Handle g_hCTFCreateArrow;
 //static Handle g_hCTFCreatePipe;
 //Handle g_hSDKMakeCarriedObject;
@@ -144,24 +142,6 @@ void SDKCall_Setup()
 		LogError("[Gamedata] Could not find CTFProjectile_Arrow::Create");
 	//from kenzzer
 	StartPrepSDKCall(SDKCall_Entity);
-
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseAnimating::GetBonePosition");
-	PrepSDKCall_AddParameter(SDKType_PlainOldData, SDKPass_Plain);
-	PrepSDKCall_AddParameter(SDKType_Vector, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
-	PrepSDKCall_AddParameter(SDKType_QAngle, SDKPass_ByRef, _, VENCODE_FLAG_COPYBACK);
-	if ((m_hGetBonePosition = EndPrepSDKCall()) == null)
-	{
-		LogError("Failed to create SDKCall for CBaseAnimating::GetBonePosition!");
-
-	}
-	StartPrepSDKCall(SDKCall_Entity);
-	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CBaseAnimating::LookupBone");
-	PrepSDKCall_AddParameter(SDKType_String, SDKPass_Pointer);
-	PrepSDKCall_SetReturnInfo(SDKType_PlainOldData, SDKPass_Plain);
-	if ((m_hLookupBone = EndPrepSDKCall()) == null)
-	{
-		LogError("Failed to create SDKCall for CBaseAnimating::LookupBone!");
-	}
 	
 	
 	StartPrepSDKCall(SDKCall_Entity);
@@ -575,13 +555,4 @@ stock void SDKCall_GetSmoothedVelocity(int entity, float vec[3])
 {
 	if(SDKGetSmoothedVelocity)
 		SDKCall(SDKGetSmoothedVelocity, entity, vec);
-}
-int LookupBone(int entity, const char[] szName)
-{
-	return SDKCall(m_hLookupBone, entity, szName);
-}
-
-void SDKCall_GetBonePosition(int entity, int iBone, float origin[3], float angles[3])
-{
-	SDKCall(m_hGetBonePosition, entity, iBone, origin, angles);
 }

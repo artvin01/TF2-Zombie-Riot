@@ -962,22 +962,22 @@ void Music_Update(int client)
 				{
 					if(!npcstats.m_bThisNpcIsABoss)
 					{
-						f_intencity += 0.5;
+						f_intencity += 0.75;
 					}
 					else
 					{
-						f_intencity += 4.0;
+						f_intencity += 5.0;
 					}
 				}
 				if (distance <= RangeSecondMusic)// If they are very close, cause more havok! more epic music!
 				{
 					if(!npcstats.m_bThisNpcIsABoss)
 					{
-						f_intencity += 0.65;
+						f_intencity += 1.0;
 					}
 					else
 					{
-						f_intencity += 5.0;
+						f_intencity += 8.0;
 					}
 				}
 			}
@@ -985,7 +985,7 @@ void Music_Update(int client)
 		
 		if(!ZombieMusicPlayed)//once set in a wave, it should stay untill the next mass revive.
 		{
-			if(!b_IsAloneOnServer && float(GlobalIntencity) >= float(PlayersInGame) * 0.25)
+			if(!b_IsAloneOnServer && float(GlobalIntencity) >= float(PlayersInGame) * 0.15)
 			{
 				ZombieMusicPlayed = true;
 			}
