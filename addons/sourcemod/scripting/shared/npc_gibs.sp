@@ -47,8 +47,8 @@ static const char g_GibModelHeavy[][] =
 };
 static const char g_GibModelPyro[][] =
 {
-	"models/player/gibs/pyrogib006.mdl", // torso
-	"models/player/gibs/pyrogib007.mdl", // waist
+	"models/player/gibs/pyrogib007.mdl", // torso
+	"models/player/gibs/pyrogib006.mdl", // waist
 	"models/player/gibs/pyrogib008.mdl", // head
 };
 static const char g_GibModelSpy[][] =
@@ -80,14 +80,14 @@ static const char g_GibModelRobotSniper[][] =
 };
 static const char g_GibModelRobotSoldier[][] =
 {
-	"models/bots/gibs/demobot_gib_chest.mdl",
 	"models/bots/gibs/demobot_gib_pelvis.mdl",
+	"models/bots/gibs/demobot_gib_leg2.mdl",
 	"models/bots/gibs/demobot_gib_head.mdl",
 };
 static const char g_GibModelRobotDemoMan[][] =
 {
-	"models/bots/gibs/demobot_gib_chest.mdl",
 	"models/bots/gibs/demobot_gib_pelvis.mdl",
+	"models/bots/gibs/demobot_gib_leg2.mdl",
 	"models/bots/gibs/demobot_gib_head.mdl",
 };
 static const char g_GibModelRobotMedic[][] =
@@ -104,15 +104,15 @@ static const char g_GibModelRobotHeavy[][] =
 };
 static const char g_GibModelRobotPyro[][] =
 {
-	"models/bots/gibs/scoutbot_gib_chest.mdl",
-	"models/bots/gibs/scoutbot_gib_pelvis.mdl",
-	"models/bots/gibs/scoutbot_gib_head.mdl",
+	"models/bots/gibs/pyrobot_gib_chest2.mdl",
+	"models/bots/gibs/pyrobot_gib_pelvis.mdl",
+	"models/bots/gibs/pyrobot_gib_head.mdl",
 };
 static const char g_GibModelRobotSpy[][] =
 {
 	"models/bots/gibs/pyrobot_gib_chest.mdl",
 	"models/bots/gibs/pyrobot_gib_pelvis.mdl",
-	"models/bots/gibs/pyrobot_gib_head.mdl",
+	"models/bots/gibs/spybot_gib_head.mdl",
 };
 static const char g_GibModelRobotEngineer[][] =
 {
