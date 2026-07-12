@@ -870,18 +870,51 @@ methodmap CClotBody < CBaseCombatCharacter
 	{ 
 		public get() { return view_as<int>(this); } 
 	}
-	public void PlayGibSound() { //ehehee this sound is funny 
+	public void PlayGibSound(int attacker = -1) { //ehehee this sound is funny 
 		int sound = GetRandomInt(0, sizeof(g_GibSound) - 1);
 	
-		EmitSoundToAll(g_GibSound[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
-	//	EmitSoundToAll(g_GibSound[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
-	//	EmitSoundToAll(g_GibSound[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
+		if(attacker == -1)
+			EmitSoundToAll(g_GibSound[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
+		else
+		{
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(IsClientInGame(client))
+				{
+					if(attacker == client)
+					{
+						EmitSoundToClient(client, g_GibSound[sound], attacker, SNDCHAN_AUTO, 70, _, 1.0);
+					}
+					else
+					{
+						EmitSoundToClient(client, g_GibSound[sound], this.index, SNDCHAN_AUTO, 70, _, 1.0);
+					}
+				}
+			}
+		}
 	}
-	public void PlayGibSoundMetal() { //ehehee this sound is funny 
+	public void PlayGibSoundMetal(int attacker = -1) { //ehehee this sound is funny 
 		int sound = GetRandomInt(0, sizeof(g_GibSoundMetal) - 1);
-	
-		EmitSoundToAll(g_GibSoundMetal[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
-	//	EmitSoundToAll(g_GibSoundMetal[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
+		
+		if(attacker == -1)
+			EmitSoundToAll(g_GibSoundMetal[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
+		else
+		{
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(IsClientInGame(client))
+				{
+					if(attacker == client)
+					{
+						EmitSoundToClient(client, g_GibSoundMetal[sound], attacker, SNDCHAN_AUTO, 80, _, 1.0);
+					}
+					else
+					{
+						EmitSoundToClient(client, g_GibSoundMetal[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
+					}
+				}
+			}
+		}
 	}
 	public void PlayStepSound(const char[] sound, float volume = 1.0, int Npc_Type = 1, bool custom = false)
 	{
@@ -4330,7 +4363,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 			}
 			else
 			{
-				Npc_DoGibLogic(pThis, GibEnemyGive);
+				Npc_DoGibLogic(pThis, GibEnemyGive,_,client);
 				SetNpcToDeadViaGib(pThis);
 			}
 		}
@@ -7447,7 +7480,7 @@ static char m_cGibModelMetal[][] =
 	"models/gibs/scanner_gib01.mdl",
 	"models/gibs/metal_gib2.mdl"
 };
-void Npc_DoGibLogic(int pThis, float GibAmount = 1.0, bool forcesilentMode = false)
+void Npc_DoGibLogic(int pThis, float GibAmount = 1.0, bool forcesilentMode = false, int attacker = -1)
 {
 	CClotBody npc = view_as<CClotBody>(pThis);
 	if(npc.m_iBleedType == 0)
@@ -7464,9 +7497,9 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0, bool forcesilentMode = fal
 		Limit_Gibs = true;
 
 	if(npc.m_iBleedType == BLEEDTYPE_METAL)
-		npc.PlayGibSoundMetal();
+		npc.PlayGibSoundMetal(attacker);
 	else if(npc.m_iBleedType != BLEEDTYPE_RUBBER)
-		npc.PlayGibSound();
+		npc.PlayGibSound(attacker);
 
 
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
@@ -7511,7 +7544,7 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0, bool forcesilentMode = fal
 		}
 		TempForce = damageForce;
 		if(GibLoop == 0 && npc.m_iBleedType == BLEEDTYPE_NORMAL)
-			ScaleVector(TempForce, 0.4);
+			ScaleVector(TempForce, 0.75);
 
 		//randomize abit
 		ScaleVector(TempForce, GetRandomFloat(0.9, 1.1));
@@ -7566,22 +7599,34 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0, bool forcesilentMode = fal
 		DispatchKeyValueVector(prop, "origin",	 TempPosition);
 		DispatchKeyValueVector(prop, "angles",	 ang);
 		DispatchSpawn(prop);
+		float ModelscaleSet = 1.0;
 		if(npc.m_bIsGiant)
 		{
 			if(npc.m_iBleedType == BLEEDTYPE_METAL && GibLoop == 0)
 			{
-				SetEntPropFloat(prop, Prop_Send, "m_flModelScale", 1.1);
+				ModelscaleSet *= 1.1;
 			}
 			else
-				SetEntPropFloat(prop, Prop_Send, "m_flModelScale", 1.6);
+				ModelscaleSet *= 1.6;
 		}
 		else
 		{
 			if(npc.m_iBleedType == BLEEDTYPE_METAL && GibLoop == 0)
 			{
-				SetEntPropFloat(prop, Prop_Send, "m_flModelScale", 0.8);
+				ModelscaleSet *= 0.8;
 			}
 		}
+		//head
+		if(GibLoop == 2)
+			ModelscaleSet *= 1.2;
+
+		//Spine
+		if(GibLoop == 1)
+			ModelscaleSet *= 2.5;
+
+		if(ModelscaleSet != 1.0)
+			SetEntPropFloat(prop, Prop_Send, "m_flModelScale", ModelscaleSet);
+			
 		TeleportEntity(prop, NULL_VECTOR, NULL_VECTOR, TempForce);
 		SetEntityCollisionGroup(prop, 2); //COLLISION_GROUP_DEBRIS_TRIGGER
 		CreateTimer(Random_time - 1.5, Prop_Gib_FadeSet, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
@@ -7596,6 +7641,8 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0, bool forcesilentMode = fal
 				if(!EnableSilentMode || !AtEdictLimit(EDICT_EFFECT))
 					ParticleSet = ParticleEffectAt(TempPosition, "blood_trail_red_01_goop", Random_time); 
 				SetEntityRenderColor(prop, 255, 0, 0, 255);
+				int color[4] = {255,0,0,255};
+				NpcGibEnemyExtreme(pThis, color);
 			}
 			case BLEEDTYPE_METAL:
 			{
@@ -8833,8 +8880,6 @@ stock void TE_BloodSprite(float Origin[3],float Direction[3], int red, int green
 	
 	TE_WriteNum("m_nSprayModel", g_sModelIndexBloodSpray);
 	TE_WriteNum("m_nDropModel", g_sModelIndexBloodDrop);
-	
-	
 //	TE_SendToAll();
 }
 
@@ -12501,4 +12546,49 @@ bool NPCStats_GetCustomChatName(int entity, char[] buffer, int maxlen)
 	}
 	
 	return false;
+}
+bool NpcGibEnemyExtreme(int entity, int color[4])
+{
+//	float TempPosition[3];
+//	WorldSpaceCenter(entity, TempPosition);
+//	TE_Particle("tfc_sniper_mist2", TempPosition, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	
+	for(int i ; i <6 ; i++)
+	{
+		float TempPosition[3];
+		float flangUnused[3];
+		int Size = 28;
+		switch(i)
+		{
+			case 0:
+			{
+				SDKCall_GetBonePosition(entity, LookupBone(entity,"bip_neck"), TempPosition, flangUnused);
+			}
+			case 1:
+			{
+				Size *= 2;
+				SDKCall_GetBonePosition(entity, LookupBone(entity,"bip_spine_0"), TempPosition, flangUnused);
+			}
+			case 2:
+			{
+				SDKCall_GetBonePosition(entity, LookupBone(entity,"bip_knee_L"), TempPosition, flangUnused);
+			}
+			case 3:
+			{
+				SDKCall_GetBonePosition(entity, LookupBone(entity,"bip_knee_R"), TempPosition, flangUnused);
+			}
+			case 4:
+			{
+				SDKCall_GetBonePosition(entity, LookupBone(entity,"bip_lowerArm_L"), TempPosition, flangUnused);
+			}
+			case 5:
+			{
+				SDKCall_GetBonePosition(entity, LookupBone(entity,"bip_lowerArm_R"), TempPosition, flangUnused);
+			}
+		}
+		TE_BloodSprite(TempPosition, { 0.0, 0.0, 0.0 }, color[0], color[1], color[2], color[3], Size);
+		TE_SendToAllInRange(TempPosition, RangeType_Visibility);		
+	//	TE_Particle("blood_impact_backscatter", TempPosition, NULL_VECTOR, flangUnused, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	}
+	
 }

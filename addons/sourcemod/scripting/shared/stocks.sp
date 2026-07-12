@@ -69,6 +69,19 @@ stock float fClamp(float fValue, float fMin, float fMax)
 
 	return fValue;
 }
+
+stock bool ClampDetect(float fValue, float fMin, float fMax)
+{
+	if (fValue < fMin) {
+		return true;
+	}
+
+	if (fValue > fMax) {
+		return true;
+	}
+
+	return false;
+}
 stock int iClamp(int iValue, int iMin, int iMax)
 {
 	if (iValue < iMin) {
