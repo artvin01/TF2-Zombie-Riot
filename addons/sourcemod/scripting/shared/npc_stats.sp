@@ -392,13 +392,6 @@ float ReturnEntityAttackspeed(int iNpc)
 	return f_AttackSpeedNpcIncrease[iNpc];
 }
 
-//I moved these up here so they can be precached, because the server crashes if a skeleton is gibbed and these aren't precached:
-static char m_cGibModelSkeleton[][] = {
-    "models/bots/skeleton_sniper/skeleton_sniper_gib_torso.mdl",
-    "models/bots/skeleton_sniper/skeleton_sniper_gib_leg_l.mdl",
-    "models/bots/skeleton_sniper/skeleton_sniper_gib_head.mdl"
-};
-
 void NPCStats_PluginStart()
 {
 	h_ColoredWearables = new ArrayList(sizeof(WearableColor));
@@ -444,6 +437,7 @@ void OnMapStart_NPC_Base()
 	PrecacheDecal(ARROW_TRAIL, true);
 	PrecacheModel(ARROW_TRAIL_RED);
 	PrecacheDecal(ARROW_TRAIL_RED, true);
+	PrecacheAllGibs();
 
 	//HookEntityOutput("trigger_multiple", "OnStartTouch", NPCStats_StartTouch);
 	//HookEntityOutput("trigger_multiple", "OnEndTouch", NPCStats_EndTouch);
@@ -503,11 +497,6 @@ void OnMapStart_NPC_Base()
 	PrecacheModel(MODEL_SSB);
 	PrecacheSound(SND_TRANSFORM);
 	PrecacheSound(SND_GIB_SKELETON);
-
-	for (int i = 0; i < sizeof(m_cGibModelSkeleton); i++)
-	{
-		PrecacheModel(m_cGibModelSkeleton[i], true);
-	}
 	#endif
 }
 
@@ -870,18 +859,51 @@ methodmap CClotBody < CBaseCombatCharacter
 	{ 
 		public get() { return view_as<int>(this); } 
 	}
-	public void PlayGibSound() { //ehehee this sound is funny 
+	public void PlayGibSound(int attacker = -1) { //ehehee this sound is funny 
 		int sound = GetRandomInt(0, sizeof(g_GibSound) - 1);
 	
-		EmitSoundToAll(g_GibSound[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
-	//	EmitSoundToAll(g_GibSound[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
-	//	EmitSoundToAll(g_GibSound[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
+		if(attacker == -1)
+			EmitSoundToAll(g_GibSound[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
+		else
+		{
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(IsClientInGame(client))
+				{
+					if(attacker == client)
+					{
+						EmitSoundToClient(client, g_GibSound[sound], attacker, SNDCHAN_AUTO, 70, _, 1.0);
+					}
+					else
+					{
+						EmitSoundToClient(client, g_GibSound[sound], this.index, SNDCHAN_AUTO, 70, _, 1.0);
+					}
+				}
+			}
+		}
 	}
-	public void PlayGibSoundMetal() { //ehehee this sound is funny 
+	public void PlayGibSoundMetal(int attacker = -1) { //ehehee this sound is funny 
 		int sound = GetRandomInt(0, sizeof(g_GibSoundMetal) - 1);
-	
-		EmitSoundToAll(g_GibSoundMetal[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
-	//	EmitSoundToAll(g_GibSoundMetal[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
+		
+		if(attacker == -1)
+			EmitSoundToAll(g_GibSoundMetal[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0, _, _);
+		else
+		{
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(IsClientInGame(client))
+				{
+					if(attacker == client)
+					{
+						EmitSoundToClient(client, g_GibSoundMetal[sound], attacker, SNDCHAN_AUTO, 80, _, 1.0);
+					}
+					else
+					{
+						EmitSoundToClient(client, g_GibSoundMetal[sound], this.index, SNDCHAN_AUTO, 80, _, 1.0);
+					}
+				}
+			}
+		}
 	}
 	public void PlayStepSound(const char[] sound, float volume = 1.0, int Npc_Type = 1, bool custom = false)
 	{
@@ -4330,7 +4352,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 			}
 			else
 			{
-				Npc_DoGibLogic(pThis, GibEnemyGive);
+				Npc_DoGibLogic(pThis, GibEnemyGive,_,client);
 				SetNpcToDeadViaGib(pThis);
 			}
 		}
@@ -4357,6 +4379,8 @@ public void SetNpcToDeadViaGib(int pThis)
 	b_IsEntityNeverTranmitted[pThis] = true; //doesnt seem to work all the time, but the more the better.
 	SetEntityRenderMode(pThis, RENDER_NONE);
 	SetEdictFlags(pThis, SetEntityTransmitState(pThis, FL_EDICT_DONTSEND));
+	//cancel any voice they have rn
+	EmitSoundToAll("vo/null.mp3", pThis, SNDCHAN_VOICE, 10, _, 0.1);	
 	CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(pThis), TIMER_FLAG_NO_MAPCHANGE);	
 	Update_TransmitState(pThis);
 }
@@ -7435,218 +7459,6 @@ public int Can_I_See_Ally(int attacker, int ally)
 	return Traced_Target;
 }
 
-static char m_cGibModelDefault[][] =
-{
-	"models/gibs/antlion_gib_large_1.mdl",
-	"models/Gibs/HGIBS_spine.mdl",
-	"models/Gibs/HGIBS.mdl"
-};
-static char m_cGibModelMetal[][] =
-{
-	"models/gibs/helicopter_brokenpiece_03.mdl",
-	"models/gibs/scanner_gib01.mdl",
-	"models/gibs/metal_gib2.mdl"
-};
-void Npc_DoGibLogic(int pThis, float GibAmount = 1.0, bool forcesilentMode = false)
-{
-	CClotBody npc = view_as<CClotBody>(pThis);
-	if(npc.m_iBleedType == 0)
-		return;
-		
-	float startPosition[3];
-				
-	float damageForce[3];
-	npc.m_vecpunchforce(damageForce, false);
-	ScaleVector(damageForce, 0.025); //Reduce overall
-
-	bool Limit_Gibs = false;
-	if(CurrentGibCount > ZR_MAX_GIBCOUNT || EnableSilentMode || forcesilentMode || AtEdictLimit(EDICT_NPC))
-		Limit_Gibs = true;
-
-	if(npc.m_iBleedType == BLEEDTYPE_METAL)
-		npc.PlayGibSoundMetal();
-	else if(npc.m_iBleedType != BLEEDTYPE_RUBBER)
-		npc.PlayGibSound();
-
-
-	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", startPosition);
-				
-	for(int GibLoop; GibLoop < 3; GibLoop++)
-	{
-		int prop = CreateEntityByName("prop_physics_multiplayer");
-		if(!IsValidEntity(prop))
-			return; //Emergency backup
-		float TempPosition[3];
-		float TempForce[3];
-
-		TempPosition = startPosition;
-
-		switch(GibLoop)
-		{
-			case 0:
-			{
-				//main torso
-				if(!npc.m_bIsGiant)
-					TempPosition[2] += 42;
-				else
-					TempPosition[2] += 64;
-
-			}
-			case 1:
-			{
-				//Spine, or something
-				if(!npc.m_bIsGiant)
-					TempPosition[2] += 30;
-				else
-					TempPosition[2] += 49;
-			}
-			case 2:
-			{
-				//Head
-				if(!npc.m_bIsGiant)
-					TempPosition[2] += 75;
-				else
-					TempPosition[2] += 110;
-			}
-		}
-		TempForce = damageForce;
-		if(GibLoop == 0 && npc.m_iBleedType == BLEEDTYPE_NORMAL)
-			ScaleVector(TempForce, 0.4);
-
-		//randomize abit
-		ScaleVector(TempForce, GetRandomFloat(0.9, 1.1));
-		
-		//This gib in specific has too much knockback.
-
-		if(npc.m_iBleedType == BLEEDTYPE_METAL)
-			DispatchKeyValue(prop, "model", m_cGibModelMetal[GibLoop]);
-		else if (npc.m_iBleedType == BLEEDTYPE_SKELETON)
-		{
-			DispatchKeyValue(prop, "model", m_cGibModelSkeleton[GibLoop]);
-			SetEntProp(prop, Prop_Send, "m_nSkin", GetEntProp(npc.index, Prop_Send, "m_nSkin", 1));
-		}
-		else
-			DispatchKeyValue(prop, "model", m_cGibModelDefault[GibLoop]);
-
-		DispatchKeyValue(prop, "physicsmode", "2");
-		DispatchKeyValue(prop, "massScale", "1.0");
-		DispatchKeyValue(prop, "spawnflags", "2");
-
-		float Random_time = GetRandomFloat(6.0, 7.0);
-		if(EnableSilentMode || CurrentGibCount > ZR_MAX_GIBCOUNT_ABSOLUTE)
-		{
-			Random_time *= 0.5; //half the duration if there are too many gibs
-		}
-#if defined RPG
-		Random_time *= 0.25; //in RPG, gibs are really not needed as they are purpely cosmetic, for this reason they wont stay long at all.
-#endif
-		f_GibHealingAmount[prop] = 1.0 * GibAmount; //Set it to false by default first.
-		if(Limit_Gibs)	
-			f_GibHealingAmount[prop] *= 3.0;
-
-		if(b_thisNpcIsABoss[pThis] || b_thisNpcIsARaid[pThis])
-		{
-			f_GibHealingAmount[prop] *= 4.0;
-		}
-		else if(b_IsGiant[pThis])
-		{
-			f_GibHealingAmount[prop] *= 2.0;
-		}
-
-		float ang[3];
-		switch(GibLoop)
-		{
-			case 0:
-			{
-				if(npc.m_iBleedType == BLEEDTYPE_METAL)
-					ang[0] = 90.0;
-			}
-		}
-		CurrentGibCount += 1;
-		DispatchKeyValueVector(prop, "origin",	 TempPosition);
-		DispatchKeyValueVector(prop, "angles",	 ang);
-		DispatchSpawn(prop);
-		if(npc.m_bIsGiant)
-		{
-			if(npc.m_iBleedType == BLEEDTYPE_METAL && GibLoop == 0)
-			{
-				SetEntPropFloat(prop, Prop_Send, "m_flModelScale", 1.1);
-			}
-			else
-				SetEntPropFloat(prop, Prop_Send, "m_flModelScale", 1.6);
-		}
-		else
-		{
-			if(npc.m_iBleedType == BLEEDTYPE_METAL && GibLoop == 0)
-			{
-				SetEntPropFloat(prop, Prop_Send, "m_flModelScale", 0.8);
-			}
-		}
-		TeleportEntity(prop, NULL_VECTOR, NULL_VECTOR, TempForce);
-		SetEntityCollisionGroup(prop, 2); //COLLISION_GROUP_DEBRIS_TRIGGER
-		CreateTimer(Random_time - 1.5, Prop_Gib_FadeSet, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
-		CreateTimer(Random_time, Timer_RemoveEntity_Prop_Gib, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
-
-		Random_time -= 1.0;
-		int ParticleSet = -1;
-		switch(npc.m_iBleedType)
-		{
-			case BLEEDTYPE_NORMAL:
-			{
-				if(!EnableSilentMode || !AtEdictLimit(EDICT_EFFECT))
-					ParticleSet = ParticleEffectAt(TempPosition, "blood_trail_red_01_goop", Random_time); 
-				SetEntityRenderColor(prop, 255, 0, 0, 255);
-			}
-			case BLEEDTYPE_METAL:
-			{
-				if(!EnableSilentMode || !AtEdictLimit(EDICT_EFFECT))
-					ParticleSet = ParticleEffectAt(TempPosition, "tpdamage_4", Random_time); 
-			}
-			case BLEEDTYPE_RUBBER:
-			{
-				if(!EnableSilentMode || !AtEdictLimit(EDICT_EFFECT))
-					ParticleSet = ParticleEffectAt(TempPosition, "doublejump_trail_alt", Random_time); //This is a permanent particle, gotta delete it manually...
-			}
-			case BLEEDTYPE_XENO:
-			{
-				if(!EnableSilentMode || !AtEdictLimit(EDICT_EFFECT))
-					ParticleSet = ParticleEffectAt(TempPosition, "blood_impact_green_01", Random_time); 
-				SetEntityRenderColor(prop, 0, 255, 0, 255);
-			}
-			/*case BLEEDTYPE_SKELETON:
-			{
-				Skeletons don't bleed, so I'm leaving this blank.
-			}*/
-			case BLEEDTYPE_DWELLER:
-			{
-				if(!EnableSilentMode || !AtEdictLimit(EDICT_EFFECT))
-					ParticleSet = ParticleEffectAt(TempPosition, "flamethrower_rainbow_bubbles02", Random_time); 
-				SetEntityRenderColor(prop, 65, 65, 255, 255);
-			}
-			case BLEEDTYPE_VOID:
-			{
-				if(!EnableSilentMode || !AtEdictLimit(EDICT_EFFECT))
-				{
-					TE_BloodSprite(TempPosition, { 0.0, 0.0, 0.0 }, 200, 0, 200, 255, 32);
-					TE_SendToAllInRange(TempPosition, RangeType_Visibility);
-				}
-				SetEntityRenderColor(prop, 200, 0, 200, 255);
-			}
-			case BLEEDTYPE_PORTAL:
-			{
-				//none.
-			}
-		}	
-		if(ParticleSet != -1)
-		{
-			SetParent(prop, ParticleSet);
-		}
-		b_IsAGib[prop] = true;
-		if(Limit_Gibs)
-			return; //only spawn 1 gib.
-	}
-}
-
 #if defined ZR
 void GibCollidePlayerInteraction(int gib, int player)
 {
@@ -8833,8 +8645,6 @@ stock void TE_BloodSprite(float Origin[3],float Direction[3], int red, int green
 	
 	TE_WriteNum("m_nSprayModel", g_sModelIndexBloodSpray);
 	TE_WriteNum("m_nDropModel", g_sModelIndexBloodDrop);
-	
-	
 //	TE_SendToAll();
 }
 

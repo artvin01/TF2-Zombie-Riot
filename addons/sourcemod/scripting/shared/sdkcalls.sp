@@ -9,7 +9,6 @@ Handle g_hSDKStartTouch;
 static Handle g_hSetAbsOrigin;
 static Handle g_hSetAbsAngle;
 static Handle g_hInvalidateBoneCache;
-
 static Handle g_hCTFCreateArrow;
 //static Handle g_hCTFCreatePipe;
 //Handle g_hSDKMakeCarriedObject;
@@ -142,6 +141,8 @@ void SDKCall_Setup()
 	if(!g_hCTFCreateArrow)
 		LogError("[Gamedata] Could not find CTFProjectile_Arrow::Create");
 	//from kenzzer
+	StartPrepSDKCall(SDKCall_Entity);
+	
 	
 	StartPrepSDKCall(SDKCall_Entity);
 	PrepSDKCall_SetFromConf(gamedata, SDKConf_Signature, "CTFWeaponBaseMelee::GetShootSound");

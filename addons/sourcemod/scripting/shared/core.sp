@@ -59,8 +59,8 @@
 
 #endif
 
-#define ZR_MAX_GIBCOUNT		12 //Anymore then this, and it will only summon 1 gib per zombie instead.
-#define ZR_MAX_GIBCOUNT_ABSOLUTE 35 //Anymore then this, and the duration is halved for gibs staying.
+#define ZR_MAX_GIBCOUNT		56 //Anymore then this, and it will only summon 1 gib per zombie instead.
+#define ZR_MAX_GIBCOUNT_ABSOLUTE 20 //Anymore then this, and the duration is halved for gibs staying.
 #define RAIDBOSS_GLOBAL_ATTACKLIMIT 16
 
 //#pragma dynamic	131072
@@ -346,7 +346,6 @@ char g_ArrowHitSoundMiss[][] = {
 };
 
 char g_GibSound[][] = {
-	"physics/flesh/flesh_squishy_impact_hard1.wav",
 	"physics/flesh/flesh_squishy_impact_hard2.wav",
 	"physics/flesh/flesh_squishy_impact_hard3.wav",
 	"physics/flesh/flesh_squishy_impact_hard4.wav",
@@ -707,6 +706,7 @@ int OriginalWeapon_AmmoType[MAXENTITIES];
 #include "master_takedamage.sp"
 #include "npc_default_sounds.sp"	// NPC Stats is required here due to important methodmap
 #include "npc_stats.sp"	// NPC Stats is required here due to important methodmap
+#include "npc_gibs.sp"	// NPC Stats is required here due to important methodmap
 #include "npc_collision_logic.sp"	// NPC collisions are sepearted for ease
 #include "npc_trace_filters.sp"	// NPC trace filters are sepearted for ease
 

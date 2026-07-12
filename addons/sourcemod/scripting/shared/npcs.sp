@@ -1343,6 +1343,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	OnTakeDamageBleedNpc(victim, attacker, inflictor, damage, damagetype, weapon, damagePosition, GameTime);
 	//LogEntryInvicibleTest(victim, attacker, damage, 22);
 
+	AdjustDamageForce(damageForce);
 	npcBase.m_vecpunchforce(damageForce, true);
 	if(!npcBase.m_bDissapearOnDeath) //Make sure that if they just vanish, its always false. so their deathsound plays.
 	{
@@ -1354,7 +1355,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 		{
 			npcBase.m_bGib = true;
 		}
-		else if((damage * fl_GibVulnerablity[victim]) > (ReturnEntityMaxHealth(victim) * 1.5))
+		else if((damage * fl_GibVulnerablity[victim]) > (ReturnEntityMaxHealth(victim) * 0.8))
 		{
 			npcBase.m_bGib = true;
 		}
@@ -3023,3 +3024,21 @@ void PrintNPCMessageWithPrefixes_Delay(DataPack pack)
 	PrintNPCMessageWithPrefixes(entity, npcColor, message, messageIsTranslated, customName, messageColor, customNameIsTranslated);
 }
 #endif
+
+
+void AdjustDamageForce(float Damageforce[3])
+{
+	int Scaleup = 0;
+	for(int i; i < 3; i++)
+	{
+		if(!ClampDetect(Damageforce[i], -3000.0, 3000.0))
+		{
+			Scaleup++;
+		}
+	}
+	if(Scaleup >= 3)
+	{
+		ScaleVector(Damageforce, 10.0);
+	}
+	ScaleVector(Damageforce, 0.5);
+}
