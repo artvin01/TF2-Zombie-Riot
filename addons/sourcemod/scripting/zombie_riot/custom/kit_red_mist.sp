@@ -326,12 +326,15 @@ static Action Timer_Red_Mist_Ego(Handle timer, int client)
 
 void Disable_Everything_Red_Mist(int client)
 {
-	Ego_Energy[client] = 0;
-	RemoveSpecificBuff(client, "Ego Manifestation");
-	RemoveSpecificBuff(client, "Influence of the bodies");
-	RemoveSpecificBuff(client, "Red_Mist_Strength");
-	Special_Cooldowns[client][2] = GetGameTime() + (120.00 * CooldownReductionAmount(client));
-	Ego_Active[client] = false;
+	if(Ego_Active[client])
+	{
+		Ego_Energy[client] = 0;
+		RemoveSpecificBuff(client, "Ego Manifestation");
+		RemoveSpecificBuff(client, "Influence of the bodies");
+		RemoveSpecificBuff(client, "Red_Mist_Strength");
+		Special_Cooldowns[client][2] = GetGameTime() + (120.00 * CooldownReductionAmount(client));
+		Ego_Active[client] = false;
+	}
 }
 
 void Red_Mist_Horizontal_Slash_DoSwingTrace(int client, float &CustomMeleeRange, float &CustomMeleeWide, bool &ignore_walls, int &enemies_hit_aoe)
