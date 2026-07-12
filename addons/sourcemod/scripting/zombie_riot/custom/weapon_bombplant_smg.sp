@@ -602,7 +602,7 @@ static Action Timer_Management_ExploAR(Handle timer, DataPack pack)
 									int DronShot = view_as<CClotBody>(Robot).FireParticleRocket(vecDest, 0.0, 1200.0, 0.0, "raygun_projectile_red_crit", true,_, true, RobotPos);
 									i_WandOwner[DronShot]=EntIndexToEntRef(client);
 									i_WandWeapon[DronShot]=EntIndexToEntRef(weapon);
-									f_WandDamage[DronShot]=750.0*Attributes_Get(weapon, 2, 1.0)*1.2;
+									f_WandDamage[DronShot]=750.0*Attributes_Get(weapon, 2, 1.0);
 									WandProjectile_ApplyFunctionToEntity(DronShot, Dron_BombARTouch);	
 									fl_NextRangedAttack[Robot] = GameTime + 0.2;
 									i_State[Robot]++;
@@ -1235,7 +1235,7 @@ public void ERTargetingRemote_M1_Attack(int client, int weapon, bool crit, int s
 		SetEntPropFloat(Props, Prop_Send, "m_fadeMinDist", 1.0);
 		SetEntPropFloat(Props, Prop_Send, "m_fadeMaxDist", 1.0);
 		MakeObjectIntangeable(Props);
-		fl_Charge_delay[Props] = 925.0*Attributes_Get(slot, 2, 1.0)*1.38;
+		fl_Charge_delay[Props] = 925.0*Attributes_Get(slot, 2, 1.0)*1.15;
 		fl_Charge_Duration[Props] = 3.0/Attributes_Get(slot, 103, 1.0);
 		fl_Dead_Ringer[Props] = EXPLOSION_RADIUS*Attributes_Get(slot, 99, 1.0);
 		XYZ.m_iAttacksTillMegahit++;
