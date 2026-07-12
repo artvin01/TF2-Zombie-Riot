@@ -26,6 +26,7 @@ static bool IsOverride[MAXPLAYERS] = {false, ...};
 static bool IsExtraDesc_1[MAXPLAYERS] = {false, ...};
 static bool IsExtraDesc_2[MAXPLAYERS] = {false, ...};
 static bool IsExtraDesc_3[MAXPLAYERS] = {false, ...};
+static bool PlayOnlyOneSound[MAXPLAYERS] = {false, ...};
 
 static int g_LaserIndex;
 
@@ -39,6 +40,7 @@ public void ResetMapStartExploARWeapon()
 	PrecacheModel("models/props_farm/vent001.mdl");
 	PrecacheModel("models/weapons/w_models/w_drg_ball.mdl");
 	g_LaserIndex = PrecacheModel(LASERBEAM);
+	Zero(PlayOnlyOneSound);
 	Zero(Can_I_Fire);
 	Zero(ExploAR_OverHit);
 	Zero(ExploAR_HUDDelay);
@@ -319,6 +321,7 @@ public void BombAR_AirStrike_Beacon(int client, int weapon, bool crit, int slot)
 			Rogue_OnAbilityUse(client, weapon);
 			Ability_Apply_Cooldown(client, slot, 50.0);
 			
+			PlayOnlyOneSound[client]=false;
 			ExploAR_AirStrikeActivated[client]=SMGAmmoMAX+64;
 			ExploAR_AirStrikeActivatedMAX[client]=SMGAmmoMAX;
 			
@@ -918,7 +921,11 @@ static void HE_StrikeThink(DataPack pack)
 		ParticleEffectAt(targetpos, "rd_robot_explosion", 1.0);
 		CreateEarthquake(targetpos, 0.5, radius*0.8, 16.0, 255.0);
 		Explode_Logic_Custom(damage, client, client, weapon, targetpos, radius, falloff);
-		EmitSoundToAll("beams/beamstart5.wav", 0, SNDCHAN_AUTO, 90, SND_NOFLAGS, 0.8, SNDPITCH_NORMAL, -1, targetpos);
+		if(!PlayOnlyOneSound[client])
+		{
+			EmitSoundToAll("beams/beamstart5.wav", 0, SNDCHAN_AUTO, 90, SND_NOFLAGS, 0.8, SNDPITCH_NORMAL, -1, targetpos);
+			PlayOnlyOneSound[client]=true;
+		}
 		return;
 	}
 	else
