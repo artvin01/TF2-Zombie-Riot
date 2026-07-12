@@ -73,6 +73,7 @@ void NPC_ConfigSetup()
 	// Buildings
 	ObjectBarricade_MapStart();
 	ObjectDecorative_MapStart();
+	ObjectExplosive_MapStart();
 	ObjectAmmobox_MapStart();
 	ObjectArmorTable_MapStart();
 	ObjectPerkMachine_MapStart();
@@ -1481,6 +1482,7 @@ void NPCDeath(int entity)
 {
 	Freeplay_OnNPCDeath(entity);
 	Cheese_OnNPCDeath(entity);
+	Gunsaw_NPCDeath(entity);
 	if(view_as<CClotBody>(entity).m_fCreditsOnKill)
 	{
 		int GiveMoney = 0;
@@ -1551,6 +1553,54 @@ void NPCDeath(int entity)
 
 Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
+	CClotBody npc = view_as<CClotBody>(victim);
+	bool PreventHurtsound = false;
+	//Various checks to prevent hurt sounds and allat
+	if(attacker <= MaxClients && TeutonType[attacker] != TEUTON_NONE)
+	{
+		PreventHurtsound = true;
+	}
+	/*
+	if(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
+		PreventHurtsound = true;
+	//dont when bleeding
+	*/
+
+	int CheckHpThreshhold = ReturnEntityMaxHealth(victim);
+	int flHealth = GetEntProp(victim, Prop_Data, "m_iHealth");
+	if(flHealth >= CheckHpThreshhold)
+	{
+		CheckHpThreshhold = flHealth;
+	}
+	if(npc.m_iHealthBar > 0)
+	{
+		CheckHpThreshhold *= npc.m_iHealthBar;
+	}
+	float WhichThreshholdDamageAt = 0.075;
+	//normal enemies need to take atleast 7.5% of their hp as damage in 1 hit so it does the hurt animation
+	if(b_thisNpcIsARaid[victim])
+	{
+		WhichThreshholdDamageAt *= 0.025;
+	}
+	else if(b_thisNpcIsABoss[victim])
+	{
+		WhichThreshholdDamageAt *= 0.15;
+	}
+	WhichThreshholdDamageAt *= float(flHealth);
+	if(WhichThreshholdDamageAt >= damage)
+	{
+		PreventHurtsound = true;
+	}
+	
+	if(PreventHurtsound)
+	{
+		float gameTime = GetGameTime(npc.index);
+
+		if(npc.m_flHeadshotCooldown < (gameTime + 0.0001))
+		{
+			npc.m_flHeadshotCooldown = gameTime + 0.0001;
+		}
+	}
 	Function func = func_NPCOnTakeDamage[victim];
 	if(func && func != INVALID_FUNCTION)
 	{
@@ -1596,6 +1646,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "object/obj_brewing_stand.sp"
 #include "object/obj_revenant.sp"
 #include "object/obj_grill.sp"
+#include "object/obj_explosivebarrel.sp"
 #include "object/construction/obj_giant_lighthouse.sp"
 #include "object/construction/obj_const_stove.sp"
 #include "object/construction/obj_const_factory.sp"

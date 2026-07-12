@@ -760,7 +760,8 @@ public void ReconstructiveTeleporter(int client)
 			{
 				char npc_classname[60];
 				NPC_GetPluginById(i_NpcInternalId[ally], npc_classname, sizeof(npc_classname));
-				if(BarrackOwner[ally] == GetClientUserId(client) && !(StrEqual(npc_classname, "npc_barrack_building")))
+				if(BarrackOwner[ally] == GetClientUserId(client) && !(StrEqual(npc_classname, "npc_barrack_building"))
+				&& !(StrEqual(npc_classname, "npc_barrack_villager")))
 				{
 					IsLiveBarrackUnits=true;
 					WorldSpaceCenter(ally, WorldSpaceVec);
@@ -872,6 +873,12 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 	else 
 		Base_HealingMaxPoints = RoundToCeil(1900.0 * Healing_Amount);
 	
+	if(IsBarracks(client))
+	{
+		float scale = 1.0 + (Barracks_GetInfo(client, 1) * 0.20);
+
+		Base_HealingMaxPoints = RoundToCeil(9000.0 * scale);	// Yes, it needs necessarily to scale with paps, otherwise it's still nowhere near enough
+	}
 	if(Base_HealingMaxPoints <= 3000)
 		Base_HealingMaxPoints = 3000;
 		
@@ -956,39 +963,15 @@ public void Reinforce(int client, bool NoCD)
 			f_ReinforceTillMax[client] = 1.0;
 		}
 
-		int MaxCashScale = CurrentCash;
-		if(MaxCashScale > 60000)
-			MaxCashScale = 60000;
-		
 		bool DeadPlayer;
 		for(int client_check=1; client_check<=MaxClients; client_check++)
 		{
-			if(!IsValidClient(client_check))
-				continue;
-			if(TeutonType[client_check] == TEUTON_NONE)
-				continue;
-			if(!b_AntiLateSpawn_Allow[client_check])
-				continue;
-			if(client==client_check || GetTeam(client_check) != TFTeam_Red)
-				continue;
-			if(!WasHereSinceStartOfWave(client_check))
-				continue;
-			if(f_PlayerLastKeyDetected[client_check] < GetGameTime())
-				continue;
-			if(HasSpecificBuff(client_check, "Vuntulum Bomb EMP Death"))
-				continue;
-			if(!Rogue_BlueParadox_CanTeutonUpdate(client_check))
-				continue;
-
-			int CashSpendScale = CashSpentTotal[client_check];
-
-			if(CashSpendScale <= 500)
-				CashSpendScale = 500;
-
-			if((CashSpendScale * 3) < (MaxCashScale))
-				continue;
-
-			DeadPlayer=true;
+			if (CanPlayerBeSummoned(client_check, client))
+			{
+				// Just want to see if there's at least someone we can summon
+				DeadPlayer = true;
+				break;
+			}
 		}
 
 		if(!DeadPlayer)
@@ -2091,7 +2074,7 @@ public Action OnBombDrop(const char [] output, int caller, int activator, float 
 		if(IsValidClient(PreviousOwner))
 		{
 			int RandomHELLDIVER = GetRandomDeathPlayer(HELLDIVER);
-			if(IsValidClient(RandomHELLDIVER) && GetTeam(RandomHELLDIVER) == TFTeam_Red && TeutonType[RandomHELLDIVER] == TEUTON_DEAD && WasHereSinceStartOfWave(RandomHELLDIVER))
+			if(RandomHELLDIVER != -1)
 			{
 				TeutonType[RandomHELLDIVER] = TEUTON_NONE;
 				dieingstate[RandomHELLDIVER] = 0;
@@ -2126,7 +2109,7 @@ public Action OnBombDrop(const char [] output, int caller, int activator, float 
 			{
 				if(IsValidClient(PreviousOwner))
 				{
-					CPrintToChat(PreviousOwner, "%s {default}wasn't able to get any merc... the backup call was refunded.");
+					CPrintToChat(PreviousOwner, "%s {default}wasn't able to get any merc... the backup call was refunded.", s_MissionClient);
 					HealPointToReinforce(PreviousOwner, 0, 1.0);
 					i_MaxRevivesAWave--;
 				}
@@ -2175,54 +2158,58 @@ public Action Timer_DelayTele(Handle timer, DataPack pack)
 
 stock int GetRandomDeathPlayer(int client)
 {
-	int Getclient = -1;
-
 	int victims;
 	int[] victim = new int[MaxClients];
+
+	for(int client_check = 1; client_check <= MaxClients; client_check++)
+	{
+		if (CanPlayerBeSummoned(client_check, client))
+			victim[victims++] = client_check;
+	}
+	
+
+	if(victims)
+		return victim[GetURandomInt() % victims];
+	
+	return -1;
+}
+
+bool CanPlayerBeSummoned(int client, int summoner)
+{
+	if(!IsValidClient(client))
+		return false;
+
+	if(IsEntityAlive(client, _, true))
+		return false;
+
+	if(!b_AntiLateSpawn_Allow[client])
+		return false;
+
+	if(summoner==client || GetTeam(client) != TFTeam_Red)
+		return false;
+
+	if(!WasHereSinceStartOfWave(client))
+		return false;
+
+	if(f_PlayerLastKeyDetected[client] < GetGameTime())
+		return false;
+	
+	if(HasSpecificBuff(client, "Vuntulum Bomb EMP Death"))
+		return false;
+
+	if(!Rogue_BlueParadox_CanTeutonUpdate(client))
+		return false;
 
 	int MaxCashScale = CurrentCash;
 	if(MaxCashScale > 60000)
 		MaxCashScale = 60000;
-
-	for(int client_check = 1; client_check <= MaxClients; client_check++)
-	{
-		if(!IsValidClient(client_check))
-			continue;
-
-		if(TeutonType[client_check] == TEUTON_NONE)
-			continue;
-
-		if(!b_AntiLateSpawn_Allow[client_check])
-			continue;
-		if(client==client_check || GetTeam(client_check) != TFTeam_Red)
-			continue;
-
-		if(!WasHereSinceStartOfWave(client_check))
-			continue;
-
-		if(f_PlayerLastKeyDetected[client_check] < GetGameTime())
-			continue;
-		if(HasSpecificBuff(client_check, "Vuntulum Bomb EMP Death"))
-			continue;
-		if(!Rogue_BlueParadox_CanTeutonUpdate(client_check))
-			continue;
-
-		int CashSpendScale = CashSpentTotal[client_check];
-
-		if(CashSpendScale <= 500)
-			CashSpendScale = 500;
-
-		if((CashSpendScale * 3) < (MaxCashScale))
-			continue;
-
-		victim[victims++] = client_check;
-	}
 	
-	if(victims)
-	{
-		int winner = victim[GetURandomInt() % victims];
-		Getclient = winner;
-	}
+	int CashSpendScale = CashSpentTotal[client];
+	if(CashSpendScale <= 500)
+		CashSpendScale = 500;
 
-	return Getclient;
+	if((CashSpendScale * 3) < (MaxCashScale))
+		return false;
+	
+	return true;
 }

@@ -80,7 +80,7 @@ static const char g_SlicerHitSound[][] = {
 	"ambient/machines/slicer4.wav",
 };
 
-
+static int NPCID;
 public void Construction_Raid_Zilius_OnMapStart()
 {
 	NPCData data;
@@ -92,10 +92,13 @@ public void Construction_Raid_Zilius_OnMapStart()
 	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = Zilius_TBB_Precahce;
-	NPC_Add(data);
+	NPCID = NPC_Add(data);
 }
 
-
+int Zilius_ID()
+{
+	return NPCID;
+}
 
 void Zilius_TBB_Precahce()
 {
@@ -310,6 +313,11 @@ methodmap Construction_Raid_Zilius < CClotBody
 		public get()		{	return this.m_iMedkitAnnoyance;	}
 		public set(int value) 	{	this.m_iMedkitAnnoyance = value;	}
 	}
+	property bool m_bClearFollower
+	{
+		public get()							{ return b_FUCKYOU[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_FUCKYOU[this.index] = TempValueForProperty; }
+	}
 	public void SayStuffZilius()
 	{
 		//one in 3 chance.
@@ -320,43 +328,43 @@ methodmap Construction_Raid_Zilius < CClotBody
 		{
 			case 1:
 			{
-				CPrintToChatAll("{black}Zilius{default}: Chaos? If only {black}''Izan''{default} was still around to tell you himself.");
+				NPCTalkMessage(this.index, "Chaos? If only {black}''Izan''{default} was still around to tell you himself.");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{black}Zilius{default}: Ever think about what endless violence causes? Look at yourselves.");
+				NPCTalkMessage(this.index, "Ever think about what endless violence causes? Look at yourselves.");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{black}Zilius{default}: You are just as bad as the {violet}curtain{default} and {violet}void{default} was.");
+				NPCTalkMessage(this.index, "You are just as bad as the {violet}curtain{default} and {violet}void{default} was.");
 			}
 			case 4:
 			{
-				CPrintToChatAll("{black}Zilius{default}: Expidonsa wasnt just an underground city, it was the very planet you live on, Parasites.");
+				NPCTalkMessage(this.index, "Expidonsa wasnt just an underground city, it was the very planet you live on, Parasites.");
 			}
 			case 5:
 			{
-				CPrintToChatAll("{black}Zilius{default}: If only the other higherups and {black}''Izan''{default} agreed to not save those others.");
+				NPCTalkMessage(this.index, "If only the other higherups and {black}''Izan''{default} agreed to not save those others.");
 			}
 			case 6:
 			{
-				CPrintToChatAll("{black}Zilius{default}: Whatever you think expidonsa doesn't have, it does.");
+				NPCTalkMessage(this.index, "Whatever you think expidonsa doesn't have, it does.");
 			}
 			case 7:
 			{
-				CPrintToChatAll("{black}Zilius{default}: {blue}Sensal{default}, {gold}Silvester{default}, all those other expidonsans in that region are so clueless to whomever made chaos.");
+				NPCTalkMessage(this.index, "{blue}Sensal{default}, {gold}Silvester{default}, all those other expidonsans in that region are so clueless to whomever made chaos.");
 			}
 			case 8:
 			{
-				CPrintToChatAll("{black}Zilius{default}: Alminans are the only ones I respect, Mazeat is an amalgam of failures.");
+				NPCTalkMessage(this.index, "Alminans are the only ones I respect, Mazeat is an amalgam of failures.");
 			}
 			case 9:
 			{
-				CPrintToChatAll("{black}Zilius{default}: Kahmlstein is such a wasted person, sadly he wasnt apart of the {gold}prime race{default}.");
+				NPCTalkMessage(this.index, "Kahmlstein is such a wasted person, sadly he wasnt apart of the {gold}prime race{default}.");
 			}
 			case 10:
 			{
-				CPrintToChatAll("{black}Zilius{default}: If you think very logically, extermination for all of you is the only to truly finish {violet}them{default}.");
+				NPCTalkMessage(this.index, "If you think very logically, extermination for all of you is the only to truly finish {violet}them{default}.");
 			}
 		}
 	}
@@ -409,20 +417,21 @@ methodmap Construction_Raid_Zilius < CClotBody
 		{
 			case 1:
 			{
-				CPrintToChatAll("{black}Zilius{default}: No other races even help us, we will wipe you out ourselves.");
+				NPCTalkMessage(npc.index, "No other races even help us, we will wipe you out ourselves.");
 			}
 			case 2:
 			{
-				CPrintToChatAll("{black}Zilius{default}: Extreme intelligence comes from foresight, dont you think?");
+				NPCTalkMessage(npc.index, "Extreme intelligence comes from foresight, dont you think?");
 			}
 			case 3:
 			{
-				CPrintToChatAll("{black}Zilius{default}: Zilius and the other expidonsans are too nice, we do lack that weakness.");
+				NPCTalkMessage(npc.index, "Zilius and the other expidonsans are too nice, we do lack that weakness.");
 			}
 		}
 		RemoveAllDamageAddition();
 		bool final = StrContains(data, "final_item") != -1;
 		bool bossrush = StrContains(data, "bossrush") != -1;
+		npc.m_bClearFollower = StrContains(data, "free_zeina") != -1;
 		
 		Zero(b_said_player_weaponline);
 		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
@@ -578,6 +587,10 @@ methodmap Construction_Raid_Zilius < CClotBody
 	}
 }
 
+static void NPCTalkMessage(int entity, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(entity, "black", message);
+}
 
 static void Internal_ClotThink(int iNPC)
 {
@@ -591,19 +604,19 @@ static void Internal_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{black}Zilius{default}: {black}''Bob the second''{default} is still such an ass, but whatever.");
+					NPCTalkMessage(npc.index, "{black}''Bob the second''{default} is still such an ass, but whatever.");
 				}
 				case 1:
 				{
-					CPrintToChatAll("{black}Zilius{default}: We both suffered losses, so take it as a truce now.");
+					NPCTalkMessage(npc.index, "We both suffered losses, so take it as a truce now.");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{black}Zilius{default}: You proved to me that other races have the chance to not be useless... but most are regardless.");
+					NPCTalkMessage(npc.index, "You proved to me that other races have the chance to not be useless... but most are regardless.");
 				}
 				case 3:
 				{
-					CPrintToChatAll("{black}Zilius{default}: Whenever the {purple}void or curtain{default} surfaces we'll land a hand, dont you think sensal or whoever are the only ones.");
+					NPCTalkMessage(npc.index, "Whenever the {purple}void or curtain{default} surfaces we'll land a hand, dont you think sensal or whoever are the only ones.");
 				} 
 				case 4:
 				{
@@ -612,7 +625,7 @@ static void Internal_ClotThink(int iNPC)
 				} 
 				case 5:
 				{
-					CPrintToChatAll("{black}Zilius{default}: Because you created a simulation thats just pathetic, Dont mess with reality or even a fake of it.");
+					NPCTalkMessage(npc.index, "Because you created a simulation thats just pathetic, Dont mess with reality or even a fake of it.");
 					npc.m_flWinAnimationSay = GetGameTime() + 3.0;
 				} 
 				case 6:
@@ -622,11 +635,11 @@ static void Internal_ClotThink(int iNPC)
 				} 
 				case 7:
 				{
-					CPrintToChatAll("{black}Zilius{default}: Whatever, Theres many more expidonsans to convince, you earned our respect, but not our trust yet.");
+					NPCTalkMessage(npc.index, "Whatever, Theres many more expidonsans to convince, you earned our respect, but not our trust yet.");
 				} 
 				case 8:
 				{
-					CPrintToChatAll("{black}Zilius{default}: for one, {black}''Bob the second''{default}, stop being so inactive and finally help against the chaos with your fellow expidonsans... {black}''Izan''{default}.");
+					NPCTalkMessage(npc.index, "for one, {black}''Bob the second''{default}, stop being so inactive and finally help against the chaos with your fellow expidonsans... {black}''Izan''{default}.");
 				} 
 				case 9:
 				{
@@ -634,7 +647,7 @@ static void Internal_ClotThink(int iNPC)
 				} 
 				case 10:
 				{
-					CPrintToChatAll("{black}Zilius{default}: Sure, just tell your Mercs to not spill the beans.");
+					NPCTalkMessage(npc.index, "Sure, just tell your Mercs to not spill the beans.");
 				} 
 				case 11:
 				{
@@ -680,7 +693,7 @@ static void Internal_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					CPrintToChatAll("{black}Zilius{default}: If only we kept your gene modification tech to make you into something greater.");
+					NPCTalkMessage(npc.index, "If only we kept your gene modification tech to make you into something greater.");
 				}
 			}
 		}
@@ -813,7 +826,7 @@ static Action Internal_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 	{
 		if(Construction_Mode() || Dungeon_Mode())
 		{
-			CPrintToChatAll("{black}Zilius{default}: Guess you lot are more then worthy. ill let you be, be usefull against the {purple}void{default}.");
+			NPCTalkMessage(npc.index, "Guess you lot are more then worthy. ill let you be, be usefull against the {purple}void{default}.");
 			npc.m_flWinAnimation = GetGameTime() + 50.0;
 			npc.m_flWinAnimationSay = GetGameTime() + 4.0;
 			i_RaidGrantExtra[npc.index] = 1111;
@@ -1061,6 +1074,7 @@ void Zilius_SpawnAllyDuoRaid(int ref)
 	int entity = EntRefToEntIndex(ref);
 	if(IsValidEntity(entity))
 	{
+		Construction_Raid_Zilius npc = view_as<Construction_Raid_Zilius>(entity);
 		float pos[3]; GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 		int maxhealth;
@@ -1072,9 +1086,10 @@ void Zilius_SpawnAllyDuoRaid(int ref)
 		int spawn_index = NPC_CreateByName("npc_zeina_prisoner", -1, pos, ang, GetTeam(entity));
 		if(spawn_index > MaxClients)
 		{
-			Construction_Raid_Zilius npc = view_as<Construction_Raid_Zilius>(spawn_index);
-			npc.m_iTargetAlly = entity;
+			ZeinaPrisoner npcSummon = view_as<ZeinaPrisoner>(spawn_index);
+			npcSummon.m_iTargetAlly = entity;
 			NpcStats_CopyStats(entity, spawn_index);
+			npcSummon.m_bClearFollower = npc.m_bClearFollower;
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
 			SetEntProp(spawn_index, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", maxhealth);
@@ -1176,7 +1191,7 @@ static void Internal_Weapon_Lines(Construction_Raid_Zilius npc, int client)
 
 	if(valid)
 	{
-		CPrintToChatAll("{black}Zilius{default}: %s", Text_Lines);
+		NPCTalkMessage(npc.index, Text_Lines);
 		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
 		b_said_player_weaponline[client] = true;
 	}

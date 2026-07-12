@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static char g_RandomizerClasses[][] = {
+public const char g_RandomizerClasses[][] = {
 	"", // unknown
 	"scout",
 	"sniper",
@@ -34,6 +34,30 @@ static void ClotPrecache()
 	NPC_GetByPlugin("npc_aperture_sentry");
 	NPC_GetByPlugin("npc_aperture_dispenser");
 	NPC_GetByPlugin("npc_aperture_teleporter");
+	
+	// This is likely already all precached, but just in case
+	PrecacheModel("models/weapons/c_models/c_double_barrel.mdl");
+	PrecacheModel("models/weapons/c_models/c_rocketlauncher/c_rocketlauncher.mdl");
+	PrecacheModel("models/weapons/c_models/c_grenadelauncher/c_grenadelauncher.mdl");
+	PrecacheModel("models/weapons/c_models/c_stickybomb_launcher/c_stickybomb_launcher.mdl");
+	PrecacheModel("models/weapons/c_models/c_targe/c_targe.mdl");
+	PrecacheModel("models/weapons/c_models/c_claymore/c_claymore.mdl");
+	PrecacheModel("models/weapons/c_models/c_minigun/c_minigun.mdl");
+	PrecacheModel("models/weapons/c_models/c_minigun/c_minigun_natascha.mdl");
+	PrecacheModel("models/weapons/c_models/c_tomislav/c_tomislav.mdl");
+	PrecacheModel("models/workshop/weapons/c_models/c_gatling_gun/c_gatling_gun.mdl");
+	PrecacheModel("models/weapons/c_models/c_shotgun/c_shotgun.mdl");
+	PrecacheModel("models/weapons/c_models/c_proto_backpack/c_proto_backpack.mdl");
+	PrecacheModel("models/weapons/c_models/c_proto_medigun/c_proto_medigun.mdl");
+	PrecacheModel("models/weapons/c_models/c_sniperrifle/c_sniperrifle.mdl");
+	PrecacheModel("models/weapons/c_models/c_smg/c_smg.mdl");
+	PrecacheModel("models/weapons/c_models/c_knife/c_knife.mdl");
+	PrecacheModel("models/weapons/c_models/c_ambassador/c_ambassador.mdl");
+	PrecacheModel("models/workshop/weapons/c_models/c_switchblade/c_switchblade.mdl");
+	PrecacheModel("models/weapons/c_models/c_flamethrower/c_flamethrower.mdl");
+	PrecacheModel("models/weapons/c_models/c_bow/c_bow.mdl");
+	PrecacheModel("models/weapons/c_models/c_spikewrench/c_spikewrench.mdl");
+	PrecacheModel("models/workshop_partner/weapons/c_models/c_dex_arm/c_dex_arm.mdl");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -251,7 +275,7 @@ static void Randomizer_SelectBehavior(Randomizer npc, TFClassType class, int for
 					func_NPCThink[npc.index] = view_as<Function>(ApertureMinigunnerV2_ClotThink);
 					func_NPCDeath[npc.index] = view_as<Function>(ApertureMinigunnerV2_NPCDeath);
 					
-					npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_minigun/c_minigun_natascha.mdl");
+					npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_tomislav/c_tomislav.mdl");
 					npc.m_flSpeed *= 0.57;
 				}
 				case 3:
@@ -413,7 +437,7 @@ static void Randomizer_SelectBehavior(Randomizer npc, TFClassType class, int for
 			// Short Circuit
 			func_NPCThink[npc.index] = view_as<Function>(Vulpo_ClotThink);
 			func_NPCDeath[npc.index] = view_as<Function>(Vulpo_NPCDeath);
-			fl_Extra_Damage[npc.index] *= 0.5;
+			fl_Extra_Damage[npc.index] *= 0.33;
 			npc.m_iWearable1 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_dex_arm/c_dex_arm.mdl");
 			activity = npc.LookupActivity("ACT_MP_RUN_SECONDARY");
 		}

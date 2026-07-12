@@ -506,7 +506,7 @@ int ReplicateClient_RollAngle[MAXPLAYERS];
 bool b_StickyIsSticking[MAXENTITIES];
 
 float f_EntityRenderColour[MAXENTITIES][3];
-int i_EntityRenderColourSave[MAXENTITIES][3];
+int i_EntityRenderColourSave[MAXENTITIES][4];
 
 int i_Wearable[MAXENTITIES][10];
 int i_FreezeWearable[MAXENTITIES];
@@ -670,6 +670,8 @@ Function EntityFuncAttack3[MAXENTITIES];
 Function EntityFuncReload4[MAXENTITIES];
 Function EntityFuncPlayerRunCmd[MAXENTITIES];
 Function EntityFuncOnKill[MAXENTITIES];
+Function EntityOnAllyInteract[MAXENTITIES];
+Function EntityOnBuildObject[MAXENTITIES];
 Function EntityFuncTakeDamage[MAXENTITIES][3];
 Function EntityCustomTraceMelee[MAXENTITIES];
 //Function EntityFuncReloadSingular5[MAXENTITIES];

@@ -31,13 +31,6 @@ static const char g_MeleeHitSounds[][] = {
 
 void Vestan_Tacticalunit_OnMapStart_NPC()
 {
-	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
-	for (int i = 0; i < (sizeof(g_HurtSounds));		i++) { PrecacheSound(g_HurtSounds[i]);		}
-	PrecacheSound(g_MeleeAttackSounds);
-	for (int i = 0; i < (sizeof(g_MeleeHitSounds)); i++) { PrecacheSound(g_MeleeHitSounds[i]); }
-	PrecacheSound(g_DronPingSounds);
-	PrecacheModel("models/player/scout.mdl");
-	PrecacheModel(LASERBEAM);
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Vesta Tacticalunit");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_vesta_tacticalunit");
@@ -45,8 +38,20 @@ void Vestan_Tacticalunit_OnMapStart_NPC()
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Vesta;
+	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
 	NPC_Add(data);
+}
+
+static void ClotPrecache()
+{
+	PrecacheSoundArray(g_DeathSounds);
+	PrecacheSoundArray(g_HurtSounds);
+	PrecacheSoundArray(g_MeleeHitSounds);
+	PrecacheSound(g_MeleeAttackSounds);
+	PrecacheSound(g_DronPingSounds);
+	PrecacheModel("models/player/scout.mdl");
+	PrecacheModel(LASERBEAM);
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -299,7 +304,7 @@ static void VestaTacticalunit_ClotThink(int iNPC)
 			if(!i_ammo_count[npc.index] && npc.m_iState==1)
 			{
 				FormatEx(Adddeta, sizeof(Adddeta), "%s;tracking", Adddeta);
-				FormatEx(Adddeta, sizeof(Adddeta), "%s;overridetarget%i", Adddeta, npc.m_iTarget);
+				FormatEx(Adddeta, sizeof(Adddeta), "%s;overridetarget%i", Adddeta, EntIndexToEntRef(npc.m_iTarget));
 			}
 			
 			if(i_GunAmmo[npc.index])

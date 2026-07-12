@@ -1092,6 +1092,8 @@ static float Player_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attacker
 				return Player_OnTakeDamage_Fractal(victim, damage, damagePosition,attacker);
 		}
 	}
+
+	Gunsaw_Monologue_OnTakeDamage(victim, damage);
 	return damage;
 }
 
@@ -2075,12 +2077,13 @@ static stock bool OnTakeDamagePlayerSpecific(int victim, int &attacker, int &inf
 	}
 #else
 	float CritChance = Attributes_GetOnPlayer(attacker, Attrib_CritChance, false,_, 0.0);
+	CritChance += float(StatusEffects_PoiseReturnCount(attacker)) * (0.00625);
 	if(CritChance && GetRandomFloat(0.0, 1.0) < (CritChance))
 	{
 		if(Rogue_Rift_BookOfWeakness())
-			damage *= 2.0;
-		else
 			damage *= 3.0;
+		else
+			damage *= 2.0;
 			
 		DisplayCritAboveNpc(victim, attacker, true); //Display crit above head
 	}

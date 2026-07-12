@@ -41,7 +41,7 @@ static char g_CoffinClaim2[][] = {
 static char g_CoffinRevive[][] = {
 	"ui/halloween_boss_chosen_it.wav",
 };
-bool Precached = false;
+static bool Precached = false;
 public void HeartBroken_OnMapStart()
 {
 	PrecacheSoundArray(g_CoffinClaim);
@@ -1238,42 +1238,8 @@ void Heartbroken_WildHunt(int client, bool ForceRevive = false)
 		return;
 	}
 	
-	int MaxCashScale = CurrentCash;
-	if(MaxCashScale > 60000)
-		MaxCashScale = 60000;
-	//taken from reinforce
-	bool DeadPlayer;
-	for(int client_check=1; client_check<=MaxClients; client_check++)
-	{
-		if(!IsValidClient(client_check))
-			continue;
-		if(TeutonType[client_check] == TEUTON_NONE)
-			continue;
-		if(!b_AntiLateSpawn_Allow[client_check])
-			continue;
-		if(client==client_check || GetTeam(client_check) != TFTeam_Red)
-			continue;
-		if(!WasHereSinceStartOfWave(client_check))
-			continue;
-		if(f_PlayerLastKeyDetected[client_check] < GetGameTime())
-			continue;
-		if(HasSpecificBuff(client_check, "Vuntulum Bomb EMP Death"))
-			continue;
-		if(!Rogue_BlueParadox_CanTeutonUpdate(client))
-			continue;
-
-		int CashSpendScale = CashSpentTotal[client_check];
-
-		if(CashSpendScale <= 500)
-			CashSpendScale = 500;
-
-		if((CashSpendScale * 3) < (MaxCashScale))
-			continue;
-
-		DeadPlayer=true;
-	}
-
-	if(!DeadPlayer)
+	int RandomWildHunted = GetRandomDeathPlayer(client);
+	if(!IsValidClient(RandomWildHunted))
 	{
 		if(ForceRevive)
 			return;
@@ -1282,14 +1248,9 @@ void Heartbroken_WildHunt(int client, bool ForceRevive = false)
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%T", "Player not detected", client);
 		return;
 	}
-
-	int RandomWildHunted = GetRandomDeathPlayer(client);
-	if(!IsValidClient(RandomWildHunted))
-		return;
-
+	
 	if(!ForceRevive)
 	{
-		
 		int MeleeWeapon = EntRefToEntIndex(ref_MeleeWeapon[client]);
 		if(!IsValidEntity(MeleeWeapon))
 			Rogue_OnAbilityUse(client, MeleeWeapon);

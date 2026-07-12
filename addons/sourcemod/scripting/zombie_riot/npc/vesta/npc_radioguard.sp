@@ -118,7 +118,7 @@ methodmap Vestan_Radioguard < CClotBody
 			char buffers[3][64];
 			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
 			ReplaceString(buffers[0], 64, "target", "");
-			int targetdata = StringToInt(buffers[0]);
+			int targetdata = EntRefToEntIndex(StringToInt(buffers[0]));
 			if(IsValidAlly(npc.index, targetdata))
 				npc.m_iMainTarget = targetdata;
 		}
@@ -206,6 +206,14 @@ static void Vestan_Radioguard_ClotThink(int iNPC)
 			{
 				npc.m_iTarget = GetClosestTarget(npc.index);
 				npc.m_flGetClosestTargetTime = GetGameTime(npc.index) + GetRandomRetargetTime();
+
+				for(int i; i < i_MaxcountNpcTotal; i++)
+				{
+					int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+					if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == GetTeam(npc.index)
+					&& (i_NpcInternalId[entity] == VictorianRadioRepair_ID() || i_NpcInternalId[entity] == VictorianRadiomast_ID()))
+						ApplyStatusEffect(npc.index, entity, "Very Defensive Backup", 0.5);
+				}
 			}
 		}
 		switch(VestanRadioguardSelfDefense(npc, GetGameTime(npc.index), flDistanceToTarget, TooFar))

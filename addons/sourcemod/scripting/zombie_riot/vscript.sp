@@ -9,6 +9,7 @@ static bool MapLockedWeapons;
 static bool Loaded;
 static ScriptCall ScriptFireScriptHook;
 static ScriptCall ScriptAddStoreTable;
+static ScriptCall ScriptGetPlayerCondDuration;
 
 // Wrapper for ScriptHandle/FireScriptHook for when the ext is loaded/not
 methodmap VScriptEvent < ScriptHandle
@@ -131,6 +132,7 @@ static void SetupVScript()
 {
 	ScriptFireScriptHook = new ScriptCall("FireScriptHook", ScriptField_Bool, ScriptField_String, ScriptField_HScript);
 	ScriptAddStoreTable = new ScriptCall("_ZRAddToStoreTable", ScriptField_Void, ScriptField_HScript);
+	ScriptGetPlayerCondDuration = new ScriptCall("GetCondDuration", ScriptField_Float, ScriptField_Int);
 	
 	VScript_RegisterFunction("ZR_GetClientCash", VGetCurrentCash, "(client)", ScriptField_Int, ScriptField_HScript);
 	VScript_RegisterFunction("ZR_SpentClientCash", VSpentClientCash, "(client, amount)", ScriptField_Void, ScriptField_HScript, ScriptField_Int);
@@ -306,10 +308,8 @@ static void VGiveClientAmmo(ScriptContext context)
 		{
 			int index = context.GetArgInt(1);
 			int amount = context.GetArgInt(2);
-			
-			int ammo = GetAmmo(client, index) + (AmmoData[index][1] * amount);
-			SetAmmo(client, index, ammo);
-			CurrentAmmo[client][index] = ammo;
+
+			AddAmmoClient(client, index, _, float(amount), true);
 			return;
 		}
 	}
@@ -529,4 +529,15 @@ static void VCreateNPC(ScriptContext context)
 	{
 		context.SetReturnNull();
 	}
+}
+float VS_GetPlayerCondDuration(int player, TFCond cond)
+{
+    ScriptHandle hPlayer = VScript_EntityToHScript(player);
+    if (!hPlayer)
+        return 0.0;
+
+    if (ScriptGetPlayerCondDuration.ExecuteInScope(hPlayer, cond) != ScriptStatus_Done)
+        return 0.0;
+
+    return ScriptGetPlayerCondDuration.GetReturnFloat();
 }

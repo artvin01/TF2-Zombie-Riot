@@ -69,6 +69,19 @@ stock float fClamp(float fValue, float fMin, float fMax)
 
 	return fValue;
 }
+
+stock bool ClampDetect(float fValue, float fMin, float fMax)
+{
+	if (fValue < fMin) {
+		return true;
+	}
+
+	if (fValue > fMax) {
+		return true;
+	}
+
+	return false;
+}
 stock int iClamp(int iValue, int iMin, int iMax)
 {
 	if (iValue < iMin) {
@@ -480,7 +493,9 @@ stock int GetClientPointVisible(int iClient, float flDistance = 100.0, bool igno
 		}
 	}
 
-
+	if(iHit > 0 && iHit < sizeof(i_TraceToInstead) && i_TraceToInstead[iHit] > 0)
+		iHit = i_TraceToInstead[iHit];
+	
 	if(repeatsretry >= 2)
 		i_PreviousInteractedEntity[iClient] = iHit;
 
@@ -1243,6 +1258,8 @@ stock void StartBleedingTimer(int victim, int attacker, float damage, int amount
 		else if(victim > 0 && victim <= MaxClients)
 			Force_ExplainBuffToClient(victim, "Bleed");
 
+		Gunsaw_Monologue_OnBleed(victim);
+
 		BleedAmountCountStack[victim] += 1;
 		DataPack pack;
 		CreateDataTimer(0.5, Timer_Bleeding, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
@@ -1806,6 +1823,9 @@ public bool Trace_OnlyPlayer(int entity, int mask, any data)
 
 public bool Trace_DontHitEntityOrPlayerOrAlliedNpc(int entity, int mask, any data)
 {
+	if(i_TraceToInstead[entity] > 0)
+		entity = i_TraceToInstead[entity];
+	
 	if(entity <= MaxClients)
 	{
 		
@@ -1871,6 +1891,9 @@ public bool Trace_DontHitEntityOrPlayerOrAlliedNpc(int entity, int mask, any dat
 
 public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 {
+	if(i_TraceToInstead[entity] > 0)
+		entity = i_TraceToInstead[entity];
+	
 	if(entity <= MaxClients)
 	{
 #if defined ZR
@@ -1934,7 +1957,7 @@ public bool Trace_DontHitEntityOrPlayer(int entity, int mask, any data)
 			return false;
 		}
 	}
-#endif	
+#endif
 
 	if(b_ThisEntityIgnored[entity] && i_IsABuilding[entity])
 	{
@@ -3913,17 +3936,19 @@ public void TeleportEntityLocalPos_FrameDelayDo(DataPack pack)
 }
 stock void SetPlayerActiveWeapon(int client, int weapon)
 {
-	TF2Util_SetPlayerActiveWeapon(client, weapon);
+	if(!IsValidClient(client))
+		return;
+	if(!IsValidEntity(weapon))
+		return;
+//	TF2Util_SetPlayerActiveWeapon(client, weapon);
 #if defined ZR
 //	WeaponSwtichToWarningPostDestroyed(weapon);
 #endif
+	RunScriptCode(client, -1, -1, "self.Weapon_Switch(EntIndexToHScript(%d))", weapon);
+
 	//incase the above fails, do this instead.
-	char buffer[64];
-	GetEntityClassname(weapon, buffer, sizeof(buffer));
-	FakeClientCommand(client, "use %s", buffer); 					//allow client to change
-	SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);	//Force client to change.
-	OnWeaponSwitchPost(client, weapon);
-	
+	//SetEntPropEnt(client, Prop_Send, "m_hActiveWeapon", weapon);	//Force client to change.
+	//OnWeaponSwitchPost(client, weapon);
 }
 
 stock void DHook_CreateDetour(GameData gamedata, const char[] name, DHookCallback preCallback = INVALID_FUNCTION, DHookCallback postCallback = INVALID_FUNCTION)
@@ -3989,6 +4014,7 @@ stock int SpawnFormattedWorldText(const char[] format, float origin[3], int text
 	int worldtext = CreateEntityByName("point_worldtext");
 	if(IsValidEntity(worldtext))
 	{
+		SetEntProp(worldtext, Prop_Data, "m_bForcePurgeFixedupStrings", true);
 		DispatchKeyValue(worldtext, "targetname", "rpg_fortress");
 		DispatchKeyValue(worldtext, "message", format);
 		char intstring[8];
@@ -4710,6 +4736,30 @@ public Action ThirdersonTransmitEnvLaser(int entity, int client)
 	return Plugin_Stop;
 }
 
+void AddEntityToFirstPersonTransmitMode(int client, int entity)
+{
+	i_OwnerEntityEnvLaser[entity] = EntIndexToEntRef(client);
+	SDKHook(entity, SDKHook_SetTransmit, FirstPersonTransmitMode);
+}
+public Action FirstPersonTransmitMode(int entity, int client)
+{
+	if(client > 0 && client <= MaxClients)
+	{
+		int owner = EntRefToEntIndex(i_OwnerEntityEnvLaser[entity]);
+		if(owner == client)
+		{
+			if(TF2_IsPlayerInCondition(client, TFCond_Taunting) || GetEntProp(client, Prop_Send, "m_nForceTauntCam"))
+			{
+				return Plugin_Stop;
+			}
+		}
+		else if(GetEntPropEnt(client, Prop_Send, "m_hObserverTarget") != owner || GetEntProp(client, Prop_Send, "m_iObserverMode") != 4)
+		{
+			return Plugin_Stop;
+		}
+	}
+	return Plugin_Continue;
+}
 
 //bool identified if it went above max health or not.
 
@@ -6168,4 +6218,28 @@ stock void StringToUpper(char[] buffer)
 		buffer[i] = CharToUpper(buffer[i]);
 		i++;
 	}
+}
+
+float GetDifferenceBetweenAngles(float fA[3], float fB[3])
+{
+    float fFwdA[3]; GetAngleVectors(fA, fFwdA, NULL_VECTOR, NULL_VECTOR);
+    float fFwdB[3]; GetAngleVectors(fB, fFwdB, NULL_VECTOR, NULL_VECTOR);
+    return RadToDeg(ArcCosine(fFwdA[0] * fFwdB[0] + fFwdA[1] * fFwdB[1] + fFwdA[2] * fFwdB[2]));
+}
+Address GetPlayerShared(int client)
+{
+	static int s_sharedOffset = -1;
+	if (s_sharedOffset == -1)
+		s_sharedOffset = GetEntSendPropOffs(client, "m_Shared", true);
+	return GetEntityAddress(client) + view_as<Address>(s_sharedOffset);
+}
+
+int GetPlayerFromShared(Address pShared)
+{
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if (IsClientInGame(client) && GetPlayerShared(client) == pShared)
+			return client;
+	}
+	return -1;
 }

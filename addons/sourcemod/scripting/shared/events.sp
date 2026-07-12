@@ -126,6 +126,8 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	Zealot_RoundStart();
 	Drops_ResetChances();
 	NPCStats_HandlePaintedWearables();
+	Gunsaw_RoundStart();
+	IndexFather_ResetAllStats();
 
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -275,7 +277,6 @@ public Action OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 	Waves_RoundEnd();
 	Escape_RoundEnd();
 	Rogue_RoundEnd();
-	Construction_RoundEnd();
 	BetWar_RoundEnd();
 	CurrentGame = 0;
 	RoundStartTime = 0.0;
@@ -608,6 +609,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	PurnellDeathsound(client);
 	Vehicle_Exit(client, true);
 	SdkHooks_SetAndUpdateArmorClientText(client);
+	Gunsaw_PlayerDeath(client);
 #endif
 
 #if defined RPG

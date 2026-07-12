@@ -86,6 +86,8 @@ static int GrabPlayer[MAXPLAYERS];
 static bool ParticleSpawned[MAXENTITIES];
 static bool Frozen_Player[MAXPLAYERS];
 
+static int NPCID;
+
 void Huscarls_OnMapStart_NPC()
 {
 	NPCData data;
@@ -97,7 +99,12 @@ void Huscarls_OnMapStart_NPC()
 	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	NPC_Add(data);
+	NPCID = NPC_Add(data);
+}
+
+int VestaHuscarls_NPCID()
+{
+	return NPCID;
 }
 
 static void ClotPrecache()
@@ -121,6 +128,7 @@ static void ClotPrecache()
 	PrecacheSound(g_ThrowSounds);
 	PrecacheSound("ambient/alarms/doomsday_lift_alarm.wav", true);
 	PrecacheSound("mvm/mvm_cpoint_klaxon.wav", true);
+	PrecacheSound("mvm/mvm_tank_ping.wav", true);
 	PrecacheSound("weapons/medi_shield_deploy.wav", true);
 	PrecacheSound("mvm/mvm_tele_deliver.wav");
 	PrecacheSound("items/powerup_pickup_knockout.wav", true);
@@ -129,6 +137,7 @@ static void ClotPrecache()
 
 	PrecacheModel("models/props_mvm/mvm_player_shield.mdl", true);
 	PrecacheModel("models/props_mvm/mvm_player_shield2.mdl", true);
+	PrecacheModel("models/buildables/sentry_shield.mdl", true);
 	g_Laser = PrecacheModel(LASERBEAM);
 	g_RedPoint = PrecacheModel("sprites/redglow1.vmt");
 	
@@ -329,17 +338,17 @@ methodmap Huscarls < CClotBody
 		{
 			case 1:
 			{
-				npc.m_flMeleeArmor = 0.6;
+				npc.m_flMeleeArmor = 0.95;
 				npc.m_flRangedArmor = 1.0;
 			}
 			case 2:
 			{
-				npc.m_flMeleeArmor = 0.75;
+				npc.m_flMeleeArmor = 1.1;
 				npc.m_flRangedArmor = 0.85;
 			}
 			default:
 			{
-				npc.m_flMeleeArmor = 0.75;
+				npc.m_flMeleeArmor = 1.1;
 				npc.m_flRangedArmor = 1.0;
 			}
 		}
@@ -348,9 +357,10 @@ methodmap Huscarls < CClotBody
 		npc.m_flDoingAnimation=0.0;
 		float gametime = GetGameTime(npc.index);
 		npc.m_iOverrideOwner = 0;
-		static char countext[2][512];
+		bool STFU;
+		static char countext[3][512];
 		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
-		float MAXHitCharge=10000.0;
+		float MAXHitCharge=20000.0;
 		for(int i = 0; i < count; i++)
 		{
 			if(i>=count)break;
@@ -369,6 +379,11 @@ methodmap Huscarls < CClotBody
 				ReplaceString(countext[i], sizeof(countext[]), "max_hitcharge", "");
 				MAXHitCharge = StringToFloat(countext[i]);
 			}
+			else if(StrContains(countext[i], "stfu") != -1)
+			{
+				ReplaceString(countext[i], sizeof(countext[]), "stfu", "");
+				STFU=true;
+			}
 		}
 		if(npc.m_iOverlordComboAttack)
 		{
@@ -382,40 +397,42 @@ methodmap Huscarls < CClotBody
 			b_ThisEntityIgnored[npc.index] = true;
 			b_NoKillFeed[npc.index] = true;
 			npc.m_iChanged_WalkCycle = -1;
-
-			switch(npc.m_iOverlordComboAttack)
+			if(!STFU)
 			{
-				case 1:
+				switch(npc.m_iOverlordComboAttack)
 				{
-					switch(GetRandomInt(0, 2))
+					case 1:
 					{
-						case 0: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-1", false, true);
-						case 1: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-2", false, true);
-						case 2: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-9", false, true);
+						switch(GetRandomInt(0, 2))
+						{
+							case 0: VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Support-1");
+							case 1: VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Support-2");
+							case 2: VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Support-9");
+						}
 					}
-				}
-				case 2:
-				{
-					switch(GetRandomInt(0, 1))
+					case 2:
 					{
-						case 0: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-3", false, true);
-						case 1: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-4", false, true);
+						switch(GetRandomInt(0, 1))
+						{
+							case 0: VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Support-3");
+							case 1: VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Support-4");
+						}
 					}
-				}
-				case 3:
-				{
-					switch(GetRandomInt(0, 1))
+					case 3:
 					{
-						case 0: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-5", false, true);
-						case 1: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-6", false, true);
+						switch(GetRandomInt(0, 1))
+						{
+							case 0: VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Support-5");
+							case 1: VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Support-6");
+						}
 					}
-				}
-				case 4:
-				{
-					switch(GetRandomInt(0, 1))
+					case 4:
 					{
-						case 0: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-7", false, true);
-						case 1: NPCPritToChat(npc.index, "{blue}", "Huscarls_Talk_Support-8", false, true);
+						switch(GetRandomInt(0, 1))
+						{
+							case 0: VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Support-7");
+							case 1: VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Support-8");
+						}
 					}
 				}
 			}
@@ -495,7 +512,7 @@ methodmap Huscarls < CClotBody
 				Music_SetRaidMusic(music);
 			}
 
-			NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_Intro", false, true);
+			VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Intro");
 			
 			char buffers[3][64];
 			ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
@@ -577,6 +594,11 @@ methodmap Huscarls < CClotBody
 		
 		return npc;
 	}
+}
+
+void VestaHuscarls_NPCTalkMessage(int entity, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(entity, "lightblue", message, true);
 }
 
 static void Clone_ClotThink(int iNPC)
@@ -702,7 +724,7 @@ static void Clone_ClotThink(int iNPC)
 					{
 						float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 						float SlamDMG = 50.0;
-						float Range = 250.0;
+						float Range = 300.0;
 						ParticleEffectAt(WorldSpaceVec, "mvm_soldier_shockwave", 1.0);
 						ParticleEffectAt(WorldSpaceVec, "ExplosionCore_MidAir", 1.0);
 						CreateEarthquake(WorldSpaceVec, 1.0, Range * 1.25, 16.0, 255.0);
@@ -871,7 +893,7 @@ static int Support_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], float
 					else
 					{
 						float vAngles[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAngles);
-						EntityLookPoint(npc.index, vAngles, VecSelfNpc, vecTarget);
+						EntityLookPoint(npc.index, vAngles, VecSelfNpc, vecTarget, MASK_PLAYERSOLID);
 						if(GetVectorDistance(VecSelfNpc, vecTarget, true)<15625.0)
 						{
 							npc.RemoveGesture("ACT_MP_PASSTIME_THROW_MIDDLE");
@@ -986,7 +1008,8 @@ static int Support_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], float
 
 static Action Clone_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	return Plugin_Handled;
+	damage*=0.0;
+	return Plugin_Changed;
 }
 
 static void Clone_NPCDeath(int entity)
@@ -1042,9 +1065,9 @@ static void Huscarls_ClotThink(int iNPC)
 			npc.m_fbGunout = true;
 			switch(GetRandomInt(0, 2))
 			{
-				case 0:NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_Lastman-1", false, false);
-				case 1:NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_Lastman-2", false, false);
-				case 2:NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_Lastman-3", false, false);
+				case 0:VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Lastman-1");
+				case 1:VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Lastman-2");
+				case 2:VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Lastman-3");
 			}
 		}
 	}
@@ -1058,7 +1081,7 @@ static void Huscarls_ClotThink(int iNPC)
 		BlockLoseSay = true;
 		AlreadySaidWin = true;
 		
-		NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_GameEnd", false, false);
+		VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_GameEnd");
 		return;
 	}
 	if(RaidModeTime < GetGameTime())
@@ -1077,8 +1100,8 @@ static void Huscarls_ClotThink(int iNPC)
 			SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", MaxHealth);
 			switch(GetRandomInt(0, 1))
 			{
-				case 0:NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_TimeUp-1", false, false);
-				case 1:NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_TimeUp-2", false, false);
+				case 0:VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_TimeUp-1");
+				case 1:VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_TimeUp-2");
 				//case 2:CPrintToChatAll("{lightblue}Huscarls{default}: {blue}Harrison{default}? The situation is over. Let's go back.");
 			}
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
@@ -1228,7 +1251,9 @@ static void Huscarls_ClotThink(int iNPC)
 				static float vOrigin[3], vAngles[3];
 				GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAngles);
 				vAngles[0]=5.0;
-				EntityLookPoint(npc.index, vAngles, VecSelfNpc, vOrigin);
+				if(!EntityLookPoint(npc.index, vAngles, VecSelfNpc, vOrigin))
+					npc.m_iState=3;
+				
 				npc.SetGoalVector(vOrigin);
 			}
 		}
@@ -1244,16 +1269,26 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 
 	if(npc.m_flHuscarlsAdaptiveArmorDuration && npc.m_flHuscarlsAdaptiveArmorDuration < gameTime)
 	{
+		if(IsValidEntity(npc.m_iWearable8))
+			RemoveEntity(npc.m_iWearable8);
 		if(fl_ruina_battery[npc.index])
 		{
-			NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_Ability1-2", false, false);
-			GrantEntityArmor(npc.index, false, 0.1, 0.5, 0, (float(ReturnEntityMaxHealth(npc.index))*0.07)*(fl_ruina_battery[npc.index]/fl_ruina_battery_max[npc.index]));
+			VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Ability1-2");
 		}
 		else
 			RemoveSpecificBuff(npc.index, "Battery_TM Charge");
 		npc.m_flHuscarlsAdaptiveArmorDuration=0.0;
 		npc.m_flHuscarlsAdaptiveArmorCoolDown = gameTime + (NpcStats_VestanCallToArms(npc.index) ? 20.0 : 30.0);
 	}
+	if(HasSpecificBuff(npc.index, "Battery_TM Charge") && IsValidEntity(npc.m_iWearable8))
+	{
+		SetEntityRenderColor(npc.m_iWearable8, 255, 255-(125*RoundToCeil(fl_ruina_battery[npc.index]/fl_ruina_battery_max[npc.index])), 255, 255);
+		VecSelfNpc[2] -= 100.0;
+		Custom_SDKCall_SetLocalOrigin(npc.m_iWearable8, VecSelfNpc);
+		VecSelfNpc[2] += 100.0;
+	}
+	else if(IsValidEntity(npc.m_iWearable8))
+		RemoveEntity(npc.m_iWearable8);
 	
 	if(b_angered_twice[npc.index] && npc.m_flHuscarlsRushCoolDown-(0.28 + DEFAULT_UPDATE_DELAY_FLOAT) > gameTime && npc.m_flHuscarlsRushCoolDown-3.6 < gameTime)
 		HuscarlsGrab(npc, gameTime);
@@ -1300,7 +1335,7 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 				else
 				{
 					float vAngles[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAngles);
-					EntityLookPoint(npc.index, vAngles, VecSelfNpc, vecTarget);
+					EntityLookPoint(npc.index, vAngles, VecSelfNpc, vecTarget, MASK_PLAYERSOLID);
 					if(GetVectorDistance(VecSelfNpc, vecTarget, true)<15625.0)
 					{
 						npc.RemoveGesture("ACT_MP_PASSTIME_THROW_MIDDLE");
@@ -1413,7 +1448,7 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 		{
 			case 0:
 			{
-				NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_Ability1-1", false, false);
+				VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Ability1-1");
 				
 				npc.AddActivityViaSequence("layer_taunt_unleashed_rage_heavy");
 				npc.SetCycle(0.5);
@@ -1445,6 +1480,14 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 						if(IgniteFist)
 							IgniteTargetEffect(npc.m_iWearable2);
 					}
+					if(IsValidEntity(npc.m_iWearable8))
+						RemoveEntity(npc.m_iWearable8);
+					npc.m_iWearable8 = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl",_,_,_,-100.0, true);
+					SetVariantString("2.0");
+					AcceptEntityInput(npc.m_iWearable8, "SetModelScale");
+					SetEntityRenderColor(npc.m_iWearable8, 255, 255, 255, 255);
+					SetEntProp(npc.m_iWearable8, Prop_Send, "m_nSkin", 1);
+					EmitSoundToAll("mvm/mvm_tank_ping.wav");
 					npc.m_flHuscarlsAdaptiveArmorDuration = gameTime + 5.0;
 				}
 				if(npc.m_flDoingAnimation < gameTime)
@@ -1583,7 +1626,7 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 				{
 					float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 					float SlamDMG = 50.0;
-					float Range = 250.0;
+					float Range = 300.0;
 					ParticleEffectAt(WorldSpaceVec, "mvm_soldier_shockwave", 1.0);
 					ParticleEffectAt(WorldSpaceVec, "ExplosionCore_MidAir", 1.0);
 					CreateEarthquake(WorldSpaceVec, 1.0, Range * 1.25, 16.0, 255.0);
@@ -1644,9 +1687,11 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 								
 								WorldSpaceCenter(targetTrace, vecHit);
 								float damage = 50.0 * RaidModeScaling;
+								float flKnockback = 750.0;
 								if(fl_ruina_battery[npc.index] && !npc.m_flHuscarlsAdaptiveArmorDuration)
 								{
 									damage+=fl_ruina_battery[npc.index]*0.1;
+									flKnockback+=fl_ruina_battery[npc.index]*0.1;
 									fl_ruina_battery[npc.index]=0.0;
 									ExtinguishTarget(npc.m_iWearable2);
 									CreateEarthquake(vecTarget, 0.5, 350.0, 16.0, 255.0);
@@ -1664,7 +1709,7 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 									if(IsInvuln(targetTrace) && !HasSpecificBuff(targetTrace, "Solid Stance"))
 									{
 										Knocked = true;
-										Custom_Knockback(npc.index, targetTrace, 750.0, true);
+										Custom_Knockback(npc.index, targetTrace, flKnockback, true);
 									}
 									if(!HasSpecificBuff(targetTrace, "Fluid Movement"))
 									{
@@ -1674,7 +1719,7 @@ static int Huscarls_Work(Huscarls npc, float gameTime, float VecSelfNpc[3], floa
 								}
 								
 								if(!Knocked && !HasSpecificBuff(targetTrace, "Solid Stance"))
-									Custom_Knockback(npc.index, targetTrace, 375.0, true);
+									Custom_Knockback(npc.index, targetTrace, flKnockback/2.0, true);
 							} 
 						}
 					}
@@ -1755,17 +1800,17 @@ static Action Huscarls_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		{
 			case 0:
 			{
-				NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_BlastArmor", false, false);
+				VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_BlastArmor");
 				BlastArmor[npc.index]=true;
 			}
 			case 1:
 			{
-				NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_MagicArmor", false, false);
+				VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_MagicArmor");
 				MagicArmor[npc.index]=true;
 			}
 			default:
 			{
-				NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_BulletArmor", false, false);
+				VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_BulletArmor");
 				BulletArmor[npc.index]=true;
 			}
 		}
@@ -1847,7 +1892,13 @@ static Action Huscarls_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		if(!npc.m_bLostHalfHealth)
 		{
 			EmitSoundToAll("ambient/alarms/doomsday_lift_alarm.wav");
-			NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-1", false);
+			
+			int support = Vesta_GetSupport(VESTA_HARRISON);
+			if (support)
+				VestaHarrison_NPCTalkMessage(support, "Harrison_Talk_Support-1");
+			else
+				NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-1", false);
+			
 			npc.m_bLostHalfHealth = true;
 		}
 		if(!npc.Anger)
@@ -1863,7 +1914,13 @@ static Action Huscarls_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 		if(!npc.m_bLostHalfHealth)
 		{
 			EmitSoundToAll("ambient/alarms/doomsday_lift_alarm.wav");
-			NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-1", false);
+			
+			int support = Vesta_GetSupport(VESTA_HARRISON);
+			if (support)
+				VestaHarrison_NPCTalkMessage(support, "Harrison_Talk_Support-1");
+			else
+				NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-1", false);
+			
 			npc.m_bLostHalfHealth = true;
 		}
 	}
@@ -1955,9 +2012,9 @@ static void Huscarls_NPCDeath(int entity)
 		return;
 	switch(GetRandomInt(0,2))
 	{
-		case 0:NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_EscapePlan-1", false, false);
-		case 1:NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_EscapePlan-2", false, false);
-		case 2:NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_EscapePlan-3", false, false);
+		case 0:VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_EscapePlan-1");
+		case 1:VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_EscapePlan-2");
+		case 2:VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_EscapePlan-3");
 	}
 }
 
@@ -2173,6 +2230,7 @@ static bool Vesta_Support(Huscarls npc)
 	if(Vs_RechargeTime[npc.index] < Vs_RechargeTimeMax[npc.index])
 	{
 		float position[3];
+		int RGBColor[3]={255, 200, 80};
 		position[0] = vecTarget[0];
 		position[1] = vecTarget[1];
 		position[2] = vecTarget[2] + 3000.0;
@@ -2195,14 +2253,15 @@ static bool Vesta_Support(Huscarls npc)
 				if(IsValidClient(client) && !IsFakeClient(client))
 					Vs_LockOn[client]=false;
 			}
+			RGBColor={255, 120, 50};
 		}
 		spawnRing_Vectors(Vs_Temp_Pos[npc.index], (1000.0 - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*1000.0)), 0.0, 0.0, 0.0, LASERBEAM, 255, 255, 255, 150, 1, 0.1, 3.0, 0.1, 3);
 		float position2[3];
 		position2[0] = Vs_Temp_Pos[npc.index][0];
 		position2[1] = Vs_Temp_Pos[npc.index][1];
 		position2[2] = Vs_Temp_Pos[npc.index][2] + 40.0;
-		spawnRing_Vectors(position2, 1000.0, 0.0, 0.0, 0.0, LASERBEAM, 255, 200, 80, 150, 1, 0.1, 3.0, 0.1, 3);
-		spawnRing_Vectors(Vs_Temp_Pos[npc.index], 1000.0, 0.0, 0.0, 0.0, LASERBEAM, 255, 200, 80, 150, 1, 0.1, 3.0, 0.1, 3);
+		spawnRing_Vectors(position2, 1000.0, 0.0, 0.0, 0.0, LASERBEAM, RGBColor[0], RGBColor[1], RGBColor[2], 150, 1, 0.1, 3.0, 0.1, 3);
+		spawnRing_Vectors(Vs_Temp_Pos[npc.index], 1000.0, 0.0, 0.0, 0.0, LASERBEAM, RGBColor[0], RGBColor[1], RGBColor[2], 150, 1, 0.1, 3.0, 0.1, 3);
 		TE_SetupBeamPoints(Vs_Temp_Pos[npc.index], position, g_Laser, -1, 0, 0, 0.1, 0.0, 25.0, 0, 0.0, {145, 47, 47, 150}, 3);
 		TE_SendToAll();
 		TE_SetupGlowSprite(Vs_Temp_Pos[npc.index], g_RedPoint, 0.1, 1.0, 255);
@@ -2382,7 +2441,7 @@ static bool TinCan_Raid(Huscarls npc, float gameTime)
 		{
 			case 0:
 			{
-				NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_Pre_2_Phase", false, false);
+				VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_Pre_2_Phase");
 				npc.AddActivityViaSequence("tauntrussian_rubdown");
 				npc.m_flAttackHappens = 0.0;
 				npc.SetCycle(0.5);
@@ -2514,8 +2573,8 @@ static bool TinCan_Raid(Huscarls npc, float gameTime)
 				npc.m_flDoingAnimation = gameTime + 1.0;
 				switch(GetRandomInt(0, 1))
 				{
-					case 0:NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_2_Phase-1", false, false);
-					case 1:NPCPritToChat(npc.index, "{lightblue}", "Huscarls_Talk_2_Phase-2", false, false);
+					case 0:VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_2_Phase-1");
+					case 1:VestaHuscarls_NPCTalkMessage(npc.index, "Huscarls_Talk_2_Phase-2");
 				}
 				npc.RemoveGesture("ACT_MP_PASSTIME_THROW_MIDDLE");
 				npc.AddActivityViaSequence("layer_taunt_soviet_showoff");

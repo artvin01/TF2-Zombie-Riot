@@ -220,6 +220,16 @@ methodmap CaptinoBaguettus < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
 	}
+	property float m_flNextTMITalk
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][5]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
+	}
+	property int m_iNextTMITalk
+	{
+		public get()							{ return i_OverlordComboAttack[this.index]; }
+		public set(int TempValueForProperty) 	{ i_OverlordComboAttack[this.index] = TempValueForProperty; }
+	}
 	
 	public CaptinoBaguettus(float vecPos[3], float vecAng[3], int ally)
 	{
@@ -231,8 +241,8 @@ methodmap CaptinoBaguettus < CClotBody
 		int iActivity = npc.LookupActivity("selectionMenu_Idle");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
-		npc.m_flNextMeleeAttack = 0.0;
 		npc.g_TimesSummoned = 0;
+		npc.m_iNextTMITalk = -1;
 		npc.m_iAttacksTillMegahit = 0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -248,6 +258,7 @@ methodmap CaptinoBaguettus < CClotBody
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flCaptinoMeniusTeleportForAlly = 0.0;
 		npc.m_flCaptinoMeniusTeleportForEnemy = 0.0;
+		npc.m_flNextTMITalk = 0.0;
 		npc.m_bCamo = false;
 		npc.Anger = false;
 		npc.m_bFUCKYOU = false;
@@ -418,7 +429,7 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 			{
 				if(AlreadySaidWin)
 				{
-					NPCPritToChat_Noname("CaptinoMenius_Talk-2", false);
+					NPCPritToChat_Noname("CaptinoMenius_Talk-6", false);
 					npc.g_TimesSummoned=-1;
 				}
 				else
@@ -519,7 +530,7 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 						npc.SetCycle(0.01);
 						npc.SetPlaybackRate(1.0);
 					}
-					NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-1", false, false);
+					NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-5", false, false);
 					npc.PlayCloakSound();
 					npc.m_bCamo=true;
 				}
@@ -690,6 +701,92 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 	if(npc.m_flNextThinkTime > GameTime)
 		return;
 	npc.m_flNextThinkTime = GameTime + 0.1;
+	
+	switch(npc.m_iNextTMITalk)
+	{
+		case -1:
+		{
+			npc.m_flNextTMITalk = GameTime + 1.0;
+			npc.m_iNextTMITalk=0;
+		}
+		case 0:
+		{
+			if(npc.m_flNextTMITalk < GameTime)
+			{
+				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-1-1", false, false);
+				npc.m_flNextTMITalk = GameTime + 3.5;
+				npc.m_iNextTMITalk=1;
+			}
+		}
+		case 1:
+		{
+			if(npc.m_flNextTMITalk < GameTime)
+			{
+				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-1-2", false, false);
+				npc.m_iNextTMITalk=2;
+			}
+		}
+		case 2:
+		{
+			if(Waves_GetRoundScale()+1==11)
+			{
+				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-2-1", false, false);
+				npc.m_flNextTMITalk = GameTime + 4.0;
+				npc.m_iNextTMITalk=3;
+			}
+		}
+		case 3:
+		{
+			if(npc.m_flNextTMITalk < GameTime)
+			{
+				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-2-2", false, false);
+				npc.m_iNextTMITalk=4;
+			}
+		}
+		case 4:
+		{
+			if(Waves_GetRoundScale()+1==21)
+			{
+				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-3-1", false, false);
+				npc.m_flNextTMITalk = GameTime + 4.0;
+				npc.m_iNextTMITalk=5;
+			}
+		}
+		case 5:
+		{
+			if(npc.m_flNextTMITalk < GameTime)
+			{
+				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-3-2", false, false);
+				npc.m_flNextTMITalk = GameTime + 2.0;
+				npc.m_iNextTMITalk=6;
+			}
+		}
+		case 6:
+		{
+			if(npc.m_flNextTMITalk < GameTime)
+			{
+				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-3-3", false, false);
+				npc.m_iNextTMITalk=7;
+			}
+		}
+		case 7:
+		{
+			if(Waves_GetRoundScale()+1==31)
+			{
+				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-4-1", false, false);
+				npc.m_flNextTMITalk = GameTime + 4.0;
+				npc.m_iNextTMITalk=8;
+			}
+		}
+		case 8:
+		{
+			if(npc.m_flNextTMITalk < GameTime)
+			{
+				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-4-2", false, false);
+				npc.m_iNextTMITalk=9;
+			}
+		}
+	}
 	
 	if(!IsValidAlly(npc.index, npc.m_iTargetAlly) || npc.m_flGetClosestTargetAllyTime < GameTime)
 	{

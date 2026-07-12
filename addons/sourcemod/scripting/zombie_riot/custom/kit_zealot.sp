@@ -373,7 +373,7 @@ void WeaponZealot_OnTakeDamage_Gun(int attacker, int victim, float &damage)
 	{
 		if(i_WhatPotionDrink[attacker] == 3 && i_HasBeenHeadShotted[victim])
 		{
-			damage *= 1.3;
+			damage *= 1.5;
 		}
 	}	
 }
@@ -382,7 +382,7 @@ void WeaponZealot_OnTakeDamage(int attacker, int victim, float &damage)
 	//Anti delay
 	if(Zealot_BonusMeleeDamageDuration[attacker] > GetGameTime())
 	{
-		Zealot_BonusMeleeDamage[attacker] += 0.05;
+		Zealot_BonusMeleeDamage[attacker] += 0.1;
 		if(Zealot_BonusMeleeDamage[attacker] >= 1.5)
 		{	
 			Zealot_BonusMeleeDamage[attacker] = 1.5;
@@ -426,12 +426,12 @@ void WeaponZealot_OnTakeDamage(int attacker, int victim, float &damage)
 
 	SetAmmo(attacker, Ammo_ClassSpecific, ammo);
 	CurrentAmmo[attacker][Ammo_ClassSpecific] = ammo;
-	MaxDodgeCount[attacker] = 10;
+	MaxDodgeCount[attacker] = 3;
 	if(HasSpecificBuff(attacker, "Zealot's Random Drinks"))
 	{
 		if(i_WhatPotionDrink[attacker] == 3 && i_HasBeenHeadShotted[victim])
 		{
-			damage *= 1.3;
+			damage *= 1.5;
 		}
 	}	
 }
@@ -654,9 +654,9 @@ public void Client_ZealotThink(int client)
 
 	MaxDodgeCount[client]--;
 
-	//Punishment for dodging forwards.
-	if((buttons & IN_FORWARD))
-		MaxDodgeCount[client]--;
+//	//Punishment for dodging forwards.
+//	if((buttons & IN_FORWARD))
+//		MaxDodgeCount[client]--;
 	static float anglesB[3];
 	GetClientEyeAngles(client, anglesB);
 	anglesB[1] += AngleDeviate;
@@ -671,18 +671,18 @@ public void Client_ZealotThink(int client)
 	f_Client_BackwardsWalkPenalty[client] = 1.0;
 	f_Client_LostFriction[client] = 0.0;
 	f_ResetMoveSpeedPenalty[client] = GetGameTime() + 0.25;
-	float CooldownDo = 5.0;
+	float CooldownDo = 2.0;
 	switch(i_PaPLevel[client])
 	{
 		case 1:
-			CooldownDo = 4.0;
+			CooldownDo = 1.5;
 		case 2,3:
-			CooldownDo = 3.5;
+			CooldownDo = 1.0;
 		case 4,5:
-			CooldownDo = 3.0;
+			CooldownDo = 0.9;
 	}
 	if(LastMann)
-		CooldownDo * 0.65;
+		CooldownDo *= 0.65;
 
 	if(HasSpecificBuff(client, "Zealot's Random Drinks"))
 	{
