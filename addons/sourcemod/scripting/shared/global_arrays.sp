@@ -330,6 +330,7 @@ bool Viewchanges_PlayerModelsAnims[] =
 	true,
 	false,
 	true,
+	true,
 };
 
 ConVar cvarTimeScale;
