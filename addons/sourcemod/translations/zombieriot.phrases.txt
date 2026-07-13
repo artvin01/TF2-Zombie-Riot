@@ -5348,6 +5348,10 @@
 		"it"	"Niko Oneshot"
 		"ko"	"니코 (원샷)"
 	}
+	"Claire Fpe"
+	{
+		"en"	"Claire Fpe"
+	}
 	"Skeleboy"
 	{
 		"en"	"Skeleboy"

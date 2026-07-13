@@ -53,6 +53,7 @@ static const char PlayerModelsCustom[][] =
 	"models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl",
 	"models/bots/skeleton_sniper/skeleton_sniper.mdl",
 	"models/zombie_riot/player_model_add/model_player_2_1.mdl",
+	"models/vsj/fpe_claire/zr_port/claire_pm.mdl",
 };
 
 
@@ -63,6 +64,7 @@ static const char PlayerCustomHands[][] =
 	"models/sasamin/oneshot/zombie_riot_edit/niko_arms_01.mdl",
 	"models/bots/skeleton_sniper/skeleton_sniper.mdl",
 	"models/zombie_riot/player_model_add/model_player_hands_1_5.mdl",
+	"models/vsj/fpe_claire/zr_port/claire_carms.mdl",
 };
 
 int PlayerCustomModelBodyGroup[] =
@@ -81,6 +83,7 @@ enum
 	NIKO_2 = 2,
 	SKELEBOY = 3,
 	KLEINER = 4,
+	CLAIRE_FPE = 5,
 }
 
 static int HandIndex[10];
