@@ -1705,7 +1705,7 @@ public void OnClientDisconnect(int client)
 	RTSCamera_ClientDisconnect(client);
 #endif
 
-	i_ClientHasCustomGearEquipped[client] = 0;
+	i_ClientHasCustomGearEquipped[client] = CUSTOMGEAR_NONE;
 	i_EntityToAlwaysMeleeHit[client] = 0;
 	ReplicateClient_Svairaccelerate[client] = -1.0;
 	ReplicateClient_BackwardsWalk[client] = -1.0;

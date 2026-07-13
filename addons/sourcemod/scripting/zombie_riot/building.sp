@@ -2714,7 +2714,8 @@ void DeleteAndRefundBuilding(int client, int entity)
 			return;
 	}
 
-	if(IsValidClient(client))
+	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(IsValidClient(client) && client == owner)
 	{
 		int Repair = 	GetEntProp(entity, Prop_Data, "m_iRepair");
 		int MaxRepair = GetEntProp(entity, Prop_Data, "m_iRepairMax");
