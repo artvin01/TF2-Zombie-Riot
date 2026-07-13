@@ -8,6 +8,9 @@ let loop=false;
 let max_songs=0;
 
 function set_audio_resource(obj) {
+    if (document.body.classList.contains("inspectmode")) {
+        return;
+    };
     if (max_songs>0) {
         if (last_song_id!==-1) { document.getElementById(last_song_id).classList.remove("music_playing") };
         obj.classList.add("music_playing");
