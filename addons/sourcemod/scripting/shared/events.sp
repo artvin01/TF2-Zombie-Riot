@@ -337,7 +337,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		if(WaitingInQueue[client])
 			TeutonType[client] = TEUTON_WAITING;
 
-		if(i_ClientHasCustomGearEquipped[client] > 1)
+		if(i_ClientHasCustomGearEquipped[client] == CUSTOMGEAR_QUANTUM_SUIT)
 		{
 			SDKCall_GiveCorrectAmmoCount(client);
 
@@ -595,7 +595,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 		
 	i_HealthBeforeSuit[client] = 0;
 	f_HealthBeforeSuittime[client] = GetGameTime() + 0.25;
-	i_ClientHasCustomGearEquipped[client] = false;
+	i_ClientHasCustomGearEquipped[client] = CUSTOMGEAR_NONE;
 	UnequipQuantumSet(client);
 //	CreateTimer(0.0, QuantumDeactivate, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE); //early cancel out!, save the wearer!
 	//

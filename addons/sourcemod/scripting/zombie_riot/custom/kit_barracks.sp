@@ -91,7 +91,13 @@ static Action Timer_Barracks(Handle timer, DataPack pack)
 	int weapon = EntRefToEntIndex(pack.ReadCell());
 	int client = EntRefToEntIndex(pack.ReadCell());
 	
-	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
+	bool valid = IsValidClient(client);
+	if(valid && i_ClientHasCustomGearEquipped[client] != CUSTOMGEAR_NONE)
+	{
+		// Don't nuke our stuff if we have quantum suit or similar gear equipped
+		return Plugin_Continue;
+	}
+	else if(!valid || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
 	{	
 		h_Barrack_Timer[clientindx] = null;
 		return Plugin_Stop;
