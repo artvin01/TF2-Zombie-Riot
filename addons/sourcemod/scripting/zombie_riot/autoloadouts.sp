@@ -155,6 +155,7 @@ bool AutoLoadouts_SpecificNameToPlayer(int client, char Name[64])
 	
 	return false;
 }
+/*
 bool AutoLoadouts_GiveRandomOfTypeToPlayer(int client, int type)
 {
 	int length = AutoLoadoutList.Length;
@@ -184,7 +185,7 @@ bool AutoLoadouts_GiveRandomOfTypeToPlayer(int client, int type)
 	
 	return true;
 }
-
+*/
 void AutoLoadouts_SetPlayerLoadout(int client, int id)
 {
 	Store_SellAutoBoughtItems(client);
