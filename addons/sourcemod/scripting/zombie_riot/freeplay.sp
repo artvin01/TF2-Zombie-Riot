@@ -37,6 +37,7 @@ static int ProsperityDebuff;
 static bool SilenceDebuff;
 static float ExtraEnemySize;
 static bool UnlockedSpeed;
+static bool UnlockedMegeHPRegen;
 static bool CheesyPresence;
 static int EloquenceBuff;
 static int RampartBuff;
@@ -177,6 +178,7 @@ void Freeplay_ResetAll()
 	SilenceDebuff = false;
 	ExtraEnemySize = 1.0;
 	UnlockedSpeed = false;
+	UnlockedMegeHPRegen = false;
 	CheesyPresence = false;
 	EloquenceBuff = 0;
 	RampartBuff = 0;
@@ -2265,7 +2267,7 @@ void Freeplay_OnEndWave(int &cash)
 	}
 
 	Freeplay_SetRemainingCash(500.0);
-	Freeplay_SetCashTime(GetGameTime() + 12.5);
+	Freeplay_SetCashTime(GetGameTime() + 15.0);
 }
 
 float Freeplay_SetupValues()
@@ -3521,8 +3523,8 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 65:
 			{
-				// 7.5% chance, otherwise retry.
-				if(GetRandomFloat(0.0, 1.0) <= 0.075)
+				// 10% chance, otherwise retry.
+				if(GetRandomFloat(0.0, 1.0) <= 0.1)
 				{
 					strcopy(message, sizeof(message), "{green}A new special weapon is now available for purchase!");
 					Rogue_RareWeapon_Collect();
@@ -3600,7 +3602,7 @@ void Freeplay_SetupStart(bool extra = false)
 					Freeplay_SetupStart();
 					return;
 				}
-				strcopy(message, sizeof(message), "{red}III THINK YOU NEED MORE MEN!");
+				strcopy(message, sizeof(message), "{red}III THINK YOU NEED MORE MEN!!!");
 				moremen = 1;
 			}
 			case 72:
@@ -3749,6 +3751,17 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				strcopy(message, sizeof(message), "{red}Holy smokes, it's him. {crimson}The SIGMALLER!");
 				sigmaller = true;
+			}
+			case 86:
+			{
+				if(UnlockedMegeHPRegen)
+				{
+					Freeplay_SetupStart();
+					return;
+				}
+				UnlockedMegeHPRegen = true;
+				Store_DiscountNamedItem("Sigmar's Curage", 999);
+				strcopy(message, sizeof(message), "{green}Sigmar's Curage is now buyable in the passive store!");
 			}
 			default:
 			{
