@@ -825,9 +825,11 @@ public MRESReturn DHook_RocketExplodePre(int entity, DHookParam params)
 	TE_Particle("ExplosionCore_MidAir", GrenadePos, NULL_VECTOR, NULL_VECTOR, 
 	_, _, _, _, _, _, _, _, _, _, 0.0);
 	//reuse for kaboom
+	PrintToChatAll("test1");
 	Function func = func_WandOnTouch[entity];
 	if(func && func != INVALID_FUNCTION)
 	{
+		PrintToChatAll("test2");
 		Call_StartFunction(null, func);
 		Call_PushCell(entity);
 		Call_Finish();

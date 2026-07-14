@@ -6,6 +6,7 @@ enum
 	AutoLoadoutType_Melee,
 	AutoLoadoutType_Ranged,
 	AutoLoadoutType_Mage,
+	AutoLoadoutType_Medic,
 	AutoLoadoutType_Kit,
 }
 
@@ -54,6 +55,10 @@ void AutoLoadouts_ConfigSetup()
 			else if (StrContains(loadout.name, "Mage", false) == 0)
 			{
 				loadout.type = AutoLoadoutType_Mage;
+			}
+			else if (StrContains(loadout.name, "Medic", false) == 0)
+			{
+				loadout.type = AutoLoadoutType_Medic;
 			}
 			else if (StrContains(loadout.name, "Kit", false) == 0)
 			{

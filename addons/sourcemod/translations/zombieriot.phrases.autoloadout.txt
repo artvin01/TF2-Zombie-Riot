@@ -43,9 +43,9 @@
 	{
 		"en" 		"Medic: Medigun [Normal]"
 	}
-	"Magic 1"
+	"Mage 1"
 	{
-		"en" 		"Medic: Explosive Spell [Normal]"
+		"en" 		"Mage: Explosive Spell [Normal]"
 	}
 	"Melee 1"
 	{
