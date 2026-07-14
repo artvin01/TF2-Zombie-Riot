@@ -2725,27 +2725,33 @@
 		"it"		"Questa è la breve esercitazione. Toccare il tabellone (TAB) per aprire il negozio."
 		"ko"		"이것은 짧은 튜토리얼입니다. 점수판 호출 (탭, Tab) 키를 눌러 상점을 여세요."
 	}
-	"tutorial_2"
+	"tutorial_1_2"
 	{
-		"en"		"Good! Now Navigate to ''Weapons'' and buy any weapon you want.\nTap the scoreboard (TAB) to open the store again if it got closed.\n<--------------- The Store!                                                          "
-		"fr"		"Bien fait! Maintenant, naviguez vers «armes» et achetez l'arme que vous voulez.\nAppuyez sur TAB pour re-ouvrir la boutique s'il se ferme."
-		"ru"		"Отлично! Теперь перейдите к «оружию» и купите любое оружие.\nОткройте таблицу очков (TAB), чтобы снова открыть магазин, если он был закрыт."
-		"pt"		"Otimo! Agora navegue até a seção de armas e compre uma arma que você goste.\nAbra o placar (TAB) para abrir a loja novamente caso ela feche."
-		"nl"		"Goed! Navigeer nu naar wapens en koop een wapen naar keuze.\nOpen het scorebord (TAB) om de winkel nogmaals te open als het wordt gesloten."
-		"chi"       "好!现在导航到武器并购买任何你想要的武器。\n如果商店被关闭，你可以再次按下TAB键来打开它!"
-		"it"		"Bene! Ora vai su ''Armi'' e compra l'arma che vuoi.\nTocca il tasto (TAB) per riaprire il negozio, se è stato chiuso.\n<--------------- Il negozio!                                                          "
-		"ko"		"좋습니다! 이제 ''무기'' 항목을 따라가서 원하는 무기를 구매하세요.\n상점이 닫혔다면, 점수판 호출 (탭, Tab) 키를 다시 눌러 상점을 여세요.\n<--------------- 상점!" 
+		"en"		"Good! As youre new you can select from pre-made weapon loadouts.\nThis is so you can get a feel of the game first, before being overwhelmed by the store.\nClick on:"
+	}
+	"tutorial_1_3"
+	{
+		"en"		"Good! In here you can also make manual loadouts, but...\nFor now Click on:"
+	}
+	"tutorial_1_4"
+	{
+		"en"		"Good! In here you can select an automatic loadout for now\nClick on what you feel like playing!"
+	}
+	"tutorial_fail_map"
+	{
+		"en"		"It seems that this map prevents the tutorial from playing right....\nHard to explain, but you have to buy weapons from the store on the left\nWait till next map for the tutorial to be correct."
+	}
+	"tutorial_Storelocation"
+	{
+		"en"		"||| The store is here! |||\n||| Check below/around this text! |||"
+	}
+	"tutorial_storeclosed_warning"
+	{
+		"en"		"Tap the scoreboard (TAB) to open the store again, its currently not open!"
 	}
 	"tutorial_3"
 	{
-		"en"		"Only have 1 weapon at a time at the start!\nBuy better guns and upgrades in later waves and survive to the end!\nMore help is in the store under ''help?''\nTeamwork is the key to victory!"
-		"fr"		"Vous avez maintenant votre arme, vous êtes prêt.\nAchetez des armes meilleures, ainsi que des améliorations, dans des vagues futures,\net survivez jusqu'à la fin!\nDe l'aide additionelle se trove dans la boutique, sous «aide»."
-		"ru"		"Теперь, когда у вас есть оружие, вы готовы.\nКупите лучшее оружие и улучшения в следующих волнах и выживите!\nПодробности можно найти в магазине в разделе «Помощь?»\nКомандная работа - ключ к победе!"
-		"pt"		"Agora que você tem uma arma, você está pronto(a).\nCompre armas melhores, e as aprimore em ondas posteriores e sobreviva ate o final!\nÉ possivel adquirir mais ajuda no menu na opção de ''ajuda?''\nTrabalho em equipe é a chava para a vitória!"
-		"nl"		"Nu dat je een wapen hebt ben je voorbereid.\nKoop betere wapens en upgrades in latere golven en probeer tot het einde te overleven!\nVerdere hulp vind je onder de winkel bij ''help?''\nTeamwork is de sleutel voor victorie!"
-		"chi"       "现在你已经拥有了武器，你准备好了吗？\n去买更好的枪和升级你的武器，生存到最后!\n更多的帮助可以在“帮助”中查看\n团队合作是胜利的关键!"
-		"it"		"All'inizio, hai solo un'arma per volta!\nCompra armi e potenziamenti migliori nelle ondate successive e sopravvivi fino alla fine!"
-		"ko"		"처음에는 무기를 한 번에 하나만 가지세요!\n이후의 웨이브를 생존하여 더 나은 무기와 개선을 구매하세요!\n더 많은 정보를 보려면 상점 밑의 ''도움'' 버튼을 확인하세요.\n팀워크가 바로 승리의 지름길입니다!"
+		"en"		"You can buy weapons in the store yourself too once you get the hang of the gameplay!\nBuy better guns and upgrades in later waves and survive to the end!\nMore help is in the store under ''help?''"
 	}
 	"tutorial_4"
 	{
@@ -2815,13 +2821,7 @@
 	}
 	"Loadouts"
 	{
-		"en"		"Loadouts"
-		"fr"		"Chargements"
-		///"ru"		"Снаряжения"
-		"pt"		"Loadouts"
-		"chi"       "预设"
-		"it"		"Equipaggiamti"
-		"ko"		"로드아웃"
+		"en" 		"Loadouts/Autoloadouts"
 	}
 	"All Items"
 	{
