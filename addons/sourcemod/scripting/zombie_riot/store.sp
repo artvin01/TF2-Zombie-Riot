@@ -4879,11 +4879,7 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 						return 0;
 					}
 					
-					if (!item.Equipped[client])
-					{
-						Store_TryToBuyItem(client, index, false);
-					}
-					else
+					if (item.Equipped[client])
 					{
 						int cash = Store_GetPlayerCash(client, false);
 						if(info.AmmoBuyMenuOnly && info.AmmoBuyMenuOnly < Ammo_MAX)	// Weapon with A2735mmo, buyable only
@@ -4903,6 +4899,30 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 							int ammo = GetAmmo(client, info.Ammo) + AmmoData[info.Ammo][1];
 							SetAmmo(client, info.Ammo, ammo);
 							CurrentAmmo[client][info.Ammo] = ammo;
+						}
+						
+					}
+					else if (!item.Owned[client])
+					{
+						Store_TryToBuyItem(client, index, false);
+					}
+					else
+					{
+						Store_EquipSlotCheck(client, item);
+				
+						item.Equipped[client] = true;
+						StoreItems.SetArray(index, item);
+						
+						if(!TeutonType[client] && !i_ClientHasCustomGearEquipped[client])
+						{
+						//	Store_GiveItem(client, index, item.Equipped[client]);
+						//	if(TF2_GetClassnameSlot(info.Classname) == TFWeaponSlot_Melee)
+						//		Store_RemoveNullWeapons(client);
+							
+							CheckMultiSlots(client);
+							Manual_Impulse_101(client, GetClientHealth(client));
+							Store_ApplyAttribs(client);
+							Store_GiveAll(client, GetClientHealth(client));
 						}
 					}
 				}
@@ -5252,27 +5272,6 @@ int Store_TryToBuyItem(int client, int index, bool auto)
 
 		Store_ApplyAttribs(client);
 		Store_GiveAll(client, GetClientHealth(client));
-	}
-	else
-	{
-		Store_EquipSlotCheck(client, item);
-
-		item.Equipped[client] = true;
-		item.AutoBought[client] = auto;
-		
-		StoreItems.SetArray(index, item);
-		
-		if(!TeutonType[client] && !i_ClientHasCustomGearEquipped[client])
-		{
-		//	Store_GiveItem(client, index, item.Equipped[client]);
-		//	if(TF2_GetClassnameSlot(info.Classname) == TFWeaponSlot_Melee)
-		//		Store_RemoveNullWeapons(client);
-			
-			CheckMultiSlots(client);
-			Manual_Impulse_101(client, GetClientHealth(client));
-			Store_ApplyAttribs(client);
-			Store_GiveAll(client, GetClientHealth(client));
-		}
 	}
 	
 	return BUY_RESULT_SUCCESS;
