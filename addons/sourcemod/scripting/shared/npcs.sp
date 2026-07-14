@@ -977,13 +977,9 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 					played_headshotsound_already[attacker] = GetGameTime()
 				}
 				else*/
-				if(!WasAlreadyPlayed)
+				if(!WasAlreadyPlayed && Blitzed_By_Riot)
 				{
-#if defined ZR
 					DisplayCritAboveNpc(victim, attacker, Blitzed_By_Riot);
-#else
-					DisplayCritAboveNpc(victim, attacker, false);
-#endif
 				//	played_headshotsound_already_Case[attacker] = random_case;
 				//	played_headshotsound_already_Pitch[attacker] = pitch;
 				}
@@ -1605,57 +1601,124 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 	{
 		if(!(damagetype & (DMG_SHOCK)))
 		{
+			bool PlayToAll = false;
 			if (f_CooldownForHurtParticle[victim] < GameTime)
 			{
+				PlayToAll = true;
+				//Play To All
 				if(EnableSilentMode)
 					f_CooldownForHurtParticle[victim] = GameTime + 1.0;
 				else
 					f_CooldownForHurtParticle[victim] = GameTime + 0.25;
+			}
 
-				if(npcBase.m_iBleedType == BLEEDTYPE_NORMAL)
+			if(npcBase.m_iBleedType == BLEEDTYPE_NORMAL)
+			{
+				TE_ParticleInt(g_particleImpactFlesh, damagePosition);
+				if(PlayToAll)
 				{
-					TE_ParticleInt(g_particleImpactFlesh, damagePosition);
 					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
 				}
-				else if (npcBase.m_iBleedType == BLEEDTYPE_METAL)
+				else
 				{
-					damagePosition[2] -= 40.0;
-					TE_ParticleInt(g_particleImpactMetal, damagePosition);
+					if(attacker > 0 && attacker < MaxClients)
+						TE_SendToClient(attacker);
+				}
+			}
+			else if (npcBase.m_iBleedType == BLEEDTYPE_METAL)
+			{
+				damagePosition[2] -= 40.0;
+				TE_ParticleInt(g_particleImpactMetal, damagePosition);
+				if(PlayToAll)
+				{
 					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
 				}
-				else if (npcBase.m_iBleedType == BLEEDTYPE_RUBBER)
+				else
 				{
-					TE_ParticleInt(g_particleImpactRubber, damagePosition);
+					if(attacker > 0 && attacker < MaxClients)
+						TE_SendToClient(attacker);
+				}
+			}
+			else if (npcBase.m_iBleedType == BLEEDTYPE_RUBBER)
+			{
+				TE_ParticleInt(g_particleImpactRubber, damagePosition);
+				if(PlayToAll)
+				{
 					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
 				}
-				else if (npcBase.m_iBleedType == BLEEDTYPE_XENO)
+				else
 				{
-					//If you cant find any good blood effect, use this one and just recolour it.
-					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 125, 255, 125, 255, 32);
+					if(attacker > 0 && attacker < MaxClients)
+						TE_SendToClient(attacker);
+				}
+			}
+			else if (npcBase.m_iBleedType == BLEEDTYPE_XENO)
+			{
+				//If you cant find any good blood effect, use this one and just recolour it.
+				TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 125, 255, 125, 255, 32);
+				if(PlayToAll)
+				{
 					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
 				}
-				else if (npcBase.m_iBleedType == BLEEDTYPE_DWELLER)
+				else
 				{
-					//If you cant find any good blood effect, use this one and just recolour it.
-					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 65, 65, 255, 255, 32);
+					if(attacker > 0 && attacker < MaxClients)
+						TE_SendToClient(attacker);
+				}
+			}
+			else if (npcBase.m_iBleedType == BLEEDTYPE_DWELLER)
+			{
+				//If you cant find any good blood effect, use this one and just recolour it.
+				TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 65, 65, 255, 255, 32);
+				if(PlayToAll)
+				{
 					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
 				}
-				else if (npcBase.m_iBleedType == BLEEDTYPE_VOID)
+				else
 				{
-					//If you cant find any good blood effect, use this one and just recolour it.
-					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 200, 0, 200, 255, 32);
+					if(attacker > 0 && attacker < MaxClients)
+						TE_SendToClient(attacker);
+				}
+			}
+			else if (npcBase.m_iBleedType == BLEEDTYPE_VOID)
+			{
+				//If you cant find any good blood effect, use this one and just recolour it.
+				TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 200, 0, 200, 255, 32);
+				if(PlayToAll)
+				{
 					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
 				}
-				else if (npcBase.m_iBleedType == BLEEDTYPE_UMBRAL)
+				else
 				{
-					//If you cant find any good blood effect, use this one and just recolour it.
-					TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 200, 200, 200, 255, 32);
+					if(attacker > 0 && attacker < MaxClients)
+						TE_SendToClient(attacker);
+				}
+			}
+			else if (npcBase.m_iBleedType == BLEEDTYPE_UMBRAL)
+			{
+				//If you cant find any good blood effect, use this one and just recolour it.
+				TE_BloodSprite(damagePosition, { 0.0, 0.0, 0.0 }, 200, 200, 200, 255, 32);
+				if(PlayToAll)
+				{
 					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
 				}
-				else if (npcBase.m_iBleedType == BLEEDTYPE_PORTAL)
+				else
 				{
-					TE_ParticleInt(g_particleImpactPortal, damagePosition);
+					if(attacker > 0 && attacker < MaxClients)
+						TE_SendToClient(attacker);
+				}
+			}
+			else if (npcBase.m_iBleedType == BLEEDTYPE_PORTAL)
+			{
+				TE_ParticleInt(g_particleImpactPortal, damagePosition);
+				if(PlayToAll)
+				{
 					TE_SendToAllInRange(damagePosition, RangeType_Visibility);
+				}
+				else
+				{
+					if(attacker > 0 && attacker < MaxClients)
+						TE_SendToClient(attacker);
 				}
 			}
 		}
