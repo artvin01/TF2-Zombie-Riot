@@ -5876,6 +5876,6 @@
 	"Index Father Dodge Desc"
 	{
 		"en" 	"When dashing, you dodge attacks for the next 0.5 seconds\nDodge attacks fully upto a damage treshhold (upgrades, melee dmg is 2x more lenient)\nIf damage is too high, you take 0.75x dmg instead."
-		"ko"	"대쉬할 때 다음 0.5초 동안 공격을 회피\n일정 수치 이하의 피해량을 완전히 회피(개선 시 증가, 근접 피해는 상한 2배)\n피해량이 너무 높다면 대신 피해를 0.75배로 감소"
+		"ko"	"대쉬할 때 다음 0.5초 동안 공격을 회피\n상한까지의 피해량을 완전 회피(개선 시 증가, 근접 피해는 상한 2배)\n피해량이 너무 높다면 대신 0.75배로 감소"
 	}
 }
