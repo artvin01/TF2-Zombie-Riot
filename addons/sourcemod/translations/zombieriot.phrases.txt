@@ -2737,6 +2737,10 @@
 	{
 		"en"		"Good! In here you can select an automatic loadout for now\nClick on what you feel like playing!"
 	}
+	"tutorial_fail_map"
+	{
+		"en"		"It seems that this map prevents the tutorial from playing right....\nHard to explain, but you have to buy weapons from the store on the left\nWait till next map for the tutorial to be correct."
+	}
 	"tutorial_Storelocation"
 	{
 		"en"		"||| The store is here! |||\n||| Check below/around this text! |||"

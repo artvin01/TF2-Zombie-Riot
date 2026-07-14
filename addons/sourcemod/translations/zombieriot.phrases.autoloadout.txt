@@ -9,6 +9,10 @@
 	{
 		"en" 		"Autoloadouts"
 	}
+	"Autoloadout Disable"
+	{
+		"en" 		"Autoloadouts DISABLED FOR THIS MAP"
+	}
 	"Autoloadout Store Page"
 	{
 		"en" 		"Back to the store"

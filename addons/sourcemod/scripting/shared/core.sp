@@ -99,6 +99,7 @@ ConVar zr_downloadconfig;
 ConVar CvarSkillPoints;
 ConVar CvarRogueSpecialLogic;
 ConVar CvarLeveling;
+ConVar CvarDisableAutoLoadouts;
 ConVar CvarAutoSelectWave;
 ConVar CvarAutoSelectDiff;
 ConVar CvarVoteLimit;

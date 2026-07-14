@@ -210,7 +210,7 @@ bool AutoLoadouts_IsClientUsing(int client)
 	return ClientAutoLoadout[client].itemList != null;
 }
 
-void AutoLoadouts_RemoveEnhancementsFromClientList(int client)
+stock void AutoLoadouts_RemoveEnhancementsFromClientList(int client)
 {
 	// if we manually enhance a weapon or buy a different weapon, we should break the enhancement links
 	if (!AutoLoadouts_IsClientUsing(client))

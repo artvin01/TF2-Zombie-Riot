@@ -172,6 +172,13 @@ void DoTutorialStep(int client, bool obeycooldown)
 				}
 				case 2:
 				{
+					if(CvarDisableAutoLoadouts.BoolValue)
+					{
+						SetHudTextParams(-1.0, 0.4, 10.0, 255, 255, 255, 255);
+						ShowSyncHudText(client, SyncHud, "%t", "tutorial_fail_map");
+						f_TutorialUpdateStep[client] = GetGameTime() + 9999.0;
+						return;
+					}
 					if(AnyMenuOpen[client] == 2.0)
 					{
 
