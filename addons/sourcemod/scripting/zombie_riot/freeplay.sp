@@ -37,6 +37,7 @@ static int ProsperityDebuff;
 static bool SilenceDebuff;
 static float ExtraEnemySize;
 static bool UnlockedSpeed;
+static bool UnlockedMegeHPRegen;
 static bool CheesyPresence;
 static int EloquenceBuff;
 static int RampartBuff;
@@ -58,6 +59,7 @@ static bool DarknessComing;
 static int setuptimes;
 static float ExtraAttackspeed;
 static bool thespewer;
+static bool sigmaller;
 
 static int FreeplayModifActive = 0;
 static float FM_Health;
@@ -176,6 +178,7 @@ void Freeplay_ResetAll()
 	SilenceDebuff = false;
 	ExtraEnemySize = 1.0;
 	UnlockedSpeed = false;
+	UnlockedMegeHPRegen = false;
 	CheesyPresence = false;
 	EloquenceBuff = 0;
 	RampartBuff = 0;
@@ -196,6 +199,7 @@ void Freeplay_ResetAll()
 	setuptimes = 4;
 	ExtraAttackspeed = 1.0;
 	thespewer = false;
+	sigmaller = false;
 	squeezerplus = false;
 	FM_Health = 0.25;
 	FM_Damage = 0.5;
@@ -225,6 +229,9 @@ int Freeplay_EnemyCount()
 			amount++;
 
 		if(thespewer)
+			amount++;
+
+		if(sigmaller)
 			amount++;
 	}
 
@@ -270,7 +277,7 @@ int Freeplay_GetDangerLevelCurrent()
 void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = false)
 {
 	bool shouldscale = true;
-	if(RaidFight || friendunit || zombiecombine || moremen || immutable || Schizophrenia || DarknessComing || thespewer)
+	if(RaidFight || friendunit || zombiecombine || moremen || immutable || Schizophrenia || DarknessComing || thespewer || sigmaller)
 	{
 		enemy.Is_Boss = 0;
 		enemy.WaitingTimeGive = 0.0;
@@ -768,6 +775,19 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Credits += 100.0;
 		count = 1;
 		thespewer = false;
+	}
+	else if(sigmaller)
+	{
+		enemy.Is_Immune_To_Nuke = true;
+		enemy.Is_Boss = 1;
+		enemy.Index = NPC_GetByPlugin("npc_freeplay_sigmaller");
+		enemy.Health = RoundToFloor(((500000.0 + HealthBonus) / 65.0 * float(Waves_GetRound())) * HealthMulti);
+		enemy.ExtraDamage = 0.5;
+		enemy.ExtraSpeed = 1.0;
+		enemy.ExtraSize = 1.0;
+		enemy.Credits += 100.0;
+		count = 1;
+		sigmaller = false;
 	}
 	else
 	{
@@ -2247,7 +2267,7 @@ void Freeplay_OnEndWave(int &cash)
 	}
 
 	Freeplay_SetRemainingCash(500.0);
-	Freeplay_SetCashTime(GetGameTime() + 12.5);
+	Freeplay_SetCashTime(GetGameTime() + 15.0);
 }
 
 float Freeplay_SetupValues()
@@ -3503,8 +3523,8 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 65:
 			{
-				// 7.5% chance, otherwise retry.
-				if(GetRandomFloat(0.0, 1.0) <= 0.075)
+				// 10% chance, otherwise retry.
+				if(GetRandomFloat(0.0, 1.0) <= 0.1)
 				{
 					strcopy(message, sizeof(message), "{green}A new special weapon is now available for purchase!");
 					Rogue_RareWeapon_Collect();
@@ -3582,7 +3602,7 @@ void Freeplay_SetupStart(bool extra = false)
 					Freeplay_SetupStart();
 					return;
 				}
-				strcopy(message, sizeof(message), "{red}III THINK YOU NEED MORE MEN!");
+				strcopy(message, sizeof(message), "{red}III THINK YOU NEED MORE MEN!!!");
 				moremen = 1;
 			}
 			case 72:
@@ -3709,7 +3729,7 @@ void Freeplay_SetupStart(bool extra = false)
 					Freeplay_SetupStart();
 					return;
 				}
-				strcopy(message, sizeof(message), "{red}THE DARKNESS IS COMING. {crimson}YOU NEED TO RUN.");
+				strcopy(message, sizeof(message), "{red}THE DARKNESS IS COMING! {crimson}YOU NEED TO RUN!!");
 				DarknessComing = true;
 			}
 			case 84:
@@ -3719,8 +3739,29 @@ void Freeplay_SetupStart(bool extra = false)
 					Freeplay_SetupStart();
 					return;
 				}
-				strcopy(message, sizeof(message), "{red}Your final challenge.... a {crimson}Nourished Spewer.");
+				strcopy(message, sizeof(message), "{red}Your final challenge.... a {crimson}Nourished Spewer!");
 				thespewer = true;
+			}
+			case 85:
+			{
+				if(sigmaller)
+				{
+					Freeplay_SetupStart();
+					return;
+				}
+				strcopy(message, sizeof(message), "{red}Holy smokes, it's him. {crimson}The SIGMALLER!");
+				sigmaller = true;
+			}
+			case 86:
+			{
+				if(UnlockedMegeHPRegen)
+				{
+					Freeplay_SetupStart();
+					return;
+				}
+				UnlockedMegeHPRegen = true;
+				Store_DiscountNamedItem("Sigmar's Curage", 999);
+				strcopy(message, sizeof(message), "{green}Sigmar's Curage is now buyable in the passive store!");
 			}
 			default:
 			{
