@@ -140,7 +140,7 @@ void DoTutorialStep(int client, bool obeycooldown)
 	{
 		if(f_TutorialUpdateStep[client] < GetGameTime() || !obeycooldown)
 		{
-			f_TutorialUpdateStep[client] = GetGameTime() + 1.0;
+			f_TutorialUpdateStep[client] = GetGameTime() + 0.25;
 			
 			/*TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,0.0});
 			
@@ -172,11 +172,44 @@ void DoTutorialStep(int client, bool obeycooldown)
 				}
 				case 2:
 				{
-					SetGlobalTransTarget(client);
-					SetHudTextParams(-1.0, 0.4, 1.5, 255, 255, 255, 255);
-					ShowSyncHudText(client, SyncHud, "%t", "tutorial_2");
+					if(AnyMenuOpen[client] == 2.0)
+					{
+
+						SetGlobalTransTarget(client);
+						SetHudTextParams(-1.0, 0.4, 1.5, 255, 255, 255, 255);
+						ShowSyncHudText(client, SyncHud, "%t", "tutorial_1_4");
+
+						SetHudTextParams(0.0, 0.2, 0.35, 255, 255, 255, 255);
+						ShowSyncHudText(client, SyncHud2, "%t", "tutorial_Storelocation");
+					}
+					else if(IsInLoadoutMenu(client))
+					{
+						
+						SetGlobalTransTarget(client);
+						SetHudTextParams(-1.0, 0.4, 1.5, 255, 255, 255, 255);
+						ShowSyncHudText(client, SyncHud, "%t [%T]", "tutorial_1_3", "Autoloadout Page", client);
+
+						SetHudTextParams(0.0, 0.2, 0.35, 255, 255, 255, 255);
+						ShowSyncHudText(client, SyncHud2, "%t", "tutorial_Storelocation");
+					}
+					else if(!LastStoreMenu[client])
+					{
+						SetGlobalTransTarget(client);
+						SetHudTextParams(-1.0, 0.4, 1.5, 255, 255, 255, 255);
+						ShowSyncHudText(client, SyncHud, "%t", "tutorial_storeclosed_warning");
+					}
+					else
+					{
+						SetGlobalTransTarget(client);
+						SetHudTextParams(-1.0, 0.4, 1.5, 255, 255, 255, 255);
+						ShowSyncHudText(client, SyncHud, "%t [%T]", "tutorial_1_2", "Loadouts", client);
+
+						SetHudTextParams(0.0, 0.2, 0.35, 255, 255, 255, 255);
+						ShowSyncHudText(client, SyncHud2, "%t", "tutorial_Storelocation");
+					}
+					//"This is the short Tutorial. Open chat and type /store to open the store!"
+					
 					//ShowAnnotationToPlayer(client, vecSwingEnd, TutorialText, 5.0, -1);
-					//"Good! You can also Open the store with TAB when the tutorial is done.\nNow Navigate to weapons and buy any weapon you want."
 				}
 				case 3:
 				{
@@ -186,8 +219,6 @@ void DoTutorialStep(int client, bool obeycooldown)
 					SPrintToChat(client,"%t","tutorial_3");
 					f_TutorialUpdateStep[client] = GetGameTime() + 10.0;
 					SetClientTutorialStep(client, 4);
-					//ShowAnnotationToPlayer(client, vecSwingEnd, TutorialText, 8.0, -1);
-					//"Now that you have a weapon you're prepared.\nBuy better guns and upgrades in later waves and survive to the end!\nFurther help can be found in the store under ''help?''\nTeamwork is the key to victory!"
 				}
 				case 4:
 				{

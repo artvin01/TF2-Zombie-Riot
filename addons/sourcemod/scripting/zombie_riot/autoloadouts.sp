@@ -28,6 +28,7 @@ static AutoLoadout ClientAutoLoadout[MAXPLAYERS + 1];
 
 void AutoLoadouts_ConfigSetup()
 {
+	LoadTranslations("zombieriot.phrases.autoloadout");
 	AutoLoadoutList = new ArrayList(sizeof(AutoLoadout));
 	
 	char buffer[PLATFORM_MAX_PATH];
@@ -127,6 +128,30 @@ void AutoLoadouts_MapNamesToData()
 	}
 }
 
+bool AutoLoadouts_SpecificNameToPlayer(int client, char Name[64])
+{
+	int length = AutoLoadoutList.Length;
+	if (length == 0)
+		return false;
+	
+	AutoLoadout loadout;
+	for (int i = 0; i < length; i++)
+	{
+		AutoLoadoutList.GetArray(i, loadout);
+		if(StrEqual(loadout.name, Name, false))
+		{
+			AutoLoadouts_SetPlayerLoadout(client, i);
+			if(ClientTutorialStep(client) == 2)
+			{
+				f_TutorialUpdateStep[client] = GetGameTime() + 10.0;
+				SetClientTutorialStep(client, 3);
+			}
+			return true;
+		}
+	}
+	
+	return false;
+}
 bool AutoLoadouts_GiveRandomOfTypeToPlayer(int client, int type)
 {
 	int length = AutoLoadoutList.Length;
@@ -206,13 +231,12 @@ void AutoLoadouts_Handle()
 		AutoLoadoutItem item;
 		ClientAutoLoadout[client].itemList.GetArray(0, item);
 		
-		PrintToChatAll("trying %s (id %d)...", item.name, item.index);
 		bool couldAfford;
 		if (item.level == 0)
 		{
 			if (Store_TryToBuyItem(client, item.index))
 			{
-				PrintToChatAll("Auto-bought %s", item.name);
+				SPrintToChat(client, "%t %s", "Autoloadout Bought Item", item.name);
 				couldAfford = true;
 			}
 		}
@@ -222,7 +246,7 @@ void AutoLoadouts_Handle()
 			Store_GetItemByIndex(item.index, storeItem);
 			if (Store_TryToPapWeapon(client, storeItem, item.index, item.level))
 			{
-				PrintToChatAll("Auto-bought %s enhancement %d", item.name, item.level);
+				SPrintToChat(client, "%t %s", "Autoloadout Enhance Item", item.name);
 				couldAfford = true;
 			}
 		}
@@ -233,7 +257,6 @@ void AutoLoadouts_Handle()
 		// Likely can't afford the next item, leave the starter store if we're in it
 		if (!couldAfford && StarterCashMode[client])
 		{
-			PrintToChatAll("Can't afford another item! Leaving Starter Store...");
 			StarterCashMode[client] = false;
 		}
 			
@@ -242,4 +265,90 @@ void AutoLoadouts_Handle()
 		if (ClientAutoLoadout[client].itemList.Length == 0)
 			AutoLoadouts_RemovePlayerLoadout(client);
 	}
+}
+
+
+void Autoloadout_DisplayCurrentAuto(int client, char[] buffer, int sizeofbuffer)
+{
+	Format(buffer, sizeofbuffer, "%s\n%T",buffer,  "Autoloadout Current Have", client);
+	if(AutoLoadouts_IsClientUsing(client))
+		Format(buffer, sizeofbuffer, "%s %T",buffer, ClientAutoLoadout[client].name, client);
+	else
+		Format(buffer, sizeofbuffer, "%s %T",buffer, "None", client);
+	Format(buffer, sizeofbuffer, "%s \n ",buffer);
+}
+
+void AutoLoadouts_DisplayLoadouts(int client)
+{
+	char buffer[256];
+	Menu menu2 = new Menu(AutoLoadouts_DisplayLoadouts_Page);
+	
+	Format(buffer, sizeof(buffer), "%T", "Autoloadout Select Header", client);
+	Autoloadout_DisplayCurrentAuto(client, buffer, sizeof(buffer));
+	menu2.SetTitle("%s", buffer, client);
+	
+	Format(buffer, sizeof(buffer), "%T", "Autoloadout Store Page", client);
+	menu2.AddItem("-2", buffer);
+	
+	Format(buffer, sizeof(buffer), "%T \n ", "Autoloadout CancelLoadout", client);
+	if (!AutoLoadouts_IsClientUsing(client))
+		menu2.AddItem("-3", buffer, ITEMDRAW_DISABLED);
+	else
+		menu2.AddItem("-3", buffer, ITEMDRAW_DEFAULT);
+
+	
+	int mainLength = AutoLoadoutList.Length;
+	for (int i = 0; i < mainLength; i++)
+	{
+		//Get all auto loadouts
+		AutoLoadout loadout;
+		AutoLoadoutList.GetArray(i, loadout);
+		Format(buffer, sizeof(buffer), "%T", loadout.name, client);
+		menu2.AddItem(loadout.name, buffer);
+	}
+
+	menu2.Display(client, MENU_TIME_FOREVER);
+	AnyMenuOpen[client] = 2.0;
+}
+
+
+public int AutoLoadouts_DisplayLoadouts_Page(Menu menu, MenuAction action, int client, int choice)
+{
+	switch(action)
+	{
+		case MenuAction_End:
+		{
+			if(IsValidClient(client))
+				AnyMenuOpen[client] = 0.0;
+		}
+		case MenuAction_Cancel:
+		{
+			delete menu;
+			AnyMenuOpen[client] = 0.0;
+		}
+		case MenuAction_Select:
+		{
+			AnyMenuOpen[client] = 0.0;
+			char buffer[64];
+			menu.GetItem(choice, buffer, sizeof(buffer));
+			if(!AutoLoadouts_SpecificNameToPlayer(client, buffer))
+			{
+				int id = StringToInt(buffer);
+				switch(id)
+				{
+					case -2:
+					{
+						Store_Menu(client);
+					}
+					case -3:
+					{
+						AutoLoadouts_RemovePlayerLoadout(client);
+						AutoLoadouts_DisplayLoadouts(client);
+					}
+				}
+			}
+		}
+
+	}
+	return 0;
 }

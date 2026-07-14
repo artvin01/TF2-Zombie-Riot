@@ -652,6 +652,10 @@ static Item LastBoughtWeapon[MAXPLAYERS];
 static bool HasMultiInSlot[MAXPLAYERS][6];
 static Function HolsterFunc[MAXPLAYERS] = {INVALID_FUNCTION, ...};
 
+bool IsInLoadoutMenu(int client)
+{
+	return InLoadoutMenu[client];
+}
 enum struct AutoPapInfo
 {
 	int index;
@@ -3687,11 +3691,12 @@ static void MenuPage(int client, int section)
 			return;
 		}
 		
-		char buf[84];
+		char buf[255];
 		if(StarterCashMode[client])
 			Format(buf, sizeof(buf), "%T", "Loadout Credits", client, cash);
 		else
 			Format(buf, sizeof(buf), "%T", "Credits_Menu", client, cash, GlobalExtraCash + CashReceivedNonWave[client]);
+		Format(buf, sizeof(buf), "%T", "Credits_Menu", client, cash, GlobalExtraCash + CashReceivedNonWave[client]);
 		item.GetItemInfo(0, info);
 		menu = new Menu(Store_MenuPage);
 		if(NPCOnly[client] == 1)
@@ -3719,15 +3724,19 @@ static void MenuPage(int client, int section)
 		}
 	}
 	else
-	{
+	{		
 		int xpLevel = LevelToXp(Level[client]);
 		int xpNext = LevelToXp(Level[client]+1);
 		
-		char buf[84];
+		char buf[255];
 		if(StarterCashMode[client])
 			Format(buf, sizeof(buf), "%T", "Loadout Credits", client, cash);
 		else
 			Format(buf, sizeof(buf), "%T", "Credits_Menu", client, cash, GlobalExtraCash + CashReceivedNonWave[client]);
+		if(AutoLoadouts_IsClientUsing(client))
+		{
+			Autoloadout_DisplayCurrentAuto(client, buf, sizeof(buf));
+		}
 		int nextAt = xpNext-xpLevel;
 		menu = new Menu(Store_MenuPage);
 		if(NPCOnly[client] == 1)
@@ -4154,11 +4163,8 @@ static void MenuPage(int client, int section)
 	}
 	else if(section == -1 && !NPCOnly[client])
 	{
-		if(Level[client] > STARTER_WEAPON_LEVEL)
-		{
-			Format(buffer, sizeof(buffer), "%T", "Loadouts", client);
-			menu.AddItem("-22", buffer);
-		}
+		Format(buffer, sizeof(buffer), "%T", "Loadouts", client);
+		menu.AddItem("-22", buffer);
 
 		if(Rogue_ArtifactEnabled())
 		{
@@ -4829,11 +4835,6 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 			{
 				case 0:
 				{
-					if(ClientTutorialStep(client) == 2)
-					{
-						SetClientTutorialStep(client, 3);
-						DoTutorialStep(client, false);	
-					}
 					
 					int level = item.Owned[client] - 1;
 					if(item.ParentKit || level < 0)
@@ -5272,6 +5273,8 @@ static void LoadoutPage(int client, bool last = false)
 		}
 	}
 	
+	Format(buffer, sizeof(buffer), "[%T]", "Autoloadout Page", client);
+	menu.AddItem("-123", buffer, ITEMDRAW_DEFAULT);
 	if(!length)
 	{
 		Format(buffer, sizeof(buffer), "%T", "None", client);
@@ -5314,6 +5317,15 @@ public int Store_LoadoutPage(Menu menu, MenuAction action, int client, int choic
 			
 			char buffer[32];
 			menu.GetItem(choice, buffer, sizeof(buffer));
+			int id = StringToInt(buffer);
+			switch(id)
+			{
+				case -123:
+				{
+					AutoLoadouts_DisplayLoadouts(client);
+					return 0;
+				}
+			}
 			LoadoutItem(client, buffer);
 		}
 	}

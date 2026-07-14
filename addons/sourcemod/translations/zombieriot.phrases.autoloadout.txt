@@ -1,0 +1,54 @@
+
+"Phrases"
+{
+	"Autoloadout Select Header"
+	{
+		"en" 		"Select which autoloadout you'd want to have."
+	}
+	"Autoloadout Page"
+	{
+		"en" 		"Autoloadouts"
+	}
+	"Autoloadout Store Page"
+	{
+		"en" 		"Back to the store"
+	}
+	"Autoloadout Current Have"
+	{
+		"en" 		"Current Autoloadout:"
+	}
+	"Autoloadout CancelLoadout"
+	{
+		"en" 		"Cancel Current Autoloadout"
+	}
+	"Autoloadout Bought Item"
+	{
+		"en" 		"Bought Item:"
+	}
+	"Autoloadout Enhance Item"
+	{
+		"en" 		"Enhanced Item:"
+	}
+
+	
+	"Ranged 1"
+	{
+		"en" 		"Ranger: Fast Fire [Easy]"
+	}
+	"Ranged 2"
+	{
+		"en" 		"Ranger: Shotgun [Easy]"
+	}
+	"Medic 1"
+	{
+		"en" 		"Medic: Medigun [Normal]"
+	}
+	"Magic 1"
+	{
+		"en" 		"Medic: Explosive Spell [Normal]"
+	}
+	"Melee 1"
+	{
+		"en" 		"Melee: Scythe [Hard]"
+	}
+}
