@@ -2728,30 +2728,37 @@
 	"tutorial_1_2"
 	{
 		"en"		"Good! As youre new you can select from pre-made weapon loadouts.\nThis is so you can get a feel of the game first, before being overwhelmed by the store.\nClick on:"
+		"ko"		"좋습니다! 신규 유저이시기에 사전 제작된 무기 로드아웃을 선택할 수 있습니다.\n상점의 내용이 많기에 먼저 게임의 방식을 적응하기 위함입니다.\n이걸 선택해주세요:" 
 	}
 	"tutorial_1_3"
 	{
 		"en"		"Good! In here you can also make manual loadouts, but...\nFor now Click on:"
+		"ko"		"좋습니다! 여기서는 수동 로드아웃 역시 만들 수 있습니다만...\n지금은 이걸 선택해주세요:" 
 	}
 	"tutorial_1_4"
 	{
 		"en"		"Good! In here you can select an automatic loadout for now\nClick on what you feel like playing!"
+		"ko"		"좋습니다! 이곳에서 자동 로드아웃을 선택하실 수 있습니다.\n플레이하고 싶은 것을 선택해주세요!" 
 	}
 	"tutorial_fail_map"
 	{
 		"en"		"It seems that this map prevents the tutorial from playing right....\nHard to explain, but you have to buy weapons from the store on the left\nWait till next map for the tutorial to be correct."
+		"ko"		"아무래도 이 맵이 튜토리얼의 실행을 방해하는 것 같습니다...\n설명하기 어렵지만, 왼쪽의 상점에서 무기를 구매하셔야 합니다.\n올바른 튜토리얼을 위해 다음 맵까지 기다려주세요." 
 	}
 	"tutorial_Storelocation"
 	{
 		"en"		"||| The store is here! |||\n||| Check below/around this text! |||"
+		"ko"		"||| 상점은 여기입니다! |||\n||| 이 텍스트 아래/주변을 확인하세요! |||" 
 	}
 	"tutorial_storeclosed_warning"
 	{
 		"en"		"Tap the scoreboard (TAB) to open the store again, its currently not open!"
+		"ko"		"점수판 호출 (탭, Tab) 키를 눌러 다시 상점을 여세요, 현재 열려있지 않습니다!" 
 	}
 	"tutorial_3"
 	{
 		"en"		"You can buy weapons in the store yourself too once you get the hang of the gameplay!\nBuy better guns and upgrades in later waves and survive to the end!\nMore help is in the store under ''help?''"
+		"ko"		"게임의 방식에 적응하셨다면 직접 무기를 구매하실 수도 있습니다!\n이후의 웨이브를 생존하기 위해 더 나은 무기와 개선을 구매하세요!\n더 많은 정보를 보려면 상점 밑의 ''도움'' 버튼을 확인하세요." 
 	}
 	"tutorial_4"
 	{
@@ -2822,6 +2829,7 @@
 	"Loadouts"
 	{
 		"en" 		"Loadouts/Autoloadouts"
+		"ko"		"로드아웃/자동 로드아웃"
 	}
 	"All Items"
 	{
