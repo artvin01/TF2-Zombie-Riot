@@ -5351,6 +5351,7 @@
 	"Claire Fpe"
 	{
 		"en"	"Claire Fpe"
+		"ko"	"클레어 (기초 종이 교육)"
 	}
 	"Skeleboy"
 	{
