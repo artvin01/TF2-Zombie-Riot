@@ -102,14 +102,6 @@ void AutoLoadouts_ConfigSetup()
 	delete kv;
 	
 	AutoLoadouts_MapNamesToData();
-	
-	RegConsoleCmd("sm_autoloadout", Command_AutoLoadout);
-}
-
-Action Command_AutoLoadout(int client, int args)
-{
-	AutoLoadouts_GiveRandomOfTypeToPlayer(client, GetCmdArgInt(1));
-	return Plugin_Continue;
 }
 
 void AutoLoadouts_MapNamesToData()
@@ -126,6 +118,12 @@ void AutoLoadouts_MapNamesToData()
 			AutoLoadoutItem loadoutItem;
 			loadout.itemList.GetArray(j, loadoutItem);
 			loadoutItem.index = Store_GetItemIndexByName(loadoutItem.name);
+			if (loadoutItem.index == -1)
+			{
+				LogError("Failed to find item %s on Auto Loadout entry %s!", loadoutItem.name, loadout.name);
+				continue;
+			}
+			
 			loadout.itemList.SetArray(j, loadoutItem);
 		}
 		
@@ -189,6 +187,7 @@ bool AutoLoadouts_GiveRandomOfTypeToPlayer(int client, int type)
 
 void AutoLoadouts_SetPlayerLoadout(int client, int id)
 {
+	Store_SellAutoBoughtItems(client);
 	AutoLoadouts_RemovePlayerLoadout(client);
 	
 	AutoLoadout loadout;
@@ -210,7 +209,7 @@ bool AutoLoadouts_IsClientUsing(int client)
 	return ClientAutoLoadout[client].itemList != null;
 }
 
-stock void AutoLoadouts_RemoveEnhancementsFromClientList(int client)
+void AutoLoadouts_RemoveEnhancementsFromClientList(int client)
 {
 	// if we manually enhance a weapon or buy a different weapon, we should break the enhancement links
 	if (!AutoLoadouts_IsClientUsing(client))
@@ -236,35 +235,41 @@ void AutoLoadouts_Handle()
 		AutoLoadoutItem item;
 		ClientAutoLoadout[client].itemList.GetArray(0, item);
 		
-		bool couldAfford;
+		if (item.index == 0)
+		{
+			// corrupted entry from a typo in the config, skip!
+			ClientAutoLoadout[client].itemList.Erase(0);
+			
+			if (ClientAutoLoadout[client].itemList.Length == 0)
+				AutoLoadouts_RemovePlayerLoadout(client);
+			
+			continue;
+		}
+		
+		int result = BUY_RESULT_CANT_AFFORD;
 		if (item.level == 0)
 		{
-			if (Store_TryToBuyItem(client, item.index))
-			{
+			result = Store_TryToBuyItem(client, item.index, true);
+			if (result == BUY_RESULT_SUCCESS)
 				SPrintToChat(client, "%t %s", "Autoloadout Bought Item", item.name);
-				couldAfford = true;
-			}
 		}
 		else
 		{
 			Item storeItem;
 			Store_GetItemByIndex(item.index, storeItem);
-			if (Store_TryToPapWeapon(client, storeItem, item.index, item.level))
+			if (Store_TryToPapWeapon(client, storeItem, item.index, item.level, PAP_DESC_BOUGHT_AUTO, true))
 			{
 				SPrintToChat(client, "%t %s", "Autoloadout Enhance Item", item.name);
-				couldAfford = true;
+				result = BUY_RESULT_SUCCESS;
 			}
 		}
 		
-		if (couldAfford)
+		if (result == BUY_RESULT_SUCCESS || result == BUY_RESULT_ALREADY_HAS_ITEM)
 			ClientAutoLoadout[client].itemList.Erase(0);
 		
-		// Likely can't afford the next item, leave the starter store if we're in it
-		if (!couldAfford && StarterCashMode[client])
-		{
+		// Can't afford the next item, leave the starter store if we're in it
+		if (result == BUY_RESULT_CANT_AFFORD && StarterCashMode[client])
 			StarterCashMode[client] = false;
-		}
-			
 		
 		// We're done and don't need the auto loadout anymore
 		if (ClientAutoLoadout[client].itemList.Length == 0)
@@ -353,7 +358,6 @@ public int AutoLoadouts_DisplayLoadouts_Page(Menu menu, MenuAction action, int c
 				}
 			}
 		}
-
 	}
 	return 0;
 }
