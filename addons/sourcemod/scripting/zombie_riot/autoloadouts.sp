@@ -12,14 +12,14 @@ enum
 
 enum struct AutoLoadout
 {
-	char name[64];
+	char name[128];
 	int type;
 	ArrayList itemList;
 }
 
 enum struct AutoLoadoutItem
 {
-	char name[64];
+	char name[128];
 	int index;
 	int level;
 }
