@@ -176,6 +176,9 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0, bool forcesilentMode = fal
 		float TempForce[3];
 		CurrentGibCount += 1;
 
+		//failsafea incase it sets nothing
+		DispatchKeyValue(prop, "model", "models/gibs/antlion_gib_large_1.mdl");
+
 		TempPosition = startPosition;
 		
 		float ModelscaleSet = 1.0;

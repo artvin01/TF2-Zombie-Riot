@@ -493,8 +493,8 @@ void OnMapStart_NPC_Base()
 	PrecacheSound(SOUND_DANGER_KILL_THIS_GUY_IMMEDIATELY);
 	PrecacheSound(SOUND_HHH_DEATH);
 	PrecacheModel(BONEZONE_MODEL);
-	PrecacheModel(BONEZONE_MODEL_BOSS);
-	PrecacheModel(MODEL_SSB);
+//	PrecacheModel(BONEZONE_MODEL_BOSS);
+//	PrecacheModel(MODEL_SSB);
 	PrecacheSound(SND_TRANSFORM);
 	PrecacheSound(SND_GIB_SKELETON);
 	#endif
