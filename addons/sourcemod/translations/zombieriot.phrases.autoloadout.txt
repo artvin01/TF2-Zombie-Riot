@@ -4,55 +4,68 @@
 	"Autoloadout Select Header"
 	{
 		"en" 		"Select which autoloadout you'd want to have."
+		"ko"		"사용하고 싶은 자동 로드아웃을 선택하세요."
 	}
 	"Autoloadout Page"
 	{
 		"en" 		"Autoloadouts"
+		"ko"		"자동 로드아웃"
 	}
 	"Autoloadout Disable"
 	{
 		"en" 		"Autoloadouts DISABLED FOR THIS MAP"
+		"ko"		"현재 맵에서는 자동 로드아웃 비활성화"
 	}
 	"Autoloadout Store Page"
 	{
 		"en" 		"Back to the store"
+		"ko"		"상점으로 돌아가기"
 	}
 	"Autoloadout Current Have"
 	{
 		"en" 		"Current Autoloadout:"
+		"ko"		"현재 자동 로드아웃:"
 	}
 	"Autoloadout CancelLoadout"
 	{
 		"en" 		"Cancel Current Autoloadout"
+		"ko"		"현재 자동 로드아웃 취소"
 	}
 	"Autoloadout Bought Item"
 	{
 		"en" 		"Bought Item:"
+		"ko"		"구매한 아이템:"
 	}
 	"Autoloadout Enhance Item"
 	{
 		"en" 		"Enhanced Item:"
+		"ko"		"강화된 아이템:"
 	}
 
 	
 	"Ranged 1"
 	{
 		"en" 		"Ranger: Fast Fire [Easy]"
+		"ko"		"원거리: 속사 (쉬움)"
 	}
 	"Ranged 2"
 	{
 		"en" 		"Ranger: Shotgun [Easy]"
+		"ko"		"원거리: 산탄총 (쉬움)"
 	}
 	"Medic 1"
 	{
 		"en" 		"Medic: Medigun [Normal]"
+		"ko"		"치유: 메디건 (보통)"
 	}
 	"Mage 1"
 	{
 		"en" 		"Mage: Explosive Spell [Normal]"
+		"ko"		"마법: 폭발 마법 (보통)"
 	}
 	"Melee 1"
 	{
 		"en" 		"Melee: Scythe [Hard]"
+		"ko"		"근접: 낫 (어려움)"
 	}
 }
