@@ -205,6 +205,7 @@ public void Weapon_BurningThumb_M2(int client, int weapon, bool crit, int slot)
 			int ShieldGive;
 			RemoveSpecificBuff(client, "Shielding");
 			ApplyStatusEffect(client, client, "Shielding", TimeUntillReach);
+			ApplyStatusEffect(client, client, "Solid Stance", TimeUntillReach);	
 			ShieldGive = ReturnEntityMaxHealth(client) / 13;
 
 			Shielding_Add(client, ShieldGive);
