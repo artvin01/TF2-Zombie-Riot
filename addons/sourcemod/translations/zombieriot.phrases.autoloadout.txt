@@ -4,41 +4,48 @@
 	"Autoloadout Select Header"
 	{
 		"en" 		"Select which autoloadout you'd want to have."
+		"ko"		"사용하고 싶은 자동 로드아웃을 선택하세요."
 		"ru"		"Выберите с каким авто-снаряжением вы хотите играть."
 		"pl"		"Wybierz który przygotowany zestaw wyposażenia chcesz mieć."
 	}
 	"Autoloadout Page"
 	{
 		"en" 		"Autoloadouts"
+		"ko"		"자동 로드아웃"
 		"ru"		"Авто-снаряжение"
 		"pl"		"przygotowane zestawy wyposażenia"
 	}
 	"Autoloadout Disable"
 	{
 		"en" 		"Autoloadouts DISABLED FOR THIS MAP"
+		"ko"		"현재 맵에서는 자동 로드아웃 비활성화"
 		"ru"		"Авто-Снаряжение отключено для этой карты."
 		"pl"		"przygotowane zestawy wyposażenia wyłączone na tej mapie."
 	}
 	"Autoloadout Store Page"
 	{
 		"en" 		"Back to the store"
+		"ko"		"상점으로 돌아가기"
 		"ru"		"Назад в магазин"
 		"pl"		"Wróć do sklepu"
 	}
 	"Autoloadout Current Have"
 	{
 		"en" 		"Current Autoloadout:"
+		"ko"		"현재 자동 로드아웃:"
 		"ru"		"Выбранное Авто-Снаряжение:"
 		"pl"		"Aktualne przygotowane wyposażenie:"
 	}
 	"Autoloadout CancelLoadout"
 	{
 		"en" 		"Cancel Current Autoloadout"
+		"ko"		"현재 자동 로드아웃 취소"
 		"ru"		"Отменть текущее Авто-Снаряжение"
 	}
 	"Autoloadout Bought Item"
 	{
 		"en" 		"Bought Item:"
+		"ko"		"구매한 아이템:"
 		"ru"		"Куплен предмет:"
 		"pl"		"Anuluj aktualne przygotowane wyposażenie"
 	}
@@ -54,35 +61,41 @@
 		"en" 		"Enhanced Item: {1} - {2}"
 		"pl"		"Ulepszono przedmiot: {1} - {2}"
 		"ru"		"Улучшен предмет: {1} - {2}"
+		"ko"		"강화된 아이템: {1} - {2}"
 	}
 	
 	"Ranged 1"
 	{
 		"en" 		"Ranger: Fast Fire [Easy]"
+		"ko"		"원거리: 속사 (쉬움)"
 		"ru"		"Стрелок: Скорострел [Легко]"
 		"pl"		"Daleki Zasięg: Szybko szczelny [łatwy]"
 	}
 	"Ranged 2"
 	{
 		"en" 		"Ranger: Shotgun [Easy]"
+		"ko"		"원거리: 산탄총 (쉬움)"
 		"ru"		"Стрелок: Дробовик [Легко]"
 		"pl"		"Daleki Zasięg: Shotgun [łatwy]"
 	}
 	"Medic 1"
 	{
 		"en" 		"Medic: Medigun [Normal]"
+		"ko"		"치유: 메디건 (보통)"
 		"ru"		"Медик: Лечебная пушка [Нормально]"
 		"pl"		"Medyk: Medigun [Normalny]"
 	}
 	"Mage 1"
 	{
 		"en" 		"Mage: Explosive Spell [Normal]"
+		"ko"		"마법: 폭발 마법 (보통)"
 		"ru"		"Маг: Взрывные заклинания [Нормально]"
 		"pl"		"Mag: Eksplodujące zaklęcie [Normalny]"
 	}
 	"Melee 1"
 	{
 		"en" 		"Melee: Scythe [Hard]"
+		"ko"		"근접: 낫 (어려움)"
 		"ru"		"Ближний бой: Коса [Сложно]"
 		"pl"		"walka wręcz: Kosa [Trudny]"
 	}
