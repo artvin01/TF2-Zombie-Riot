@@ -5,8 +5,8 @@ import json
 import vtf2img
 from collections import defaultdict
 from re import sub
-from bs4 import BeautifulSoup
-from bs4.formatter import Formatter
+#from bs4 import BeautifulSoup
+#from bs4.formatter import Formatter
 from ruamel.yaml import YAML
 type TypeSourceObject = list[list[int] | str | int ]
 
@@ -382,9 +382,7 @@ def get_sources(files: dict[str,str], variables: dict[str,str | int]) -> dict[st
 
     return found
 
-def get_refs(content: str, value: str | int, negative_on_fail:bool=False, print_:bool=False) -> list[int]:
-    if print_:
-        write("debug.json", json.dumps(content.split("\n"),indent=2))
+def get_refs(content: str, value: str | int, negative_on_fail:bool=False) -> list[int]:
     result: list[int] = [i+1 for i,line in enumerate(content.split("\n")) if str(value) in line]
     if len(result) > 0:
         return result
