@@ -50,7 +50,7 @@
 		"pl"		"Anuluj aktualne przygotowane wyposażenie"
 	}
 	"Autoloadout Bought Item"
-	
+	{
 		"#format"	"{1:s}"
 		"en" 		"Bought Item: {1}"
 		"pl"		"Kupiono przedmiot: {1}"
