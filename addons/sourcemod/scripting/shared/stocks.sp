@@ -3726,6 +3726,8 @@ stock void DisplayCritAboveNpc(int victim = -1, int client, bool sound, float po
 		}
 
 	}
+	if(ParticleIndex == -2)
+		return;
 	if(ParticleIndex != -1)
 	{
 		TE_ParticleInt(ParticleIndex, chargerPos);

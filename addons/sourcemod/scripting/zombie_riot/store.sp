@@ -19,6 +19,13 @@ enum
 	VIEW_TEUTON_EXCEPTION,
 }
 
+enum
+{
+	BUY_RESULT_CANT_AFFORD,
+	BUY_RESULT_ALREADY_HAS_ITEM,
+	BUY_RESULT_SUCCESS,
+}
+
 enum struct ItemInfo
 {
 	int Cost;
@@ -575,6 +582,7 @@ enum struct Item
 	int CurrentClipSaved[MAXPLAYERS];
 	bool BoughtBefore[MAXPLAYERS];
 	int RogueBoughtRecently[MAXPLAYERS];
+	bool AutoBought[MAXPLAYERS];
 	
 	bool NPCSeller;
 	float NPCSeller_Discount;
@@ -652,6 +660,10 @@ static Item LastBoughtWeapon[MAXPLAYERS];
 static bool HasMultiInSlot[MAXPLAYERS][6];
 static Function HolsterFunc[MAXPLAYERS] = {INVALID_FUNCTION, ...};
 
+bool IsInLoadoutMenu(int client)
+{
+	return InLoadoutMenu[client];
+}
 enum struct AutoPapInfo
 {
 	int index;
@@ -1570,7 +1582,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 				//int owner = -1;
 				if (!PapPreviewMode[client])
 				{
-					if (!Store_TryToPapWeapon(client, item, values[0], values[1]))
+					if (!Store_TryToPapWeapon(client, item, values[0], values[1], PAP_DESC_BOUGHT, false))
 					{
 						if (!Store_IsItemInClientAutoPapList(client, values[0], values[1]))
 						{
@@ -1598,7 +1610,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
-bool Store_TryToPapWeapon(int client, Item item, int index, int level, int descType = PAP_DESC_BOUGHT)
+bool Store_TryToPapWeapon(int client, Item item, int index, int level, int descType, bool auto)
 {
 	ItemInfo info;
 	if(item.GetItemInfo(level, info) && info.Cost)
@@ -1664,6 +1676,9 @@ bool Store_TryToPapWeapon(int client, Item item, int index, int level, int descT
 			
 			Store_ApplyAttribs(client);
 			Store_GiveAll(client, GetClientHealth(client));
+			
+			if (!auto && AutoLoadouts_IsClientUsing(client))
+				AutoLoadouts_RemoveEnhancementsFromClientList(client);
 			
 			LastBoughtWeapon[client] = item;
 
@@ -2137,16 +2152,19 @@ void Store_ResetClient(int client)
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
-		if(item.Owned[client] || item.Scaled[client] || item.Equipped[client])
+		if(item.Owned[client] || item.Scaled[client] || item.Equipped[client] || item.AutoBought[client])
 		{
 			item.Owned[client] = 0;
 			item.Scaled[client] = 0;
 			item.Equipped[client] = false;
+			item.AutoBought[client] = false;
 			StoreItems.SetArray(i, item);
 		}
 	}
 
 	UsingChoosenTags[client] = false;
+	
+	AutoLoadouts_RemovePlayerLoadout(client);
 	delete ChoosenTags[client];
 }
 
@@ -3687,11 +3705,12 @@ static void MenuPage(int client, int section)
 			return;
 		}
 		
-		char buf[84];
+		char buf[255];
 		if(StarterCashMode[client])
 			Format(buf, sizeof(buf), "%T", "Loadout Credits", client, cash);
 		else
 			Format(buf, sizeof(buf), "%T", "Credits_Menu", client, cash, GlobalExtraCash + CashReceivedNonWave[client]);
+		Format(buf, sizeof(buf), "%T", "Credits_Menu", client, cash, GlobalExtraCash + CashReceivedNonWave[client]);
 		item.GetItemInfo(0, info);
 		menu = new Menu(Store_MenuPage);
 		if(NPCOnly[client] == 1)
@@ -3719,15 +3738,19 @@ static void MenuPage(int client, int section)
 		}
 	}
 	else
-	{
+	{		
 		int xpLevel = LevelToXp(Level[client]);
 		int xpNext = LevelToXp(Level[client]+1);
 		
-		char buf[84];
+		char buf[255];
 		if(StarterCashMode[client])
 			Format(buf, sizeof(buf), "%T", "Loadout Credits", client, cash);
 		else
 			Format(buf, sizeof(buf), "%T", "Credits_Menu", client, cash, GlobalExtraCash + CashReceivedNonWave[client]);
+		if(AutoLoadouts_IsClientUsing(client))
+		{
+			Autoloadout_DisplayCurrentAuto(client, buf, sizeof(buf));
+		}
 		int nextAt = xpNext-xpLevel;
 		menu = new Menu(Store_MenuPage);
 		if(NPCOnly[client] == 1)
@@ -4154,11 +4177,8 @@ static void MenuPage(int client, int section)
 	}
 	else if(section == -1 && !NPCOnly[client])
 	{
-		if(Level[client] > STARTER_WEAPON_LEVEL)
-		{
-			Format(buffer, sizeof(buffer), "%T", "Loadouts", client);
-			menu.AddItem("-22", buffer);
-		}
+		Format(buffer, sizeof(buffer), "%T", "Loadouts", client);
+		menu.AddItem("-22", buffer);
 
 		if(Rogue_ArtifactEnabled())
 		{
@@ -4585,6 +4605,9 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 						Format(buffer, sizeof(buffer), "%T", "Niko Oneshot", client);
 						menu2.AddItem("-48", buffer);
 
+						Format(buffer, sizeof(buffer), "%T", "Claire Fpe", client);
+						menu2.AddItem("-152", buffer);
+
 						Format(buffer, sizeof(buffer), "%T", "Skeleboy", client);
 						menu2.AddItem("-49", buffer);
 
@@ -4632,6 +4655,12 @@ public int Store_MenuPage(Menu menu, MenuAction action, int client, int choice)
 					case -151:
 					{
 						OverridePlayerModel(client, HHH_SkeletonOverride, true);
+						JoinClassInternal(client, CurrentClass[client]);
+						MenuPage(client, -1);
+					}
+					case -152:
+					{
+						OverridePlayerModel(client, CLAIRE_FPE, true);
 						JoinClassInternal(client, CurrentClass[client]);
 						MenuPage(client, -1);
 					}
@@ -4820,18 +4849,13 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 			{
 				case 0:
 				{
-					int cash = Store_GetPlayerCash(client, false);
-					if(ClientTutorialStep(client) == 2)
-					{
-						SetClientTutorialStep(client, 3);
-						DoTutorialStep(client, false);	
-					}
-		
-					int level = item.Owned[client]-1;
+					
+					int level = item.Owned[client] - 1;
 					if(item.ParentKit || level < 0)
 						level = 0;
 
 					item.GetItemInfo(level, info);
+					
 					if(info.ScrapCost > 0) //Make scrap cost preffered, dont bother with anything else.
 					{
 						if((info.ScrapCost > (Scrap[client])) && !CvarInfiniteCash.BoolValue)
@@ -4842,7 +4866,7 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 						float VecOrigin[3];
 						GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", VecOrigin);
 						VecOrigin[2] += 45.0;
-
+						
 						Stock_SpawnGift(VecOrigin, GIFT_MODEL, 45.0, view_as<ZRGiftRarity>(info.UnboxRarity -1)); //since they are one lower
 						
 						if(!CvarInfiniteCash.BoolValue)
@@ -4851,12 +4875,13 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 						}
 						
 						MenuPage(client, index);
-
+						
 						return 0;
 					}
 					
-					if(item.Equipped[client])	// Buy Ammo
+					if (item.Equipped[client])
 					{
+						int cash = Store_GetPlayerCash(client, false);
 						if(info.AmmoBuyMenuOnly && info.AmmoBuyMenuOnly < Ammo_MAX)	// Weapon with A2735mmo, buyable only
 						{
 							Store_SpendPlayerCash(client, AmmoData[info.AmmoBuyMenuOnly][0]);
@@ -4875,170 +4900,16 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 							SetAmmo(client, info.Ammo, ammo);
 							CurrentAmmo[client][info.Ammo] = ammo;
 						}
-					}
-					else if(item.ParentKit)	// Weapon Kit
-					{
-						if(!item.Owned[client])	// Buy All Items
-						{
-							int base = info.Cost;
-							ItemCost(client, item, info.Cost);
-							if(info.Cost <= cash)
-							{
-								Store_SpendPlayerCash(client, info.Cost);
-								Store_BuyClientItem(client, index, item, info);
-								item.BuyPrice[client] = info.Cost;
-								item.RogueBoughtRecently[client] += 1;
-								item.Sell[client] = ItemSell(base, info.Cost);
-								if(item.GregOnlySell == 2)
-								{
-									item.BuyPrice[client] = 0;
-									item.Sell[client] = 0;
-								}
-								item.BuyWave[client] = Waves_GetRoundScale();
-								item.Equipped[client] = false;
-
-								if(item.GregOnlySell == 2)
-								{
-									item.Sell[client] = 0;
-								}
-								if(!item.BoughtBefore[client])
-								{
-									item.BoughtBefore[client] = true;
-								//	StoreBalanceLog.Rewind();
-								//	StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
-								}
-								
-								ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
-							}
-						}
 						
-						if(item.Owned[client] && !item.Equipped[client])	// Equip All Items
-						{
-							Store_EquipSlotCheck(client, item);
-
-							item.Equipped[client] = true;
-							StoreItems.SetArray(index, item);
-							
-							static Item subItem;
-							int length = StoreItems.Length;
-							for(int i; i < length; i++)
-							{
-								StoreItems.GetArray(i, subItem);
-								if(subItem.Section == index)
-								{
-									Store_EquipSlotCheck(client, subItem);
-									subItem.Owned[client] = item.Owned[client];
-									subItem.Equipped[client] = true;
-									StoreItems.SetArray(i, subItem);
-									
-									LastBoughtWeapon[client] = subItem;
-								}
-							}
-							
-							if(!TeutonType[client] && !i_ClientHasCustomGearEquipped[client])
-							{	
-								Store_ApplyAttribs(client);								
-								Store_GiveAll(client, GetClientHealth(client));
-							}
-						}
 					}
-					else if(info.Classname[0])	// Weapon
+					else if (!item.Owned[client])
 					{
-						if(!item.Owned[client])	// Buy Weapon
-						{
-							int base = info.Cost;
-							ItemCost(client, item, info.Cost);
-							if(info.Cost <= cash)
-							{
-								Store_SpendPlayerCash(client, info.Cost);
-								Store_BuyClientItem(client, index, item, info);
-								item.BuyPrice[client] = info.Cost;
-								item.RogueBoughtRecently[client] += 1;
-								item.Sell[client] = ItemSell(base, info.Cost);
-								item.BuyWave[client] = Waves_GetRoundScale();
-								if(item.GregOnlySell == 2)
-								{
-									item.Sell[client] = 0;
-								}
-								if(info.NoRefundWanted)
-								{
-									item.BuyWave[client] = -1;
-									item.Sell[client] = item.Sell[client] / 2;
-								}
-								item.Equipped[client] = false;
-
-								if(!item.BoughtBefore[client])
-								{
-									item.BoughtBefore[client] = true;
-								//	StoreBalanceLog.Rewind();
-								//	StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
-								}
-								
-								ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
-								
-								LastBoughtWeapon[client] = item;
-							}
-						}
-						
-						if(item.Owned[client] && !item.Equipped[client])	// Equip Weapon
-						{
-							Store_EquipSlotCheck(client, item);
-
-							item.Equipped[client] = true;
-							StoreItems.SetArray(index, item);
-							
-							if(!TeutonType[client] && !i_ClientHasCustomGearEquipped[client])
-							{
-								Store_GiveItem(client, index, item.Equipped[client]);
-								if(TF2_GetClassnameSlot(info.Classname) == TFWeaponSlot_Melee)
-									Store_RemoveNullWeapons(client);
-								
-								CheckInvalidSlots(client);
-								CheckMultiSlots(client);
-								Manual_Impulse_101(client, GetClientHealth(client));
-							}
-						}
-					}
-					else if(!item.Owned[client])	// Buy Perk
-					{
-						int base = info.Cost;
-						ItemCost(client, item, info.Cost);
-						if(info.Cost <= cash)
-						{
-							Store_SpendPlayerCash(client, info.Cost);
-							Store_BuyClientItem(client, index, item, info);
-							item.BuyPrice[client] = info.Cost;
-							item.RogueBoughtRecently[client] += 1;
-							item.Sell[client] = ItemSell(base, info.Cost);
-							item.BuyWave[client] = Waves_GetRoundScale();
-							if(item.GregOnlySell == 2)
-							{
-								item.Sell[client] = 0;
-							}
-							else if(info.NoRefundWanted)
-							{
-								item.BuyWave[client] = -1;
-								item.Sell[client] = item.Sell[client] / 2;
-							}
-							if(!item.BoughtBefore[client])
-							{
-								item.BoughtBefore[client] = true;
-							//	StoreBalanceLog.Rewind();
-							//	StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
-							}
-							
-							StoreItems.SetArray(index, item);
-							
-							ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
-
-							Store_ApplyAttribs(client);
-							Store_GiveAll(client, GetClientHealth(client));
-						}
+						Store_TryToBuyItem(client, index, false);
 					}
 					else
 					{
 						Store_EquipSlotCheck(client, item);
-
+				
 						item.Equipped[client] = true;
 						StoreItems.SetArray(index, item);
 						
@@ -5215,6 +5086,197 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 	}
 	return 0;
 }
+
+int Store_TryToBuyItem(int client, int index, bool auto)
+{
+	// Gotta dupe item and info in the menu. sorry.
+	Item item;
+	StoreItems.GetArray(index, item);
+	
+	if (item.Owned[client])
+		return BUY_RESULT_ALREADY_HAS_ITEM;
+	
+	int cash = Store_GetPlayerCash(client, false);
+	
+	ItemInfo info;
+	int level = item.Owned[client] - 1;
+	if(item.ParentKit || level < 0)
+		level = 0;
+	
+	item.GetItemInfo(level, info);
+	
+	if(item.ParentKit)	// Weapon Kit
+	{
+		if(!item.Owned[client])	// Buy All Items
+		{
+			int base = info.Cost;
+			ItemCost(client, item, info.Cost);
+			if(info.Cost > cash)
+				return BUY_RESULT_CANT_AFFORD;
+			
+			Store_SpendPlayerCash(client, info.Cost);
+			Store_BuyClientItem(client, index, item, info);
+			item.BuyPrice[client] = info.Cost;
+			item.RogueBoughtRecently[client] += 1;
+			item.Sell[client] = ItemSell(base, info.Cost);
+			if(item.GregOnlySell == 2)
+			{
+				item.BuyPrice[client] = 0;
+				item.Sell[client] = 0;
+			}
+			item.BuyWave[client] = Waves_GetRoundScale();
+			item.Equipped[client] = false;
+
+			if(item.GregOnlySell == 2)
+			{
+				item.Sell[client] = 0;
+			}
+			if(!item.BoughtBefore[client])
+			{
+				item.BoughtBefore[client] = true;
+			//	StoreBalanceLog.Rewind();
+			//	StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
+				
+				ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
+			}
+		}
+		
+		if(item.Owned[client] && !item.Equipped[client])	// Equip All Items
+		{
+			Store_EquipSlotCheck(client, item);
+
+			item.Equipped[client] = true;
+			item.AutoBought[client] = auto;
+			
+			StoreItems.SetArray(index, item);
+			
+			static Item subItem;
+			int length = StoreItems.Length;
+			for(int i; i < length; i++)
+			{
+				StoreItems.GetArray(i, subItem);
+				if(subItem.Section == index)
+				{
+					Store_EquipSlotCheck(client, subItem);
+					subItem.Owned[client] = item.Owned[client];
+					subItem.Equipped[client] = true;
+					StoreItems.SetArray(i, subItem);
+					
+					LastBoughtWeapon[client] = subItem;
+				}
+			}
+			
+			if(!TeutonType[client] && !i_ClientHasCustomGearEquipped[client])
+			{	
+				Store_ApplyAttribs(client);								
+				Store_GiveAll(client, GetClientHealth(client));
+			}
+		}
+	}
+	else if(info.Classname[0])	// Weapon
+	{
+		if(!item.Owned[client])	// Buy Weapon
+		{
+			int base = info.Cost;
+			ItemCost(client, item, info.Cost);
+			if(info.Cost > cash)
+				return BUY_RESULT_CANT_AFFORD;
+			
+			Store_SpendPlayerCash(client, info.Cost);
+			Store_BuyClientItem(client, index, item, info);
+			item.BuyPrice[client] = info.Cost;
+			item.RogueBoughtRecently[client] += 1;
+			item.Sell[client] = ItemSell(base, info.Cost);
+			item.BuyWave[client] = Waves_GetRoundScale();
+			if(item.GregOnlySell == 2)
+			{
+				item.Sell[client] = 0;
+			}
+			if(info.NoRefundWanted)
+			{
+				item.BuyWave[client] = -1;
+				item.Sell[client] = item.Sell[client] / 2;
+			}
+			item.Equipped[client] = false;
+
+			if(!item.BoughtBefore[client])
+			{
+				item.BoughtBefore[client] = true;
+			//	StoreBalanceLog.Rewind();
+			//	StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
+			}
+			
+			if (!auto && AutoLoadouts_IsClientUsing(client))
+				AutoLoadouts_RemoveEnhancementsFromClientList(client);
+			
+			ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
+			
+			LastBoughtWeapon[client] = item;
+		}
+		
+		if(item.Owned[client] && !item.Equipped[client])	// Equip Weapon
+		{
+			Store_EquipSlotCheck(client, item);
+
+			item.Equipped[client] = true;
+			item.AutoBought[client] = auto;
+			
+			StoreItems.SetArray(index, item);
+			
+			if(!TeutonType[client] && !i_ClientHasCustomGearEquipped[client])
+			{
+				Store_GiveItem(client, index, item.Equipped[client]);
+				if(TF2_GetClassnameSlot(info.Classname) == TFWeaponSlot_Melee)
+					Store_RemoveNullWeapons(client);
+				
+				CheckInvalidSlots(client);
+				CheckMultiSlots(client);
+				Manual_Impulse_101(client, GetClientHealth(client));
+			}
+		}
+	}
+	else if(!item.Owned[client])	// Buy Perk
+	{
+		int base = info.Cost;
+		ItemCost(client, item, info.Cost);
+		if(info.Cost > cash)
+			return BUY_RESULT_CANT_AFFORD;
+		
+		Store_SpendPlayerCash(client, info.Cost);
+		Store_BuyClientItem(client, index, item, info);
+		item.BuyPrice[client] = info.Cost;
+		item.RogueBoughtRecently[client] += 1;
+		item.Sell[client] = ItemSell(base, info.Cost);
+		item.BuyWave[client] = Waves_GetRoundScale();
+		if(item.GregOnlySell == 2)
+		{
+			item.Sell[client] = 0;
+		}
+		else if(info.NoRefundWanted)
+		{
+			item.BuyWave[client] = -1;
+			item.Sell[client] = item.Sell[client] / 2;
+		}
+		if(!item.BoughtBefore[client])
+		{
+			item.BoughtBefore[client] = true;
+		//	StoreBalanceLog.Rewind();
+		//	StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
+		}
+		
+		item.AutoBought[client] = auto;
+		
+		StoreItems.SetArray(index, item);
+		
+		ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
+
+		Store_ApplyAttribs(client);
+		Store_GiveAll(client, GetClientHealth(client));
+	}
+	
+	return BUY_RESULT_SUCCESS;
+}
+
 //anymore then 20 slots iss overkill.
 #define MAX_LOADOUT_SLOTS 20
 static void LoadoutPage(int client, bool last = false)
@@ -5235,6 +5297,16 @@ static void LoadoutPage(int client, bool last = false)
 		}
 	}
 	
+	if(!CvarDisableAutoLoadouts.BoolValue)
+	{
+		Format(buffer, sizeof(buffer), "[%T]", "Autoloadout Page", client);
+		menu.AddItem("-123", buffer, ITEMDRAW_DEFAULT);
+	}
+	else
+	{
+		Format(buffer, sizeof(buffer), "[%T]", "Autoloadout Disable", client);
+		menu.AddItem("-0", buffer, ITEMDRAW_DISABLED);
+	}
 	if(!length)
 	{
 		Format(buffer, sizeof(buffer), "%T", "None", client);
@@ -5277,6 +5349,15 @@ public int Store_LoadoutPage(Menu menu, MenuAction action, int client, int choic
 			
 			char buffer[32];
 			menu.GetItem(choice, buffer, sizeof(buffer));
+			int id = StringToInt(buffer);
+			switch(id)
+			{
+				case -123:
+				{
+					AutoLoadouts_DisplayLoadouts(client);
+					return 0;
+				}
+			}
 			LoadoutItem(client, buffer);
 		}
 	}
@@ -5649,7 +5730,7 @@ void Store_ApplyAttribs(int client)
 
 	float value;
 	char buffer1[12];
-	if(i_ClientHasCustomGearEquipped[client] < 2)
+	if(i_ClientHasCustomGearEquipped[client] != CUSTOMGEAR_QUANTUM_SUIT)
 	{
 		static ItemInfo info;
 		char buffer2[32];
@@ -7814,6 +7895,7 @@ void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip,
 				item.RogueBoughtRecently[client] -= 1;
 				
 				item.Owned[client] = 0;
+				item.AutoBought[client] = false;
 				if(item.Scaled[client] > 0)
 					item.Scaled[client]--;
 				
@@ -8011,7 +8093,7 @@ void Store_HandleAutoPapList()
 				continue;
 			}
 			
-			if (Store_TryToPapWeapon(client, item, autoInfo.index, autoInfo.level, PAP_DESC_BOUGHT_AUTO))
+			if (Store_TryToPapWeapon(client, item, autoInfo.index, autoInfo.level, PAP_DESC_BOUGHT_AUTO, false))
 			{
 				if (item.ChildKit)
 				{
@@ -8033,10 +8115,7 @@ void Store_HandleAutoPapList()
 					break;
 				}
 				
-				int next = info.PackSkip;
-				if (next <= 0)
-					next = 1;
-				
+				int next = info.PackSkip + 1;
 				autoInfo.level += next;
 				AutoPapList[client].SetArray(i, autoInfo);
 				break; // Only allow 1 enhancement per timer tick
@@ -8063,5 +8142,28 @@ void Store_HandleAutoPapList()
 		
 		if (AutoPapList[client].Length == 0)
 			delete AutoPapList[client];
+	}
+}
+
+int Store_GetItemIndexByName(const char[] name)
+{
+	return StoreItems.FindString(name, Item::Name);
+}
+
+void Store_GetItemByIndex(int index, Item item)
+{
+	StoreItems.GetArray(index, item);
+}
+
+void Store_SellAutoBoughtItems(int client)
+{
+	int length = StoreItems.Length;
+	for (int i = 0; i < length; i++)
+	{
+		Item item;
+		StoreItems.GetArray(i, item);
+		
+		if (item.Owned[client] && item.AutoBought[client])
+			TryAndSellOrUnequipItem(i, item, client, false, false, true);
 	}
 }

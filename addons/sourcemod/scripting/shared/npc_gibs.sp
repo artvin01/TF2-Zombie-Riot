@@ -66,6 +66,12 @@ static const char g_GibModelEngineer[][] =
 
 
 
+// didnt use correct models sometimes due to
+/*
+Failed to find attachment point specified for particle effect in model '(null)' keyvalues section. Trying to spawn effect 'player_intel_papertrail' on attachment named 'paperpoint'
+spam
+*/
+
 static const char g_GibModelRobotScout[][] =
 {
 	"models/bots/gibs/scoutbot_gib_chest.mdl",
@@ -80,15 +86,15 @@ static const char g_GibModelRobotSniper[][] =
 };
 static const char g_GibModelRobotSoldier[][] =
 {
-	"models/bots/gibs/demobot_gib_pelvis.mdl",
-	"models/bots/gibs/demobot_gib_leg2.mdl",
-	"models/bots/gibs/demobot_gib_head.mdl",
+	"models/bots/gibs/heavybot_gib_chest.mdl",
+	"models/bots/gibs/heavybot_gib_pelvis.mdl",
+	"models/bots/gibs/heavybot_gib_head.mdl",
 };
 static const char g_GibModelRobotDemoMan[][] =
 {
-	"models/bots/gibs/demobot_gib_pelvis.mdl",
-	"models/bots/gibs/demobot_gib_leg2.mdl",
-	"models/bots/gibs/demobot_gib_head.mdl",
+	"models/bots/gibs/heavybot_gib_chest.mdl",
+	"models/bots/gibs/heavybot_gib_pelvis.mdl",
+	"models/bots/gibs/heavybot_gib_head.mdl",
 };
 static const char g_GibModelRobotMedic[][] =
 {
@@ -169,6 +175,9 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0, bool forcesilentMode = fal
 		float TempPosition[3];
 		float TempForce[3];
 		CurrentGibCount += 1;
+
+		//failsafea incase it sets nothing
+		DispatchKeyValue(prop, "model", "models/gibs/antlion_gib_large_1.mdl");
 
 		TempPosition = startPosition;
 		
@@ -425,6 +434,8 @@ int Npc_DoFittingNpcGibs(int pThis, int GibLoop, int GibProp)
 		int pos = FindCharInString(model, '/', true);
 		if(pos != -1)
 			model[pos] = '\0';
+		ReplaceStringEx(model, sizeof(model), "_boss", "", _, _, false);
+		ReplaceStringEx(model, sizeof(model), "bot_", "", _, _, false);
 
 		class = TF2_GetClass(model);
 		IsRobot = true;
@@ -455,6 +466,8 @@ int Npc_DoFittingNpcGibs(int pThis, int GibLoop, int GibProp)
 				DispatchKeyValue(GibProp, "model", g_GibModelSpy[GibLoop]);
 			case TFClass_Engineer:
 				DispatchKeyValue(GibProp, "model", g_GibModelEngineer[GibLoop]);
+			default:
+				DispatchKeyValue(GibProp, "model", g_GibModelRobotScout[GibLoop]);
 		}
 	}
 	else
@@ -479,6 +492,8 @@ int Npc_DoFittingNpcGibs(int pThis, int GibLoop, int GibProp)
 				DispatchKeyValue(GibProp, "model", g_GibModelRobotSpy[GibLoop]);
 			case TFClass_Engineer:
 				DispatchKeyValue(GibProp, "model", g_GibModelRobotEngineer[GibLoop]);
+			default:
+				DispatchKeyValue(GibProp, "model", g_GibModelRobotScout[GibLoop]);
 		}
 	}
 	return true;

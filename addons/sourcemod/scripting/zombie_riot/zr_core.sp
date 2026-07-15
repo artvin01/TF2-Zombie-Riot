@@ -605,6 +605,7 @@ char s_MissionClient[64]; // Who hired us for the current job
 #include "construction.sp"
 #include "betting.sp"
 #include "dungeons.sp"
+#include "autoloadouts.sp"
 #include "sm_skyboxprops.sp"
 #include "shared/sound_manualdownload.sp"
 #include "custom/homing_projectile_logic.sp"
@@ -1227,6 +1228,7 @@ public Action GlobalTimer(Handle timer)
 	Zombie_Delay_Warning();
 	Spawners_Timer();
 	Store_HandleAutoPapList();
+	AutoLoadouts_Handle();
 	
 	if(frame % 100)
 		return Plugin_Continue;
@@ -1279,7 +1281,7 @@ void ZR_ClientPutInServer(int client)
 	i_CurrentEquippedPerk[client] = 0;
 	UpdatePerkName(client);
 	i_HealthBeforeSuit[client] = 0;
-	i_ClientHasCustomGearEquipped[client] = 0;
+	i_ClientHasCustomGearEquipped[client] = CUSTOMGEAR_NONE;
 	
 	Construction_PutInServer(client);
 	if(CountPlayersOnServer() == 1)

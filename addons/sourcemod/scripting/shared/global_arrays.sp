@@ -174,6 +174,13 @@ public const int RenderColors_RPG[][] =
 	{0, 0, 0, 255}			//none, black.
 };
 
+enum
+{
+	CUSTOMGEAR_NONE = 0,
+	CUSTOMGEAR_VEHICLE_WEAPON,
+	CUSTOMGEAR_QUANTUM_SUIT,
+}
+
 bool ForceNiko;
 Handle g_hImpulse;
 
@@ -323,6 +330,7 @@ bool Viewchanges_PlayerModelsAnims[] =
 	true,
 	false,
 	true,
+	true,
 };
 
 ConVar cvarTimeScale;
@@ -412,7 +420,7 @@ int ClientAttribResetCount[MAXPLAYERS];
 
 //This is for going through things via lag comp or other reasons to teleport things away.
 //bool Do_Not_Regen_Mana[MAXPLAYERS];;
-int i_ClientHasCustomGearEquipped[MAXPLAYERS]={0, ...};
+int i_ClientHasCustomGearEquipped[MAXPLAYERS]={CUSTOMGEAR_NONE, ...};
 
 float delay_hud[MAXPLAYERS];
 float f_DelayBuildNotif[MAXPLAYERS];

@@ -19,7 +19,7 @@
 		"en"	"{yellow}Scales with playercount, unless youre the buff owner or enemies benefit from it."
 		"es"	"{yellow}Escala con la cantidad de jugadores, a menos que seas el emisor del buff o si el enemigo se beneficia de este."
 		"it"	"{yellow}Scala con il numero di giocatori, a meno che tu non sia il proprietario del buff o che i nemici non ne beneficino."
-		"ko"	"{yellow}플레이어 수에 따라 효과가 증가합니다. 당신이 버프를 건 장본인이거나 적도 똑같이 효과를 받는게 아니라면 말이죠."
+		"ko"	"{yellow}플레이어 수에 따라 수치가 조정됩니다. 당신이 버프를 건 장본인이거나 적도 똑같이 효과를 받는게 아니라면 말이죠."
 	}
 	"Teslar Shock"
 	{

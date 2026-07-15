@@ -166,7 +166,7 @@ public Action Blacksmith_TimerEffect(Handle timer, int client)
 {
 	if(IsClientInGame(client) && SmithLevel[client] > -1)
 	{
-		if(!dieingstate[client] && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && i_HealthBeforeSuit[client] == 0)
+		if(!dieingstate[client] && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && i_ClientHasCustomGearEquipped[client] == CUSTOMGEAR_NONE)
 		{
 			int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 			if(weapon != -1)

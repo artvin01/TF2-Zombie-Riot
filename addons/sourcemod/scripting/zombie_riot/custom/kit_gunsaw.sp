@@ -705,6 +705,8 @@ static void StealBodyForm(int client, int entity)
 		int pos = FindCharInString(model, '/', true);
 		if(pos != -1)
 			model[pos] = '\0';
+		ReplaceStringEx(model, sizeof(model), "_boss", "", _, _, false);
+		ReplaceStringEx(model, sizeof(model), "bot_", "", _, _, false);
 
 		class = TF2_GetClass(model);
 		effect = Body_Robot;

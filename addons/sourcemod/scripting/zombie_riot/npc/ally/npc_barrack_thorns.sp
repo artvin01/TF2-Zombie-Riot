@@ -671,6 +671,7 @@ public Action BarrackThorns_OnTakeDamage(int victim, int &attacker, int &inflict
 	
 	float Maxhealth = ReturnEntityMaxHealth(npc.index) + 0.0;
 	int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
+	f_ArmorCurrosionImmunity[npc.index][Element_Warped] = GetGameTime() + 5.0;
 	if((ReturnEntityMaxHealth(npc.index)/2) <= damage) // If teutonic takes a single instance of damage higher than 1/2 of his max hp he instead takes only 50% of his max hp as dmg
 	{
 		damage = Maxhealth/2;
@@ -681,7 +682,6 @@ public Action BarrackThorns_OnTakeDamage(int victim, int &attacker, int &inflict
 		npc.PlayThornsDeath();
 		ThornsDowned[npc.index] = 1;
 		ThornsRevive[npc.index] = GetGameTime() + 60.0; // 60 seconds to revive
-		npc.m_flNextMeleeAttack = GetGameTime() + 60.0;
 
 		b_NpcIsInvulnerable[npc.index] = true;
 		b_ThisEntityIgnored[npc.index] = true;
@@ -696,6 +696,8 @@ void SetDownedState_Thorns(int iNpc, bool StateDo)
 	BarrackThorns npc = view_as<BarrackThorns>(iNpc);
 	if(StateDo) // Make him go KO
 	{
+		npc.m_flNextMeleeAttack = FAR_FUTURE;
+		npc.m_flAttackHappens = 0.0;
 		ThornsDowned[iNpc] = 1;
 		ThornsRevive[iNpc] = GetGameTime() + 60.0;
 		b_ThisEntityIgnored[iNpc] = true;
@@ -707,6 +709,8 @@ void SetDownedState_Thorns(int iNpc, bool StateDo)
 		{
 			ThornsDowned[iNpc] = 0;
 		}
+		npc.m_flNextMeleeAttack = GetGameTime() + 1.0;
+		npc.m_flAttackHappens = 0.0;
 		ThornsRevive[iNpc] = 0.0;
 		b_ThisEntityIgnored[iNpc] = false;
 		b_NpcIsInvulnerable[iNpc] = false;

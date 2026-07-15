@@ -414,7 +414,7 @@ int AnarchyAbominationSelfDefense(AnarchyAbomination npc, bool &SpinSound)
 			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 			
-			SDKHook(projectile, SDKHook_StartTouch, AnarchyAbomination_Rocket_Particle_StartTouch);			
+			WandProjectile_ApplyFunctionToEntity(projectile, AnarchyAbomination_Rocket_Particle_StartTouch);	
 		}
 		if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.5))
 		{

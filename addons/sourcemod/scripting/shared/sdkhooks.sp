@@ -2754,7 +2754,7 @@ public Action SDKHook_NormalSHook(int clients[MAXPLAYERS], int &numClients, char
 						entity, channel, volume, level, pitch, flags,seed);
 					}
 					//nothing for niko. silent!
-					case NIKO_2:
+					case NIKO_2, CLAIRE_FPE:
 					{
 
 					}

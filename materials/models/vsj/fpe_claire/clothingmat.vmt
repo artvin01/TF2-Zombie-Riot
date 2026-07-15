@@ -1,0 +1,5 @@
+"VertexlitGeneric"
+{
+	"$basetexture" "models/vsj/fpe_claire/ClothingMAT"
+	"$surfaceprop" "Flesh"
+}

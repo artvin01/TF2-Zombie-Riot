@@ -121,11 +121,6 @@
 		"ko"		"무기들"
 		"it"		"Armi"
 	}
-	"Loadouts"
-	{
-		"en" 		"Loadouts"
-		"ko"		"로드아웃"
-	}
 	"Settings"
 	{
 		"en" 		"Settings"
