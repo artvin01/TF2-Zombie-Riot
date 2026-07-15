@@ -1472,6 +1472,7 @@
 		"chi"       	"属性升级"
 		"it"		"Potenziamenti"
 		"ko"		"개선"
+		"pl"		"Ulepszenia"
 	}
 	"Melee Upgrades"//Melee Upgrades HERE!!!
 	{
@@ -1485,6 +1486,7 @@
 		"chi"       	"近战升级"
 		"it"		"Potenziamenti in mischia"
 		"ko"		"근접 무기 개선"
+		"pl"		"Ulepszenia walki wręcz"
 	}
 	"Cannibalism"
 	{
@@ -1599,6 +1601,7 @@
 		"chi"       	"建筑"
 		"it"		"Potenziamenti della struttura"
 		"ko"		"구조물 개선"
+		"pl"		"Ulepszenia budowania"
 	}
 	"Repair Handling book for dummies"
 	{
@@ -1750,6 +1753,7 @@
 		"chi"       	"远程升级"
 		"it"		"Potenziamenti a distanza"
 		"ko"		"원거리 무기 개선"
+		"pl"		"Ulepszenia broni na dystans"
 	}
 	"Accurate Marksman"
 	{
@@ -1834,6 +1838,7 @@
 		"chi"       	"魔法升级"
 		"it"		"Potenziamenti dei maghi"
 		"ko"		"마법 무기 개선"
+		"pl"		"Ulepszenia magiczne"
 	}
 	"Magical Haste"
 	{
@@ -1936,6 +1941,7 @@
 		"chi"		"被动升级"
 		"it"		"Potenziamenti passivi"
 		"ko"		"생존 개선"
+		"pl"		"Ulepszenia przetrwania"
 	}
 	"Body armor"
 	{
@@ -2050,12 +2056,14 @@
 		"chi"       	"医疗升级"
 		"it"		"Potenziamenti della Medigun"
 		"ko"		"메디건 개선"
+		"pl"		"Ulepszenia mediguna"
 	}
 	"Support Upgrades"
 	{
 		"en"		"Support Upgrades"
 		"ru" 		"Для поддержки"
 		"ko"		"지원 개선"
+		"pl"		"Ulepszenia wsparcia"
 	}
 	"Doctor Certificate"
 	{
@@ -3248,6 +3256,7 @@
 		"chi"       "工程师物品"
 		"it"		"Attrezzatura per costruttori"
 		"ko"		"건축가 장비"
+		"pl"		"Rzeczy Budownicze"
 	}
 	"Shrapnel Shredder"
 	{

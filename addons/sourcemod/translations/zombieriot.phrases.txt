@@ -2724,16 +2724,19 @@
 		"chi"       "这是一个简单的新手教程。按下TAB键来打开商店。"
 		"it"		"Questa è la breve esercitazione. Toccare il tabellone (TAB) per aprire il negozio."
 		"ko"		"이것은 짧은 튜토리얼입니다. 점수판 호출 (탭, Tab) 키를 눌러 상점을 여세요."
+		"pl"		"To jest krótki samouczek. Otwórz tablice wyników (TAB) aby otworzyć sklep."
 	}
 	"tutorial_1_2"
 	{
 		"en"		"Good! As youre new you can select from pre-made weapon loadouts.\nThis is so you can get a feel of the game first, before being overwhelmed by the store.\nClick on:"
 		"ru"		"Отлично! Так как вы новичок вы можете выбрать из приготовленный снаряжений.\nЭто сделано для того что бы вы смогли адаптироваться к игре перед там как быть перегруженным магазином.\nНажми на:"
+		"pl"		"Dobrze! Skoro jesteś tutaj po raz pierwszy możesz wybrać z kilku przygotowanych zestawów wyposażenia.\nJest to robione aby móc doświadczyć grę na początku bez bycia przytłoczonym przez system sklepu.\nKliknij na:"
 	}
 	"tutorial_1_3"
 	{
 		"en"		"Good! In here you can also make manual loadouts, but...\nFor now Click on:"
 		"ru"		"Хорошо! Здесь можно сделать и собственные снаряжения, но...\nПока что нажми на:"
+		"pl"		"Dobrze! Tutaj możesz też robić swoje własne zestawy wyposażenia ale...\nNarazie kliknij na:"
 	}
 	"tutorial_1_4"
 	{
@@ -2744,21 +2747,30 @@
 	{
 		"en"		"It seems that this map prevents the tutorial from playing right....\nHard to explain, but you have to buy weapons from the store on the left\nWait till next map for the tutorial to be correct."
 		"ru"		"Похоже Эта карта не даёт начать обучение...\nТрудно объяснить, но пока что тебе нужно покупать оружие в магазине слева\nПодожди пока карта поменяется что бы обучение прошло правильно."
+		"pl"		"Dobrze! Tutaj możesz wybrać przygotowany zestaw wyposażenia.\nKliknij na ten którym chcesz grać!"
+	}
+	"tutorial_fail_map"
+	{
+		"en"		"It seems that this map prevents the tutorial from playing right....\nHard to explain, but you have to buy weapons from the store on the left(TAB)\nWait till next map for the tutorial to be correct."
+		"pl"		"Wygląda na to, że aktulana mapa blokuje tutorial od poprawnego działania...\nTrudno wytłumaczyć, ale musisz kupować bronie w skelepie po lewo(TAB)\nPoczekaj na następną mapę aby tutorial działał poprawnie."
 	}
 	"tutorial_Storelocation"
 	{
 		"en"		"||| The store is here! |||\n||| Check below/around this text! |||"
 		"ru"		"||| Магазин здесь! |||\n||| Check снизу/вокруг этого текста! |||
+		"pl"		"||| Sklep jest tutaj! |||\n||| Sprawdź pod/wokół tego tekstu! |||"
 	}
 	"tutorial_storeclosed_warning"
 	{
 		"en"		"Tap the scoreboard (TAB) to open the store again, its currently not open!"
 		"ru"		"Нажми на кнопку таблицы очков (по умолчанию TAB) что бы снова открыть магазин,Сейчас он не открыт!"
+		"pl"		"Kliknij tablice wyników (TAB) aby otworzyć sklep ponownie, aktualnie jest zamknięty!"
 	}
 	"tutorial_3"
 	{
 		"en"		"You can buy weapons in the store yourself too once you get the hang of the gameplay!\nBuy better guns and upgrades in later waves and survive to the end!\nMore help is in the store under ''help?''"
 		"ru"		"Ты можешь купить оружия в магазне самостоятельно когда поймешь базу геймплея!\nПокупай более сильные пушки и позже улучшай их и выживи до конца!\nБольше помощи можно найти в магазине в разделе ''помощь?''"
+		"pl"		"Możesz samodzielnie kupić bronie w sklepie, kiedy przyzwyczaisz się do grania\nKup lepsze bronie i ulepszenia w późniejszych falach i przetrwaj do końca!\nWięcej pomocy jest w sklepie pod sekcją ''pomoc?/help?''"
 	}
 	"tutorial_4"
 	{
@@ -2766,6 +2778,7 @@
 		"ru"		"И напоследок! В твоём хаде и хаде врагов будут разные символы.\n☛Озночает Урон ближнего боя.➶Озночает урон дальнего боя.☖ Озночает бонус урона(обычно для НПС)\nПроценты Показывают насколько они умножены."
 		"it"		"Un'ultima cosa! Nel vostro hud e in quello dei nemici vedrete vari simboli.\n☛Significa danno da mischia.➶Significa danno a distanza.☖ Significa bonus di danno (di solito per gli npc)\nLa percentuale mostra per quanto è stata moltiplicata."
 		"ko"		"마지막으로! 당신과 적의 허드에는 여러 심볼이 보이실 겁니다.\n☛(손가락)은 근접 피해를 뜻합니다.➶(화살)은 원거리 피해를 뜻합니다.☖는 피해량 보너스를 의미합니다.(일반적으로 NPC에게 해당)\n퍼센테이지는 그것의 곱해진 값을 나타냅니다."
+		"pl"		"Jeszcze jedna rzecz! W twoim interfejsie na dole zobaczysz różne symbole.\n☛oznacza obrażenia z bliska.➶Oznacza obrażenia z daleka.☖Oznacza zwiększenie obrażeń(zwykle dla przeciwników)\nProcent wskazuje o ile jest mnożone."
 	}
 	"tutorial_5"
 	{
@@ -2773,6 +2786,7 @@
 		"ru"		"Ты замечишь что они подсвечиваются!\nЕсли ты наносишь/получаешь соответсвенный урон,но подчеркнётся!\nЕсли ты получил/нанёс рукопашный урон ☛ подсветится."
 		"it"		"Si noterà anche che si evidenzia!\nSe si infligge/riceve il tipo di danno corrispondente, si ottiene un trattino basso!\nSe si infligge/riceve danno in mischia, si illuminerà ☛."
 		"ko"		"그리고 이 심볼이 가끔씩 밝아지는 것을 알아차리셨을 겁니다!\n해당 유형의 피해를 받거나, 해당 유형으로 피해를 주면, 그 심볼에 밑줄이 그어집니다.\n예시로 근접 피해를 가하거나, 근접 피해로 공격 받았다면, ☛가 하이라이트로 표시됩니다."
+		"pl"		"Zobaczysz też, że się podświetlają!\nKiedy dostaniesz/zadaż obrażenia danego typu to ten typ się podświetli!\nJeśli zadasz obrażenia z broni ręcznej ☛się podświetli."
 	}
 	"Tutorial Show Hint Perk Machine"
 	{
@@ -2787,6 +2801,7 @@
 		"ru"		"У вас нету Машины навыков!\nПопробуй построить её, зайди в ''снаряжение строителя'' возьми гаечный ключ.\nЗайди в меню через R\nКупи или получи достаточно маталла и/или улучшения для размещения больше построек."
 		"it"		"Non c'è una macchina per i vantaggi!\nProva a costruirne una, vai a ''Attrezzatura del costruttore'' e prendi una chiave inglese.\nAccedi al suo menu con R!\nOttieni abbastanza metallo e/o potenziamenti per avere più spazio per il costruttore!"
 		"ko"		"퍽 기계가 없습니다!\n''건축가 장비''로 들어가 렌치를 장착하고 렌치로 해당 구조물을 건설할 수 있습니다.\nR 키를 눌러 구조물 메뉴을 여세요!\n충분한 금속이 필요하며 더 많이 건설하려면 건축가 개선이 더 필요합니다!"
+		"pl"		"Nie ma maszyny ulepszeń!\nSprobój zbudować jedną, idż do ''Rzeczy Budownicze'' i załóż klucz.\nOtwórz jego menu z R!\nZdobądź wystarczająco metalu lub ulepszeń budowlanych dla więcej miejsca na budowle."
 	}
 	"Tutorial Show Hint Pack a Punch"
 	{
