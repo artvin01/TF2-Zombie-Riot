@@ -41,6 +41,7 @@
 		"en" 		"Cancel Current Autoloadout"
 		"ko"		"현재 자동 로드아웃 취소"
 		"ru"		"Отменть текущее Авто-Снаряжение"
+		"pl"		"Anuluj aktualne przygotowane wyposażenie"
 	}
 	"Autoloadout Bought Item"
 	{
