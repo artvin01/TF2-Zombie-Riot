@@ -176,13 +176,12 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0, bool forcesilentMode = fal
 		float TempForce[3];
 		CurrentGibCount += 1;
 
-		//failsafea incase it sets nothing
-		DispatchKeyValue(prop, "model", "models/gibs/antlion_gib_large_1.mdl");
+		char model[PLATFORM_MAX_PATH];
 
 		TempPosition = startPosition;
 		
 		float ModelscaleSet = 1.0;
-		int GibFound = Npc_DoFittingNpcGibs(pThis, GibLoop, prop);
+		int GibFound = Npc_DoFittingNpcGibs(pThis, GibLoop, model, sizeof(model));
 		if(GibFound == 0)
 		{
 			switch(GibLoop)
@@ -221,16 +220,21 @@ void Npc_DoGibLogic(int pThis, float GibAmount = 1.0, bool forcesilentMode = fal
 			//This gib in specific has too much knockback.
 
 			if(npc.m_iBleedType == BLEEDTYPE_METAL)
-				DispatchKeyValue(prop, "model", m_cGibModelMetal[GibLoop]);
+				strcopy(model, sizeof(model), m_cGibModelMetal[GibLoop]);
 			else if (npc.m_iBleedType == BLEEDTYPE_SKELETON)
 			{
-				DispatchKeyValue(prop, "model", m_cGibModelSkeleton[GibLoop]);
+				strcopy(model, sizeof(model), m_cGibModelSkeleton[GibLoop]);
 				SetEntProp(prop, Prop_Send, "m_nSkin", GetEntProp(npc.index, Prop_Send, "m_nSkin", 1));
 			}
 			else
-				DispatchKeyValue(prop, "model", m_cGibModelDefault[GibLoop]);
-				
+				strcopy(model, sizeof(model), m_cGibModelDefault[GibLoop]);
 		}
+		
+		//failsafea incase it sets nothing
+		if (!model[0])
+			model = "models/gibs/antlion_gib_large_1.mdl";
+		
+		DispatchKeyValue(prop, "model", model);
 
 		DispatchKeyValue(prop, "physicsmode", "2");
 		DispatchKeyValue(prop, "massScale", "1.0");
@@ -406,7 +410,7 @@ void ModifyGib(int GibFound, int pThis, int bleedtype, int gib, float Random_tim
 		SetParent(gib, ParticleSet);
 	}
 }
-int Npc_DoFittingNpcGibs(int pThis, int GibLoop, int GibProp)
+int Npc_DoFittingNpcGibs(int pThis, int GibLoop, char[] buffer, int maxlen)
 {
 	CClotBody npc = view_as<CClotBody>(pThis);
 	TFClassType class;
@@ -449,25 +453,25 @@ int Npc_DoFittingNpcGibs(int pThis, int GibLoop, int GibProp)
 		switch(class)
 		{
 			case TFClass_Scout:
-				DispatchKeyValue(GibProp, "model", g_GibModelScout[GibLoop]);
+				strcopy(buffer, maxlen, g_GibModelScout[GibLoop]);
 			case TFClass_Sniper:
-				DispatchKeyValue(GibProp, "model", g_GibModelSniper[GibLoop]);
+				strcopy(buffer, maxlen, g_GibModelSniper[GibLoop]);
 			case TFClass_Soldier:
-				DispatchKeyValue(GibProp, "model", g_GibModelSoldier[GibLoop]);
+				strcopy(buffer, maxlen, g_GibModelSoldier[GibLoop]);
 			case TFClass_DemoMan:
-				DispatchKeyValue(GibProp, "model", g_GibModelDemoMan[GibLoop]);
+				strcopy(buffer, maxlen, g_GibModelDemoMan[GibLoop]);
 			case TFClass_Medic:
-				DispatchKeyValue(GibProp, "model", g_GibModelMedic[GibLoop]);
+				strcopy(buffer, maxlen, g_GibModelMedic[GibLoop]);
 			case TFClass_Heavy:
-				DispatchKeyValue(GibProp, "model", g_GibModelHeavy[GibLoop]);
+				strcopy(buffer, maxlen, g_GibModelHeavy[GibLoop]);
 			case TFClass_Pyro:
-				DispatchKeyValue(GibProp, "model", g_GibModelPyro[GibLoop]);
+				strcopy(buffer, maxlen, g_GibModelPyro[GibLoop]);
 			case TFClass_Spy:
-				DispatchKeyValue(GibProp, "model", g_GibModelSpy[GibLoop]);
+				strcopy(buffer, maxlen, g_GibModelSpy[GibLoop]);
 			case TFClass_Engineer:
-				DispatchKeyValue(GibProp, "model", g_GibModelEngineer[GibLoop]);
+				strcopy(buffer, maxlen, g_GibModelEngineer[GibLoop]);
 			default:
-				DispatchKeyValue(GibProp, "model", g_GibModelRobotScout[GibLoop]);
+				strcopy(buffer, maxlen, g_GibModelRobotScout[GibLoop]);
 		}
 	}
 	else
@@ -475,25 +479,25 @@ int Npc_DoFittingNpcGibs(int pThis, int GibLoop, int GibProp)
 		switch(class)
 		{
 			case TFClass_Scout:
-				DispatchKeyValue(GibProp, "model", g_GibModelRobotScout[GibLoop]);
+				strcopy(buffer, maxlen, g_GibModelRobotScout[GibLoop]);
 			case TFClass_Sniper:
-				DispatchKeyValue(GibProp, "model", g_GibModelRobotSniper[GibLoop]);
+				strcopy(buffer, maxlen, g_GibModelRobotSniper[GibLoop]);
 			case TFClass_Soldier:
-				DispatchKeyValue(GibProp, "model", g_GibModelRobotSoldier[GibLoop]);
+				strcopy(buffer, maxlen, g_GibModelRobotSoldier[GibLoop]);
 			case TFClass_DemoMan:
-				DispatchKeyValue(GibProp, "model", g_GibModelRobotDemoMan[GibLoop]);
+				strcopy(buffer, maxlen, g_GibModelRobotDemoMan[GibLoop]);
 			case TFClass_Medic:
-				DispatchKeyValue(GibProp, "model", g_GibModelRobotMedic[GibLoop]);
+				strcopy(buffer, maxlen, g_GibModelRobotMedic[GibLoop]);
 			case TFClass_Heavy:
-				DispatchKeyValue(GibProp, "model", g_GibModelRobotHeavy[GibLoop]);
+				strcopy(buffer, maxlen, g_GibModelRobotHeavy[GibLoop]);
 			case TFClass_Pyro:
-				DispatchKeyValue(GibProp, "model", g_GibModelRobotPyro[GibLoop]);
+				strcopy(buffer, maxlen, g_GibModelRobotPyro[GibLoop]);
 			case TFClass_Spy:
-				DispatchKeyValue(GibProp, "model", g_GibModelRobotSpy[GibLoop]);
+				strcopy(buffer, maxlen, g_GibModelRobotSpy[GibLoop]);
 			case TFClass_Engineer:
-				DispatchKeyValue(GibProp, "model", g_GibModelRobotEngineer[GibLoop]);
+				strcopy(buffer, maxlen, g_GibModelRobotEngineer[GibLoop]);
 			default:
-				DispatchKeyValue(GibProp, "model", g_GibModelRobotScout[GibLoop]);
+				strcopy(buffer, maxlen, g_GibModelRobotScout[GibLoop]);
 		}
 	}
 	return true;
