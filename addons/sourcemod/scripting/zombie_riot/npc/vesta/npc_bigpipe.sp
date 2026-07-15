@@ -224,11 +224,11 @@ methodmap VestaBigpipe < CClotBody
 			//The NPC name will be displayed normally only after 1 frame.
 			switch(GetRandomInt(0, 4))
 			{
-				case 0:NPCPritToChat(npc.index, "{forestgreen}", "bigpipe_Talk_01-1", false, true);
-				case 1:NPCPritToChat(npc.index, "{forestgreen}", "bigpipe_Talk_01-2", false, true);
-				case 2:NPCPritToChat(npc.index, "{forestgreen}", "bigpipe_Talk_01-3", false, true);
-				case 3:NPCPritToChat(npc.index, "{forestgreen}", "bigpipe_Talk_01-4", false, true);
-				case 4:NPCPritToChat(npc.index, "{forestgreen}", "bigpipe_Talk_01-5", false, true);
+				case 0:VestaBigPipe_NPCTalkMessage(npc.index, "bigpipe_Talk_01-1");
+				case 1:VestaBigPipe_NPCTalkMessage(npc.index, "bigpipe_Talk_01-2");
+				case 2:VestaBigPipe_NPCTalkMessage(npc.index, "bigpipe_Talk_01-3");
+				case 3:VestaBigPipe_NPCTalkMessage(npc.index, "bigpipe_Talk_01-4");
+				case 4:VestaBigPipe_NPCTalkMessage(npc.index, "bigpipe_Talk_01-5");
 			}
 		}
 
@@ -285,6 +285,11 @@ methodmap VestaBigpipe < CClotBody
 	}
 }
 
+void VestaBigPipe_NPCTalkMessage(int entity, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(entity, "forestgreen", message, true);
+}
+
 static void VestaBigpipe_ClotThink(int iNPC)
 {
 	VestaBigpipe npc = view_as<VestaBigpipe>(iNPC);
@@ -325,9 +330,9 @@ static void VestaBigpipe_ClotThink(int iNPC)
 	{
 		switch(GetRandomInt(0, 2))
 		{
-			case 0:NPCPritToChat(npc.index, "{forestgreen}", "bigpipe_Talk_03-1", false, false);
-			case 1:NPCPritToChat(npc.index, "{forestgreen}", "bigpipe_Talk_03-2", false, false);
-			case 2:NPCPritToChat(npc.index, "{forestgreen}", "bigpipe_Talk_03-3", false, false);
+			case 0:VestaBigPipe_NPCTalkMessage(npc.index, "bigpipe_Talk_03-1");
+			case 1:VestaBigPipe_NPCTalkMessage(npc.index, "bigpipe_Talk_03-2");
+			case 2:VestaBigPipe_NPCTalkMessage(npc.index, "bigpipe_Talk_03-3");
 		}
 		npc.m_iHarbringer=-1;
 	}
@@ -345,9 +350,9 @@ static void VestaBigpipe_ClotThink(int iNPC)
 	{
 		switch(GetRandomInt(0, 2))
 		{
-			case 0:NPCPritToChat(npc.index, "{forestgreen}", "bigpipe_Talk_02-1", false, false);
-			case 1:NPCPritToChat(npc.index, "{forestgreen}", "bigpipe_Talk_02-2", false, false);
-			case 2:NPCPritToChat(npc.index, "{forestgreen}", "bigpipe_Talk_02-3", false, false);
+			case 0:VestaBigPipe_NPCTalkMessage(npc.index, "bigpipe_Talk_02-1");
+			case 1:VestaBigPipe_NPCTalkMessage(npc.index, "bigpipe_Talk_02-2");
+			case 2:VestaBigPipe_NPCTalkMessage(npc.index, "bigpipe_Talk_02-3");
 		}
 		npc.m_iBirdEye=-1;
 	}
@@ -640,8 +645,8 @@ static int VestaBigpipeSelfDefense(VestaBigpipe npc, float gameTime, float dista
 					}
 					switch(GetRandomInt(0, 1))
 					{
-						case 0:NPCPritToChat(npc.index, "{forestgreen}", "bigpipe_Talk_04-1", false, false);
-						case 1:NPCPritToChat(npc.index, "{forestgreen}", "bigpipe_Talk_04-2", false, false);
+						case 0:VestaBigPipe_NPCTalkMessage(npc.index, "bigpipe_Talk_04-1");
+						case 1:VestaBigPipe_NPCTalkMessage(npc.index, "bigpipe_Talk_04-2");
 					}
 					npc.m_flWeaponSwitchCooldown = gameTime + 1.0;
 					npc.SetActivity("ACT_MP_CROUCH_SECONDARY");
@@ -844,9 +849,9 @@ static int VestaBigpipeSelfDefense(VestaBigpipe npc, float gameTime, float dista
 						{
 							switch(GetRandomInt(0, 2))
 							{
-								case 0:NPCPritToChat(npc.index, "{forestgreen}", "bigpipe_Talk_05-1", false, false);
-								case 1:NPCPritToChat(npc.index, "{forestgreen}", "bigpipe_Talk_05-2", false, false);
-								case 2:NPCPritToChat(npc.index, "{forestgreen}", "bigpipe_Talk_05-3", false, false);
+								case 0:VestaBigPipe_NPCTalkMessage(npc.index, "bigpipe_Talk_05-1");
+								case 1:VestaBigPipe_NPCTalkMessage(npc.index, "bigpipe_Talk_05-2");
+								case 2:VestaBigPipe_NPCTalkMessage(npc.index, "bigpipe_Talk_05-3");
 							}
 						}
 					}
@@ -905,9 +910,9 @@ static int VestaBigpipeSelfDefense(VestaBigpipe npc, float gameTime, float dista
 						{
 							switch(GetRandomInt(0, 2))
 							{
-								case 0:NPCPritToChat(npc.index, "{forestgreen}", "bigpipe_Talk_05-1", false, false);
-								case 1:NPCPritToChat(npc.index, "{forestgreen}", "bigpipe_Talk_05-2", false, false);
-								case 2:NPCPritToChat(npc.index, "{forestgreen}", "bigpipe_Talk_05-3", false, false);
+								case 0:VestaBigPipe_NPCTalkMessage(npc.index, "bigpipe_Talk_05-1");
+								case 1:VestaBigPipe_NPCTalkMessage(npc.index, "bigpipe_Talk_05-2");
+								case 2:VestaBigPipe_NPCTalkMessage(npc.index, "bigpipe_Talk_05-3");
 							}
 						}
 					}

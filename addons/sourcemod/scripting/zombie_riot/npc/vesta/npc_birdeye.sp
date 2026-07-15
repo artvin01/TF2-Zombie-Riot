@@ -280,61 +280,52 @@ methodmap VestaBirdeye < CClotBody
 		b_AimBuff = !(StrContains(data, "aimbuff") != -1);
 		
 		b_TheGoons=false;
+		
+		int summonData = 0;
+		
 		if(!StrContains(data, "only"))
 		{
 			//The NPC name will be displayed normally only after 1 frame.
 			switch(GetRandomInt(0, 4))
 			{
-				case 0:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_01-1", false, true);
-				case 1:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_01-2", false, true);
-				case 2:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_01-3", false, true);
-				case 3:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_01-4", false, true);
-				case 4:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_01-5", false, true);
+				case 0:VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_01-1");
+				case 1:VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_01-2");
+				case 2:VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_01-3");
+				case 3:VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_01-4");
+				case 4:VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_01-5");
 			}
 		}
 		else if(!StrContains(data, "the_goons"))
 		{
+			summonData = 1;
 			b_TheGoons=true;
 			npc.m_flMeleeArmor -= 0.25;
-			switch(GetRandomInt(0, 2))
-			{
-				case 0:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_08-1", false, true);
-				case 1:NPCPritToChat_Override("Bigpipe", "{forestgreen}", "bigpipe_Talk_06-1", false);
-				case 2:NPCPritToChat_Override("Harbringer", "{sienna}", "harbringer_Talk_07-1", false);
-			}
-			RequestFrame(VestaBirdeye_SpawnAllyDuo, EntIndexToEntRef(npc.index));
 		}
 		else if(!StrContains(data, "damn_trio"))
 		{
+			summonData = 2;
 			b_TheGoons=true;
 			npc.m_flMeleeArmor -= 0.25;
-			RequestFrame(VestaBirdeye_SpawnAllyDuo, EntIndexToEntRef(npc.index));
 		}
 		else
 		{
-			switch(GetRandomInt(0, 13))
-			{
-				case 0:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_01-1", false, true);
-				case 1:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_01-2", false, true);
-				case 2:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_01-3", false, true);
-				case 3:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_01-4", false, true);
-				case 4:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_01-5", false, true);
-				
-				case 5:NPCPritToChat_Override("Bigpipe", "{forestgreen}", "bigpipe_Talk_01-1", false);
-				case 6:NPCPritToChat_Override("Bigpipe", "{forestgreen}", "bigpipe_Talk_01-2", false);
-				case 7:NPCPritToChat_Override("Bigpipe", "{forestgreen}", "bigpipe_Talk_01-3", false);
-				case 8:NPCPritToChat_Override("Bigpipe", "{forestgreen}", "bigpipe_Talk_01-4", false);
-				case 9:NPCPritToChat_Override("Bigpipe", "{forestgreen}", "bigpipe_Talk_01-5", false);
-				
-				case 10:NPCPritToChat_Override("Harbringer", "{sienna}", "harbringer_Talk_01-1", false);
-				case 11:NPCPritToChat_Override("Harbringer", "{sienna}", "harbringer_Talk_01-2", false);
-				case 12:NPCPritToChat_Override("Harbringer", "{sienna}", "harbringer_Talk_01-3", false);
-				case 13:NPCPritToChat_Override("Harbringer", "{sienna}", "harbringer_Talk_01-4", false);
-			}
-			RequestFrame(VestaBirdeye_SpawnAllyDuo, EntIndexToEntRef(npc.index));
+			summonData = 3;
+		}
+		
+		if (summonData)
+		{
+			DataPack pack = new DataPack();
+			pack.WriteCell(EntIndexToEntRef(npc.index));
+			pack.WriteCell(summonData);
+			RequestFrame(VestaBirdeye_SpawnAllyDuo, pack);
 		}
 		return npc;
 	}
+}
+
+void VestaBirdeye_NPCTalkMessage(int entity, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(entity, "tan", message, true);
 }
 
 static void VestaBirdeye_ClotThink(int iNPC)
@@ -425,8 +416,8 @@ static void VestaBirdeye_ClotThink(int iNPC)
 			{
 				switch(GetRandomInt(0, 1))
 				{
-					case 0:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_02-1", false, false);
-					case 1:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_02-2", false, false);
+					case 0:VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_02-1");
+					case 1:VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_02-2");
 				}
 				npc.m_iBigPipe=-1;
 			}
@@ -439,8 +430,8 @@ static void VestaBirdeye_ClotThink(int iNPC)
 			{
 				switch(GetRandomInt(0, 1))
 				{
-					case 0:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_03-1", false, false);
-					case 1:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_03-2", false, false);
+					case 0:VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_03-1");
+					case 1:VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_03-2");
 				}
 				npc.m_iHarbringer=-1;
 			}
@@ -456,9 +447,9 @@ static void VestaBirdeye_ClotThink(int iNPC)
 			npc.m_flRangedArmor -= 0.3;
 			switch(GetRandomInt(0, 2))
 			{
-				case 0:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_04-1", false, false);
-				case 1:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_04-2", false, false);
-				case 2:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_04-3", false, false);
+				case 0:VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_04-1");
+				case 1:VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_04-2");
+				case 2:VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_04-3");
 			}
 			ApplyStatusEffect(npc.index, npc.index, "Ammo_TM Visualization", 999.0);
 			npc.m_bFUCKYOU=true;
@@ -702,9 +693,9 @@ static Action Timer_BirdEyeTele(Handle timer, int iNPC)
 		npc.PlayIdleAlertSound();
 		switch(GetRandomInt(0, 1))
 		{
-			case 0:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_07-1", false, false);
-			case 1:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_07-2", false, false);
-			case 2:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_07-3", false, false);
+			case 0:VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_07-1");
+			case 1:VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_07-2");
+			case 2:VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_07-3");
 		}
 		ApplyStatusEffect(npc.index, npc.index, "Ammo_TM Visualization", 999.0);
 		npc.m_flMeleeArmor -= 0.3;
@@ -727,9 +718,9 @@ static Action Timer_BirdEyeTele(Handle timer, int iNPC)
 			npc.m_bFUCKYOU = true;
 			switch(GetRandomInt(0, 1))
 			{
-				case 0:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_07-1", false, false);
-				case 1:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_07-2", false, false);
-				case 2:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_07-3", false, false);
+				case 0:VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_07-1");
+				case 1:VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_07-2");
+				case 2:VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_07-3");
 			}
 			ApplyStatusEffect(npc.index, npc.index, "Ammo_TM Visualization", 999.0);
 			TeleportEntity(npc.index, VecOld);
@@ -737,8 +728,8 @@ static Action Timer_BirdEyeTele(Handle timer, int iNPC)
 		}
 		switch(GetRandomInt(0, 1))
 		{
-			case 0:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_06-1", false, false);
-			case 1:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_06-2", false, false);
+			case 0:VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_06-1");
+			case 1:VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_06-2");
 		}
 		ParticleEffectAt(VecOld, "teleported_red", 0.5);
 		ParticleEffectAt(Vec, "teleported_blue", 0.5);
@@ -883,8 +874,8 @@ static int VestaBirdeyeSniperMode(VestaBirdeye npc, float gameTime)
 				{
 					switch(GetRandomInt(0, 1))
 					{
-						case 0:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_05-1", false, false);
-						case 1:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_05-2", false, false);
+						case 0:VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_05-1");
+						case 1:VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_05-2");
 					}
 				}
 				else
@@ -975,8 +966,8 @@ static int VestaBirdeyeAssaultMode(VestaBirdeye npc, float gameTime, int target,
 						{
 							switch(GetRandomInt(0, 1))
 							{
-								case 0:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_05-1", false, false);
-								case 1:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_05-2", false, false);
+								case 0:VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_05-1");
+								case 1:VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_05-2");
 							}
 						}
 						else
@@ -1054,8 +1045,8 @@ static int VestaBirdeyeAssaultMode(VestaBirdeye npc, float gameTime, int target,
 						{
 							switch(GetRandomInt(0, 1))
 							{
-								case 0:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_05-1", false, false);
-								case 1:NPCPritToChat(npc.index, "{tan}", "birdeye_Talk_05-2", false, false);
+								case 0:VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_05-1");
+								case 1:VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_05-2");
 							}
 						}
 					}
@@ -1129,52 +1120,129 @@ static int VestaBirdeyeAssaultMode(VestaBirdeye npc, float gameTime, int target,
 	return 0;
 }
 
-static void VestaBirdeye_SpawnAllyDuo(int ref)
+static void VestaBirdeye_SpawnAllyDuo(DataPack pack)
 {
-	int entity = EntRefToEntIndex(ref);
-	if(IsValidEntity(entity))
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	int summonData = pack.ReadCell();
+	delete pack;
+	
+	if(!IsValidEntity(entity))
+		return;
+
+	VestaBirdeye npc = view_as<VestaBirdeye>(entity);
+	float pos[3]; GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
+	float ang[3]; GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
+	int maxhealth;
+
+	maxhealth = GetEntProp(entity, Prop_Data, "m_iHealth");
+
+	int spawn_index = NPC_CreateByName("npc_harbringer", entity, pos, ang, GetTeam(entity), b_TheGoons ? "the_goons" : "birdeye");
+	int spawn_index2 = NPC_CreateByName("npc_bigpipe", entity, pos, ang, GetTeam(entity), b_TheGoons ? "the_goons" : "birdeye");
+	if(spawn_index > MaxClients)
 	{
-		VestaBirdeye npc = view_as<VestaBirdeye>(entity);
-		float pos[3]; GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
-		float ang[3]; GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
-		int maxhealth;
-
-		maxhealth = GetEntProp(entity, Prop_Data, "m_iHealth");
-
-		int spawn_index = NPC_CreateByName("npc_harbringer", entity, pos, ang, GetTeam(entity), b_TheGoons ? "the_goons" : "birdeye");
-		int spawn_index2 = NPC_CreateByName("npc_bigpipe", entity, pos, ang, GetTeam(entity), b_TheGoons ? "the_goons" : "birdeye");
-		if(spawn_index > MaxClients)
+		NpcStats_CopyStats(entity, spawn_index);
+		//i_ally_index = EntIndexToEntRef(spawn_index);
+		//VestaHarbringer_Set_Ally_Index(entity);
+		NpcAddedToZombiesLeftCurrently(spawn_index, true);
+		SetEntProp(spawn_index, Prop_Data, "m_iHealth", RoundToFloor(maxhealth*2.5));
+		SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", RoundToFloor(maxhealth*2.5));
+		fl_Extra_MeleeArmor[spawn_index] = fl_Extra_MeleeArmor[entity];
+		fl_Extra_RangedArmor[spawn_index] = fl_Extra_RangedArmor[entity];
+		fl_Extra_Speed[spawn_index] = fl_Extra_Speed[entity];
+		fl_Extra_Damage[spawn_index] = fl_Extra_Damage[entity];
+		i_AmountProjectiles[spawn_index] = npc.index;
+		b_thisNpcIsABoss[spawn_index] = b_thisNpcIsABoss[entity];
+		npc.m_iHarbringer=spawn_index;
+	}
+	if(spawn_index2 > MaxClients)
+	{
+		//i_ally_index = EntIndexToEntRef(spawn_index2);
+		//VestaBigPipe_Set_Ally_Index(entity);
+		NpcAddedToZombiesLeftCurrently(spawn_index2, true);
+		SetEntProp(spawn_index2, Prop_Data, "m_iHealth", RoundToFloor(maxhealth*1.5));
+		SetEntProp(spawn_index2, Prop_Data, "m_iMaxHealth", RoundToFloor(maxhealth*1.5));
+		fl_Extra_MeleeArmor[spawn_index2] = fl_Extra_MeleeArmor[entity];
+		fl_Extra_RangedArmor[spawn_index2] = fl_Extra_RangedArmor[entity];
+		fl_Extra_Speed[spawn_index2] = fl_Extra_Speed[entity];
+		fl_Extra_Damage[spawn_index2] = fl_Extra_Damage[entity];
+		i_AmountProjectiles[spawn_index2] = npc.index;
+		i_State[spawn_index2] = npc.m_iHarbringer;
+		b_thisNpcIsABoss[spawn_index2] = b_thisNpcIsABoss[entity];
+		npc.m_iBigPipe=spawn_index2;
+		i_State[spawn_index] = spawn_index2;
+	}
+	
+	switch (summonData)
+	{
+		case 1:
 		{
-			NpcStats_CopyStats(entity, spawn_index);
-			//i_ally_index = EntIndexToEntRef(spawn_index);
-			//VestaHarbringer_Set_Ally_Index(entity);
-			NpcAddedToZombiesLeftCurrently(spawn_index, true);
-			SetEntProp(spawn_index, Prop_Data, "m_iHealth", RoundToFloor(maxhealth*2.5));
-			SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", RoundToFloor(maxhealth*2.5));
-			fl_Extra_MeleeArmor[spawn_index] = fl_Extra_MeleeArmor[entity];
-			fl_Extra_RangedArmor[spawn_index] = fl_Extra_RangedArmor[entity];
-			fl_Extra_Speed[spawn_index] = fl_Extra_Speed[entity];
-			fl_Extra_Damage[spawn_index] = fl_Extra_Damage[entity];
-			i_AmountProjectiles[spawn_index] = npc.index;
-			b_thisNpcIsABoss[spawn_index] = b_thisNpcIsABoss[entity];
-			npc.m_iHarbringer=spawn_index;
+			switch(GetURandomInt() % 3)
+			{
+				case 0: 
+				{
+					VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_08-1");
+				}
+				
+				case 1:
+				{
+					if (spawn_index > MaxClients)
+						VestaHarbringer_NPCTalkMessage(spawn_index, "harbringer_Talk_07-1");
+				}
+				
+				case 2:
+				{
+					if (spawn_index2 > MaxClients)
+						VestaBigPipe_NPCTalkMessage(spawn_index2, "bigpipe_Talk_06-1");
+				}
+			}
 		}
-		if(spawn_index2 > MaxClients)
+		
+		case 3:
 		{
-			//i_ally_index = EntIndexToEntRef(spawn_index2);
-			//VestaBigPipe_Set_Ally_Index(entity);
-			NpcAddedToZombiesLeftCurrently(spawn_index2, true);
-			SetEntProp(spawn_index2, Prop_Data, "m_iHealth", RoundToFloor(maxhealth*1.5));
-			SetEntProp(spawn_index2, Prop_Data, "m_iMaxHealth", RoundToFloor(maxhealth*1.5));
-			fl_Extra_MeleeArmor[spawn_index2] = fl_Extra_MeleeArmor[entity];
-			fl_Extra_RangedArmor[spawn_index2] = fl_Extra_RangedArmor[entity];
-			fl_Extra_Speed[spawn_index2] = fl_Extra_Speed[entity];
-			fl_Extra_Damage[spawn_index2] = fl_Extra_Damage[entity];
-			i_AmountProjectiles[spawn_index2] = npc.index;
-			i_State[spawn_index2] = npc.m_iHarbringer;
-			b_thisNpcIsABoss[spawn_index2] = b_thisNpcIsABoss[entity];
-			npc.m_iBigPipe=spawn_index2;
-			i_State[spawn_index] = spawn_index2;
+			switch(GetURandomInt() % 3)
+			{
+				case 0: 
+				{
+					switch(GetURandomInt() % 5)
+					{
+						case 0: VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_01-1");
+						case 1: VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_01-2");
+						case 2: VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_01-3");
+						case 3: VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_01-4");
+						case 4: VestaBirdeye_NPCTalkMessage(npc.index, "birdeye_Talk_01-5");
+					}
+				}
+				
+				case 1:
+				{
+					if (spawn_index > MaxClients)
+					{
+						switch(GetURandomInt() % 4)
+						{
+							case 0: VestaHarbringer_NPCTalkMessage(spawn_index, "harbringer_Talk_01-1");
+							case 1: VestaHarbringer_NPCTalkMessage(spawn_index, "harbringer_Talk_01-2");
+							case 2: VestaHarbringer_NPCTalkMessage(spawn_index, "harbringer_Talk_01-3");
+							case 3: VestaHarbringer_NPCTalkMessage(spawn_index, "harbringer_Talk_01-4");
+						}
+					}
+				}
+				
+				case 2:
+				{
+					if (spawn_index2 > MaxClients)
+					{
+						switch(GetURandomInt() % 5)
+						{
+							case 0: VestaBigPipe_NPCTalkMessage(spawn_index2, "bigpipe_Talk_01-1");
+							case 1: VestaBigPipe_NPCTalkMessage(spawn_index2, "bigpipe_Talk_01-2");
+							case 2: VestaBigPipe_NPCTalkMessage(spawn_index2, "bigpipe_Talk_01-3");
+							case 3: VestaBigPipe_NPCTalkMessage(spawn_index2, "bigpipe_Talk_01-4");
+							case 4: VestaBigPipe_NPCTalkMessage(spawn_index2, "bigpipe_Talk_01-5");
+						}
+					}
+				}
+			}
 		}
 	}
 }
