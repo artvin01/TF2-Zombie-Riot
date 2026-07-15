@@ -20,6 +20,7 @@ enum struct AutoLoadout
 enum struct AutoLoadoutItem
 {
 	char name[128];
+	char desc[255];
 	int index;
 	int level;
 }
@@ -79,6 +80,17 @@ void AutoLoadouts_ConfigSetup()
 				if(kv.GetSectionName(item.name, sizeof(item.name)))
 				{
 					item.level = kv.GetNum("level", 0);
+					
+					kv.GetString("desc", item.desc, sizeof(item.desc));
+					if (!item.desc[0])
+					{
+						// Try to automatically load translations based on name if they exist, if we didn't specify one
+						char phrase[255];
+						FormatEx(phrase, sizeof(phrase), "%s Mini Desc", item.name);
+						if (TranslationPhraseExists(phrase))
+							strcopy(item.desc, sizeof(item.desc), phrase);
+					}
+					
 					loadout.itemList.PushArray(item);
 				}
 				else
@@ -252,7 +264,18 @@ void AutoLoadouts_Handle()
 		{
 			result = Store_TryToBuyItem(client, item.index, true);
 			if (result == BUY_RESULT_SUCCESS)
-				SPrintToChat(client, "%t %s", "Autoloadout Bought Item", item.name);
+			{
+				char name[128], desc[255];
+				FormatEx(name, sizeof(name), "%T", item.name, client);
+				
+				if (item.desc[0])
+					FormatEx(desc, sizeof(desc), "%T", item.desc, client);
+				
+				if (!desc[0])
+					SPrintToChat(client, "%t", "Autoloadout Bought Item", name);
+				else
+					SPrintToChat(client, "%t", "Autoloadout Bought Item With Desc", name, desc);
+			}
 		}
 		else
 		{
@@ -260,7 +283,6 @@ void AutoLoadouts_Handle()
 			Store_GetItemByIndex(item.index, storeItem);
 			if (Store_TryToPapWeapon(client, storeItem, item.index, item.level, PAP_DESC_BOUGHT_AUTO, true))
 			{
-				SPrintToChat(client, "%t %s", "Autoloadout Enhance Item", item.name);
 				result = BUY_RESULT_SUCCESS;
 			}
 		}
@@ -319,7 +341,7 @@ void AutoLoadouts_DisplayLoadouts(int client)
 	}
 
 	menu2.Display(client, MENU_TIME_FOREVER);
-	AnyMenuOpen[client] = 2.0;
+	AnyMenuOpen[client] = 2;
 }
 
 
@@ -330,16 +352,16 @@ public int AutoLoadouts_DisplayLoadouts_Page(Menu menu, MenuAction action, int c
 		case MenuAction_End:
 		{
 			if(IsValidClient(client))
-				AnyMenuOpen[client] = 0.0;
+				AnyMenuOpen[client] = 0;
 		}
 		case MenuAction_Cancel:
 		{
 			delete menu;
-			AnyMenuOpen[client] = 0.0;
+			AnyMenuOpen[client] = 0;
 		}
 		case MenuAction_Select:
 		{
-			AnyMenuOpen[client] = 0.0;
+			AnyMenuOpen[client] = 0;
 			char buffer[64];
 			menu.GetItem(choice, buffer, sizeof(buffer));
 			if(!AutoLoadouts_SpecificNameToPlayer(client, buffer))
