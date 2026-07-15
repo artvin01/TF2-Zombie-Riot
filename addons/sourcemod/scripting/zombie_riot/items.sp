@@ -486,7 +486,7 @@ void Items_EncyclopediaMenu(int client, int page = -1, bool inPage = false)
 {
 	Menu menu = new Menu(Items_EncyclopediaMenuH);
 	SetGlobalTransTarget(client);
-	AnyMenuOpen[client] = 1.0;
+	AnyMenuOpen[client] = 1;
 
 	if(inPage)
 	{
@@ -652,13 +652,13 @@ public int Items_EncyclopediaMenuH(Menu menu, MenuAction action, int client, int
 			delete menu;
 			if(IsValidClient(client))
 			{
-				AnyMenuOpen[client] = 0.0;
+				AnyMenuOpen[client] = 0;
 				CategoryPage[client] = -2;
 			}
 		}
 		case MenuAction_Cancel:
 		{
-			AnyMenuOpen[client] = 0.0;
+			AnyMenuOpen[client] = 0;
 			if(choice == MenuCancel_ExitBack)
 			{
 				if(CategoryPage[client] == -1)

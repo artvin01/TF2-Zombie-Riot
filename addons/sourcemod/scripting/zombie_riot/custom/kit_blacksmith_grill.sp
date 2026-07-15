@@ -239,7 +239,7 @@ static void GrillingMenu(int client, const char[] msg = "")
 	char buffer[64];
 
 	Menu menu = new Menu(GrillingMenuH);
-	AnyMenuOpen[client] = 1.0;
+	AnyMenuOpen[client] = 1;
 
 	if(msg[0])
 	{
@@ -309,17 +309,17 @@ static int GrillingMenuH(Menu menu, MenuAction action, int client, int choice)
 		{
 			delete menu;
 			if(IsValidClient(client))
-				AnyMenuOpen[client] = 0.0;
+				AnyMenuOpen[client] = 0;
 		}
 		case MenuAction_Cancel:
 		{
-			AnyMenuOpen[client] = 0.0;
+			AnyMenuOpen[client] = 0;
 			InMenu[client] = false;
 			ResetStoreMenuLogic(client);
 		}
 		case MenuAction_Select:
 		{
-			AnyMenuOpen[client] = 0.0;
+			AnyMenuOpen[client] = 0;
 			InMenu[client] = false;
 			ResetStoreMenuLogic(client);
 			

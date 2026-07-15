@@ -1666,7 +1666,7 @@ public void Anvil_Menu(int client)
 		SetStoreMenuLogic(client, false);
 		static char buffer[128];
 		Menu menu = new Menu(Anvil_MenuH);
-		AnyMenuOpen[client] = 1.0;
+		AnyMenuOpen[client] = 1;
 
 		SetGlobalTransTarget(client);
 		
@@ -1694,11 +1694,11 @@ public int Anvil_MenuH(Menu menu, MenuAction action, int client, int choice)
 		{
 			delete menu;
 			if(IsValidClient(client))
-				AnyMenuOpen[client] = 0.0;
+				AnyMenuOpen[client] = 0;
 		}
 		case MenuAction_Select:
 		{
-			AnyMenuOpen[client] = 0.0;
+			AnyMenuOpen[client] = 0;
 			ResetStoreMenuLogic(client);
 			char buffer[24];
 			menu.GetItem(choice, buffer, sizeof(buffer));
