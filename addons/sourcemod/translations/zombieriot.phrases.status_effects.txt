@@ -3931,7 +3931,7 @@
 	"Red Mist Counter Desc"
 	{
 		"en"	"automatically attack nearby enemies who hit you when not attacking\nHas limited range, goes on cooldown if used too many times \nor taken too much damage at once"
-		"ko"	"공격하지 않는 동안 자신을 공격한 적에게 자동으로 반격합니다.\n제한된 사거리를 보유, 일정 횟수 사용 혹은 한번에 너무 큰 피해를 받을 시 쿨다운으로 돌입합니다."
+		"ko"	"공격하지 않는 동안 자신을 공격한 적에게 자동으로 반격합니다.\n제한된 사거리를 보유, 일정 횟수 사용 혹은 한번에 너무 큰 피해를 받을 시 쿨타임으로 돌입합니다."
 	}
 	"Red Mist Onrush"
 	{
