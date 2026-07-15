@@ -2792,7 +2792,7 @@
 		"en"		"You will also notice that it highlights!\nIf you deal/take the corresponding type of damage, it will get an underscore!\nif you take/deal melee damage ☛will lightup."
 		"ru"		"Ты замечишь что они подсвечиваются!\nЕсли ты наносишь/получаешь соответсвенный урон,но подчеркнётся!\nЕсли ты получил/нанёс рукопашный урон ☛ подсветится."
 		"it"		"Si noterà anche che si evidenzia!\nSe si infligge/riceve il tipo di danno corrispondente, si ottiene un trattino basso!\nSe si infligge/riceve danno in mischia, si illuminerà ☛."
-		"ko"		"그리고 이 심볼이 가끔씩 강조되는 것을 알아차리셨을 겁니다!\n해당 유형의 피해를 받거나, 해당 유형으로 피해를 주거나 받으면, 그 심볼에 밑줄이 그어집니다.\n예시로 근접 피해를 가하거나, 근접 피해로 공격 받았다면, ☛가 하이라이트로 표시됩니다."
+		"ko"		"그리고 이 심볼이 가끔씩 강조되는 것을 알아차리셨을 겁니다!\n해당 유형의 피해를 받거나, 해당 유형으로 피해를 주거나 받으면, 그 심볼에 밑줄이 그어집니다.\n예시로 근접 피해를 가하거나, 근접 피해로 공격 받았다면, ☛가 강조 표시됩니다."
 		"pl"		"Zobaczysz też, że się podświetlają!\nKiedy dostaniesz/zadaż obrażenia danego typu to ten typ się podświetli!\nJeśli zadasz obrażenia z broni ręcznej ☛się podświetli."
 	}
 	"Tutorial Show Hint Perk Machine"
