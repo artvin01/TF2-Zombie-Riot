@@ -5,7 +5,6 @@ import subprocess
 import pathlib
 import json
 import time
-import embed
 import modules.shared
 import vdf
 from collections import defaultdict
@@ -15,7 +14,6 @@ from typing import Any
 """
 TODO
 [ ] Complete const2 support
-[ ] Embed <-> Website (max) wave count inconsistencies
 [ ] Include main music parts somehow
 """
 
@@ -363,7 +361,6 @@ def parse_wave(wave_idx: int, wave_data: dict[str, Any], auto_wave_cash: bool):
             "extra_info": extra_info + desc + music,
             # waves.sp line 4165 if(data.Is_Boss < 2 && (support || data.ignore_max_cap || data.Is_Static || data.Team == TFTeam_Red))
             "css_class": npc_css_class,
-            "embed_extra_flags": npc_extra_flags # used by embed.py to determine all coloring
         }
         npc_hash = util.id_from_str(json.dumps(npc_output)) # same NPC data will output same hash
         npc_output["count"] = count
@@ -442,7 +439,6 @@ def parse_waveset(file: str, data: dict[str, Any], abslink: str, name: str, desc
             continue
         wave_idx += 1
         output["waves"][wave_idx] = parse_wave(wave_idx, wave_data, bool(util.cfgtoint(wd["auto_wave_cash"])))
-        embed.generate_waveset_embed(f"{abslink}_{wave_idx}", name, int(wave_idx), max_waves_idx, output["waves"][wave_idx])
 
     waveset_cache[file] = output
     return output

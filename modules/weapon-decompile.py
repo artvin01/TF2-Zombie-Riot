@@ -9,7 +9,7 @@ type WeaponData = dict[str,str]
 
 def read(filename:str) -> str:
     # Windows-specific fix to: https://stackoverflow.com/questions/9233027/unicodedecodeerror-charmap-codec-cant-decode-byte-x-in-position-y-character
-    # no idea if applying encoding="utf-8" everywhere changes anything, better be safe
+    # No idea if applying encoding="utf-8" everywhere changes anything, better be safe
     if os.name == 'nt':
         with open(filename, 'r', encoding="utf-8") as f:
             return f.read()
@@ -33,7 +33,7 @@ def decompile_model(path:str):
         prefix = ""
         if "zombie_riot" in path:
             path = f"TF2-Zombie-Riot/{path}"
-        elif os.path.isdir("models"):
+        elif os.path.isdir("models"): # NOTE: https://tf2content.loadout.tf/
             path = f"models/{path}"
             prefix = "tf_"
         else:

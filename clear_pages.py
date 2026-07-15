@@ -5,7 +5,6 @@ from os.path import isdir
 r = [
     "gh-pages/data",
     "gh-pages/docs",
-    "gh-pages/embed",
     "gh-pages/icons",
     "gh-pages/premedia_icons",
     "gh-pages/static",

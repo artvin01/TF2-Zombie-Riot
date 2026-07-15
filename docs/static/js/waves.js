@@ -219,18 +219,6 @@ function fill_template(temp, cont) {
     return temp
 }
 
-function copy_waveset_embed_link(event) {
-    let source_url = window.location.href.substring(0,  window.location.href.lastIndexOf('/'));;
-    navigator.clipboard.writeText(`${source_url}/embed/${waveset_file.split(".json")[0].split("/")[1]}_${wave}.gif`);
-
-    let notification = create_element("div",{"class": "notify_copied", "innerHTML": "Embed link copied!"});
-    notification.style.setProperty("--top",`${event.clientY + window.scrollY - 32}px`);
-    notification = document.body.appendChild(notification);
-    notification.style["left"] = `${event.clientX - (notification.getBoundingClientRect().width/2)}px`;
-    setTimeout(function(notification){
-        notification.remove();
-    }, 1000, notification)
-}
 
 // http://stackoverflow.com/a/10997390/11236
 function updateURLParameter(url, param, paramVal){

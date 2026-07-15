@@ -9,7 +9,6 @@ MODULES = {
         "file": "modules.wavesets",
         "dependencies": ["static", "phrase"],
         "paths": [
-            "gh-pages/embed",
             "gh-pages/repo_img",
             "gh-pages/wavesets"
         ]

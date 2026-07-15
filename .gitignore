@@ -17,6 +17,7 @@ tf_decompiled/*.qc
 tf_decompiled/*.smd
 tf_decompiled/*/
 models/
+mat_tmp/
 
 # NOTE unused premedia icons in tf2_zr_wikigen archive
 premedia_icons_unused/

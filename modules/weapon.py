@@ -111,9 +111,12 @@ def shared_parse_weapon_attrs(weapon_data: WeaponData, pap_key:str="") -> Weapon
                     if val_str != "0":
                         if desc_str in strings_english:
                             desc_pre = strings_english[desc_str]
+                            # tf2 itself shows +- sometimes, so this is disabled for consistency
+                            """
                             if val_str.startswith("-"):
                                 if desc_pre.startswith("+") or desc_pre.startswith("-"):
                                     desc_pre=desc_pre[1:] # Prevent attributes showing up as "+-200% [attribute desc]"
+                            """
                             desc = desc_pre.replace("%s1", val_str)
                         else:
                             desc = f"{val_str} {desc_str}"
