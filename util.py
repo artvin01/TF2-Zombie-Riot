@@ -348,43 +348,9 @@ def divfornewline(string:str):
 
 # --------------------------- SOURCE INSPECTOR ---------------------------
 
-def get_sources(files: dict[str,str], variables: dict[str,str | int]) -> dict[str,dict[str,str]]:
-    """
-    Get a source dictionary showing where content is located in a file.
-    Only use this if you cannot add sources in the parsing process itself!
-    files:
-        {
-            file_url:str : file_content:str,
-            [...]
-        }
-    variables:
-        {
-            variable_name:str : value:str|int
-            [...]
-        }
-
-    -> {
-            variable_name:str : {
-                filename:str : {
-                    "file_url": file_url:str,
-                    "refs": [10,20,30,...]
-                }
-                [...]
-            }
-            [...]
-        }
-    """
-    found: dict[str,dict[str,str]] = defaultdict(dict)
-
-    for file_url, file_content in files.items():
-        for variable_name,value in variables.items():
-            found[variable_name][file_url] = get_refs(file_content, value)
-
-    return found
-
-def get_refs(content: str, value: str | int, negative_on_fail:bool=False) -> list[int]:
-    result: list[int] = [i+1 for i,line in enumerate(content.split("\n")) if str(value) in line]
-    if len(result) > 0:
+def get_refs(content: list[str], value: str | int, negative_on_fail:bool=False) -> list[int]:
+    result: list[int] = [i for i,line in enumerate(content, 1) if value in line]
+    if result:
         return result
     elif negative_on_fail:
         return [-1]
@@ -397,7 +363,7 @@ def get_key_src(key:str) -> tuple[str,int]: # part of phrases
         if key in phrase:
             # phrase[key]["en"]
             filename = f"./TF2-Zombie-Riot/addons/sourcemod/translations/{PHRASES_FILES[idx]}"
-            filedata = read(filename)
+            filedata = read(filename).splitlines() # TODO cache
             return (filename.replace("./TF2-Zombie-Riot/",""), get_refs(filedata,key,negative_on_fail=True)[0])
     return ("?",-1)
 

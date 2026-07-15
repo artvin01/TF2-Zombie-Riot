@@ -61,6 +61,7 @@ class NPC:
             ).replace("\t"," ")
         )
         self.FILE_DATA_RAW: str = util.readlines(self.PATH)
+        self.FILE_DATA_SPLIT: list[str] = self.FILE_DATA_RAW.splitlines()
         self.HIDDEN: bool = not ("npc_donoteveruse" not in self.FILE_DATA and "NPC_Add" in self.FILE_DATA)
         if not self.HIDDEN:
             self.source: dict[str, dict[str,tuple[int,int]] | tuple[str,int]] = {}
@@ -112,7 +113,7 @@ class NPC:
             try:
                 ICON_STR = f'strcopy({self.main_prefix}.Icon, sizeof({self.main_prefix}.Icon), \"'
                 self.icon:str = self.FILE_DATA.split(ICON_STR)[1].split("\");")[0]
-                self.source["icon"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_RAW,ICON_STR)[0])
+                self.source["icon"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_SPLIT,ICON_STR)[0])
             except IndexError:
                 self.icon = ""
 
@@ -122,8 +123,8 @@ class NPC:
             self.music_entries: list[dict[str,str | bool]] = []
             if len(music_cutouts) > 0:
                 music_hashes: list[str] = []
-                music_cutout_source_start = util.get_refs(self.FILE_DATA_RAW, "MusicEnum music;")
-                music_cutout_source_end = [util.get_refs(item, "Music_SetRaidMusic(", negative_on_fail=True)[0] for i,item in enumerate(self.FILE_DATA_RAW.split("MusicEnum music;")) if i > 0]
+                music_cutout_source_start = util.get_refs(self.FILE_DATA_SPLIT, "MusicEnum music;")
+                music_cutout_source_end = [util.get_refs(item.splitlines(), "Music_SetRaidMusic(", negative_on_fail=True)[0] for i,item in enumerate(self.FILE_DATA_RAW.split("MusicEnum music;")) if i > 0]
                 util.debug(f"NPC:__init__:music_cutouts\n{json.dumps(music_cutouts,indent=2)}","npcs", "OKBLUE")
                 for i, code in enumerate(music_cutouts):
                     mfilename = self._get_music_val(code,"Path").replace("#","")
@@ -167,7 +168,7 @@ class NPC:
                 "music_entries": {
                     "name", "filepath", "file_exists"FILE_DATA
                 }
-                "source": [see util.py:get_sources()]
+                "source": [see util.py:get_refs() usage]
             }
             """
 
@@ -176,7 +177,7 @@ class NPC:
         try:
             NAME_STR = f'strcopy({self.main_prefix}.Name, sizeof({self.main_prefix}.Name), \"'
             self.name = self.FILE_DATA.split(NAME_STR)[1].split("\");")[0]
-            self.source["name"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_RAW, NAME_STR)[0]) # TODO reference translations too?
+            self.source["name"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_SPLIT, NAME_STR)[0]) # TODO reference translations too?
         except IndexError:
             self.name = None
 
@@ -202,7 +203,7 @@ class NPC:
                 full_str = util.normalize_whitespace(item.replace("\t"," ")).split(' ')
                 util.debug(f"NPC:get_npc_constants:full_str[1] {full_str[1]}", "npcs", "OKCYAN")
                 # e.g. '4500static' fixed temporarily by just removing "static". gotta fix this later, it seems like it doesn't get split by newlines or smth
-                k, v = full_str[0].replace(" ",""), full_str[1].split("\n")[0].split("//")[0].replace(" ","").replace("\"","").replace("static","")
+                k, v = full_str[0].replace(" ",""), full_str[1].splitlines()[0].split("//")[0].replace(" ","").replace("\"","").replace("static","")
                 util.debug(f"NPC:get_npc_constants:k, v {k}, {v}", "npcs", "OKCYAN")
                 self.npc_vars_dict[k] = v
                 if v.endswith(".mp3"):
@@ -322,12 +323,12 @@ class NPC:
         # One instance of everything
         PLUGIN_STR = f'strcopy({self.main_prefix}.Plugin, sizeof({self.main_prefix}.Plugin), \"'
         self.plugin = self.FILE_DATA.split(PLUGIN_STR)[1].split("\");")[0]
-        self.source["plugin"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_RAW,PLUGIN_STR)[0])
+        self.source["plugin"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_SPLIT,PLUGIN_STR)[0])
 
         try:
             CAT_STR = f"{self.main_prefix}.Category = "
             self.category = self.FILE_DATA.split(CAT_STR)[1].split(";")[0]
-            self.source["plugin"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_RAW,CAT_STR,negative_on_fail=True)[0])
+            self.source["plugin"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_SPLIT,CAT_STR,negative_on_fail=True)[0])
         except IndexError:
             self.category = f"404 prefix: {self.main_prefix}" if "npcs" in util.DEBUG else "-1"
 
@@ -335,14 +336,14 @@ class NPC:
             FLAGS_STR = f"{self.main_prefix}.Flags = "
             self.flags = self.FILE_DATA.split(FLAGS_STR)[1]
             self.flags = self.flags.split(";")[0].split("|")
-            self.source["flags"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_RAW,FLAGS_STR,negative_on_fail=True)[0])
+            self.source["flags"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_SPLIT,FLAGS_STR,negative_on_fail=True)[0])
         except IndexError:
             self.flags = []
 
         try:
             HEALTH_STR = "CClotBody(vecPos, vecAng, "
             self.health = self.FILE_DATA.split(HEALTH_STR)[1].split("));")[0].split(',')[2].replace('"',"").replace(" ","")
-            self.source["health"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_RAW,HEALTH_STR,negative_on_fail=True)[0])
+            self.source["health"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_SPLIT,HEALTH_STR,negative_on_fail=True)[0])
             #if "MinibossHealthScaling" in self.health:
             #    self.health = f"Miniboss health scaling (Base {self.health.split("(")[1][:-1]}HP)"
             if ":" in self.health:

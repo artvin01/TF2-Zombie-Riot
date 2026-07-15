@@ -46,7 +46,7 @@ def decompile_model(path:str):
         qcdata = read(f"{prefix}decompiled/{pure_filename}.qc")
         bodygroup_idx = 1
         bodygroup_map = {}
-        for line in qcdata.split("\n"):
+        for line in qcdata.splitlines():
             if line.strip().startswith("studio"):
                 bodygroup_map[2**(bodygroup_idx-1)]=line.split(" ")[-1].strip('"')
                 bodygroup_idx += 1
