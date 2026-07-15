@@ -2764,19 +2764,19 @@
 	{
 		"en"		"One last thing! In your hud and enemy huds you will see various symbols.\n☛Means melee damage.➶Means Ranged damage.☖ Means damage bonus (npcs usually)\nPercentage shows what its multiplied by."
 		"it"		"Un'ultima cosa! Nel vostro hud e in quello dei nemici vedrete vari simboli.\n☛Significa danno da mischia.➶Significa danno a distanza.☖ Significa bonus di danno (di solito per gli npc)\nLa percentuale mostra per quanto è stata moltiplicata."
-		"ko"		"마지막으로! 당신과 적의 허드에는 여러 심볼이 보이실 겁니다.\n☛(손가락)은 근접 피해를 뜻합니다.➶(화살)은 원거리 피해를 뜻합니다.☖는 피해량 보너스를 의미합니다.(일반적으로 NPC에게 해당)\n퍼센테이지는 그것의 곱해진 값을 나타냅니다."
+		"ko"		"마지막으로! 당신과 적의 허드에는 여러 심볼이 보이실 겁니다.\n☛(손가락)은 근접 피해를 뜻합니다.➶(화살)은 원거리 피해를 뜻합니다.☖는 피해량 보너스를 의미합니다.(일반적으로 NPC에게 해당)\n퍼센트는 해당 수치의 배율을 나타냅니다."
 	}
 	"tutorial_5"
 	{
 		"en"		"You will also notice that it highlights!\nIf you deal/take the corresponding type of damage, it will get an underscore!\nif you take/deal melee damage ☛will lightup."
 		"it"		"Si noterà anche che si evidenzia!\nSe si infligge/riceve il tipo di danno corrispondente, si ottiene un trattino basso!\nSe si infligge/riceve danno in mischia, si illuminerà ☛."
-		"ko"		"그리고 이 심볼이 가끔씩 밝아지는 것을 알아차리셨을 겁니다!\n해당 유형의 피해를 받거나, 해당 유형으로 피해를 주면, 그 심볼에 밑줄이 그어집니다.\n예시로 근접 피해를 가하거나, 근접 피해로 공격 받았다면, ☛가 하이라이트로 표시됩니다."
+		"ko"		"그리고 이 심볼이 가끔씩 강조되는 것을 알아차리셨을 겁니다!\n해당 유형의 피해를 받거나, 해당 유형으로 피해를 주거나 받으면, 그 심볼에 밑줄이 그어집니다.\n예시로 근접 피해를 가하거나, 근접 피해로 공격 받았다면, ☛가 하이라이트로 표시됩니다."
 	}
 	"Tutorial Show Hint Perk Machine"
 	{
 		"en"		"Use this machine to get a boost to yourself!\nSelect what you want!\nHold crouch to see its effects when selecting!"
 		"it"		"Usa questa macchina per darti una spinta! \nSeleziona ciò che vuoi! \nTieni premuto il tasto crouch per vedere i suoi effetti durante la selezione!"
-		"ko"		"이 기계를 사용하여 추가 버프를 받으세요!\n원하는 것을 선택하세요!\n앉기를 꾹 누르면 어떤 효과가 있는지 미리 볼 수 있습니다!"
+		"ko"		"이 기계를 사용하여 추가 버프를 받으세요!\n원하는 것을 선택하세요!\n웅크린 상태로 선택하면 어떤 효과가 있는지 미리 볼 수 있습니다!"
 	}
 	"Tutorial Show Hint Perk Machine Build One"
 	{
@@ -2857,7 +2857,7 @@
 	{
 		"en"		"Favorite this loadout to autobuy it when you connect"
 		"it"		"Preferisci questo equipaggiamento per acquistarlo automaticamente quando ti connetti"
-		"ko"		"로드아웃 즐겨찾기(접속했을때 로드아웃의 아이템 자동 구매)"
+		"ko"		"로드아웃 즐겨찾기(접속 시 자동 구매)"
 	}
 	"Un Favorite"
 	{
