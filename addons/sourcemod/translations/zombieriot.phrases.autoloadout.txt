@@ -4,31 +4,42 @@
 	"Autoloadout Select Header"
 	{
 		"en" 		"Select which autoloadout you'd want to have."
+		"ru"		"Выберите с каким авто-снаряжением вы хотите играть."
 		"pl"		"Wybierz który przygotowany zestaw wyposażenia chcesz mieć."
 	}
 	"Autoloadout Page"
 	{
 		"en" 		"Autoloadouts"
+		"ru"		"Авто-снаряжение"
 		"pl"		"przygotowane zestawy wyposażenia"
 	}
 	"Autoloadout Disable"
 	{
 		"en" 		"Autoloadouts DISABLED FOR THIS MAP"
+		"ru"		"Авто-Снаряжение отключено для этой карты."
 		"pl"		"przygotowane zestawy wyposażenia wyłączone na tej mapie."
 	}
 	"Autoloadout Store Page"
 	{
 		"en" 		"Back to the store"
+		"ru"		"Назад в магазин"
 		"pl"		"Wróć do sklepu"
 	}
 	"Autoloadout Current Have"
 	{
 		"en" 		"Current Autoloadout:"
+		"ru"		"Выбранное Авто-Снаряжение:"
 		"pl"		"Aktualne przygotowane wyposażenie:"
 	}
 	"Autoloadout CancelLoadout"
 	{
 		"en" 		"Cancel Current Autoloadout"
+		"ru"		"Отменть текущее Авто-Снаряжение"
+	}
+	"Autoloadout Bought Item"
+	{
+		"en" 		"Bought Item:"
+		"ru"		"Куплен предмет:"
 		"pl"		"Anuluj aktualne przygotowane wyposażenie"
 	}
 	"Autoloadout Bought Item"
@@ -42,31 +53,37 @@
 		"#format"	"{1:s},{2:s}"
 		"en" 		"Enhanced Item: {1} - {2}"
 		"pl"		"Ulepszono przedmiot: {1} - {2}"
+		"ru"		"Улучшен предмет: {1} - {2}"
 	}
 	
 	"Ranged 1"
 	{
 		"en" 		"Ranger: Fast Fire [Easy]"
+		"ru"		"Стрелок: Скорострел [Легко]"
 		"pl"		"Daleki Zasięg: Szybko szczelny [łatwy]"
 	}
 	"Ranged 2"
 	{
 		"en" 		"Ranger: Shotgun [Easy]"
+		"ru"		"Стрелок: Дробовик [Легко]"
 		"pl"		"Daleki Zasięg: Shotgun [łatwy]"
 	}
 	"Medic 1"
 	{
 		"en" 		"Medic: Medigun [Normal]"
+		"ru"		"Медик: Лечебная пушка [Нормально]"
 		"pl"		"Medyk: Medigun [Normalny]"
 	}
 	"Mage 1"
 	{
 		"en" 		"Mage: Explosive Spell [Normal]"
+		"ru"		"Маг: Взрывные заклинания [Нормально]"
 		"pl"		"Mag: Eksplodujące zaklęcie [Normalny]"
 	}
 	"Melee 1"
 	{
 		"en" 		"Melee: Scythe [Hard]"
+		"ru"		"Ближний бой: Коса [Сложно]"
 		"pl"		"walka wręcz: Kosa [Trudny]"
 	}
 	
