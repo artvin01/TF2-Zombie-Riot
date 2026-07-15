@@ -44,16 +44,11 @@
 	}
 	"Autoloadout Bought Item"
 	{
-		"en" 		"Bought Item:"
-		"ko"		"구매한 아이템:"
-		"ru"		"Куплен предмет:"
-		"pl"		"Anuluj aktualne przygotowane wyposażenie"
-	}
-	"Autoloadout Bought Item"
-	{
 		"#format"	"{1:s}"
 		"en" 		"Bought Item: {1}"
 		"pl"		"Kupiono przedmiot: {1}"
+		"ko"		"구매한 아이템: {1}"
+		"ru"		"Куплен предмет: {1}"
 	}
 	"Autoloadout Bought Item With Desc"
 	{
@@ -107,41 +102,49 @@
 	"Wrench Mini Desc"
 	{
 		"en" 		"Lets you construct buildings. The building menu is brought up with [R] while holding it."
+		"ko"		"구조물을 건설할 수 있도록 합니다. 구조물 메뉴는 렌치를 들고 R키를 눌러 열 수 있습니다."
 	}
 	
 	"SMG Mini Desc"
 	{
 		"en" 		"You can refill its ammo by interacting with ammo boxes built by other players or yourself."
+		"ko"		"본인 혹은 다른 플레이어가 건설한 탄약 상자와 상호작용하여 탄약을 보충할 수 있습니다."
 	}
 	
 	"Shotgun Mini Desc"
 	{
 		"en" 		"You can refill its ammo by interacting with ammo boxes built by other players or yourself."
+		"ko"		"본인 혹은 다른 플레이어가 건설한 탄약 상자와 상호작용하여 탄약을 보충할 수 있습니다."
 	}
 	
 	"Medigun Mini Desc"
 	{
 		"en" 		"Can toggle between healing and damage modes with [R]."
+		"ko"		"R키를 눌러 치유 모드와 피해 모드를 전환할 수 있습니다."
 	}
 	
 	"Super-Uber-Saw Mini Desc"
 	{
 		"en" 		"Gains charge from healing teammates. Deals massive damage and knockback to enemies when fully charged."
+		"ko"		"아군을 치유하면 충전을 얻습니다. 충전이 완료되면 공격 적중 시 대상들에게 막대한 피해와 넉백을 가합니다."
 	}
 	
 	"Gravaton Spell Mini Desc"
 	{
 		"en" 		"Causes a delayed magic explosion where you aim. Mage weapons use mana instead of ammo."
+		"ko"		"조준하고 있는 위치에 지연성 폭발을 일으킵니다. 마법 무기는 탄약 대신 마나를 사용합니다."
 	}
 	
 	"Magic Potion Mini Desc"
 	{
 		"en" 		"Refills your mana with [MOUSE2]. Has a long cooldown."
+		"ko"		"우클릭을 눌러 마나를 보충합니다. 쿨타임이 깁니다."
 	}
 	
 	"Sensal's Scythe Mini Desc"
 	{
 		"en" 		"Gains charge on hit. Can shoot scythe projectiles with [R] when charged."
+		"ko"		"적중 시 충전을 얻습니다. 충전 시 R키를 눌러 낫 투사체를 발사할 수 있습니다."
 	}
 	
 	// SURVIVAL UPGRADES
@@ -149,21 +152,25 @@
 	"Generic Survival Upgrade Mini Desc"
 	{
 		"en"		"More armor capacity, max health and damage resistance."
+		"ko"		"아머 최대치, 최대 체력, 피해 저항력이 증가합니다."
 	}
 	
 	"Grigori's Blessing Mini Desc"
 	{
 		"en"		"More max health and health regen while on low health."
+		"ko"		"최대 체력이 증가하며 체력이 낮을 시 체력을 재생합니다."
 	}
 	
 	"Healthy Apple from Bob Mini Desc"
 	{
 		"en"		"Greatly increased max health."
+		"ko"		"최대 체력이 대폭 증가합니다."
 	}
 	
 	"Spookmaster's Strong Bone Amplifier Mini Desc"
 	{
 		"en"		"Greatly increased max health and damage resistance."
+		"ko"		"최대 체력과 피해 저항력이 대폭 증가합니다."
 	}
 	
 	// RANGED UPGRADES
@@ -171,21 +178,25 @@
 	"Generic Damage Ranged Upgrade Mini Desc"
 	{
 		"en"		"Deal more damage with ranged weapons."
+		"ko"		"원거리 무기의 피해가 증가합니다."
 	}
 	
 	"Accurate Marksman Mini Desc"
 	{
 		"en"		"Better accuracy and faster projectile speed with ranged weapons."
+		"ko"		"원거리 무기의 정확도와 투사체 속도가 증가합니다."
 	}
 	
 	"Compacted Rounds Mini Desc"
 	{
 		"en"		"More clip size, faster attack and reload speed with ranged weapons."
+		"ko"		"원거리 무기의 장탄수, 공격 속도, 재장전 속도가 증가합니다."
 	}
 	
 	"Expidonsan's Black hole Storage Unit Mini Desc"
 	{
 		"en"		"Deal more damage, gain more clip size, faster attack and reload speed with ranged weapons."
+		"ko"		"원거리 무기의 피해량, 장탄수, 공격 속도, 재장전 속도가 증가합니다."
 	}
 	
 	// MAGE UPGRADES
@@ -193,26 +204,31 @@
 	"Generic Damage Mage Upgrade Mini Desc"
 	{
 		"en"		"Deal more damage with mage weapons."
+		"ko"		"마법 무기의 피해량이 증가합니다."
 	}
 	
 	"Magical Haste Mini Desc"
 	{
 		"en"		"Deal more damage, gain faster firing speed, mana regen and more max mana with mage weapons."
+		"ko"		"마법 무기의 피해량, 공격 속도, 마나 재생, 최대 마나가 증가합니다."
 	}
 	
 	"Hastening Potion Mini Desc"
 	{
 		"en"		"Deal more damage, gain faster firing speed, mana regen and more max mana, health and melee damage resistance with mage weapons."
+		"ko"		"마법 무기의 피해량, 공격 속도, 마나 재생, 최대 마나, 최대 체력, 근접 피해 저항력이 증가합니다."
 	}
 	
 	"Betweenlands Potion Mini Desc"
 	{
 		"en"		"Deal more damage, gain faster firing speed, mana regen and more max mana, health and melee damage resistance with mage weapons."
+		"ko"		"마법 무기의 피해량, 공격 속도, 마나 재생, 최대 마나, 최대 체력, 근접 피해 저항력이 증가합니다."
 	}
 	
 	"Ruina's Sacret Magic Ways Mini Desc"
 	{
 		"en"		"Deal more damage, gain faster firing speed and more max mana with mage weapons."
+		"ko"		"마법 무기의 피해량, 공격 속도, 최대 마나가 증가합니다."
 	}
 	
 	// MELEE UPGRADES
@@ -220,21 +236,25 @@
 	"Generic Melee Upgrade Mini Desc"
 	{
 		"en"		"Deal more damage, gain more health on kill, max health and melee damage resistance with melee weapons."
+		"ko"		"근접 무기의 피해량, 처치 시 체력 회복량, 최대 체력, 근접 피해 저항력이 증가합니다."
 	}
 	
 	"Cannibalism Mini Desc"
 	{
 		"en"		"Lets you eat gibs to regenerate health. Gain more health on kill with melee weapons."
+		"ko"		"시체 조각을 먹어 체력을 회복할 수 있습니다. 근접 무기 처치 시 체력 회복량이 증가합니다."
 	}
 	
 	"Copium Mini Desc"
 	{
 		"en"		"Deal more damage and gain damage resistance with melee weapons."
+		"ko"		"근접 무기의 피해량, 근접 피해 저항력이 증가합니다."
 	}
 	
 	"Cocain Mini Desc"
 	{
 		"en"		"Gain faster attack speed with melee weapons."
+		"ko"		"근접 무기의 공격 속도가 증가합니다."
 	}
 	
 	// SUPPORT UPGRADES
@@ -242,10 +262,12 @@
 	"Generic Support Upgrade Mini Desc"
 	{
 		"en"		"Gain faster healing rate and melee damage resistance with suppórt weapons."
+		"ko"		"지원 무기의 치유 속도, 근접 피해 저항력이 증가합니다."
 	}
 	
 	"Medic's Lost Medical Lisence Mini Desc"
 	{
 		"en"		"Gain faster healing rate, reviving speed and melee damage resistance with suppórt weapons."
+		"ko"		"지원 무기의 치유 속도, 부활 속도, 근접 피해 저항력이 증가합니다."
 	}
 }
