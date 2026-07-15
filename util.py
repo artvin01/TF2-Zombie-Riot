@@ -295,9 +295,12 @@ def readlines(filename:str) -> str:
 
 
 def write(filename:str, val:str):
+    """
+    # for debugging (increases generation time)
     if filename.endswith(".html"):
         soup=BeautifulSoup(val,features="html.parser")
         val=soup.prettify(formatter=Formatter("html5",indent=4))
+    """
     with open(filename, 'w+') as f:
         f.write(val)
 

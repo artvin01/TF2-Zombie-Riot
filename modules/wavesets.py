@@ -85,22 +85,22 @@ def unique_enemy_delays(w: str) -> str:
     # https://stackoverflow.com/questions/41941116/replace-each-occurrence-of-sub-strings-in-the-string-with-randomly-generated-val
     space = "		"
 
-    # .1f
-    for i in range(0,301):
-        delay_str = f'{i/10:.1f}'
-        delay_count = w.count(delay_str)
-        w = w.replace("{","{{").replace("}","}}") # double curly brackets get ignored by .format
-        w = w.replace(f'{space}"{delay_str}"', space+'"{}"')
-        w = w.format(*(" "*i + delay_str for i in range(delay_count)))
-    
-    # .2f
-    for i in range(0,3001):
-        delay_str = f'{i/100:.2f}'
-        delay_count = w.count(delay_str)
-        w = w.replace("{","{{").replace("}","}}") # double curly brackets get ignored by .format
-        w = w.replace(f'{space}"{delay_str}"', space+'"{}"')
-        w = w.format(*(" "*i + delay_str for i in range(delay_count)))
+    def bl(n_w,n_dstr):
+        n_dstr_ct = n_w.count(n_dstr)
+        n_w = n_w.replace("{","{{").replace("}","}}") # double curly brackets get ignored by .format
+        n_w = n_w.replace(f'{space}"{n_dstr}"', space+'"{}"')
+        return n_w.format(*(" "*i + n_dstr for i in range(n_dstr_ct)))
 
+    for d in range(0,4):
+        if f"{d}." in w:
+            for d2 in range(0,10):
+                dstr = f"{d}.{d2}"
+                if f"{d}.{d2}":
+                    w = bl(w,dstr)
+                    for d3 in range(0,10):
+                        dstr = f"{d}.{d2}{d3}"
+                        if dstr: w = bl(w,dstr)
+    
     return w
 
 def get_npc(plugin: str) -> dict[str, str]:
