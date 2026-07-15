@@ -32,16 +32,17 @@
 		"pl"		"Anuluj aktualne przygotowane wyposażenie"
 	}
 	"Autoloadout Bought Item"
-	{
-		"en" 		"Bought Item:"
-		"pl"		"Kupiono przedmiot:"
+	
+		"#format"	"{1:s}"
+		"en" 		"Bought Item: {1}"
+		"pl"		"Kupiono przedmiot: {1}"
 	}
-	"Autoloadout Enhance Item"
+	"Autoloadout Bought Item With Desc"
 	{
-		"en" 		"Enhanced Item:"
-		"pl"		"Ulepszono przedmiot:"
+		"#format"	"{1:s},{2:s}"
+		"en" 		"Enhanced Item: {1} - {2}"
+		"pl"		"Ulepszono przedmiot: {1} - {2}"
 	}
-
 	
 	"Ranged 1"
 	{
@@ -67,5 +68,154 @@
 	{
 		"en" 		"Melee: Scythe [Hard]"
 		"pl"		"walka wręcz: Kosa [Trudny]"
+	}
+	
+	// ITEM MINI DESCRIPTIONS
+	
+	// WEAPONS
+	
+	"Wrench Mini Desc"
+	{
+		"en" 		"Lets you construct buildings. The building menu is brought up with [R] while holding it."
+	}
+	
+	"SMG Mini Desc"
+	{
+		"en" 		"You can refill its ammo by interacting with ammo boxes built by other players or yourself."
+	}
+	
+	"Shotgun Mini Desc"
+	{
+		"en" 		"You can refill its ammo by interacting with ammo boxes built by other players or yourself."
+	}
+	
+	"Medigun Mini Desc"
+	{
+		"en" 		"Can toggle between healing and damage modes with [R]."
+	}
+	
+	"Super-Uber-Saw Mini Desc"
+	{
+		"en" 		"Gains charge from healing teammates. Deals massive damage and knockback to enemies when fully charged."
+	}
+	
+	"Gravaton Spell Mini Desc"
+	{
+		"en" 		"Causes a delayed magic explosion where you aim. Mage weapons use mana instead of ammo."
+	}
+	
+	"Magic Potion Mini Desc"
+	{
+		"en" 		"Refills your mana with [MOUSE2]. Has a long cooldown."
+	}
+	
+	"Sensal's Scythe Mini Desc"
+	{
+		"en" 		"Gains charge on hit. Can shoot scythe projectiles with [R] when charged."
+	}
+	
+	// SURVIVAL UPGRADES
+	
+	"Generic Survival Upgrade Mini Desc"
+	{
+		"en"		"More armor capacity, max health and damage resistance."
+	}
+	
+	"Grigori's Blessing Mini Desc"
+	{
+		"en"		"More max health and health regen while on low health."
+	}
+	
+	"Healthy Apple from Bob Mini Desc"
+	{
+		"en"		"Greatly increased max health."
+	}
+	
+	"Spookmaster's Strong Bone Amplifier Mini Desc"
+	{
+		"en"		"Greatly increased max health and damage resistance."
+	}
+	
+	// RANGED UPGRADES
+	
+	"Generic Damage Ranged Upgrade Mini Desc"
+	{
+		"en"		"Deal more damage with ranged weapons."
+	}
+	
+	"Accurate Marksman Mini Desc"
+	{
+		"en"		"Better accuracy and faster projectile speed with ranged weapons."
+	}
+	
+	"Compacted Rounds Mini Desc"
+	{
+		"en"		"More clip size, faster attack and reload speed with ranged weapons."
+	}
+	
+	"Expidonsan's Black hole Storage Unit Mini Desc"
+	{
+		"en"		"Deal more damage, gain more clip size, faster attack and reload speed with ranged weapons."
+	}
+	
+	// MAGE UPGRADES
+	
+	"Generic Damage Mage Upgrade Mini Desc"
+	{
+		"en"		"Deal more damage with mage weapons."
+	}
+	
+	"Magical Haste Mini Desc"
+	{
+		"en"		"Deal more damage, gain faster firing speed, mana regen and more max mana with mage weapons."
+	}
+	
+	"Hastening Potion Mini Desc"
+	{
+		"en"		"Deal more damage, gain faster firing speed, mana regen and more max mana, health and melee damage resistance with mage weapons."
+	}
+	
+	"Betweenlands Potion Mini Desc"
+	{
+		"en"		"Deal more damage, gain faster firing speed, mana regen and more max mana, health and melee damage resistance with mage weapons."
+	}
+	
+	"Ruina's Sacret Magic Ways Mini Desc"
+	{
+		"en"		"Deal more damage, gain faster firing speed and more max mana with mage weapons."
+	}
+	
+	// MELEE UPGRADES
+	
+	"Generic Melee Upgrade Mini Desc"
+	{
+		"en"		"Deal more damage, gain more health on kill, max health and melee damage resistance with melee weapons."
+	}
+	
+	"Cannibalism Mini Desc"
+	{
+		"en"		"Lets you eat gibs to regenerate health. Gain more health on kill with melee weapons."
+	}
+	
+	"Copium Mini Desc"
+	{
+		"en"		"Deal more damage and gain damage resistance with melee weapons."
+	}
+	
+	"Cocain Mini Desc"
+	{
+		"en"		"Gain faster attack speed with melee weapons."
+	}
+	
+	// SUPPORT UPGRADES
+	
+	"Generic Support Upgrade Mini Desc"
+	{
+		"en"		"Gain faster healing rate and melee damage resistance with suppórt weapons."
+	}
+	
+	"Medic's Lost Medical Lisence Mini Desc"
+	{
+		"en"		"Gain faster healing rate, reviving speed and melee damage resistance with suppórt weapons."
 	}
 }
