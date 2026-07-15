@@ -4266,7 +4266,7 @@
 	"Speechless Desc"
 	{
 		"en" 	"Explorers of the voided place, fallen expidonsans\n-Each attack makes them attack faster\n-On attack gains shield\n-Shield cooldown is ignored against barricades\n-Fires an infinite piercing laser with damage delay\n-The faster it attacks the slower it moves\n-Jumps at target\n-Once life is lost:\nGain immensive buffs\nShield lasts longer\nCan no longer heal"
-		"ko"	"공허화된 공간의 탐험가들, 쓰러진 엑스피돈사인들.\n-공격할 때마다 공격 속도 증가\n-적중 시 보호막 획득\n-바리케이드 공격 시 보호막 쿨다운 무시\n-약간의 지연을 가진 무한히 관통하는 레이저 발사\n-공격 속도가 빠를수록 이동 속도 감소\n-대상에게 뛰어듬\n-생명을 잃을 시:\n막대한 버프 획득\n보호막 지속 시간 증가\n체력 회복 불가능"
+		"ko"	"공허화된 공간의 탐험가들, 쓰러진 엑스피돈사인들.\n-공격할 때마다 공격 속도 증가\n-적중 시 보호막 획득\n-바리케이드 공격 시 보호막 쿨타임 무시\n-약간의 지연을 가진 무한히 관통하는 레이저 발사\n-공격 속도가 빠를수록 이동 속도 감소\n-대상에게 뛰어듬\n-생명을 잃을 시:\n막대한 버프 획득\n보호막 지속 시간 증가\n체력 회복 불가능"
 	}
 	"Unspeakable"
 	{
@@ -4278,7 +4278,7 @@
 	"Unspeakable Desc"
 	{
 		"en"	"Hearts of the void...\n-Ability sucks all allies in and if too close, damages them heavily and debuffs, gains ranged resistance and melee vuln during it it.\nCan rapid attack if it didnt attack for a while or after a cooldown.\nDuring its existance, void spreading is immensively increased.\nVoid Pillars are summoned below enemies.\nIf too low on health, will spread void where it walks.\n-Can get a shield each hp threshhold\n(Silence)makes voidbuff weaker"
-		"ko"	"공허의 심장이라고 하는 존재...\n-능력1: 주변의 모든 적을 빨아들이며, 근접한 대상에게 높은 피해를 가하고 디버프를 부여하며, 원거리 피해 저항력을 얻고 근접 피해에 취약해집니다.\n-한동안 공격하지 않았거나 쿨다운이 지난 후, 다음 공격의 속도가 크게 증가\n-이 적이 등장하면, 공허 점막의 확산 속도 대폭 가속.\n-대상 아래에 공허 기둥을 소환합니다.\n-체력이 크게 낮아질 경우, 이동한 위치에 공허 점막을 생성\n-체력이 일정 수치 감소할 때마다 보호막을 얻습니다.\n(침묵 상태 시) 이 적에게 부여되는 공허 관련 버프가 약화됩니다."
+		"ko"	"공허의 심장이라고 하는 존재...\n-능력1: 주변의 모든 적을 빨아들이며, 근접한 대상에게 높은 피해를 가하고 디버프를 부여하며, 원거리 피해 저항력을 얻고 근접 피해에 취약해집니다.\n-한동안 공격하지 않았거나 쿨타임이 지난 후, 다음 공격의 속도가 크게 증가\n-이 적이 등장하면, 공허 점막의 확산 속도 대폭 가속.\n-대상 아래에 공허 기둥을 소환합니다.\n-체력이 크게 낮아질 경우, 이동한 위치에 공허 점막을 생성\n-체력이 일정 수치 감소할 때마다 보호막을 얻습니다.\n(침묵 상태 시) 이 적에게 부여되는 공허 관련 버프가 약화됩니다."
 	}
 	"Voided Diversionistico"
 	{
@@ -7957,7 +7957,7 @@
 	"Mazeat Fabulous Squad X Elite, Solvence of Cringe Desc"
 	{
 		"en"	"Raid Quadra boss\n-Spawns:\nBob the first:\n-Melee attacks cause stacking vuln\n-Causes air punch attacks\nOmega\n-Punches very fast\n-Summons a one time vincent that dunks you\nWhiteflower:\n-Dashes at you dealing damage\n-Dash cooldown reduced with melee hits\nShadowing darkness:\n-Attacks cause Necrosis\n-teleports above you, slams down, spawns a pool that causes necrosis, and shoots 2 waves that damage you\nAll these raids are heavily dummed down or changed"
-		"ko"	"4중 레이드 보스.\n-스폰되는 대상:\n밥 1세:\n-근접 공격 적중 시 대상에게 중첩 가능한 취약 효과 부여\n오메가:\n-매우 빠른 펀치 공격 보유\n-플레이어를 잡아 내려 찍는 일회성 빈센트를 소환\n배풍등:\n-대상에게 돌격하여 피해를 가함\n-근접 공격 적중 시 돌격 쿨다운 감소\n그림자 응달:\n-공격이 쇠약 원소 피해를 부여\n-대상 위에 순간이동하여 내려찍는 공격을 하며, 이때 해당 위치에 쇠약 원소 피해를 부여하는 장판 생성. 그 후 2개의 파동 발사\n포함된 모든 레이드 보스들은 크게 약화되거나 변경됨"
+		"ko"	"4중 레이드 보스.\n-스폰되는 대상:\n밥 1세:\n-근접 공격 적중 시 대상에게 중첩 가능한 취약 효과 부여\n오메가:\n-매우 빠른 펀치 공격 보유\n-플레이어를 잡아 내려 찍는 일회성 빈센트를 소환\n배풍등:\n-대상에게 돌격하여 피해를 가함\n-근접 공격 적중 시 돌격 쿨타임 감소\n그림자 응달:\n-공격이 쇠약 원소 피해를 부여\n-대상 위에 순간이동하여 내려찍는 공격을 하며, 이때 해당 위치에 쇠약 원소 피해를 부여하는 장판 생성. 그 후 2개의 파동 발사\n포함된 모든 레이드 보스들은 크게 약화되거나 변경됨"
 	}
 	"Bob The First Squad"
 	{
