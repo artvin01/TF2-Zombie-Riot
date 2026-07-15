@@ -4,57 +4,70 @@
 	"Autoloadout Select Header"
 	{
 		"en" 		"Select which autoloadout you'd want to have."
+		"pl"		"Wybierz który przygotowany zestaw wyposażenia chcesz mieć."
 	}
 	"Autoloadout Page"
 	{
 		"en" 		"Autoloadouts"
+		"pl"		"przygotowane zestawy wyposażenia"
 	}
 	"Autoloadout Disable"
 	{
 		"en" 		"Autoloadouts DISABLED FOR THIS MAP"
+		"pl"		"przygotowane zestawy wyposażenia wyłączone na tej mapie."
 	}
 	"Autoloadout Store Page"
 	{
 		"en" 		"Back to the store"
+		"pl"		"Wróć do sklepu"
 	}
 	"Autoloadout Current Have"
 	{
 		"en" 		"Current Autoloadout:"
+		"pl"		"Aktualne przygotowane wyposażenie:"
 	}
 	"Autoloadout CancelLoadout"
 	{
 		"en" 		"Cancel Current Autoloadout"
+		"pl"		"Anuluj aktualne przygotowane wyposażenie"
 	}
 	"Autoloadout Bought Item"
-	{
+	
 		"#format"	"{1:s}"
 		"en" 		"Bought Item: {1}"
+		"pl"		"Kupiono przedmiot: {1}"
 	}
 	"Autoloadout Bought Item With Desc"
 	{
 		"#format"	"{1:s},{2:s}"
-		"en" 		"Bought Item: {1} - {2}"
+		"en" 		"Enhanced Item: {1} - {2}"
+		"pl"		"Ulepszono przedmiot: {1} - {2}"
 	}
 	
 	"Ranged 1"
 	{
 		"en" 		"Ranger: Fast Fire [Easy]"
+		"pl"		"Daleki Zasięg: Szybko szczelny [łatwy]"
 	}
 	"Ranged 2"
 	{
 		"en" 		"Ranger: Shotgun [Easy]"
+		"pl"		"Daleki Zasięg: Shotgun [łatwy]"
 	}
 	"Medic 1"
 	{
 		"en" 		"Medic: Medigun [Normal]"
+		"pl"		"Medyk: Medigun [Normalny]"
 	}
 	"Mage 1"
 	{
 		"en" 		"Mage: Explosive Spell [Normal]"
+		"pl"		"Mag: Eksplodujące zaklęcie [Normalny]"
 	}
 	"Melee 1"
 	{
 		"en" 		"Melee: Scythe [Hard]"
+		"pl"		"walka wręcz: Kosa [Trudny]"
 	}
 	
 	// ITEM MINI DESCRIPTIONS
