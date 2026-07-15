@@ -4,55 +4,68 @@
 	"Autoloadout Select Header"
 	{
 		"en" 		"Select which autoloadout you'd want to have."
+		"ru"		"Выберите с каким авто-снаряжением вы хотите играть."
 	}
 	"Autoloadout Page"
 	{
 		"en" 		"Autoloadouts"
+		"ru"		"Авто-снаряжение"
 	}
 	"Autoloadout Disable"
 	{
 		"en" 		"Autoloadouts DISABLED FOR THIS MAP"
+		"ru"		"Авто-Снаряжение отключено для этой карты."
 	}
 	"Autoloadout Store Page"
 	{
 		"en" 		"Back to the store"
+		"ru"		"Назад в магазин"
 	}
 	"Autoloadout Current Have"
 	{
 		"en" 		"Current Autoloadout:"
+		"ru"		"Выбранное Авто-Снаряжение:"
 	}
 	"Autoloadout CancelLoadout"
 	{
 		"en" 		"Cancel Current Autoloadout"
+		"ru"		"Отменть текущее Авто-Снаряжение"
 	}
 	"Autoloadout Bought Item"
 	{
 		"en" 		"Bought Item:"
+		"ru"		"Куплен предмет:"
 	}
 	"Autoloadout Enhance Item"
 	{
 		"en" 		"Enhanced Item:"
+		"ru"		"Улучшен предмет:"
 	}
 
 	
 	"Ranged 1"
 	{
 		"en" 		"Ranger: Fast Fire [Easy]"
+		"ru"		"Стрелок: Скорострел [Легко]"
 	}
 	"Ranged 2"
 	{
 		"en" 		"Ranger: Shotgun [Easy]"
+		"ru"		"Стрелок: Дробовик [Легко]"
 	}
 	"Medic 1"
 	{
 		"en" 		"Medic: Medigun [Normal]"
+		"ru"		"Медик: Лечебная пушка [Нормально]"
 	}
 	"Mage 1"
 	{
 		"en" 		"Mage: Explosive Spell [Normal]"
+		"ru"		"Маг: Взрывные заклинания [Нормально]"
 	}
 	"Melee 1"
 	{
 		"en" 		"Melee: Scythe [Hard]"
+		"ru"		"Ближний бой: Коса [Сложно]"
 	}
 }
