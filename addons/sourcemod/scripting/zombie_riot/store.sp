@@ -1623,10 +1623,9 @@ bool Store_TryToPapWeapon(int client, Item item, int index, int level, int descT
 			item.CurrentClipSaved[client] = -5;
 
 			int activeWeaponIndex = Store_GetActiveWeaponStoreIndex(client);
-			bool wasKit;
+			
 			if(item.ChildKit)
 			{
-				wasKit = true;
 				// Increase sellback value of parent kit
 				static Item other;
 				StoreItems.GetArray(item.Section, other);
@@ -1697,13 +1696,10 @@ bool Store_TryToPapWeapon(int client, Item item, int index, int level, int descT
 
 			CheckClientLateJoin(client);
 			
-			if (wasKit)
-			{
-				// Avoid switching to a different weapon when papping a kit
-				int newWeapon = Store_GetClientWeaponEntityFromStoreIndex(client, activeWeaponIndex);
-				if (newWeapon > MaxClients)
-					SetPlayerActiveWeapon(client, newWeapon);
-			}
+			int newWeapon = Store_GetClientWeaponEntityFromStoreIndex(client, activeWeaponIndex);
+			if (newWeapon > MaxClients)
+				SetPlayerActiveWeapon(client, newWeapon);
+			
 			return true;
 		}
 	}
