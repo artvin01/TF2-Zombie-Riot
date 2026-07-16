@@ -30,7 +30,7 @@ jobs:
 
       - name: Decompile
         run: |
-          venv\Scripts\python.exe modules\weapon-decompile.py
+          venv\Scripts\python.exe -m cProfile -s time modules\weapon-decompile.py
 
       - name: Upload decompiled model data
         uses: actions/cache/save@v5
@@ -68,7 +68,7 @@ jobs:
       run: |
         Xvfb :0 -screen 0 1024x768x16 &
         export DISPLAY=:0
-        ./venv/bin/python main.py
+        ./venv/bin/python -m cProfile -s time main.py
 
     - name: Upload static files as artifact
       id: deployment
