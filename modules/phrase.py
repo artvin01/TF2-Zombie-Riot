@@ -10,6 +10,8 @@ if "decompile" not in util.DEBUG:
     util.log("Parsing phrases...")
     for p in PHRASES:
         util.log(f"> {p}")
-        util.PHRASES.append(CaseInsensitiveDict(vdf.loads(util.read(f"./TF2-Zombie-Riot/addons/sourcemod/translations/{p}"))["Phrases"])) # type: ignore[w]
+        util.RAW_PHRASE[p] = util.read(f"./TF2-Zombie-Riot/addons/sourcemod/translations/{p}")
+        util.PHRASES.append(CaseInsensitiveDict(vdf.loads(util.RAW_PHRASE[p])["Phrases"])) # type: ignore[w]
+        util.RAW_PHRASE[p] = util.RAW_PHRASE[p].splitlines()
 else:
     util.log("DEBUG=decompile; Skipping phrase parsing!")

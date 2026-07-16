@@ -80,8 +80,9 @@ def musicmodal_to_html(modal: dict[str,str]) -> str:
         context["SRC"] = html_src(modal["source"])
         del context["source"]
     else:
-        log("Modal does not have 'source' set!","WARNING")
-        log(json.dumps(modal,indent=2),"FAIL")
+        # Waveset data will not have sources set anyway
+        #log("Modal does not have 'source' set!","WARNING")
+        #log(json.dumps(modal,indent=2),"FAIL")
         context["SRC"] = "?"
     return fill_template(read(f"templates/music/music_modal{"_missing"*int(not file_exists)}.html"),context)
 
@@ -173,7 +174,11 @@ def to_section_link(string: str) -> str:
     return sub(r'[^a-z0-9]', '-', string.lower())
 
 
-def remove_multiline_comments(code: str, newline:bool=False) -> str: # Fixes the script interpreting the comment in npc_headcrabzombie.sp as actual data
+def remove_multiline_comments(code: str, newline:bool=False) -> str:
+    """
+    Fixes the script interpreting the comment in npc_headcrabzombie.sp as actual data.
+    (removes lines from /* to */)
+    """
     new_str = ""
     reading_comment = False
     for line in code.splitlines():
@@ -274,6 +279,7 @@ def log(message:str, color:str="OKGREEN"):
 
 # --------------------------- CORE ---------------------------
 def read(filename:str) -> str:
+    """Read ./filename"""
     # Windows-specific fix to: https://stackoverflow.com/questions/9233027/unicodedecodeerror-charmap-codec-cant-decode-byte-x-in-position-y-character
     # no idea if applying encoding="utf-8" everywhere changes anything, better be safe
     if os.name == 'nt':
@@ -284,6 +290,7 @@ def read(filename:str) -> str:
             return f.read()
 
 def readlines(filename:str) -> str:
+    """Read ./filename (readlines method)"""
     # Windows-specific fix to: https://stackoverflow.com/questions/9233027/unicodedecodeerror-charmap-codec-cant-decode-byte-x-in-position-y-character
     # no idea if applying encoding="utf-8" everywhere changes anything, better be safe
     if os.name == 'nt':
@@ -295,6 +302,7 @@ def readlines(filename:str) -> str:
 
 
 def write(filename:str, val:str):
+    """Write val to ./filename"""
     """
     # for debugging (increases generation time)
     if filename.endswith(".html"):
@@ -306,6 +314,7 @@ def write(filename:str, val:str):
 
 # --------------------------- PHRASES ---------------------------
 
+RAW_PHRASE: dict[str,str] = {}
 PHRASES: list[dict[str,str]] = []
 
 yaml=YAML(typ='safe')
@@ -313,6 +322,11 @@ with open("./config/phrases.yml",'r') as file:
     PHRASES_FILES = yaml.load(file) # type: ignore[w]
 
 def get_key(key:str,silent:bool=False,empty_on_fail:bool=False) -> str:
+    """
+    Find specified key in any loaded phrase file. (phrase.py)
+    silent: warn of missing keys
+    empty_on_fail: return empty string if key not found, else return key itself 
+    """
     silent = silent or "decompile" in DEBUG
     for phrase in PHRASES:
         if key in phrase:
@@ -329,6 +343,10 @@ def get_key(key:str,silent:bool=False,empty_on_fail:bool=False) -> str:
 MORECOLORS_JSON = json.loads(read("gh-pages/static/data/morecolors.json"))
 
 def apply_morecolors(string:str):
+    """
+    Applies CSS MoreColors classes to a given string.
+    e.g. {white}foobar -> <span class="mc_white">foobar</span>
+    """
     new=f"<span>{string}</span>"
     has_replaced = False
     for colorname in MORECOLORS_JSON.keys():
@@ -342,13 +360,21 @@ def apply_morecolors(string:str):
 
 def divfornewline(string:str):
     """
+    Separates strings into divs by line.
     NOTE: Doesn't take \\\\n
     """
-    return f"<div>{string.replace("\n","</div>\n<div>")}</div>\n"
+    return f"<div>{"</div><div>".join(string.splitlines())}</div>\n"
 
 # --------------------------- SOURCE INSPECTOR ---------------------------
 
 def get_refs(content: list[str], value: str | int, negative_on_fail:bool=False) -> list[int]:
+    """
+    Find where a substring is located in a multiline string.
+    content: string split by newline
+    value: substring to search for (one line only)
+    negative_on_fail: return [-1] on fail, else raise exception
+    -> List of lines where substring was found starting from line 1
+    """
     result: list[int] = [i for i,line in enumerate(content, 1) if value in line]
     if result:
         return result
@@ -357,17 +383,24 @@ def get_refs(content: list[str], value: str | int, negative_on_fail:bool=False) 
     else:
         raise ValueError(f"Could not find '{value}' in content!")
 
-#  util.get_key_src(desc_key, negative_on_fail=True)
 def get_key_src(key:str) -> tuple[str,int]: # part of phrases
+    """
+    Find where a translation key is located in loaded phrase files.
+    -> (filepath, refs)
+        on fail: ("?", -1) 
+    """
     for idx, phrase in enumerate(PHRASES):
         if key in phrase:
-            # phrase[key]["en"]
             filename = f"./TF2-Zombie-Riot/addons/sourcemod/translations/{PHRASES_FILES[idx]}"
-            filedata = read(filename).splitlines() # TODO cache
-            return (filename.replace("./TF2-Zombie-Riot/",""), get_refs(filedata,key,negative_on_fail=True)[0])
-    return ("?",-1)
+            return (filename.replace("./TF2-Zombie-Riot/",""), get_refs(RAW_PHRASE[PHRASES_FILES[idx]],key,negative_on_fail=True)[0])
+    return ("?", -1)
 
 def html_src(src_obj: TypeSourceObject):
+    """
+    Return a TypeSourceObject as an HTML data-src attribute
+    e.g. ("foo",1) -> "foo#L1"
+         ("foo",[1,2]) -> "foo#L1-L2"
+    """
     if type(src_obj[1]) is list:
         return f"{src_obj[0]}#L{src_obj[1][0]}-L{src_obj[1][1]}"
     else:
