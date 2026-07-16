@@ -1883,18 +1883,10 @@ void Store_SetClientItem(int client, int index, int owned, int scaled, int equip
 	
 	if(item.ParentKit)
 	{
-		static Item subItem;
-		int length = StoreItems.Length;
-		for(int i; i < length; i++)
-		{
-			StoreItems.GetArray(i, subItem);
-			if(subItem.Section == index)
-			{
-				subItem.Owned[client] = item.Equipped[client] ? owned : 0;
-				subItem.Equipped[client] = item.Equipped[client];
-				StoreItems.SetArray(i, subItem);
-			}
-		}
+		if (item.Equipped[client])
+			Store_EquipAllItemsFromKit(client, item, index);
+		else
+			Store_UnequipAllItemsFromKit(client, index, true);
 	}
 	
 	StoreItems.SetArray(index, item);
@@ -2105,20 +2097,7 @@ void Store_BuyClientItem(int client, int index, Item item, const ItemInfo info)
 	item.BuyWave[client] = -1;
 
 	if(item.ParentKit)
-	{
-		static Item subItem;
-		int length = StoreItems.Length;
-		for(int i; i < length; i++)
-		{
-			StoreItems.GetArray(i, subItem);
-			if(subItem.Section == index)
-			{
-				subItem.Owned[client] = 1;
-				subItem.Equipped[client] = true;
-				StoreItems.SetArray(i, subItem);
-			}
-		}
-	}
+		Store_EquipAllItemsFromKit(client, item, index);
 	
 	if(info.FuncOnBuy != INVALID_FUNCTION)
 	{
@@ -4909,9 +4888,12 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 					else
 					{
 						Store_EquipSlotCheck(client, item);
-				
+						
 						item.Equipped[client] = true;
 						StoreItems.SetArray(index, item);
+						
+						if (item.ParentKit)
+							Store_EquipAllItemsFromKit(client, item, index);
 						
 						if(!TeutonType[client] && !i_ClientHasCustomGearEquipped[client])
 						{
@@ -5147,24 +5129,9 @@ int Store_TryToBuyItem(int client, int index, bool auto)
 
 			item.Equipped[client] = true;
 			item.AutoBought[client] = auto;
-			
 			StoreItems.SetArray(index, item);
 			
-			static Item subItem;
-			int length = StoreItems.Length;
-			for(int i; i < length; i++)
-			{
-				StoreItems.GetArray(i, subItem);
-				if(subItem.Section == index)
-				{
-					Store_EquipSlotCheck(client, subItem);
-					subItem.Owned[client] = item.Owned[client];
-					subItem.Equipped[client] = true;
-					StoreItems.SetArray(i, subItem);
-					
-					LastBoughtWeapon[client] = subItem;
-				}
-			}
+			Store_EquipAllItemsFromKit(client, item, index);
 			
 			if(!TeutonType[client] && !i_ClientHasCustomGearEquipped[client])
 			{	
@@ -6981,23 +6948,7 @@ stock int Store_Equip(int client, int index, bool UpdateSlots = true, bool speci
 		CheckMultiSlots(client);
 	
 	if(item.ParentKit)
-	{
-		static Item subItem;
-		int length = StoreItems.Length;
-		for(int i; i < length; i++)
-		{
-			StoreItems.GetArray(i, subItem);
-			if(subItem.Section == index)
-			{
-				Store_EquipSlotCheck(client, item);
-				subItem.Owned[client] = item.Owned[client];
-				subItem.Equipped[client] = true;
-				StoreItems.SetArray(i, subItem);
-				
-				LastBoughtWeapon[client] = subItem;
-			}
-		}
-	}
+		Store_EquipAllItemsFromKit(client, item, index);
 	
 	return entity;
 }
@@ -7903,20 +7854,7 @@ void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip,
 				StoreItems.SetArray(index, item);
 				
 				if(item.ParentKit)
-				{
-					static Item subItem;
-					int length = StoreItems.Length;
-					for(int i; i < length; i++)
-					{
-						StoreItems.GetArray(i, subItem);
-						if(subItem.Section == index)
-						{
-							subItem.Owned[client] = 0;
-							subItem.Equipped[client] = false;
-							StoreItems.SetArray(i, subItem);
-						}
-					}
-				}
+					Store_UnequipAllItemsFromKit(client, index, true);
 					
 				if(PlaySound)
 				{
@@ -8165,5 +8103,42 @@ void Store_SellAutoBoughtItems(int client)
 		
 		if (item.Owned[client] && item.AutoBought[client])
 			TryAndSellOrUnequipItem(i, item, client, false, false, true);
+	}
+}
+
+void Store_EquipAllItemsFromKit(int client, Item item, int index)
+{
+	Item subItem;
+	int length = StoreItems.Length;
+	for(int i; i < length; i++)
+	{
+		StoreItems.GetArray(i, subItem);
+		if(subItem.Section == index)
+		{
+			Store_EquipSlotCheck(client, subItem);
+			subItem.Owned[client] = item.Owned[client];
+			subItem.Equipped[client] = true;
+			StoreItems.SetArray(i, subItem);
+			
+			LastBoughtWeapon[client] = subItem;
+		}
+	}
+}
+
+void Store_UnequipAllItemsFromKit(int client, int index, bool remove)
+{
+	Item subItem;
+	int length = StoreItems.Length;
+	for(int i; i < length; i++)
+	{
+		StoreItems.GetArray(i, subItem);
+		if(subItem.Section == index)
+		{
+			if (remove)
+				subItem.Owned[client] = 0;
+			
+			subItem.Equipped[client] = false;
+			StoreItems.SetArray(i, subItem);
+		}
 	}
 }
