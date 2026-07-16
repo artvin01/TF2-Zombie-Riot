@@ -587,7 +587,7 @@ void Attributes_OnKill(int victim, int client, int weapon)
 
 	if(IsValidEntity(weapon) && weapon > MaxClients)
 	{
-		Attributes_Trigger_HealOnKill(client, victim, weapon, 0.85);
+		Attributes_Trigger_HealOnKill(client, victim, weapon, 0.9);
 		value = Attributes_Get(weapon, 613, 0.0);	// minicritboost on kill
 		if(value)
 			TF2_AddCondition(client, TFCond_MiniCritOnKill, value);

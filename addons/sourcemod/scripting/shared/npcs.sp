@@ -3129,7 +3129,7 @@ void Npc_TriggerAllAssists(int victim)
 				WeaponRef = EntRefToEntIndex(WeaponRef);
 				if(IsValidEntity(WeaponRef))
 				{
-					Attributes_Trigger_HealOnKill(assist, victim, WeaponRef, 0.66 * 0.85);
+					Attributes_Trigger_HealOnKill(assist, victim, WeaponRef, 0.75 * 0.9);
 				}
 			}
 		}
