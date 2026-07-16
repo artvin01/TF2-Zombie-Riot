@@ -1734,15 +1734,35 @@ void Func_DodgesHud(int attacker, int victim, StatusEffect Apply_MasterStatusEff
 	else
 		Format(HudToDisplay, SizeOfChar, "⮌(%i / %.1fs)", i_DodgesAvailable[victim], f_DodgeCooldown[victim] - GetGameTime());
 }
+
+#define INDEX_MINIMUM_SPEED_DODGE 200.0
+enum
+{
+	FAIL_DODGE,
+	FULL_DODGE,
+	CLOSE_DODGE,
+}
 float Func_Dodge_TakeDamage(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float damage)
 {
 	if(CheckInHud())
 		return 1.0;
-	bool DoDodge = true;
+	int DoDodge = FAIL_DODGE;
 	if(i_DodgesAvailable[victim] <= 0)
 		return 1.0;
 
+	float vecVelocity[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecAbsVelocity", vecVelocity);
+	
+	float speed = getLinearVelocity(vecVelocity);
+	if (speed < INDEX_MINIMUM_SPEED_DODGE)
+	{
+		return 1.0;
+	}
 	if(f_DodgeActive[victim] < GetGameTime())
+	{
+		return 1.0;
+	}
+	if(f_MinimumDashCD[victim] > GetGameTime())
 	{
 		return 1.0;
 	}
@@ -1753,54 +1773,52 @@ float Func_Dodge_TakeDamage(int attacker, int victim, StatusEffect Apply_MasterS
 		//if its melee damage, you dodge 2x as harder attacks
 		RMC_damage_cap *= 2.0;
 	}
-	int DrainDashes = 1;
-	if(b_thisNpcIsARaid[attacker])
+
+	if(damage < (RMC_damage_cap * 0.5))
 	{
-		DrainDashes = 5;
+		DoDodge = FULL_DODGE;
 	}
-	else if(b_thisNpcIsABoss[attacker])
+	else if(damage < RMC_damage_cap)
+	{
+		DoDodge = CLOSE_DODGE;
+	}
+	//otherwise
+	/*
+	int DrainDashes = 1;
+	if(b_thisNpcIsARaid[attacker] || b_thisNpcIsABoss[attacker])
 	{
 		DrainDashes = 2;
 	}
-	if(damage > RMC_damage_cap)
-	{
-		DoDodge = false;
-	}
-	if(DoDodge)
-	{
-		if(f_MinimumDashCD[victim] < GetGameTime())
-			i_DodgesAvailable[victim] -= DrainDashes;
-		IndexFather_AllyDodgedAttack(victim);
-		DoDodgeEffect(victim);
-		if(WeaponLevel[victim] >= 2)
-			StatusEffects_PoiseAddStuff(victim, 1, 2.0);
+	*/
 
-		//prevent losing all dahes in a nano second
-		f_MinimumDashCD[victim] = GetGameTime() + 0.05;
-		if(i_DodgesAvailable[victim] <= 0)
-		{
-			i_DodgesAvailable[victim] = 0;
-		}
-		f_DodgeCooldown[victim] = GetGameTime() + IndexFather_DashCooldown(victim);
-		return 0.0;
-	}
-	else
+	switch(DoDodge)
 	{
-		//fail....
-		if(f_MinimumDashCD[victim] < GetGameTime())
-			i_DodgesAvailable[victim] -= DrainDashes;
-		DoDodgeEffect(victim);
-		if(WeaponLevel[victim] >= 2)
-			StatusEffects_PoiseAddStuff(victim, 1, 2.0);
-
-		f_MinimumDashCD[victim] = GetGameTime() + 0.05;
-		if(i_DodgesAvailable[victim] <= 0)
+		case FULL_DODGE:
 		{
-			i_DodgesAvailable[victim] = 0;
+			IndexFather_AllyDodgedAttack(victim);
+			DoDodgeEffect(victim);
+			if(WeaponLevel[victim] >= 2)
+				StatusEffects_PoiseAddStuff(victim, 1, 2.0);
+			f_MinimumDashCD[victim] = GetGameTime() + 0.05;
 		}
-		f_DodgeCooldown[victim] = GetGameTime() + IndexFather_DashCooldown(victim);
-		return 0.75;
+		case CLOSE_DODGE:
+		{
+			IndexFather_AllyDodgedAttack(victim);
+			DoDodgeEffect(victim);
+			if(WeaponLevel[victim] >= 2)
+				StatusEffects_PoiseAddStuff(victim, 1, 2.0);
+			f_MinimumDashCD[victim] = GetGameTime() + 0.1;
+		}
 	}
+
+	switch(DoDodge)
+	{
+		case FULL_DODGE, CLOSE_DODGE:
+			return 0.0;
+		case FAIL_DODGE:
+			return 1.0;
+	}
+	return 1.0;
 }	
 
 public void IndexFather_DodgeLogic(int client)
