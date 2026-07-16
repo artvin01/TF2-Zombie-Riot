@@ -371,7 +371,7 @@ public int AutoLoadouts_DisplayLoadouts_Page(Menu menu, MenuAction action, int c
 				{
 					case -2:
 					{
-						Store_Menu(client);
+						RequestFrame(RequestFrameStoreOpen, EntIndexToEntRef(client));
 					}
 					case -3:
 					{
@@ -383,4 +383,11 @@ public int AutoLoadouts_DisplayLoadouts_Page(Menu menu, MenuAction action, int c
 		}
 	}
 	return 0;
+}
+void RequestFrameStoreOpen(int ref)
+{
+	int client = EntRefToEntIndex(ref);
+	if(!IsValidClient(client))
+		return;
+	Store_Menu(client);
 }
