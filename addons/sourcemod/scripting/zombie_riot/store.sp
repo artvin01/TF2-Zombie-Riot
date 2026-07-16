@@ -1622,8 +1622,11 @@ bool Store_TryToPapWeapon(int client, Item item, int index, int level, int descT
 			item.Owned[client] = level + 1;
 			item.CurrentClipSaved[client] = -5;
 
+			int activeWeaponIndex = Store_GetActiveWeaponStoreIndex(client);
+			bool wasKit;
 			if(item.ChildKit)
 			{
+				wasKit = true;
 				// Increase sellback value of parent kit
 				static Item other;
 				StoreItems.GetArray(item.Section, other);
@@ -1693,6 +1696,14 @@ bool Store_TryToPapWeapon(int client, Item item, int index, int level, int descT
 			}
 
 			CheckClientLateJoin(client);
+			
+			if (wasKit)
+			{
+				// Avoid switching to a different weapon when papping a kit
+				int newWeapon = Store_GetClientWeaponEntityFromStoreIndex(client, activeWeaponIndex);
+				if (newWeapon > MaxClients)
+					SetPlayerActiveWeapon(client, newWeapon);
+			}
 			return true;
 		}
 	}
@@ -5087,6 +5098,8 @@ int Store_TryToBuyItem(int client, int index, bool auto)
 	
 	item.GetItemInfo(level, info);
 	
+	int activeWeaponIndex = Store_GetActiveWeaponStoreIndex(client);
+	
 	if(item.ParentKit)	// Weapon Kit
 	{
 		if(!item.Owned[client])	// Buy All Items
@@ -5239,6 +5252,11 @@ int Store_TryToBuyItem(int client, int index, bool auto)
 
 		Store_ApplyAttribs(client);
 		Store_GiveAll(client, GetClientHealth(client));
+		
+		// Avoid switching to a different weapon when buying an upgrade
+		int newWeapon = Store_GetClientWeaponEntityFromStoreIndex(client, activeWeaponIndex);
+		if (newWeapon > MaxClients)
+			SetPlayerActiveWeapon(client, newWeapon);
 	}
 	
 	return BUY_RESULT_SUCCESS;
@@ -8141,4 +8159,30 @@ void Store_UnequipAllItemsFromKit(int client, int index, bool remove)
 			StoreItems.SetArray(i, subItem);
 		}
 	}
+}
+
+int Store_GetActiveWeaponStoreIndex(int client)
+{
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if (weapon == -1)
+		return weapon;
+	
+	return StoreWeapon[weapon];
+}
+
+int Store_GetClientWeaponEntityFromStoreIndex(int client, int index)
+{
+	int length = GetMaxWeapons(client);
+	for(int i; i < length; i++)
+	{
+		int weapon = GetEntPropEnt(client, Prop_Send, "m_hMyWeapons", i);
+		if (!IsValidEntity(weapon))
+			continue;
+		
+		int otherIndex = StoreWeapon[weapon];
+		if (index == otherIndex)
+			return weapon;
+	}
+	
+	return -1;
 }
