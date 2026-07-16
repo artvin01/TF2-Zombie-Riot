@@ -396,10 +396,11 @@ void WeaponZealot_OnTakeDamage(int attacker, int victim, float &damage)
 	{
 		Zealot_BonusMeleeDamage[attacker] = 1.0;
 	}
-	AmmoGiveWeapon[attacker] += 0.5;
+	AmmoGiveWeapon[attacker] += 1.0;
+	/*
 	if(i_HasBeenHeadShotted[victim])
 		AmmoGiveWeapon[attacker] += 0.5;
-
+	*/
 	int ammo = GetAmmo(attacker, Ammo_ClassSpecific);
 	if(AmmoGiveWeapon[attacker] >= 1.0)
 	{
