@@ -2716,7 +2716,7 @@
 	"The Enforcer Desc Weak"
 	{
 		"en"	"-Increases damage.\n-Doubles damage falloff\n-Grants an ability that stuns and knockbacks 3 targets, consumes one clip per target hit.\n-On hit, reduce cooldown"
-		"ko"	"-피해량 증가\n-거리 비례 피해 감소량 2배\n-최대 3명의 적을 기절시키고 넉백시키는 능력 획득. 적중한 적 하나당 장탄 1 소모\n-적중 시, 능력 쿨다운 감소"
+		"ko"	"-피해량 증가\n-거리 비례 피해 감소량 2배\n-최대 3명의 적을 기절시키고 넉백시키는 능력 획득. 적중한 적 하나당 장탄 1 소모\n-적중 시, 능력 쿨타임 감소"
 	}
 	"The Enforcer Desc"
 	{
@@ -3814,7 +3814,7 @@
 	"Riot Gun Desc"
 	{
 		"en"	"-if Armor, resistance from front attacks.\n-15％ Res\n-R stuns targets in front of you and increases attack speed\n-slower with shield on\n-Shield Break: gain speed with a cooldown\n-M2 shoves enemies, gain armor on hit\n-on hurt, you + ally CD Reduced"
-		"ko"	"-아머 보유시 정면의 적에게 받는 피해가 감소\n-저항력 15％ 증가\n-R키 능력: 정면의 적 기절 및 공격 속도 증가\n-방패 전개시 이동 속도 감소\n-방패 파괴시 이동 속도 증가(쿨타임 존재)\n-M2 능력 사용 시 적을 밀쳐내며, 적중 시 아머 획득\n-피해를 입을 시 자신과 아군의 쿨다운 감소"
+		"ko"	"-아머 보유시 정면의 적에게 받는 피해가 감소\n-저항력 15％ 증가\n-R키 능력: 정면의 적 기절 및 공격 속도 증가\n-방패 전개시 이동 속도 감소\n-방패 파괴시 이동 속도 증가(쿨타임 존재)\n-M2 능력 사용 시 적을 밀쳐내며, 적중 시 아머 획득\n-피해를 입을 시 자신과 아군의 쿨타임 감소"
 	}
 	"Energized Riot Gun Desc"
 	{
@@ -5446,7 +5446,7 @@
 	"The Heartbroken Desc 2"
 	{
 		"en"	"-Overall Stat Increases\n-Your R now can dash towards an enemy, next hit dealing big damage\nIf the enemy has not maxed sinking:\nReduce Dash Cooldown\n-Unlock Secondary weapon:\n-Crouch+R to temporarily revive players for 5 coffins\n-Gain coffins on hit, and from summoned allies, raids give 2x as much"
-		"ko"	"-전반적인 능력치 증가\n-R키로 적에게 돌진할 수 있으며, 다음에 적중하는 공격의 피해량이 크게 증가\n적이 보유한 침잠이 최대치가 아니라면:\n돌진 쿨다운 감소\n-보조 무기 해금:\n-웅크리기+R로 '관'을 5 소모하여 사망한 플레이어를 일시적으로 부활 가능\n-자신이나 부활한 아군의 공격 적중 시 관을 얻음"
+		"ko"	"-전반적인 능력치 증가\n-R키로 적에게 돌진할 수 있으며, 다음에 적중하는 공격의 피해량이 크게 증가\n적이 보유한 침잠이 최대치가 아니라면:\n돌진 쿨타임 감소\n-보조 무기 해금:\n-웅크리기+R로 '관'을 5 소모하여 사망한 플레이어를 일시적으로 부활 가능\n-자신이나 부활한 아군의 공격 적중 시 관을 얻음"
 	}
 	"The Heartbroken Desc 3"
 	{
@@ -5481,7 +5481,7 @@
 	"Tiantui Star Blade Desc"
 	{
 		"en"	"\n-Abilities uses ammo and refills on wave end\n-M2 to charge forward, consuming ammo, gives 2x melee range and shield\n-Combos reset charge cooldown\n-R and crouch to reload special ammo and gain a buff (spend ammo for stronger, once per wave, revives downed)"
-		"ko"	"-능력이 탄환을 소모하며 웨이브 종료 시 재보급\n-우클릭으로 돌진하며 탄환을 소모: 사거리가 2배로 증가하며 보호막을 획득\n-콤보 적중 시 돌진 쿨다운 초기화\n-웅크리기+R로 특수 탄환 장전, 버프 획득(탄환 일정량 사용 시 버프 강화, 다운 중 사용 시 1회 부활)"
+		"ko"	"-능력이 탄환을 소모하며 웨이브 종료 시 재보급\n-우클릭으로 돌진하며 탄환을 소모: 사거리가 2배로 증가하며 보호막을 획득\n-콤보 적중 시 돌진 쿨타임 초기화\n-웅크리기+R로 특수 탄환 장전, 버프 획득(탄환 일정량 사용 시 버프 강화, 다운 중 사용 시 1회 부활)"
 	}
 	"Tiantui Star Blade Extra"
 	{
@@ -5626,7 +5626,7 @@
 	"Reconstructive Shotgun Desc"
 	{
 		"en"	"Deals more damage to marked enemies and heals (npcs) based off dmg dealt, M2 shows the cooldown\n-The healing nova currently heals 1 target\nYou heal for 5%% of that amount"
-		"ko"	"표적 상태인 대상에게 피해량이 증가하며, 가한 피해량에 따라 NPC들을 치유: 우클릭은 쿨다운을 표시\n-치유 노바는 1명의 대상을 치유할 수 있음\n-해당 효과로 치유 시 사용자도 해당 치유량의 5％를 치유"
+		"ko"	"표적 상태인 대상에게 피해량이 증가하며, 가한 피해량에 따라 NPC들을 치유: 우클릭은 쿨타임을 표시\n-치유 노바는 1명의 대상을 치유할 수 있음\n-해당 효과로 치유 시 사용자도 해당 치유량의 5％를 치유"
 	}
 	"Reconstructive Shotgun Desc 1"
 	{
@@ -5691,7 +5691,7 @@
 	"The Italian Business Desc 4"
 	{
 		"en"	"-More damage, building hp, repair rate\n-You can now do another Power-hit in a row\n-The HUD show if you still can, beware it has increased effect but also cooldown"
-		"ko"	"-피해량, 구조물 체력, 수리 효율 증가\n-이제 두번째 강타를 연속으로 사용할 수 있음\n-HUD에 사용 가능 여부가 표시되며, 연속 사용 시 위력이 증가하지만 쿨다운 역시 증가"
+		"ko"	"-피해량, 구조물 체력, 수리 효율 증가\n-이제 두번째 강타를 연속으로 사용할 수 있음\n-HUD에 사용 가능 여부가 표시되며, 연속 사용 시 위력이 증가하지만 쿨타임 역시 증가"
 	}
 	"The Italian Business Desc 5"
 	{
@@ -5736,7 +5736,7 @@
 	"The Index Nursefather Desc 5"
 	{
 		"en"    "-+1 Grace cap and stat increases.\n-Unlocks Sizzling Wound.\n-Can Self Revive once every 6 minutes (R).\n-Self Reviving or using Furioso gives Sizzling Wound.\n-Sizzling Wound gives increased damage but randomly gives you burn and bleed."
-		"ko"	"-가호 최대치 +1 및 능력치 증가\n-'이글거리는 상처' 해금\n-다운 시 R키로 자가 부활 가능(쿨다운 6분)\n-자가 부활 시, 혹은 Furioso 사용 시 이글거리는 상처 획득\n-이글거리는 상처는 피해량 증가를 제공하나 무작위로 화상과 출혈을 부여"
+		"ko"	"-가호 최대치 +1 및 능력치 증가\n-'이글거리는 상처' 해금\n-다운 시 R키로 자가 부활 가능(쿨타임 6분)\n-자가 부활 시, 혹은 Furioso 사용 시 이글거리는 상처 획득\n-이글거리는 상처는 피해량 증가를 제공하나 무작위로 화상과 출혈을 부여"
 	}
 	"The Index Nursefather Desc 6"
 	{
