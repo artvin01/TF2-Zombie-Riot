@@ -668,12 +668,6 @@ enum struct AutoPapInfo
 {
 	int index;
 	int level;
-	
-	void Init()
-	{
-		this.index = -1;
-		this.level = -1;
-	}
 }
 
 static ArrayList AutoPapList[MAXPLAYERS + 1];
@@ -1622,8 +1616,6 @@ bool Store_TryToPapWeapon(int client, Item item, int index, int level, int descT
 			item.Owned[client] = level + 1;
 			item.CurrentClipSaved[client] = -5;
 
-			int activeWeaponIndex = Store_GetActiveWeaponStoreIndex(client);
-			
 			if(item.ChildKit)
 			{
 				// Increase sellback value of parent kit
@@ -1695,11 +1687,6 @@ bool Store_TryToPapWeapon(int client, Item item, int index, int level, int descT
 			}
 
 			CheckClientLateJoin(client);
-			
-			int newWeapon = Store_GetClientWeaponEntityFromStoreIndex(client, activeWeaponIndex);
-			if (newWeapon > MaxClients)
-				SetPlayerActiveWeapon(client, newWeapon);
-			
 			return true;
 		}
 	}
@@ -5093,9 +5080,7 @@ int Store_TryToBuyItem(int client, int index, bool auto)
 		level = 0;
 	
 	item.GetItemInfo(level, info);
-	
-	int activeWeaponIndex = Store_GetActiveWeaponStoreIndex(client);
-	
+
 	if(item.ParentKit)	// Weapon Kit
 	{
 		if(!item.Owned[client])	// Buy All Items
@@ -5248,11 +5233,6 @@ int Store_TryToBuyItem(int client, int index, bool auto)
 
 		Store_ApplyAttribs(client);
 		Store_GiveAll(client, GetClientHealth(client));
-		
-		// Avoid switching to a different weapon when buying an upgrade
-		int newWeapon = Store_GetClientWeaponEntityFromStoreIndex(client, activeWeaponIndex);
-		if (newWeapon > MaxClients)
-			SetPlayerActiveWeapon(client, newWeapon);
 	}
 	
 	return BUY_RESULT_SUCCESS;
@@ -5932,6 +5912,8 @@ void Store_GiveAllInternal(int client, int health, bool removeWeapons = false)
 	ClientSaveRageMeterStatus(client);
 	ClientSaveUber(client);
 
+	int previousActiveWeaponStoreIndex = Store_GetActiveWeaponStoreIndex(client);
+	
 	if(!i_ClientHasCustomGearEquipped[client])
 	{
 		TF2_RemoveAllWeapons(client);
@@ -6001,9 +5983,17 @@ void Store_GiveAllInternal(int client, int health, bool removeWeapons = false)
 				}
 			}
 		}
-	
-		if(!found)
+		
+		if (found)
+		{
+			int weapon = Store_GetClientWeaponEntityFromStoreIndex(client, previousActiveWeaponStoreIndex);
+			if (weapon > MaxClients)
+				SetPlayerActiveWeapon(client, weapon);
+		}
+		else
+		{
 			Store_GiveItem(client, -1, use);
+		}
 	}
 		
 	CheckMultiSlots(client);
