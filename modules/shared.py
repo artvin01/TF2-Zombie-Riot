@@ -121,7 +121,7 @@ class NPC:
             # get all music as cutouts, starting at MusicEnum music; and ending at Music_SetRaidMusic( {parameters can vary}
             music_cutouts = [item.split("Music_SetRaidMusic(")[0] for i,item in enumerate(self.FILE_DATA.split("MusicEnum music;")) if i > 0]
             self.music_entries: list[dict[str,str | bool]] = []
-            if len(music_cutouts) > 0:
+            if music_cutouts:
                 music_hashes: list[str] = []
                 music_cutout_source_start = util.get_refs(self.FILE_DATA_SPLIT, "MusicEnum music;")
                 music_cutout_source_end = [util.get_refs(item.splitlines(), "Music_SetRaidMusic(", negative_on_fail=True)[0] for i,item in enumerate(self.FILE_DATA_RAW.split("MusicEnum music;")) if i > 0]

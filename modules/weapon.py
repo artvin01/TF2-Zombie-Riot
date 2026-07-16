@@ -14,11 +14,11 @@ type SubweaponList = dict[str,str | list[Weapon | WeaponPap]]
 
 # THUMBNAIL ========================================================================
 # Patch pyassimp to prevent null pointer error
-if os.path.isdir("venv/lib/python3.14/site-packages/pyassimp/"):
+if os.path.isdir("venv/lib/python3.14/site-packages/pyassimp/"): # source update
     util.write("venv/lib/python3.14/site-packages/pyassimp/core.py", util.read("venv/lib/python3.14/site-packages/pyassimp/core.py").replace("""else:
                         setattr(target, name, [obj[i] for i in range(length)])""","""elif obj:
                         setattr(target, name, [obj[i] for i in range(length)])"""))
-if os.path.isdir(".venv/lib/python3.14/site-packages/pyassimp/"):
+if os.path.isdir(".venv/lib/python3.14/site-packages/pyassimp/"): # wiki update / local
     util.write(".venv/lib/python3.14/site-packages/pyassimp/core.py", util.read(".venv/lib/python3.14/site-packages/pyassimp/core.py").replace("""else:
                         setattr(target, name, [obj[i] for i in range(length)])""","""elif obj:
                         setattr(target, name, [obj[i] for i in range(length)])"""))
@@ -28,7 +28,7 @@ import pyassimp # noqa: E402
 # https://github.com/f3d-app/f3d/blob/master/examples/libf3d/python/offscreen-thumbnail/offscreen_thumbnail.py
 f3d.Engine.autoload_plugins()
 eng = f3d.Engine.create(True)
-eng.window.size = 256,256
+eng.window.size = 128,128
 opt = eng.options
 
 # No UI overlays in thumbnails
@@ -334,7 +334,7 @@ def item_block(key:str, data:dict[str,Any], output:dict[str,Any], type_override:
                 })
             elif itm.is_weapon:
                 wep = Weapon(item,item_data)
-                if len(override_keys := type_override.split(",")) > 0:
+                if (override_keys := type_override.split(",")):
                     if len(override_keys[0])>0:
                         wep.type=override_keys[0] # type:ignore[w]
                     if "nohide" in override_keys:
@@ -343,7 +343,7 @@ def item_block(key:str, data:dict[str,Any], output:dict[str,Any], type_override:
                 output["$items"].append(wep)
             elif itm.is_weapon_kit:
                 kit = Weapon(item,item_data)
-                if len(override_keys := type_override.split(",")) > 0:
+                if (override_keys := type_override.split(",")):
                     kit.type = override_keys[0] # type: ignore[w]
                 kit.add_global_tags()
                 kit.subweapons["name"] = "Kit Items"
