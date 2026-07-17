@@ -2102,14 +2102,17 @@
 	"Auto Purchase Selected"
 	{
 		"en"		"This item will be automatically purchased once you can afford it."
+		"ko"		"이 아이템은 이제 가능할 때 자동으로 구매됩니다."
 	}
 	"Auto Purchase Replaced"
 	{
 		"en"		"This item will be automatically purchased once you can afford it. The previous selection has been replaced."
+		"ko"		"이 아이템은 이제 가능할 때 자동으로 구매됩니다. 이전에 선택한 아이템을 대체합니다."
 	}
 	"Auto Purchase Deselected"
 	{
 		"en"		"This item will no longer be automatically purchased."
+		"ko"		"이 아이템은 이제 더 이상 자동으로 구매되지 않습니다."
 	}
 	"Revive Teammate tooltip"
 	{
