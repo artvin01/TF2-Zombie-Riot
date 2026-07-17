@@ -8533,6 +8533,9 @@ static void Const2_SefHeal_Timer(int entity, StatusEffect Apply_MasterStatusEffe
 	float maxhealth = float(ReturnEntityMaxHealth(entity));
 	if(b_thisNpcIsARaid[entity] || b_thisNpcIsABoss[entity])
 		maxhealth *= 0.01;
+	else if (b_IsGiant[entity])
+		maxhealth *= 0.5;
+	
 	HealEntityGlobal(entity, entity, maxhealth / 5.0, 1.0, 0.0, HEAL_SELFHEAL);
 }
 static void Const2_Armoring_Timer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
@@ -8548,6 +8551,9 @@ static void Const2_Armoring_Timer(int entity, StatusEffect Apply_MasterStatusEff
 	float maxhealth = float(ReturnEntityMaxHealth(entity));
 	if(b_thisNpcIsARaid[entity] || b_thisNpcIsABoss[entity])
 		maxhealth *= 0.025;
+	else if (b_IsGiant[entity])
+		maxhealth *= 0.5;
+	
 	GrantEntityArmor(entity, false, 1.0, 0.25, 0, maxhealth / 4.0);
 }
 
