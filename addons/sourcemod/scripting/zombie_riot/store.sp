@@ -7831,6 +7831,7 @@ void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip,
 					Call_Finish();
 				}
 				Store_Unequip(client, index);
+				Store_RemoveFromClientAutoPapList(client, index);
 				
 				Store_ApplyAttribs(client);
 				Store_GiveAll(client, GetClientHealth(client));	
@@ -7880,6 +7881,8 @@ void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip,
 				
 				item.Equipped[client] = false;
 				StoreItems.SetArray(index, item);
+				
+				Store_RemoveFromClientAutoPapList(client, index);
 				
 				if(item.ParentKit)
 					Store_UnequipAllItemsFromKit(client, index, true);
@@ -8192,6 +8195,8 @@ void Store_UnequipAllItemsFromKit(int client, int index, bool remove)
 			
 			subItem.Equipped[client] = false;
 			StoreItems.SetArray(i, subItem);
+			
+			Store_RemoveFromClientAutoPapList(client, i);
 		}
 	}
 }
