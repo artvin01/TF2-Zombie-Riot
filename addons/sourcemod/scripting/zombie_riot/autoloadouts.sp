@@ -134,7 +134,6 @@ bool AutoLoadouts_SpecificNameToPlayer(int client, char Name[64])
 
 void AutoLoadouts_SetPlayerLoadout(int client, int id)
 {
-	Store_SellAutoBoughtItems(client);
 	AutoLoadouts_RemovePlayerLoadout(client);
 	
 	AutoLoadout loadout;
@@ -142,6 +141,7 @@ void AutoLoadouts_SetPlayerLoadout(int client, int id)
 	strcopy(ClientAutoLoadout[client].name, sizeof(loadout.name), loadout.name);
 	
 	ClientAutoLoadout[client].itemList = loadout.itemList.Clone();
+	Store_SellAutoBoughtItems(client);
 }
 
 void AutoLoadouts_RemovePlayerLoadout(int client)
@@ -169,6 +169,11 @@ void AutoLoadouts_RemoveEnhancementsFromClientList(int client)
 		if (item.level > 0)
 			ClientAutoLoadout[client].itemList.Erase(i);
 	}
+}
+
+bool AutoLoadouts_IsItemInClientList(int client, int index)
+{
+	return ClientAutoLoadout[client].itemList.FindValue(index, AutoLoadoutItem::index) != -1;
 }
 
 void AutoLoadouts_Handle()

@@ -8150,7 +8150,7 @@ void Store_SellAutoBoughtItems(int client)
 		Item item;
 		StoreItems.GetArray(i, item);
 		
-		if (item.Owned[client] && item.AutoBought[client])
+		if (item.Owned[client] && item.AutoBought[client] && !AutoLoadouts_IsItemInClientList(client, i))
 			TryAndSellOrUnequipItem(i, item, client, false, false, true);
 	}
 }
