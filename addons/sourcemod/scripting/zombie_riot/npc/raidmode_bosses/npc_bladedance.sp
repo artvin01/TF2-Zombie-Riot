@@ -34,6 +34,7 @@ static const char g_RangedSpecialAttackSoundsSecondary[][] = {
 void RaidbossBladedance_MapStart()
 {
 	PrecacheModel("models/effects/combineball.mdl");
+	PrecacheSound("ambient/machines/teleport3.wav");
 	for (int i = 0; i < (sizeof(g_DeathSounds));	   i++) { PrecacheSound(g_DeathSounds[i]);	   }
 	for (int i = 0; i < (sizeof(g_IdleSound));	i++) { PrecacheSound(g_IdleSound[i]);	}
 	for (int i = 0; i < (sizeof(g_HurtSound));	i++) { PrecacheSound(g_HurtSound[i]);	}
@@ -164,6 +165,7 @@ methodmap RaidbossBladedance < CClotBody
 
 		
 		bool final = StrContains(data, "final_item") != -1;
+		bool clone = StrContains(data, "clone") != -1;
 		npc.m_bBossRushDuo = StrContains(data, "bossrush_duo") != -1;
 		
 		if(Rogue_HasNamedArtifact("Ascension Stack"))
@@ -173,7 +175,6 @@ methodmap RaidbossBladedance < CClotBody
 		{
 			i_RaidGrantExtra[npc.index] = 1;
 		}
-		RemoveAllDamageAddition();
 
 		npc.m_bThisNpcIsABoss = true;
 		npc.Anger = false;
@@ -185,8 +186,6 @@ methodmap RaidbossBladedance < CClotBody
 		npc.Anger = false;
 		npc.m_iOverlordComboAttack = 0;
 		npc.m_flMeleeArmor = 0.75;
-		
-		Citizen_MiniBossSpawn();
 		
 		npc.m_iWearable1 = npc.EquipItem("partyhat", "models/player/items/spy/spy_party_phantom.mdl");
 		SetVariantString("1.25");
@@ -200,40 +199,52 @@ methodmap RaidbossBladedance < CClotBody
 
 		SetEntityRenderColor(npc.m_iWearable2, 255, 55, 55, 255);
 		
-		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
-		EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);	
 		npc.m_flBladedanceAngerResistance = 0.0;
-
-		for(int client_check=1; client_check<=MaxClients; client_check++)
-		{
-			if(IsClientInGame(client_check) && !IsFakeClient(client_check))
-				LookAtTarget(client_check, npc.index);
-		}
 
 		SetVariantInt(3);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
 
-		RaidModeScaling = 0.0;
-		RaidModeTime = GetGameTime() + ((300.0) * (1.0 + (MultiGlobalEnemy * 0.4)));
-		RaidAllowsBuildings = true;
-		RaidAllowLastman = true;
-		
-		if (npc.m_bBossRushDuo)
+		if (clone)
 		{
-			if (!IsValidEntity(RaidBossActive))
-				RaidBossActive = EntIndexToEntRef(npc.index);
-			
-			GiveNpcOutLineLastOrBoss(npc.index, true);
-			RaidAllowsBuildings = false;
-			RaidAllowLastman = true;
-			RaidModeTime = GetGameTime() + 500.0;
+			EmitSoundToAll("ambient/machines/teleport3.wav", _, _, _, _, 1.0);
+			EmitSoundToAll("ambient/machines/teleport3.wav", _, _, _, _, 1.0);
 		}
 		else
 		{
-			Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "??????????????????????????????????");
-			CPrintToChatAll("{crimson}Bladedance{default}: How did you get here? Why are you attacking me?? More void creatures?");
-			
-			RaidBossActive = EntIndexToEntRef(npc.index);
+			EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);
+			EmitSoundToAll("npc/zombie_poison/pz_alert1.wav", _, _, _, _, 1.0);
+
+			RemoveAllDamageAddition();
+			Citizen_MiniBossSpawn();
+
+			for(int client_check=1; client_check<=MaxClients; client_check++)
+			{
+				if(IsClientInGame(client_check) && !IsFakeClient(client_check))
+					LookAtTarget(client_check, npc.index);
+			}
+
+			RaidModeScaling = 0.0;
+			RaidModeTime = GetGameTime() + ((300.0) * (1.0 + (MultiGlobalEnemy * 0.4)));
+			RaidAllowsBuildings = true;
+			RaidAllowLastman = true;
+
+			if (npc.m_bBossRushDuo)
+			{
+				if (!IsValidEntity(RaidBossActive))
+					RaidBossActive = EntIndexToEntRef(npc.index);
+
+				GiveNpcOutLineLastOrBoss(npc.index, true);
+				RaidAllowsBuildings = false;
+				RaidAllowLastman = true;
+				RaidModeTime = GetGameTime() + 500.0;
+			}
+			else
+			{
+				Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "??????????????????????????????????");
+				CPrintToChatAll("{crimson}Bladedance{default}: How did you get here? Why are you attacking me?? More void creatures?");
+
+				RaidBossActive = EntIndexToEntRef(npc.index);
+			}
 		}
 
 		return npc;
