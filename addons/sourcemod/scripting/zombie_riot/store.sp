@@ -1476,6 +1476,8 @@ void Store_PackMenu(int client, int index, int owneditemlevel = -1, int owner, b
 						{
 							ItemCostPap(item, info.Cost);
 
+							bool disable = !CvarInfiniteCash.BoolValue && (info.Cost <= 0 || info.Cost > 900000);
+							
 //							Format(data, sizeof(data), "%d;%d;%d;%d", index, OwnedItemIndex + i, entity, userid);
 							Format(data, sizeof(data), "%i;%i;%i", index, (OwnedItemIndex + i), userid);
 							TranslateItemName(client, item.Name, info.Custom_Name, info.Custom_Name, sizeof(info.Custom_Name));
@@ -1483,7 +1485,7 @@ void Store_PackMenu(int client, int index, int owneditemlevel = -1, int owner, b
 							if (Store_IsItemInClientAutoPapList(client, index, OwnedItemIndex + i))
 								Format(buffer, sizeof(buffer), "%s [%T]", buffer, "Selected For Purchase", client);
 							
-							menu.AddItem(data, buffer, ITEMDRAW_DEFAULT);
+							menu.AddItem(data, buffer, disable ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 							if(info.Desc[0])
 							{
@@ -1491,7 +1493,7 @@ void Store_PackMenu(int client, int index, int owneditemlevel = -1, int owner, b
 								char DescWeaponFuse[128];
 								Format(DescWeaponFuse, sizeof(DescWeaponFuse), "%s-explain-%s", dataFirst,data);
 								Format(DescWeapon, sizeof(DescWeapon), "%T\n ", "Describe This Weapon", client);
-								menu.AddItem(DescWeaponFuse, DescWeapon, ITEMDRAW_DEFAULT);
+								menu.AddItem(DescWeaponFuse, DescWeapon, disable ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 							}
 						}
 					}
