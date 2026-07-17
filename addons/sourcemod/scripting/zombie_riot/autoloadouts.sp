@@ -197,7 +197,7 @@ void AutoLoadouts_Handle()
 			continue;
 		}
 		
-		int result = BUY_RESULT_CANT_AFFORD;
+		int result;
 		if (item.level == 0)
 		{
 			result = Store_TryToBuyItem(client, item.index, true);
@@ -219,13 +219,10 @@ void AutoLoadouts_Handle()
 		{
 			Item storeItem;
 			Store_GetItemByIndex(item.index, storeItem);
-			if (Store_TryToPapWeapon(client, storeItem, item.index, item.level, PAP_DESC_BOUGHT_AUTO, true))
-			{
-				result = BUY_RESULT_SUCCESS;
-			}
+			result = Store_TryToPapWeapon(client, storeItem, item.index, item.level, PAP_DESC_BOUGHT_AUTO, true);
 		}
 		
-		if (result == BUY_RESULT_SUCCESS || result == BUY_RESULT_ALREADY_HAS_ITEM)
+		if (result == BUY_RESULT_FAILURE || result == BUY_RESULT_SUCCESS || result == BUY_RESULT_ALREADY_HAS_ITEM)
 			ClientAutoLoadout[client].itemList.Erase(0);
 		
 		// Can't afford the next item, leave the starter store if we're in it

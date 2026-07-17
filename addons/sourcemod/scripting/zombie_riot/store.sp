@@ -21,6 +21,7 @@ enum
 
 enum
 {
+	BUY_RESULT_FAILURE = -1,
 	BUY_RESULT_CANT_AFFORD,
 	BUY_RESULT_ALREADY_HAS_ITEM,
 	BUY_RESULT_SUCCESS,
@@ -1577,7 +1578,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 				//int owner = -1;
 				if (!PapPreviewMode[client])
 				{
-					if (!Store_TryToPapWeapon(client, item, values[0], values[1], PAP_DESC_BOUGHT, false))
+					if (Store_TryToPapWeapon(client, item, values[0], values[1], PAP_DESC_BOUGHT, false) != BUY_RESULT_SUCCESS)
 					{
 						if (!Store_IsItemInClientAutoPapList(client, values[0], values[1]))
 						{
@@ -1605,94 +1606,95 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
-bool Store_TryToPapWeapon(int client, Item item, int index, int level, int descType, bool autoLoadout)
+int Store_TryToPapWeapon(int client, Item item, int index, int level, int descType, bool autoLoadout)
 {
 	ItemInfo info;
-	if(item.GetItemInfo(level, info) && info.Cost)
-	{ 	
-		ItemCostPap(item, info.Cost);
-		if(Store_GetPlayerCash(client, false) >= info.Cost)
+	if(!item.GetItemInfo(level, info) || !info.Cost)
+		return BUY_RESULT_FAILURE;
+
+	ItemCostPap(item, info.Cost);
+	if(Store_GetPlayerCash(client, false) < info.Cost)
+		return BUY_RESULT_CANT_AFFORD;
+	
+	if (item.Owned[client] > level)
+		return BUY_RESULT_ALREADY_HAS_ITEM;
+	
+	Store_SpendPlayerCash(client, info.Cost);
+	item.Owned[client] = level + 1;
+	item.CurrentClipSaved[client] = -5;
+
+	if(item.ChildKit)
+	{
+		// Increase sellback value of parent kit
+		static Item other;
+		StoreItems.GetArray(item.Section, other);
+
+		if(other.Sell[client] < 0) //weapons with no cost start at -21312831293729139127389 so lets fix that
 		{
-			Store_SpendPlayerCash(client, info.Cost);
-			item.Owned[client] = level + 1;
-			item.CurrentClipSaved[client] = -5;
+			other.Sell[client] = 0;
+		}
 
-			if(item.ChildKit)
+		other.Sell[client] += RoundToCeil(float(info.Cost) * SELL_AMOUNT);
+		other.BuyWave[client] = -1;
+		other.Owned[client] = level + 1;
+
+		StoreItems.SetArray(item.Section, other);
+
+		// Packs all weapons part of the same kit
+		ItemInfo info2;
+		int length = StoreItems.Length;
+		for(int i; i < length; i++)
+		{
+			StoreItems.GetArray(i, other);
+			if(other.Section == item.Section && i != index)
 			{
-				// Increase sellback value of parent kit
-				static Item other;
-				StoreItems.GetArray(item.Section, other);
-
-				if(other.Sell[client] < 0) //weapons with no cost start at -21312831293729139127389 so lets fix that
+				if(other.GetItemInfo(level, info2) && info2.Cost) // If vaild, set new pack level
 				{
-					other.Sell[client] = 0;
-				}
-
-				other.Sell[client] += RoundToCeil(float(info.Cost) * SELL_AMOUNT);
-				other.BuyWave[client] = -1;
-				other.Owned[client] = level + 1;
-
-				StoreItems.SetArray(item.Section, other);
-
-				// Packs all weapons part of the same kit
-				ItemInfo info2;
-				int length = StoreItems.Length;
-				for(int i; i < length; i++)
-				{
-					StoreItems.GetArray(i, other);
-					if(other.Section == item.Section && i != index)
-					{
-						if(other.GetItemInfo(level, info2) && info2.Cost) // If vaild, set new pack level
-						{
-							other.Owned[client] = level + 1;
-							StoreItems.SetArray(i, other);
-						}
-					}
+					other.Owned[client] = level + 1;
+					StoreItems.SetArray(i, other);
 				}
 			}
-			else
-			{
-				if(item.Sell[client] < 0) //weapons with no cost start at -21312831293729139127389 so lets fix that
-				{
-					item.Sell[client] = 0;
-				}
-				item.Sell[client] += RoundToCeil(float(info.Cost) * SELL_AMOUNT);
-				item.BuyWave[client] = -1;
-			}
-
-			StoreItems.SetArray(index, item);
-			
-			TF2_StunPlayer(client, 0.0, 0.0, TF_STUNFLAG_SOUND, 0);
-			
-			SetDefaultHudPosition(client);
-			
-			ShowSyncHudText(client, SyncHud_Notifaction, "Your weapon was Enhanced");
-			PrintPapDescription(client, item, info, descType);
-			
-			Store_ApplyAttribs(client);
-			Store_GiveAll(client, GetClientHealth(client));
-			
-			if (!autoLoadout && AutoLoadouts_IsClientUsing(client))
-				AutoLoadouts_RemoveEnhancementsFromClientList(client);
-			
-			LastBoughtWeapon[client] = item;
-
-			Function Func = info.FuncOnPap;
-
-			if(Func && Func != INVALID_FUNCTION)
-			{
-				Call_StartFunction(null, Func);
-				Call_PushCell(client);
-				Call_PushArrayEx(item, sizeof(item), SM_PARAM_COPYBACK);
-				Call_Finish();
-			}
-
-			CheckClientLateJoin(client);
-			return true;
 		}
 	}
+	else
+	{
+		if(item.Sell[client] < 0) //weapons with no cost start at -21312831293729139127389 so lets fix that
+		{
+			item.Sell[client] = 0;
+		}
+		item.Sell[client] += RoundToCeil(float(info.Cost) * SELL_AMOUNT);
+		item.BuyWave[client] = -1;
+	}
+
+	StoreItems.SetArray(index, item);
 	
-	return false;
+	TF2_StunPlayer(client, 0.0, 0.0, TF_STUNFLAG_SOUND, 0);
+	
+	SetDefaultHudPosition(client);
+	
+	ShowSyncHudText(client, SyncHud_Notifaction, "Your weapon was Enhanced");
+	PrintPapDescription(client, item, info, descType);
+	
+	Store_ApplyAttribs(client);
+	Store_GiveAll(client, GetClientHealth(client));
+	
+	if (!autoLoadout && AutoLoadouts_IsClientUsing(client))
+		AutoLoadouts_RemoveEnhancementsFromClientList(client);
+	
+	LastBoughtWeapon[client] = item;
+
+	Function Func = info.FuncOnPap;
+
+	if(Func && Func != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, Func);
+		Call_PushCell(client);
+		Call_PushArrayEx(item, sizeof(item), SM_PARAM_COPYBACK);
+		Call_Finish();
+	}
+
+	CheckClientLateJoin(client);
+	return BUY_RESULT_SUCCESS;
 }
 
 void PrintPapDescription(int client, Item item, ItemInfo info, int type = PAP_DESC_BOUGHT)
@@ -8073,7 +8075,7 @@ void Store_HandleAutoPapList()
 				continue;
 			}
 			
-			if (Store_TryToPapWeapon(client, item, autoInfo.index, autoInfo.level, PAP_DESC_BOUGHT_AUTO, false))
+			if (Store_TryToPapWeapon(client, item, autoInfo.index, autoInfo.level, PAP_DESC_BOUGHT_AUTO, false) == BUY_RESULT_SUCCESS)
 			{
 				if (item.ChildKit)
 				{
