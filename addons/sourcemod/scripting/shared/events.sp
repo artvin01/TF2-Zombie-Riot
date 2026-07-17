@@ -815,7 +815,7 @@ void DeleteAllBadEntities_NonZrMaps()
 		GetEntityClassname(i, classname, sizeof(classname));
 		if(!StrContains(classname, "prop_door") ||
 		!StrContains(classname, "item_teamflag") ||
-		/*!StrContains(classname, "func_regenerate") ||*/
+		!StrContains(classname, "func_regenerate") ||
 		!StrContains(classname, "func_respawnroom") ||
 		!StrContains(classname, "func_respawnroomvisualizer") ||
 		!StrContains(classname, "func_door"))
