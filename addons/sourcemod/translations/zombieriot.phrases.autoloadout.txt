@@ -253,13 +253,13 @@
 	
 	"Generic Support Upgrade Mini Desc"
 	{
-		"en"		"Gain faster healing rate and melee damage resistance with suppórt weapons."
+		"en"		"Gain faster healing rate and melee damage resistance with support weapons."
 		"ko"		"지원 무기의 치유 속도, 근접 피해 저항력이 증가합니다."
 	}
 	
 	"Medic's Lost Medical Lisence Mini Desc"
 	{
-		"en"		"Gain faster healing rate, reviving speed and melee damage resistance with suppórt weapons."
+		"en"		"Gain faster healing rate, reviving speed and melee damage resistance with support weapons."
 		"ko"		"지원 무기의 치유 속도, 부활 속도, 근접 피해 저항력이 증가합니다."
 	}
 }
