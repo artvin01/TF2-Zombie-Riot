@@ -1,19 +1,9 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-enum
-{
-	AutoLoadoutType_Melee,
-	AutoLoadoutType_Ranged,
-	AutoLoadoutType_Mage,
-	AutoLoadoutType_Medic,
-	AutoLoadoutType_Kit,
-}
-
 enum struct AutoLoadout
 {
 	char name[128];
-	int type;
 	ArrayList itemList;
 }
 
@@ -45,32 +35,6 @@ void AutoLoadouts_ConfigSetup()
 		AutoLoadout loadout;
 		if(kv.GetSectionName(loadout.name, sizeof(loadout.name)))
 		{
-			if (StrContains(loadout.name, "Melee", false) == 0)
-			{
-				loadout.type = AutoLoadoutType_Melee;
-			}
-			else if (StrContains(loadout.name, "Ranged", false) == 0)
-			{
-				loadout.type = AutoLoadoutType_Ranged;
-			}
-			else if (StrContains(loadout.name, "Mage", false) == 0)
-			{
-				loadout.type = AutoLoadoutType_Mage;
-			}
-			else if (StrContains(loadout.name, "Medic", false) == 0)
-			{
-				loadout.type = AutoLoadoutType_Medic;
-			}
-			else if (StrContains(loadout.name, "Kit", false) == 0)
-			{
-				loadout.type = AutoLoadoutType_Kit;
-			}
-			else
-			{
-				LogError("Auto Loadout entry %s has an unknown type prefix!", loadout.name);
-				continue;
-			}
-			
 			loadout.itemList = new ArrayList(sizeof(AutoLoadoutItem));
 			kv.GotoFirstSubKey();
 			
@@ -167,48 +131,17 @@ bool AutoLoadouts_SpecificNameToPlayer(int client, char Name[64])
 	
 	return false;
 }
-/*
-bool AutoLoadouts_GiveRandomOfTypeToPlayer(int client, int type)
-{
-	int length = AutoLoadoutList.Length;
-	if (length == 0)
-		return false;
-	
-	ArrayList ids = new ArrayList();
-	AutoLoadout loadout;
-	for (int i = 0; i < length; i++)
-	{
-		AutoLoadoutList.GetArray(i, loadout);
-		if (loadout.type == type)
-			ids.Push(i);
-	}
-	
-	length = ids.Length;
-	if (length == 0)
-	{
-		delete ids;
-		return false;
-	}
-	
-	int id = ids.Get(GetURandomInt() % length);
-	delete ids;
-	
-	AutoLoadouts_SetPlayerLoadout(client, id);
-	
-	return true;
-}
-*/
+
 void AutoLoadouts_SetPlayerLoadout(int client, int id)
 {
-	Store_SellAutoBoughtItems(client);
 	AutoLoadouts_RemovePlayerLoadout(client);
 	
 	AutoLoadout loadout;
 	AutoLoadoutList.GetArray(id, loadout);
 	strcopy(ClientAutoLoadout[client].name, sizeof(loadout.name), loadout.name);
 	
-	ClientAutoLoadout[client].type = loadout.type;
 	ClientAutoLoadout[client].itemList = loadout.itemList.Clone();
+	Store_SellAutoBoughtItems(client);
 }
 
 void AutoLoadouts_RemovePlayerLoadout(int client)
@@ -238,6 +171,11 @@ void AutoLoadouts_RemoveEnhancementsFromClientList(int client)
 	}
 }
 
+bool AutoLoadouts_IsItemInClientList(int client, int index)
+{
+	return ClientAutoLoadout[client].itemList.FindValue(index, AutoLoadoutItem::index) != -1;
+}
+
 void AutoLoadouts_Handle()
 {
 	for (int client = 1; client <= MaxClients; client++)
@@ -259,7 +197,7 @@ void AutoLoadouts_Handle()
 			continue;
 		}
 		
-		int result = BUY_RESULT_CANT_AFFORD;
+		int result;
 		if (item.level == 0)
 		{
 			result = Store_TryToBuyItem(client, item.index, true);
@@ -272,7 +210,7 @@ void AutoLoadouts_Handle()
 					FormatEx(desc, sizeof(desc), "%T", item.desc, client);
 				
 				if (!desc[0])
-					SPrintToChat(client, "%t", "Autoloadout Bought Item", name);
+					SPrintToChat(client, "%t", "Generic Bought Item", name);
 				else
 					SPrintToChat(client, "%t", "Autoloadout Bought Item With Desc", name, desc);
 			}
@@ -281,13 +219,10 @@ void AutoLoadouts_Handle()
 		{
 			Item storeItem;
 			Store_GetItemByIndex(item.index, storeItem);
-			if (Store_TryToPapWeapon(client, storeItem, item.index, item.level, PAP_DESC_BOUGHT_AUTO, true))
-			{
-				result = BUY_RESULT_SUCCESS;
-			}
+			result = Store_TryToPapWeapon(client, storeItem, item.index, item.level, PAP_DESC_BOUGHT_AUTO, true);
 		}
 		
-		if (result == BUY_RESULT_SUCCESS || result == BUY_RESULT_ALREADY_HAS_ITEM)
+		if (result == BUY_RESULT_FAILURE || result == BUY_RESULT_SUCCESS || result == BUY_RESULT_ALREADY_HAS_ITEM)
 			ClientAutoLoadout[client].itemList.Erase(0);
 		
 		// Can't afford the next item, leave the starter store if we're in it

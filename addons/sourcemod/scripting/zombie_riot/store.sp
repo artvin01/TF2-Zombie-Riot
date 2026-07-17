@@ -21,6 +21,7 @@ enum
 
 enum
 {
+	BUY_RESULT_FAILURE = -1,
 	BUY_RESULT_CANT_AFFORD,
 	BUY_RESULT_ALREADY_HAS_ITEM,
 	BUY_RESULT_SUCCESS,
@@ -671,6 +672,7 @@ enum struct AutoPapInfo
 }
 
 static ArrayList AutoPapList[MAXPLAYERS + 1];
+static int NextAutoBuy[MAXPLAYERS + 1];
 
 void Store_OnCached(int client)
 {
@@ -1474,14 +1476,16 @@ void Store_PackMenu(int client, int index, int owneditemlevel = -1, int owner, b
 						{
 							ItemCostPap(item, info.Cost);
 
+							bool disable = !CvarInfiniteCash.BoolValue && (info.Cost <= 0 || info.Cost > 900000);
+							
 //							Format(data, sizeof(data), "%d;%d;%d;%d", index, OwnedItemIndex + i, entity, userid);
 							Format(data, sizeof(data), "%i;%i;%i", index, (OwnedItemIndex + i), userid);
 							TranslateItemName(client, item.Name, info.Custom_Name, info.Custom_Name, sizeof(info.Custom_Name));
-							Format(buffer, sizeof(buffer), "%s [$%d]", info.Custom_Name, info.Cost);
+							Format(buffer, sizeof(buffer), "%s ($%d)", info.Custom_Name, info.Cost);
 							if (Store_IsItemInClientAutoPapList(client, index, OwnedItemIndex + i))
-								Format(buffer, sizeof(buffer), "%s (%T)", buffer, "Pap Auto Enhancement Standby", client);
+								Format(buffer, sizeof(buffer), "%s [%T]", buffer, "Selected For Purchase", client);
 							
-							menu.AddItem(data, buffer, ITEMDRAW_DEFAULT);
+							menu.AddItem(data, buffer, disable ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 
 							if(info.Desc[0])
 							{
@@ -1489,7 +1493,7 @@ void Store_PackMenu(int client, int index, int owneditemlevel = -1, int owner, b
 								char DescWeaponFuse[128];
 								Format(DescWeaponFuse, sizeof(DescWeaponFuse), "%s-explain-%s", dataFirst,data);
 								Format(DescWeapon, sizeof(DescWeapon), "%T\n ", "Describe This Weapon", client);
-								menu.AddItem(DescWeaponFuse, DescWeapon, ITEMDRAW_DEFAULT);
+								menu.AddItem(DescWeaponFuse, DescWeapon, disable ? ITEMDRAW_DISABLED : ITEMDRAW_DEFAULT);
 							}
 						}
 					}
@@ -1576,7 +1580,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 				//int owner = -1;
 				if (!PapPreviewMode[client])
 				{
-					if (!Store_TryToPapWeapon(client, item, values[0], values[1], PAP_DESC_BOUGHT, false))
+					if (Store_TryToPapWeapon(client, item, values[0], values[1], PAP_DESC_BOUGHT, false) != BUY_RESULT_SUCCESS)
 					{
 						if (!Store_IsItemInClientAutoPapList(client, values[0], values[1]))
 						{
@@ -1604,94 +1608,95 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
-bool Store_TryToPapWeapon(int client, Item item, int index, int level, int descType, bool auto)
+int Store_TryToPapWeapon(int client, Item item, int index, int level, int descType, bool autoLoadout)
 {
 	ItemInfo info;
-	if(item.GetItemInfo(level, info) && info.Cost)
-	{ 	
-		ItemCostPap(item, info.Cost);
-		if(Store_GetPlayerCash(client, false) >= info.Cost)
+	if(!item.GetItemInfo(level, info) || !info.Cost)
+		return BUY_RESULT_FAILURE;
+
+	ItemCostPap(item, info.Cost);
+	if(Store_GetPlayerCash(client, false) < info.Cost)
+		return BUY_RESULT_CANT_AFFORD;
+	
+	if (item.Owned[client] > level)
+		return BUY_RESULT_ALREADY_HAS_ITEM;
+	
+	Store_SpendPlayerCash(client, info.Cost);
+	item.Owned[client] = level + 1;
+	item.CurrentClipSaved[client] = -5;
+
+	if(item.ChildKit)
+	{
+		// Increase sellback value of parent kit
+		static Item other;
+		StoreItems.GetArray(item.Section, other);
+
+		if(other.Sell[client] < 0) //weapons with no cost start at -21312831293729139127389 so lets fix that
 		{
-			Store_SpendPlayerCash(client, info.Cost);
-			item.Owned[client] = level + 1;
-			item.CurrentClipSaved[client] = -5;
+			other.Sell[client] = 0;
+		}
 
-			if(item.ChildKit)
+		other.Sell[client] += RoundToCeil(float(info.Cost) * SELL_AMOUNT);
+		other.BuyWave[client] = -1;
+		other.Owned[client] = level + 1;
+
+		StoreItems.SetArray(item.Section, other);
+
+		// Packs all weapons part of the same kit
+		ItemInfo info2;
+		int length = StoreItems.Length;
+		for(int i; i < length; i++)
+		{
+			StoreItems.GetArray(i, other);
+			if(other.Section == item.Section && i != index)
 			{
-				// Increase sellback value of parent kit
-				static Item other;
-				StoreItems.GetArray(item.Section, other);
-
-				if(other.Sell[client] < 0) //weapons with no cost start at -21312831293729139127389 so lets fix that
+				if(other.GetItemInfo(level, info2) && info2.Cost) // If vaild, set new pack level
 				{
-					other.Sell[client] = 0;
-				}
-
-				other.Sell[client] += RoundToCeil(float(info.Cost) * SELL_AMOUNT);
-				other.BuyWave[client] = -1;
-				other.Owned[client] = level + 1;
-
-				StoreItems.SetArray(item.Section, other);
-
-				// Packs all weapons part of the same kit
-				ItemInfo info2;
-				int length = StoreItems.Length;
-				for(int i; i < length; i++)
-				{
-					StoreItems.GetArray(i, other);
-					if(other.Section == item.Section && i != index)
-					{
-						if(other.GetItemInfo(level, info2) && info2.Cost) // If vaild, set new pack level
-						{
-							other.Owned[client] = level + 1;
-							StoreItems.SetArray(i, other);
-						}
-					}
+					other.Owned[client] = level + 1;
+					StoreItems.SetArray(i, other);
 				}
 			}
-			else
-			{
-				if(item.Sell[client] < 0) //weapons with no cost start at -21312831293729139127389 so lets fix that
-				{
-					item.Sell[client] = 0;
-				}
-				item.Sell[client] += RoundToCeil(float(info.Cost) * SELL_AMOUNT);
-				item.BuyWave[client] = -1;
-			}
-
-			StoreItems.SetArray(index, item);
-			
-			TF2_StunPlayer(client, 0.0, 0.0, TF_STUNFLAG_SOUND, 0);
-			
-			SetDefaultHudPosition(client);
-			
-			ShowSyncHudText(client, SyncHud_Notifaction, "Your weapon was Enhanced");
-			PrintPapDescription(client, item, info, descType);
-			
-			Store_ApplyAttribs(client);
-			Store_GiveAll(client, GetClientHealth(client));
-			
-			if (!auto && AutoLoadouts_IsClientUsing(client))
-				AutoLoadouts_RemoveEnhancementsFromClientList(client);
-			
-			LastBoughtWeapon[client] = item;
-
-			Function Func = info.FuncOnPap;
-
-			if(Func && Func != INVALID_FUNCTION)
-			{
-				Call_StartFunction(null, Func);
-				Call_PushCell(client);
-				Call_PushArrayEx(item, sizeof(item), SM_PARAM_COPYBACK);
-				Call_Finish();
-			}
-
-			CheckClientLateJoin(client);
-			return true;
 		}
 	}
+	else
+	{
+		if(item.Sell[client] < 0) //weapons with no cost start at -21312831293729139127389 so lets fix that
+		{
+			item.Sell[client] = 0;
+		}
+		item.Sell[client] += RoundToCeil(float(info.Cost) * SELL_AMOUNT);
+		item.BuyWave[client] = -1;
+	}
+
+	StoreItems.SetArray(index, item);
 	
-	return false;
+	TF2_StunPlayer(client, 0.0, 0.0, TF_STUNFLAG_SOUND, 0);
+	
+	SetDefaultHudPosition(client);
+	
+	ShowSyncHudText(client, SyncHud_Notifaction, "Your weapon was Enhanced");
+	PrintPapDescription(client, item, info, descType);
+	
+	Store_ApplyAttribs(client);
+	Store_GiveAll(client, GetClientHealth(client));
+	
+	if (!autoLoadout && AutoLoadouts_IsClientUsing(client))
+		AutoLoadouts_RemoveEnhancementsFromClientList(client);
+	
+	LastBoughtWeapon[client] = item;
+
+	Function Func = info.FuncOnPap;
+
+	if(Func && Func != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, Func);
+		Call_PushCell(client);
+		Call_PushArrayEx(item, sizeof(item), SM_PARAM_COPYBACK);
+		Call_Finish();
+	}
+
+	CheckClientLateJoin(client);
+	return BUY_RESULT_SUCCESS;
 }
 
 void PrintPapDescription(int client, Item item, ItemInfo info, int type = PAP_DESC_BOUGHT)
@@ -2136,7 +2141,7 @@ void Store_ResetClient(int client)
 	}
 
 	UsingChoosenTags[client] = false;
-	
+	NextAutoBuy[client] = 0;
 	AutoLoadouts_RemovePlayerLoadout(client);
 	delete ChoosenTags[client];
 }
@@ -3529,8 +3534,9 @@ static void MenuPage(int client, int section)
 						ItemCost(client, item, info.Cost);
 						
 						Format(buffer, sizeof(buffer), "%T ($%d)", "Buy", client, info.Cost);
-						if(info.Cost > cash)
-							style = ITEMDRAW_DISABLED;
+						
+						if (NextAutoBuy[client] == section)
+							Format(buffer, sizeof(buffer), "%s [%T]", buffer, "Selected For Purchase", client);
 					}
 					
 					char buffer2[16];
@@ -4877,7 +4883,21 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 					}
 					else if (!item.Owned[client])
 					{
-						Store_TryToBuyItem(client, index, false);
+						if (NextAutoBuy[client] == index)
+						{
+							SPrintToChat(client, "%t", "Auto Purchase Deselected");
+							NextAutoBuy[client] = 0;
+						}
+						else if (Store_TryToBuyItem(client, index, false) == BUY_RESULT_CANT_AFFORD)
+						{
+							// Couldn't afford, queue instead
+							if (NextAutoBuy[client] == 0)
+								SPrintToChat(client, "%t", "Auto Purchase Selected");
+							else
+								SPrintToChat(client, "%t", "Auto Purchase Replaced");
+							
+							NextAutoBuy[client] = index;
+						}
 					}
 					else
 					{
@@ -4886,7 +4906,8 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 						item.Equipped[client] = true;
 						StoreItems.SetArray(index, item);
 						
-						if (item.ParentKit)
+						bool kit = item.ParentKit;
+						if (kit)
 							Store_EquipAllItemsFromKit(client, item, index);
 						
 						if(!TeutonType[client] && !i_ClientHasCustomGearEquipped[client])
@@ -4898,7 +4919,7 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 							CheckMultiSlots(client);
 							Manual_Impulse_101(client, GetClientHealth(client));
 							Store_ApplyAttribs(client);
-							Store_GiveAll(client, GetClientHealth(client));
+							Store_GiveAll(client, GetClientHealth(client), _, !kit);
 						}
 					}
 				}
@@ -5063,7 +5084,7 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 	return 0;
 }
 
-int Store_TryToBuyItem(int client, int index, bool auto)
+int Store_TryToBuyItem(int client, int index, bool autoLoadout)
 {
 	// Gotta dupe item and info in the menu. sorry.
 	Item item;
@@ -5122,7 +5143,7 @@ int Store_TryToBuyItem(int client, int index, bool auto)
 			Store_EquipSlotCheck(client, item);
 
 			item.Equipped[client] = true;
-			item.AutoBought[client] = auto;
+			item.AutoBought[client] = autoLoadout;
 			StoreItems.SetArray(index, item);
 			
 			Store_EquipAllItemsFromKit(client, item, index);
@@ -5130,7 +5151,7 @@ int Store_TryToBuyItem(int client, int index, bool auto)
 			if(!TeutonType[client] && !i_ClientHasCustomGearEquipped[client])
 			{	
 				Store_ApplyAttribs(client);								
-				Store_GiveAll(client, GetClientHealth(client));
+				Store_GiveAll(client, GetClientHealth(client), _, false);
 			}
 		}
 	}
@@ -5167,7 +5188,7 @@ int Store_TryToBuyItem(int client, int index, bool auto)
 			//	StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
 			}
 			
-			if (!auto && AutoLoadouts_IsClientUsing(client))
+			if (!autoLoadout && AutoLoadouts_IsClientUsing(client))
 				AutoLoadouts_RemoveEnhancementsFromClientList(client);
 			
 			ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
@@ -5180,7 +5201,7 @@ int Store_TryToBuyItem(int client, int index, bool auto)
 			Store_EquipSlotCheck(client, item);
 
 			item.Equipped[client] = true;
-			item.AutoBought[client] = auto;
+			item.AutoBought[client] = autoLoadout;
 			
 			StoreItems.SetArray(index, item);
 			
@@ -5225,7 +5246,7 @@ int Store_TryToBuyItem(int client, int index, bool auto)
 		//	StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
 		}
 		
-		item.AutoBought[client] = auto;
+		item.AutoBought[client] = autoLoadout;
 		
 		StoreItems.SetArray(index, item);
 		
@@ -5836,17 +5857,17 @@ void Store_ApplyAttribs(int client)
 	StatusEffect_ApplySpeedPlayer(client);
 }
 
-void Store_GiveAll(int client, int health, bool removeWeapons = false)
+void Store_GiveAll(int client, int health, bool removeWeapons = false, bool switchToPreviousWeapon = true)
 {
 //	Profiler profiler = new Profiler();
 //	profiler.Start();		
-	Store_GiveAllInternal(client, health, removeWeapons);		
+	Store_GiveAllInternal(client, health, removeWeapons, switchToPreviousWeapon);		
 //	profiler.Stop();	
 //	PrintToChatAll("Profiler testing: %f", profiler.Time);
 //	delete profiler;
 }
 
-void Store_GiveAllInternal(int client, int health, bool removeWeapons = false)
+void Store_GiveAllInternal(int client, int health, bool removeWeapons = false, bool switchToPreviousWeapon = true)
 {
 	TF2_RemoveCondition(client, TFCond_Taunting);
 	PreMedigunCheckAntiCrash(client);
@@ -5986,9 +6007,12 @@ void Store_GiveAllInternal(int client, int health, bool removeWeapons = false)
 		
 		if (found)
 		{
-			int weapon = Store_GetClientWeaponEntityFromStoreIndex(client, previousActiveWeaponStoreIndex);
-			if (weapon > MaxClients)
-				SetPlayerActiveWeapon(client, weapon);
+			if (switchToPreviousWeapon)
+			{
+				int weapon = Store_GetClientWeaponEntityFromStoreIndex(client, previousActiveWeaponStoreIndex);
+				if (weapon > MaxClients && GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") != weapon)
+					SetPlayerActiveWeapon(client, weapon);
+			}
 		}
 		else
 		{
@@ -8006,16 +8030,34 @@ void Store_HandleAutoPapList()
 {
 	for (int client = 1; client <= MaxClients; client++)
 	{
-		if (!AutoPapList[client])
-			continue;
-		
 		if (!IsValidClient(client) || IsFakeClient(client))
 		{
 			if (AutoPapList[client])
 				delete AutoPapList[client];
 			
+			NextAutoBuy[client] = 0;
 			continue;
 		}
+		
+		if (NextAutoBuy[client] > 0)
+		{
+			int index = NextAutoBuy[client];
+			int result = Store_TryToBuyItem(client, index, false);
+			if (result != BUY_RESULT_CANT_AFFORD)
+			{
+				NextAutoBuy[client] = 0;
+				
+				if (result == BUY_RESULT_SUCCESS)
+				{
+					char name[128];
+					Store_GetTranslatedItemNameByIndex(client, index, name, sizeof(name));
+					SPrintToChat(client, "%t", "Generic Bought Item", name);
+				}
+			}
+		}
+		
+		if (!AutoPapList[client])
+			continue;
 		
 		Item item;
 		ItemInfo info;
@@ -8035,7 +8077,7 @@ void Store_HandleAutoPapList()
 				continue;
 			}
 			
-			if (Store_TryToPapWeapon(client, item, autoInfo.index, autoInfo.level, PAP_DESC_BOUGHT_AUTO, false))
+			if (Store_TryToPapWeapon(client, item, autoInfo.index, autoInfo.level, PAP_DESC_BOUGHT_AUTO, false) == BUY_RESULT_SUCCESS)
 			{
 				if (item.ChildKit)
 				{
@@ -8097,6 +8139,13 @@ void Store_GetItemByIndex(int index, Item item)
 	StoreItems.GetArray(index, item);
 }
 
+void Store_GetTranslatedItemNameByIndex(int client, int index, char[] buffer, int maxlen)
+{
+	Item item;
+	StoreItems.GetArray(index, item);
+	FormatEx(buffer, maxlen, "%T", item.Name, client);
+}
+
 void Store_SellAutoBoughtItems(int client)
 {
 	int length = StoreItems.Length;
@@ -8105,7 +8154,7 @@ void Store_SellAutoBoughtItems(int client)
 		Item item;
 		StoreItems.GetArray(i, item);
 		
-		if (item.Owned[client] && item.AutoBought[client])
+		if (item.Owned[client] && item.AutoBought[client] && !AutoLoadouts_IsItemInClientList(client, i))
 			TryAndSellOrUnequipItem(i, item, client, false, false, true);
 	}
 }

@@ -43,23 +43,14 @@
 		"ru"		"Отменть текущее Авто-Снаряжение"
 		"pl"		"Anuluj aktualne przygotowane wyposażenie"
 	}
-	"Autoloadout Bought Item"
-	{
-		"#format"	"{1:s}"
-		"en" 		"Bought Item: {1}"
-		"pl"		"Kupiono przedmiot: {1}"
-		"ko"		"구매한 아이템: {1}"
-		"ru"		"Куплен предмет: {1}"
-	}
 	"Autoloadout Bought Item With Desc"
 	{
 		"#format"	"{1:s},{2:s}"
-		"en" 		"Enhanced Item: {1} - {2}"
-		"pl"		"Ulepszono przedmiot: {1} - {2}"
-		"ru"		"Улучшен предмет: {1} - {2}"
-		"ko"		"강화된 아이템: {1} - {2}"
+		"en" 		"Purchased Item: {1} - {2}"
+		"pl"		"Kupiono przedmiot: {1} - {2}"
+		"ru"		"Куплен предмет: {1} - {2}"
+		"ko"		"구매한 아이템: {1} - {2}"
 	}
-	
 	"Ranged 1"
 	{
 		"en" 		"Ranger: Fast Fire [Easy]"
@@ -262,13 +253,13 @@
 	
 	"Generic Support Upgrade Mini Desc"
 	{
-		"en"		"Gain faster healing rate and melee damage resistance with suppórt weapons."
+		"en"		"Gain faster healing rate and melee damage resistance with support weapons."
 		"ko"		"지원 무기의 치유 속도, 근접 피해 저항력이 증가합니다."
 	}
 	
 	"Medic's Lost Medical Lisence Mini Desc"
 	{
-		"en"		"Gain faster healing rate, reviving speed and melee damage resistance with suppórt weapons."
+		"en"		"Gain faster healing rate, reviving speed and melee damage resistance with support weapons."
 		"ko"		"지원 무기의 치유 속도, 부활 속도, 근접 피해 저항력이 증가합니다."
 	}
 }
