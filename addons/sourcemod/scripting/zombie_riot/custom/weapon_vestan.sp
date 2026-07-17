@@ -43,6 +43,9 @@ static float Vesta_TmepSpeed[MAXPLAYERS];
 static float Vesta_DoubleTapR[MAXPLAYERS];
 static bool Vesta_PerkDeadShot[MAXPLAYERS];
 
+static const char g_BrainAnnihilatorShot[][] = {
+	"weapons/stinger_fire1.wav",
+};
 void ResetMapStartVesta()
 {
 	Vesta_Map_Precache();
@@ -65,6 +68,7 @@ static void Vesta_Map_Precache()
 	PrecacheSound(SOUND_RAPID_SHOT_ACTIVATE);
 	PrecacheSound(SOUND_RAPID_SHOT_HYPER);
 	PrecacheSound(SOUND_OVERHEAT);
+	PrecacheSoundArray(g_BrainAnnihilatorShot);
 	PrecacheSound("weapons/crit_power.wav");
 	g_LaserIndex = PrecacheModel("materials/sprites/laserbeam.vmt");
 	static char model[PLATFORM_MAX_PATH];
@@ -771,4 +775,47 @@ bool IsInteractionBuilding(int building)
 	/*if(StrEqual(c_NpcName[building], "Pack-a-Punch") && Pap_WeaponCheck(client))
 		IsInteraction=true;*/
 	return IsInteraction;
+}
+
+
+static Handle h_TimerCritForce[MAXPLAYERS+1] = {null, ...};
+public void ForcePlay_CritSoundCreated(int client, int weapon)
+{
+	DataPack pack = new DataPack();
+	if(h_TimerCritForce[client] != null)
+	{
+		if(IsValidHandle(h_TimerCritForce[client]))
+			delete h_TimerCritForce[client];
+		h_TimerCritForce[client] = null;
+	}
+	h_TimerCritForce[client] = CreateDataTimer(0.1, ForceCritPlay_Timer, pack, TIMER_REPEAT);
+	pack.WriteCell(client);
+	pack.WriteCell(EntIndexToEntRef(weapon));
+	pack.WriteCell(EntIndexToEntRef(client));
+}
+static Action ForceCritPlay_Timer(Handle timer, DataPack pack)
+{
+	pack.Reset();
+	int clientindx = pack.ReadCell();
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	int client = EntRefToEntIndex(pack.ReadCell());
+	
+	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
+	{
+		h_TimerCritForce[clientindx] = null;
+		return Plugin_Stop;
+	}
+	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if(weapon_holding == weapon)
+	{
+		TF2_AddCondition(client, TFCond_CritOnKill, 0.3);
+		StopSound(client, SNDCHAN_STATIC, "weapons/crit_power.wav");
+	}
+	return Plugin_Continue;
+}
+
+public void Weapon_BrainAnnihilator(int client, int weapon, bool crit, int slot)
+{
+	EmitSoundToAll(g_BrainAnnihilatorShot[GetRandomInt(0, sizeof(g_BrainAnnihilatorShot) - 1)], client, _, 80,_, 1.0, 90,_,_,_,_,GetGameTime() - 1.0);
+		
 }

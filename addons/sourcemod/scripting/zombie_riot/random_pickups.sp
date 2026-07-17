@@ -2,8 +2,8 @@
 
 #define SUPPLIES_MODEL_RANDOM "models/items/ammopack_large.mdl"
 #define PICKUP_SOUND "playgamesound items/gunpickup2.wav"
-#define DELAY_BETWEEN_PICKUPS 60.0
-#define MAX_PICKUPS_ALLOWED 5
+#define DELAY_BETWEEN_PICKUPS 45.0
+#define MAX_PICKUPS_ALLOWED 8
 
 
 static float DelayBetweenSpawns;
