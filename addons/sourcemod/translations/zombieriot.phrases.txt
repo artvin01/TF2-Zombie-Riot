@@ -2081,15 +2081,35 @@
 		"en"		"Automatic enhancements for this weapon have been paused as it has multiple enhancement paths, you must choose one."
 		"ko"		"다수의 강화 경로로 인해 이 무기의 자동 강화가 중단되었습니다: 하나를 선택해야 합니다."
 	}
-	"Pap Auto Enhancement Standby"
-	{
-		"en"		"Selected for Purchase"
-		"ko"		"구매를 위해 선택됨"
-	}
 	"Pap Auto Enhancement Notice"
 	{
 		"en"		"Selecting enhancements you can't afford will\nqueue them for purchase when possible."
 		"ko"		"현재 구매할 수 없는 강화를 선택 시\n가능할 때 자동 구매하도록 예약합니다."
+	}
+	"Selected For Purchase"
+	{
+		"en"		"Selected for Purchase"
+		"ko"		"구매를 위해 선택됨"
+	}
+	"Generic Bought Item"
+	{
+		"#format"	"{1:s}"
+		"en" 		"Purchased Item: {1}"
+		"pl"		"Kupiono przedmiot: {1}"
+		"ko"		"구매한 아이템: {1}"
+		"ru"		"Куплен предмет: {1}"
+	}
+	"Auto Purchase Selected"
+	{
+		"en"		"This item will be automatically purchased once you can afford it."
+	}
+	"Auto Purchase Replaced"
+	{
+		"en"		"This item will be automatically purchased once you can afford it. The previous selection has been replaced."
+	}
+	"Auto Purchase Deselected"
+	{
+		"en"		"This item will no longer be automatically purchased."
 	}
 	"Revive Teammate tooltip"
 	{

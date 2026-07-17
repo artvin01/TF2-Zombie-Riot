@@ -671,6 +671,7 @@ enum struct AutoPapInfo
 }
 
 static ArrayList AutoPapList[MAXPLAYERS + 1];
+static int NextAutoBuy[MAXPLAYERS + 1];
 
 void Store_OnCached(int client)
 {
@@ -1477,9 +1478,9 @@ void Store_PackMenu(int client, int index, int owneditemlevel = -1, int owner, b
 //							Format(data, sizeof(data), "%d;%d;%d;%d", index, OwnedItemIndex + i, entity, userid);
 							Format(data, sizeof(data), "%i;%i;%i", index, (OwnedItemIndex + i), userid);
 							TranslateItemName(client, item.Name, info.Custom_Name, info.Custom_Name, sizeof(info.Custom_Name));
-							Format(buffer, sizeof(buffer), "%s [$%d]", info.Custom_Name, info.Cost);
+							Format(buffer, sizeof(buffer), "%s ($%d)", info.Custom_Name, info.Cost);
 							if (Store_IsItemInClientAutoPapList(client, index, OwnedItemIndex + i))
-								Format(buffer, sizeof(buffer), "%s (%T)", buffer, "Pap Auto Enhancement Standby", client);
+								Format(buffer, sizeof(buffer), "%s [%T]", buffer, "Selected For Purchase", client);
 							
 							menu.AddItem(data, buffer, ITEMDRAW_DEFAULT);
 
@@ -1604,7 +1605,7 @@ public int Store_PackMenuH(Menu menu, MenuAction action, int client, int choice)
 	return 0;
 }
 
-bool Store_TryToPapWeapon(int client, Item item, int index, int level, int descType, bool auto)
+bool Store_TryToPapWeapon(int client, Item item, int index, int level, int descType, bool autoLoadout)
 {
 	ItemInfo info;
 	if(item.GetItemInfo(level, info) && info.Cost)
@@ -1671,7 +1672,7 @@ bool Store_TryToPapWeapon(int client, Item item, int index, int level, int descT
 			Store_ApplyAttribs(client);
 			Store_GiveAll(client, GetClientHealth(client));
 			
-			if (!auto && AutoLoadouts_IsClientUsing(client))
+			if (!autoLoadout && AutoLoadouts_IsClientUsing(client))
 				AutoLoadouts_RemoveEnhancementsFromClientList(client);
 			
 			LastBoughtWeapon[client] = item;
@@ -2136,7 +2137,7 @@ void Store_ResetClient(int client)
 	}
 
 	UsingChoosenTags[client] = false;
-	
+	NextAutoBuy[client] = 0;
 	AutoLoadouts_RemovePlayerLoadout(client);
 	delete ChoosenTags[client];
 }
@@ -3529,8 +3530,9 @@ static void MenuPage(int client, int section)
 						ItemCost(client, item, info.Cost);
 						
 						Format(buffer, sizeof(buffer), "%T ($%d)", "Buy", client, info.Cost);
-						if(info.Cost > cash)
-							style = ITEMDRAW_DISABLED;
+						
+						if (NextAutoBuy[client] == section)
+							Format(buffer, sizeof(buffer), "%s [%T]", buffer, "Selected For Purchase", client);
 					}
 					
 					char buffer2[16];
@@ -4877,7 +4879,21 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 					}
 					else if (!item.Owned[client])
 					{
-						Store_TryToBuyItem(client, index, false);
+						if (NextAutoBuy[client] == index)
+						{
+							SPrintToChat(client, "%t", "Auto Purchase Deselected");
+							NextAutoBuy[client] = 0;
+						}
+						else if (Store_TryToBuyItem(client, index, false) == BUY_RESULT_CANT_AFFORD)
+						{
+							// Couldn't afford, queue instead
+							if (NextAutoBuy[client] == 0)
+								SPrintToChat(client, "%t", "Auto Purchase Selected");
+							else
+								SPrintToChat(client, "%t", "Auto Purchase Replaced");
+							
+							NextAutoBuy[client] = index;
+						}
 					}
 					else
 					{
@@ -5063,7 +5079,7 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 	return 0;
 }
 
-int Store_TryToBuyItem(int client, int index, bool auto)
+int Store_TryToBuyItem(int client, int index, bool autoLoadout)
 {
 	// Gotta dupe item and info in the menu. sorry.
 	Item item;
@@ -5122,7 +5138,7 @@ int Store_TryToBuyItem(int client, int index, bool auto)
 			Store_EquipSlotCheck(client, item);
 
 			item.Equipped[client] = true;
-			item.AutoBought[client] = auto;
+			item.AutoBought[client] = autoLoadout;
 			StoreItems.SetArray(index, item);
 			
 			Store_EquipAllItemsFromKit(client, item, index);
@@ -5167,7 +5183,7 @@ int Store_TryToBuyItem(int client, int index, bool auto)
 			//	StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
 			}
 			
-			if (!auto && AutoLoadouts_IsClientUsing(client))
+			if (!autoLoadout && AutoLoadouts_IsClientUsing(client))
 				AutoLoadouts_RemoveEnhancementsFromClientList(client);
 			
 			ClientCommand(client, "playgamesound \"mvm/mvm_bought_upgrade.wav\"");
@@ -5180,7 +5196,7 @@ int Store_TryToBuyItem(int client, int index, bool auto)
 			Store_EquipSlotCheck(client, item);
 
 			item.Equipped[client] = true;
-			item.AutoBought[client] = auto;
+			item.AutoBought[client] = autoLoadout;
 			
 			StoreItems.SetArray(index, item);
 			
@@ -5225,7 +5241,7 @@ int Store_TryToBuyItem(int client, int index, bool auto)
 		//	StoreBalanceLog.SetNum(item.Name, StoreBalanceLog.GetNum(item.Name) + 1);
 		}
 		
-		item.AutoBought[client] = auto;
+		item.AutoBought[client] = autoLoadout;
 		
 		StoreItems.SetArray(index, item);
 		
@@ -8006,16 +8022,34 @@ void Store_HandleAutoPapList()
 {
 	for (int client = 1; client <= MaxClients; client++)
 	{
-		if (!AutoPapList[client])
-			continue;
-		
 		if (!IsValidClient(client) || IsFakeClient(client))
 		{
 			if (AutoPapList[client])
 				delete AutoPapList[client];
 			
+			NextAutoBuy[client] = 0;
 			continue;
 		}
+		
+		if (NextAutoBuy[client] > 0)
+		{
+			int index = NextAutoBuy[client];
+			int result = Store_TryToBuyItem(client, index, false);
+			if (result != BUY_RESULT_CANT_AFFORD)
+			{
+				NextAutoBuy[client] = 0;
+				
+				if (result == BUY_RESULT_SUCCESS)
+				{
+					char name[128];
+					Store_GetTranslatedItemNameByIndex(client, index, name, sizeof(name));
+					SPrintToChat(client, "%t", "Generic Bought Item", name);
+				}
+			}
+		}
+		
+		if (!AutoPapList[client])
+			continue;
 		
 		Item item;
 		ItemInfo info;
@@ -8095,6 +8129,13 @@ int Store_GetItemIndexByName(const char[] name)
 void Store_GetItemByIndex(int index, Item item)
 {
 	StoreItems.GetArray(index, item);
+}
+
+void Store_GetTranslatedItemNameByIndex(int client, int index, char[] buffer, int maxlen)
+{
+	Item item;
+	StoreItems.GetArray(index, item);
+	FormatEx(buffer, maxlen, "%T", item.Name, client);
 }
 
 void Store_SellAutoBoughtItems(int client)
