@@ -2277,6 +2277,11 @@ void BarracksUnitAttack_NPCTakeDamagePost(int victim, int attacker, float damage
 		//make sure they have a barracks
 
 		int MaxHealth = ReturnEntityMaxHealth(victim);
+		
+		// prevent dividing by zero...
+		if (MaxHealth <= 0)
+			MaxHealth = 50;
+
 		if(damage >= float(MaxHealth))
 			damage = float(MaxHealth);
 			
