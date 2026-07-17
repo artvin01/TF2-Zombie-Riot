@@ -4902,7 +4902,8 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 						item.Equipped[client] = true;
 						StoreItems.SetArray(index, item);
 						
-						if (item.ParentKit)
+						bool kit = item.ParentKit;
+						if (kit)
 							Store_EquipAllItemsFromKit(client, item, index);
 						
 						if(!TeutonType[client] && !i_ClientHasCustomGearEquipped[client])
@@ -4914,7 +4915,7 @@ public int Store_MenuItemInt(Menu menu, MenuAction action, int client, int choic
 							CheckMultiSlots(client);
 							Manual_Impulse_101(client, GetClientHealth(client));
 							Store_ApplyAttribs(client);
-							Store_GiveAll(client, GetClientHealth(client));
+							Store_GiveAll(client, GetClientHealth(client), _, !kit);
 						}
 					}
 				}
@@ -5146,7 +5147,7 @@ int Store_TryToBuyItem(int client, int index, bool autoLoadout)
 			if(!TeutonType[client] && !i_ClientHasCustomGearEquipped[client])
 			{	
 				Store_ApplyAttribs(client);								
-				Store_GiveAll(client, GetClientHealth(client));
+				Store_GiveAll(client, GetClientHealth(client), _, false);
 			}
 		}
 	}
@@ -5852,17 +5853,17 @@ void Store_ApplyAttribs(int client)
 	StatusEffect_ApplySpeedPlayer(client);
 }
 
-void Store_GiveAll(int client, int health, bool removeWeapons = false)
+void Store_GiveAll(int client, int health, bool removeWeapons = false, bool switchToPreviousWeapon = true)
 {
 //	Profiler profiler = new Profiler();
 //	profiler.Start();		
-	Store_GiveAllInternal(client, health, removeWeapons);		
+	Store_GiveAllInternal(client, health, removeWeapons, switchToPreviousWeapon);		
 //	profiler.Stop();	
 //	PrintToChatAll("Profiler testing: %f", profiler.Time);
 //	delete profiler;
 }
 
-void Store_GiveAllInternal(int client, int health, bool removeWeapons = false)
+void Store_GiveAllInternal(int client, int health, bool removeWeapons = false, bool switchToPreviousWeapon = true)
 {
 	TF2_RemoveCondition(client, TFCond_Taunting);
 	PreMedigunCheckAntiCrash(client);
@@ -6002,9 +6003,12 @@ void Store_GiveAllInternal(int client, int health, bool removeWeapons = false)
 		
 		if (found)
 		{
-			int weapon = Store_GetClientWeaponEntityFromStoreIndex(client, previousActiveWeaponStoreIndex);
-			if (weapon > MaxClients)
-				SetPlayerActiveWeapon(client, weapon);
+			if (switchToPreviousWeapon)
+			{
+				int weapon = Store_GetClientWeaponEntityFromStoreIndex(client, previousActiveWeaponStoreIndex);
+				if (weapon > MaxClients && GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") != weapon)
+					SetPlayerActiveWeapon(client, weapon);
+			}
 		}
 		else
 		{
