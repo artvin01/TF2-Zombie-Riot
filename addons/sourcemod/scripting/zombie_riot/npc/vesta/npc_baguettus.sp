@@ -54,7 +54,7 @@ static void ClotPrecache()
 	PrecacheModel("models/player/spy.mdl");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
 	return CaptinoBaguettus(vecPos, vecAng, team);
 }
@@ -231,7 +231,7 @@ methodmap CaptinoBaguettus < CClotBody
 		public set(int TempValueForProperty) 	{ i_OverlordComboAttack[this.index] = TempValueForProperty; }
 	}
 	
-	public CaptinoBaguettus(float vecPos[3], float vecAng[3], int ally)
+	public CaptinoBaguettus(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		CaptinoBaguettus npc = view_as<CaptinoBaguettus>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "750", ally, true, true));
 		
