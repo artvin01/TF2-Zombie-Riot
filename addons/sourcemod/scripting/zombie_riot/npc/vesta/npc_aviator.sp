@@ -238,6 +238,11 @@ static void Aviator_ClotThink(int iNPC)
 		npc.m_flGetClosestTargetTime = gametime + GetRandomRetargetTime();
 	}
 
+	if(!StrContains(data, "nomech"))
+	{
+		npc.m_flAngerDelay = GetGameTime() + 999.0;
+	}
+
 	//SuiT UP
 	if(npc.m_flAngerDelay < gametime)
 	{
