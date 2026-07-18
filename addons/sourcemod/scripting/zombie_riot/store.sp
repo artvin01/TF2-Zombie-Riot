@@ -5934,7 +5934,8 @@ void Store_GiveAllInternal(int client, int health, bool removeWeapons = false, b
 	ClientSaveUber(client);
 
 	int previousActiveWeaponStoreIndex = Store_GetActiveWeaponStoreIndex(client);
-	
+	int previousLastWeaponStoreIndex = Store_GetLastWeaponStoreIndex(client);
+
 	if(!i_ClientHasCustomGearEquipped[client])
 	{
 		TF2_RemoveAllWeapons(client);
@@ -6012,6 +6013,10 @@ void Store_GiveAllInternal(int client, int health, bool removeWeapons = false, b
 				int weapon = Store_GetClientWeaponEntityFromStoreIndex(client, previousActiveWeaponStoreIndex);
 				if (weapon > MaxClients && GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") != weapon)
 					SetPlayerActiveWeapon(client, weapon);
+				
+				weapon = Store_GetClientWeaponEntityFromStoreIndex(client, previousLastWeaponStoreIndex);
+				if (weapon > MaxClients)
+					SetEntPropEnt(client, Prop_Send, "m_hLastWeapon", weapon);
 			}
 		}
 		else
@@ -7831,6 +7836,7 @@ void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip,
 					Call_Finish();
 				}
 				Store_Unequip(client, index);
+				Store_RemoveFromClientAutoPapList(client, index);
 				
 				Store_ApplyAttribs(client);
 				Store_GiveAll(client, GetClientHealth(client));	
@@ -7880,6 +7886,8 @@ void TryAndSellOrUnequipItem(int index, Item item, int client, bool ForceUneqip,
 				
 				item.Equipped[client] = false;
 				StoreItems.SetArray(index, item);
+				
+				Store_RemoveFromClientAutoPapList(client, index);
 				
 				if(item.ParentKit)
 					Store_UnequipAllItemsFromKit(client, index, true);
@@ -8192,6 +8200,8 @@ void Store_UnequipAllItemsFromKit(int client, int index, bool remove)
 			
 			subItem.Equipped[client] = false;
 			StoreItems.SetArray(i, subItem);
+			
+			Store_RemoveFromClientAutoPapList(client, i);
 		}
 	}
 }
@@ -8199,6 +8209,15 @@ void Store_UnequipAllItemsFromKit(int client, int index, bool remove)
 int Store_GetActiveWeaponStoreIndex(int client)
 {
 	int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+	if (weapon == -1)
+		return weapon;
+	
+	return StoreWeapon[weapon];
+}
+
+int Store_GetLastWeaponStoreIndex(int client)
+{
+	int weapon = GetEntPropEnt(client, Prop_Send, "m_hLastWeapon");
 	if (weapon == -1)
 		return weapon;
 	
