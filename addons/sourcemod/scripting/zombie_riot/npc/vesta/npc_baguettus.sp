@@ -706,8 +706,17 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 	{
 		case -1:
 		{
-			npc.m_flNextTMITalk = GameTime + 1.0;
-			npc.m_iNextTMITalk=0;
+			if(!StrContains(data, "voidsurv"))
+			{
+				NPCPritToChat_Override("Sensal", "{blue}", "CaptinoMenius_Sensal_And_Zeina_Talk-1", false);	
+				npc.m_flNextTMITalk = GameTime + 1.0;
+				npc.m_iNextTMITalk=9;
+			}
+			else
+			{
+				npc.m_flNextTMITalk = GameTime + 1.0;
+				npc.m_iNextTMITalk=0;
+			}
 		}
 		case 0:
 		{
@@ -783,7 +792,25 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 			if(npc.m_flNextTMITalk < GameTime)
 			{
 				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Talk-4-2", false, false);
-				npc.m_iNextTMITalk=9;
+				npc.m_iNextTMITalk=11;
+			}
+		}
+		case 9:
+		{
+			if(npc.m_flNextTMITalk < GameTime)
+			{
+				NPCPritToChat_Override("Zeina", "{lightcyan}", "CaptinoMenius_Sensal_And_Zeina_Talk-2", false);
+				npc.m_flNextTMITalk = GameTime + 1.0;
+				npc.m_iNextTMITalk=10;
+			}
+		}
+		case 10:
+		{
+			if(npc.m_flNextTMITalk < GameTime)
+			{
+				NPCPritToChat(npc.index, "{paleturquoise}", "CaptinoMenius_Sensal_And_Zeina_Talk-3", false, false);
+				npc.m_flNextTMITalk = GameTime + 1.0;
+				npc.m_iNextTMITalk=11;
 			}
 		}
 	}
