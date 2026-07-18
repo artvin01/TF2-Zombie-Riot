@@ -74,7 +74,7 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Aviator(vecPos, vecAng, team);
+	return Aviator(vecPos, vecAng, team, data);
 }
 methodmap Aviator < CClotBody
 {
