@@ -117,6 +117,7 @@
 	"Current Modifier"
 	{
 		"en"	"Current Modifier"
+		"ko"	"현재 모디파이어"
 	}
 	"Current Skill Points"
 	{
