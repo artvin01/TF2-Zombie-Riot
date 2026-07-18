@@ -3883,6 +3883,9 @@ void FullyReviveClient(int target, int client, int extralogic = 0, bool teleport
 	ClientSaveUber(target);
 	ClientSaveRageMeterStatus(target);
 	
+	int previousActiveWeaponStoreIndex = Store_GetActiveWeaponStoreIndex(client);
+	int previousLastWeaponStoreIndex = Store_GetLastWeaponStoreIndex(client);
+	
 	SetEntPropEnt(target, Prop_Send, "m_hObserverTarget", client);
 	f_WasRecentlyRevivedViaNonWave[target] = GetGameTime() + 1.0;
 	DHook_RespawnPlayer(target);
@@ -3939,6 +3942,14 @@ void FullyReviveClient(int target, int client, int extralogic = 0, bool teleport
 			HealEntityGlobal(client, target, float(SDKCall_GetMaxHealth(target)), 0.1, 1.0, HEAL_ABSOLUTE);
 		}
 	}
+	
+	int weapon = Store_GetClientWeaponEntityFromStoreIndex(client, previousActiveWeaponStoreIndex);
+	if (weapon > MaxClients && GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") != weapon)
+		SetPlayerActiveWeapon(client, weapon);
+	
+	weapon = Store_GetClientWeaponEntityFromStoreIndex(client, previousLastWeaponStoreIndex);
+	if (weapon > MaxClients)
+		SetEntPropEnt(client, Prop_Send, "m_hLastWeapon", weapon);
 	
 	SetEntityRenderMode(target, RENDER_NORMAL);
 	SetEntityRenderColor(target, 255, 255, 255, 255);
