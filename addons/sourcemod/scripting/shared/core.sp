@@ -3883,8 +3883,8 @@ void FullyReviveClient(int target, int client, int extralogic = 0, bool teleport
 	ClientSaveUber(target);
 	ClientSaveRageMeterStatus(target);
 	
-	int previousActiveWeaponStoreIndex = Store_GetActiveWeaponStoreIndex(client);
-	int previousLastWeaponStoreIndex = Store_GetLastWeaponStoreIndex(client);
+	int previousActiveWeaponStoreIndex = Store_GetActiveWeaponStoreIndex(target);
+	int previousLastWeaponStoreIndex = Store_GetLastWeaponStoreIndex(target);
 	
 	SetEntPropEnt(target, Prop_Send, "m_hObserverTarget", client);
 	f_WasRecentlyRevivedViaNonWave[target] = GetGameTime() + 1.0;
@@ -3943,13 +3943,13 @@ void FullyReviveClient(int target, int client, int extralogic = 0, bool teleport
 		}
 	}
 	
-	int weapon = Store_GetClientWeaponEntityFromStoreIndex(client, previousActiveWeaponStoreIndex);
-	if (weapon > MaxClients && GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon") != weapon)
-		SetPlayerActiveWeapon(client, weapon);
+	int weapon = Store_GetClientWeaponEntityFromStoreIndex(target, previousActiveWeaponStoreIndex);
+	if (weapon > MaxClients && GetEntPropEnt(target, Prop_Send, "m_hActiveWeapon") != weapon)
+		SetPlayerActiveWeapon(target, weapon);
 	
-	weapon = Store_GetClientWeaponEntityFromStoreIndex(client, previousLastWeaponStoreIndex);
+	weapon = Store_GetClientWeaponEntityFromStoreIndex(target, previousLastWeaponStoreIndex);
 	if (weapon > MaxClients)
-		SetEntPropEnt(client, Prop_Send, "m_hLastWeapon", weapon);
+		SetEntPropEnt(target, Prop_Send, "m_hLastWeapon", weapon);
 	
 	SetEntityRenderMode(target, RENDER_NORMAL);
 	SetEntityRenderColor(target, 255, 255, 255, 255);
