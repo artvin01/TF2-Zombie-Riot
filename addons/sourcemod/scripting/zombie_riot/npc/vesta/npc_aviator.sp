@@ -162,14 +162,15 @@ methodmap Aviator < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(Aviator_ClotThink);
 		
 		npc.m_flChargeAttack = GetGameTime() + 7.5;
-		if(!StrContains(data, "nomech"))
-		{
-			npc.m_flAngerDelay = GetGameTime() + 999.0;
-		}
-		else
-		{
-			npc.m_flAngerDelay = GetGameTime() + 15.0;
-		}
+		npc.m_flAngerDelay = GetGameTime() + 15.0;
+		//if(!StrContains(data, "nomech"))
+		//{
+			//npc.m_flAngerDelay = GetGameTime() + 999.0;
+		//}
+		//else
+		//{
+			//npc.m_flAngerDelay = GetGameTime() + 15.0;
+		//}
 		npc.i_GunMode = 0;
 		npc.m_iSuitupCycle = 0;
 		npc.m_flDelaySuitup = 0.0;
