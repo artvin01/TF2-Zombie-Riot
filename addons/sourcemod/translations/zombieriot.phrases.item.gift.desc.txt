@@ -2385,7 +2385,7 @@
 	}
 	"Kiter's Dream Desc"
 	{
-		"en" "I hate cading!!!\nBuldings no longer block enemies, Random drops are massively increased\nSome buildings have been adjusted\nRaids dont award items on beating."
+		"en" "I hate cading!!!\nBuldings no longer block enemies, Random drops are massively increased\nSome buildings have been adjusted"
 	}
 	"Turbulance"
 	{
