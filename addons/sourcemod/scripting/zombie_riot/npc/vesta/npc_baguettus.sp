@@ -56,7 +56,7 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return CaptinoBaguettus(vecPos, vecAng, team);
+	return CaptinoBaguettus(vecPos, vecAng, team, data);
 }
 
 methodmap CaptinoBaguettus < CClotBody
