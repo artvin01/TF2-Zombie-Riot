@@ -5674,6 +5674,10 @@ stock int GetClosestTarget(int entity,
 		int entity_close = -1;
 		while((entity_close=FindEntityByClassname(entity_close, "obj_*")) != -1) //BUILDINGS!
 		{
+			if(ZR_Get_Modifier() == KITERS_DREAM)
+			{
+				break;
+			}
 			if(entity_close != entity && entity_close != ingore_client)
 			{
 				CClotBody npc = view_as<CClotBody>(entity_close);
