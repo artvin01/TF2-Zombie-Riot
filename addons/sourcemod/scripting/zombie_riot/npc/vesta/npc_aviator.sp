@@ -72,9 +72,9 @@ static void ClotPrecache()
 	PrecacheModel("models/player/engineer.mdl");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Aviator(vecPos, vecAng, team, data);
+	return Aviator(vecPos, vecAng, team);
 }
 methodmap Aviator < CClotBody
 {
@@ -137,7 +137,7 @@ methodmap Aviator < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
 	
-	public Aviator(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Aviator(float vecPos[3], float vecAng[3], int ally)
 	{
 		Aviator npc = view_as<Aviator>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "50000", ally));
 		
