@@ -849,7 +849,6 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 			{
 				r = 0;
 				g = 0;
-				b = 0;
 			}
 			
 			int wearable = objstats.m_iWearable1;
