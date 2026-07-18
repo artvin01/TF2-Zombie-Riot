@@ -706,7 +706,7 @@ public void CaptinoBaguettus_ClotThink(int iNPC)
 	{
 		case -1:
 		{
-			if(!StrContains(data, "voidsurv"))
+			if(!StrContains(data, "voidsurv") != -1)
 			{
 				NPCPritToChat_Override("Sensal", "{blue}", "CaptinoMenius_Sensal_And_Zeina_Talk-1", false);	
 				npc.m_flNextTMITalk = GameTime + 1.0;
