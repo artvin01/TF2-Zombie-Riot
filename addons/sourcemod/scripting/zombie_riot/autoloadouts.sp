@@ -286,12 +286,12 @@ public int AutoLoadouts_DisplayLoadouts_Page(Menu menu, MenuAction action, int c
 	{
 		case MenuAction_End:
 		{
+			delete menu;
 			if(IsValidClient(client))
 				AnyMenuOpen[client] = 0;
 		}
 		case MenuAction_Cancel:
 		{
-			delete menu;
 			AnyMenuOpen[client] = 0;
 		}
 		case MenuAction_Select:

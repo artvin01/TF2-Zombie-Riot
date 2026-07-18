@@ -5268,6 +5268,16 @@ static void LoadoutPage(int client, bool last = false)
 	
 	char buffer[64];
 	
+	if(!CvarDisableAutoLoadouts.BoolValue)
+	{
+		Format(buffer, sizeof(buffer), "[%T]", "Autoloadout Page", client);
+		menu.AddItem("-123", buffer, ITEMDRAW_DEFAULT);
+	}
+	else
+	{
+		Format(buffer, sizeof(buffer), "[%T]", "Autoloadout Disable", client);
+		menu.AddItem("-0", buffer, ITEMDRAW_DISABLED);
+	}
 	int length;
 	if(Loadouts[client])
 	{
@@ -5279,16 +5289,6 @@ static void LoadoutPage(int client, bool last = false)
 		}
 	}
 	
-	if(!CvarDisableAutoLoadouts.BoolValue)
-	{
-		Format(buffer, sizeof(buffer), "[%T]", "Autoloadout Page", client);
-		menu.AddItem("-123", buffer, ITEMDRAW_DEFAULT);
-	}
-	else
-	{
-		Format(buffer, sizeof(buffer), "[%T]", "Autoloadout Disable", client);
-		menu.AddItem("-0", buffer, ITEMDRAW_DISABLED);
-	}
 	if(!length)
 	{
 		Format(buffer, sizeof(buffer), "%T", "None", client);
