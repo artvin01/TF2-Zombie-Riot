@@ -4,15 +4,6 @@
 static bool MaxMiniBoss;
 static int CurrentModifActive = 0;
 
-#define CHAOS_INTRUSION 1
-#define SECONDARY_MERCS 2
-#define OLD_TIMES 3
-#define TURBOLENCES 4
-#define PARANORMAL_ACTIVITY 5
-#define PREFIX_GALORE 6
-#define PREFIX_ONESTAND 7
-#define NOSTALGICA 8
-
 void Modifier_MiniBossSpawn(bool &spawns)
 {
 	if(MaxMiniBoss)
@@ -79,6 +70,11 @@ public void Modifier_Collect_Nostalica()
 {
 	CurrentModifActive = NOSTALGICA;
 }
+public void Modifier_Collect_KitersDream()
+{
+	CurrentModifActive = KITERS_DREAM;
+}
+
 public void Modifier_Collect_Turbolences()
 {
 	CurrentModifActive = TURBOLENCES;
@@ -306,6 +302,10 @@ void ZRModifs_CharBuffToAdd(char[] data)
 		case NOSTALGICA:
 		{
 			FormatEx(data, 12, "NO");
+		}
+		case KITERS_DREAM:
+		{
+			FormatEx(data, 12, "KI");
 		}
 	}
 }

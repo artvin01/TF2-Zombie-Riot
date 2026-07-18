@@ -57,7 +57,12 @@ public Action RandomPickup_DelayBetweenSpawns(Handle timer)
 	}
 	RandomPickup_SpawnPickup(VectorSave);
 	//spawn a pickup at this location.
-	DelayBetweenSpawns = GetGameTime() + DELAY_BETWEEN_PICKUPS;
+	float RandomPickupTime = DELAY_BETWEEN_PICKUPS; 
+	if(ZR_Get_Modifier() == KITERS_DREAM)
+	{
+		RandomPickupTime *= 0.5;
+	}
+	DelayBetweenSpawns = GetGameTime() + RandomPickupTime;
 	return Plugin_Continue;
 }
 
@@ -94,7 +99,13 @@ bool RandomPickup_SpawnPickup(float VectorGoal[3])
 		SetEntityCollisionGroup(prop, 27);
 		SDKHook(prop, SDKHook_Touch, RandomPickup_TouchPickup);
 		i_WandIdNumber[prop] = 999;
-		CreateTimer(DELAY_BETWEEN_PICKUPS * MAX_PICKUPS_ALLOWED, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
+		float RandomPickupTime = DELAY_BETWEEN_PICKUPS; 
+		int MaxPickups = MAX_PICKUPS_ALLOWED; 
+		if(ZR_Get_Modifier() == KITERS_DREAM)
+		{
+			MaxPickups *= 2;
+		}
+		CreateTimer(RandomPickupTime * MaxPickups, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 	}	
 	return true;
 }

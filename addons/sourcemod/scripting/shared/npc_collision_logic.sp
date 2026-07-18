@@ -62,6 +62,10 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 		}
 		if(i_IsABuilding[otherindex])
 		{
+			if(ZR_Get_Modifier() == KITERS_DREAM)
+			{
+				return false;
+			}
 			if(GetTeam(bot_entidx) != TFTeam_Red && IsEntityTowerDefense(bot_entidx))
 			{
 				if(RaidbossIgnoreBuildingsLogic(2) || b_NpcIgnoresbuildings[bot_entidx])
@@ -117,6 +121,10 @@ bool ShouldCollide_NpcLoco_Internal(int bot_entidx, int otherindex, int extrarul
 	}
 	if(i_IsABuilding[otherindex])
 	{
+		if(ZR_Get_Modifier() == KITERS_DREAM)
+		{
+			return false;
+		}
 		if(RaidbossIgnoreBuildingsLogic(2) || b_NpcIgnoresbuildings[bot_entidx])
 		{
 			return false;

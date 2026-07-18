@@ -432,6 +432,10 @@ bool Items_GiveIdItem(int client, int id, bool noForward = false)
 
 bool Items_GiveNamedItem(int client, const char[] name, bool noForward = false)
 {
+	if(ZR_Get_Modifier() == KITERS_DREAM)
+	{
+		return false;
+	}
 	if(name[0] && GiftItems)
 	{
 		int length = GiftItems.Length;

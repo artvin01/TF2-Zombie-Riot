@@ -5346,6 +5346,11 @@ stock bool IsValidEnemy(int index, int enemy, bool camoDetection=false, bool tar
 		else if(i_IsABuilding[enemy])
 		{
 #if defined ZR
+			//buildings are entirely disabled.
+			if(ZR_Get_Modifier() == KITERS_DREAM)
+			{
+				return false;
+			}
 			if(b_NpcIgnoresbuildings[index])
 			{
 				return false;

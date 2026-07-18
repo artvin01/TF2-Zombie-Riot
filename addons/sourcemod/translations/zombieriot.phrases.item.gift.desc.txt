@@ -2379,6 +2379,14 @@
 		// True fusion changes: His knockup no longer makes you immune to fall damage, ion oneshots you
 		// Blitzkrieg: Rockets are AOE
 	}
+	"Kiter's Dream"
+	{
+		"en" "Kiter's Dream"
+	}
+	"Kiter's Dream Desc"
+	{
+		"en" "I hate cading!!!\nBuldings no longer block enemies, Random drops are massively increased\nSome buildings have been adjusted\nRaids dont award items on beating."
+	}
 	"Turbulance"
 	{
 		"en"	"Turbulance"

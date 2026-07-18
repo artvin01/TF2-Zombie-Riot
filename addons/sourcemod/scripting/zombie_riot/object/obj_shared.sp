@@ -845,6 +845,12 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 			}
 			
 			int r = 255 - g;
+			if(ZR_Get_Modifier() == KITERS_DREAM)
+			{
+				r = 0;
+				g = 0;
+				b = 0;
+			}
 			
 			int wearable = objstats.m_iWearable1;
 			if(wearable != -1)

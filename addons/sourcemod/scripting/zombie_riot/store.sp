@@ -3730,6 +3730,8 @@ static void MenuPage(int client, int section)
 		{
 			Autoloadout_DisplayCurrentAuto(client, buf, sizeof(buf));
 		}
+		if(WhatModifierSetting[0])
+			Format(buf, sizeof(buf), "%s\n%T: [%T]\n ", buf, "Current Modifier", client,WhatModifierSetting,client);
 		int nextAt = xpNext-xpLevel;
 		menu = new Menu(Store_MenuPage);
 		if(NPCOnly[client] == 1)

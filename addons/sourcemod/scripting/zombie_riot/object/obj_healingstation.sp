@@ -102,6 +102,8 @@ static bool ClotInteract(int client, int weapon, ObjectHealingStation npc)
 		default:
 			MaxHealthPerc *= 0.15;
 	}
+	if(ZR_Get_Modifier() == KITERS_DREAM)
+		MaxHealthPerc *= 0.5;
 	if(HealAmmount < MaxHealthPerc)
 	{
 		HealAmmount = MaxHealthPerc;
