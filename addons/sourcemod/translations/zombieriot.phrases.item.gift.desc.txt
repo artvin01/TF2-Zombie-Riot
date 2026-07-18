@@ -2382,10 +2382,12 @@
 	"Kiter's Dream"
 	{
 		"en" "Kiter's Dream"
+		"ko" "카이팅 유저의 꿈"
 	}
 	"Kiter's Dream Desc"
 	{
 		"en" "I hate cading!!!\nBuldings no longer block enemies, Random drops are massively increased\nSome buildings have been adjusted"
+		"ko" "난 바리케이드가 싫어!!!\n구조물이 더 이상 적을 막지 않으며, 랜덤 드랍 아이템의 스폰량이 대폭 증가합니다.\n일부 구조물의 성능이 조정됩니다."
 	}
 	"Turbulance"
 	{
