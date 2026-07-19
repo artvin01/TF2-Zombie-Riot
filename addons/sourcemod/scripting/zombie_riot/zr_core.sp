@@ -571,6 +571,7 @@ float f_ExtraDropChanceRarity = 1.0;
 bool applied_lastmann_buffs_once = false;
 int i_WaveHasFreeplay = 0;
 float fl_MatrixReflect[MAXENTITIES];
+float fl_NextAmmoBoxAnnotation[MAXPLAYERS];
 
 char s_MissionClient[64]; // Who hired us for the current job
 
@@ -1005,6 +1006,7 @@ void ZR_MapStart()
 	Zero(f_TimeAfterSpawn);
 	Zero2(f_ArmorCurrosionImmunity);
 	Zero(fl_MatrixReflect);
+	Zero(fl_NextAmmoBoxAnnotation);
 	Reset_stats_Amphi_Global();
 	Reset_stats_PHLOG_Global();
 	Amphi_Map_Precache();
@@ -1231,6 +1233,7 @@ public Action GlobalTimer(Handle timer)
 	Spawners_Timer();
 	Store_HandleAutoPapList();
 	AutoLoadouts_Handle();
+	CheckForLowAmmo();
 	
 	if(frame % 100)
 		return Plugin_Continue;
@@ -3927,4 +3930,86 @@ bool ZR_AllowLastman()
 void WeaponUpdateDo()
 {
 	RedMist_ResetAbnorms();
+}
+
+void CheckForLowAmmo()
+{
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if (!IsValidClient(client) || !IsEntityAlive(client))
+			continue;
+		
+		if (Level[client] > 5)
+			continue;
+		
+		float gameTime = GetGameTime();
+		if (fl_NextAmmoBoxAnnotation[client] > gameTime)
+			continue;
+		
+		int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+		if (weapon == -1)
+			continue;
+		
+		int ammoType = GetAmmoType_WeaponPrimary(weapon);
+		if (IsBadAmmoType(ammoType))
+			continue;
+		
+		int ammo = GetAmmo(client, ammoType);
+		if (ammo <= 10)
+		{
+			const float duration = 5.9;
+			fl_NextAmmoBoxAnnotation[client] = gameTime + duration;
+			
+			SetDefaultHudPosition(client, .duration = duration);
+			ShowSyncHudText(client, SyncHud_Notifaction, "%T", "Low On Ammo", client);
+			
+			char buffer[128];
+			int entity = MaxClients + 1;
+			while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
+			{
+				NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
+				if(!StrContains(buffer, "obj_ammobox"))
+				{
+					float vecTarget[3];
+					vecTarget[2] += 60.0;
+					
+					static int uniqueId = 12000;
+					Format(buffer, sizeof(buffer), "%T", "Show Ammo Box", client);
+					Event event = CreateEvent("show_annotation");
+					if(event)
+					{
+						event.SetFloat("worldNormalX", vecTarget[0]);
+						event.SetFloat("worldNormalY", vecTarget[1]);
+						event.SetFloat("worldNormalZ", vecTarget[2]);
+						event.SetInt("follow_entindex", entity);
+						event.SetFloat("lifetime", duration);
+						event.SetString("text", buffer);
+						event.SetString("play_sound", "vo/null.mp3");
+						KillMostCurrentIDAnnotation(client, i_CurrentIdBeforeAnnoation[client]);
+						event.SetInt("id", uniqueId++);
+						i_CurrentIdBeforeAnnoation[client] = uniqueId;
+						event.FireToClient(client);
+						event.Cancel();
+						
+						if (uniqueId >= 20000)
+							uniqueId = 12000;
+					}
+					break;
+				}
+			}
+		}
+	}
+}
+
+bool IsBadAmmoType(int ammoType)
+{
+	return ammoType == -1 ||
+	ammoType == 0 ||
+	ammoType == 1 ||
+	ammoType == 2 ||
+	ammoType ==	Ammo_Jar ||
+	ammoType == Ammo_Hand_Grenade ||
+	ammoType == Ammo_Potion_Supply ||
+	ammoType == Ammo_Metal_Sub ||
+	ammoType == Ammo_ClassSpecific;
 }
