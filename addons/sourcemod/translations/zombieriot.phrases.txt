@@ -6111,4 +6111,12 @@
 		"en" 		"Card on cooldown ({1} seconds!)"
 		"ko"		"책장 쿨타임 상태 ({1}초)"
 	}
+	"Low On Ammo"
+	{
+		"en"		"You're low on ammo! Collect more ammo by interacting with ammo boxes or\nin the weapon's store page. (Open the menu and press [H])"
+	}
+	"Show Ammo Box"
+	{
+		"en"		"Ammo box here!"
+	}
 }
