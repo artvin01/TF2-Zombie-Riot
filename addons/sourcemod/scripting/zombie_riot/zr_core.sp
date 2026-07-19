@@ -3933,10 +3933,10 @@ void CheckForLowAmmo()
 	{
 		if (!IsValidClient(client) || !IsEntityAlive(client))
 			continue;
-		/*
+		
 		if (Level[client] > 5)
 			continue;
-		*/
+		
 		float gameTime = GetGameTime();
 		if (fl_NextAmmoBoxAnnotation[client] > gameTime)
 			continue;
