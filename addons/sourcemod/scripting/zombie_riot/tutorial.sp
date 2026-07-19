@@ -136,7 +136,7 @@ void DoTutorialStep(int client, bool obeycooldown)
 		}
 	}
 
-	if(IsClientInTutorial(client) && ClientTutorialStep(client) >= 1 && ClientTutorialStep(client) <= 3)
+	if(IsClientInBuyTutorial(client))
 	{
 		UTIL_ScreenFade(client, 33, 9999999, FFADE_IN, 0, 0, 0, 233);
 	}
@@ -374,4 +374,10 @@ void TutorialEndFully(int client)
 {
 	Database_GlobalSetInt(client, DATATABLE_MISC, "tutorial", 6);
 	SetClientTutorialMode(client, false);
+}
+
+
+bool IsClientInBuyTutorial(int client)
+{
+	return (IsClientInTutorial(client) && ClientTutorialStep(client) >= 1 && ClientTutorialStep(client));
 }

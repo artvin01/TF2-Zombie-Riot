@@ -639,11 +639,10 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 
 		if(attacker <= MaxClients && attacker > 0)
 		{
+			if(!CheckInHud())
+				DoClientHitmarker(attacker);
 			if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 			{
-				if(!CheckInHud())
-					DoClientHitmarker(attacker);
-
 				if(IsValidEntity(weapon))
 				{
 					damage = NPC_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, i_HexCustomDamageTypes[victim]);

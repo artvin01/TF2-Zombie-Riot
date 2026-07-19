@@ -30,7 +30,8 @@ enum
 {
 	WHITEOUT_DISABLE = 0,
 	WHITEOUT_ENABLE = 1,
-	WHITEOUT_ONLYLOADOUTAUTO = 2
+	WHITEOUT_ONLYLOADOUTAUTO = 2,
+	WHITEOUT_ONLYLOADOUTAUTO_BLOCKBEFORE = 3
 }
 enum struct ItemInfo
 {
@@ -4032,7 +4033,11 @@ static void MenuPage(int client, int section)
 					Format(buffer, sizeof(buffer), "%s {$%s}", buffer, item.NPCSeller_Discount < 0.71 ? "$" : "");
 				}
 				int style = ITEMDRAW_DEFAULT;
-				if(Level[client] < 5 && item.WhiteOut == WHITEOUT_ONLYLOADOUTAUTO && ((IsClientInTutorial(client) && ClientTutorialStep(client) >= 1 && ClientTutorialStep(client) <= 3) || AutoLoadouts_IsClientUsing(client)))
+				if(Level[client] < 5 && item.WhiteOut == WHITEOUT_ONLYLOADOUTAUTO && (IsClientInBuyTutorial(client) || AutoLoadouts_IsClientUsing(client)))
+				{
+					style = ITEMDRAW_DISABLED;
+				}
+				else if(Level[client] < 5 && item.WhiteOut == WHITEOUT_ONLYLOADOUTAUTO_BLOCKBEFORE && IsClientInBuyTutorial(client) && !AutoLoadouts_IsClientUsing(client))
 				{
 					style = ITEMDRAW_DISABLED;
 				}
@@ -4081,7 +4086,12 @@ static void MenuPage(int client, int section)
 						
 						Format(buffer, sizeof(buffer), "%s [↑]", info.Custom_Name);
 					}
-					else if(Level[client] < 5 && item.WhiteOut == WHITEOUT_ONLYLOADOUTAUTO && ((IsClientInTutorial(client) && ClientTutorialStep(client) >= 1 && ClientTutorialStep(client) <= 3) || AutoLoadouts_IsClientUsing(client)))
+					else if(Level[client] < 5 && item.WhiteOut == WHITEOUT_ONLYLOADOUTAUTO && (IsClientInBuyTutorial(client) || AutoLoadouts_IsClientUsing(client)))
+					{
+						style = ITEMDRAW_DISABLED;
+						Format(buffer, sizeof(buffer), "%s", info.Custom_Name);
+					}
+					else if(Level[client] < 5 && item.WhiteOut == WHITEOUT_ONLYLOADOUTAUTO_BLOCKBEFORE && IsClientInBuyTutorial(client) && !AutoLoadouts_IsClientUsing(client))
 					{
 						style = ITEMDRAW_DISABLED;
 						Format(buffer, sizeof(buffer), "%s", info.Custom_Name);
