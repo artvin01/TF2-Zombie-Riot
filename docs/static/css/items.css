@@ -472,3 +472,7 @@ select { /* made with gtag class in mind */
     top: 115;
     pointer-events: all;
 }
+
+.inspectmode .atfx_name {
+    pointer-events: all;
+}
