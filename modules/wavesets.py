@@ -15,6 +15,7 @@ from typing import Any
 TODO
 [ ] Complete const2 support
 [ ] Include main music parts somehow
+[ ] Tint status effects by buff/debuff type (blue/red team tf2 colors)
 """
 
 # General ================================
@@ -636,11 +637,13 @@ def parse_rogue(name: str, data: dict[str, Any], html_mapsets: str) -> tuple[str
         info_html += rogue_item_modal(artifact)
 
     # All Artifacts
+    rogue_num = int(data["Rogue"]["roguestyle"])+1
     info_html += "<h2>Artifacts</h2>\n"
-    for artifact in data["Rogue"]["Artifacts"]:
-        if defaultdict(str, data["Rogue"]["Artifacts"][artifact])["hidden"]=="1":
+    for artifact, a_data in data["Rogue"]["Artifacts"].items():
+        if defaultdict(str, a_data)["hidden"]=="1":
             continue
-        info_html += rogue_item_modal(artifact,data["Rogue"]["Artifacts"][artifact])
+        info_html += rogue_item_modal(artifact,a_data)
+        ARTIFACTS.append(artifact_json(artifact, a_data, f"Rogue {rogue_num}"))
 
     # Curses
     info_html += "<h2>Curses</h2>\n"
@@ -648,7 +651,6 @@ def parse_rogue(name: str, data: dict[str, Any], html_mapsets: str) -> tuple[str
         info_html += rogue_item_modal(curse)
 
     # Floors
-    rogue_num = int(data["Rogue"]["roguestyle"])+1
     info_html += "<h2>Floors</h2>\n"
     for idx, (floor_name, floor_data) in enumerate(data["Rogue"]["Floors"].items()):
         rooms = floor_data["rooms"]
@@ -700,6 +702,9 @@ def rogue_item_modal(name: str, obj: dict[str, str] | str | None = None):
         "desc": desc
     }
     return util.fill_template(util.read("templates/rogue/rogue_item.html"),context)
+
+def artifact_json(name: str, obj: dict[str,str], source: str):
+    return {"name": util.get_key(name), "description": util.get_key(f"{name} Desc"), "source": source, "id": util.id_from_str(name+source)} | obj
 
 def parse_rogue_stage(info_html: str, snameraw: str, sdata: dict[str, Any], name: str, floor_name: str, rogue_num: str) -> str:
     sdesc=util.get_key(snameraw + " Desc",empty_on_fail=True,silent=True)
@@ -878,10 +883,11 @@ def parse_const1(name: str, data: dict[str, Any], html_mapsets: str) -> tuple[st
     # All Artifacts
     info_html += "<h2>Artifacts</h2>\n"
     info_html += "<ul>\n"
-    for artifact in data["Construction"]["Artifacts"]:
-        if defaultdict(str, data["Construction"]["Artifacts"][artifact])["hidden"]=="1":
+    for artifact, a_data in data["Construction"]["Artifacts"].items():
+        if defaultdict(str, a_data)["hidden"]=="1":
             continue
-        info_html += rogue_item_modal(artifact,data["Construction"]["Artifacts"][artifact])
+        info_html += rogue_item_modal(artifact,a_data)
+        ARTIFACTS.append(artifact_json(artifact,a_data, "Construction 1"))
     info_html += "</ul>\n"
 
     # All Research
@@ -1094,10 +1100,11 @@ def parse_const2(name: str, data: dict[str, Any], html_mapsets: str) -> tuple[st
     # All Artifacts
     info_html += "<h2>Artifacts</h2>\n"
     info_html += "<ul>\n"
-    for artifact in data["Dungeon"]["Artifacts"]:
-        if defaultdict(str, data["Dungeon"]["Artifacts"][artifact])["hidden"]=="1":
+    for artifact, a_data in data["Dungeon"]["Artifacts"].items():
+        if defaultdict(str, a_data)["hidden"]=="1":
             continue
-        info_html += rogue_item_modal(artifact,data["Dungeon"]["Artifacts"][artifact])
+        info_html += rogue_item_modal(artifact,a_data)
+        ARTIFACTS.append(artifact_json(artifact, a_data, "Construction 2"))
     info_html += "</ul>\n"
 
     # Random music
@@ -1150,7 +1157,8 @@ NPCS_BY_FILENAME, NPCS_BY_CATEGORY = parse_all_npcs()
 DEFAULT_CASH_BY_WAVE = parse_default_cash()
 DEFAULT_MISSION_CLIENT = parse_default_mission_client()
 MUSIC_BY_TITLE = {}
-# COMPLETE_ITEM_MAP = {} # map item name to a waveset
+ARTIFACTS = []
+# COMPLETE_ITEM_MAP = {} # TODO map item name to a waveset
 util.write("npcs_by_category.json", json.dumps(NPCS_BY_CATEGORY,indent=2))
 
 cfg_files = {
@@ -1167,6 +1175,7 @@ for f,n in cfg_files.items():
     html_specialmaps, html_otherset = parse_waveset_list_cfg(f, html_specialmaps, html_otherset, filename_md=n)
 
 util.write("music_by_title.json", json.dumps(MUSIC_BY_TITLE,indent=2))
+util.write("gh-pages/data/artifacts.json", json.dumps(ARTIFACTS,indent=2))
 # util.write("complete_item_map.json", json.dumps(MUSIC_BY_TITLE,indent=2))
 
 # Get current commit SHA for TF2-Zombie-Riot

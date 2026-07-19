@@ -257,6 +257,24 @@
     }
 }
 
+/* Used for: Artifacts */
+.highlight_bg {
+    animation: highlight_bg 1s infinite ease-in-out;
+    z-index: 1;
+    outline-offset:2px;
+}
+@keyframes highlight_bg {
+    0% {
+        outline: 2px solid rgba(255,255,255,0%);
+    }
+    50% {
+        outline: 2px solid rgba(255,255,255,100%);
+    }
+    100% {
+        outline: 2px solid rgba(255,255,255,0%);
+    }
+}
+
 /* Modals =================================== */
 /* Main modal container (Title + SW container) */
 .modal {
@@ -398,4 +416,44 @@ input[type=search]::-webkit-search-cancel-button { /* Hide X button on chromium 
 }
 .fx_header {
     margin-top: 1em;
+}
+
+/* Artifacts ===================================== */
+
+select { /* made with gtag class in mind */
+    color: var(--text-dark);
+    font-size: 1em;
+    outline: none;
+    border: none;
+}
+
+.atfx_name {
+    pointer-events: none;
+}
+
+/* holy jank */
+.atfx_instance:before { /* atfx_instances are <li> elements */
+  content: "";
+  padding-right: 0;
+}
+.atfx_instance {
+    display: flex;
+
+    width: unset;
+    height: unset;
+    padding: unset;
+    margin: 10px;
+    border-radius: unset;
+    border: unset;
+    background-color: unset;
+
+    /* Tooltips */
+    position: relative;
+    text-decoration: none;
+}
+.atfx_instance:hover {
+    background-color: unset;
+}
+.atfx_instance .item_tooltip {
+    text-align: left;
 }

@@ -10,7 +10,8 @@ MODULES = {
         "dependencies": ["static", "phrase"],
         "paths": [
             "gh-pages/repo_img",
-            "gh-pages/wavesets"
+            "gh-pages/wavesets",
+            "gh-pages/data"
         ]
     },
     "npcs": {
