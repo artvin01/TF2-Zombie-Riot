@@ -26,7 +26,13 @@ enum
 	BUY_RESULT_ALREADY_HAS_ITEM,
 	BUY_RESULT_SUCCESS,
 }
-
+enum
+{
+	WHITEOUT_DISABLE = 0,
+	WHITEOUT_ENABLE = 1,
+	WHITEOUT_ONLYLOADOUTAUTO = 2,
+	WHITEOUT_ONLYLOADOUTAUTO_BLOCKBEFORE = 3
+}
 enum struct ItemInfo
 {
 	int Cost;
@@ -560,7 +566,7 @@ enum struct Item
 	bool ChildKit;
 	bool MaxBarricadesBuild;
 	bool Hidden;
-	bool WhiteOut;
+	int WhiteOut;
 	bool IgnoreSlots;
 	char Tags[256];
 	char Author[128];
@@ -1259,7 +1265,7 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 	}
 
 	item.Starter = view_as<bool>(kv.GetNum("starter"));
-	item.WhiteOut = view_as<bool>(kv.GetNum("whiteout"));
+	item.WhiteOut = view_as<int>(kv.GetNum("whiteout"));
 	item.IgnoreSlots = view_as<bool>(kv.GetNum("ignore_equip_region"));
 	item.RogueAlwaysSell = view_as<bool>(kv.GetNum("rogue_always_sell", rogueSell ? 1 : 0));
 	item.NoKit = view_as<bool>(kv.GetNum("nokit", noKits ? 1 : 0));
@@ -3806,7 +3812,10 @@ static void MenuPage(int client, int section)
 			else
 			{
 				Format(buffer, sizeof(buffer), "%T", "Owned Items", client);
-				menu.AddItem("-2", buffer);
+				if((IsClientInTutorial(client) && ClientTutorialStep(client) >= 1 && ClientTutorialStep(client) <= 3) || AutoLoadouts_IsClientUsing(client))
+					menu.AddItem("-2", buffer, ITEMDRAW_DISABLED);
+				else
+					menu.AddItem("-2", buffer);
 			}
 		}
 	}
@@ -4023,8 +4032,17 @@ static void MenuPage(int client, int section)
 				{
 					Format(buffer, sizeof(buffer), "%s {$%s}", buffer, item.NPCSeller_Discount < 0.71 ? "$" : "");
 				}
+				int style = ITEMDRAW_DEFAULT;
+				if(Level[client] < 5 && item.WhiteOut == WHITEOUT_ONLYLOADOUTAUTO && (IsClientInBuyTutorial(client) || AutoLoadouts_IsClientUsing(client)))
+				{
+					style = ITEMDRAW_DISABLED;
+				}
+				else if(Level[client] < 5 && item.WhiteOut == WHITEOUT_ONLYLOADOUTAUTO_BLOCKBEFORE && IsClientInBuyTutorial(client) && !AutoLoadouts_IsClientUsing(client))
+				{
+					style = ITEMDRAW_DISABLED;
+				}
 				//category has some type of sale in it !
-				menu.AddItem(info.Classname, buffer);
+				menu.AddItem(info.Classname, buffer, style);
 				found = true;
 			}
 			else
@@ -4035,7 +4053,6 @@ static void MenuPage(int client, int section)
 					int style = ITEMDRAW_DEFAULT;
 					IntToString(i, info.Classname, sizeof(info.Classname));
 					TranslateItemName(client, item.Name, info.Custom_Name, info.Custom_Name, sizeof(info.Custom_Name));
-					
 					if(info.ScrapCost > 0)
 					{
 						Format(buffer, sizeof(buffer), "%s ($%d) [$%d]", info.Custom_Name, info.ScrapCost, Scrap[client]);
@@ -4062,14 +4079,24 @@ static void MenuPage(int client, int section)
 					{
 						continue;
 					}
-					else if(!item.WhiteOut && Rogue_UnlockStore() && !item.NPCSeller && (item.Hidden || (!RogueAlwaysSell(item))) && !CvarInfiniteCash.BoolValue)
+					else if(item.WhiteOut == WHITEOUT_DISABLE && Rogue_UnlockStore() && !item.NPCSeller && (item.Hidden || (!RogueAlwaysSell(item))) && !CvarInfiniteCash.BoolValue)
 					{
 						if(Rogue_UnlockStore() > 1)
 							continue;
 						
 						Format(buffer, sizeof(buffer), "%s [↑]", info.Custom_Name);
 					}
-					else if(!item.WhiteOut && !CvarUnlockStore.BoolValue && info.Cost_Unlock > 1000 && !Rogue_UnlockStore() && info.Cost_Unlock > CurrentCash)
+					else if(Level[client] < 5 && item.WhiteOut == WHITEOUT_ONLYLOADOUTAUTO && (IsClientInBuyTutorial(client) || AutoLoadouts_IsClientUsing(client)))
+					{
+						style = ITEMDRAW_DISABLED;
+						Format(buffer, sizeof(buffer), "%s", info.Custom_Name);
+					}
+					else if(Level[client] < 5 && item.WhiteOut == WHITEOUT_ONLYLOADOUTAUTO_BLOCKBEFORE && IsClientInBuyTutorial(client) && !AutoLoadouts_IsClientUsing(client))
+					{
+						style = ITEMDRAW_DISABLED;
+						Format(buffer, sizeof(buffer), "%s", info.Custom_Name);
+					}
+					else if(item.WhiteOut == WHITEOUT_DISABLE && !CvarUnlockStore.BoolValue && info.Cost_Unlock > 1000 && !Rogue_UnlockStore() && info.Cost_Unlock > CurrentCash)
 					{
 						Format(buffer, sizeof(buffer), "%s [%.0f％]", info.Custom_Name, float(CurrentCash) * 100.0 / float(info.Cost_Unlock));
 						style = ITEMDRAW_DISABLED;
@@ -4084,7 +4111,7 @@ static void MenuPage(int client, int section)
 						}
 						else
 						{
-							if(item.WhiteOut)
+							if(item.WhiteOut == WHITEOUT_ENABLE)
 							{
 								Format(buffer, sizeof(buffer), "%s", info.Custom_Name);
 								style = ITEMDRAW_DISABLED;

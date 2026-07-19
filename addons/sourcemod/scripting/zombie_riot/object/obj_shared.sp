@@ -1691,7 +1691,7 @@ public void ObjectGeneric_ClotTakeDamage_Post(int victim, int attacker, int infl
 		OnPostAttackUniqueWeapon(attacker, victim, weapon, i_HexCustomDamageTypes[victim]);
 #endif
 		//Do not show this event if they are attacked with DOT. Earls bleedin.
-		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+	//	if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 		{
 			Event event = CreateEvent("npc_hurt");
 			if(event) 

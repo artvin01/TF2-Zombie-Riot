@@ -3136,6 +3136,11 @@ void GiveXP(int client, int xp, bool freeplay = false, bool SetXpAndLevelSilentl
 	}
 
 	float DecimalXp = float(xp);
+	if(Level[client] < 5)
+	{
+		//much lower xp gain
+		DecimalXp *= 0.25;
+	}
 
 	if(!SetXpAndLevelSilently)
 	{
