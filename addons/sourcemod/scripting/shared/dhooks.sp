@@ -983,7 +983,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
-			if(i_IsABuilding[entity2] && RaidbossIgnoreBuildingsLogic(2))
+			if(i_IsABuilding[entity2] && (RaidbossIgnoreBuildingsLogic(2) || ZR_Get_Modifier() == KITERS_DREAM))
 			{
 				return false;
 			}

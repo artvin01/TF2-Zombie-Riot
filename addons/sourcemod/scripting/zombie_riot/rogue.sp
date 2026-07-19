@@ -2145,6 +2145,7 @@ static void StartBattle(const Stage stage, float time = 3.0)
 		}
 	}
 
+	RandomPickup_ResetTimer();
 	RemoveAllCustomMusic();
 
 	char buffer[PLATFORM_MAX_PATH];

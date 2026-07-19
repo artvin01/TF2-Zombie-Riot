@@ -396,10 +396,11 @@ void WeaponZealot_OnTakeDamage(int attacker, int victim, float &damage)
 	{
 		Zealot_BonusMeleeDamage[attacker] = 1.0;
 	}
-	AmmoGiveWeapon[attacker] += 0.5;
+	AmmoGiveWeapon[attacker] += 1.0;
+	/*
 	if(i_HasBeenHeadShotted[victim])
 		AmmoGiveWeapon[attacker] += 0.5;
-
+	*/
 	int ammo = GetAmmo(attacker, Ammo_ClassSpecific);
 	if(AmmoGiveWeapon[attacker] >= 1.0)
 	{
@@ -671,15 +672,15 @@ public void Client_ZealotThink(int client)
 	f_Client_BackwardsWalkPenalty[client] = 1.0;
 	f_Client_LostFriction[client] = 0.0;
 	f_ResetMoveSpeedPenalty[client] = GetGameTime() + 0.25;
-	float CooldownDo = 2.0;
+	float CooldownDo = 5.0;
 	switch(i_PaPLevel[client])
 	{
 		case 1:
-			CooldownDo = 1.5;
+			CooldownDo = 4.0;
 		case 2,3:
-			CooldownDo = 1.0;
+			CooldownDo = 3.5;
 		case 4,5:
-			CooldownDo = 0.9;
+			CooldownDo = 3.0;
 	}
 	if(LastMann)
 		CooldownDo *= 0.65;

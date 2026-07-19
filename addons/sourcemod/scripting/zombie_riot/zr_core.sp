@@ -517,7 +517,7 @@ int Armor_Charge[MAXENTITIES];
 int Armor_DebuffType[MAXENTITIES];
 float f_Armor_BreakSoundDelay[MAXENTITIES];
 
-float AnyMenuOpen[MAXPLAYERS];
+int AnyMenuOpen[MAXPLAYERS];
 float LastStoreMenu[MAXPLAYERS];
 bool LastStoreMenu_Store[MAXPLAYERS];
 
@@ -607,6 +607,7 @@ char s_MissionClient[64]; // Who hired us for the current job
 #include "dungeons.sp"
 #include "autoloadouts.sp"
 #include "sm_skyboxprops.sp"
+#include "random_pickups.sp"
 #include "shared/sound_manualdownload.sp"
 #include "custom/homing_projectile_logic.sp"
 #include "custom/weapon_slug_rifle.sp"
@@ -1028,6 +1029,7 @@ void ZR_MapStart()
 	Wand_FireBall_Map_Precache();
 	Wand_Lightning_Map_Precache();
 	WeaponBoomerang_MapStart();
+	RandomPickup_OnMapStart();
 	Wand_LightningAbility_Map_Precache();
 	Wand_Necro_Map_Precache();
 	Wand_NerosSpell_Map_Precache();

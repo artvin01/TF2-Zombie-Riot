@@ -5968,6 +5968,7 @@ enum
 	RedMist_AbnormSelect = 8,
 	RedMist_WasInAbnorm = 9,
 	DontUpdateHudClient = 10,
+	KillAssist = 11,
 }
 
 enum struct HitDetectionEnum
@@ -5976,10 +5977,11 @@ enum struct HitDetectionEnum
 	int Victim;
 	float Time;
 	int Offset;
+	int ExtraInfo;
 }
 static ArrayList hGlobalHitDetectionLogic;
 
-bool IsIn_HitDetectionCooldown(int attacker, int victim, int offset = 0)
+bool IsIn_HitDetectionCooldown(int attacker, int victim, int offset = 0, int &ExtraInfoAdd = 0)
 {
 	// ArrayList is empty currently
 	if(!hGlobalHitDetectionLogic)
@@ -5994,6 +5996,7 @@ bool IsIn_HitDetectionCooldown(int attacker, int victim, int offset = 0)
 		if(data.Attacker == attacker && data.Victim == victim && data.Offset == offset)
 		{
 			// We found our match
+			ExtraInfoAdd = data.ExtraInfo;
 			return data.Time > GetGameTime();
 		}
 	}
@@ -6002,7 +6005,7 @@ bool IsIn_HitDetectionCooldown(int attacker, int victim, int offset = 0)
 	return false;
 }
 
-void Set_HitDetectionCooldown(int attacker, int victim, float time, int offset = 0)
+void Set_HitDetectionCooldown(int attacker, int victim, float time, int offset = 0, int ExtraInfoAdd = 0)
 {
 	// Create if empty
 	if(!hGlobalHitDetectionLogic)
@@ -6018,6 +6021,7 @@ void Set_HitDetectionCooldown(int attacker, int victim, float time, int offset =
 		{
 			// We found our match, update the value
 			data.Time = time;
+			data.ExtraInfo = ExtraInfoAdd;
 			hGlobalHitDetectionLogic.SetArray(i, data);
 			return;
 		}
@@ -6028,6 +6032,7 @@ void Set_HitDetectionCooldown(int attacker, int victim, float time, int offset =
 	data.Victim = victim;
 	data.Offset = offset;
 	data.Time = time;
+	data.ExtraInfo = ExtraInfoAdd;
 	hGlobalHitDetectionLogic.PushArray(data);
 }
 

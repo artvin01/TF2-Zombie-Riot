@@ -114,7 +114,10 @@ static bool ClotInteract(int client, int weapon, ObjectArmorTable npc)
 	int owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
 	Building_GiveRewardsUse(client, owner, 30, true, 0.75, true);
 	GiveArmorViaPercentage(client, 0.2, 1.0);
-	ApplyBuildingCollectCooldown(npc.index, client, 45.0);
+	if(ZR_Get_Modifier() == KITERS_DREAM)
+		ApplyBuildingCollectCooldown(npc.index, client, 65.0);
+	else
+		ApplyBuildingCollectCooldown(npc.index, client, 45.0);
 	ClientCommand(client, "playgamesound ambient/machines/machine1_hit2.wav");
 	float pos[3];
 	GetEntPropVector(npc.index, Prop_Send, "m_vecOrigin", pos);

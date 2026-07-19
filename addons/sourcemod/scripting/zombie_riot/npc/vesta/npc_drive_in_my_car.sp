@@ -165,6 +165,8 @@ methodmap VestanAssaultVehicle < CClotBody
 		int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
 		for(int i = 0; i < count; i++)
 		{
+			TrimString(countext[i]);
+			
 			if(i>=count)break;
 			else if(StrContains(countext[i], "halfstartspeed") != -1)
 			{
@@ -203,7 +205,7 @@ methodmap VestanAssaultVehicle < CClotBody
 			}
 			else if(StrContains(countext[i], "extrahealth") != -1)
 			{
-				ReplaceString(countext[i], sizeof(countext[]), "health", "");
+				ReplaceString(countext[i], sizeof(countext[]), "extrahealth", "");
 				npc.m_flSpawnHealth = StringToFloat(countext[i]);
 			}
 			else if(StrContains(countext[i], "extradamage") != -1)

@@ -1335,6 +1335,7 @@ public Action NPC_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 	}
 #endif
 	
+	Npcs_AddToAssist(attacker, weapon, victim);
 	//LogEntryInvicibleTest(victim, attacker, damage, 21);
 	OnTakeDamageBleedNpc(victim, attacker, inflictor, damage, damagetype, weapon, damagePosition, GameTime);
 	//LogEntryInvicibleTest(victim, attacker, damage, 22);
@@ -2573,6 +2574,7 @@ void NPC_DeadEffects(int entity)
 			Attributes_OnKill(entity, client, WeaponLastHit);
 			Npc_WeaponOnKillDo(entity, client, WeaponLastHit);
 		}
+		Npc_TriggerAllAssists(entity);
 	}
 }
 void Npc_WeaponOnKillDo(int entity, int client, int weapon)
@@ -3104,4 +3106,32 @@ void AdjustDamageForce(float Damageforce[3])
 		ScaleVector(Damageforce, 10.0);
 	}
 	ScaleVector(Damageforce, 0.5);
+}
+
+
+void Npcs_AddToAssist(int attacker, int weapon, int victim)
+{
+	int weaponforward = -1;
+	if(weapon != -1)
+		weaponforward = EntIndexToEntRef(weapon);
+	Set_HitDetectionCooldown(attacker, victim, GetGameTime() + 3.0, KillAssist,weaponforward);
+}
+void Npc_TriggerAllAssists(int victim)
+{
+	int killer = EntRefToEntIndex(LastHitRef[victim]);
+	for(int assist=1; assist<=MaxClients; assist++)
+	{
+		if(IsEntityAlive(assist) && assist != killer)
+		{
+			int WeaponRef = 0;
+			if(IsIn_HitDetectionCooldown(assist, victim, KillAssist, WeaponRef))
+			{
+				WeaponRef = EntRefToEntIndex(WeaponRef);
+				if(IsValidEntity(WeaponRef))
+				{
+					Attributes_Trigger_HealOnKill(assist, victim, WeaponRef, 0.75 * 0.9);
+				}
+			}
+		}
+	}
 }

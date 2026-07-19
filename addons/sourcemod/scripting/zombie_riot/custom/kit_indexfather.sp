@@ -1606,8 +1606,13 @@ stock float IndexFather_DamageDealTreshhold()
 		MinCashMaxGain = 1000;
 
 	MinCashMaxGain -= 250;
-
-	if(MinCashMaxGain >= 100000)
+	
+	if (MinCashMaxGain <= 0)
+	{
+		// Can never happen but might as well
+		MinCashMaxGain = 1;
+	}
+	else if(MinCashMaxGain >= 100000)
 	{
 		MinCashMaxGain = 100000;
 	}
@@ -1624,8 +1629,13 @@ stock float IndexFather_DamageTakeTreshhold()
 	int MinCashMaxGain = CurrentCash;
 
 	MinCashMaxGain -= 750;
-
-	if(MinCashMaxGain >= 100000)
+	
+	if (MinCashMaxGain <= 0)
+	{
+		// CAN happen if you get it immediately after a game starts
+		MinCashMaxGain = 1;
+	}
+	else if(MinCashMaxGain >= 100000)
 	{
 		MinCashMaxGain = 100000;
 	}

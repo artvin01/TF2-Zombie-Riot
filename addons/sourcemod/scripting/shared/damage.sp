@@ -2344,11 +2344,11 @@ void EntityBuffHudShow(int victim, int attacker, char[] Debuff_Adder_left, char[
 	{
 		if(GetTeam(victim) != TFTeam_Red)
 		{
-			Format(Debuff_Adder_right, SizeOfChar, "%c%s", BufferAdd,Debuff_Adder_right);
+			Format(Debuff_Adder_right, SizeOfChar, "%s%s", BufferAdd,Debuff_Adder_right);
 		}
 		else
 		{
-			Format(Debuff_Adder_left, SizeOfChar, "%c%s", BufferAdd,Debuff_Adder_left);
+			Format(Debuff_Adder_left, SizeOfChar, "%s%s", BufferAdd,Debuff_Adder_left);
 		}
 	}
 }

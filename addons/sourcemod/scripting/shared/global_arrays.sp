@@ -22,6 +22,16 @@ float PreventRespawnsAll;
 #define ZR_DAMAGE_ALLOW_SELFHURT				(1 << 12)
 #define ZR_ELEMENTAL_QUANTUM					(1 << 13)
 
+#define CHAOS_INTRUSION 1
+#define SECONDARY_MERCS 2
+#define OLD_TIMES 3
+#define TURBOLENCES 4
+#define PARANORMAL_ACTIVITY 5
+#define PREFIX_GALORE 6
+#define PREFIX_ONESTAND 7
+#define NOSTALGICA 8
+#define KITERS_DREAM 9
+
 
 #define PERK_NONE						0
 #define PERK_REGENE						(1 << 0)
