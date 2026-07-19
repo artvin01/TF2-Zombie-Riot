@@ -466,3 +466,9 @@ select { /* made with gtag class in mind */
 .atfx_instance .item_tooltip {
     text-align: left;
 }
+
+.atfx_instance:focus .item_tooltip {
+    opacity: 1;
+    top: 115;
+    pointer-events: all;
+}

@@ -709,7 +709,7 @@ def artifact_json(name: str, obj: dict[str,str], a_from: str):
         "from": a_from, 
         "source": {
             "name": util.get_key_src(name),
-            "desc": util.get_key_src(f"{name} Desc")
+            "description": util.get_key_src(f"{name} Desc")
         },
         "id": util.id_from_str(name+a_from)
     }

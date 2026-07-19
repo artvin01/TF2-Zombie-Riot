@@ -1,6 +1,5 @@
 .inspectmode [data-src] {
     background-color: #ff000033;
-    pointer-events: all;
 }
 
 .inspectmode [data-src]:hover {

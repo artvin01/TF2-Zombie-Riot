@@ -23,9 +23,9 @@ async function parse_items(goto = true) {
 
 function atfxobject(parent_element, artifact, root) {
     let atfxitem = parent_element.appendChild(create_element("li", "item_instance atfx_instance"));
-    let atfx_name = create_element_adv("span", {"innerHTML": artifact.name, "class": "atfx_name"}) ;
-    atfx_name.dataset.src = html_src(artifact.source.name);
-    atfxitem.appendChild(atfx_name);
+    atfxitem.tabIndex = "0";
+    // inspectmode_point gives the element pointer_events: all when inspectmode is on.
+    atfxitem.appendChild(create_element_adv("span", {"innerHTML": artifact.name, "class": "atfx_name inspectmode_point"})).dataset.src = html_src(artifact.source.name);
     let atfxtooltip = atfxitem.appendChild(create_element("div", "item_tooltip"));
     atfxtooltip.appendChild(create_element("div", "secondary", `From ${artifact.from}`));
     if ("shopcost" in artifact) {
@@ -35,7 +35,7 @@ function atfxobject(parent_element, artifact, root) {
         atfxtooltip.appendChild(create_element("div", "secondary", `Dropchance ${artifact.dropchance}`));
     }
     artifact.description.split("\n").forEach(line => {
-        atfxtooltip.appendChild(create_element("div", "", apply_morecolors(line)));
+        atfxtooltip.appendChild(create_element_adv("div", {"innerHTML": apply_morecolors_src(line, artifact.source.description)}))
     });
 
     atfxitem.dataset.id = artifact.id;
@@ -65,28 +65,30 @@ function atfxobject(parent_element, artifact, root) {
     /* Prevent tooltips from going outside of viewport */
     /* TODO unified lib */
     atfxitem.addEventListener("mouseover", event => {
-        let item_tooltip = event.target.getElementsByClassName("item_tooltip")[0];
+        if (event.target.classList.contains("item_instance")) {
+            let item_tooltip = event.target.getElementsByClassName("item_tooltip")[0];
 
-        /* do not switch sides every time */
-        item_tooltip.classList.remove("item_tooltip_toright");
-        item_tooltip.classList.remove("item_tooltip_toleft");
-        item_tooltip.offsetHeight;
-
-        tooltip_bbox = item_tooltip.getBoundingClientRect();
-
-        // absolute jank
-        if (tooltip_bbox.left < 0) {
-            item_tooltip.classList.add("notr-right");item_tooltip.offsetHeight;item_tooltip.classList.remove("notr-right");
-            item_tooltip.classList.add("item_tooltip_toright");
-        } else if (tooltip_bbox.right > window.innerWidth) {
-            item_tooltip.classList.add("notr-left");item_tooltip.offsetHeight;item_tooltip.classList.remove("notr-left");
-            item_tooltip.classList.add("item_tooltip_toleft");
-        } else {
-            item_tooltip.classList.add("notr-default");item_tooltip.offsetHeight;item_tooltip.classList.remove("notr-default");
+            /* do not switch sides every time */
             item_tooltip.classList.remove("item_tooltip_toright");
             item_tooltip.classList.remove("item_tooltip_toleft");
+            item_tooltip.offsetHeight;
+
+            tooltip_bbox = item_tooltip.getBoundingClientRect();
+
+            // absolute jank
+            if (tooltip_bbox.left < 0) {
+                item_tooltip.classList.add("notr-right");item_tooltip.offsetHeight;item_tooltip.classList.remove("notr-right");
+                item_tooltip.classList.add("item_tooltip_toright");
+            } else if (tooltip_bbox.right > window.innerWidth) {
+                item_tooltip.classList.add("notr-left");item_tooltip.offsetHeight;item_tooltip.classList.remove("notr-left");
+                item_tooltip.classList.add("item_tooltip_toleft");
+            } else {
+                item_tooltip.classList.add("notr-default");item_tooltip.offsetHeight;item_tooltip.classList.remove("notr-default");
+                item_tooltip.classList.remove("item_tooltip_toright");
+                item_tooltip.classList.remove("item_tooltip_toleft");
+            }
+            item_tooltip.offsetHeight;
         }
-        item_tooltip.offsetHeight;
     })
     return atfxitem
 }
@@ -96,17 +98,6 @@ async function update_items() {
     document.body.getElementsByClassName("fx_container")[0].remove();
     let artifacts_by_contents = {};
     await parse_items(false);
-}
-function set_tag(type, event) {
-    if (type!==showpositive) {
-        showpositive = type;
-        document.getElementById(`fxtype${type}`).classList.add("active");
-        document.getElementById(`fxtype${!type}`).classList.remove("active");
-    } else if (type===showpositive) {
-        showpositive = null
-        document.getElementById(`fxtype${type}`).classList.remove("active");
-    };
-    update_items();
 }
 
 async function interface_goto(wid) {
@@ -279,19 +270,6 @@ function create_element_adv(tag, attributes) {
     }
     return element;
 }
-/*
-def html_src(src_obj: TypeSourceObject):
-    """
-    Return a TypeSourceObject as an HTML data-src attribute
-    e.g. ("foo",1) -> "foo#L1"
-         ("foo",[1,2]) -> "foo#L1-L2"
-    """
-    if type(src_obj[1]) is list:
-        return f"{src_obj[0]}#L{src_obj[1][0]}-L{src_obj[1][1]}"
-    else:
-        return f"{src_obj[0]}#L{src_obj[1]}"
-*/
-
 
 /**
 Return a TypeSourceObject as an HTML data-src attribute  

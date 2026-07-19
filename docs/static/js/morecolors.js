@@ -31,3 +31,24 @@ function remove_morecolors(str_) {
     };
     return str_
 }
+
+
+function apply_morecolors_src(str_, src_obj) {
+    let newstr = `<span data-src="${__html_src__(src_obj)}">${str_}</span>`;
+    let has_replaced=false;
+    for (const [colorname,_] of Object.entries(MORECOLORS_JSON)) {
+        newstr = newstr.replaceAll(`{${colorname}}`, `</span><span class="mc_${colorname}" data-src="${__html_src__(src_obj)}">`)
+        if (str_.includes(`{${colorname}}`)) {
+            has_replaced=true
+        };
+    };
+    newstr = newstr.replaceAll("<span></span>",""); // remove empty divs
+    return newstr
+}
+function __html_src__(src_obj) { /* local use only */
+    if (typeof src_obj === Array) {
+        return `${src_obj[0]}#L${src_obj[1][0]}-L${src_obj[1][1]}`;
+    } else {
+        return `${src_obj[0]}#L${src_obj[1]}`;
+    }
+}

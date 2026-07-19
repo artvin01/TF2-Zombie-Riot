@@ -2,6 +2,7 @@ SRC_URL = "https://github.com/artvin01/TF2-Zombie-Riot/blob/master/"
 // reference: https://unixpapa.com/js/key.html
 document.addEventListener(("click"), (evt) => {
   if (document.body.classList.contains("inspectmode")) {
+    console.log("Clicked src: ", evt.target.dataset.src)
     if (evt.target.dataset.src !== undefined && evt.target.dataset.src !== "?#L-1") {
       evt.preventDefault();
       let url = SRC_URL + evt.target.dataset.src;
