@@ -252,13 +252,13 @@ void Freeplay_OnNPCDeath(int entity)
 int Freeplay_GetDangerLevelCurrent()
 {
 	//0.5% chance for danger lvl 0 stuff.
-	if(GetRandomFloat(0.0, 1.0) <= 0.0025)
+	if(GetRandomFloat(0.0, 1.0) <= 0.003)
 	{
 		return 0;
 	}
 	int DangerLevel = 1;
 
-	float DefaultChance = 0.035 * float(EnemyChance);
+	float DefaultChance = 0.04 * float(EnemyChance);
 	for(int LoopMax = 1; LoopMax < 6 ; LoopMax++)
 	{
 		//theres a default 10% chance to roll higher enemies.
@@ -339,6 +339,12 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 						enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 						enemy.Data = "wave_40;blitzmayhem";
 					}
+					case 5:
+					{
+						enemy.Index = NPC_GetByPlugin("npc_blitzkrieg");
+						enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.Data = "wave_40;blitzmayhem";
+					}
 					default:
 					{
 						enemy.Index = NPC_GetByPlugin("npc_blitzkrieg");
@@ -409,7 +415,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 9:	
 			{
 				enemy.Index = NPC_GetByPlugin("npc_bob_the_first_last_savior");
-				enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((7500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.65);
 				enemy.Data = "nobackup";
 			}
