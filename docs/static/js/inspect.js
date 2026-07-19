@@ -13,8 +13,10 @@ document.addEventListener("keydown", (event) => {
   if (event.code === "KeyG" && event.ctrlKey) {
     event.preventDefault();
     if (document.body.classList.contains("inspectmode")) {
+      console.log("Turned OFF inspect mode");
       document.body.classList.remove("inspectmode");
     } else {
+      console.log("Turned ON inspect mode");
       document.body.classList.add("inspectmode");
     }
   };

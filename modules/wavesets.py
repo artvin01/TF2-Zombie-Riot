@@ -15,7 +15,6 @@ from typing import Any
 TODO
 [ ] Complete const2 support
 [ ] Include main music parts somehow
-[ ] Tint status effects by buff/debuff type (blue/red team tf2 colors)
 """
 
 # General ================================
@@ -703,8 +702,17 @@ def rogue_item_modal(name: str, obj: dict[str, str] | str | None = None):
     }
     return util.fill_template(util.read("templates/rogue/rogue_item.html"),context)
 
-def artifact_json(name: str, obj: dict[str,str], source: str):
-    return {"name": util.get_key(name), "description": util.get_key(f"{name} Desc"), "source": source, "id": util.id_from_str(name+source)} | obj
+def artifact_json(name: str, obj: dict[str,str], a_from: str):
+    return obj | {
+        "name": util.get_key(name), 
+        "description": util.get_key(f"{name} Desc"), 
+        "from": a_from, 
+        "source": {
+            "name": util.get_key_src(name),
+            "desc": util.get_key_src(f"{name} Desc")
+        },
+        "id": util.id_from_str(name+a_from)
+    }
 
 def parse_rogue_stage(info_html: str, snameraw: str, sdata: dict[str, Any], name: str, floor_name: str, rogue_num: str) -> str:
     sdesc=util.get_key(snameraw + " Desc",empty_on_fail=True,silent=True)

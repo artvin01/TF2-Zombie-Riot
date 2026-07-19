@@ -15,7 +15,6 @@ async function parse_items(goto = true) {
     let atfxlist = document.body.appendChild(create_element("ul", "fx_container"));
     artifact_data.forEach(artifact => {
         if (artifact.source === filter_source || filter_source===null) {
-            console.log("a");
             atfxobject(atfxlist, artifact, true)
         }
     })
@@ -24,9 +23,11 @@ async function parse_items(goto = true) {
 
 function atfxobject(parent_element, artifact, root) {
     let atfxitem = parent_element.appendChild(create_element("li", "item_instance atfx_instance"));
-    atfxitem.appendChild(create_element_adv("span", {"innerHTML": artifact.name, "class": "atfx_name"}));
+    let atfx_name = create_element_adv("span", {"innerHTML": artifact.name, "class": "atfx_name"}) ;
+    atfx_name.dataset.src = html_src(artifact.source.name);
+    atfxitem.appendChild(atfx_name);
     let atfxtooltip = atfxitem.appendChild(create_element("div", "item_tooltip"));
-    atfxtooltip.appendChild(create_element("div", "secondary", `From ${artifact.source}`));
+    atfxtooltip.appendChild(create_element("div", "secondary", `From ${artifact.from}`));
     if ("shopcost" in artifact) {
         atfxtooltip.appendChild(create_element("div", "secondary", `Cost △ ${artifact.shopcost}`));
     }
@@ -277,6 +278,32 @@ function create_element_adv(tag, attributes) {
         }
     }
     return element;
+}
+/*
+def html_src(src_obj: TypeSourceObject):
+    """
+    Return a TypeSourceObject as an HTML data-src attribute
+    e.g. ("foo",1) -> "foo#L1"
+         ("foo",[1,2]) -> "foo#L1-L2"
+    """
+    if type(src_obj[1]) is list:
+        return f"{src_obj[0]}#L{src_obj[1][0]}-L{src_obj[1][1]}"
+    else:
+        return f"{src_obj[0]}#L{src_obj[1]}"
+*/
+
+
+/**
+Return a TypeSourceObject as an HTML data-src attribute  
+e.g. ("foo",1) -> "foo#L1"  
+........("foo",[1,2]) -> "foo#L1-L2"  
+ */
+function html_src(src_obj) {
+    if (typeof src_obj === Array) {
+        return `${src_obj[0]}#L${src_obj[1][0]}-L${src_obj[1][1]}`;
+    } else {
+        return `${src_obj[0]}#L${src_obj[1]}`;
+    }
 }
 
 // wait until morecolors.js loads
