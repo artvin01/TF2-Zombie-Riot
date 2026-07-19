@@ -136,6 +136,10 @@ void DoTutorialStep(int client, bool obeycooldown)
 		}
 	}
 
+	if(IsClientInTutorial(client) && ClientTutorialStep(client) >= 1 && ClientTutorialStep(client) <= 3)
+	{
+		UTIL_ScreenFade(client, 33, 9999999, FFADE_IN, 0, 0, 0, 233);
+	}
 	if(IsClientInTutorial(client) && ClientTutorialStep(client) != 0 && TeutonType[client] != TEUTON_WAITING)
 	{
 		if(f_TutorialUpdateStep[client] < GetGameTime() || !obeycooldown)
@@ -226,6 +230,8 @@ void DoTutorialStep(int client, bool obeycooldown)
 					SPrintToChat(client,"%t","tutorial_3");
 					f_TutorialUpdateStep[client] = GetGameTime() + 10.0;
 					SetClientTutorialStep(client, 4);
+					UTIL_ScreenFade(client, 1, 1, FFADE_PURGE, 0, 0, 0, 233);
+					UTIL_ScreenFade(client, 66, 66, FFADE_OUT, 0, 0, 0, 233);
 				}
 				case 4:
 				{
