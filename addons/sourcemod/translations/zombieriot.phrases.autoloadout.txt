@@ -40,11 +40,13 @@
 	{
 		"#format"	"{1:s},{2:d}"
 		"en" 		"Next item: {1} (${2})"
+		"ko"		"다음 아이템: {1} (${2})"
 	}
 	"Autoloadout Next Item Is Enhancement"
 	{
 		"#format"	"{1:s}"
 		"en" 		"{1} Enhancement"
+		"ko"		"{1} 강화"
 	}
 	"Autoloadout CancelLoadout"
 	{
