@@ -221,11 +221,11 @@
 }
 
 .attribute_container .positive {
-    color: #99CCFF
+    color: #99CCFF;
 }
 
 .attribute_container .negative {
-    color: #FF4040
+    color: #FF4040;
 }
 
 /* Item misc ------------------------------------- */
@@ -364,7 +364,7 @@ input[type=search] {
     font-size: 32px;
 
     /* Icon */
-    background-image: url("../static/img/search.svg");
+    background-image: url("../img/search.svg");
     background-size: calc(32px - 3px);
     background-repeat: no-repeat;
     background-position: 10px center;
@@ -416,6 +416,15 @@ input[type=search]::-webkit-search-cancel-button { /* Hide X button on chromium 
 }
 .fx_header {
     margin-top: 1em;
+}
+
+/* effect types | true=>buff false=>debuff */
+.item_instance[data-fxtype=true] {
+    background-color: #99CCFF26 !important;
+}
+
+.item_instance[data-fxtype=false] {
+    background-color: #FF404026 !important;
 }
 
 /* Artifacts ===================================== */

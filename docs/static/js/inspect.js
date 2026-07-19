@@ -21,3 +21,4 @@ document.addEventListener("keydown", (event) => {
     }
   };
 })
+console.log("%c \nThis page has inspect support. Press CTRL+G to toggle inspect mode. Elements with sources defined will be highlighted in red.\n ","font-size: 2em;");

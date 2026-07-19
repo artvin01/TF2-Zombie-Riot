@@ -14,6 +14,7 @@ async function parse_items(goto = true) {
 
 function fxobject(parent_element, effect, root) {
     let fxitem = parent_element.appendChild(create_element("div","item_instance"));
+    fxitem.dataset.fxtype = effect.type;
     let name = `${effect.icon} ${effect.name}`;
     fxitem.appendChild(create_element("span", "fx_icon", effect.icon));
     let fxtooltip = fxitem.appendChild(create_element("div", "item_tooltip"));
