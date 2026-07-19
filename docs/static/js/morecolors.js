@@ -1,4 +1,5 @@
 let MORECOLORS_JSON = {}
+let MORECOLORS_LOADED = false;
 async function init_morecolors() {
     try {
         const response = await fetch("static/data/morecolors.json");
@@ -6,6 +7,7 @@ async function init_morecolors() {
             throw new Error(`[init_morecolors] Response status: ${response.status}`);
         }
         MORECOLORS_JSON = await response.json();
+        MORECOLORS_LOADED = true;
     } catch (error) {
         console.error(`[init_morecolors] ${error.message}`);
     }

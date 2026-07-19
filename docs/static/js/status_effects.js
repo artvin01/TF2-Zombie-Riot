@@ -3,6 +3,18 @@ let effect_by_contents = {};
 let showpositive = null;
 
 async function parse_items(goto = true) {
+    // wait until morecolors.js loads
+    let iters = 0;
+    while(!MORECOLORS_LOADED) {
+        await sleep(100);
+        iters += 1;
+        if (iters > 50) {
+            console.log("Timing out after 5 seconds.")
+            break;
+        } else {
+            console.log("Waiting for morecolors to load...")
+        }
+    }
     let fxlist = document.body.appendChild(create_element("ul", "fx_container"));
     effect_data.forEach(effect => {
         if (effect.type === showpositive || showpositive===null) {
@@ -248,9 +260,8 @@ function create_element(tag, classes, content = "") {
     el.innerHTML = content;
     return el
 }
-
-// wait until morecolors.js loads
-while(typeof apply_morecolors !== "function") {
-    sleep(1000);
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
+
 fetch_fx();

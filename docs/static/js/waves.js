@@ -37,9 +37,18 @@ async function parse_waveset(file) {
 
     max_waves = Number(Object.keys(waveset_data["waves"]).reduce((a, b) => Number(a) > Number(b) ? a : b));
 
+    
     // wait until morecolors.js loads
-    while(typeof apply_morecolors !== "function") {
-        await sleep(1000);
+    let iters = 0;
+    while(!MORECOLORS_LOADED) {
+        await sleep(100);
+        iters += 1;
+        if (iters > 50) {
+            console.log("Timing out after 5 seconds.")
+            break;
+        } else {
+            console.log("Waiting for morecolors to load...")
+        }
     }
 
     const waveset_info_container = document.getElementById("waveset_info");

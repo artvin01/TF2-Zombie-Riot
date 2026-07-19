@@ -12,6 +12,18 @@ const source_types = [
 /* NOTE if an item is hidden by filter it can still be searched for (same goes for items.js etc.) */
 
 async function parse_items(goto = true) {
+    // wait until morecolors.js loads
+    let iters = 0;
+    while(!MORECOLORS_LOADED) {
+        await sleep(100);
+        iters += 1;
+        if (iters > 50) {
+            console.log("Timing out after 5 seconds.")
+            break;
+        } else {
+            console.log("Waiting for morecolors to load...")
+        }
+    }
     let atfxlist = document.body.appendChild(create_element("ul", "fx_container"));
     artifact_data.forEach(artifact => {
         if (artifact.from === filter_from || filter_from===null) {
@@ -283,10 +295,8 @@ function html_src(src_obj) {
         return `${src_obj[0]}#L${src_obj[1]}`;
     }
 }
-
-// wait until morecolors.js loads
-while(typeof apply_morecolors !== "function") {
-    sleep(1000);
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 let src_dropdown = document.getElementById("gtags").appendChild(create_element("select", "gtag"));
