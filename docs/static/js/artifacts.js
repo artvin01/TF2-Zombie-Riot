@@ -1,6 +1,6 @@
 let artifact_data = [];
 let artifact_by_contents = {};
-let filter_source = null;
+let filter_from = null;
 const source_types = [
     "All",
     "Rogue 1",
@@ -14,7 +14,7 @@ const source_types = [
 async function parse_items(goto = true) {
     let atfxlist = document.body.appendChild(create_element("ul", "fx_container"));
     artifact_data.forEach(artifact => {
-        if (artifact.source === filter_source || filter_source===null) {
+        if (artifact.from === filter_from || filter_from===null) {
             atfxobject(atfxlist, artifact, true)
         }
     })
@@ -314,9 +314,9 @@ while(typeof apply_morecolors !== "function") {
 let src_dropdown = document.getElementById("gtags").appendChild(create_element("select", "gtag"));
 src_dropdown.addEventListener("change", event => {
     if (event.target.value === "All") {
-        filter_source = null;
+        filter_from = null;
     } else {
-        filter_source = event.target.value;
+        filter_from = event.target.value;
     }
     update_items();
 })
