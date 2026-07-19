@@ -2835,7 +2835,7 @@
 		"en"		"There's no perk machine!\nTry building one, go to ''Builder Gear'' and grab a wrench.\nAccess its menu with R!\nUnder ''Support Buildings''\nGet enough metal and/or upgrades for more builder space!"
 		"ru"		"У вас нету Машины навыков!\nПопробуй построить её, зайди в ''снаряжение строителя'' возьми гаечный ключ.\nЗайди в меню через R\nКупи или получи достаточно маталла и/или улучшения для размещения больше построек."
 		"it"		"Non c'è una macchina per i vantaggi!\nProva a costruirne una, vai a ''Attrezzatura del costruttore'' e prendi una chiave inglese.\nAccedi al suo menu con R!\nOttieni abbastanza metallo e/o potenziamenti per avere più spazio per il costruttore!"
-		"ko"		"퍽 기계가 없습니다!\n''건축가 장비''로 들어가 렌치를 장착하고 렌치로 해당 구조물을 건설할 수 있습니다.\nR 키를 눌러 구조물 메뉴을 여세요!\n충분한 금속이 필요하며 더 많이 건설하려면 건축가 개선이 더 필요합니다!"
+		"ko"		"퍽 기계가 없습니다!\n''건축가 장비''로 들어가 렌치를 장착하고 렌치로 해당 구조물을 건설할 수 있습니다.\nR 키를 눌러 구조물 메뉴을 여세요!\n''지원 구조물''에 있습니다.\n충분한 금속이 필요하며 더 많이 건설하려면 건축가 개선이 더 필요합니다!"
 		"pl"		"Nie ma maszyny ulepszeń!\nSprobój zbudować jedną, idż do ''Rzeczy Budownicze'' i załóż klucz.\nOtwórz jego menu z R!\nZdobądź wystarczająco metalu lub ulepszeń budowlanych dla więcej miejsca na budowle."
 	}
 	"Tutorial Show Hint Pack a Punch"
@@ -6114,9 +6114,11 @@
 	"Low On Ammo"
 	{
 		"en"		"You're low on ammo! Collect more ammo by interacting with ammo boxes or\nin the weapon's store page. (Open the menu and press [H])"
+		"ko"		"탄약이 부족합니다! 탄약 상자와 상호작용하거나 무기의 상점 페이지에서\n탄약을 구매하세요. (메뉴를 열고 H키를 누르세요!)"
 	}
 	"Show Ammo Box"
 	{
 		"en"		"Ammo box here!"
+		"ko"		"탄약 상자는 여기 있습니다!"
 	}
 }
