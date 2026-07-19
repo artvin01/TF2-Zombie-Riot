@@ -36,6 +36,16 @@
 		"ru"		"Выбранное Авто-Снаряжение:"
 		"pl"		"Aktualne przygotowane wyposażenie:"
 	}
+	"Autoloadout Next Item"
+	{
+		"#format"	"{1:s},{2:d}"
+		"en" 		"Next item: {1} (${2})"
+	}
+	"Autoloadout Next Item Is Enhancement"
+	{
+		"#format"	"{1:s}"
+		"en" 		"{1} Enhancement"
+	}
 	"Autoloadout CancelLoadout"
 	{
 		"en" 		"Cancel Current Autoloadout"

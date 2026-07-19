@@ -3734,6 +3734,7 @@ static void MenuPage(int client, int section)
 		if(AutoLoadouts_IsClientUsing(client))
 		{
 			Autoloadout_DisplayCurrentAuto(client, buf, sizeof(buf));
+			AutoLoadouts_DisplayNextItem(client, buf, sizeof(buf));
 		}
 		if(WhatModifierSetting[0])
 			Format(buf, sizeof(buf), "%s\n%T: [%T]\n ", buf, "Current Modifier", client,WhatModifierSetting,client);
@@ -7216,7 +7217,7 @@ char[] TranslateItemDescription_Long(int client, const char Desc[256], const cha
 	return buffer;
 }
 */
-static void ItemCost(int client, Item item, int &cost)
+void ItemCost(int client, Item item, int &cost)
 {
 	bool Setup = !Waves_Started() || (!Rogue_NoDiscount() && !Construction_Mode() && !Dungeon_Mode() && Waves_InSetup());
 	bool GregSale = false;
@@ -7322,7 +7323,7 @@ static int ItemSell(int base, int discount)
 	return RoundToCeil(cost * ratio);
 }
 
-static stock void ItemCostPap(const Item item, int &cost)
+void ItemCostPap(const Item item, int &cost)
 {
 	if(Dungeon_Mode())
 	{
