@@ -36,8 +36,7 @@ async function parse_items(goto = true) {
 function atfxobject(parent_element, artifact, root) {
     let atfxitem = parent_element.appendChild(create_element("li", "item_instance atfx_instance"));
     atfxitem.tabIndex = "0";
-    // inspectmode_point gives the element pointer_events: all when inspectmode is on.
-    atfxitem.appendChild(create_element_adv("span", {"innerHTML": artifact.name, "class": "atfx_name inspectmode_point"})).dataset.src = html_src(artifact.source.name);
+    atfxitem.appendChild(create_element_adv("span", {"innerHTML": artifact.name, "class": "atfx_name"})).dataset.src = html_src(artifact.source.name);
     let atfxtooltip = atfxitem.appendChild(create_element("div", "item_tooltip"));
     atfxtooltip.appendChild(create_element("div", "secondary", `From ${artifact.from}`));
     if ("shopcost" in artifact) {
