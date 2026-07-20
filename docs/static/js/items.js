@@ -191,7 +191,7 @@ function iter_item(parent_element, item, sw_opt) {
     /* Subweapon viewing functionality */
     /* Map item to an id (Viewing subweapons, Weapon selectors) */
     item_el.dataset.id = item.wid;
-    if (sw_opt) { // popup on click
+    if (sw_opt) { // popup on click || trophy waveset obtain link 
         item_by_id[item.wid] = item
         contents = [
             item.name,
@@ -204,43 +204,53 @@ function iter_item(parent_element, item, sw_opt) {
         item_by_contents[contents.join(" ")] = item
         if ("subweapons" in item) {
             if ("items" in item["subweapons"]) {
-                    item_el.style["cursor"] = "pointer";
-                    item_tooltip.appendChild(create_element("div", "secondary item_notice", `Click to view ${item["subweapons"]["name"]}`)) // Show "Click to view Weapon Enhancements/Kit Items" in tooltip
+                item_el.style["cursor"] = "pointer";
+                item_tooltip.appendChild(create_element("div", "secondary item_notice", `Click to view ${item["subweapons"]["name"]}`)); // Show "Click to view Weapon Enhancements/Kit Items" in tooltip
 
-                    item_el.addEventListener("click", (event) => {
-                        item = item_by_id[event.target.dataset.id];
-                        open_subweapon_modal(item);
-                        let bounds = swr_canvas.getBoundingClientRect();
-                        mousepos[0] = event.clientX-bounds.left;
-                        mousepos[1] = event.clientY-bounds.top;
-                    });
+                item_el.addEventListener("click", (event) => {
+                    item = item_by_id[event.target.dataset.id];
+                    open_subweapon_modal(item);
+                    let bounds = swr_canvas.getBoundingClientRect();
+                    mousepos[0] = event.clientX-bounds.left;
+                    mousepos[1] = event.clientY-bounds.top;
+                });
 
-                    function _swexplore(parentsubwep,swpath) {
-                        if (parentsubwep.name !== item.name) { // no "duplicates" as in you can just search for the main wep and check paps
-                            contents = [
-                                parentsubwep.name,
-                            //    parentsubwep.description
-                            ]
-                            parentsubwep.id = item.wid;
-                            parentsubwep.swid = swpath;
-                            parentsubwep.parent_is_kit = item.type === "weaponkit" && swpath.length===2;
-                            item_by_contents[contents.join(" ")] = parentsubwep
-                        }
-                        let arr = parentsubwep.subweapons.items || [];
-                        arr.forEach((childsubwep, idx) => {
-                            _swexplore(childsubwep, swpath + "abcd".slice(idx,idx+1));
-                        });
+                function _swexplore(parentsubwep,swpath) {
+                    if (parentsubwep.name !== item.name) { // no "duplicates" as in you can just search for the main wep and check paps
+                        contents = [
+                            parentsubwep.name,
+                        //    parentsubwep.description
+                        ]
+                        parentsubwep.id = item.wid;
+                        parentsubwep.swid = swpath;
+                        parentsubwep.parent_is_kit = item.type === "weaponkit" && swpath.length===2;
+                        item_by_contents[contents.join(" ")] = parentsubwep
                     }
-
-                    item.subweapons.items.forEach((subwep, idx) => {
-                        _swexplore(subwep,"a"+"abcd".slice(idx,idx+1));
+                    let arr = parentsubwep.subweapons.items || [];
+                    arr.forEach((childsubwep, idx) => {
+                        _swexplore(childsubwep, swpath + "abcd".slice(idx,idx+1));
                     });
                 }
+
+                item.subweapons.items.forEach((subwep, idx) => {
+                    _swexplore(subwep,"a"+"abcd".slice(idx,idx+1));
+                });
             }
+        }
 
+        if ("to_obtain" in item) {
+            item_el.style["cursor"] = "pointer";
+            item_tooltip.appendChild(create_element("div", "secondary item_notice", `Obtained in: ${item.to_obtain.name}`));
+            item_tooltip.appendChild(create_element("div", "secondary item_notice", `Click to go to waveset`));
 
+            item_el.addEventListener("click", (event) => {
+                item = item_by_id[event.target.dataset.id];
+                let url = `waveset_viewer.html?w=${item.to_obtain.file}`
+                window.open(url, "_blank");
+            });
+        }
 
-        /* Weapon selector clipboard shortcut (disable if in search modal) */
+        /* Item selector clipboard shortcut (disable if in search modal) */
         item_el.addEventListener("contextmenu", (event) => {
             event.preventDefault();
             let source_url = window.location.href.split('?')[0]; // get url w/o params

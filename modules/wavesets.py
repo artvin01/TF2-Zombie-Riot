@@ -118,10 +118,11 @@ def get_npc(plugin: str) -> dict[str, str]:
         "description": npc_data.description
     }
 
-def parse_wave(wave_idx: int, wave_data: dict[str, Any], auto_wave_cash: bool):
+def parse_wave(wave_idx: int, wave_data: dict[str, Any], auto_wave_cash: bool, return_obtainables=False):
     output:list[dict[str,Any]] = []
     output_hashes: dict[str,int] = {}
     has_cash_entry = False
+    obtainables = []
 
     for wave_entry, wave_entry_data in wave_data.items():
         try:
@@ -216,6 +217,12 @@ def parse_wave(wave_idx: int, wave_data: dict[str, Any], auto_wave_cash: bool):
 
         if "custom_name" in wave_entry_data:
             npc_name = wave_entry_data["custom_name"]
+
+        if npc_data.obtain_item:
+            obtainables.append({
+                "item": npc_data.obtain_item,
+                "npc_name": npc_name,
+            })
 
         dd = defaultdict(str, wave_entry_data)
         npc_name_prefix = ""
@@ -380,7 +387,10 @@ def parse_wave(wave_idx: int, wave_data: dict[str, Any], auto_wave_cash: bool):
             "text": f"Wave cash: <span class=\"money\">{DEFAULT_CASH_BY_WAVE[wave_idx-1]}</span>"
         })
 
-    return output
+    if return_obtainables:
+        return output,obtainables
+    else:
+        return output
 
 def parse_waveset(file: str, data: dict[str, Any], abslink: str, name: str, desc: str) -> dict[str, Any]:
     global waveset_cache
@@ -403,12 +413,11 @@ def parse_waveset(file: str, data: dict[str, Any], abslink: str, name: str, desc
         "character_hired_by": wd["character_hired_by"] or DEFAULT_MISSION_CLIENT
     }
 
-    """
     if wd["complete_item"]:
-        if wd["complete_item"] in COMPLETE_ITEM_MAP:
-            util.log(f"Item {wd["complete_item"]} already in mapping! WV: {COMPLETE_ITEM_MAP[wd["complete_item"]]}","FAIL")
-        COMPLETE_ITEM_MAP[wd["complete_item"]] = file
-    """
+        COMPLETE_ITEM_MAP[wd["complete_item"]] = {
+            "name": util.abslink_to_display(abslink,name),
+            "file": f"{abslink}.json"
+        }
 
     wave_idx = 0
 
@@ -438,7 +447,20 @@ def parse_waveset(file: str, data: dict[str, Any], abslink: str, name: str, desc
         if len(wave_data)==0 or sum([int(util.is_float(entry)) for entry in wave_data]) == 0: # second condition checks for npc amount
             continue
         wave_idx += 1
-        output["waves"][wave_idx] = parse_wave(wave_idx, wave_data, bool(util.cfgtoint(wd["auto_wave_cash"])))
+        output["waves"][wave_idx], obtainables = parse_wave(wave_idx, wave_data, bool(util.cfgtoint(wd["auto_wave_cash"])), return_obtainables=True)
+        if not (abslink.startswith("zr_bossrush") or abslink.startswith("zr_summercamp")): # TODO does bossrush give items for bosses?
+            for obt in obtainables:
+                """
+                TODO: 
+                - Blitzkrieg's Army(donnerkrieg has entry and blitzkrieg doesnt)
+                """
+                if obt["item"] not in COMPLETE_ITEM_MAP:
+                    COMPLETE_ITEM_MAP[obt["item"]] = {
+                        "name": f"{util.abslink_to_display(abslink,name)}|{obt["npc_name"]}",
+                        "file": f"{abslink}.json&wv={wave_idx}"
+                    }
+                else:
+                    util.log(f"Duplicate {obt["item"]} in w:{abslink}|wv:{wave_idx}|npc:{obt["npc_name"]}", "WARNING")
 
     waveset_cache[file] = output
     return output
@@ -1166,8 +1188,7 @@ DEFAULT_CASH_BY_WAVE = parse_default_cash()
 DEFAULT_MISSION_CLIENT = parse_default_mission_client()
 MUSIC_BY_TITLE = {}
 ARTIFACTS = []
-# COMPLETE_ITEM_MAP = {} # TODO map item name to a waveset
-util.write("npcs_by_category.json", json.dumps(NPCS_BY_CATEGORY,indent=2))
+COMPLETE_ITEM_MAP = {}
 
 cfg_files = {
     "classic.cfg": "gh-pages/survival.html",
@@ -1182,9 +1203,10 @@ html_otherset = {}
 for f,n in cfg_files.items():
     html_specialmaps, html_otherset = parse_waveset_list_cfg(f, html_specialmaps, html_otherset, filename_md=n)
 
-util.write("music_by_title.json", json.dumps(MUSIC_BY_TITLE,indent=2))
+util.write("gh-pages/data/npcs_by_category.json", json.dumps(NPCS_BY_CATEGORY,indent=2))
+util.write("gh-pages/data/music_by_title.json", json.dumps(MUSIC_BY_TITLE,indent=2))
 util.write("gh-pages/data/artifacts.json", json.dumps(ARTIFACTS,indent=2))
-# util.write("complete_item_map.json", json.dumps(MUSIC_BY_TITLE,indent=2))
+util.write("gh-pages/data/complete_item_map.json", json.dumps(COMPLETE_ITEM_MAP,indent=2))
 
 # Get current commit SHA for TF2-Zombie-Riot
 COMMIT_SHA = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd="TF2-Zombie-Riot").strip().decode("utf-8")

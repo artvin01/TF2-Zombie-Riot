@@ -11,7 +11,6 @@ SKILLTREE_CFG: dict[str,Any] = vdf.loads(util.read("./TF2-Zombie-Riot/addons/sou
 with open("./config/skilltree.yml",'r') as file:
     PARSECFG = yaml.load(file) # type: ignore[w]
 
-util.log("Parsing Skilltree...")
 """
    	"name"		"Luck Up 1"	            // Name
     "player"	"SkillPlayer_LuckUp"	// Function
@@ -62,6 +61,7 @@ def skill_block(x:int, y:int, skill: dict[str,Any], skill_json:list[dict[str,str
                         ny+=1*PARSECFG.get(subskill,1)
 
             #skill_md += f'{" "*depth}{subskill}["{desc}"]\n'
+            util.log(f"{subskill:<10} {data["name"]:<32} {(nx,ny)}")
             skill_json.append({
                 "name": util.get_key(data["name"]),
                 "desc": desc,

@@ -4,7 +4,6 @@ import os
 from ruamel.yaml import YAML
 
 # TODO source mapping: NPC shared.
-# Where we left off: NPC single and multi implemented fully, sources are available, nothing else sourcified yet, gotta do a proof of concept JS inspect script for the NPC page now.
 
 FLAG_MAPPINGS = {
     "MVM_CLASS_FLAG_NONE": "", #// Show Nothing
@@ -154,6 +153,13 @@ class NPC:
             # may be a problem if for example a file has multiple npcs with one that doesn't have the logic
             self.has_prefix_logic: bool = PREFIX_STR in self.FILE_DATA # TODO add source?
 
+            self.obtain_item = None
+            if "Items_GiveNamedItem(" in self.FILE_DATA:
+                if len(p1:=self.FILE_DATA.split('Items_GiveNamedItem(client, "'))>1:
+                    self.obtain_item = p1[1].split('");')[0]
+                else:
+                    self.obtain_item = self.FILE_DATA.split('Items_GiveNamedItem(client_repat, "')[1].split('");')[0] # Corrupted Barney's Chainsaw
+
             """
             npc_obj = {
                 "name": name,
@@ -168,6 +174,7 @@ class NPC:
                 "music_entries": {
                     "name", "filepath", "file_exists"FILE_DATA
                 }
+                "obtain_item": obtain_item
                 "source": [see util.py:get_refs() usage]
             }
             """
@@ -383,6 +390,7 @@ class NPC:
             "filetype": self.filetype,
             "has_prefix_logic": self.has_prefix_logic,
             "music_entries": self.music_entries,
+            "obtain_item": self.obtain_item,
             "source": self.source
         }
 
@@ -395,6 +403,7 @@ class NPC_Dummy():
         self.filetype: str | None = npc_obj.filetype
         self.has_prefix_logic: bool = npc_obj.has_prefix_logic
         self.music_entries:list[dict[str,str | bool]] = npc_obj.music_entries
+        self.obtain_item: str | None = npc_obj.obtain_item
 
         self.plugin: str | list[str] = []
         self.category: str | list[str] = []

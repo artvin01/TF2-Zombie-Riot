@@ -19,14 +19,14 @@ MODULES = {
         "dependencies": [
             "static",
             "phrase",
-            "wavesets"
+            "wavesets" # npcs_by_category.json
         ]
     },
     "music": {
         "file": "modules.music",
         "dependencies": [
             "static",
-            "wavesets"
+            "wavesets" # music_by_title.json
         ],
         "paths": ["gh-pages/data"]
     },
@@ -34,7 +34,8 @@ MODULES = {
         "file": "modules.weapon",
         "dependencies": [
             "static",
-            "phrase"
+            "phrase",
+            "wavesets" # complete_item_map.json
         ],
         "paths": ["gh-pages/data"]
     },

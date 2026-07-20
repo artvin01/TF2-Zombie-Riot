@@ -146,6 +146,7 @@ def shared_parse_weapon_icon(weapon_data: WeaponData, weapon_name:str, pap_key:s
 
 # CONFIG ========================================================================
 CFG_WEAPONS: dict[str,Any] = vdf.loads(util.read("./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/weapons.cfg"))["Weapons"] # type: ignore[w]
+COMPLETE_ITEM_MAP: dict[str,dict[str,str]] = json.loads(util.read("gh-pages/data/complete_item_map.json"))
 # Item blacklist for hidden items that aren't indicated as hidden
 yaml=YAML(typ='safe')
 with open("./config/item_blacklist.yml",'r') as file:
@@ -323,15 +324,18 @@ def item_block(key:str, data:dict[str,Any], output:dict[str,Any], type_override:
                     }
                 """
                 name = util.get_key(item, silent=True)
-                output["$items"].append({
+                trophy = {
                     "type": "trophy",
                     "name": name,
                     "wid": util.id_from_str(name),
                     "tags": [],
                     "description": util.get_key(item_data["desc"], silent=True),
                     "wtags": "",
-                    "wcfghidden": ""
-                })
+                    "wcfghidden": "",
+                }
+                if name in COMPLETE_ITEM_MAP:
+                    trophy["to_obtain"] = COMPLETE_ITEM_MAP[name]
+                output["$items"].append(trophy)
             elif itm.is_weapon:
                 wep = Weapon(item,item_data)
                 if (override_keys := type_override.split(",")):

@@ -2,7 +2,7 @@ import util
 import json
 
 util.log("Converting music_by_filename.json to a list...")
-music_by_title = json.loads(util.read("music_by_title.json"))
+music_by_title = json.loads(util.read("gh-pages/data/music_by_title.json"))
 music_list_html = ""
 music_idx = 0
 for _, modal in sorted(music_by_title.items()):

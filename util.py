@@ -231,6 +231,18 @@ def fill_template(template: str, context: dict[str,str]) -> str:
             exit()
     return template
 
+def abslink_to_display(abslink: str, name: str) -> str:
+    if abslink.startswith("classic_"):
+        return f"ZR: Survival|{name}"
+    if abslink.startswith("fastmode_"):
+        return f"ZR: Raidrush|{name}"
+    if not (abslink.startswith("zr_deepforest") \
+            or abslink.startswith("zr_integratedstrategies") \
+            or abslink.startswith("zr_rift_between_fates") \
+            or abslink.startswith("zr_const")): # const 1&2
+        return f"ZR: Special Maps|{name}"
+    return name
+
 # --------------------------- LOGGING ---------------------------
 bcolors = {
     "HEADER": '\033[95m',
