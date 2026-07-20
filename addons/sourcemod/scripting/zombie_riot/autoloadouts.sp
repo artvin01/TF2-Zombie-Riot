@@ -268,12 +268,13 @@ void AutoLoadouts_DisplayNextItem(int client, char[] buffer, int sizeofbuffer)
 	ItemInfo info;
 	storeItem.GetItemInfo(item.level, info);
 	
+	int cost = info.Cost;
 	if (item.level == 0)
-		ItemCost(client, storeItem, info.Cost);
+		ItemCost(client, storeItem, cost);
 	else
-		ItemCostPap(storeItem, info.Cost);
-		
-	FormatEx(nextItem, sizeof(nextItem), "%T", "Autoloadout Next Item", client, name, info.Cost);
+		ItemCostPap(storeItem, cost);
+	
+	FormatEx(nextItem, sizeof(nextItem), "%T", "Autoloadout Next Item", client, name, cost);
 	Format(buffer, sizeofbuffer, "%s\n%s\n ",buffer, nextItem);
 }
 
