@@ -339,7 +339,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 						enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 						enemy.Data = "wave_40;blitzmayhem";
 					}
-					case 5:
+					case 6:
 					{
 						enemy.Index = NPC_GetByPlugin("npc_blitzkrieg");
 						enemy.Health = RoundToFloor((6000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
@@ -864,6 +864,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Health = RoundToFloor(((3000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound())) * HealthMulti);
 				enemy.ExtraDamage = 1.09;
 				enemy.ExtraThinkSpeed = 0.75;
+				enemy.Is_Boss = 1;
 				count = 1;
 			}
 			else if(roll == 8)
