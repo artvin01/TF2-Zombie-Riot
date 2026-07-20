@@ -864,6 +864,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Health = RoundToFloor(((3000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound())) * HealthMulti);
 				enemy.ExtraDamage = 1.09;
 				enemy.ExtraThinkSpeed = 0.75;
+				enemy.Is_Boss = 1;
 				count = 1;
 			}
 			else if(roll == 8)
