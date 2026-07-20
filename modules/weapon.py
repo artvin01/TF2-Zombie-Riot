@@ -294,8 +294,8 @@ class GenericItem:
         self.is_weapon:bool=(("desc" in item_data) or ("author" in item_data)) and "weaponkit" not in item_data
         self.is_weapon_kit:bool="weaponkit" in item_data
         self.is_trophy:bool="desc" in item_data and "visual_desc_only" in item_data
-        self.is_category:bool="author" not in item_data and ("filter" in item_data or "nokit" in item_data) and "whiteout" not in item_data
-        self.is_text:bool="whiteout" in item_data
+        self.is_text:bool=("whiteout" in item_data) and (item_data["whiteout"] == "1")
+        self.is_category:bool="author" not in item_data and ("filter" in item_data or "nokit" in item_data) and not self.is_text
 
 util.log("Parsing Weapon List...")
 
