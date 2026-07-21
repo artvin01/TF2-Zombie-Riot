@@ -8064,7 +8064,7 @@ bool Store_IsItemInClientAutoPapList(int client, int index, int level)
 	return false;
 }
 
-void Store_HandleAutoPapList()
+void Store_HandleAutoPurchases()
 {
 	for (int client = 1; client <= MaxClients; client++)
 	{
@@ -8076,6 +8076,8 @@ void Store_HandleAutoPapList()
 			NextAutoBuy[client] = 0;
 			continue;
 		}
+		
+		// Autobuying items
 		
 		if (NextAutoBuy[client] > 0)
 		{
@@ -8094,8 +8096,16 @@ void Store_HandleAutoPapList()
 			}
 		}
 		
+		// Autobuying enhancements
+		
 		if (!AutoPapList[client])
 			continue;
+		
+		if (AutoPapList[client].Length == 0)
+		{
+			delete AutoPapList[client];
+			continue;
+		}
 		
 		Item item;
 		ItemInfo info;
