@@ -3813,7 +3813,7 @@ static void MenuPage(int client, int section)
 			else
 			{
 				Format(buffer, sizeof(buffer), "%T", "Owned Items", client);
-				if((IsClientInTutorial(client) && ClientTutorialStep(client) >= 1 && ClientTutorialStep(client) <= 3) || AutoLoadouts_IsClientUsing(client))
+				if(Level[client] < 5 && (IsClientInBuyTutorial(client) || AutoLoadouts_IsClientUsing(client)))
 					menu.AddItem("-2", buffer, ITEMDRAW_DISABLED);
 				else
 					menu.AddItem("-2", buffer);
