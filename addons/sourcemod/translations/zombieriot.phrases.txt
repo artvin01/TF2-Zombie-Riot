@@ -4871,7 +4871,7 @@
 	}
 	"Xeno Desc"
 	{
-		"en"	"After defeating Blitzkrieg, we start an infection we last saw in Rogue 1, the Xeno infection. It seems to be mutating their victims with new abilities! We need to take this out before it gets bad."
+		"en"	"After defeating Blitzkrieg, we start seeing an infection we last saw in Rogue 1, the Xeno infection. It seems to be mutating their victims with new abilities! We need to take this out before it gets bad."
 		"fr"	"Les ennemis sont infectés avec l'infection Xéno, et reçoivent de nouvelles abilités!"
 		"chi"	"外界感染到来，僵尸们的变异也更加严重了。"
 		"it"	"L'infezione Xeno è arrivata, mutando i nemici con nuove abilità!"
