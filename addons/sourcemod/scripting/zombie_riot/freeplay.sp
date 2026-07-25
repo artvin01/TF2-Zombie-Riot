@@ -870,8 +870,8 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			else if(roll == 8)
 			{
 				enemy.Index = NPC_GetByPlugin("npc_vanishingmatter");
-				enemy.Health = RoundToFloor(((250000.0 + HealthBonus) / 70.0 * (float(Waves_GetRound()) * 1.11)) * HealthMulti);
-				enemy.ExtraDamage = 0.75;
+				enemy.Health = RoundToFloor(((350000.0 + HealthBonus) / 70.0 * float(Waves_GetRound())) * HealthMulti);
+				enemy.ExtraDamage = 0.95;
 				count = 10;
 			}
 			else if(roll == 9)
@@ -908,20 +908,6 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Health = RoundToFloor(((500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound())) * HealthMulti);
 				enemy.ExtraDamage = 2.0;
 				count = 5;
-			}
-			else if(roll == 14)
-			{
-				enemy.Index = NPC_GetByPlugin("npc_vanishingmatter");
-				enemy.Health = RoundToFloor(((250000.0 + HealthBonus) / 70.0 * (float(Waves_GetRound()) * 1.11)) * HealthMulti);
-				enemy.ExtraDamage = 0.75;
-				count = 10;
-			}
-			else if(roll == 15)
-			{
-				enemy.Index = NPC_GetByPlugin("npc_vanishingmatter");
-				enemy.Health = RoundToFloor(((350000.0 + HealthBonus) / 70.0 * float(Waves_GetRound())) * HealthMulti);
-				enemy.ExtraDamage = 0.95;
-				count = 10;
 			}
 			else
 			{
