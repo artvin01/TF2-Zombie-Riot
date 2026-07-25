@@ -4577,8 +4577,8 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 			{
 				int bossdanger = dangerlevel;
 				
-				if(bossdanger >= 5)
-					bossdanger = 4;
+				if(bossdanger >= 6)
+					bossdanger = 5;
 
 				int index = boss.FindValue(bossdanger, Wave::DangerLevel);
 				if(index == -1)
