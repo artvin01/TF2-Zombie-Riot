@@ -258,7 +258,7 @@ int Freeplay_GetDangerLevelCurrent()
 	}
 	int DangerLevel = 1;
 
-	float DefaultChance = 0.04 * float(EnemyChance);
+	float DefaultChance = 0.05 * float(EnemyChance);
 	for(int LoopMax = 1; LoopMax < 6 ; LoopMax++)
 	{
 		//theres a default 10% chance to roll higher enemies.
@@ -2260,7 +2260,7 @@ void Freeplay_OnEndWave(int &cash)
 	}
 
 	Freeplay_SetRemainingCash(500.0);
-	Freeplay_SetCashTime(GetGameTime() + 15.0);
+	Freeplay_SetCashTime(GetGameTime() + 20.0);
 }
 
 float Freeplay_SetupValues()
@@ -2334,7 +2334,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 90;
+		rand = GetURandomInt() % 91;
 	/*
 	if(wrathofirln)
 	{
@@ -3251,8 +3251,8 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 42:
 			{
-				strcopy(message, sizeof(message), "{red}Enemies will now move 20% faster!");
-				SpeedMult += 0.2;
+				strcopy(message, sizeof(message), "{red}Enemies will now move 15% faster!");
+				SpeedMult += 0.15;
 			}
 			case 43:
 			{
@@ -3770,6 +3770,16 @@ void Freeplay_SetupStart(bool extra = false)
 				UnlockedMegeHPRegen = true;
 				Store_DiscountNamedItem("Sigmar's Curage", 999);
 				strcopy(message, sizeof(message), "{green}Sigmar's Curage is now buyable in the passive store!");
+			}
+			case 90:
+			{
+				if(friendunit)
+				{
+					Freeplay_SetupStart();
+					return;
+				}
+				strcopy(message, sizeof(message), "{green}You will gain a strong, friendly unit.");
+				friendunit = true;
 			}
 			default:
 			{
