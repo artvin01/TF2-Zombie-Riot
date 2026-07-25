@@ -436,15 +436,14 @@ public void Barracks_OnTakeDamage_Italian(int victim, int &attacker, int &inflic
 }
 public void CommanderKit_Unequip(int client)
 {
-	WeaponPap[client] = -1;
-	delete h_Barrack_Timer[client];
 	h_Barrack_Timer[client] = null;
+	delete h_Barrack_Timer[client];
 }
 public int Barracks_GetInfo(int client, int choice)
 {
 	if (client > 0 && client <= MaxClients)
 	{
-		if(!IsBarracks(client) || WeaponPap[client] < 0)
+		if(!IsBarracks(client))
 		return -1;
 		
 		switch(choice)
