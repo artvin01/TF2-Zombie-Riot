@@ -266,6 +266,7 @@ int Freeplay_GetDangerLevelCurrent()
 		DefaultChance = 0.50;
 	}
 
+	for(int LoopMax = 1; LoopMax < 6 ; LoopMax++)
 	{
 		//theres a default 10% chance to roll higher enemies.
 		if(GetRandomFloat(0.0, 1.0) <= (DefaultChance))
