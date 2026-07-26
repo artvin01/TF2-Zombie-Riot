@@ -4570,7 +4570,7 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 
 		for(int i; i < Max_Enemy_Get; i++)
 		{
-			int dangerlevel = Freeplay_GetDangerLevelCurrent();
+			int dangerlevel = Freeplay_GetDangerLevelCurrent(postWaves);
 			bool isBoss = !(GetURandomInt() % 9);
 
 			if(isBoss)
