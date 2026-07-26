@@ -3761,6 +3761,29 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{green}You will gain a strong, friendly unit.");
 				friendunit = true;
 			}
+			case 90:
+			{
+				//if(EnemyChance > 8)
+				//{
+				//	Freeplay_SetupStart();
+				//	return;
+				//}
+	
+				strcopy(message, sizeof(message), "{red}Stronger enemy types are now more likely to appear!");
+				EnemyChance++;
+			}
+			case 91:
+			{
+				if(EnemyChance < 3)
+				{
+					Freeplay_SetupStart();
+					return;
+				}
+	
+				strcopy(message, sizeof(message), "{green}Stronger enemy types are now less likely to appear.");
+				EnemyChance--;
+			}
+
 			default:
 			{
 				strcopy(message, sizeof(message), "{yellow}Nothing!");
