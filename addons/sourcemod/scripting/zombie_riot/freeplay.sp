@@ -262,7 +262,10 @@ int Freeplay_GetDangerLevelCurrent()
 	DefaultChance += 0.003 * float(postWaves - 40);
 	
 	if(DefaultChance > 0.50)
-	DefaultChance = 0.50;
+	{
+		DefaultChance = 0.50;
+	}
+
 	{
 		//theres a default 10% chance to roll higher enemies.
 		if(GetRandomFloat(0.0, 1.0) <= (DefaultChance))
@@ -2337,7 +2340,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 89;
+		rand = GetURandomInt() % 91;
 	/*
 	if(wrathofirln)
 	{
@@ -3773,6 +3776,16 @@ void Freeplay_SetupStart(bool extra = false)
 				UnlockedMegeHPRegen = true;
 				Store_DiscountNamedItem("Sigmar's Curage", 999);
 				strcopy(message, sizeof(message), "{green}Sigmar's Curage is now buyable in the passive store!");
+			}
+			case 90:
+			{
+				if(friendunit)
+				{
+					Freeplay_SetupStart();
+					return;
+				}
+				strcopy(message, sizeof(message), "{green}You will gain a strong, friendly unit.");
+				friendunit = true;
 			}
 			default:
 			{
