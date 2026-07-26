@@ -249,7 +249,7 @@ void Freeplay_OnNPCDeath(int entity)
 	}
 }
 
-int Freeplay_GetDangerLevelCurrent()
+int Freeplay_GetDangerLevelCurrent(int postWaves)
 {
 	//0.5% chance for danger lvl 0 stuff.
 	if(GetRandomFloat(0.0, 1.0) <= 0.005)
