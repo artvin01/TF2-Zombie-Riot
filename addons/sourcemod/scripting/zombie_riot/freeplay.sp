@@ -196,7 +196,7 @@ void Freeplay_ResetAll()
 	LoveNahTonic = false;
 	Schizophrenia = false;
 	DarknessComing = false;
-	setuptimes = 4;
+	setuptimes = 3;
 	ExtraAttackspeed = 1.0;
 	thespewer = false;
 	sigmaller = false;
@@ -2296,7 +2296,7 @@ void Freeplay_SetupStart(bool extra = false)
 		if(setuptimes <= 0)
 		{
 			guaranteedraid = true;
-			setuptimes = 4;
+			setuptimes = 3;
 		//	wrathofirln = false;
 		}
 
