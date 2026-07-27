@@ -59,6 +59,11 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 
 methodmap DwellerHeavy < CClotBody
 {
+	property float m_flHurtForAbility
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 	public void PlayIdleSound()
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -218,15 +223,19 @@ void DwellerHeavy_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 {
 	if(attacker > 0)
 	{
+		if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+		{
+			npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
+			npc.m_blPlayHurtAnimation = true;
+		}
 		DwellerHeavy npc = view_as<DwellerHeavy>(victim);
-		if(npc.m_flHeadshotCooldown < GetGameTime(npc.index))
+		if(npc.m_flHurtForAbility < GetGameTime(npc.index))
 		{
 			if (attacker <= MaxClients && attacker > 0 && TeutonType[attacker] != TEUTON_NONE)
 			{	
 				return;
 			}
-			npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
-			npc.m_blPlayHurtAnimation = true;
+			npc.m_flHurtForAbility = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 
 			if(damagetype & DMG_CLUB)
 			{

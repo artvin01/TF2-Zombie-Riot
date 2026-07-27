@@ -245,7 +245,6 @@ void RefragmentedHeavy_OnTakeDamage(int victim, int &attacker, int &inflictor, f
 			}
 			npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 			npc.m_blPlayHurtAnimation = true;
-			npc.Anger = true;
 		}
 	}
 }
