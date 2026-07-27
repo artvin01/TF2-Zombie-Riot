@@ -196,7 +196,7 @@ void Freeplay_ResetAll()
 	LoveNahTonic = false;
 	Schizophrenia = false;
 	DarknessComing = false;
-	setuptimes = 4;
+	setuptimes = 3;
 	ExtraAttackspeed = 1.0;
 	thespewer = false;
 	sigmaller = false;
@@ -249,16 +249,23 @@ void Freeplay_OnNPCDeath(int entity)
 	}
 }
 
-int Freeplay_GetDangerLevelCurrent()
+int Freeplay_GetDangerLevelCurrent(int postWaves)
 {
 	//0.5% chance for danger lvl 0 stuff.
-	if(GetRandomFloat(0.0, 1.0) <= 0.003)
+	if(GetRandomFloat(0.0, 1.0) <= 0.005)
 	{
 		return 0;
 	}
 	int DangerLevel = 1;
 
-	float DefaultChance = 0.04 * float(EnemyChance);
+	float DefaultChance = 0.03 * float(EnemyChance);
+	DefaultChance += 0.003 * float(postWaves - 40);
+	
+	if(DefaultChance > 0.50)
+	{
+		DefaultChance = 0.50;
+	}
+
 	for(int LoopMax = 1; LoopMax < 6 ; LoopMax++)
 	{
 		//theres a default 10% chance to roll higher enemies.
@@ -415,7 +422,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 9:	
 			{
 				enemy.Index = NPC_GetByPlugin("npc_bob_the_first_last_savior");
-				enemy.Health = RoundToFloor((7500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((8000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.65);
 				enemy.Data = "nobackup";
 			}
@@ -510,15 +517,15 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Health = RoundToFloor((4500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "Im_The_raid;My_Twin";
 				enemy.ExtraDamage = 0.75;
-				enemy.ExtraSpeed = 1.10;
+				enemy.ExtraSpeed = 1.00;
 			}
 			case 21:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_agent_johnson");
 				enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = 0.70; // johnson gets way too much damage in freeplay, reduce it
-				enemy.ExtraThinkSpeed = 0.6;
-				enemy.ExtraSpeed = 1.50;
+				enemy.ExtraThinkSpeed = 0.8;
+				enemy.ExtraSpeed = 1.1;
 			}
 			case 22:
 			{
@@ -602,9 +609,9 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Index = NPC_GetByPlugin("npc_almagest_jkei");
 				enemy.Health = RoundToFloor((7000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "force_final_battle";
-				enemy.ExtraThinkSpeed = 0.55;
+				enemy.ExtraThinkSpeed = 0.75;
 				enemy.ExtraDamage = 1.15;
-				enemy.ExtraSpeed = 1.15;
+				enemy.ExtraSpeed = 1.05;
 			}
 			case 35:
 			{
@@ -822,7 +829,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			enemy.ExtraDamage = 1.0;
 
 			enemy.Is_Immune_To_Nuke = true;
-			int roll = GetRandomInt(1, 15);
+			int roll = GetRandomInt(1, 14);
 			if(roll == 2)
 			{
 				enemy.Index = NPC_GetByPlugin("npc_dimensionfrag");
@@ -870,8 +877,8 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			else if(roll == 8)
 			{
 				enemy.Index = NPC_GetByPlugin("npc_vanishingmatter");
-				enemy.Health = RoundToFloor(((250000.0 + HealthBonus) / 70.0 * (float(Waves_GetRound()) * 1.11)) * HealthMulti);
-				enemy.ExtraDamage = 0.75;
+				enemy.Health = RoundToFloor(((350000.0 + HealthBonus) / 70.0 * float(Waves_GetRound())) * HealthMulti);
+				enemy.ExtraDamage = 0.95;
 				count = 10;
 			}
 			else if(roll == 9)
@@ -908,20 +915,6 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Health = RoundToFloor(((500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound())) * HealthMulti);
 				enemy.ExtraDamage = 2.0;
 				count = 5;
-			}
-			else if(roll == 14)
-			{
-				enemy.Index = NPC_GetByPlugin("npc_vanishingmatter");
-				enemy.Health = RoundToFloor(((250000.0 + HealthBonus) / 70.0 * (float(Waves_GetRound()) * 1.11)) * HealthMulti);
-				enemy.ExtraDamage = 0.75;
-				count = 10;
-			}
-			else if(roll == 15)
-			{
-				enemy.Index = NPC_GetByPlugin("npc_vanishingmatter");
-				enemy.Health = RoundToFloor(((350000.0 + HealthBonus) / 70.0 * float(Waves_GetRound())) * HealthMulti);
-				enemy.ExtraDamage = 0.95;
-				count = 10;
 			}
 			else
 			{
@@ -2274,7 +2267,7 @@ void Freeplay_OnEndWave(int &cash)
 	}
 
 	Freeplay_SetRemainingCash(500.0);
-	Freeplay_SetCashTime(GetGameTime() + 15.0);
+	Freeplay_SetCashTime(GetGameTime() + 20.0);
 }
 
 float Freeplay_SetupValues()
@@ -2307,7 +2300,7 @@ void Freeplay_SetupStart(bool extra = false)
 		if(setuptimes <= 0)
 		{
 			guaranteedraid = true;
-			setuptimes = 4;
+			setuptimes = 3;
 		//	wrathofirln = false;
 		}
 
@@ -2348,7 +2341,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 85;
+		rand = GetURandomInt() % 91;
 	/*
 	if(wrathofirln)
 	{
@@ -3265,8 +3258,8 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 42:
 			{
-				strcopy(message, sizeof(message), "{red}Enemies will now move 20% faster!");
-				SpeedMult += 0.2;
+				strcopy(message, sizeof(message), "{red}Enemies will now move 15% faster!");
+				SpeedMult += 0.15;
 			}
 			case 43:
 			{
@@ -3784,6 +3777,16 @@ void Freeplay_SetupStart(bool extra = false)
 				UnlockedMegeHPRegen = true;
 				Store_DiscountNamedItem("Sigmar's Curage", 999);
 				strcopy(message, sizeof(message), "{green}Sigmar's Curage is now buyable in the passive store!");
+			}
+			case 90:
+			{
+				if(friendunit)
+				{
+					Freeplay_SetupStart();
+					return;
+				}
+				strcopy(message, sizeof(message), "{green}You will gain a strong, friendly unit.");
+				friendunit = true;
 			}
 			default:
 			{
