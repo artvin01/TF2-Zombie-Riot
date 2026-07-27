@@ -875,6 +875,15 @@ bool BarrackBody_Interact(int client, int entity)
 	}
 	return false;
 }
+bool IsBarrackTroop(int entity)
+{
+    char plugin[64];
+    NPC_GetPluginById(i_NpcInternalId[entity], plugin, sizeof(plugin));
+    if (StrContains(plugin, "npc_barrack", false) != -1)
+		return true;
+
+    return false;
+}
 void BarracksEntityCreated(int entity)
 {
 	BarrackOwner[entity] = 0;
