@@ -223,12 +223,12 @@ void DwellerHeavy_OnTakeDamage(int victim, int &attacker, int &inflictor, float 
 {
 	if(attacker > 0)
 	{
+		DwellerHeavy npc = view_as<DwellerHeavy>(victim);
 		if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 		{
 			npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 			npc.m_blPlayHurtAnimation = true;
 		}
-		DwellerHeavy npc = view_as<DwellerHeavy>(victim);
 		if(npc.m_flHurtForAbility < GetGameTime(npc.index))
 		{
 			if (attacker <= MaxClients && attacker > 0 && TeutonType[attacker] != TEUTON_NONE)
