@@ -2562,7 +2562,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/mutations/freeplay/npc_vanishingmatter.sp"
 #include "npc/mutations/freeplay/npc_annoying_spirit.sp"
 #include "npc/mutations/freeplay/npc_darkenedheavy.sp"
-#include "npc/mutations/freeplay/npc_freeplay_sigmaller.sp.sp"
+#include "npc/mutations/freeplay/npc_freeplay_sigmaller.sp"
 
 #include "npc/construction/npc_base_building.sp"
 #include "npc/construction/npc_material_cash.sp"
