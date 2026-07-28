@@ -1,5 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
+#pragma unused client
 
 static const char g_DeathSounds[][] = {
 	")vo/soldier_negativevocalization01.mp3",
@@ -82,8 +83,6 @@ methodmap FreeplaySigmaller < CClotBody
 	
 	public FreeplaySigmaller(int client, float vecPos[3], float vecAng[3], int ally)
 	{
-		client = client;
-
 		FreeplaySigmaller npc = view_as<FreeplaySigmaller>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "3.0", "100000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
