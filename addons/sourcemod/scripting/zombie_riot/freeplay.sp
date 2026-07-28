@@ -60,6 +60,7 @@ static int setuptimes;
 static float ExtraAttackspeed;
 static bool thespewer;
 static bool sigmaller;
+static bool portalgalore;
 
 static int FreeplayModifActive = 0;
 static float FM_Health;
@@ -200,6 +201,7 @@ void Freeplay_ResetAll()
 	ExtraAttackspeed = 1.0;
 	thespewer = false;
 	sigmaller = false;
+	portalgalore = false;
 	squeezerplus = false;
 	FM_Health = 0.25;
 	FM_Damage = 0.5;
@@ -232,6 +234,9 @@ int Freeplay_EnemyCount()
 			amount++;
 
 		if(sigmaller)
+			amount++;
+
+		if(portalgalore)
 			amount++;
 	}
 
@@ -284,7 +289,7 @@ int Freeplay_GetDangerLevelCurrent(int postWaves)
 void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = false)
 {
 	bool shouldscale = true;
-	if(RaidFight || friendunit || zombiecombine || moremen || immutable || Schizophrenia || DarknessComing || thespewer || sigmaller)
+	if(RaidFight || friendunit || zombiecombine || moremen || immutable || Schizophrenia || DarknessComing || thespewer || sigmaller || portalgalore)
 	{
 		enemy.Is_Boss = 0;
 		enemy.WaitingTimeGive = 0.0;
@@ -802,6 +807,18 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Credits += 100.0;
 		count = 1;
 		sigmaller = false;
+	}
+	else if(portalgalore)
+	{
+		enemy.Is_Immune_To_Nuke = true;
+		enemy.Index = NPC_GetByPlugin("npc_void_portal");
+		enemy.ExtraSize = 1.5;
+		enemy.Credits += 100.0;
+		enemy.ExtraDamage = 2.0;
+		enemy.Is_Boss = 0;
+
+		count = 10;
+		portalgalore = false;
 	}
 	else
 	{
@@ -2342,7 +2359,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 91;
+		rand = GetURandomInt() % 92;
 	/*
 	if(wrathofirln)
 	{
@@ -3788,6 +3805,16 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				strcopy(message, sizeof(message), "{green}You will gain a strong, friendly unit.");
 				friendunit = true;
+			}
+			case 91:
+			{
+				if(portalgalore)
+				{
+					Freeplay_SetupStart();
+					return;
+				}
+				strcopy(message, sizeof(message), "{red}Here's a gift from {purple}Unspeakable{red}. {purple}Five Hundred Void Portals.");
+				portalgalore = true;
 			}
 			default:
 			{
