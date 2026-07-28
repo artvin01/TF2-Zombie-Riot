@@ -2284,7 +2284,7 @@ void Freeplay_OnEndWave(int &cash)
 		cash += extracash;
 	}
 
-	Freeplay_SetRemainingCash(500.0);
+	Freeplay_SetRemainingCash(583.0);
 	Freeplay_SetCashTime(GetGameTime() + 20.0);
 }
 
