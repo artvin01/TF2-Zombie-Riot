@@ -573,9 +573,12 @@ public void OnPostThink(int client)
 #if defined ZR
 	bool Mana_Regen_Tick = false;
 
-	if(Rogue_CanRegen() && (Mana_Regen_Delay[client] < GameTime || (b_AggreviatedSilence[client] && Mana_Regen_Delay_Aggreviated[client] < GameTime)))
+	if(Rogue_CanRegen() && ((!RechargeManaPassively(client) && Mana_Regen_Delay[client] < GameTime) || (RechargeManaPassively(client) && Mana_Regen_Delay_Aggreviated[client] < GameTime)))
 	{
-		Mana_Regen_Delay[client] = GameTime + 0.4;
+		
+		if(!RechargeManaPassively(client))	
+			Mana_Regen_Delay[client] = GameTime + 0.4;
+
 		Mana_Regen_Delay_Aggreviated[client] = GameTime + 0.4;
 
 		has_mage_weapon[client] = false;
@@ -3628,7 +3631,7 @@ stock void SDKhooks_SetManaRegenDelayTime(int client, float time)
 		f_TimeSinceLastRegenStop[client] = GetGameTime() + time;
 		
 	//Set to 0 so hud is good
-	if(!b_AggreviatedSilence[client])
+	if(!RechargeManaPassively(client))
 		mana_regen[client] = 0.0;
 #endif
 }
@@ -3664,6 +3667,15 @@ void ManaCalculationsBefore(int client)
 	float ManaMaxExtra = 500.0;
 	if(ZR_Get_Modifier() == NOSTALGICA)
 		ManaRegen *= 0.75;
+	ManaRegen *= 1.10;
+	ManaMaxExtra *= 1.10;
+	ManaMaxExtra *= 1.25;
+	if(HasSpecificBuff(client, "Mana Recharge") && !b_AggreviatedSilence[client])
+	{
+		//cut in half!
+		ManaRegen *= 0.5;
+	}
+	
 	
 	while(TF2_GetItem(client, entity, i))
 	{
@@ -3702,7 +3714,7 @@ void ManaCalculationsBefore(int client)
 	}
 	*/
 
-	if(b_AggreviatedSilence[client])	
+	if(RechargeManaPassively(client))	
 	{
 		mana_regen[client] *= 0.35;
 	}
@@ -3898,3 +3910,20 @@ bool PlayersLeftAlive(int victim)
 	return Any_Left;
 }
 #endif
+
+
+bool RechargeManaPassively(int client)
+{
+	if(b_AggreviatedSilence[client])
+		return true;
+	
+	if(HasSpecificBuff(client, "Mana Recharge"))
+	{
+		if(Mana_Regen_Delay[client] < GetGameTime())
+		{
+			return false;
+		}
+		return true;
+	}
+	return false;
+}

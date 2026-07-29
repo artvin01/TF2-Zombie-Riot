@@ -90,15 +90,15 @@ static Action Timer_Barracks(Handle timer, DataPack pack)
 	int client = EntRefToEntIndex(pack.ReadCell());
 	
 	bool valid = IsValidClient(client);
-    if(!valid)
-    {
-        h_Barrack_Timer[clientindx] = null;
-        return Plugin_Stop;
-    }
-    if(i_ClientHasCustomGearEquipped[client] != CUSTOMGEAR_NONE || !IsEntityAlive(client,_, true))
-    {
-        return Plugin_Continue;
-    }
+	if(!valid)
+	{
+		h_Barrack_Timer[clientindx] = null;
+		return Plugin_Stop;
+	}
+	if(i_ClientHasCustomGearEquipped[client] != CUSTOMGEAR_NONE || !IsEntityAlive(client,_, true))
+	{
+		return Plugin_Continue;
+	}
 	
 	Barracks_HUD(client);
 	return Plugin_Continue;

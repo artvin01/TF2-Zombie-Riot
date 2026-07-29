@@ -2335,18 +2335,6 @@
 		"it"		"Poteri del mago"
 		"ko"		"마법 전용 퍽"
 	}
-	"Mage Fragility"
-	{
-		"en"		"Mage Fragility"
-		"fr"		"Fragilité du Magicien"
-		"ru"		"Хрупкость мага"
-		"de"		"Magier Zerbrechlichkeit"
-		"pt"		"Fragilidade de Mago"
-		"nl"		"Magische breekbaarheid"
-		"chi"       	"纯粹法师"
-		"it"		"Fragilità del mago"
-		"ko"		"마법사의 취약성"
-	}
 	"Mystical Overcharge"
 	{
 		"en"		"Mystical Overcharge"

@@ -282,6 +282,7 @@ void InitStatusEffects()
 	StatusEffects_Barracks();
 	StatusEffects_IndexNurseFather();
 	StatusEffects_Gunsaw();
+	StatusEffects_ManaRecharge();
 }
 
 static int CategoryPage[MAXPLAYERS];
@@ -12048,4 +12049,21 @@ static void FuriosoAbilityEnd(int victim, StatusEffect Apply_MasterStatusEffect,
 {
 	ExtinguishTarget(victim);
 
+}
+void StatusEffects_ManaRecharge()
+{
+	StatusEffect data;
+	strcopy(data.BuffName, sizeof(data.BuffName), "Mana Recharge");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "✫");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	//Make sure it isnt ignored, set it to 0.0, on need for extra func checks either.
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
 }

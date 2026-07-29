@@ -2073,20 +2073,12 @@
 
 	"Heavy Caliber Desc"
 	{
-		"en"	"-Gain 15％ more Weapon damage\n-15％ less firerate"
-		"fr"	"+15％ dégats, -15％ cadence de tir"
-		///"ru"	"На 15％ больше урон от оружия, но на 15％ меньше скорострельность"
-		"chi"   "武器伤害提高15％，但射速降低15％"
-		"it"	"15％ in più di danno da arma, ma 15％ in meno di potenza di fuoco"
-		"ko"	"-무기 피해량 +15％\n-공격 속도 -15％"
+		"en"	"-Gain 15％ more Weapon damage\n-15％ less attacksped and reload speed"
 	}
 	
 	"Army Belt Desc"
 	{
-		"en"	"-Gain 10％ Faster reload\n-1.45x Slower weapon switch speed."
-		"fr"	"+10％ vitesse de rechargement, 1.45x vitesse de changement d'arme plus lente"
-		"it"	"10％ Ricarica più veloce ma interruttore dell'arma più lungo di 1,45x"
-		"ko"	"-재장전 속도 +10％\n-무기 전환 속도 -1.45배"
+		"en"	"-Gain 15％ Faster reload\n-Lose 15% Attackspeed\n-1.45x Slower weapon switch speed."
 	}
 	
 	"Headshot Affinity Desc"
