@@ -3669,7 +3669,6 @@ void ManaCalculationsBefore(int client)
 		ManaRegen *= 0.75;
 	ManaRegen *= 1.10;
 	ManaMaxExtra *= 1.10;
-	ManaMaxExtra *= 1.25;
 	if(HasSpecificBuff(client, "Mana Recharge") && !b_AggreviatedSilence[client])
 	{
 		//cut in half!
