@@ -61,6 +61,7 @@ static float ExtraAttackspeed;
 static bool thespewer;
 static bool sigmaller;
 static bool portalgalore;
+static bool refragportal;
 
 static int FreeplayModifActive = 0;
 static float FM_Health;
@@ -202,6 +203,7 @@ void Freeplay_ResetAll()
 	thespewer = false;
 	sigmaller = false;
 	portalgalore = false;
+	refragportal = false;
 	squeezerplus = false;
 	FM_Health = 0.25;
 	FM_Damage = 0.5;
@@ -237,6 +239,9 @@ int Freeplay_EnemyCount()
 			amount++;
 
 		if(portalgalore)
+			amount++;
+
+		if(refragportal)
 			amount++;
 	}
 
@@ -289,7 +294,7 @@ int Freeplay_GetDangerLevelCurrent(int postWaves)
 void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = false)
 {
 	bool shouldscale = true;
-	if(RaidFight || friendunit || zombiecombine || moremen || immutable || Schizophrenia || DarknessComing || thespewer || sigmaller || portalgalore)
+	if(RaidFight || friendunit || zombiecombine || moremen || immutable || Schizophrenia || DarknessComing || thespewer || sigmaller || portalgalore || refragportal)
 	{
 		enemy.Is_Boss = 0;
 		enemy.WaitingTimeGive = 0.0;
@@ -819,6 +824,18 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 
 		count = 10;
 		portalgalore = false;
+	}
+	else if(refragportal)
+	{
+		enemy.Is_Immune_To_Nuke = true;
+		enemy.Index = NPC_GetByPlugin("npc_portal_gate");
+		enemy.ExtraSize = 1.5;
+		enemy.Credits += 100.0;
+		enemy.ExtraDamage = 2.0;
+		enemy.Is_Boss = 0;
+
+		count = 2;
+		refragportal = false;
 	}
 	else
 	{
@@ -1755,15 +1772,15 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{purple}NO RANDOM KRANZ V3! {gold}- {red}Whats with the ''No Random'' part? Also version 3?");
+					CPrintToChatAll("{darkblue}NO RANDOM KRANZ V3! {gold}- {red}Whats with the ''No Random'' part? Also version 3?");
 				}
 				case 2:
 				{
-					CPrintToChatAll("{purple}NO RANDOM KRANZ V3! {gold}- {red}April Fools >:P!!!! oh.. im late...");
+					CPrintToChatAll("{darkblue}NO RANDOM KRANZ V3! {gold}- {red}April Fools >:P!!!! oh.. im late...");
 				}
 				default:
 				{
-					CPrintToChatAll("{purple}NO RANDOM KRANZ V3! {gold}- {red}Whats with the ''V3'' part? Also not random?");
+					CPrintToChatAll("{darkblue}NO RANDOM KRANZ V3! {gold}- {red}Whats with the ''V3'' part? Also not random?");
 				}
 			}
 		}
@@ -2359,7 +2376,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 92;
+		rand = GetURandomInt() % 93;
 	/*
 	if(wrathofirln)
 	{
@@ -3813,8 +3830,18 @@ void Freeplay_SetupStart(bool extra = false)
 					Freeplay_SetupStart();
 					return;
 				}
-				strcopy(message, sizeof(message), "{red}Here's a gift from {purple}Unspeakable{red}. {purple}Five Hundred Void Portals.");
+				strcopy(message, sizeof(message), "{red}Here's a gift from {purple}Unspeakable{red}. {purple}Five Hundred Void Portals!!");
 				portalgalore = true;
+			}
+			case 92:
+			{
+				if(refragportal)
+				{
+					Freeplay_SetupStart();
+					return;
+				}
+				strcopy(message, sizeof(message), "{red}Here's a gift from {darkblue}C.H.I.M.E.R.A.{red}. {purple}Five Hundred Portal Gate!");
+				refragportal = true;
 			}
 			default:
 			{
