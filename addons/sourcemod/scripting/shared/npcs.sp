@@ -813,12 +813,6 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 			if(NpcStats_ElementalAmp(entity))
 			{
 				value *= 1.2;
-				if(HasSpecificBuff(entity, "Black Flames"))
-					value *= 1.5;
-			}
-			else if(HasSpecificBuff(entity, "Black Flames"))
-			{
-				value *= 1.25;
 			}
 			//Burn damage should pierce any resistances because its too hard to keep track off, and its not common.
 			if(i_IsABuilding[entity]) //if enemy was a building, deal 5x damage.

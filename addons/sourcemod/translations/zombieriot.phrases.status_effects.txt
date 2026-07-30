@@ -4127,7 +4127,7 @@
 	}
 	"Black Flames Desc"
 	{
-		"en"	"Target Burns forever and this cannot ever be stopped under any circumstances ever.\n-burn deals 25％ more damage\n-If together with Elemental Amplification, gets stronger"
+		"en"	"Target Burns forever and this cannot ever be stopped under any circumstances ever."
 	}
 	"Comfort in Hard Times"
 	{
