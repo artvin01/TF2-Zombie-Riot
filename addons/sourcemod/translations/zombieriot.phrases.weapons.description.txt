@@ -1276,9 +1276,7 @@
 	}
 	"Fire Wand Pap 3"
 	{
-		"en"	"-Increased damage\n-Increased attackspeed\n-Fires 5 fireballs in quick succession, subsequent fireballs deal less damage.\n-Your basic attacks deal much more damage."
-		"it"	"Aumenta i danni, spara 5 palle di fuoco in rapida successione, le palle di fuoco successive infliggono meno danni.\nI suoi attacchi base infliggono molti più danni."
-		"ko"	"피해량, 공격 속도 증가\n-우클릭이 파이어볼 5개를 연속으로 발사\n-늦게 발사되는 파이어볼은 더 적은 피해를 가함\n-기본 공격의 피해량이 크게 증가"
+		"en"	"-Increased damage\n-Increased attackspeed\n-Fires 5 fireballs in quick succession, subsequent fireballs deal less damage.\n-Your basic attacks deal much more damage.\n-Flames turn black upon burning enemies."
 	}
 	
 	"Cryo Staff Desc"

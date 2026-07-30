@@ -4121,6 +4121,14 @@
 	{
 		"en"	"Dealin damage to an enemy nearby with mana gives mana regen for 2 seconds.\nRecharges mana slowly overtime."
 	}
+	"Black Flames"
+	{
+		"en"	"Black Flames"
+	}
+	"Black Flames Desc"
+	{
+		"en"	"Target Burns forever and this cannot ever be stopped under any circumstances ever.\n-burn deals 25％ more damage\n-If together with Elemental Amplification, gets stronger"
+	}
 	"Comfort in Hard Times"
 	{
 		"en"	"Comfort in Hard Times"

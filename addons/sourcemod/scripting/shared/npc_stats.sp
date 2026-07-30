@@ -11338,6 +11338,10 @@ float Reapply_BurningCorpse[MAXENTITIES];
 
 void IgniteTargetEffect(int target, int ViewmodelSetting = 0, int viewmodelClient = 0, int type = 0, char typeoverride[255] = "")
 {
+	if(HasSpecificBuff(target, "Black Flames"))
+	{
+		type = 2;
+	}
 	Reapply_BurningCorpse[target] = GetGameTime() + 5.0;
 	if(ViewmodelSetting > 0)
 	{
@@ -11508,6 +11512,10 @@ public Action IgniteTimerVisual(Handle timer, DataPack pack)
 
 void IngiteTargetClientside(int target, int client, bool ingite, int type)
 {
+	if(HasSpecificBuff(target, "Black Flames"))
+	{
+		type = 2;
+	}
 	char typeEffect[255];
 	switch(type)
 	{
