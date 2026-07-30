@@ -4116,10 +4116,12 @@
 	"Mana Recharge"
 	{
 		"en"	"Mana Recharge"
+		"ko"	"마나 재생"
 	}
 	"Mana Recharge Desc"
 	{
-		"en"	"Dealin damage to an enemy nearby with mana gives mana regen for 2 seconds.\nRecharges mana slowly overtime."
+		"en"	"Dealing damage to an enemy nearby with mana gives mana regen for 2 seconds.\nRecharges mana slowly overtime."
+		"ko"	"마법 무기로 근처의 적에게 피해를 가할 시 2초 동안 마나 재생을 제공합니다.\n지속적으로 마나를 느리게 재생합니다."
 	}
 	"Comfort in Hard Times"
 	{
