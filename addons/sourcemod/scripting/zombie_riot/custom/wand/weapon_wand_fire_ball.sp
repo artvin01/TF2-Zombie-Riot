@@ -370,7 +370,7 @@ public void FireballDealDamageFinalPap(int victim, int &attacker, int &inflictor
 	if((zr_custom_damage & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 		return;
 
-	bool HadBuff = HasSpecificBuff(target, "Black Flames");
+	bool HadBuff = HasSpecificBuff(victim, "Black Flames");
 	ApplyStatusEffect(attacker, victim, "Black Flames", 999.0);
 	if(!HadBuff)
 	{

@@ -12070,5 +12070,6 @@ void StatusEffects_ManaRecharge()
 	strcopy(data.BuffName, sizeof(data.BuffName), "Black Flames");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "~~");
 	data.Positive 					= false;
+	data.ElementalLogic				= true;
 	StatusEffect_AddGlobal(data);
 }
