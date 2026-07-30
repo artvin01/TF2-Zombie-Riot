@@ -624,7 +624,6 @@ public void OnPostThink(int client)
 				ManaCalculationsBefore(client);
 				if(RegenAutoDo == 4)
 					mana_regen[client] *= 0.2;
-				PrintToChatAll("test1");
 				//always set this
 
 				Mana_Regen_Tick = true;
