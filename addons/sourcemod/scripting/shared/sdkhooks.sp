@@ -592,7 +592,6 @@ public void OnPostThink(int client)
 				}
 			}
 
-			ManaCalculationsBefore(client);
 			if(RegenAutoDo == 1 || RegenAutoDo == 2)
 			{
 				if(Mana_Regen_Delay_Aggreviated[client] < GameTime)
@@ -600,7 +599,6 @@ public void OnPostThink(int client)
 					RegenAutoDo = 4;
 					//We auto regen
 					Mana_Regen_Delay_Aggreviated[client] = GameTime + 0.4;
-					mana_regen[client] *= 0.2;
 					if(f_TimeSinceLastRegenStop[client] < GetGameTime() + 0.4)
 						f_TimeSinceLastRegenStop[client] = GetGameTime() + 0.4;
 				}
@@ -611,12 +609,8 @@ public void OnPostThink(int client)
 				Mana_Regen_Delay_Aggreviated[client] = GameTime + 0.4;
 				if(Mana_Regen_Delay[client] < GameTime)
 				{
-					RegenAutoDo = 4;
+					RegenAutoDo = 5;
 					Mana_Regen_Delay[client] = GameTime + 0.4;
-				}
-				else
-				{
-					mana_regen[client] = 0.0;
 				}
 				//normal regen
 			}
@@ -624,11 +618,14 @@ public void OnPostThink(int client)
 				
 			
 			//small reuse of a bool to make it check for stuff
-			if(RegenAutoDo == 4)
+			if(RegenAutoDo >= 4)
 			{
+				has_mage_weapon[client] = false;
+				ManaCalculationsBefore(client);
+				if(RegenAutoDo == 4)
+					mana_regen[client] *= 0.2;
 				PrintToChatAll("test1");
 				//always set this
-				has_mage_weapon[client] = false;
 
 				Mana_Regen_Tick = true;
 			
