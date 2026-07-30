@@ -621,13 +621,15 @@ public void OnPostThink(int client)
 				//normal regen
 			}
 
-			//always set this
-			has_mage_weapon[client] = false;
 				
 			
 			//small reuse of a bool to make it check for stuff
 			if(RegenAutoDo == 4)
 			{
+				PrintToChatAll("test1");
+				//always set this
+				has_mage_weapon[client] = false;
+
 				Mana_Regen_Tick = true;
 			
 				if(Current_Mana[client] < RoundToCeil(max_mana[client]) && Mana_Regen_Block_Timer[client] < GameTime)
