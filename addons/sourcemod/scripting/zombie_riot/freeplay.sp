@@ -2324,7 +2324,7 @@ void Freeplay_SetupStart(bool extra = false)
 		/*
 		int irlnreq = 1;
 
-		int wrathchance = GetRandomInt(0, 100);
+		int wrathchance = GetRandomInt(2, 100);
 		if(wrathchance < irlnreq)
 		{
 			wrathofirln = true;
@@ -3840,7 +3840,7 @@ void Freeplay_SetupStart(bool extra = false)
 					Freeplay_SetupStart();
 					return;
 				}
-				strcopy(message, sizeof(message), "{red}Here's a gift from {darkblue}C.H.I.M.E.R.A.{red}. {purple}Five Hundred Portal Gate!");
+				strcopy(message, sizeof(message), "{red}Here's a gift from {darkblue}C.H.I.M.E.R.A.{red}. {darkblue}Five Hundred Portal Gate!");
 				refragportal = true;
 			}
 			default:
