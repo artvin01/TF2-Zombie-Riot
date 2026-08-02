@@ -2071,12 +2071,14 @@
 
 	"Heavy Caliber Desc"
 	{
-		"en"	"-Gain 15％ more Weapon damage\n-15％ less attacksped and reload speed"
+		"en"	"-Gain 15％ more Weapon damage\n-15％ less attack speed and reload speed"
+		"ko"	"-무기 피해량 +15％\n-공격 속도 -15％\n-재장전 속도 -15％"
 	}
 	
 	"Army Belt Desc"
 	{
-		"en"	"-Gain 15％ Faster reload\n-Lose 15% Attackspeed\n-1.45x Slower weapon switch speed."
+		"en"	"-Gain 15％ Faster reload\n-Lose 15% attack speed\n-1.45x Slower weapon switch speed."
+		"ko"	"-재장전 속도 +15％\n-공격 속도 -15％\n-무기 전환 속도 -1.45배"
 	}
 	
 	"Headshot Affinity Desc"
