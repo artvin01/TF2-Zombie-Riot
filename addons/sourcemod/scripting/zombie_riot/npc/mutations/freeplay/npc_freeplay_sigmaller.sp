@@ -52,9 +52,9 @@ void FreeplaySigmaller_OnMapStart_NPC()
 	NPC_Add(data);  
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int ally)
+static any ClotSummon(float vecPos[3], float vecAng[3], int ally)
 {
-	return FreeplaySigmaller(client, vecPos, vecAng, ally);
+	return FreeplaySigmaller(vecPos, vecAng, ally);
 }
 
 methodmap FreeplaySigmaller < CClotBody
@@ -80,7 +80,7 @@ methodmap FreeplaySigmaller < CClotBody
 		EmitSoundToAll(g_hornsound[GetRandomInt(0, sizeof(g_hornsound) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL , _, 0.5, GetRandomInt(80,110));
 	}
 	
-	public FreeplaySigmaller(int client, float vecPos[3], float vecAng[3], int ally)
+	public FreeplaySigmaller(float vecPos[3], float vecAng[3], int ally)
 	{
 		FreeplaySigmaller npc = view_as<FreeplaySigmaller>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "3.0", "100000", ally));
 		
