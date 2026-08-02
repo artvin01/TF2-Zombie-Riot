@@ -318,9 +318,16 @@ public void RaidbossBladedance_ClotThink(int iNPC)
 	}
 	else if(npc.m_iOverlordComboAttack > 45 && !npc.m_bForceNextWave && i_RaidGrantExtra[npc.index] == 1)
 	{
-		delete WaveTimer;
-		WaveTimer = CreateTimer(0.1, Waves_ProgressTimer);
-		npc.m_bForceNextWave = true;
+		//0 is default
+		int WaveWhich = 0;
+		int length = Rounds[WaveWhich].Length-1;
+		length--;
+		if(CurrentRound[WaveWhich] < length)
+		{
+			delete WaveTimer;
+			WaveTimer = CreateTimer(0.1, Waves_ProgressTimer);
+			npc.m_bForceNextWave = true;
+		}
 	}
 	else if(npc.m_iOverlordComboAttack > 50)
 	{

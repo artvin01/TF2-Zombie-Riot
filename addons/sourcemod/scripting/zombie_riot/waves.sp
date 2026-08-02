@@ -1326,6 +1326,7 @@ void WavesDeleteSet(int ArrayDo = Rounds_Default)
 		delete Rounds[ArrayDo];
 	}
 }
+
 void Waves_SetupWaves(KeyValues kv, bool start, int ArrayDo = Rounds_Default)
 {
 	Round round;

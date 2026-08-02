@@ -80,6 +80,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 {
 #if defined ZR
 
+	Barracks_InstaResearchEverything = false;
 	if(!InZRMap())
 		DeleteAllBadEntities_NonZrMaps();
 	
