@@ -1277,6 +1277,7 @@
 	"Fire Wand Pap 3"
 	{
 		"en"	"-Increased damage\n-Increased attackspeed\n-Fires 5 fireballs in quick succession, subsequent fireballs deal less damage.\n-Your basic attacks deal much more damage.\n-Flames turn black upon burning enemies."
+		"ko"	"-피해량, 공격 속도 증가\n-우클릭 시 파이어볼 5개를 연속으로 발사\n-나중에 발사된 파이어볼은 더 적은 피해를 가함\n기본 공격의 피해량이 대폭 증가\n불 붙은 적 적중 시 흑염 부여"
 	}
 	
 	"Cryo Staff Desc"
