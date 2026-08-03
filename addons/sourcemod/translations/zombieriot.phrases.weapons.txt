@@ -313,17 +313,23 @@
 		"ru"		"Рэйлган Бандита"
 		"ko"		"무법자의 레일캐논"
 	}
-	"The Pompson 7000"
+	"Pomson 7000"
 	{
-		"en"		"The Pompson 7000"
-		"fr"		"Pompson 7000"
+		"en"		"The Pomson 7000"
+		"fr"		"Pomson 7000"
 		"ru"		"Помсон 7000"
-		"de"		"The Pompson 7000"
+		"de"		"The Pomson 7000"
 		"pt"		"A Pomson 7000"
-		"nl"		"De Pompson 7000"
+		"nl"		"De Pomson 7000"
 		"chi"       	"歼灭者7000"
-		"it"		"Il Pompson 7000"
+		"it"		"Il Pomson 7000"
 		"ko" 		"폼슨 7000"
+	}
+	"Pomson 7000 MK2"
+	{
+		"en"       "The Pomson 7000 MK2"
+		"fr"       "Pomson 7000 MK2"
+		"ko"		"폼슨 7000 MK2"
 	}
 	"Dragon's Fury"
 	{
@@ -3255,15 +3261,6 @@
 		"it"		"Trituratore di schegge"
 		"ko"		"파편 분쇄기"
 	}
-	"The Pomson 7000"
-	{
-		"en"       "The Pomson 7000"
-		"fr"       "Pomson 7000"
-		"ru"       "Помсон 7000"
-		"chi"       "歼灭者7000"
-		"it"		"Il Pomson 7000"
-		"ko"		"폼슨 7000"
-	}
 	"Leone 12 Gauge Super"
 	{
 		"en"       "Leone 12 Gauge Super"
@@ -4010,6 +4007,11 @@
 	{
 		"en"		"Merc's Revolver"
 		"ko"		"용병의 리볼버"
+	}
+	"Wanted's Revolver"
+	{
+		"en"		"Wanted's Revolver"
+		"ko"		"현상 수배자의 리볼버"
 	}
 	"Greater Garbage"
 	{
