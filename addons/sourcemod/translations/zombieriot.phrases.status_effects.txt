@@ -4126,10 +4126,12 @@
 	"Black Flames"
 	{
 		"en"	"Black Flames"
+		"ko"	"흑염"
 	}
 	"Black Flames Desc"
 	{
 		"en"	"Target Burns forever and this cannot ever be stopped under any circumstances ever."
+		"ko"	"대상에게 붙은 불이 어떤 상황에서도 절대 꺼지지 않고 영원히 타오릅니다."
 	}
 	"Comfort in Hard Times"
 	{
