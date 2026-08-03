@@ -59,7 +59,7 @@ static bool DarknessComing;
 static int setuptimes;
 static float ExtraAttackspeed;
 static bool thespewer;
-static bool sigmaller;
+static bool ller;
 static bool portalgalore;
 static bool refragportal;
 
@@ -201,7 +201,7 @@ void Freeplay_ResetAll()
 	setuptimes = 3;
 	ExtraAttackspeed = 1.0;
 	thespewer = false;
-	sigmaller = false;
+	ller = false;
 	portalgalore = false;
 	refragportal = false;
 	squeezerplus = false;
@@ -235,7 +235,7 @@ int Freeplay_EnemyCount()
 		if(thespewer)
 			amount++;
 
-		if(sigmaller)
+		if(ller)
 			amount++;
 
 		if(portalgalore)
@@ -294,7 +294,7 @@ int Freeplay_GetDangerLevelCurrent(int postWaves)
 void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = false)
 {
 	bool shouldscale = true;
-	if(RaidFight || friendunit || zombiecombine || moremen || immutable || Schizophrenia || DarknessComing || thespewer || sigmaller || portalgalore || refragportal)
+	if(RaidFight || friendunit || zombiecombine || moremen || immutable || Schizophrenia || DarknessComing || thespewer || ller || portalgalore || refragportal)
 	{
 		enemy.Is_Boss = 0;
 		enemy.WaitingTimeGive = 0.0;
@@ -432,8 +432,10 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 9:	
 			{
 				enemy.Index = NPC_GetByPlugin("npc_bob_the_first_last_savior");
-				enemy.Health = RoundToFloor((9000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((8000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.65);
+				enemy.ExtraMeleeRes *= 0.75;
+				enemy.ExtraRangedRes *= 0.75;
 				enemy.Data = "nobackup";
 			}
 			case 10:	
@@ -467,13 +469,13 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 					case 1: 
 					{
 						enemy.Index = NPC_GetByPlugin("npc_xeno_mrx");
-						enemy.Health = RoundToFloor((10000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.Health = RoundToFloor((12500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
 					}
 					default: 
 					{
 						enemy.Index = NPC_GetByPlugin("npc_xeno_mrx");
-						enemy.Health = RoundToFloor((10000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.Health = RoundToFloor((12500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
 					}
 				}
@@ -805,10 +807,9 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Is_Boss = 1;
 		enemy.Index = NPC_GetByPlugin("npc_freeplay_sigmaller");
-		enemy.Health = RoundToFloor(((500000.0 + HealthBonus) / 65.0 * float(Waves_GetRound())) * HealthMulti);
-		enemy.ExtraDamage = 0.5;
+		enemy.Health = RoundToFloor(((750000.0 + HealthBonus) / 65.0 * float(Waves_GetRound())) * HealthMulti);
+		enemy.ExtraDamage = 1.0;
 		enemy.ExtraSpeed = 1.0;
-		enemy.ExtraSize = 1.0;
 		enemy.Credits += 100.0;
 		count = 1;
 		sigmaller = false;
