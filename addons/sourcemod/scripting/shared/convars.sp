@@ -93,6 +93,7 @@ void ConVar_PluginStart()
 	CvarAutoSelectWave = CreateConVar("zr_autoselectwave", "0", "If to automatically set a wave on map start instead of running a vote");
 	CvarAutoSelectDiff = CreateConVar("zr_autoselectdiff", "0", "If to automatically set a difficulty on map start instead of running a vote");
 	CvarVoteLimit = CreateConVar("zr_wavevotelimit", "0", "Max amount of options to put in waveset voting, 0 to disable");
+	CvarDisableAutoLoadouts = CreateConVar("zr_disableautoloadouts", "0", "disable the tutorial and autoloadouts");
 
 	HookConVarChange(zr_tagblacklist, StoreCvarChanged);
 	HookConVarChange(zr_tagwhitelist, StoreCvarChanged);
@@ -118,6 +119,7 @@ void ConVar_PluginStart()
 
 #if defined ZR || defined RTS	
 	CvarInfiniteCash = CreateConVar("zr_infinitecash", "0", "Money is infinite and always set to 999999", FCVAR_DONTRECORD);
+	CvarUnlockStore = CreateConVar("zr_unlockstore", "0", "Store items are always unlocked without messing with money.", FCVAR_DONTRECORD, true, 0.0, true, 1.0);
 #endif
 
 	CvarDisableThink = CreateConVar("zr_disablethinking", "0", "Disable NPC thinking", FCVAR_DONTRECORD);

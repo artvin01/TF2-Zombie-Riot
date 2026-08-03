@@ -187,7 +187,7 @@ void Construction_PluginStart()
 void Construction_MapStart()
 {
 	InConstMode = false;
-	Construction_RoundEnd();
+	Construction_Reset();
 	BackgroundMusic.Clear();
 }
 
@@ -196,6 +196,7 @@ void Construction_SetupVote(KeyValues kv)
 	PrecacheMvMIconCustom("classic_defend", false);
 
 	InConstMode = true;
+	Construction_Reset();
 
 	Rogue_SetupVote(kv, "Construction");
 
@@ -408,7 +409,7 @@ void Construction_StartSetup()
 {
 	Zero(PlayerVotedForThis);
 	Rogue_StartSetup();
-	Construction_RoundEnd();
+	Construction_Reset();
 
 	NextAttackAt = 0.0;
 
@@ -448,14 +449,14 @@ void Construction_StartSetup()
 	*/
 }
 
-void Construction_RoundEnd()
+void Construction_Reset()
 {
 	CurrentRisk = 0;
 	CurrentAttacks = 0;
 	delete GameTimer;
 	delete CurrentMaterials;
 	delete CurrentResearch;
-//	InResearch = -1;
+	InResearch = -1;
 	AttackType = 0;
 }
 
@@ -871,6 +872,9 @@ void Construction_BattleVictory()
 
 	if(type > 1)
 	{
+		// Reset next attack, give full time after a raid
+		NextAttackAt = GetGameTime() + AttackTime;
+		
 		mp_disable_respawn_times.BoolValue = false;
 		
 		int cash = 300;
@@ -1635,7 +1639,7 @@ void Construction_OpenResearch(int client)
 	SetGlobalTransTarget(client);
 
 	Menu menu = new Menu(ResearchMenuH);
-	AnyMenuOpen[client] = 1.0;
+	AnyMenuOpen[client] = 1;
 
 	ResearchInfo info;
 	char index[16], buffer[128];
@@ -1768,17 +1772,17 @@ static int ResearchMenuH(Menu menu, MenuAction action, int client, int choice)
 		{
 			delete menu;
 			if(IsValidClient(client))
-				AnyMenuOpen[client] = 0.0;
+				AnyMenuOpen[client] = 0;
 		}
 		case MenuAction_Cancel:
 		{
 			delete InResearchMenu[client];
-			AnyMenuOpen[client] = 0.0;
+			AnyMenuOpen[client] = 0;
 		}
 		case MenuAction_Select:
 		{
 			delete InResearchMenu[client];
-			AnyMenuOpen[client] = 0.0;
+			AnyMenuOpen[client] = 0;
 			
 			ResearchInfo info;
 			char buffer[64];

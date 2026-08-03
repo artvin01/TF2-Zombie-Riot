@@ -808,6 +808,10 @@ public Action BarrackBody_OnTakeDamage(int victim, int &attacker, int &inflictor
 	if(i_NpcIsABuilding[victim])
 		return Plugin_Continue;
 		
+	if(HasSpecificBuff(attacker, "Marked"))
+	{
+		damage *= 0.9;
+	}
 	
 	if(!b_thisNpcIsARaid[attacker])
 	{
@@ -870,6 +874,15 @@ bool BarrackBody_Interact(int client, int entity)
 		}
 	}
 	return false;
+}
+bool IsBarrackTroop(int entity)
+{
+    char plugin[64];
+    NPC_GetPluginById(i_NpcInternalId[entity], plugin, sizeof(plugin));
+    if (StrContains(plugin, "npc_barrack", false) != -1)
+		return true;
+
+    return false;
 }
 void BarracksEntityCreated(int entity)
 {
@@ -1114,7 +1127,6 @@ float Barracks_UnitExtraRangeCalc(int entity, int client, float range, bool buil
 
 	if(building && (i_NormalBarracks_HexBarracksUpgrades[client] & ZR_BARRACKS_UPGRADES_CRENELLATIONS))
 		RangeMulti *= 2.0;
-
 	
 	range *= RangeMulti;
 	return range;

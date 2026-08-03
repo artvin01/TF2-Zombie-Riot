@@ -4,7 +4,8 @@
 // made my first super boss, i lowkey tweaked but i pulled it off, feel free to give critiques
 // ive been coding with lua for the past 6+ years so this was fun to transition to.
 
-#define SECURITY_MODEL "models/bots/heavy/bot_heavy.mdl"
+#define SECURITY_MODEL "models/player/heavy.mdl"
+#define SECURITY_FAKE_MODEL "models/bots/heavy/bot_heavy.mdl"
 #define SECURITY_INFECTION_RANGE 300.0
 #define SECURITY_ENRAGE_THRESHOLD 0.5 
 
@@ -75,6 +76,7 @@ static void ClotPrecache()
 	for (int i = 0; i < (sizeof(g_SecurityAlertSounds)); i++) { PrecacheSound(g_SecurityAlertSounds[i]); }
 	
 	PrecacheModel(SECURITY_MODEL);
+	PrecacheModel(SECURITY_FAKE_MODEL);
 	PrecacheModel("models/workshop/player/items/heavy/robo_heavy_chief/robo_heavy_chief.mdl");
 	PrecacheModel("models/workshop/player/items/heavy/spr18_tsar_platinum/spr18_tsar_platinum.mdl");
 	PrecacheModel("models/workshop/player/items/heavy/spr18_starboard_crusader/spr18_starboard_crusader.mdl");
@@ -136,7 +138,7 @@ methodmap XenoLabSecurity < CClotBody
 	
 	public XenoLabSecurity(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		XenoLabSecurity npc = view_as<XenoLabSecurity>(CClotBody(vecPos, vecAng, SECURITY_MODEL, "1.75", "125000", ally, false));
+		XenoLabSecurity npc = view_as<XenoLabSecurity>(CClotBody(vecPos, vecAng, SECURITY_MODEL, "1.75", "125000", ally, false, true));
 		// 125000 HP - Super boss tier
 		
 		i_NpcWeight[npc.index] = 6; 
@@ -183,12 +185,14 @@ methodmap XenoLabSecurity < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/heavy/spr18_tsar_platinum/spr18_tsar_platinum.mdl");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/heavy/spr18_starboard_crusader/spr18_starboard_crusader.mdl");
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/heavy/sum23_hog_heels/sum23_hog_heels.mdl");
+		npc.m_iWearable5 = npc.EquipItem("head", SECURITY_FAKE_MODEL);
 		
-		SetEntityRenderColor(npc.index, 50, 200, 50, 255);
+		SetEntityRenderMode(npc.index, RENDER_NONE);
 		SetEntityRenderColor(npc.m_iWearable1, 50, 200, 50, 255);
 		SetEntityRenderColor(npc.m_iWearable2, 50, 200, 50, 255);
 		SetEntityRenderColor(npc.m_iWearable3, 50, 200, 50, 255);
 		SetEntityRenderColor(npc.m_iWearable4, 50, 200, 50, 255);
+		SetEntityRenderColor(npc.m_iWearable5, 50, 200, 50, 255);
 		
 		npc.m_bThisNpcIsABoss = true;
 		npc.StartPathing();
@@ -605,6 +609,8 @@ public void XenoLabSecurity_NPCDeath(int entity)
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
+	if(IsValidEntity(npc.m_iWearable5))
+		RemoveEntity(npc.m_iWearable5);
 	
 	if(npc.m_bIsLabVersion)
 	{

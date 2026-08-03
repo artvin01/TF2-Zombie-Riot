@@ -121,7 +121,7 @@ void VausMagicaShieldLogicNpcOnTakeDamage(int attacker, int victim, float &damag
 	}
 }
 #define DEFAULTMAXRAID_SHIELDCAP 250
-void VausMagicaGiveShield(int entity, int amount, bool ignorecooldown = false)
+void VausMagicaGiveShield(int entity, int amount, bool ignorecooldown = false, int customMaxCapacity = 0)
 {
 	float CapacityMaxMulti = float(CountPlayersOnRed(_, true)) / 7.0;
 	int MaxShieldCapacity = RoundToNearest(5.0 * CapacityMaxMulti);
@@ -143,7 +143,10 @@ void VausMagicaGiveShield(int entity, int amount, bool ignorecooldown = false)
 	}
 	if(MaxShieldCapacity < 1)
 		MaxShieldCapacity = 1;
-
+	
+	if (customMaxCapacity > 0)
+		MaxShieldCapacity = customMaxCapacity;
+	
 	if((f_Expidonsa_ShieldBroke[entity] > GetGameTime() && !ignorecooldown) && MaxShieldCapacity < DEFAULTMAXRAID_SHIELDCAP)
 	{
 		return; //do not give shield.

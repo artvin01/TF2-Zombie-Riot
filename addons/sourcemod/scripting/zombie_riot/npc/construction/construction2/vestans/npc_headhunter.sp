@@ -190,7 +190,7 @@ methodmap Vestan_Headhunter < CClotBody
 	}
 }
 
-public void Vestan_Headhunter_ClotThink(int iNPC)
+static void Vestan_Headhunter_ClotThink(int iNPC)
 {
 	Vestan_Headhunter npc = view_as<Vestan_Headhunter>(iNPC);
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
@@ -272,7 +272,7 @@ public void Vestan_Headhunter_ClotThink(int iNPC)
 	npc.PlayIdleAlertSound();
 }
 
-public Action Vestan_Headhunter_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
+static Action Vestan_Headhunter_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	Vestan_Headhunter npc = view_as<Vestan_Headhunter>(victim);
 		
@@ -288,7 +288,7 @@ public Action Vestan_Headhunter_OnTakeDamage(int victim, int &attacker, int &inf
 	return Plugin_Changed;
 }
 
-public void Vestan_Headhunter_NPCDeath(int entity)
+static void Vestan_Headhunter_NPCDeath(int entity)
 {
 	Vestan_Headhunter npc = view_as<Vestan_Headhunter>(entity);
 	if(!npc.m_bGib)
@@ -313,7 +313,7 @@ public void Vestan_Headhunter_NPCDeath(int entity)
 
 }
 
-int Vestan_HeadhunterSelfDefense(Vestan_Headhunter npc, float gameTime)
+static int Vestan_HeadhunterSelfDefense(Vestan_Headhunter npc, float gameTime)
 {
 	if(!npc.m_flAttackHappens)
 	{

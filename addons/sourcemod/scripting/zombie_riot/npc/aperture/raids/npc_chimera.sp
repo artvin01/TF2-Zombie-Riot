@@ -681,6 +681,8 @@ public Action CHIMERA_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 			npc.m_flRangedArmor = 1.0;
 			npc.m_flMeleeArmor = 1.0;
 			Aperture_Shared_LastStandSequence_Starting(view_as<CClotBody>(npc));
+			
+			npc.m_iDeathState = 1;
 		}
 		else if (!npc.m_flDeathAnim)
 		{
@@ -771,6 +773,18 @@ void CHIMERA_CleanUp(int iNPC)
 	npc.StopPassiveSound();
 	npc.StopStunSound(true);
 	ClearCustomFog(FogType_NPC);
+	
+	int a, entity1;
+	// Clear all lingering NPCs
+	while((entity1 = FindEntityByNPC(a)) != -1)
+	{
+		if(IsValidEntity(entity1) && i_NpcInternalId[entity1] == CHIMERARefragmentedFrostHunter_ID() || i_NpcInternalId[entity1] == CHIMERARefragmentedWinterSniper_ID())
+		{
+			b_DissapearOnDeath[entity1] = true;
+			b_DoGibThisNpc[entity1] = true;
+			SmiteNpcToDeath(entity1);
+		}
+	}
 }
 
 bool CHIMERA_timeBased(int iNPC)
@@ -1196,6 +1210,10 @@ public Action Timer_CHIMERAMineLogic(Handle timer, DataPack pack)
 
 float CHIMERAMineExploder(int entity, int victim, float damage, int weapon)
 {
+	CHIMERA npc = view_as<CHIMERA>(entity);
+	if (npc.m_iDeathState)
+		return 0.0;
+	
 	DetonateCurrentMine = true;
 	
 	char buffers[64];

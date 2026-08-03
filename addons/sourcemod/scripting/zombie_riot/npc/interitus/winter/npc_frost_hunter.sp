@@ -109,6 +109,12 @@ methodmap WinterFrostHunter < CClotBody
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
 	
+	property bool IsMercsTeam
+	{
+		public get()							{ return b_Anger[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_Anger[this.index] = TempValueForProperty; }
+	}
+	
 	public WinterFrostHunter(float vecPos[3], float vecAng[3], int ally)
 	{
 		WinterFrostHunter npc = view_as<WinterFrostHunter>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1000", ally));
@@ -142,8 +148,9 @@ methodmap WinterFrostHunter < CClotBody
 		npc.StartPathing();
 		npc.m_flSpeed = 400.0;
 		
+		npc.IsMercsTeam = (ally==TFTeam_Red&&ZR_Get_Modifier()!=2 ? true : false);
 		
-		int skin = 1;
+		int skin = (npc.IsMercsTeam ? 0 : 1);
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/weapons/c_models/c_pep_scattergun/c_pep_scattergun.mdl");
@@ -364,7 +371,10 @@ int WinterFrostHunterSelfDefense(WinterFrostHunter npc, float gameTime, int targ
 					TR_GetEndPosition(vecHit, swingTrace);
 					float origin[3], angles[3];
 					view_as<CClotBody>(npc.m_iWearable1).GetAttachment("muzzle", origin, angles);
-					ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecHit, false );
+					if(npc.IsMercsTeam)
+						ShootLaser(npc.m_iWearable1, "bullet_tracer01_red", origin, vecHit, false );
+					else
+						ShootLaser(npc.m_iWearable1, "bullet_tracer02_blue", origin, vecHit, false );
 					npc.m_flNextMeleeAttack = gameTime + 1.0;
 
 					if(IsValidEnemy(npc.index, target))

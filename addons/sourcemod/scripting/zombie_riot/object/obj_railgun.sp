@@ -246,7 +246,7 @@ static void Railgun_Boom(int client, int obj)
 
 	attack_speed = 1.0 / Attributes_GetOnPlayer(client, 343, true, true); //Sentry attack speed bonus
 			
-	Strength = attack_speed * Strength * Attributes_GetOnPlayer(client, 287, true, true);			//Sentry damage bonus
+	Strength = attack_speed * Strength * Attributes_GetOnPlayer(client, 287, true);			//Sentry damage bonus
 	
 	float sentry_range;
 		

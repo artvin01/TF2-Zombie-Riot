@@ -136,11 +136,15 @@ void DoTutorialStep(int client, bool obeycooldown)
 		}
 	}
 
+	if(IsClientInBuyTutorial(client))
+	{
+		UTIL_ScreenFade(client, 33, 9999999, FFADE_IN, 0, 0, 0, 233);
+	}
 	if(IsClientInTutorial(client) && ClientTutorialStep(client) != 0 && TeutonType[client] != TEUTON_WAITING)
 	{
 		if(f_TutorialUpdateStep[client] < GetGameTime() || !obeycooldown)
 		{
-			f_TutorialUpdateStep[client] = GetGameTime() + 1.0;
+			f_TutorialUpdateStep[client] = GetGameTime() + 0.25;
 			
 			/*TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, {0.0,0.0,0.0});
 			
@@ -172,11 +176,51 @@ void DoTutorialStep(int client, bool obeycooldown)
 				}
 				case 2:
 				{
-					SetGlobalTransTarget(client);
-					SetHudTextParams(-1.0, 0.4, 1.5, 255, 255, 255, 255);
-					ShowSyncHudText(client, SyncHud, "%t", "tutorial_2");
+					if(CvarDisableAutoLoadouts.BoolValue)
+					{
+						SetHudTextParams(-1.0, 0.4, 10.0, 255, 255, 255, 255);
+						ShowSyncHudText(client, SyncHud, "%t", "tutorial_fail_map");
+						f_TutorialUpdateStep[client] = GetGameTime() + 9999.0;
+						return;
+					}
+					if(AnyMenuOpen[client] == 2.0)
+					{
+
+						SetGlobalTransTarget(client);
+						SetHudTextParams(-1.0, 0.4, 1.5, 255, 255, 255, 255);
+						ShowSyncHudText(client, SyncHud, "%t", "tutorial_1_4");
+
+						SetHudTextParams(0.0, 0.2, 0.35, 255, 255, 255, 255);
+						ShowSyncHudText(client, SyncHud2, "%t", "tutorial_Storelocation");
+					}
+					else if(IsInLoadoutMenu(client))
+					{
+						
+						SetGlobalTransTarget(client);
+						SetHudTextParams(-1.0, 0.4, 1.5, 255, 255, 255, 255);
+						ShowSyncHudText(client, SyncHud, "%t [%T]", "tutorial_1_3", "Autoloadout Page", client);
+
+						SetHudTextParams(0.0, 0.2, 0.35, 255, 255, 255, 255);
+						ShowSyncHudText(client, SyncHud2, "%t", "tutorial_Storelocation");
+					}
+					else if(!LastStoreMenu[client])
+					{
+						SetGlobalTransTarget(client);
+						SetHudTextParams(-1.0, 0.4, 1.5, 255, 255, 255, 255);
+						ShowSyncHudText(client, SyncHud, "%t", "tutorial_storeclosed_warning");
+					}
+					else
+					{
+						SetGlobalTransTarget(client);
+						SetHudTextParams(-1.0, 0.4, 1.5, 255, 255, 255, 255);
+						ShowSyncHudText(client, SyncHud, "%t [%T]", "tutorial_1_2", "Loadouts", client);
+
+						SetHudTextParams(0.0, 0.2, 0.35, 255, 255, 255, 255);
+						ShowSyncHudText(client, SyncHud2, "%t", "tutorial_Storelocation");
+					}
+					//"This is the short Tutorial. Open chat and type /store to open the store!"
+					
 					//ShowAnnotationToPlayer(client, vecSwingEnd, TutorialText, 5.0, -1);
-					//"Good! You can also Open the store with TAB when the tutorial is done.\nNow Navigate to weapons and buy any weapon you want."
 				}
 				case 3:
 				{
@@ -186,8 +230,8 @@ void DoTutorialStep(int client, bool obeycooldown)
 					SPrintToChat(client,"%t","tutorial_3");
 					f_TutorialUpdateStep[client] = GetGameTime() + 10.0;
 					SetClientTutorialStep(client, 4);
-					//ShowAnnotationToPlayer(client, vecSwingEnd, TutorialText, 8.0, -1);
-					//"Now that you have a weapon you're prepared.\nBuy better guns and upgrades in later waves and survive to the end!\nFurther help can be found in the store under ''help?''\nTeamwork is the key to victory!"
+					UTIL_ScreenFade(client, 1, 1, FFADE_PURGE, 0, 0, 0, 233);
+					UTIL_ScreenFade(client, 66, 66, FFADE_OUT, 0, 0, 0, 233);
 				}
 				case 4:
 				{
@@ -330,4 +374,10 @@ void TutorialEndFully(int client)
 {
 	Database_GlobalSetInt(client, DATATABLE_MISC, "tutorial", 6);
 	SetClientTutorialMode(client, false);
+}
+
+
+bool IsClientInBuyTutorial(int client)
+{
+	return (IsClientInTutorial(client) && ClientTutorialStep(client) >= 1 && ClientTutorialStep(client));
 }

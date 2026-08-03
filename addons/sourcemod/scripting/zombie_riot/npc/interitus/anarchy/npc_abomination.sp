@@ -57,6 +57,12 @@ methodmap AnarchyAbomination < CClotBody
 		public get()							{ return i_TimesSummoned[this.index]; }
 		public set(int TempValueForProperty) 	{ i_TimesSummoned[this.index] = TempValueForProperty; }
 	}
+	property float m_flHurtForAbility
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
+	
 	public void PlayIdleAlertSound() 
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -287,12 +293,16 @@ public Action AnarchyAbomination_OnTakeDamage(int victim, int &attacker, int &in
 		
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
+		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
+		npc.m_blPlayHurtAnimation = true;
+	}
+	if (npc.m_flHurtForAbility < GetGameTime(npc.index))
+	{
 		if (attacker <= MaxClients && attacker > 0 && TeutonType[attacker] != TEUTON_NONE)
 		{	
 			return Plugin_Changed;
 		}
-		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
-		npc.m_blPlayHurtAnimation = true;
+		npc.m_flHurtForAbility = GetGameTime(npc.index) + DEFAULT_HURTDELAY;
 		//teutons dont change this.
 
 		npc.m_flSpeed = 290.0;
@@ -414,7 +424,7 @@ int AnarchyAbominationSelfDefense(AnarchyAbomination npc, bool &SpinSound)
 			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 			
-			SDKHook(projectile, SDKHook_StartTouch, AnarchyAbomination_Rocket_Particle_StartTouch);			
+			WandProjectile_ApplyFunctionToEntity(projectile, AnarchyAbomination_Rocket_Particle_StartTouch);	
 		}
 		if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 3.5))
 		{

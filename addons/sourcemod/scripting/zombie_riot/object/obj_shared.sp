@@ -669,13 +669,14 @@ public bool ObjectGeneric_CanBuildSentryBarracks(int client, int &count, int &ma
 	if(!client)
 		return false;
 		
-	return ObjectGeneric_CanBuildSentryInternal(client, count, maxcount);
+	count = Object_GetSentryBuilding(client) == -1 ? 0 : 1;
+	maxcount = IsBarracks(client) ? 1 : 0;
+
+	return (!count && maxcount);
 }
 public bool ObjectGeneric_CanBuildSentry(int client, int &count, int &maxcount)
 {
 	if(!client)
-		return false;
-	if(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_TROOP_CLASSES)
 		return false;
 	if(f_VintulumBombRecentlyUsed[client] > GetGameTime())
 		return false;
@@ -686,7 +687,7 @@ public bool ObjectGeneric_CanBuildSentry(int client, int &count, int &maxcount)
 bool ObjectGeneric_CanBuildSentryInternal(int client, int &count, int &maxcount)
 {
 	count = Object_GetSentryBuilding(client) == -1 ? 0 : 1;
-	maxcount = (Blacksmith_IsASmith(client) || Merchant_IsAMerchant(client)) ? 0 : 1;
+	maxcount = (Blacksmith_IsASmith(client) || Merchant_IsAMerchant(client) || IsBarracks(client)) ? 0 : 1;
 
 	return (!count && maxcount);
 }
@@ -844,6 +845,11 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 			}
 			
 			int r = 255 - g;
+			if(ZR_Get_Modifier() == KITERS_DREAM)
+			{
+				r = 0;
+				g = 0;
+			}
 			
 			int wearable = objstats.m_iWearable1;
 			if(wearable != -1)
@@ -932,6 +938,13 @@ bool Object_Interact(int client, int weapon, int obj)
 		MountedObjectInteracted = true;
 	}
 
+	if(EntityOnAllyInteract[client] && EntityOnAllyInteract[client] != INVALID_FUNCTION)
+	{
+		Call_StartFunction(null, EntityOnAllyInteract[client]);
+		Call_PushCell(client);
+		Call_PushCell(obj);
+		Call_Finish();
+	}
 	Function func = func_NPCInteract[entity];
 	if((!func || func == INVALID_FUNCTION) && GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") != -1)
 		return false;
@@ -1092,6 +1105,7 @@ int Object_MaxSupportBuildings(int client, bool ingore_glass = false)
 	maxAllowed += Building_health_attribute; 
 	maxAllowed += Blacksmith_Additional_SupportBuildings(client); 
 	maxAllowed += Merchant_Additional_SupportBuildings(client); 
+	maxAllowed += Gunsaw_Additional_SupportBuildings(client);
 	if(CvarInfiniteCash.BoolValue)
 	{
 		maxAllowed += 999;
@@ -1108,15 +1122,11 @@ int Object_MaxSupportBuildings(int client, bool ingore_glass = false)
 			maxAllowed = 1;
 	}
 
-	if(i_NormalBarracks_HexBarracksUpgrades_2[client] & ZR_BARRACKS_TROOP_CLASSES)
+	if(IsBarracks(client))
 	{
 		if(!ingore_glass)
 		{
-			if(maxAllowed > 2)
-			{
-				maxAllowed = 2;
-
-			}
+			maxAllowed = 2;
 		}
 	}
 	return maxAllowed;
@@ -1681,7 +1691,7 @@ public void ObjectGeneric_ClotTakeDamage_Post(int victim, int attacker, int infl
 		OnPostAttackUniqueWeapon(attacker, victim, weapon, i_HexCustomDamageTypes[victim]);
 #endif
 		//Do not show this event if they are attacked with DOT. Earls bleedin.
-		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+	//	if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 		{
 			Event event = CreateEvent("npc_hurt");
 			if(event) 

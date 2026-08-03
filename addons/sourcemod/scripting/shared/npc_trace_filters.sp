@@ -187,16 +187,14 @@ public bool TraceRayDontHitPlayersOrEntityCombat(int entity,int mask,any data)
 	{
 		return true;
 	}
-
 	if(entity > 0 && entity <= MaxClients) 
 	{
 		return false;
 	}
-	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
+	if(b_ThisEntityIsAProjectileForUpdateContraints[entity] && !b_IsARespawnroomVisualiser[entity])
 	{
 		return false;
 	}
-	
 	if(!b_NpcHasDied[entity])
 	{
 		return false;
@@ -205,7 +203,6 @@ public bool TraceRayDontHitPlayersOrEntityCombat(int entity,int mask,any data)
 	{
 		return true;//They blockin me
 	}
-
 	//if anything else is team
 	
 	if(GetTeam(data) == GetTeam(entity))
@@ -263,7 +260,7 @@ public bool TraceRayHitWorldOnly(int entity,int mask,any data)
 	{
 		return false;
 	}
-	if(b_ThisEntityIsAProjectileForUpdateContraints[entity])
+	if(b_ThisEntityIsAProjectileForUpdateContraints[entity] && !b_IsARespawnroomVisualiser[entity])
 	{
 		return false;
 	}

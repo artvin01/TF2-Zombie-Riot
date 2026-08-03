@@ -78,9 +78,9 @@ int MedivalVillager_ID()
 	return NPCId;
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return MedivalVillager(vecPos, vecAng, team);
+	return MedivalVillager(vecPos, vecAng, team, data);
 }
 #define MAXTRIESVILLAGER 25
 
@@ -148,8 +148,13 @@ methodmap MedivalVillager < CClotBody
 		
 		
 	}
+	property float m_flBuildingScalingMultiplier
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 	
-	public MedivalVillager(float vecPos[3], float vecAng[3], int ally)
+	public MedivalVillager(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		MedivalVillager npc = view_as<MedivalVillager>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", MinibossHealthScaling(50.0), ally));
 		
@@ -162,6 +167,15 @@ methodmap MedivalVillager < CClotBody
 		int iActivity = npc.LookupActivity("ACT_VILLAGER_RUN");
 		if(iActivity > 0) npc.StartActivity(iActivity);
 		
+		npc.m_flBuildingScalingMultiplier = 1.0;
+		if (StrContains(data, "darkage") != -1)
+		{
+			// greatly lower scaling in basic dark age
+			int maxwaves = Rounds[Rounds_Default] ? (Rounds[Rounds_Default].Length - 1) : 0;
+			if (maxwaves < 20)
+				npc.m_flBuildingScalingMultiplier *= 0.6;
+		}
+
 		npc.m_iChanged_WalkCycle = 0;
 
 		if(npc.m_iChanged_WalkCycle != 4) 	
@@ -633,6 +647,21 @@ public void MedivalVillager_ClotThink(int iNPC)
 					i_AttacksTillMegahit[spawn_index] = 10;
 					SetEntityRenderMode(spawn_index, RENDER_TRANSCOLOR);
 					SetEntityRenderColor(spawn_index, 255, 255, 255, 0);
+					
+					float mult = npc.m_flBuildingScalingMultiplier;
+					if (mult != 1.0)
+					{
+						float health = float(GetEntProp(spawn_index, Prop_Data, "m_iHealth"));
+						float maxhealth = float(GetEntProp(spawn_index, Prop_Data, "m_iMaxHealth"));
+						
+						health *= mult;
+						maxhealth *= mult;
+						
+						SetEntProp(spawn_index, Prop_Data, "m_iHealth", RoundToNearest(health));
+						SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", RoundToNearest(maxhealth));
+						
+						MedivalBuilding_MultiplyScaling(spawn_index, mult);
+					}
 				}
 			}
 		}

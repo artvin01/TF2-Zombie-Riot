@@ -56,6 +56,7 @@ static const char g_SuicideSound[][] = {
 };
 
 static int i_LaserEntityIndex[MAXENTITIES]={-1, ...};
+static bool b_PlayersPulled[MAXPLAYERS];
 
 static int NpcID;
 
@@ -77,6 +78,7 @@ void VoidUnspeakable_OnMapStart_NPC()
 	data.Precache = ClotPrecache;
 	NpcID = NPC_Add(data);
 	Zero(i_LaserEntityIndex);
+	Zero(b_PlayersPulled);
 }
 
 static void ClotPrecache()
@@ -581,6 +583,8 @@ public void VoidUnspeakable_ClotThink(int iNPC)
 		
 		return;
 	}
+	
+	VoidUnspeakable_MatterAbsorber_Pull(npc);
 
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
 	{
@@ -867,6 +871,8 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 		if(i_RaidGrantExtra[npc.index] >= 2)
 			ScaleVectorDoMulti = -400.0;
 
+		Zero(b_PlayersPulled);
+		
 		for(int EnemyLoop; EnemyLoop < MAXENTITIES; EnemyLoop ++)
 		{
 			if(IsValidEnemy(npc.index, EnemyLoop, true, true))
@@ -883,9 +889,9 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 						CClotBody npc1 = view_as<CClotBody>(EnemyLoop);
 						npc1.SetVelocity(velocity);
 					}
-					else
+					else if (0 < EnemyLoop <= MaxClients)
 					{	
-						TeleportEntity(EnemyLoop, NULL_VECTOR, NULL_VECTOR, velocity);
+						b_PlayersPulled[EnemyLoop] = true;
 					}
 					if(!IsValidEntity(i_LaserEntityIndex[EnemyLoop]))
 					{
@@ -992,11 +998,53 @@ bool VoidUnspeakable_MatterAbsorber(VoidUnspeakable npc, float gameTime)
 		npc.m_flVoidMatterAbosorbCooldown = gameTime + 35.0;
 		if(i_RaidGrantExtra[npc.index] >= 4)
 			npc.m_flVoidMatterAbosorbCooldown = gameTime + 28.0;
-
+		
+		Zero(b_PlayersPulled);
 		return true;
 	}
 
 	return false;
+}
+
+bool VoidUnspeakable_MatterAbsorber_Pull(VoidUnspeakable npc)
+{
+	if(!npc.m_flVoidMatterAbosorb)
+		return false;
+	
+	float pos[3];
+	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+	float cpos[3];
+	float velocity[3];
+	float ScaleVectorDoMulti = 300.0; // base hammer units per second speed
+	if(i_RaidGrantExtra[npc.index] >= 2)
+		ScaleVectorDoMulti = 400.0;
+	
+	ScaleVectorDoMulti *= 10.0;
+	ScaleVectorDoMulti *= GetTickInterval();
+	
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if (!b_PlayersPulled[client])
+			continue;
+		
+		if (!IsValidClient(client))
+			continue;
+		
+		GetAbsOrigin(client, cpos);
+		MakeVectorFromPoints(cpos, pos, velocity);
+		velocity[2] = 0.0;
+		
+		NormalizeVector(velocity, velocity);
+		ScaleVector(velocity, ScaleVectorDoMulti);
+		
+		float velocityPrev[3];
+		GetEntPropVector(client, Prop_Data, "m_vecVelocity", velocityPrev);
+		AddVectors(velocity, velocityPrev, velocity);
+		
+		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
+	}
+	
+	return true;
 }
 
 public void VoidUnspeakable_NPCDeath(int entity)

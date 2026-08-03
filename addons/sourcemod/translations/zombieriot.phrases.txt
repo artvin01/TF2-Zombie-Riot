@@ -114,6 +114,11 @@
 		"it"		"Contanti: {1} (+{2})"
 		"ko"		"자금: {1} (+{2})"
 	}
+	"Current Modifier"
+	{
+		"en"	"Current Modifier"
+		"ko"	"현재 모디파이어"
+	}
 	"Current Skill Points"
 	{
 		"#format"	"{1:d}"
@@ -376,12 +381,6 @@
 		"ru"		"Продать все"
 		"it"		"Vendi tutti i tuoi articoli"
 		"ko"		"모든 아이템 판매"
-	}
-	"Return to loadout Menu"
-	{
-		"en"		"Return to loadout Menu"
-		"it"		"Ritorno al menu di caricamento"
-		"ko"		"로드아웃 메뉴로 복귀"
 	}
 	"Confirm Loadout"
 	{
@@ -2059,12 +2058,66 @@
 		"it"		"La tua arma è stata potenziata a {1}:"
 		"ko"		"당신의 무기가 {1} 로 강화됨:"
 	}
+	"Pap Weapon Auto Upgraded"
+	{
+		"#format"	"{1:s}"
+		"en"		"Your weapon has been automatically enhanced to {1}:"
+		"ko"		"당신의 무기가 {1} 로 자동 강화됨:"
+	}
 	"Pap Weapon Preview"
 	{
 		"#format"	"{1:s}"
 		"en"		"Enchancement preview for {1}:"
 		"ru"		"Превью улучшений для {1}:"
 		"ko"		"{1} 의 강화 미리보기:"
+	}
+	"Pap Auto Enhancement Selected"
+	{
+		"en"		"This weapon will be automatically enhanced once you can afford it."
+		"ko"		"이 무기는 이제 가능할 때 자동으로 강화됩니다."
+	}
+	"Pap Auto Enhancement Deselected"
+	{
+		"en"		"This weapon will no longer be automatically enhanced."
+		"ko"		"이 무기는 이제 더 이상 자동으로 강화되지 않습니다."
+	}
+	"Pap Auto Enhancement Denied Multiple"
+	{
+		"en"		"Automatic enhancements for this weapon have been paused as it has multiple enhancement paths, you must choose one."
+		"ko"		"다수의 강화 경로로 인해 이 무기의 자동 강화가 중단되었습니다: 하나를 선택해야 합니다."
+	}
+	"Pap Auto Enhancement Notice"
+	{
+		"en"		"Selecting enhancements you can't afford will\nqueue them for purchase when possible."
+		"ko"		"현재 구매할 수 없는 강화를 선택 시\n가능할 때 자동 구매하도록 예약합니다."
+	}
+	"Selected For Purchase"
+	{
+		"en"		"Selected for Purchase"
+		"ko"		"구매를 위해 선택됨"
+	}
+	"Generic Bought Item"
+	{
+		"#format"	"{1:s}"
+		"en" 		"Purchased Item: {1}"
+		"pl"		"Kupiono przedmiot: {1}"
+		"ko"		"구매한 아이템: {1}"
+		"ru"		"Куплен предмет: {1}"
+	}
+	"Auto Purchase Selected"
+	{
+		"en"		"This item will be automatically purchased once you can afford it."
+		"ko"		"이 아이템은 이제 가능할 때 자동으로 구매됩니다."
+	}
+	"Auto Purchase Replaced"
+	{
+		"en"		"This item will be automatically purchased once you can afford it. The previous selection has been replaced."
+		"ko"		"이 아이템은 이제 가능할 때 자동으로 구매됩니다. 이전에 선택한 아이템을 대체합니다."
+	}
+	"Auto Purchase Deselected"
+	{
+		"en"		"This item will no longer be automatically purchased."
+		"ko"		"이 아이템은 이제 더 이상 자동으로 구매되지 않습니다."
 	}
 	"Revive Teammate tooltip"
 	{
@@ -2362,15 +2415,8 @@
 	}
 	"Credits After Selling"
 	{
-		"en" 		"Cash After Selling"
-		"fr" 		"Argent après Vente"
-		"ru" 		"After"
-		"de"		"Kredit nach verkauf"
-		"pt"		"Créditos após vender"
-		"nl"		"Krediet achter het verkopen"
-		"chi"       "出售后的积分"
-		"it"		"Contanti dopo la vendita"
-		"ko" 		"판매 후의 자금"
+		"en" 		"Post Sell"
+		"ko" 		"판매 후"
 	}
 	"MAX BARRICADES OUT CURRENTLY"
 	{
@@ -2507,6 +2553,11 @@
 		"chi"       "请花光你所有的初始现金，否则回合开始时会被清空！！!"
 		"it"		"Assicuratevi di spendere tutti i vostri soldi iniziali!"
 		"ko"		"당신의 시작 자금을 전부 사용하는걸 추천합니다!"
+	}
+	"Free Roam Spec Notice"
+	{
+		"en"		"Left click an NPC while freeroaming to spectate it."
+		"ko"		"자유 카메라 상태일 때 NPC를 보고 좌클릭하여 관전하세요."
 	}
 	"Difficulty set to"
 	{
@@ -2701,56 +2752,96 @@
 		"chi"       "这是一个简单的新手教程。按下TAB键来打开商店。"
 		"it"		"Questa è la breve esercitazione. Toccare il tabellone (TAB) per aprire il negozio."
 		"ko"		"이것은 짧은 튜토리얼입니다. 점수판 호출 (탭, Tab) 키를 눌러 상점을 여세요."
+		"pl"		"To jest krótki samouczek. Otwórz tablice wyników (TAB) aby otworzyć sklep."
 	}
-	"tutorial_2"
+	"tutorial_1_2"
 	{
-		"en"		"Good! Now Navigate to ''Weapons'' and buy any weapon you want.\nTap the scoreboard (TAB) to open the store again if it got closed.\n<--------------- The Store!                                                          "
-		"fr"		"Bien fait! Maintenant, naviguez vers «armes» et achetez l'arme que vous voulez.\nAppuyez sur TAB pour re-ouvrir la boutique s'il se ferme."
-		"ru"		"Отлично! Теперь перейдите к «оружию» и купите любое оружие.\nОткройте таблицу очков (TAB), чтобы снова открыть магазин, если он был закрыт."
-		"pt"		"Otimo! Agora navegue até a seção de armas e compre uma arma que você goste.\nAbra o placar (TAB) para abrir a loja novamente caso ela feche."
-		"nl"		"Goed! Navigeer nu naar wapens en koop een wapen naar keuze.\nOpen het scorebord (TAB) om de winkel nogmaals te open als het wordt gesloten."
-		"chi"       "好!现在导航到武器并购买任何你想要的武器。\n如果商店被关闭，你可以再次按下TAB键来打开它!"
-		"it"		"Bene! Ora vai su ''Armi'' e compra l'arma che vuoi.\nTocca il tasto (TAB) per riaprire il negozio, se è stato chiuso.\n<--------------- Il negozio!                                                          "
-		"ko"		"좋습니다! 이제 ''무기'' 항목을 따라가서 원하는 무기를 구매하세요.\n상점이 닫혔다면, 점수판 호출 (탭, Tab) 키를 다시 눌러 상점을 여세요.\n<--------------- 상점!" 
+		"en"		"Good! As youre new you can select from pre-made weapon loadouts.\nThis is so you can get a feel of the game first, before being overwhelmed by the store.\nClick on:"
+		"ko"		"좋습니다! 신규 유저이시기에 사전 제작된 무기 로드아웃을 선택할 수 있습니다.\n상점의 내용이 많기에 먼저 게임의 방식을 적응하기 위함입니다.\n이걸 선택해주세요:" 
+		"ru"		"Отлично! Так как вы новичок вы можете выбрать из приготовленный снаряжений.\nЭто сделано для того что бы вы смогли адаптироваться к игре перед там как быть перегруженным магазином.\nНажми на:"
+		"pl"		"Dobrze! Skoro jesteś tutaj po raz pierwszy możesz wybrać z kilku przygotowanych zestawów wyposażenia.\nJest to robione aby móc doświadczyć grę na początku bez bycia przytłoczonym przez system sklepu.\nKliknij na:"
+	}
+	"tutorial_1_3"
+	{
+		"en"		"Good! In here you can also make manual loadouts, but...\nFor now Click on:"
+		"ko"		"좋습니다! 여기서는 수동 로드아웃 역시 만들 수 있습니다만...\n지금은 이걸 선택해주세요:" 
+		"ru"		"Хорошо! Здесь можно сделать и собственные снаряжения, но...\nПока что нажми на:"
+		"pl"		"Dobrze! Tutaj możesz też robić swoje własne zestawy wyposażenia ale...\nNarazie kliknij na:"
+	}
+	"tutorial_1_4"
+	{
+		"en"		"Good! In here you can select an automatic loadout for now\nClick on what you feel like playing!"
+		"ko"		"좋습니다! 이곳에서 자동 로드아웃을 선택하실 수 있습니다.\n플레이하고 싶은 것을 선택해주세요!" 
+		"ru"		"Замечательно! здесь ты можешь пока что выбрать автоматичесие снаряжение\nНажмни на то что с чем хочешь играть!"
+	}
+	"tutorial_fail_map"
+	{
+		"en"		"It seems that this map prevents the tutorial from playing right....\nHard to explain, but you have to buy weapons from the store on the left\nWait till next map for the tutorial to be correct."
+		"ko"		"아무래도 이 맵이 튜토리얼의 실행을 방해하는 것 같습니다...\n설명하기 어렵지만, 왼쪽의 상점(탭, Tab)에서 무기를 구매하셔야 합니다.\n올바른 튜토리얼을 위해 다음 맵까지 기다려주세요." 
+		"ru"		"Похоже Эта карта не даёт начать обучение...\nТрудно объяснить, но пока что тебе нужно покупать оружие в магазине слева\nПодожди пока карта поменяется что бы обучение прошло правильно."
+		"pl"		"Dobrze! Tutaj możesz wybrać przygotowany zestaw wyposażenia.\nKliknij na ten którym chcesz grać!"
+	}
+	"tutorial_fail_map"
+	{
+		"en"		"It seems that this map prevents the tutorial from playing right....\nHard to explain, but you have to buy weapons from the store on the left(TAB)\nWait till next map for the tutorial to be correct."
+		"pl"		"Wygląda na to, że aktulana mapa blokuje tutorial od poprawnego działania...\nTrudno wytłumaczyć, ale musisz kupować bronie w skelepie po lewo(TAB)\nPoczekaj na następną mapę aby tutorial działał poprawnie."
+	}
+	"tutorial_Storelocation"
+	{
+		"en"		"||| The store is here! |||\n||| Check below/around this text! |||"
+		"ko"		"||| 상점은 여기입니다! |||\n||| 이 텍스트 아래/주변을 확인하세요! |||" 
+		"ru"		"||| Магазин здесь! |||\n||| Check снизу/вокруг этого текста! |||
+		"pl"		"||| Sklep jest tutaj! |||\n||| Sprawdź pod/wokół tego tekstu! |||"
+	}
+	"tutorial_storeclosed_warning"
+	{
+		"en"		"Tap the scoreboard (TAB) to open the store again, its currently not open!"
+		"ko"		"점수판 호출 (탭, Tab) 키를 눌러 다시 상점을 여세요, 현재 열려있지 않습니다!" 
+		"ru"		"Нажми на кнопку таблицы очков (по умолчанию TAB) что бы снова открыть магазин,Сейчас он не открыт!"
+		"pl"		"Kliknij tablice wyników (TAB) aby otworzyć sklep ponownie, aktualnie jest zamknięty!"
 	}
 	"tutorial_3"
 	{
-		"en"		"Only have 1 weapon at a time at the start!\nBuy better guns and upgrades in later waves and survive to the end!\nMore help is in the store under ''help?''\nTeamwork is the key to victory!"
-		"fr"		"Vous avez maintenant votre arme, vous êtes prêt.\nAchetez des armes meilleures, ainsi que des améliorations, dans des vagues futures,\net survivez jusqu'à la fin!\nDe l'aide additionelle se trove dans la boutique, sous «aide»."
-		"ru"		"Теперь, когда у вас есть оружие, вы готовы.\nКупите лучшее оружие и улучшения в следующих волнах и выживите!\nПодробности можно найти в магазине в разделе «Помощь?»\nКомандная работа - ключ к победе!"
-		"pt"		"Agora que você tem uma arma, você está pronto(a).\nCompre armas melhores, e as aprimore em ondas posteriores e sobreviva ate o final!\nÉ possivel adquirir mais ajuda no menu na opção de ''ajuda?''\nTrabalho em equipe é a chava para a vitória!"
-		"nl"		"Nu dat je een wapen hebt ben je voorbereid.\nKoop betere wapens en upgrades in latere golven en probeer tot het einde te overleven!\nVerdere hulp vind je onder de winkel bij ''help?''\nTeamwork is de sleutel voor victorie!"
-		"chi"       "现在你已经拥有了武器，你准备好了吗？\n去买更好的枪和升级你的武器，生存到最后!\n更多的帮助可以在“帮助”中查看\n团队合作是胜利的关键!"
-		"it"		"All'inizio, hai solo un'arma per volta!\nCompra armi e potenziamenti migliori nelle ondate successive e sopravvivi fino alla fine!"
-		"ko"		"처음에는 무기를 한 번에 하나만 가지세요!\n이후의 웨이브를 생존하여 더 나은 무기와 개선을 구매하세요!\n더 많은 정보를 보려면 상점 밑의 ''도움'' 버튼을 확인하세요.\n팀워크가 바로 승리의 지름길입니다!"
+		"en"		"You can buy weapons in the store yourself too once you get the hang of the gameplay!\nBuy better guns and upgrades in later waves and survive to the end!\nMore help is in the store under ''help?''"
+		"ko"		"게임의 방식에 적응하셨다면 직접 무기를 구매하실 수도 있습니다!\n이후의 웨이브를 생존하기 위해 더 나은 무기와 개선을 구매하세요!\n더 많은 정보를 보려면 상점 밑의 ''도움'' 버튼을 확인하세요." 
+		"ru"		"Ты можешь купить оружия в магазне самостоятельно когда поймешь базу геймплея!\nПокупай более сильные пушки и позже улучшай их и выживи до конца!\nБольше помощи можно найти в магазине в разделе ''помощь?''"
+		"pl"		"Możesz samodzielnie kupić bronie w sklepie, kiedy przyzwyczaisz się do grania\nKup lepsze bronie i ulepszenia w późniejszych falach i przetrwaj do końca!\nWięcej pomocy jest w sklepie pod sekcją ''pomoc?/help?''"
 	}
 	"tutorial_4"
 	{
 		"en"		"One last thing! In your hud and enemy huds you will see various symbols.\n☛Means melee damage.➶Means Ranged damage.☖ Means damage bonus (npcs usually)\nPercentage shows what its multiplied by."
+		"ru"		"И напоследок! В твоём хаде и хаде врагов будут разные символы.\n☛Озночает Урон ближнего боя.➶Озночает урон дальнего боя.☖ Озночает бонус урона(обычно для НПС)\nПроценты Показывают насколько они умножены."
 		"it"		"Un'ultima cosa! Nel vostro hud e in quello dei nemici vedrete vari simboli.\n☛Significa danno da mischia.➶Significa danno a distanza.☖ Significa bonus di danno (di solito per gli npc)\nLa percentuale mostra per quanto è stata moltiplicata."
-		"ko"		"마지막으로! 당신과 적의 허드에는 여러 심볼이 보이실 겁니다.\n☛(손가락)은 근접 피해를 뜻합니다.➶(화살)은 원거리 피해를 뜻합니다.☖는 피해량 보너스를 의미합니다.(일반적으로 NPC에게 해당)\n퍼센테이지는 그것의 곱해진 값을 나타냅니다."
+		"ko"		"마지막으로! 당신과 적의 허드에는 여러 심볼이 보이실 겁니다.\n☛(손가락)은 근접 피해를 뜻합니다.➶(화살)은 원거리 피해를 뜻합니다.☖는 피해량 보너스를 의미합니다.(일반적으로 NPC에게 해당)\n퍼센트는 해당 수치의 배율을 나타냅니다."
+		"pl"		"Jeszcze jedna rzecz! W twoim interfejsie na dole zobaczysz różne symbole.\n☛oznacza obrażenia z bliska.➶Oznacza obrażenia z daleka.☖Oznacza zwiększenie obrażeń(zwykle dla przeciwników)\nProcent wskazuje o ile jest mnożone."
 	}
 	"tutorial_5"
 	{
 		"en"		"You will also notice that it highlights!\nIf you deal/take the corresponding type of damage, it will get an underscore!\nif you take/deal melee damage ☛will lightup."
+		"ru"		"Ты замечишь что они подсвечиваются!\nЕсли ты наносишь/получаешь соответсвенный урон,но подчеркнётся!\nЕсли ты получил/нанёс рукопашный урон ☛ подсветится."
 		"it"		"Si noterà anche che si evidenzia!\nSe si infligge/riceve il tipo di danno corrispondente, si ottiene un trattino basso!\nSe si infligge/riceve danno in mischia, si illuminerà ☛."
-		"ko"		"그리고 이 심볼이 가끔씩 밝아지는 것을 알아차리셨을 겁니다!\n해당 유형의 피해를 받거나, 해당 유형으로 피해를 주면, 그 심볼에 밑줄이 그어집니다.\n예시로 근접 피해를 가하거나, 근접 피해로 공격 받았다면, ☛가 하이라이트로 표시됩니다."
+		"ko"		"그리고 이 심볼이 가끔씩 강조되는 것을 알아차리셨을 겁니다!\n해당 유형의 피해를 받거나, 해당 유형으로 피해를 주거나 받으면, 그 심볼에 밑줄이 그어집니다.\n예시로 근접 피해를 가하거나, 근접 피해로 공격 받았다면, ☛가 강조 표시됩니다."
+		"pl"		"Zobaczysz też, że się podświetlają!\nKiedy dostaniesz/zadaż obrażenia danego typu to ten typ się podświetli!\nJeśli zadasz obrażenia z broni ręcznej ☛się podświetli."
 	}
 	"Tutorial Show Hint Perk Machine"
 	{
 		"en"		"Use this machine to get a boost to yourself!\nSelect what you want!\nHold crouch to see its effects when selecting!"
+		"ru"		"Используйте эту машину что бы усилить себя!\nВыбери что хочешь!\nВ присяди можно увидеть эффекты когда выбирваешь просто нажми!"
 		"it"		"Usa questa macchina per darti una spinta! \nSeleziona ciò che vuoi! \nTieni premuto il tasto crouch per vedere i suoi effetti durante la selezione!"
-		"ko"		"이 기계를 사용하여 추가 버프를 받으세요!\n원하는 것을 선택하세요!\n앉기를 꾹 누르면 어떤 효과가 있는지 미리 볼 수 있습니다!"
+		"ko"		"이 기계를 사용하여 추가 버프를 받으세요!\n원하는 것을 선택하세요!\n웅크린 상태로 선택하면 어떤 효과가 있는지 미리 볼 수 있습니다!"
 	}
 	"Tutorial Show Hint Perk Machine Build One"
 	{
-		"en"		"There's no perk machine!\nTry building one, go to ''Builder Gear'' and grab a wrench.\nAccess its menu with R!\nGet enough metal and/or upgrades for more builder space!"
+		"en"		"There's no perk machine!\nTry building one, go to ''Builder Gear'' and grab a wrench.\nAccess its menu with R!\nUnder ''Support Buildings''\nGet enough metal and/or upgrades for more builder space!"
+		"ru"		"У вас нету Машины навыков!\nПопробуй построить её, зайди в ''снаряжение строителя'' возьми гаечный ключ.\nЗайди в меню через R\nКупи или получи достаточно маталла и/или улучшения для размещения больше построек."
 		"it"		"Non c'è una macchina per i vantaggi!\nProva a costruirne una, vai a ''Attrezzatura del costruttore'' e prendi una chiave inglese.\nAccedi al suo menu con R!\nOttieni abbastanza metallo e/o potenziamenti per avere più spazio per il costruttore!"
-		"ko"		"퍽 기계가 없습니다!\n''건축가 장비''로 들어가 렌치를 장착하고 렌치로 해당 구조물을 건설할 수 있습니다.\nR 키를 눌러 구조물 메뉴을 여세요!\n충분한 금속이 필요하며 더 많이 건설하려면 건축가 개선이 더 필요합니다!"
+		"ko"		"퍽 기계가 없습니다!\n''건축가 장비''로 들어가 렌치를 장착하고 렌치로 해당 구조물을 건설할 수 있습니다.\nR 키를 눌러 구조물 메뉴을 여세요!\n''지원 구조물''에 있습니다.\n충분한 금속이 필요하며 더 많이 건설하려면 건축가 개선이 더 필요합니다!"
+		"pl"		"Nie ma maszyny ulepszeń!\nSprobój zbudować jedną, idż do ''Rzeczy Budownicze'' i załóż klucz.\nOtwórz jego menu z R!\nZdobądź wystarczająco metalu lub ulepszeń budowlanych dla więcej miejsca na budowle."
 	}
 	"Tutorial Show Hint Pack a Punch"
 	{
 		"en"		"Use this machine with your holding weapon to upgrade it with a cost!\nNot all weapons can be upgraded!"
+		"ru"		"Используй эту машину вместе с оружием в руках что бы улучшить его кредитами\nне все оружия можно улучшить!"
 		"it"		"Usa questa macchina con l'arma che tieni in mano per potenziarla con un costo!"
 		"ko"		"이 기계를 사용하여 현재 당신이 들고 있는 무기를 자금을 소모하여 개선하세요!\n모든 무기들이 개선이 가능한건 아닙니다!"
 	}
@@ -2792,13 +2883,8 @@
 	}
 	"Loadouts"
 	{
-		"en"		"Loadouts"
-		"fr"		"Chargements"
-		///"ru"		"Снаряжения"
-		"pt"		"Loadouts"
-		"chi"       "预设"
-		"it"		"Equipaggiamti"
-		"ko"		"로드아웃"
+		"en" 		"Loadouts/Autoloadouts"
+		"ko"		"로드아웃/자동 로드아웃"
 	}
 	"All Items"
 	{
@@ -2826,7 +2912,7 @@
 	{
 		"en"		"Favorite this loadout to autobuy it when you connect"
 		"it"		"Preferisci questo equipaggiamento per acquistarlo automaticamente quando ti connetti"
-		"ko"		"로드아웃 즐겨찾기(접속했을때 로드아웃의 아이템 자동 구매)"
+		"ko"		"로드아웃 즐겨찾기(접속 시 자동 구매)"
 	}
 	"Un Favorite"
 	{
@@ -3113,17 +3199,22 @@
 	}
 	"Cant Display"
 	{
-		"en"		"Your Holding weapon cant be shown in the shop..."
+		"en"		"Your active weapon can't be shown in the shop..."
 		"ru"		"Ваше Оружие в руках нельзя показать в магазине..."
 		"it"		"L'arma di mantenimento non può essere mostrata nel negozio..."
 		"ko"		"당신이 들고 있는 무기는 상점에 표시될 수 없습니다..."
 	}
-	"Cant Display Enhance"
+	"Cant Display Active Enhance"
 	{
-		"en"		"Your Holding weapon cant be enhanced..."
+		"en"		"Your active weapon can't be enhanced..."
 		"ru"		"Ваше Оружие в руках не может быть улучшено..."
 		"it"		"L'arma di mantenimento non può essere mostrata nel negozio..."
 		"ko"		"당신이 들고 있는 무기는 강화가 불가능합니다..."
+	}
+	"Cant Display Last Bought Enhance"
+	{
+		"en"		"Your last bought weapon can't be enhanced (or you haven't bought a weapon yet)..."
+		"ko"		"당신이 마지막으로 구매한 무기는 강화가 불가능합니다(혹은 아직 아무 것도 사지 않았거나요)..."
 	}
 	"Move Hud Down"
 	{
@@ -3251,6 +3342,12 @@
 		"ko"		"지베리아 게릴라의 지원이 도착했습니다."
 		"it"		"I Guerriglieri Ziberiani sono qui per aiutare."
 	}
+	"Vesta_Survival_Bob_Message"
+	{
+		"en"		"Bob the First and his army found us and decided to help us fight the Outpost. Bob needs our help after we're finished here. He hopes that the Vestans started this....."
+		"ko"		"밥 1세와 그의 군대가 우리를 발견했으며, 전초기지와의 전투를 돕기로 결정합니다.\n이곳의 일이 끝나면 밥이 우리의 도움을 필요로 할 것입니다.\n그가 베스타인들이 먼저 이 상황을 시작했길 바라는군요..."
+		"it"		"I Guerriglieri Ziberiani sono qui per aiutare."
+	}
 	"RadioTower_here_Message"
 	{
 		"en"		"Radiotower is here, Prepare."
@@ -3263,10 +3360,15 @@
 		"it"		"Gli Expidonsan stanno cercando di inviare aiuti, ma il vuoto interferisce, solo i guardiani possono arrivare qui."
 		"ko"		"엑스피돈사가 지원을 보내려고 시도했지만, 공허의 간섭으로 인하여, 가두스들만 이 곳에 도착할 수 있었습니다."
 	}
-	"Void_Survival_Help_Message"
+	"Void_Survival_Help_Message_1"
 	{
-		"en"		"Expidonsan's are here to help us defeat this void outbreak."
-		"ko"		"엑스피돈사가 공허 재앙을 막기 위해 당신에게 합류합니다."
+		"en"		"Expidonsan scouts have located us. They’ve sent word for someone to arrive as soon as possible. Until then, they will aid us."
+		"ko"		"엑스피돈사 정찰병들이 우리의 위치를 확인했습니다.\n어떤 이에게 최대한 빠르게 도착하라고 전달한 것 같군요.\n그때까지는, 이들이 우릴 도울 것입니다."
+	}
+	"Void_Survival_Help_Message_2"
+	{
+		"en"		"Sensal has finally reached us to defeat this void outbreak."
+		"ko"		"센살이 공허 재앙을 막기 위해 드디어 당신에게 합류합니다."
 	}
 	"Umbral_Outbreak_Help_Message"
 	{
@@ -4769,11 +4871,11 @@
 	}
 	"Xeno Desc"
 	{
-		"en"	"After defeating Blitzkrieg, we start an infection we last saw in Rogue 1, the Xeno infection. It seems to be mutating their victims with new abilities! We need to take this out before it gets bad."
+		"en"	"After defeating Blitzkrieg, we start seeing an infection we last saw in Rogue 1, the Xeno infection. It seems to be mutating their victims with new abilities! We need to take this out before it gets bad."
 		"fr"	"Les ennemis sont infectés avec l'infection Xéno, et reçoivent de nouvelles abilités!"
 		"chi"	"外界感染到来，僵尸们的变异也更加严重了。"
 		"it"	"L'infezione Xeno è arrivata, mutando i nemici con nuove abilità!"
-		"ko" 	"블리츠크리그를 쓰러뜨린 후, 로그라이크1에서 목격한 제노 감염원이 퍼집니다. 희생자들을 새로운 능력과 함께 변이시키는군요! 상황이 악화되기 전에 해결해야 합니다."
+		"ko" 	"블리츠크리그를 쓰러뜨린 후, 로그라이크1에서 목격한 감염원이 퍼지는걸 발견합니다. 희생자들을 새로운 능력과 함께 변이시키는군요! 상황이 악화되기 전에 해결해야 합니다."
 	}
 	"Silvester Waldch Desc"
 	{
@@ -5308,6 +5410,11 @@
 		"chi"	"Niko [Oneshot]"
 		"it"	"Niko Oneshot"
 		"ko"	"니코 (원샷)"
+	}
+	"Claire Fpe"
+	{
+		"en"	"Claire Fpe"
+		"ko"	"클레어 (기초 종이 교육)"
 	}
 	"Skeleboy"
 	{
@@ -6002,6 +6109,16 @@
 	{
 		"#format"	"{1:.1f}"
 		"en" 		"Card on cooldown ({1} seconds!)"
-		"ko"		"책장 쿨다운 상태 ({1}초)"
+		"ko"		"책장 쿨타임 상태 ({1}초)"
+	}
+	"Low On Ammo"
+	{
+		"en"		"You're low on ammo! Collect more ammo by interacting with ammo boxes or\nin the weapon's store page. (Open the menu and press [H])"
+		"ko"		"탄약이 부족합니다! 탄약 상자와 상호작용하거나 무기의 상점 페이지에서\n탄약을 구매하세요. (메뉴를 열고 H키를 누르세요!)"
+	}
+	"Show Ammo Box"
+	{
+		"en"		"Ammo box here!"
+		"ko"		"탄약 상자는 여기 있습니다!"
 	}
 }

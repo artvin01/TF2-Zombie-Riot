@@ -257,31 +257,26 @@ public void Construction_Alyx_Collect()
 
 public void GiveCash_Base1()
 {
-	CurrentCash += 500;
 	GlobalExtraCash += 500;
 	CPrintToChatAll("%t", "Gained Material", 500, "Cash");
 }
 public void GiveCash_Base2()
 {
-	CurrentCash += 1500;
 	GlobalExtraCash += 1500;
 	CPrintToChatAll("%t", "Gained Material", 1500, "Cash");
 }
 public void GiveCash_Base3()
 {
-	CurrentCash += 3000;
 	GlobalExtraCash += 3000;
 	CPrintToChatAll("%t", "Gained Material", 3000, "Cash");
 }
 public void GiveCash_Base4()
 {
-	CurrentCash += 5000;
 	GlobalExtraCash += 5000;
 	CPrintToChatAll("%t", "Gained Material", 5000, "Cash");
 }
 public void GiveCash_2000()
 {
-	CurrentCash += 2000;
 	GlobalExtraCash += 2000;
 	CPrintToChatAll("%t", "Gained Material", 2000, "Cash");
 }

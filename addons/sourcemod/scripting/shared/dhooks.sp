@@ -784,7 +784,7 @@ public MRESReturn DHook_RocketExplodePre(int entity, DHookParam params)
 		{
 			float explosionRadius = 80.0;
 			b_NpcIsTeamkiller[entity] = true;
-			Explode_Logic_Custom(1.0, entity, entity, -1,_,explosionRadius,1.0,1.0,_,99,_,_,RocketJumpManualDo);
+			Explode_Logic_Custom(0.0, entity, entity, -1,_,explosionRadius,1.0,1.0,_,99,_,_,RocketJumpManualDo);
 			b_NpcIsTeamkiller[entity] = false;
 		}
 #endif
@@ -843,10 +843,10 @@ static float RocketJumpManualDo(int attacker, int victim, float damage, int weap
 {
 	int owner = GetEntPropEnt(attacker, Prop_Send, "m_hOwnerEntity");
 	if(owner != victim)
-		return (-damage); //Remove dmg
+		return 0.0; //Remove dmg
 		
 	if((GetEntityFlags(owner) & FL_ONGROUND))
-		return (-damage); //Remove dmg
+		return 0.0; //Remove dmg
 		
 	float GrenadePos[3];
 	GetEntPropVector(attacker, Prop_Data, "m_vecAbsOrigin", GrenadePos);
@@ -863,7 +863,7 @@ static float RocketJumpManualDo(int attacker, int victim, float damage, int weap
 	TeleportEntity(owner, NULL_VECTOR, NULL_VECTOR, velocity);
 	TF2_AddCondition(owner, TFCond_BlastJumping, 1.0);
 	Wkit_Soldin_Effect(owner);
-	return (-damage); //Remove dmg
+	return 0.0; //Remove dmg
 }
 #endif
 
@@ -983,7 +983,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			{
 				return false;
 			}
-			if(i_IsABuilding[entity2] && RaidbossIgnoreBuildingsLogic(2))
+			if(i_IsABuilding[entity2] && (RaidbossIgnoreBuildingsLogic(2) || ZR_Get_Modifier() == KITERS_DREAM))
 			{
 				return false;
 			}
@@ -1000,7 +1000,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				int EntityOwner = i_WandOwner[entity2];
 				if(ShieldDeleteProjectileCheck(EntityOwner, entity1))
 				{
-					if(func_WandOnTouchReturn(entity1))
+					if(func_WandOnTouchReturn(entity1) != INVALID_FUNCTION)
 					{
 						//make it act as if it collided with the world.
 						Wand_Base_StartTouch(entity1, 0);
@@ -1461,7 +1461,8 @@ public MRESReturn DHook_ForceRespawn(int client)
 		if(GetClientTeam(client) != 3)
 			SetTeam(client, 3);
 #endif
-		TF2Util_SetPlayerRespawnTimeOverride(client, FAR_FUTURE);
+	//	TF2Util_SetPlayerRespawnTimeOverride(client, FAR_FUTURE);
+	//for what reason?
 		return MRES_Supercede;
 	}
 	
@@ -1544,14 +1545,14 @@ public MRESReturn DHook_ForceRespawn(int client)
 		i_AmountDowned[client] = 0;
 	f_TimeAfterSpawn[client] = GetGameTime() + 1.0;
 
-	/*
-	if(IsRespawning && Dungeon_Mode())
+	if(f_WasRecentlyRevivedViaNonWave[client] < GetGameTime() && Dungeon_Mode())
 	{
+		//tele to base spawn yippie
 		CreateTimer(0.1, Dhook_TeleportToCenter, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
 		return MRES_Ignored;
 	}
-	*/
-	if(Construction_Mode() || BetWar_Mode())
+	
+	if(Construction_Mode() || BetWar_Mode() || Dungeon_Mode())
 		return MRES_Ignored;
 #endif
 	
@@ -1821,10 +1822,10 @@ void DHook_ScoutSecondaryFireAbilityDelay(int ref)
 			if(Active != entity)
 				return;
 #if defined ZR
-			Enforcer_AbilityM2(client, entity, 1, 5, 1.25, true);
+			Enforcer_AbilityM2(client, entity, 1, 5, 1.25, true, 1);
 #endif
-			SetEntPropFloat(entity, Prop_Send, "m_flNextSecondaryAttack", GetGameTime() + 4.0);
-			Ability_Apply_Cooldown(client, 2, 4.0);
+			SetEntPropFloat(entity, Prop_Send, "m_flNextSecondaryAttack", GetGameTime() + 2.5);
+			Ability_Apply_Cooldown(client, 2, 2.5);
 		}
 	}
 }
@@ -1903,7 +1904,7 @@ public MRESReturn Dhook_BlowHorn_Post(int entity)
 */
 public MRESReturn Dhook_PulseFlagBuff(Address pPlayerShared)
 {
-	int client = TF2Util_GetPlayerFromSharedAddress(pPlayerShared);
+	int client = GetPlayerFromShared(pPlayerShared);
 
 	if(PersonInitiatedHornBlow[client])
 	{

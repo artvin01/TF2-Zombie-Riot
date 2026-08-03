@@ -17,6 +17,8 @@ static const char g_HurtSounds[][] = {
 	")physics/metal/metal_box_impact_bullet3.wav"
 };
 
+static int NPCId;
+
 void VestaRadiomast_OnMapStart_NPC()
 {
 	NPCData data;
@@ -28,7 +30,12 @@ void VestaRadiomast_OnMapStart_NPC()
 	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
-	NPC_Add(data);
+	NPCId=NPC_Add(data);
+}
+
+int VictorianRadiomast_ID()
+{
+	return NPCId;
 }
 
 static void ClotPrecache()
@@ -57,6 +64,12 @@ methodmap VestaRadiomast < CClotBody
 	public void PlayDeathSound() 
 	{
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, 0.3);
+	}
+	
+	property float m_flSpawnDelay
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
 	}
 	
 	public VestaRadiomast(float vecPos[3], float vecAng[3], int ally, const char[] data)
@@ -104,23 +117,25 @@ methodmap VestaRadiomast < CClotBody
 		npc.m_bLostHalfHealth = false;
 		npc.Anger = false;
 		npc.m_bFUCKYOU = (StrContains(data, "death_func") != -1);
-		npc.m_flNextMeleeAttack = 0.0;
+		npc.m_flSpawnDelay = 0.0;
 		
 		npc.m_flMeleeArmor = 2.5;
-		npc.m_flRangedArmor = 1.25;
+		npc.m_flRangedArmor = 0.9;
 		
-		int Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 1000.0);
+		int Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 1000.0, .NeedLOSPlayer = true);
 		switch(Decicion)
 		{
 			case 2:
 			{
-				Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 500.0);
+				Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 500.0, .NeedLOSPlayer = true);
 				if(Decicion == 2)
 				{
-					Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 250.0);
+					Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 250.0, .NeedLOSPlayer = true);
 					if(Decicion == 2)
 					{
-						Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 0.0);
+						Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 0.0, .NeedLOSPlayer = true);
+						if(Decicion == 2)
+							TeleportDiversioToRandLocation(npc.index, true, 1500.0, 0.0);
 					}
 				}
 			}
@@ -197,9 +212,7 @@ public void VestaRadiomast_ClotThink(int iNPC)
 				ApplyStatusEffect(npc.index, client, "Call To Vesta", 0.5);
 		}
 	}
-	//beep say
-	//make it affected by attack speed, idk
-	if(Waves_IsEmpty() && npc.m_flNextMeleeAttack < gameTime)
+	if(Waves_IsEmpty() && npc.m_flSpawnDelay < gameTime)
 	{
 		int ISVOLI = 4;
 		int VESTA = RoundToNearest(MultiGlobalEnemyBoss * 1.2); 
@@ -385,16 +398,15 @@ public void VestaRadiomast_ClotThink(int iNPC)
 				}
 			}
 		}
-		npc.m_flNextMeleeAttack = gameTime+InfiniteWave;
+		NPC_CreateByName("npc_invisible_trigger", -1, {0.0,0.0,0.0}, {0.0,0.0,0.0}, TFTeam_Stalkers);
+		npc.m_flSpawnDelay = gameTime+InfiniteWave;
 	}
 
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
 		if(entity != npc.index && entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == team)
-		{
 			ApplyStatusEffect(npc.index, entity, "Call To Vesta", 0.5);
-		}
 	}
 
 	if(!npc.Anger && npc.m_bLostHalfHealth)
@@ -404,7 +416,7 @@ public void VestaRadiomast_ClotThink(int iNPC)
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
 
 		char Adddeta[512];
-		FormatEx(Adddeta, sizeof(Adddeta), "target%i;", npc.index);
+		FormatEx(Adddeta, sizeof(Adddeta), "target%i;", EntIndexToEntRef(npc.index));
 		for(int i=1; i<=4; i++)
 		{
 			int other = NPC_CreateByName("npc_radioguard", -1, pos, ang, team, Adddeta);
@@ -512,9 +524,7 @@ void VestaRadiomastSpawnEnemy(int iNPC, char[] plugin_name, int health = 0, floa
 	{
 		count /= 2;
 		if(count < 1)
-		{
 			count = 1;
-		}
 		for(int Spawns; Spawns <= count; Spawns++)
 		{
 			float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);

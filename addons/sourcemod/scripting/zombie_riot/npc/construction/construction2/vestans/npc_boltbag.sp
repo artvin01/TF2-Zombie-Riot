@@ -39,7 +39,7 @@ void Vestan_Resource_Collector_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Resource Collector");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_resource_collector");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_ironshield");
+	strcopy(data.Icon, sizeof(data.Icon), "scout");
 	data.IconCustom = false;
 	data.Flags = 0;
 	data.Category = Type_Vesta;
@@ -149,6 +149,7 @@ static void ResourceCollector_ClotThink(int iNPC)
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.PlayHurtSound();
+		npc.m_blPlayHurtAnimation = false;
 	}
 	
 	if(npc.m_flNextThinkTime > GetGameTime(npc.index))
@@ -202,10 +203,10 @@ static void ResourceCollector_ClotThink(int iNPC)
 static Action ResourceCollector_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
 	ResourceCollector npc = view_as<ResourceCollector>(victim);
-		
+	
 	if(attacker <= 0)
 		return Plugin_Continue;
-		
+	
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
 	{
 		npc.m_flHeadshotCooldown = GetGameTime(npc.index) + DEFAULT_HURTDELAY;

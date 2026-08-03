@@ -53,6 +53,7 @@ static const char PlayerModelsCustom[][] =
 	"models/sasamin/oneshot/zombie_riot_edit/niko_05.mdl",
 	"models/bots/skeleton_sniper/skeleton_sniper.mdl",
 	"models/zombie_riot/player_model_add/model_player_2_1.mdl",
+	"models/vsj/fpe_claire/zr_port/claire_pm.mdl",
 };
 
 
@@ -63,6 +64,7 @@ static const char PlayerCustomHands[][] =
 	"models/sasamin/oneshot/zombie_riot_edit/niko_arms_01.mdl",
 	"models/bots/skeleton_sniper/skeleton_sniper.mdl",
 	"models/zombie_riot/player_model_add/model_player_hands_1_5.mdl",
+	"models/vsj/fpe_claire/zr_port/claire_carms.mdl",
 };
 
 int PlayerCustomModelBodyGroup[] =
@@ -72,6 +74,7 @@ int PlayerCustomModelBodyGroup[] =
 	0,
 	0,
 	2,
+	0,
 };
 
 enum
@@ -81,6 +84,7 @@ enum
 	NIKO_2 = 2,
 	SKELEBOY = 3,
 	KLEINER = 4,
+	CLAIRE_FPE = 5,
 }
 
 static int HandIndex[10];
@@ -198,7 +202,7 @@ void OverridePlayerModel(int client, int index = -1, bool DontShowCosmetics = fa
 }
 
 #if defined ZR
-static void GetTeamOverride(int &team)
+void ViewChange_TeamOverride(int &team)
 {
 	if(ZR_Get_Modifier() == SECONDARY_MERCS)
 		team = 3;
@@ -234,7 +238,11 @@ void ViewChange_PlayerModel(int client)
 		
 		if(TeutonType[client] == TEUTON_NONE)
 		{
-			if(i_HealthBeforeSuit[client] == 0 && Store_HasNamedItem(client, "Expidonsan Research Card") == 0)
+			bool robot = (i_HealthBeforeSuit[client] || Store_HasNamedItem(client, "Expidonsan Research Card"));
+			
+			Gunsaw_PlayerModel(client, robot);
+			
+			if(!robot)
 			{
 				int index;
 				int sound = -1;
@@ -315,7 +323,7 @@ void ViewChange_PlayerModel(int client)
 		
 		SetEntProp(entity, Prop_Send, "m_fEffects", 129);
 #if defined ZR
-		GetTeamOverride(team);
+		ViewChange_TeamOverride(team);
 #endif
 		SetTeam(entity, team);
 		SetEntProp(entity, Prop_Send, "m_nSkin", SetSkin);
@@ -354,15 +362,15 @@ public void AntiSameFrameUpdateRemove0(int client)
 }
 
 
-void Viewchange_UpdateDelay(int client)
+void Viewchange_UpdateDelay(int client, int frames = 1)
 {
-	RequestFrame(Viewchange_UpdateDelay_Internal, EntIndexToEntRef(client));
+	RequestFrames(Viewchange_UpdateDelay_Internal, frames, EntIndexToEntRef(client));
 }
 
 void Viewchange_UpdateDelay_Internal(int ref)
 {
 	int client = EntRefToEntIndex(ref);
-	if(IsValidClient(client))
+	if(!IsValidClient(client))
 		return;
 
 	ViewChange_Update(client);
@@ -458,7 +466,7 @@ void ViewChange_Switch(int client, int active, const char[] classname)
 			
 			int team = GetClientTeam(client);
 #if defined ZR
-			GetTeamOverride(team);
+			ViewChange_TeamOverride(team);
 #endif
 			SetTeam(entity, team);
 			SetEntProp(entity, Prop_Send, "m_nSkin", team-2);
@@ -524,7 +532,7 @@ void ViewChange_Switch(int client, int active, const char[] classname)
 
 				SetEntProp(entity, Prop_Send, "m_fEffects", 129);
 #if defined ZR
-				GetTeamOverride(team);
+				ViewChange_TeamOverride(team);
 #endif
 				SetTeam(entity, team);
 				SetEntProp(entity, Prop_Send, "m_nSkin", team-2);

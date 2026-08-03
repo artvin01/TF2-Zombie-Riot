@@ -198,6 +198,7 @@ static void GrillingUse(int client, int entity)
 		HealEntityGlobal(owner, client, healing, _, 3.0);
 		Building_GiveRewardsUse(client, owner, 15, true, 0.4, true);
 		ObjectTinkerGrill_UpdateWearables(entity, Selling[owner].Length);
+		Gunsaw_Monologue_UseFridge(client);
 
 		ClientCommand(client, "playgamesound items/smallmedkit1.wav");
 		ClientCommand(client, "playgamesound vo/sandwicheat09.mp3");
@@ -238,7 +239,7 @@ static void GrillingMenu(int client, const char[] msg = "")
 	char buffer[64];
 
 	Menu menu = new Menu(GrillingMenuH);
-	AnyMenuOpen[client] = 1.0;
+	AnyMenuOpen[client] = 1;
 
 	if(msg[0])
 	{
@@ -308,17 +309,17 @@ static int GrillingMenuH(Menu menu, MenuAction action, int client, int choice)
 		{
 			delete menu;
 			if(IsValidClient(client))
-				AnyMenuOpen[client] = 0.0;
+				AnyMenuOpen[client] = 0;
 		}
 		case MenuAction_Cancel:
 		{
-			AnyMenuOpen[client] = 0.0;
+			AnyMenuOpen[client] = 0;
 			InMenu[client] = false;
 			ResetStoreMenuLogic(client);
 		}
 		case MenuAction_Select:
 		{
-			AnyMenuOpen[client] = 0.0;
+			AnyMenuOpen[client] = 0;
 			InMenu[client] = false;
 			ResetStoreMenuLogic(client);
 			

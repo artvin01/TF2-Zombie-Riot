@@ -83,7 +83,7 @@ static const char g_RocketReadyingSound[] = "misc/doomsday_cap_open_start.wav";
 
 static const char g_ShotgunFiringSound[] = ")weapons/tf2_backshot_shotty_crit.wav";
 
-static const char g_SpecialRangedAttackSound[] = "vo/mvm/norm/soldier_incoming01.mp3";
+static const char g_SpecialRangedAttackSound[] = "vo/mvm/norm/soldier_mvm_incoming01.mp3";
 
 static const char g_SelfLaunchingSound[] = ")weapons/rocket_pack_boosters_fire.wav";
 

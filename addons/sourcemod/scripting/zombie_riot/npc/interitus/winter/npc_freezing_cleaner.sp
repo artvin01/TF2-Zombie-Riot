@@ -137,7 +137,7 @@ methodmap WinterFreezingCleaner < CClotBody
 		npc.m_flSpeed = 230.0;
 		
 		
-		int skin = 1;
+		int skin = (ally==TFTeam_Red&&ZR_Get_Modifier()!=2 ? 0 : 1);
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_ai_flamethrower/c_ai_flamethrower.mdl");
@@ -278,7 +278,7 @@ void WinterFreezingCleanerSelfDefense(WinterFreezingCleaner npc)
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
 		
-		SDKHook(projectile, SDKHook_StartTouch, FreezingCleaner_Rocket_Particle_StartTouch);		
+		WandProjectile_ApplyFunctionToEntity(projectile, FreezingCleaner_Rocket_Particle_StartTouch);		
 	}
 	if(SpinSound)
 		npc.PlayMinigunSound(false);

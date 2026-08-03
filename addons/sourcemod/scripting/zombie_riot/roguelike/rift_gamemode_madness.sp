@@ -327,7 +327,6 @@ public void Rogue_GamemodeMadnessZombieRiot_EndStage()
 
 public void Rogue_GamemodeMadness_Item_ZombieRiotBadge()
 {
-	CurrentCash += 200;
 	GlobalExtraCash += 200;	
 }
 

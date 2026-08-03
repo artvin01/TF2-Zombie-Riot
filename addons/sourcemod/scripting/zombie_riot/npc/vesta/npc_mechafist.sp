@@ -152,11 +152,11 @@ methodmap VestanMechafist < CClotBody
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderColor(npc.m_iWearable1, 80, 50, 50, 255);
+		SetEntityRenderColor(npc.m_iWearable1, 150, 150, 150, 255);
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/engineer/hwn2015_iron_lung/hwn2015_iron_lung.mdl");
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
-		SetEntityRenderColor(npc.m_iWearable2, 80, 50, 50, 255);
+		SetEntityRenderColor(npc.m_iWearable2, 150, 150, 150, 255);
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/engineer/sum22_lawnmaker_style2/sum22_lawnmaker_style2.mdl");
 		SetEntityRenderColor(npc.m_iWearable3, 100, 100, 100, 255);

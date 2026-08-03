@@ -23,7 +23,7 @@ void SteamHappyfier_OnMapStart_NPC()
 
 static void ClotPrecache()
 {
-	AddToDownloadsTable("sound/zombie_riot/yippe.mp3");
+	PrecacheSoundCustom("sound/zombie_riot/yippe.mp3");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)

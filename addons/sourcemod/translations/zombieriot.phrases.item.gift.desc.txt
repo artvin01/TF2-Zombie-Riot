@@ -771,7 +771,7 @@
 	"Medic Supperior Mage Desc"
 	{
 		"en" 		"-Shoots lasers which slow himself down\n-Causes ION strikes on enemies sometimes\n-Melee attacks if on cooldown"
-		"ko" 		"-사용하는 동안 느려지는 레이저를 발사합니다.\n-때때로 표적의 위치에 이온 캐논을 생성합니다.\n-쿨다운 상태일 시 근접 공격 사용"
+		"ko" 		"-사용하는 동안 느려지는 레이저를 발사합니다.\n-때때로 표적의 위치에 이온 캐논을 생성합니다.\n-쿨타임 상태일 시 근접 공격 사용"
 	}
 	"Rebel Desc"
 	{
@@ -942,7 +942,7 @@
 	"Donnerkrieg Desc"
 	{
 		"en"		"Forced into servitutde by Blitzkrieg\n-After a cooldown falls back and prepares a big laser:\nBig laser oneshots everyone and stays alive\nGets Resistances while its up\nIn the raid fight, when Schwert dies, this laser rotates much faster"
-		"ko"		"블리츠크리그에게 패배하여 강제 예속 상태가 되었습니다.\n-쿨다운 후 후퇴하며 거대한 레이저를 준비합니다:\n레이저는 모든 대상을 즉사시키며 계속 유지됨\n사용하는 동안 저항력 증가\n레이드 상태일 경우, 슈베르트크리그 사망 시 레이저가 더욱 빠르게 회전"
+		"ko"		"블리츠크리그에게 패배하여 강제 예속 상태가 되었습니다.\n-쿨타임 후 후퇴하며 거대한 레이저를 준비합니다:\n레이저는 모든 대상을 즉사시키며 계속 유지됨\n사용하는 동안 저항력 증가\n레이드 상태일 경우, 슈베르트크리그 사망 시 레이저가 더욱 빠르게 회전"
 	}
 	"Schwertkrieg Desc"
 	{
@@ -1957,7 +1957,7 @@
 	"Captino Agentus Desc"
 	{
 		"en" 		"-Inivislbe from afar\n-Tries to go behind you\n-Can backstab you\n-If your back is agaisnt the wall, they tase you instead\n-If attacking a barricade, gives massive shield to allies and gains resistances\n-On stab reduces cooldowns\n-Teleports behind you and spawns another Diversionistico, and gains attackspeed"
-		"ko" 		"-멀리있을 때 투명화 상태가 됩니다.\n-표적의 뒤를 노립니다.\n-백스탭 가능\n-등이 벽에 붙어있다면 테이저 효과를 부여합니다.\n-바리케이드 공격 시, 아군에게 대량의 보호막과 저항력 부여\n-백스탭 시 쿨다운 감소\n-표적 뒤로 순간이동하며, 이때 다이버저니스티코를 스폰시키고 공격 속도 증가"
+		"ko" 		"-멀리있을 때 투명화 상태가 됩니다.\n-표적의 뒤를 노립니다.\n-백스탭 가능\n-등이 벽에 붙어있다면 테이저 효과를 부여합니다.\n-바리케이드 공격 시, 아군에게 대량의 보호막과 저항력 부여\n-백스탭 시 쿨타임 감소\n-표적 뒤로 순간이동하며, 이때 다이버저니스티코를 스폰시키고 공격 속도 증가"
 	}
 	"Sensal Desc"
 	{
@@ -2354,17 +2354,19 @@
 	"Nostalgica"
 	{
 		"en" "Nostalgica"
+		"ko" "향수병"
 	}
 	"Nostalgica Desc"
 	{
 		"en"	"How difficult it used to be.\nThere are too many changes to list here, assume its oldtimes but much harder"
+		"ko"	"한때 어려웠던 대로.\n써야할 것이 너무 많네요. 훨씬 더 어려운 '그때 그 시절(올탐)' 난이도로 생각해주세요."
 		//	What actually it does:
 		// 35％ more enemies, spawn 0％ faster, 15％ more are alive at once
 		// They deal +50％ dmg, +75％ dmg to cades, +60％ HP, +0％ faster, attack 33％ faster.
 		// 1 down, enemies heal 50％ more.
 		// enemies take 25% less ranged damage
 		// healing is reduced by 25% for players
-		// bosses get 50% more stats
+		// bosses get 35% more dmg and 25% more hp
 		// raids get 25% more stats
 		// fall damage boosted by 6x
 		// armor is reduced by 25%
@@ -2376,6 +2378,16 @@
 		// aoe damage falls off 25% faster for each target hit (only explodes, not lasers)
 		// True fusion changes: His knockup no longer makes you immune to fall damage, ion oneshots you
 		// Blitzkrieg: Rockets are AOE
+	}
+	"Kiter's Dream"
+	{
+		"en" "Kiter's Dream"
+		"ko" "카이팅 유저의 꿈"
+	}
+	"Kiter's Dream Desc"
+	{
+		"en" "I hate cading!!!\nBuldings no longer block enemies, Random drops are massively increased\nSome buildings have been adjusted"
+		"ko" "난 바리케이드가 싫어!!!\n구조물이 더 이상 적을 막지 않으며, 랜덤 드랍 아이템의 스폰량이 대폭 증가합니다.\n일부 구조물의 성능이 조정됩니다."
 	}
 	"Turbulance"
 	{
@@ -3505,8 +3517,13 @@
 	}
 	"Copycat Truthful Evidence Desc"
 	{
-		"en"	"This is a Copy of the evidence received from Sensal.\nSee some incomprehensible words, but think there's a hidden meaning\nThis seems to be why Vesta invaded Ziberia.\nYou became the primary target of Vestans due to this…"
-		"ko"	"센살에게 받은 진실된 증거자료[사본] 입니다.\n이해못할 단어들이 보이지만 숨겨진 뜻이 있는거 같습니다. 이것이 베스타가 지베리아를 침공한 이유 같습니다.\n하지만 이것이 베스타인들과의 트러블을 만들었습니다."
+		"en"	"This is a Copy of the evidence received from Sensal.\Vesta Clear Trophy"
+		"ko"	"센살에게 받은 진실된 증거자료[사본] 입니다.\n베스타 클리어로 흭득"
+	}
+	"Copycat Truthful Evidence Desc Lore"
+	{
+		"en"	"See some incomprehensible words, but think there's a hidden meaning\nThis seems to be why Vesta invaded Ziberia.\nyou became the primary target of Vestans due to this…"
+		"ko"	"이해못할 단어들이 보이지만 숨겨진 뜻이 있는거 같습니다. 이것이 베스타가 지베리아를 침공한 이유 같습니다.\n하지만 이것이 베스타인들과의 트러블을 만들었습니다."
 	}
 	"Dropped Secret Letter"
 	{

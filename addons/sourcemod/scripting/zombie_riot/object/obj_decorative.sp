@@ -50,7 +50,7 @@ public bool ObjectDecorative_CanBuild(int client, int &count, int &maxcount)
 	if(client)
 	{
 		count = ObjectDecorative_Buildings(client);
-		maxcount = 2;
+		maxcount = Gunsaw_IsMerc(client) ? 0 : 2;
 		if(count >= maxcount)
 			return false;
 	}
@@ -74,7 +74,7 @@ int ObjectDecorative_Buildings(int owner)
 		
 		if(owner == -1 || GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == owner)
 		{
-			if(NPCId == i_NpcInternalId[entity])
+			if(NPCId == i_NpcInternalId[entity] || i_NpcInternalId[entity] == ObjectExplosive_Id())
 				count++;
 		}
 	}

@@ -166,7 +166,7 @@ public Action Blacksmith_TimerEffect(Handle timer, int client)
 {
 	if(IsClientInGame(client) && SmithLevel[client] > -1)
 	{
-		if(!dieingstate[client] && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && i_HealthBeforeSuit[client] == 0)
+		if(!dieingstate[client] && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE && i_ClientHasCustomGearEquipped[client] == CUSTOMGEAR_NONE)
 		{
 			int weapon = GetPlayerWeaponSlot(client, TFWeaponSlot_Secondary);
 			if(weapon != -1)
@@ -431,7 +431,7 @@ void Blacksmith_BuildingUsed_Internal(int weapon ,int entity, int client, int ow
 				}
 			}
 		}
-		if(Attributes_Get(client, Attrib_DisallowTinker, 0.0) != 0.0)
+		if(Attributes_Get(weapon, Attrib_DisallowTinker, 0.0) != 0.0)
 		{
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
@@ -1666,7 +1666,7 @@ public void Anvil_Menu(int client)
 		SetStoreMenuLogic(client, false);
 		static char buffer[128];
 		Menu menu = new Menu(Anvil_MenuH);
-		AnyMenuOpen[client] = 1.0;
+		AnyMenuOpen[client] = 1;
 
 		SetGlobalTransTarget(client);
 		
@@ -1694,11 +1694,11 @@ public int Anvil_MenuH(Menu menu, MenuAction action, int client, int choice)
 		{
 			delete menu;
 			if(IsValidClient(client))
-				AnyMenuOpen[client] = 0.0;
+				AnyMenuOpen[client] = 0;
 		}
 		case MenuAction_Select:
 		{
-			AnyMenuOpen[client] = 0.0;
+			AnyMenuOpen[client] = 0;
 			ResetStoreMenuLogic(client);
 			char buffer[24];
 			menu.GetItem(choice, buffer, sizeof(buffer));

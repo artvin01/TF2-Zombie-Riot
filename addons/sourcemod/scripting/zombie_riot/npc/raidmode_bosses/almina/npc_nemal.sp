@@ -588,7 +588,7 @@ methodmap Nemal < CClotBody
 			
 		RaidModeScaling *= amount_of_people; //More then 9 and he raidboss gets some troubles, bufffffffff
 		TripleLol = false;
-		if(!StrContains(data, "triple_enemies"))
+		if(StrContains(data, "triple_enemies") != -1)
 		{
 			TripleLol = true;
 			i_RaidGrantExtra[npc.index] = 4;

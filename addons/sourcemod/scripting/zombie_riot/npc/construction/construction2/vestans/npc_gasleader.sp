@@ -39,7 +39,7 @@ void Gasleader_OnMapStart_NPC()
 	NPCData data;
 	strcopy(data.Name, sizeof(data.Name), "Vesta Gasleader");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_gasleader");
-	strcopy(data.Icon, sizeof(data.Icon), "victoria_aviator");
+	strcopy(data.Icon, sizeof(data.Icon), "sign_acidrain");
 	data.IconCustom = true;
 	data.Flags = 0;
 	data.Category = Type_Vesta;
@@ -58,6 +58,7 @@ static void ClotPrecache()
 	PrecacheSound(g_RangeAttackSounds);
 	PrecacheSound(g_MeleeAttackSounds);
 	PrecacheModel(COMBINE_CUSTOM_MODEL);
+	PrecacheModel("particle/particle_smokegrenade1.vmt");
 }
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
@@ -204,7 +205,6 @@ methodmap Gasleader < CClotBody
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 
 		npc.m_iOverlordComboAttack = 0;
-		
 
 		return npc;
 	}
@@ -235,7 +235,7 @@ static void Gasleader_ClotThink(int iNPC)
 		GasleaderEffect(npc.index, radius);
 		if(gametime > npc.m_flRangedSpecialDelay)
 		{
-			Explode_Logic_Custom(10.0, -1, npc.index, -1, vecMe, radius, _, 0.75, true, _, false, _, Gasleader_ExplodePost);
+			Explode_Logic_Custom(0.0, -1, npc.index, -1, vecMe, radius, _, 0.75, true, _, false, _, Gasleader_ExplodePost);
 			npc.m_flRangedSpecialDelay = gametime + 0.5;
 		}
 		float VecI[3]; WorldSpaceCenter(npc.index, VecI);
@@ -254,6 +254,11 @@ static void Gasleader_ClotThink(int iNPC)
 				}
 			}
 		}
+	}
+	else if(IsValidEntity(npc.m_iWearable8))
+	{
+		AcceptEntityInput(npc.m_iWearable8, "TurnOff");
+		RemoveEntity(npc.m_iWearable8);
 	}
 	
 
@@ -284,7 +289,7 @@ static void Gasleader_ClotThink(int iNPC)
 						RemoveEntity(npc.m_iWearable1);
 					if(IsValidEntity(npc.m_iWearable2))
 						RemoveEntity(npc.m_iWearable2);
-					KillFeed_SetKillIcon(npc.index, "frontier_kill");
+					KillFeed_SetKillIcon(npc.index, "pistol");
 					npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/w_pistol.mdl");
 					SetVariantString("1.5");
 					AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
@@ -338,7 +343,7 @@ static void Gasleader_ClotThink(int iNPC)
 						RemoveEntity(npc.m_iWearable1);
 					if(IsValidEntity(npc.m_iWearable2))
 						RemoveEntity(npc.m_iWearable2);
-					KillFeed_SetKillIcon(npc.index, "frontier_kill");
+					KillFeed_SetKillIcon(npc.index, "pistol");
 					npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/weapons/w_pistol.mdl");
 					SetVariantString("1.5");
 					AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
@@ -632,16 +637,23 @@ static int GasleaderSelfDefense(Gasleader npc, float gameTime, float distance)
 		return 2;
 	}
 
-
-	if(npc.m_flNextRangedAttack < gameTime)
+	if(npc.m_flNextRangedAttack < gameTime && npc.m_iState!=1)
+	{
+		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 25.0))
+		{
+			npc.AddGesture("ACT_DARIO_ATTACK_GUN_1", true,_,_,1.5);
+			npc.m_flNextRangedAttack = gameTime + 0.15;
+			npc.m_iState=1;
+		}
+	}
+	if(npc.m_flNextRangedAttack < gameTime && npc.m_iState!=0)
 	{
 		if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 25.0))
 		{
 			int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
-					
+			
 			if(IsValidEnemy(npc.index, Enemy_I_See))
 			{
-				npc.AddGesture("ACT_DARIO_ATTACK_GUN_1");
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayRangedSound();
 				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
@@ -650,7 +662,7 @@ static int GasleaderSelfDefense(Gasleader npc, float gameTime, float distance)
 				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget, { 9999.0, 9999.0, 9999.0 }))
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
-						
+					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
 					float origin[3], angles[3];
@@ -664,10 +676,13 @@ static int GasleaderSelfDefense(Gasleader npc, float gameTime, float distance)
 							damageDealt *= 10.0;
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
 						if(IsValidEnemy(npc.index, target))
+						{
 							ApplyStatusEffect(npc.index, target, "Cripple", NpcStats_VestanCallToArms(npc.index) ? 7.5 : 5.0);
-						
+							ApplyStatusEffect(npc.index, target, "Armor Melt", 5.0);
+						}
 					}
 					npc.m_flNextRangedAttack = gameTime + 1.0;
+					npc.m_iState=0;
 				}
 				delete swingTrace;
 			}
@@ -682,6 +697,7 @@ static int GasleaderSelfDefense(Gasleader npc, float gameTime, float distance)
 		}
 		else
 		{
+			npc.m_iState=0;
 			if(distance > (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 8.0))
 				return 0;
 			else if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 5.0))
@@ -704,16 +720,88 @@ static int GasleaderSelfDefense(Gasleader npc, float gameTime, float distance)
 	return 0;
 }
 
-void GasleaderEffect(int entity, float range)
+static void GasleaderEffect(int entity, float range)
 {
 	float ProjectileLoc[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
 	spawnRing_Vectors(ProjectileLoc, range * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 100, 150, 255, 175, 1, 0.1, 5.0, 0.1, 3);	
+	if(!IsValidEntity(view_as<CClotBody>(entity).m_iWearable8))
+	{
+		int iEnt = CreateEntityByName("env_smokestack");
+		if(iEnt)
+		{
+			char buffer[128];
+			Format(buffer, sizeof(buffer), "Smoke%i", entity);
+			DispatchKeyValue(iEnt, "targetname", buffer);
+			
+			Format(buffer, sizeof(buffer), "%f %f %f", ProjectileLoc[0], ProjectileLoc[1], ProjectileLoc[2]);
+			DispatchKeyValue(iEnt, "Origin", buffer);
+			
+			Format(buffer, sizeof(buffer), "%i", RoundFloat(range));
+			DispatchKeyValue(iEnt, "BaseSpread", buffer);
+			
+			DispatchKeyValue(iEnt, "SpreadSpeed", "1");
+			
+			DispatchKeyValue(iEnt, "Speed", "25");
+			
+			Format(buffer, sizeof(buffer), "%i", RoundFloat(range*0.5));
+			DispatchKeyValue(iEnt, "StartSize", buffer);
+			
+			DispatchKeyValue(iEnt, "EndSize", "50");
+			
+			DispatchKeyValue(iEnt, "Rate", "15");
+			
+			DispatchKeyValue(iEnt, "JetLength", buffer);
+			DispatchKeyValue(iEnt, "Twist", "1"); 
+			
+			DispatchKeyValue(iEnt, "RenderColor", "180 180 255");
+			
+			DispatchKeyValue(iEnt, "RenderAmt", "150");
+			
+			DispatchKeyValue(iEnt, "SmokeMaterial", "particle/particle_smokegrenade1.vmt");
+			
+			DispatchSpawn(iEnt);
+			AcceptEntityInput(iEnt, "TurnOn");
+			SetParent(entity, iEnt);
+			view_as<CClotBody>(entity).m_iWearable8=iEnt;
+			CreateTimer(300.0, Timer_StopSmoke, EntIndexToEntRef(iEnt), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(300.0 + 5.0, Timer_RemoveEntity, EntIndexToEntRef(iEnt), TIMER_FLAG_NO_MAPCHANGE);
+		}
+	}
+}
+
+static Action Timer_StopSmoke(Handle timer, int entid)
+{
+	int entity = EntRefToEntIndex(entid);
+	if(IsValidEdict(entity) && entity > MaxClients)
+		AcceptEntityInput(entity, "TurnOff");
+	return Plugin_Continue;
 }
 
 static void Gasleader_ExplodePost(int attacker, int victim, float damage, int weapon)
 {
-	Elemental_AddNervousDamage(victim, attacker, 3, true);
+	Elemental_AddNervousDamage(victim, attacker, 6, true);
+	AP_TakeDamage(victim, attacker, attacker, 3.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
+}
+
+stock void AP_TakeDamage(int entity = 0, int inflictor = 0, int attacker = 0, float damage = 0.0, int damageType = DMG_GENERIC)
+{
+	int PreviousArmor = 0;
+	if(IsValidClient(entity))
+	{
+		PreviousArmor = Armor_Charge[entity];
+		Armor_Charge[entity] = 0;
+		SDKHooks_TakeDamage(entity, inflictor, attacker, damage, damageType, -1);
+		Armor_Charge[entity] = PreviousArmor;
+	}
+	else
+	{
+		CClotBody npcenemy = view_as<CClotBody>(entity);
+		PreviousArmor = RoundToNearest(npcenemy.m_flArmorCount);
+		npcenemy.m_flArmorCount = 0.0;
+		SDKHooks_TakeDamage(entity, inflictor, attacker, damage, damageType, -1);
+		npcenemy.m_flArmorCount = float(PreviousArmor);
+	}
 }
 
 /*

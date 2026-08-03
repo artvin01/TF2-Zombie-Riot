@@ -11,6 +11,25 @@ void NPCCamera_PluginStart()
 
 public Action NPCCamera_SpecNext(int client, const char[] command, int args)
 {
+#if defined ZR
+	if (GetEntProp(client, Prop_Send, "m_iObserverMode") == OBS_MODE_ROAMING)
+	{
+		// While in freeroam mode, clicking on a targetable entity lets you spectate it
+		float pos[3];
+		
+		StartLagCompensation_Base_Boss(client);
+		int target = GetClientPointVisiblePlayersNPCs(client, 500.0, pos, true);
+		FinishLagCompensation_Base_boss();
+		
+		if (target > 0 && IsEntityAlive(target))
+		{
+			SetEntPropEnt(client, Prop_Send, "m_hObserverTarget", target);
+			SetEntProp(client, Prop_Send, "m_iObserverMode", OBS_MODE_CHASE);
+		}
+		
+		return Plugin_Handled;
+	}
+#endif
 	int minEntity = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
 	int bestEntity = MAXENTITIES;
 	int worseEntity = MAXENTITIES;
@@ -18,7 +37,7 @@ public Action NPCCamera_SpecNext(int client, const char[] command, int args)
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && (GetTeam(entity) == TFTeam_Red || b_thisNpcIsARaid[entity] || b_thisNpcIsABoss[entity] || b_StaticNPC[entity]))
+		if(NPCCamera_CanSpectateEntity(entity))
 		{
 			if(entity > minEntity && entity < bestEntity)
 			{
@@ -70,7 +89,7 @@ public Action NPCCamera_SpecPrev(int client, const char[] command, int args)
 	for(int i = i_MaxcountNpcTotal - 1; i >= 0; i--)
 	{
 		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-		if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && (GetTeam(entity) == TFTeam_Red || b_thisNpcIsARaid[entity] || b_thisNpcIsABoss[entity] || b_StaticNPC[entity]) && IsEntityAlive(entity))
+		if(NPCCamera_CanSpectateEntity(entity))
 		{
 			if(entity < maxEntity && entity > bestEntity)
 			{
@@ -111,4 +130,13 @@ public Action NPCCamera_SpecPrev(int client, const char[] command, int args)
 	
 	SetEntPropEnt(client, Prop_Send, "m_hObserverTarget", bestEntity);
 	return Plugin_Handled;
+}
+
+static bool NPCCamera_CanSpectateEntity(int entity)
+{
+#if defined ZR
+	return entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && (b_thisNpcIsARaid[entity] || b_thisNpcIsABoss[entity] || (GetTeam(entity) == TFTeam_Red && (Citizen_IsIt(entity) || b_NpcIsInvulnerable[entity])));
+#else
+	return entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && (GetTeam(entity) == TFTeam_Red || b_thisNpcIsARaid[entity] || b_thisNpcIsABoss[entity] || b_StaticNPC[entity]);
+#endif
 }

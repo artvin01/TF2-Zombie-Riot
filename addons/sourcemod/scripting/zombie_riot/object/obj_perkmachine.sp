@@ -129,7 +129,7 @@ static int Building_ConfirmMountedAction(Menu menu, MenuAction action, int clien
 		case MenuAction_Cancel:
 		{
 			if(IsValidClient(client))
-				AnyMenuOpen[client] = 0.0;
+				AnyMenuOpen[client] = 0;
 		}
 		case MenuAction_Select:
 		{

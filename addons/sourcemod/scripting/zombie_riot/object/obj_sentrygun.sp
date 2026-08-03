@@ -133,7 +133,7 @@ void ObjectSentrygun_ClotThink(ObjectSentrygun npc)
 			float damageDealt = 10.0;
 			if(Owner <= MaxClients)
 			{
-				damageDealt *= Attributes_GetOnPlayer(Owner, 287, true, true);
+				damageDealt *= Attributes_GetOnPlayer(Owner, 287, true);
 			}
 			else
 			{

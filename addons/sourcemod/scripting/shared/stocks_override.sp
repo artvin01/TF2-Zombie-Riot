@@ -407,6 +407,15 @@ stock void PrecacheSoundList(const char[][] array, int length)
 }
 
 #define PrecacheSoundArray(%1)        PrecacheSoundList(%1, sizeof(%1))
+stock void PrecacheModelList(const char[][] array, int length)
+{
+    for(int i; i < length; i++)
+    {
+		PrecacheModel(array[i]);
+    }
+}
+
+#define PrecacheModelArray(%1)        PrecacheModelList(%1, sizeof(%1))
 
 #if defined ZR
 void Edited_EmitSoundToAll(const char[] sample,

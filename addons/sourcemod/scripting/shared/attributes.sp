@@ -587,28 +587,7 @@ void Attributes_OnKill(int victim, int client, int weapon)
 
 	if(IsValidEntity(weapon) && weapon > MaxClients)
 	{
-		//dont give health on kill!
-		if(!(b_OnDeathExtraLogicNpc[victim] & ZRNPC_DEATH_NOHEALTH))
-		{
-			value = Attributes_Get(weapon, 180, 0.0);	// heal on kill
-			if(value)
-			{
-				if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim])
-				{
-					value *= 4.0;
-				}
-				else if(b_IsGiant[victim])
-				{
-					value *= 2.0;
-				}
-				//Grilled!
-				if(HasSpecificBuff(victim, "Burn"))
-					value *= 1.1;
-					
-				HealEntityGlobal(client, client, value, 1.0, 1.0, HEAL_SELFHEAL);
-			}
-		}
-		
+		Attributes_Trigger_HealOnKill(client, victim, weapon, 0.9);
 		value = Attributes_Get(weapon, 613, 0.0);	// minicritboost on kill
 		if(value)
 			TF2_AddCondition(client, TFCond_MiniCritOnKill, value);
@@ -619,6 +598,30 @@ void Attributes_OnKill(int victim, int client, int weapon)
 	}
 
 
+}
+
+void Attributes_Trigger_HealOnKill(int attacker, int victim, int weapon, float ValueModify = 1.0)
+{
+	//dont give health on kill!
+	if((b_OnDeathExtraLogicNpc[victim] & ZRNPC_DEATH_NOHEALTH))
+		return;
+	float value = Attributes_Get(weapon, 180, 0.0);	// heal on kill
+	if(!value)
+		return;
+	value *= ValueModify;
+	if(b_thisNpcIsABoss[victim] || b_thisNpcIsARaid[victim])
+	{
+		value *= 4.0;
+	}
+	else if(b_IsGiant[victim])
+	{
+		value *= 2.0;
+	}
+	//Grilled!
+	if(HasSpecificBuff(victim, "Burn"))
+		value *= 1.1;
+		
+	HealEntityGlobal(attacker, attacker, value, 1.0, 1.0, HEAL_SELFHEAL);
 }
 
 //override default

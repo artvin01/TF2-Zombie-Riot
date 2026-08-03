@@ -116,7 +116,7 @@ static void ClotThink(ObjectRevenant npc)
 				npc.PlayShootSound();
 
 				float damageDealt = 190.0;
-				damageDealt *= Attributes_GetOnPlayer(Owner, 287, true, true);
+				damageDealt *= Attributes_GetOnPlayer(Owner, 287, true);
 				if(ShouldNpcDealBonusDamage(target))
 				{
 					damageDealt *= 3.0;

@@ -283,7 +283,7 @@ int WinterSnoweyGunnerSelfDefense(WinterSnoweyGunner npc, float gameTime, int ta
 
 					if(IsValidEnemy(npc.index, target))
 					{
-						float damageDealt = 10.0;
+						float damageDealt = 20.0;
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 3.0;
 

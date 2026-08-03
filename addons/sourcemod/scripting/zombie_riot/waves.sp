@@ -37,6 +37,7 @@ enum struct MiniBoss
 	bool SoundCustom;
 	char Sound[128];
 	char Icon[128];
+	char Data[128];
 	char Text_1[128];
 	char Text_2[128];
 	char Text_3[128];
@@ -1222,6 +1223,7 @@ void Waves_SetupMiniBosses(KeyValues map)
 			}
 				
 			kv.GetString("icon", boss.Icon, sizeof(boss.Icon));
+			kv.GetString("data", boss.Data, sizeof(boss.Data));
 			
 			kv.GetString("text_1", boss.Text_1, sizeof(boss.Text_1));
 			kv.GetString("text_2", boss.Text_2, sizeof(boss.Text_2));
@@ -1324,6 +1326,7 @@ void WavesDeleteSet(int ArrayDo = Rounds_Default)
 		delete Rounds[ArrayDo];
 	}
 }
+
 void Waves_SetupWaves(KeyValues kv, bool start, int ArrayDo = Rounds_Default)
 {
 	Round round;
@@ -1416,6 +1419,12 @@ void Waves_SetupWaves(KeyValues kv, bool start, int ArrayDo = Rounds_Default)
 		kv.GetString("difficulty", buffer, sizeof(buffer));
 		if(buffer[0])
 			Waves_SetDifficultyName(buffer);
+		
+		kv.GetString("character_hired_by", buffer, sizeof(buffer));
+		if(buffer[0])
+			strcopy(s_MissionClient, sizeof(s_MissionClient), buffer);
+		else
+			s_MissionClient = DEFAULT_MISSION_CLIENT;
 			
 		round.music_setup.SetupKv("music_setup", kv);
 		
@@ -2053,6 +2062,8 @@ public Action Waves_EndVote(Handle timer, int WhatWasMyCancel)
 				EmitSoundToAll("ui/chime_rd_2base_neg.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0, 70);
 				EmitSoundToAll("ui/chime_rd_2base_pos.wav", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.0, 120);
 				
+				strcopy(WhatModifierSetting, sizeof(WhatModifierSetting), vote.Name);
+				
 				if(highest > 0)
 				{
 					float multi = float(vote.Level) / 1000.0;
@@ -2068,8 +2079,6 @@ public Action Waves_EndVote(Handle timer, int WhatWasMyCancel)
 					
 					FormatEx(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s [%s]", WhatDifficultySetting_Internal, vote.Name);
 					Waves_SetDifficultyName(WhatDifficultySetting);
-
-					strcopy(WhatModifierSetting, sizeof(WhatModifierSetting), vote.Name);
 
 					char funcs[5][64];
 					ExplodeString(vote.Config, ";", funcs, sizeof(funcs), sizeof(funcs[]));
@@ -4562,15 +4571,15 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 
 		for(int i; i < Max_Enemy_Get; i++)
 		{
-			int dangerlevel = Freeplay_GetDangerLevelCurrent();
+			int dangerlevel = Freeplay_GetDangerLevelCurrent(postWaves);
 			bool isBoss = !(GetURandomInt() % 9);
 
 			if(isBoss)
 			{
 				int bossdanger = dangerlevel;
 				
-				if(bossdanger >= 5)
-					bossdanger = 4;
+				if(bossdanger >= 6)
+					bossdanger = 5;
 
 				int index = boss.FindValue(bossdanger, Wave::DangerLevel);
 				if(index == -1)

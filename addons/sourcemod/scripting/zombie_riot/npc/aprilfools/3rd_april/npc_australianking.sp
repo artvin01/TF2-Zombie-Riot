@@ -174,21 +174,18 @@ public void AustralianKing_ClotThink(int iNPC)
 	//Australian Spidors
 	if(npc.m_flSpiderSummon < GetGameTime(npc.index))
 	{
-		float pos2[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos2);
-		int summon = NPC_CreateByName("npc_spider", -1, pos2, {0.0,0.0,0.0}, GetTeam(npc.index));
-		if(IsValidEntity(summon))
+		int team = GetTeam(npc.index);
+		if (team != TFTeam_Red)
 		{
-			AustralianKing npcsummon = view_as<AustralianKing>(summon);
-			if(GetTeam(npc.index) != TFTeam_Red)
+			int summon = SummonSpider(npc.index);
+			if (IsValidEntity(summon))
 				Zombies_Currently_Still_Ongoing++;
-
-			fl_Extra_Damage[npcsummon.index] = fl_Extra_Damage[npc.index];
-			fl_Extra_Damage[npcsummon.index] *= 1.5;
-			npcsummon.m_iTargetAlly = npc.index;
-			SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(npc.index)/40);
-			SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(npc.index)/40);
-			NpcStats_CopyStats(npc.index, summon);
 		}
+		else if (GetFriendlySpiderCount(npc.index) < 5)
+		{
+			SummonSpider(npc.index);
+		}
+		
 		npc.m_flSpiderSummon = GetGameTime(npc.index) + 0.5;
 	}
 	//Start Didgeridoo
@@ -356,4 +353,39 @@ void AustralianKingSelfDefense(AustralianKing npc, float gameTime, int target, f
 			}
 		}
 	}
+}
+
+static int GetFriendlySpiderCount(int entity)
+{
+	int count;
+	int a, entity1;
+	// Count friendly spiders
+	while((entity1 = FindEntityByNPC(a)) != -1)
+	{
+		if(IsValidEntity(entity1) && i_NpcInternalId[entity1] == AustralianSpider_ID() && GetTeam(entity) == GetTeam(entity1))
+		{
+			count++;
+		}
+	}
+	
+	return count;
+}
+
+static int SummonSpider(int owner)
+{
+	float pos2[3]; GetEntPropVector(owner, Prop_Data, "m_vecAbsOrigin", pos2);
+	int summon = NPC_CreateByName("npc_spider", -1, pos2, {0.0,0.0,0.0}, GetTeam(owner));
+	if(IsValidEntity(summon))
+	{
+		AustralianKing npcsummon = view_as<AustralianKing>(summon);
+
+		fl_Extra_Damage[npcsummon.index] = fl_Extra_Damage[owner];
+		fl_Extra_Damage[npcsummon.index] *= 1.5;
+		npcsummon.m_iTargetAlly = owner;
+		SetEntProp(summon, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(owner)/40);
+		SetEntProp(summon, Prop_Data, "m_iMaxHealth", ReturnEntityMaxHealth(owner)/40);
+		NpcStats_CopyStats(owner, summon);
+	}
+	
+	return summon;
 }

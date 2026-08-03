@@ -1,6 +1,14 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+enum
+{
+	VESTA_ATOMIZER,
+	VESTA_HUSCARLS,
+	VESTA_HARRISON,
+	VESTA_CASTELLAN,
+}
+
 static const char g_DeathSounds[][] = {
 	"weapons/rescue_ranger_teleport_receive_01.wav",
 	"weapons/rescue_ranger_teleport_receive_02.wav"
@@ -125,6 +133,8 @@ static bool SUPERHIT[MAXENTITIES];
 static int g_RedPoint;
 static int g_Laser;
 
+static int NPCID;
+
 void Atomizer_OnMapStart_NPC()
 {
 	NPCData data;
@@ -136,7 +146,12 @@ void Atomizer_OnMapStart_NPC()
 	data.Category = Type_Raid;
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
-	NPC_Add(data);
+	NPCID = NPC_Add(data);
+}
+
+int VestaAtomizer_NPCID()
+{
+	return NPCID;
 }
 
 static void ClotPrecache()
@@ -266,6 +281,11 @@ methodmap Atomizer < CClotBody
 		public get()							{ return fl_AbilityOrAttack[this.index][3]; }
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][3] = TempValueForProperty; }
 	}
+	property float m_flExtraDMGForBall
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][4]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][4] = TempValueForProperty; }
+	}
 	
 	public Atomizer(int client, float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
@@ -308,8 +328,8 @@ methodmap Atomizer < CClotBody
 			npc.m_flAngerDelay = 0.0;
 			npc.m_flDelay_Attribute = 0.0;
 			npc.m_iAmmo = 0;
-			
-			static char countext[2][216];
+			bool STFU;
+			static char countext[3][216];
 			int count = ExplodeString(data, ";", countext, sizeof(countext), sizeof(countext[]));
 			for(int i = 0; i < count; i++)
 			{
@@ -324,19 +344,30 @@ methodmap Atomizer < CClotBody
 					ReplaceString(countext[i], sizeof(countext[]), "override", "");
 					npc.m_iTargetAlly = StringToInt(countext[i]);
 				}
+				else if(StrContains(countext[i], "stfu") != -1)
+				{
+					ReplaceString(countext[i], sizeof(countext[]), "stfu", "");
+					STFU=true;
+				}
 			}
 			switch(npc.m_iOverlordComboAttack)
 			{
-				case 1: NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Support-1", false, true);
+				case 1:{if(!STFU){VestaAtomizer_NPCTalkMessage(npc.index, "Atomizer_Talk_Support-1");}}
 				case 2:
 				{
+					npc.StartPathing();
 					npc.m_flSpeed = 400.0;
-					npc.m_iMaxAmmo = 30+RoundToNearest(float(CountPlayersOnRed(2)) * 2.5);
-					if(npc.m_iMaxAmmo>45)npc.m_iMaxAmmo=45;
+					npc.m_iMaxAmmo = 30+RoundToNearest(float(CountPlayersOnRed(2)) * 3.0);
+					if(npc.m_iMaxAmmo>45)
+					{
+						npc.m_flExtraDMGForBall = 1.0*(npc.m_iMaxAmmo/45.0);
+						npc.m_iMaxAmmo=45;
+					}
 					npc.m_iAmmo = npc.m_iMaxAmmo;
-					NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Support-2", false, true);
+					if(!STFU)
+						VestaAtomizer_NPCTalkMessage(npc.index, "Atomizer_Talk_Support-2");
 				}
-				default: NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Support-1", false, true);
+				default:{if(!STFU){VestaAtomizer_NPCTalkMessage(npc.index, "Atomizer_Talk_Support-1");}}
 			}
 			npc.PlaySupportSpawnSound();
 		}
@@ -359,6 +390,7 @@ methodmap Atomizer < CClotBody
 			ParticleSpawned[npc.index] = false;
 			SUPERHIT[npc.index] = false;
 			npc.m_flNiceMiss = 0.0;
+			npc.m_flExtraDMGForBall = 0.0;
 			Vs_Atomizer_To_Huscarls = 0;
 			npc.i_GunMode = 0;
 			npc.m_iOverlordComboAttack = 0;
@@ -366,8 +398,12 @@ methodmap Atomizer < CClotBody
 			npc.m_flNextRangedSpecialAttackHappens = GetGameTime(npc.index) + 5.0;
 			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 30.0;
 			npc.m_flAngerDelay = GetGameTime(npc.index) + 15.0;
-			npc.m_iMaxAmmo = 20+RoundToNearest(float(CountPlayersOnRed(2)) * 2.5);
-			if(npc.m_iMaxAmmo>45)npc.m_iMaxAmmo=45;
+			npc.m_iMaxAmmo = 10+RoundToNearest(float(CountPlayersOnRed(2)) * 3.0);
+			if(npc.m_iMaxAmmo>45)
+			{
+				npc.m_flExtraDMGForBall = 1.0*(npc.m_iMaxAmmo/36.0);
+				npc.m_iMaxAmmo=45;
+			}
 			npc.m_iAmmo = 0;
 			OnMiss[npc.index] = false;
 			npc.m_fbRangedSpecialOn = false;
@@ -414,7 +450,7 @@ methodmap Atomizer < CClotBody
 				Music_SetRaidMusic(music);
 			}
 			
-			NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Intro", false, true);
+			VestaAtomizer_NPCTalkMessage(npc.index, "Atomizer_Talk_Intro");
 			Vs_Atomizer_To_Huscarls=Vesta_Melee_or_Ranged(npc);
 			
 			char buffers[3][64];
@@ -496,6 +532,11 @@ methodmap Atomizer < CClotBody
 	}
 }
 
+void VestaAtomizer_NPCTalkMessage(int entity, const char[] message)
+{
+	PrintNPCMessageWithPrefixes(entity, "blue", message, true);
+}
+
 static void Clone_ClotThink(int iNPC)
 {
 	Atomizer npc = view_as<Atomizer>(iNPC);
@@ -524,7 +565,6 @@ static void Clone_ClotThink(int iNPC)
 	{
 		npc.g_TimesSummoned -= 1;
 	}
-	
 	
 	switch(npc.m_iOverlordComboAttack)
 	{
@@ -749,7 +789,7 @@ static int Support_Work(Atomizer npc, float gameTime, float distance)
 					if(npc.m_flAttackHappens < gameTime && npc.m_flAttackHappens_bullshit >= gameTime && npc.m_flAttackHappenswillhappen)
 					{
 						npc.PlayRangedSound();
-						float RocketDamage = 37.5;
+						float RocketDamage = 11.2;
 						float RocketSpeed = 1650.0;
 						float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 						float VecStart[3]; WorldSpaceCenter(npc.index, VecStart);
@@ -800,7 +840,8 @@ static int Support_Work(Atomizer npc, float gameTime, float distance)
 
 static Action Clone_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
 {
-	return Plugin_Handled;
+	damage*=0.0;
+	return Plugin_Changed;
 }
 
 static void Clone_NPCDeath(int entity)
@@ -867,15 +908,15 @@ static void Atomizer_ClotThink(int iNPC)
 			{
 				case 0:
 				{
-					NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Lastman-1", false, false);
+					VestaAtomizer_NPCTalkMessage(npc.index, "Atomizer_Talk_Lastman-1");
 				}
 				case 1:
 				{
-					NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Lastman-2", false, false);
+					VestaAtomizer_NPCTalkMessage(npc.index, "Atomizer_Talk_Lastman-2");
 				}
 				case 2:
 				{
-					NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Lastman-3", false, false);
+					VestaAtomizer_NPCTalkMessage(npc.index, "Atomizer_Talk_Lastman-3");
 				}
 			}
 		}
@@ -890,7 +931,7 @@ static void Atomizer_ClotThink(int iNPC)
 		AlreadySaidWin = true;
 		BlockLoseSay = true;
 		
-		NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_GameEnd", false, false);
+		VestaAtomizer_NPCTalkMessage(npc.index, "Atomizer_Talk_GameEnd");
 		return;
 	}
 	if(ZR_Get_Modifier() == 6)
@@ -920,10 +961,10 @@ static void Atomizer_ClotThink(int iNPC)
 		SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", MaxHealth);
 		switch(GetRandomInt(1, 4))
 		{
-			case 1:NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_TimeUp-1", false, false);
-			case 2:NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_TimeUp-2", false, false);
-			case 3:NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_TimeUp-3", false, false);
-			case 4:NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_TimeUp-4", false, false);
+			case 1:VestaAtomizer_NPCTalkMessage(npc.index, "Atomizer_Talk_TimeUp-1");
+			case 2:VestaAtomizer_NPCTalkMessage(npc.index, "Atomizer_Talk_TimeUp-2");
+			case 3:VestaAtomizer_NPCTalkMessage(npc.index, "Atomizer_Talk_TimeUp-3");
+			case 4:VestaAtomizer_NPCTalkMessage(npc.index, "Atomizer_Talk_TimeUp-4");
 		}
 		for(int i=1; i<=15; i++)
 		{
@@ -1035,7 +1076,7 @@ static void Atomizer_ClotThink(int iNPC)
 		{
 			case 0:
 			{
-				NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Pre_2_Phase", false, false);
+				VestaAtomizer_NPCTalkMessage(npc.index, "Atomizer_Talk_Pre_2_Phase");
 				if(IsValidEntity(npc.m_iWearable2))
 					RemoveEntity(npc.m_iWearable2);
 				npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/all_class/taunt_cheers/taunt_cheers_pyro.mdl");
@@ -1081,7 +1122,7 @@ static void Atomizer_ClotThink(int iNPC)
 					AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 					SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
 					ApplyStatusEffect(npc.index, npc.index, "Call To Vesta", 999.9);
-					NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_2_Phase", false, false);
+					VestaAtomizer_NPCTalkMessage(npc.index, "Atomizer_Talk_2_Phase");
 					npc.m_iState=0;
 					npc.m_bFUCKYOU_move_anim=true;
 					npc.m_flNextRangedAttack = gameTime+1.0;//Punishment
@@ -1107,7 +1148,7 @@ static void Atomizer_ClotThink(int iNPC)
 		static float ProjLocBase[3];
 		if(npc.m_iState <= 0)
 		{
-			NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_Ability", false, false);
+			VestaAtomizer_NPCTalkMessage(npc.index, "Atomizer_Talk_Ability");
 			npc.AddActivityViaSequence("taunt05");
 			npc.SetCycle(0.01);
 			npc.SetPlaybackRate(1.4);
@@ -1386,9 +1427,9 @@ static void Atomizer_NPCDeath(int entity)
 
 	switch(GetRandomInt(0,2))
 	{
-		case 0:NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_EscapePlan-1", false, false);
-		case 1:NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_EscapePlan-2", false, false);
-		case 2:NPCPritToChat(npc.index, "{blue}", "Atomizer_Talk_EscapePlan-3", false, false);
+		case 0:VestaAtomizer_NPCTalkMessage(npc.index, "Atomizer_Talk_EscapePlan-1");
+		case 1:VestaAtomizer_NPCTalkMessage(npc.index, "Atomizer_Talk_EscapePlan-2");
+		case 2:VestaAtomizer_NPCTalkMessage(npc.index, "Atomizer_Talk_EscapePlan-3");
 	}
 
 }
@@ -1470,8 +1511,12 @@ static int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float d
 			npc.m_flDoingAnimation = gameTime + 0.45;
 			npc.m_flNextRangedSpecialAttackHappens = gameTime + (DrinkPOWERUP[npc.index] ? 15.0 : 22.5);
 			npc.m_flNextRangedAttack += 1.0;
-			npc.m_iMaxAmmo = (DrinkPOWERUP[npc.index] ? 30 : 20)+RoundToNearest(float(CountPlayersOnRed(2)) * 2.5);
-			if(npc.m_iMaxAmmo>45)npc.m_iMaxAmmo=45;
+			npc.m_iMaxAmmo = (DrinkPOWERUP[npc.index] ? 20 : 10)+RoundToNearest(float(CountPlayersOnRed(2)) * 3.0);
+			if(npc.m_iMaxAmmo>45)
+			{
+				npc.m_flExtraDMGForBall = 1.0*(npc.m_iMaxAmmo/36.0);
+				npc.m_iMaxAmmo=45;
+			}
 			npc.m_iAmmo = npc.m_iMaxAmmo;
 		}
 	}
@@ -1576,10 +1621,17 @@ static int AtomizerSelfDefense(Atomizer npc, float gameTime, int target, float d
 								ExtinguishTarget(npc.m_iWearable2);
 							}
 							if(DrinkPOWERUP[npc.index])
-								RocketDamage*=1.25;
+							{
+								if(npc.m_flExtraDMGForBall>1.0)
+									RocketDamage*=npc.m_flExtraDMGForBall;
+								else
+									RocketDamage*=1.25;
+							}
+							else if(npc.m_flExtraDMGForBall>1.0)
+								RocketDamage*=npc.m_flExtraDMGForBall;
 							float RocketSpeed = 1650.0;
-							float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget );
-							float VecStart[3]; WorldSpaceCenter(npc.index, VecStart );
+							float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
+							float VecStart[3]; WorldSpaceCenter(npc.index, VecStart);
 							float vecDest[3];
 							vecDest = vecTarget;
 							float SpeedReturn[3];
@@ -1763,38 +1815,7 @@ static void SuperAttack(int entity, int victim, float damage, int weapon)
 		SUPERHIT[npc.index]=true;
 	}
 }
-/*
-static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
-{
-	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-	if(!IsValidEntity(owner))
-		owner = 0;
-	if(target > 0 && target < MAXENTITIES)	//did we hit something???
-	{
-		int inflictor = h_ArrowInflictorRef[entity];
-		if(inflictor != -1)
-			inflictor = EntRefToEntIndex(h_ArrowInflictorRef[entity]);
 
-		if(inflictor == -1)
-			inflictor = owner;
-			
-		float DamageDeal = fl_rocket_particle_dmg[entity];
-		if(ShouldNpcDealBonusDamage(target))
-			DamageDeal *= h_BonusDmgToSpecialArrow[entity];
-		KillFeed_SetKillIcon(owner, "ball");
-		SDKHooks_TakeDamage(target, owner, inflictor, DamageDeal, DMG_BULLET|DMG_PREVENT_PHYSICS_FORCE, -1);	//acts like a kinetic rocket	
-		if(target <= MaxClients && !IsInvuln(target))
-			if(!HasSpecificBuff(target, "Fluid Movement"))
-				TF2_StunPlayer(target, 2.0, 0.4, TF_STUNFLAG_NOSOUNDOREFFECT|TF_STUNFLAG_SLOWDOWN);
-		ApplyStatusEffect(owner, target, "Teslar Shock", NpcStats_VestanCallToArms(owner) ? 7.5 : 5.0);
-	}
-	int particle = EntRefToEntIndex(i_WandParticle[entity]);
-	if(IsValidEntity(particle))
-		RemoveEntity(particle);
-	RemoveEntity(entity);
-	return Plugin_Handled;
-}
-*/
 static Action Atomizer_Rocket_Particle_StartTouch(int entity, int target)
 {
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
@@ -1911,6 +1932,12 @@ stock void SetVelocityAtomizerProjectile(DataPack pack)
 }
 static bool ONLYBSP(int entity, int contentsMask, any data)
 {
+	if(IsValidEdict(entity))
+	{
+		char sClassname[128];
+		GetEdictClassname(entity, sClassname, sizeof(sClassname));
+		return (StrContains(sClassname, "func_respawnroomvisualizer") != -1);
+	}
 	return !entity;
 }
 
@@ -1938,12 +1965,25 @@ static int Vesta_Melee_or_Ranged(Atomizer npc)
 		return 2;
 }
 
-public bool EntityLookPoint(int entity, float flAng[3], float flPos[3], float pos[3])
+bool EntityLookPoint(int entity, float flAng[3], float flPos[3], float pos[3], int mask = MASK_SHOT)
 {
-	Handle trace = TR_TraceRayFilterEx(flPos, flAng, MASK_SHOT, RayType_Infinite, ONLYBSP, entity);
+	Handle trace = TR_TraceRayFilterEx(flPos, flAng, mask, RayType_Infinite, ONLYBSP, entity);
 	
 	if(TR_DidHit(trace))
 	{
+		static char classname[128];
+		int TRIndex = TR_GetEntityIndex(INVALID_HANDLE);
+		if(IsValidEdict(TRIndex))
+		{
+			GetEdictClassname(TRIndex, classname, sizeof(classname));
+			if(StrContains(classname, "func_respawnroomvisualizer") != -1)
+			{
+				TR_GetEndPosition(pos, trace);
+				CloseHandle(trace);
+				return false;
+			}
+		}
+	
 		TR_GetEndPosition(pos, trace);
 		CloseHandle(trace);
 		return true;
@@ -1994,7 +2034,7 @@ static void Atomizer_Weapon_Lines(Atomizer npc, int client)
 
 	if(valid)
 	{
-		NPCPritToChat(npc.index, "{blue}", Text_Lines, false, false);
+		VestaAtomizer_NPCTalkMessage(npc.index, Text_Lines);
 		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
 		b_said_player_weaponline[client] = true;
 	}
@@ -2024,6 +2064,7 @@ static bool Vesta_Support(Atomizer npc)
 	if(Vs_RechargeTime[npc.index] < Vs_RechargeTimeMax[npc.index])
 	{
 		float position[3];
+		int RGBColor[3]={255, 200, 80};
 		position[0] = vecTarget[0];
 		position[1] = vecTarget[1];
 		position[2] = vecTarget[2] + 3000.0;
@@ -2046,14 +2087,15 @@ static bool Vesta_Support(Atomizer npc)
 				if(IsValidClient(client) && !IsFakeClient(client))
 					Vs_LockOn[client]=false;
 			}
+			RGBColor={255, 120, 50};
 		}
 		spawnRing_Vectors(Vs_Temp_Pos[npc.index], (1000.0 - ((Vs_RechargeTime[npc.index]/Vs_RechargeTimeMax[npc.index])*1000.0)), 0.0, 0.0, 0.0, LASERBEAM, 255, 255, 255, 150, 1, 0.1, 3.0, 0.1, 3);
 		float position2[3];
 		position2[0] = Vs_Temp_Pos[npc.index][0];
 		position2[1] = Vs_Temp_Pos[npc.index][1];
 		position2[2] = Vs_Temp_Pos[npc.index][2] + 40.0;
-		spawnRing_Vectors(position2, 1000.0, 0.0, 0.0, 0.0, LASERBEAM, 255, 200, 80, 150, 1, 0.1, 3.0, 0.1, 3);
-		spawnRing_Vectors(Vs_Temp_Pos[npc.index], 1000.0, 0.0, 0.0, 0.0, LASERBEAM, 255, 200, 80, 150, 1, 0.1, 3.0, 0.1, 3);
+		spawnRing_Vectors(position2, 1000.0, 0.0, 0.0, 0.0, LASERBEAM, RGBColor[0], RGBColor[1], RGBColor[2], 150, 1, 0.1, 3.0, 0.1, 3);
+		spawnRing_Vectors(Vs_Temp_Pos[npc.index], 1000.0, 0.0, 0.0, 0.0, LASERBEAM, RGBColor[0], RGBColor[1], RGBColor[2], 150, 1, 0.1, 3.0, 0.1, 3);
 		TE_SetupBeamPoints(Vs_Temp_Pos[npc.index], position, g_Laser, -1, 0, 0, 0.1, 0.0, 25.0, 0, 0.0, {145, 47, 47, 150}, 3);
 		TE_SendToAll();
 		TE_SetupGlowSprite(Vs_Temp_Pos[npc.index], g_RedPoint, 0.1, 1.0, 255);
@@ -2137,4 +2179,46 @@ stock int Vesta_GetTargetDistance(int entity, bool inversion, bool ICantSEE)
 		}
 	}
 	return ClosestTarget;
+}
+
+int Vesta_GetSupport(int id)
+{
+	int a, entity1;
+	while((entity1 = FindEntityByNPC(a)) != -1)
+	{
+		if (!IsValidEntity(entity1))
+			continue;
+		
+		if(IsValidEntity(entity1))
+		{
+			switch (id)
+			{
+				case VESTA_ATOMIZER:
+				{
+					if (i_NpcInternalId[entity1] == VestaAtomizer_NPCID())
+						return entity1;
+				}
+				
+				case VESTA_HUSCARLS:
+				{
+					if (i_NpcInternalId[entity1] == VestaHuscarls_NPCID())
+						return entity1;
+				}
+				
+				case VESTA_HARRISON:
+				{
+					if (i_NpcInternalId[entity1] == VestaHarrison_NPCID())
+						return entity1;
+				}
+				
+				case VESTA_CASTELLAN:
+				{
+					if (i_NpcInternalId[entity1] == VestaCastellan_NPCID())
+						return entity1;
+				}
+			}
+		}
+	}
+	
+	return 0;
 }

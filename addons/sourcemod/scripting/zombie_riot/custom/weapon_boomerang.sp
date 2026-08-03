@@ -125,7 +125,7 @@ public void Weapon_Boomerang_Ability(int client, int weapon, bool crit, int slot
 		case 5: //Nightmare
 		{
 			//idk yet
-			ApplyStatusEffect(client, client, "Nightmareish Sawing", 10.0);
+			ApplyStatusEffect(client, client, "Nightmareish Sawing", 15.0);
 			Ability_Apply_Cooldown(client, slot, 50.0);
 			EmitSoundToAll("physics/metal/metal_large_debris1.wav", client, SNDCHAN_AUTO, 80, _, 0.7, 105);
 		}
@@ -380,14 +380,14 @@ static void BoomerRangThrow(int client, int weapon, char[] modelstringname = WOO
 		damage *= 0.6;
 	if(extraability == 2)
 		damage *= 0.4;
-	float speed = 1100.0;
+	float speed = 1600.0;
 	speed *= Attributes_Get(weapon, 103, 1.0);
 	speed *= Attributes_Get(weapon, 104, 1.0);
 
 	if(extraability == 1)
 		speed *= 0.4;
 	float time = 2500.0 / speed;
-	time *= 0.35;
+	time *= 0.55;
 	time *= Attributes_Get(weapon, 101, 1.0);
 	time *= Attributes_Get(weapon, 102, 1.0);
 	float TimeReturnToplayer = time;

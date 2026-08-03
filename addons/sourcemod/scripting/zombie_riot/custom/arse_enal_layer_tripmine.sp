@@ -75,7 +75,7 @@ public void Weapon_Arsenal_Trap(int client, int weapon, bool crit, int slot)
 		
 			attack_speed = 1.0 / Attributes_GetOnPlayer(client, 343, true, true); //Sentry attack speed bonus
 				
-			Bonus_damage = attack_speed * Attributes_GetOnPlayer(client, 287, true, true);			//Sentry damage bonus
+			Bonus_damage = attack_speed * Attributes_GetOnPlayer(client, 287, true);			//Sentry damage bonus
 
 			Bonus_damage *= BuildingWeaponDamageModif(1);
 			
@@ -462,7 +462,6 @@ public void Trip_TrackPlanted(int client)
 									if ((StrContains(other_classname, "zr_base_npc") != -1) && (GetTeam(client) != GetTeam(targ)))
 									{
 										SDKHooks_TakeDamage(targ, client, client, Trip_DMG[client] * (Ratio2 * Ratio1), DMG_BLAST, -1);
-										SummonerRenerateResources(client, 2.6, 0.0, true);
 										EmitSoundToAll(TRIP_ACTIVATED, targ, _, 70);
 										TriggerExplosion = true;
 									}

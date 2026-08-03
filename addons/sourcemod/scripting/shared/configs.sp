@@ -146,6 +146,7 @@ void Configs_ConfigsExecuted()
 			OnClientPutInServer(client);
 	}
 #if defined ZR
+	AutoLoadouts_ConfigSetup();
 	ZR_FastDownloadForce();
 #endif
 }

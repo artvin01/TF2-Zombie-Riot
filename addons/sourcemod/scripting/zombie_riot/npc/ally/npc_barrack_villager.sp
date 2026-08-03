@@ -522,7 +522,7 @@ bool BarracksVillager_RepairSelfTower(int entity, int tower)
 	{
 		if(GetEntProp(tower, Prop_Data, "m_iHealth") < GetEntProp(tower, Prop_Data, "m_iMaxHealth"))
 		{
-			SetEntProp(tower, Prop_Data, "m_iHealth", GetEntProp(tower, Prop_Data, "m_iHealth") + (GetEntProp(tower, Prop_Data, "m_iMaxHealth") / 500));
+			SetEntProp(tower, Prop_Data, "m_iHealth", GetEntProp(tower, Prop_Data, "m_iHealth") + (GetEntProp(tower, Prop_Data, "m_iMaxHealth") / 375));
 			if(GetEntProp(tower, Prop_Data, "m_iHealth") >= GetEntProp(tower, Prop_Data, "m_iMaxHealth"))
 			{
 				SetEntProp(tower, Prop_Data, "m_iHealth", GetEntProp(tower, Prop_Data, "m_iMaxHealth"));
@@ -572,7 +572,7 @@ void BarracksVillager_RepairBuilding(int entity, int building)
 		{
 			if(i_IsABuilding[building])
 			{
-				int HealthToRepair = GetEntProp(building, Prop_Data, "m_iMaxHealth") / 750;
+				int HealthToRepair = GetEntProp(building, Prop_Data, "m_iMaxHealth") / 500;
 				if(HealthToRepair < 1)
 				{
 					HealthToRepair = 1;

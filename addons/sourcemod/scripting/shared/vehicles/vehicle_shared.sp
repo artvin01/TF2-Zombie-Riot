@@ -986,7 +986,7 @@ static void AdjustClientWeapons(int client)
 				if(ModifiedWeapons[client] > 0)
 					Store_RemoveSpecificItem(client, NULL_STRING, _, ModifiedWeapons[client]);
 				
-				i_ClientHasCustomGearEquipped[client] = 1;
+				i_ClientHasCustomGearEquipped[client] = CUSTOMGEAR_VEHICLE_WEAPON;
 				ModifiedWeapons[client] = gun;
 
 				int health = GetClientHealth(client);
@@ -1038,7 +1038,7 @@ static void RestoreClientWeapons(int client)
 {
 	if(ModifiedWeapons[client])
 	{
-		i_ClientHasCustomGearEquipped[client] = 0;
+		i_ClientHasCustomGearEquipped[client] = CUSTOMGEAR_NONE;
 		Store_RemoveSpecificItem(client, NULL_STRING, _, ModifiedWeapons[client]);
 		ModifiedWeapons[client] = 0;
 		

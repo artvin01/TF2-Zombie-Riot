@@ -357,7 +357,6 @@ public void Rogue_StoneFurnace_Remove()
 
 static void GiveCash(int cash)
 {
-	CurrentCash += cash;
 	GlobalExtraCash += cash;
 	CPrintToChatAll("{green}%t", "Cash Gained!", cash);
 }

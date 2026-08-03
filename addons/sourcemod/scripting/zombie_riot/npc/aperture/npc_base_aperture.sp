@@ -93,6 +93,7 @@ void Aperture_Shared_LastStandSequence_Starting(CClotBody npc)
 	
 	npc.m_flArmorCount = 0.0;
 	
+	RaidTimerAlert = false;
 	RaidModeScaling = 0.0;
 	RaidModeTime = gameTime + APERTURE_LAST_STAND_TIMER_TOTAL;
 	if(ZR_Get_Modifier() == 1)
@@ -273,6 +274,7 @@ public void Aperture_Shared_LastStandSequence_NPCDeath(int entity)
 	
 	StopSound(npc.index, SNDCHAN_AUTO, g_ApertureSharedStunMainSound);
 	i_LastStandBossRef = INVALID_ENT_REFERENCE;
+	RaidTimerAlert = true;
 	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);

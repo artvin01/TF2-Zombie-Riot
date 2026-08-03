@@ -80,6 +80,7 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 {
 #if defined ZR
 
+	Barracks_InstaResearchEverything = false;
 	if(!InZRMap())
 		DeleteAllBadEntities_NonZrMaps();
 	
@@ -126,6 +127,8 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	Zealot_RoundStart();
 	Drops_ResetChances();
 	NPCStats_HandlePaintedWearables();
+	Gunsaw_RoundStart();
+	IndexFather_ResetAllStats();
 
 	for(int client=1; client<=MaxClients; client++)
 	{
@@ -275,7 +278,6 @@ public Action OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 	Waves_RoundEnd();
 	Escape_RoundEnd();
 	Rogue_RoundEnd();
-	Construction_RoundEnd();
 	BetWar_RoundEnd();
 	CurrentGame = 0;
 	RoundStartTime = 0.0;
@@ -336,7 +338,7 @@ public void OnPlayerResupply(Event event, const char[] name, bool dontBroadcast)
 		if(WaitingInQueue[client])
 			TeutonType[client] = TEUTON_WAITING;
 
-		if(i_ClientHasCustomGearEquipped[client] > 1)
+		if(i_ClientHasCustomGearEquipped[client] == CUSTOMGEAR_QUANTUM_SUIT)
 		{
 			SDKCall_GiveCorrectAmmoCount(client);
 
@@ -594,7 +596,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 		
 	i_HealthBeforeSuit[client] = 0;
 	f_HealthBeforeSuittime[client] = GetGameTime() + 0.25;
-	i_ClientHasCustomGearEquipped[client] = false;
+	i_ClientHasCustomGearEquipped[client] = CUSTOMGEAR_NONE;
 	UnequipQuantumSet(client);
 //	CreateTimer(0.0, QuantumDeactivate, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE); //early cancel out!, save the wearer!
 	//
@@ -608,6 +610,7 @@ public Action OnPlayerDeath(Event event, const char[] name, bool dontBroadcast)
 	PurnellDeathsound(client);
 	Vehicle_Exit(client, true);
 	SdkHooks_SetAndUpdateArmorClientText(client);
+	Gunsaw_PlayerDeath(client);
 #endif
 
 #if defined RPG

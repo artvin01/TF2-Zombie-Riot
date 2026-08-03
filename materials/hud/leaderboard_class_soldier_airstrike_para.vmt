@@ -1,0 +1,10 @@
+"UnlitGeneric"
+{
+	"$basetexture" "hud/leaderboard_class_soldier_airstrike_para"
+	"$vertexcolor" 1
+	"$no_fullbright" 1
+	"$ignorez" 1
+	"%keywords" "tf"
+	"$translucent" 1
+
+}

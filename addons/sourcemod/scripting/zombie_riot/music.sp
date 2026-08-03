@@ -559,7 +559,7 @@ void Music_EndLastmann(bool Reinforce=false)
 					case 4:
 						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/expidonsa_waves/wave_30_soldine.mp3", 2.0);
 					case 5:
-						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/purnell_lastman.mp3", 2.0);
+						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/purnell_lastman_1.mp3", 2.0);
 					case 6:
 						StopSound(client, SNDCHAN_STATIC, "#music/hl2_song23_suitsong3.mp3");
 					case 7:
@@ -580,6 +580,13 @@ void Music_EndLastmann(bool Reinforce=false)
 						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/heatbroken_lastman.mp3", 2.0);
 					case 16:
 						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/red_mist_lastman.mp3", 2.0);
+					case 17:
+						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/medieval_raid/kazimierz_boss.mp3", 2.0);
+					case 18:
+						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/gunsaw_lastman.mp3", 2.0);
+					case 19:
+						StopCustomSound(client, SNDCHAN_STATIC, "#zombiesurvival/prescript_lastman.mp3", 2.0);
+
 				}
 				SetMusicTimer(client, 0);
 				MusicLastmann.StopMusic(client);
@@ -955,22 +962,22 @@ void Music_Update(int client)
 				{
 					if(!npcstats.m_bThisNpcIsABoss)
 					{
-						f_intencity += 0.5;
+						f_intencity += 0.75;
 					}
 					else
 					{
-						f_intencity += 4.0;
+						f_intencity += 5.0;
 					}
 				}
 				if (distance <= RangeSecondMusic)// If they are very close, cause more havok! more epic music!
 				{
 					if(!npcstats.m_bThisNpcIsABoss)
 					{
-						f_intencity += 0.65;
+						f_intencity += 1.0;
 					}
 					else
 					{
-						f_intencity += 5.0;
+						f_intencity += 8.0;
 					}
 				}
 			}
@@ -978,7 +985,7 @@ void Music_Update(int client)
 		
 		if(!ZombieMusicPlayed)//once set in a wave, it should stay untill the next mass revive.
 		{
-			if(!b_IsAloneOnServer && float(GlobalIntencity) >= float(PlayersInGame) * 0.25)
+			if(!b_IsAloneOnServer && float(GlobalIntencity) >= float(PlayersInGame) * 0.15)
 			{
 				ZombieMusicPlayed = true;
 			}
@@ -1073,6 +1080,21 @@ void Music_Update(int client)
 						EmitCustomToClient(client, "#zombiesurvival/red_mist_lastman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.3);//1.3 is volume, after that is pitch
 						SetMusicTimer(client, GetTime() + 91);
 					}
+				}
+				case 17:
+				{
+					EmitCustomToClient(client, "#zombiesurvival/medieval_raid/kazimierz_boss.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.8);
+					SetMusicTimer(client, GetTime() + 189);
+				}
+				case 18:
+				{
+					EmitCustomToClient(client, "#zombiesurvival/gunsaw_lastman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.3);
+					SetMusicTimer(client, GetTime() + 220);
+				}
+				case 19:
+				{
+					EmitCustomToClient(client, "#zombiesurvival/prescript_lastman.mp3",client, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 1.3);
+					SetMusicTimer(client, GetTime() + 92);
 				}
 				default:
 				{	

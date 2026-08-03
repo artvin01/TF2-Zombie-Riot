@@ -30,11 +30,6 @@ public void Rogue_Support_Collect()
 
 	GlobalExtraCash += 250;
 	
-	for(int client = 1; client <= MaxClients; client++)
-	{
-		if(IsClientInGame(client))
-			CashSpent[client] -= 250;
-	}
 }
 
 public void Rogue_Spearhead_Ally(int entity, StringMap map)

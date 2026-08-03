@@ -43,6 +43,11 @@ Main Servers:
 145.239.70.42:27015 ( steam://connect/145.239.70.42:27015 )
 
 
+## info
+Zr uses a system that allows creators to add more sounds without straining servers and others.
+
+This uses a different repo were you download sounds manually with a simple drag and drop.
+- [Manual ZR Sound Repo](https://github.com/artvin01/ZrManualSounds)
  
 ## cvar's
 
@@ -89,7 +94,6 @@ The SourceMod plugins / extensions listed below are required for TF2 Zombie Riot
 - [TFEconData](https://github.com/nosoop/SM-TFEconData)
 - [CBaseNpc](https://github.com/TF2-DMB/CBaseNPC)
 - [Timescale Windows Fix](https://forums.alliedmods.net/showthread.php?t=324264) Not needed if you are on linux.
-- [TF2Utils](https://github.com/nosoop/SM-TFUtils)
 - [File Network](https://forums.alliedmods.net/showthread.php?t=341953)
 - [CollisionHookFIX](https://github.com/voided/CollisionHook)
 - [Source scramble](https://github.com/nosoop/SMExt-SourceScramble)

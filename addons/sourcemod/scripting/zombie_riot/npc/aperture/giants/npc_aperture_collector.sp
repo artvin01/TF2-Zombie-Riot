@@ -2,8 +2,8 @@
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
-	"mvm/giant_common/giant_common_explodes_01",
-	"mvm/giant_common/giant_common_explodes_02",
+	"mvm/giant_common/giant_common_explodes_01.wav",
+	"mvm/giant_common/giant_common_explodes_02.wav",
 };
 
 static const char g_HurtSounds[][] = {

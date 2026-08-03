@@ -276,7 +276,7 @@ static void VestanOfflineAvangard_ClotThink(int iNPC)
 			SetVariantString("1.5");
 			AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 			Is_a_Medic[npc.index]=false;
-			npc.m_flSpawnTime = gameTime+50.0;
+			npc.m_flSpawnTime = gameTime+fl_ruina_battery_max[npc.index];
 		}
 		
 		if(npc.m_fbRangedSpecialOn && npc.m_flNextRangedAttack < gameTime)

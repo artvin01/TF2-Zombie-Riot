@@ -121,11 +121,6 @@
 		"ko"		"무기들"
 		"it"		"Armi"
 	}
-	"Loadouts"
-	{
-		"en" 		"Loadouts"
-		"ko"		"로드아웃"
-	}
 	"Settings"
 	{
 		"en" 		"Settings"
@@ -1477,6 +1472,7 @@
 		"chi"       	"属性升级"
 		"it"		"Potenziamenti"
 		"ko"		"개선"
+		"pl"		"Ulepszenia"
 	}
 	"Melee Upgrades"//Melee Upgrades HERE!!!
 	{
@@ -1490,6 +1486,7 @@
 		"chi"       	"近战升级"
 		"it"		"Potenziamenti in mischia"
 		"ko"		"근접 무기 개선"
+		"pl"		"Ulepszenia walki wręcz"
 	}
 	"Cannibalism"
 	{
@@ -1604,6 +1601,7 @@
 		"chi"       	"建筑"
 		"it"		"Potenziamenti della struttura"
 		"ko"		"구조물 개선"
+		"pl"		"Ulepszenia budowania"
 	}
 	"Repair Handling book for dummies"
 	{
@@ -1755,6 +1753,7 @@
 		"chi"       	"远程升级"
 		"it"		"Potenziamenti a distanza"
 		"ko"		"원거리 무기 개선"
+		"pl"		"Ulepszenia broni na dystans"
 	}
 	"Accurate Marksman"
 	{
@@ -1839,6 +1838,7 @@
 		"chi"       	"魔法升级"
 		"it"		"Potenziamenti dei maghi"
 		"ko"		"마법 무기 개선"
+		"pl"		"Ulepszenia magiczne"
 	}
 	"Magical Haste"
 	{
@@ -1941,6 +1941,7 @@
 		"chi"		"被动升级"
 		"it"		"Potenziamenti passivi"
 		"ko"		"생존 개선"
+		"pl"		"Ulepszenia przetrwania"
 	}
 	"Body armor"
 	{
@@ -2055,12 +2056,14 @@
 		"chi"       	"医疗升级"
 		"it"		"Potenziamenti della Medigun"
 		"ko"		"메디건 개선"
+		"pl"		"Ulepszenia mediguna"
 	}
 	"Support Upgrades"
 	{
 		"en"		"Support Upgrades"
 		"ru" 		"Для поддержки"
 		"ko"		"지원 개선"
+		"pl"		"Ulepszenia wsparcia"
 	}
 	"Doctor Certificate"
 	{
@@ -2331,18 +2334,6 @@
 		"chi"       	"魔法特效"
 		"it"		"Poteri del mago"
 		"ko"		"마법 전용 퍽"
-	}
-	"Mage Fragility"
-	{
-		"en"		"Mage Fragility"
-		"fr"		"Fragilité du Magicien"
-		"ru"		"Хрупкость мага"
-		"de"		"Magier Zerbrechlichkeit"
-		"pt"		"Fragilidade de Mago"
-		"nl"		"Magische breekbaarheid"
-		"chi"       	"纯粹法师"
-		"it"		"Fragilità del mago"
-		"ko"		"마법사의 취약성"
 	}
 	"Mystical Overcharge"
 	{
@@ -3253,6 +3244,7 @@
 		"chi"       "工程师物品"
 		"it"		"Attrezzatura per costruttori"
 		"ko"		"건축가 장비"
+		"pl"		"Rzeczy Budownicze"
 	}
 	"Shrapnel Shredder"
 	{
@@ -5356,10 +5348,25 @@
 		"en"	"Enhancement: Overheating Protection Removed"
 		"ko"	"개조: 과열 보호 제거"
 	}
-	"Enhancement: Airstrike Beacon"
+	"Enhancement: Quad-Tech Chambers"
 	{
-		"en"	"Enhancement: Heat Sink Discharge"
-		"ko"	"개조: 폭격 유도 비콘"
+		"en"	"Enhancement: Quad-Tech Chambers"
+		"ko"	"개조: 4연발 신기술 약실"
+	}
+	"Enhancement: Cross-Platform Compatibility"
+	{
+		"en"	"Enhancement: Cross-Platform Compatibility"
+		"ko"	"개조: 크로스 플랫폼 호환성"
+	}
+	"Enhancement: Precision Strike Beacon"
+	{
+		"en"	"Enhancement: Precision Strike Beacon"
+		"ko"	"개조: 정밀 타격 비콘"
+	}
+	"ER Targeting Remote"
+	{
+		"en"	"Targeting Remote"
+		"ko"	"원격 조준기"
 	}
 	"Boomerang"
 	{
@@ -5552,36 +5559,6 @@
 		"en" "Kit Modernizer VI"
 		"it" "Kit Modernizzatore VI"
 		"ko" "키트 현대화 VI"
-	}
-	"Unit Reformator I"
-	{
-		"en" "Unit Reformator I"
-		"it" "Unità Riformatore I"
-		"ko" "유닛 개혁가 I"
-	}
-	"Unit Reformator II"
-	{
-		"en" "Unit Reformator II"
-		"it" "Unità Reformator II"
-		"ko" "유닛 개혁가 II"
-	}
-	"Unit Reformator III"
-	{
-		"en" "Unit Reformator III"
-		"it" "Unità Reformator III"
-		"ko" "유닛 개혁가 III"
-	}
-	"Unit Reformator IV"
-	{
-		"en" "Unit Reformator IV"
-		"it" "Unità Reformator IV"
-		"ko" "유닛 개혁가 IV"
-	}
-	"Unit Reformator V"
-	{
-		"en" "Unit Reformator V"
-		"it" "Unità Riformatore V"
-		"ko" "유닛 개혁가 V"
 	}
 	"Adaptive Medigun"
 	{
@@ -6076,5 +6053,90 @@
 	{
 		"en"	"Tiantui Star's Blade"
 		"ko"	"천퇴성도"
+	}
+	"The Mercenary"
+	{
+		"en"	"The Mercenary"
+		"ko"	"''용병''"
+	}
+	"Lost Gadgets"
+	{
+		"en"	"Lost Gadgets"
+		"ko"	"유실된 소형 도구"
+	}
+	"Gunsaw Pistol"
+	{
+		"en"	"Gunsaw Pistol"
+		"ko"	"건소우 권총"
+	}
+	"Gunsaw Saw-Off"
+	{
+		"en"	"Gunsaw Saw-Off"
+		"ko"	"건소우 소드 오프"
+	}
+	"Explosive Barrel"
+	{
+		"en"	"Explosive Barrel"
+		"ko"	"폭발성 드럼통"
+	}
+	"The Index Nursefather"
+	{
+		"en"    "The Index Nursefather"
+		"ko"	"검지 아비"
+	}
+	"Prescript Delivered on a device"
+	{
+		"en"    "Prescript Delivered on a device"
+		"ko"	"단말기로 전해진 지령"
+	}
+	"Golden Vial With a Chain"
+	{
+		"en"    "Golden Vial With a Chain"
+		"ko"	"신탁 단말기 [카두세우스]"
+	}
+	"Prescript Hatchet"
+	{
+		"en"    "Prescript Hatchet"
+		"ko"	"손도끼로 갈비뼈를 찍어 내릴 때는..."
+	}
+	"Prescript Hammer"
+	{
+		"en"    "Prescript Hammer"
+		"ko"	"망치로 뒤통수를 으깨야 할 때는..."
+	}
+	"Prescript Whip"
+	{
+		"en"    "Prescript Whip"
+		"ko"	"채찍으로 살점을 만 갈래 떼어내야 할 때는..."
+	}
+	"Prescript Lance"
+	{
+		"en"    "Prescript Lance"
+		"ko"	"랜스로 20인치의 구멍을 내야 할 때는..."
+	}
+	"Prescript Rapier"
+	{
+		"en"    "Prescript Rapier"
+		"ko"	"레이피어로 몸에 10개 이상의 구멍을 내야할 때는..."
+	}
+	"Prescript Stiletto"
+	{
+		"en"    "Prescript Stiletto"
+		"ko"	"스틸레토로 허파를 꿰뚫을 때는..."
+	}
+	"Prescript Bastardsword"
+	{
+		"en"    "Prescript Bastardsword"
+		"ko"	"바스타드 소드로 어깨와 머리를 짓이길 때는..."
+	}
+	"Prescript Greatsword"
+	{
+		"en"    "Prescript Greatsword"
+		"ko"	"커다란 검으로 몸통을 갈라야 할 때는..."
+	}
+	"Prescript Scythe"
+	{
+		"en"    "Prescript Scythe"
+		"ko"	"낫으로... 누군가처럼 공간을 따라 베어내야 할 때는..."
 	}
 }

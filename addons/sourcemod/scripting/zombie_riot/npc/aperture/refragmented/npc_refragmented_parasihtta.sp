@@ -112,15 +112,6 @@ methodmap Parasihtta < CClotBody
 	}
 }
 
-public Action Parasihtta_RemoveOverlay(Handle helpmeimblind, int id)
-{
-	int client = GetClientOfUserId(id);
-	if (IsValidClient(client))
-		DoOverlay(client, "");
-		
-	return Plugin_Continue;
-}
-
 public void Parasihtta_ClotThink(int iNPC)
 {
 	Parasihtta npc = view_as<Parasihtta>(iNPC);
@@ -195,31 +186,15 @@ public void Parasihtta_ClotThink(int iNPC)
 						SDKHooks_TakeDamage(target, npc.index, npc.index, 0.0, DMG_CLUB, -1, _, vecHit);
 						if(!HasSpecificBuff(target, "Envenomed"))
 						{
-							ApplyStatusEffect(npc.index, target, "Envenomed", 10.0);
+							ApplyStatusEffect(npc.index, target, "Envenomed", 5.0);
+							
 							if(target <= MaxClients)
-							{
 								Force_ExplainBuffToClient(target, "Envenomed");
-								SetEntProp(target, Prop_Data, "m_iHealth", 1);
-								HealEntityGlobal(target, target, 250.0, 1.0, 20.0, HEAL_SELFHEAL);
-							}
 						}
 						if (i_IsABuilding[target])
 						{
 							//use void a subtitute, it just reduces repair HP alot.
 							Elemental_AddVoidDamage(target, npc.index, 2000, false, false);
-						}
-						if(b_ThisWasAnNpc[target])
-						{
-							//for some fucking reason these fucking npcs don't wanna get fucking affected by the fucking envenomed buff that I fucking made, fuck them.
-							GetEntProp(target, Prop_Data, "m_iHealth");
-							SetEntProp(target, Prop_Data, "m_iHealth", 1);
-						}
-						if(!i_IsABuilding[target] && !b_ThisWasAnNpc[target])
-						{
-							TF2_AddCondition(target, TFCond_LostFooting, 5.0);
-							TF2_AddCondition(target, TFCond_MarkedForDeathSilent, 10.0);
-							DoOverlay(target, "debug/yuv", 0);
-							CreateTimer(15.0, Parasihtta_RemoveOverlay, GetClientUserId(target), TIMER_FLAG_NO_MAPCHANGE);
 						}
 					}
 				}

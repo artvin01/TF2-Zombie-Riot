@@ -710,11 +710,8 @@ static void Smith_SelfDefense(AgentSmith npc, float gameTime, int target, float 
 				if(IsValidEnemy(npc.index, target))
 				{
 					float damage = 90.0;
-					if(!npc.m_bFUCKYOU)
-					{
-						if(ShouldNpcDealBonusDamage(target))
-							damage *= 5.0;
-					}
+					if(ShouldNpcDealBonusDamage(target))
+						damage *= 8.0;
 					if(target > 0) 
 					{
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
@@ -983,11 +980,11 @@ static void Agent_CloningAmount(AgentSmith npc)
 	if(Waves_InFreeplay())
 	{
 		amount = 4;
-		Agent_Smith_Cloner(npc, amount, ReturnEntityMaxHealth(npc.index)/2, 3.5);
+		Agent_Smith_Cloner(npc, amount, ReturnEntityMaxHealth(npc.index)/3, 3.5);
 	}
 	else
 	{
-		Agent_Smith_Cloner(npc, amount, ReturnEntityMaxHealth(npc.index)/2, 2.0);
+		Agent_Smith_Cloner(npc, amount, ReturnEntityMaxHealth(npc.index)/3, 1.0);
 	}
 }
 

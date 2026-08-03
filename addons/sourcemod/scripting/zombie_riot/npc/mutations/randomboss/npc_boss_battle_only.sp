@@ -459,9 +459,9 @@ void BossBattleSummonRaidboss(int bosssummonbase)
 			PluginName = "npc_boss_reila";	
 			Format(CharData, sizeof(CharData), "%s%s",CharData, "force_final_battle");
 			
-			enemy.ExtraDamage *= 1.05;
+			enemy.ExtraDamage *= 0.75;
 			//no umbrals so buff hard
-			enemy.Health = RoundToNearest(float(enemy.Health) * 1.25); 
+			enemy.Health = RoundToNearest(float(enemy.Health) * 1.35); 
 		}
 		case 32:
 		{
