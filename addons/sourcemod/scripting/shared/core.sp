@@ -237,7 +237,7 @@ enum
 	RUINA_DAGGER_2			= 64,			//7
 	RUINA_HEALING_STAFF_2	= 128,			//8
 	RUINA_REI_LAUNCHER		= 256,			//9
-	RUINA_WINGS_1			= 512,			//10
+	RUINA_UNUSED_BG_2_1		= 512,			//10
 	RUINA_IMPACT_LANCE_1	= 1024,			//11
 	RUINA_IMPACT_LANCE_2	= 2048,			//12
 	RUINA_IMPACT_LANCE_3	= 4096,			//13
@@ -247,14 +247,13 @@ enum
 	RUINA_ZANGETSU_2		= 65536,		//17
 	RUINA_BLADE_3			= 131072,		//18
 	RUINA_LAN_SWORD_3		= 262144,		//19
-	RUINA_LAZER_CANNON_2	= 524288,		//20
-	RUINA_WINGS_2			= 1048576		//21	going beyond this it legit cannot compile anymore, likely due to too many things
+	RUINA_LAZER_CANNON_2	= 524288		//20
 }
 #define RUINA_CUSTOM_MODELS_3	"models/zombie_riot/weapons/ruina_models_3_3_test1.mdl"
 enum
 {
-	RUINA_WINGS_4			= 1,			//1
-	RUINA_WINGS_3			= 2,			//2
+	RUINA_UNUSED_BG_4_1		= 1,			//1
+	RUINA_UNUSED_BG_4_2		= 2,			//2
 	RUINA_MAGIA_TOWER_1		= 4,			//3
 	RUINA_MAGIA_TOWER_2		= 8,			//4
 	RUINA_MAGIA_TOWER_3		= 16,			//5

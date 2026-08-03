@@ -91,7 +91,19 @@ $cdmaterials "models\weapons\c_items\"
 //c_saxxy					//gold
 //c_frying_pan_gold 		//gold
 
-$cdmaterials "models/player/shared/"	//gold_player
+$cdmaterials "models/player/shared/"								//gold_player
+$cdmaterials "models/workshop/weapons/c_models/c_invasion_wrangler"	//c_invasion_wrangler_laser.vm
+
+//
+
+$texturegroup "skinfamilies"
+{
+	{ "c_invasion_wrangler_laser"       	"c_invasion_wrangler_laser"			"neon_red_solid"	"dispenser"				}		//red
+	{ "c_invasion_wrangler_laser_blue"    	"c_invasion_wrangler_laser_blue"	"neon_blue_solid"	"dispenser_blue"		}		//blue
+	{ "player_chrome1" 						"australium_container_glass"		"neon_red_solid"	"player_chrome1"		}		//uber red
+	{ "gold_player"							"australium_container_glass"		"neon_blue_solid"	"gold_player"			}		//uber blue
+}
+
 
 $cdmaterials "passtime\neons\"	
 //neon_red_solid
@@ -109,7 +121,6 @@ $bbox -1.784 -1.784 -2.533 1.77 1.773 29.017
 //Good to know I can use these to create special points for vector getting to connect beams or TE or for effects
 
 $definebone "weapon_bone" "" 0 0 0 0 0 0 0 0 0 0 0 0
-#definebone "root"	"" 0 0 0 0 0 0 0 0 0 0 0 0
 
 
 $sequence "idle" {
