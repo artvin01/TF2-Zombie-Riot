@@ -3223,19 +3223,19 @@
 		"ru"		"Помощь Иберии и Экспидонса"
 		"ko"		"알미나와 엑스피돈사인들의 도움"
 	}
-	"Almina's Last Hope..."
+	"Almina's Last Hope"
 	{
 		"en"		"Almina's Last Hope"
 		"ru"		"Последняя Надежда Иберии"
 		"ko"		"알미나의 마지막 희망"
 	}
-	"Blitzkrieg's destroyed Core"
+	"Blitzkrieg's Army"
 	{
 		"en"		"Blitzkrieg's Army"
 		"ru"		"Армия Блицкрига"
 		"ko"		"블리츠크리그의 군대"
 	}
-	"Guln's Dying Wish"
+	"Guln's Companions"
 	{
 		"en"		"Guln's Companions"
 		"ru"		"Компаньоны Гюльна"
