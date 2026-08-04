@@ -77,15 +77,6 @@ $illumposition 0.096 -0.043 13.267
 
 $mostlyopaque
 
-$cdmaterials "models\custom_weaponry\"
-$cdmaterials "models\weapons\w_wrench\"				
-//it has gold!		w_wrench01_gold
-
-$cdmaterials "models\weapons\c_items\"					
-//c_saxxy					//gold
-//c_frying_pan_gold 		//gold
-
-$cdmaterials "models\workshop_partner\weapons\c_models\c_ai_flamethrower\"
 $cdmaterials "models\props_skybox\"					
 //black							//legit just black
 
@@ -112,7 +103,8 @@ $cdmaterials "models\props_halloween\"
 //unlit_black		//is black
 
 $cdmaterials ""
-
+//../../../qc/ruina_qc/v3/
+//D:\J's Stuff\Github Desktop\TF2-Zombie-Riot\devsrc\blender_files\jdeivid\ruina
 $cdmaterials "models/player/shared/"								//gold_player
 $cdmaterials "models/workshop/weapons/c_models/c_invasion_wrangler"	//c_invasion_wrangler_laser.vm
 

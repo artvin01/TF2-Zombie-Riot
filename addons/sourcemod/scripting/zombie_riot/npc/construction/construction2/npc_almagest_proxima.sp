@@ -163,8 +163,8 @@ methodmap AlmagestProxima < CClotBody
 
 		npc.m_flSpeed = 350.0;
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/zombie_riot/weapons/ruina_models_2_6_test3.mdl");
-		SetVariantInt(65536);
+		npc.m_iWearable1 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_2);
+		SetVariantInt(RUINA_ZANGETSU_2);
 		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/robo_medic_physician_mask/robo_medic_physician_mask.mdl");
