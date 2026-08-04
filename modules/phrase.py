@@ -1,12 +1,9 @@
 import util
 import vdf
 from requests.structures import CaseInsensitiveDict
-from ruamel.yaml import YAML
 
 if "decompile" not in util.DEBUG:
-    yaml=YAML(typ='safe')
-    with open("./config/phrases.yml",'r') as file:
-        PHRASES = yaml.load(file) # type: ignore[w]
+    PHRASES = util.load_yaml("./config/phrases.yml") # type: ignore[w]
     util.log("Parsing phrases...")
     for p in PHRASES:
         util.log(f"> {p}")

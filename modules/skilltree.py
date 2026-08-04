@@ -3,13 +3,10 @@ import util
 import json
 import vdf
 from collections import defaultdict
-from ruamel.yaml import YAML
 from typing import Any
 
-yaml=YAML(typ='safe')
 SKILLTREE_CFG: dict[str,Any] = vdf.loads(util.read("./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/skilltree.cfg")) # type: ignore[w]
-with open("./config/skilltree.yml",'r') as file:
-    PARSECFG = yaml.load(file) # type: ignore[w]
+PARSECFG = util.load_yaml("./config/skilltree.yml") # type: ignore[w]
 
 """
    	"name"		"Luck Up 1"	            // Name

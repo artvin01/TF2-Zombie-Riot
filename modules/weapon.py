@@ -6,7 +6,6 @@ import json
 import f3d
 from modules.gamedata import items_game, modelmapping, strings_english
 from collections import defaultdict
-from ruamel.yaml import YAML
 from typing import Any
 type WeaponAttributes = dict[str,list[str]]
 type WeaponData = dict[str,str]
@@ -148,9 +147,7 @@ def shared_parse_weapon_icon(weapon_data: WeaponData, weapon_name:str, pap_key:s
 CFG_WEAPONS: dict[str,Any] = vdf.loads(util.read("./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/weapons.cfg"))["Weapons"] # type: ignore[w]
 COMPLETE_ITEM_MAP: dict[str,dict[str,str]] = json.loads(util.read("gh-pages/data/complete_item_map.json"))
 # Item blacklist for hidden items that aren't indicated as hidden
-yaml=YAML(typ='safe')
-with open("./config/item_blacklist.yml",'r') as file:
-    ITEM_BLACKLIST = yaml.load(file) # type: ignore[w]
+ITEM_BLACKLIST = util.load_yaml("./config/item_blacklist.yml") # type: ignore[w]
 FACTION_MAPPINGS = {
     "1": "Expidonsa",
     "2": "Grunwald",

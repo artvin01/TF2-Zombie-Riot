@@ -323,15 +323,18 @@ def write(filename:str, val:str):
     """
     with open(filename, 'w+') as f:
         f.write(val)
+    
+yaml=YAML(typ='safe')
+def load_yaml(filename: str) -> dict[Any] | list[Any]:
+    with open(filename, 'r') as file:
+        return yaml.load(file) # type: ignore[w]
 
 # --------------------------- PHRASES ---------------------------
 
 RAW_PHRASE: dict[str,str] = {}
 PHRASES: list[dict[str,str]] = []
 
-yaml=YAML(typ='safe')
-with open("./config/phrases.yml",'r') as file:
-    PHRASES_FILES = yaml.load(file) # type: ignore[w]
+PHRASES_FILES = load_yaml("./config/phrases.yml")
 
 def get_key(key:str,silent:bool=False,empty_on_fail:bool=False) -> str:
     """

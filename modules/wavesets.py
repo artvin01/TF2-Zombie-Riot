@@ -50,6 +50,7 @@ def parse_all_npcs() -> tuple[dict[str, modules.shared.TypeNPC], dict[str, list[
             if not npc_obj.HIDDEN:
                 plugin_name = npc_obj.plugin
                 if type(plugin_name) is list:
+                    # Unpack filetype: multi / shared
                     for i,pn in enumerate(plugin_name):
                         dummy = modules.shared.NPC_Dummy(npc_obj)
                         if npc_obj.filetype == "shared":
@@ -64,6 +65,7 @@ def parse_all_npcs() -> tuple[dict[str, modules.shared.TypeNPC], dict[str, list[
                             npc_by_category[dummy.category] = []
                         npc_by_category[dummy.category].append(dummy)
                 else:
+                    # filetype: single
                     npc_by_file[plugin_name] = npc_obj
                     if npc_obj.category not in npc_by_category:
                         npc_by_category[npc_obj.category]=[]
@@ -363,8 +365,7 @@ def parse_wave(wave_idx: int, wave_data: dict[str, Any], auto_wave_cash: bool, r
             "img": image if image else "",
             "prefix": npc_name_prefix,
             "display_name": npc_name,
-            "true_name": npc_name_raw, # Unused for now, might be used in inspect mode.
-            "plugin_name": wave_entry_data["plugin"], # Unused for now, might be used in inspect mode.
+            "plugin_name": wave_entry_data["plugin"], # used in npc preview html template?
             "extra_info": extra_info + desc + music,
             # waves.sp line 4165 if(data.Is_Boss < 2 && (support || data.ignore_max_cap || data.Is_Static || data.Team == TFTeam_Red))
             "css_class": npc_css_class,
@@ -454,7 +455,7 @@ def parse_waveset(file: str, data: dict[str, Any], abslink: str, name: str, desc
                 TODO: 
                 - Blitzkrieg's Army(donnerkrieg has entry and blitzkrieg doesnt)
                 """
-                if obt["item"] not in COMPLETE_ITEM_MAP:
+                if obt["item"] not in COMPLETE_ITEM_MAP:# and obt["npc_name"] not in TROPHY_NPC_BLACKLIST:
                     COMPLETE_ITEM_MAP[obt["item"]] = {
                         "name": f"{util.abslink_to_display(abslink,name)}|{obt["npc_name"]}",
                         "file": f"{abslink}.json&wv={wave_idx}"
@@ -1189,6 +1190,7 @@ DEFAULT_MISSION_CLIENT = parse_default_mission_client()
 MUSIC_BY_TITLE = {}
 ARTIFACTS = []
 COMPLETE_ITEM_MAP = {}
+#TROPHY_NPC_BLACKLIST = util.load_yaml("./config/trophy_npc_blacklist.yml")
 
 cfg_files = {
     "classic.cfg": "gh-pages/survival.html",

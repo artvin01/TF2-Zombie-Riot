@@ -1,7 +1,6 @@
 import util
 import json
 import os
-from ruamel.yaml import YAML
 
 # TODO source mapping: NPC shared.
 
@@ -25,9 +24,7 @@ FLAG_CSS = {
 }
 PREFIX_STR = """bool carrier = data[0] == 'R';
 		bool elite = !carrier && data[0];"""
-yaml=YAML(typ='safe')
-with open("./config/npc_whitelist.yml",'r') as file:
-    NPC_WHITELIST = yaml.load(file) # type: ignore[w]
+NPC_WHITELIST = util.load_yaml("./config/npc_whitelist.yml")
 
 MISSING_ICON_VTF = "TF2-Zombie-Riot/materials/hud/leaderboard_class_robo_extremethreat.vtf"
 MISSING_ICON_PNG = "repo_img/robo_extremethreat.png"
@@ -65,17 +62,18 @@ class NPC:
         if not self.HIDDEN:
             self.source: dict[str, dict[str,tuple[int,int]] | tuple[str,int]] = {}
             """
+            Source support:
             return {
                 "name": self.name, ✓
-                "category": self.category,2/3
+                "category": self.category, 2/3(multi)
                 "description": self.description, ✓
-                "plugin": self.plugin,2/3
+                "plugin": self.plugin, 2/3(multi)
                 "icon": self.icon, ✓
-                "flags": self.flags,2/3
-                "filetype": self.filetype,X
-                "has_prefix_logic": self.has_prefix_logic,X
+                "flags": self.flags, 2/3(multi)
+                "filetype": self.filetype, X
+                "has_prefix_logic": self.has_prefix_logic, X
                 "music_entries": self.music_entries, ✓
-                "source": self.source
+                "source": self.source X
             }
             """
             # Get NPC name
@@ -103,7 +101,7 @@ class NPC:
             self.health: str | list[str] | dict[str,str] = []
             if "shared" in self.PATH:
                 self._set_npc_data_shared()
-            if self.FILE_DATA.count("NPC_Add") > 1:
+            elif self.FILE_DATA.count("NPC_Add") > 1: # NOTE elif might break something
                 self._set_npc_data_multi()
             else:
                 self._set_npc_data_single()
@@ -243,8 +241,12 @@ class NPC:
         return k,v
 
 
-    def _set_npc_data_shared(self): # TODO fix this mess of a function
+    def _set_npc_data_shared(self):
         # Several instances of NPC entry data, several instances of CClotBody in separate files
+        # Used for Herald of the Abyss only
+        # npc_herald_1: public
+        # npc_herald_2, 3, 4: hidden
+        if self.name != "Herald of the Abyss": raise NotImplementedError("This code was only written with npc_herald in mind! :P")
         self.plugin = self.FILE_DATA.split(f"strcopy({self.main_prefix}.Plugin, sizeof({self.main_prefix}.Plugin), \"")
         self.plugin = [item.split("\");")[0] for i,item in enumerate(self.plugin) if i > 0]
 
@@ -254,35 +256,29 @@ class NPC:
         self.flags = self.FILE_DATA.split(f"{self.main_prefix}.Flags = ")
         self.flags = [item.split(";")[0].split("|") for i,item in enumerate(self.flags) if i > 0]
 
-        #base_path = self.PATH.replace(self.PATH.split("/")[-1],"") # remove deepest item
+        base_path = self.PATH.replace(self.PATH.split("/")[-1],"") # remove deepest item
         self.health = []
-        for _,_ in enumerate(self.plugin): # both vars unused????
-            #p_data = util.read(base_path+p+".sp") # what the hell is this
+        for idx,p in enumerate(self.plugin):
+            p_data = util.read(base_path+p+".sp")
             try:
-                h = self.FILE_DATA.split("CClotBody(vecPos, vecAng, ")[1].split("));")[0].split(',')[2].replace('"',"").replace(" ","")
-                if ":" in h:
-                    """
-                    extra "data" fields for enemies (lists, numbers or types like "Elite")
-                    'data[0]?x' is probably checking if any value from the waveset cfg exists at all to use x?
-                    """
-                    cases = h.split(":(")
-                    if len(cases) == 0:
-                        cases = h.split(":")
-                    h = {}
-                    for case in cases:
-                        if ":" in case:
-                            subcases = case.split(":")
-                            for subcase in subcases:
-                                k,v = self._parse_case(subcase)
-                                h[k] = self._parse_health_number(v)
-                        else:
-                            k,v = self._parse_case(case)
-                            h[k] = self._parse_health_number(v)
-                else:
-                    raise NotImplementedError
+                h = p_data.split("CClotBody(vecPos, vecAng, ")[1].split("));")[0].split(',')[2].replace('"',"").replace(" ","")
+                # other case removed as it does not get used
+                if h == "health": # small bit of hardcoding
+                    if idx == 1:
+                        # IntToString(view_as<Herald>(0).m_iBaseHealth * 3, health, sizeof(health));                  
+                        h = str(int(self.health[0]) * 3)
+                    elif idx == 2:
+                        # IntToString(view_as<Herald>(0).m_iBaseHealth * 4, health, sizeof(health));
+                        h = str(int(self.health[0]) * 4)
+                    elif idx == 3:
+                        # IntToString(view_as<Herald>(0).m_iBaseHealth * 7, health, sizeof(health));
+                        h = str(int(self.health[0]) * 7)
+                # if it's not health it's whatever npc_herald_1 has
             except IndexError:
                 h = "?"
             self.health.append(h)
+        
+        self.filetype = "shared"
 
 
     def _set_npc_data_multi(self):
