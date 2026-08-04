@@ -1,8 +1,7 @@
 import util
 import json
 import os
-
-# TODO source mapping: NPC shared.
+from copy import deepcopy
 
 FLAG_MAPPINGS = {
     "MVM_CLASS_FLAG_NONE": "", #// Show Nothing
@@ -149,7 +148,7 @@ class NPC:
             self.source["description"] = util.get_key_src(desc_key)
 
             # may be a problem if for example a file has multiple npcs with one that doesn't have the logic
-            self.has_prefix_logic: bool = PREFIX_STR in self.FILE_DATA # TODO add source?
+            self.has_prefix_logic: bool = PREFIX_STR in self.FILE_DATA
 
             self.obtain_item = None
             if "Items_GiveNamedItem(" in self.FILE_DATA:
@@ -182,7 +181,7 @@ class NPC:
         try:
             NAME_STR = f'strcopy({self.main_prefix}.Name, sizeof({self.main_prefix}.Name), \"'
             self.name = self.FILE_DATA.split(NAME_STR)[1].split("\");")[0]
-            self.source["name"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_SPLIT, NAME_STR)[0]) # TODO reference translations too?
+            self.source["name"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_SPLIT, NAME_STR)[0])
         except IndexError:
             self.name = None
 
@@ -239,23 +238,77 @@ class NPC:
             k,v = "default", c
         v=v.replace(")","")
         return k,v
+    
+    
+    def _set_npc_entry_data_single(self):
+        PLUGIN_STR = f'strcopy({self.main_prefix}.Plugin, sizeof({self.main_prefix}.Plugin), \"'
+        self.plugin = self.FILE_DATA.split(PLUGIN_STR)[1].split("\");")[0]
+        self.source["plugin"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_SPLIT,PLUGIN_STR)[0])
 
+        try:
+            CAT_STR = f"{self.main_prefix}.Category = "
+            self.category = self.FILE_DATA.split(CAT_STR)[1].split(";")[0]
+            self.source["category"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_SPLIT,CAT_STR,negative_on_fail=True)[0])
+        except IndexError:
+            self.category = f"404 prefix: {self.main_prefix}" if "npcs" in util.DEBUG else "-1"
 
-    def _set_npc_data_shared(self):
-        # Several instances of NPC entry data, several instances of CClotBody in separate files
-        # Used for Herald of the Abyss only
-        # npc_herald_1: public
-        # npc_herald_2, 3, 4: hidden
-        if self.name != "Herald of the Abyss": raise NotImplementedError("This code was only written with npc_herald in mind! :P")
-        self.plugin = self.FILE_DATA.split(f"strcopy({self.main_prefix}.Plugin, sizeof({self.main_prefix}.Plugin), \"")
+        try:
+            FLAGS_STR = f"{self.main_prefix}.Flags = "
+            self.flags = self.FILE_DATA.split(FLAGS_STR)[1]
+            self.flags = self.flags.split(";")[0].split("|")
+            self.source["flags"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_SPLIT,FLAGS_STR,negative_on_fail=True)[0])
+        except IndexError:
+            self.flags = []
+
+    def _set_npc_entry_data_multiple(self):
+        PLUGIN_STR = f"strcopy({self.main_prefix}.Plugin, sizeof({self.main_prefix}.Plugin), \""
+        self.plugin = self.FILE_DATA.split(PLUGIN_STR)
         self.plugin = [item.split("\");")[0] for i,item in enumerate(self.plugin) if i > 0]
+        self.source["plugin"] = [self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_SPLIT,PLUGIN_STR)]
+        if len(self.source["plugin"][1]) <= 1:
+            print("plugins:", self.plugin, self.source["plugin"])
+            #exit()
 
-        self.category = self.FILE_DATA.split(f"{self.main_prefix}.Category = ")
+        CAT_STR = f"{self.main_prefix}.Category = "
+        self.category = self.FILE_DATA.split(CAT_STR)
         self.category = [item.split(";")[0] for i,item in enumerate(self.category) if i > 0]
+        self.source["category"] = [self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_SPLIT,CAT_STR)]
 
-        self.flags = self.FILE_DATA.split(f"{self.main_prefix}.Flags = ")
+        FLAGS_STR = f"{self.main_prefix}.Flags = "
+        self.flags = self.FILE_DATA.split(FLAGS_STR)
         self.flags = [item.split(";")[0].split("|") for i,item in enumerate(self.flags) if i > 0]
-
+        self.source["flags"] = [self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_SPLIT,FLAGS_STR)]
+    
+    def _set_npc_cclot_data_single(self):
+        try:
+            HEALTH_STR = "CClotBody(vecPos, vecAng, "
+            self.health = self.FILE_DATA.split(HEALTH_STR)[1].split("));")[0].split(',')[2].replace('"',"").replace(" ","")
+            self.source["health"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_SPLIT,HEALTH_STR,negative_on_fail=True)[0])
+            if ":" in self.health:
+                """
+                extra "data" fields for enemies (lists, numbers or types like "Elite")
+                'data[0]?x' is probably checking if any value from the waveset cfg exists at all to use x?
+                """
+                cases = self.health.split(":(")
+                if len(cases) == 0:
+                    cases = self.health.split(":")
+                self.health = {}
+                for case in cases:
+                    if ":" in case:
+                        subcases = case.split(":")
+                        for subcase in subcases:
+                            k,v = self._parse_case(subcase)
+                            self.health[k] = self._parse_health_number(v)
+                    else:
+                        k,v = self._parse_case(case)
+                        self.health[k] = self._parse_health_number(v)
+            else:
+                self.health = self._parse_health_number(self.health) + "HP"
+        except IndexError:
+            self.health = "?"
+    
+    def _set_npc_cclot_data_multiple(self):
+        if self.name != "Herald of the Abyss": raise NotImplementedError("Parser only supports npc_herald_!")
         base_path = self.PATH.replace(self.PATH.split("/")[-1],"") # remove deepest item
         self.health = []
         for idx,p in enumerate(self.plugin):
@@ -277,102 +330,30 @@ class NPC:
             except IndexError:
                 h = "?"
             self.health.append(h)
-        
-        self.filetype = "shared"
-
-
-    def _set_npc_data_multi(self):
-        # Several instances of NPC entry data, one instance of CClotBody
-        self.plugin = self.FILE_DATA.split(f"strcopy({self.main_prefix}.Plugin, sizeof({self.main_prefix}.Plugin), \"")
-        self.plugin = [item.split("\");")[0] for i,item in enumerate(self.plugin) if i > 0]
-
-        self.category = self.FILE_DATA.split(f"{self.main_prefix}.Category = ")
-        self.category = [item.split(";")[0] for i,item in enumerate(self.category) if i > 0]
-
-        self.flags = self.FILE_DATA.split(f"{self.main_prefix}.Flags = ")
-        self.flags = [item.split(";")[0].split("|") for i,item in enumerate(self.flags) if i > 0]
-
-        try:
-            self.health = self.FILE_DATA.split("CClotBody(vecPos, vecAng, ")[1].split("));")[0].split(',')[2].replace('"',"").replace(" ","")
-            #if "MinibossHealthScaling" in self.health:
-            #    self.health = f"Miniboss health scaling (Base {self.health.split("(")[1][:-1]}HP)"
-            if ":" in self.health:
-                """
-                extra "data" fields for enemies (lists, numbers or types like "Elite")
-                'data[0]?x' is probably checking if any value from the waveset cfg exists at all to use x?
-                """
-                cases = self.health.split(":(")
-                if len(cases) == 0:
-                    cases = self.health.split(":")
-                self.health = {}
-                for case in cases:
-                    if ":" in case:
-                        subcases = case.split(":")
-                        for subcase in subcases:
-                            k,v = self._parse_case(subcase)
-                            self.health[k] = self._parse_health_number(v)
-                    else:
-                        k,v = self._parse_case(case)
-                        self.health[k] = self._parse_health_number(v)
-            else:
-                self.health = self._parse_health_number(self.health) + "HP"
-        except IndexError:
-            self.health = "?"
-
-        self.filetype = "multi"
 
 
     def _set_npc_data_single(self):
         # One instance of everything
-        PLUGIN_STR = f'strcopy({self.main_prefix}.Plugin, sizeof({self.main_prefix}.Plugin), \"'
-        self.plugin = self.FILE_DATA.split(PLUGIN_STR)[1].split("\");")[0]
-        self.source["plugin"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_SPLIT,PLUGIN_STR)[0])
-
-        try:
-            CAT_STR = f"{self.main_prefix}.Category = "
-            self.category = self.FILE_DATA.split(CAT_STR)[1].split(";")[0]
-            self.source["plugin"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_SPLIT,CAT_STR,negative_on_fail=True)[0])
-        except IndexError:
-            self.category = f"404 prefix: {self.main_prefix}" if "npcs" in util.DEBUG else "-1"
-
-        try:
-            FLAGS_STR = f"{self.main_prefix}.Flags = "
-            self.flags = self.FILE_DATA.split(FLAGS_STR)[1]
-            self.flags = self.flags.split(";")[0].split("|")
-            self.source["flags"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_SPLIT,FLAGS_STR,negative_on_fail=True)[0])
-        except IndexError:
-            self.flags = []
-
-        try:
-            HEALTH_STR = "CClotBody(vecPos, vecAng, "
-            self.health = self.FILE_DATA.split(HEALTH_STR)[1].split("));")[0].split(',')[2].replace('"',"").replace(" ","")
-            self.source["health"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_SPLIT,HEALTH_STR,negative_on_fail=True)[0])
-            #if "MinibossHealthScaling" in self.health:
-            #    self.health = f"Miniboss health scaling (Base {self.health.split("(")[1][:-1]}HP)"
-            if ":" in self.health:
-                """
-                extra "data" fields for enemies (lists, numbers or types like "Elite")
-                'data[0]?x' is probably checking if any value from the waveset cfg exists at all to use x?
-                """
-                cases = self.health.split(":(")
-                if len(cases) == 0:
-                    cases = self.health.split(":")
-                self.health = {}
-                for case in cases:
-                    if ":" in case:
-                        subcases = case.split(":")
-                        for subcase in subcases:
-                            k,v = self._parse_case(subcase)
-                            self.health[k] = self._parse_health_number(v)
-                    else:
-                        k,v = self._parse_case(case)
-                        self.health[k] = self._parse_health_number(v)
-            else:
-                self.health = self._parse_health_number(self.health) + "HP"
-        except IndexError:
-            self.health = "?"
-
+        self._set_npc_entry_data_single()
+        self._set_npc_cclot_data_single()
         self.filetype = "single"
+
+
+    def _set_npc_data_multi(self):
+        # Several instances of NPC entry data, one instance of CClotBody
+        self._set_npc_entry_data_multiple()
+        self._set_npc_cclot_data_single()
+        self.filetype = "multi"
+
+
+    def _set_npc_data_shared(self):
+        # Several instances of NPC entry data, several instances of CClotBody in separate files
+        # Used for Herald of the Abyss only
+        # npc_herald_1: public
+        # npc_herald_2, 3, 4: hidden
+        self._set_npc_entry_data_multiple()
+        self._set_npc_cclot_data_multiple()
+        self.filetype = "shared"
 
 
     def __json__(self):
@@ -390,7 +371,7 @@ class NPC:
             "source": self.source
         }
 
-class NPC_Dummy():
+class NPC_Dummy(): # Used for multi and shared NPCs
     def __init__(self, npc_obj: NPC):
         # yes this is stupid. I won't change it.
         self.name: str | None = npc_obj.name
@@ -400,6 +381,7 @@ class NPC_Dummy():
         self.has_prefix_logic: bool = npc_obj.has_prefix_logic
         self.music_entries:list[dict[str,str | bool]] = npc_obj.music_entries
         self.obtain_item: str | None = npc_obj.obtain_item
+        self.source: dict[str, dict[str,tuple[int,int]] | tuple[str,int]] = deepcopy(npc_obj.source) # Needs to be copied for multi and shared npcs!
 
         self.plugin: str | list[str] = []
         self.category: str | list[str] = []
@@ -418,5 +400,6 @@ class NPC_Dummy():
             "flags": self.flags,
             "filetype": self.filetype,
             "has_prefix_logic": self.has_prefix_logic,
-            "music_entries": self.music_entries
+            "music_entries": self.music_entries,
+            "source": self.source
         }

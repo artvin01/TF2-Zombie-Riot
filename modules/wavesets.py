@@ -57,9 +57,16 @@ def parse_all_npcs() -> tuple[dict[str, modules.shared.TypeNPC], dict[str, list[
                             dummy.health = npc_obj.health[min(len(npc_obj.health)-1,i)]
                         else:
                             dummy.health = npc_obj.health
-                        dummy.category = npc_obj.category[min(len(npc_obj.category)-1,i)]
+                        # TODO unified func
                         dummy.plugin = npc_obj.plugin[min(len(npc_obj.plugin)-1,i)]
+                        if "plugin" in dummy.source:
+                            dummy.source["plugin"][1] = npc_obj.source["plugin"][1][min(len(npc_obj.source["plugin"][1])-1,i)]
+                        dummy.category = npc_obj.category[min(len(npc_obj.category)-1,i)]
+                        if "category" in dummy.source:
+                            dummy.source["category"][1] = npc_obj.source["category"][1][min(len(npc_obj.source["category"][1])-1,i)]
                         dummy.flags = npc_obj.flags[min(len(npc_obj.flags)-1,i)]
+                        if "flags" in dummy.source:
+                            dummy.source["flags"][1] = npc_obj.source["flags"][1][min(len(npc_obj.source["flags"][1])-1,i)]
                         npc_by_file[pn] = dummy
                         if dummy.category not in npc_by_category:
                             npc_by_category[dummy.category] = []
@@ -451,11 +458,7 @@ def parse_waveset(file: str, data: dict[str, Any], abslink: str, name: str, desc
         output["waves"][wave_idx], obtainables = parse_wave(wave_idx, wave_data, bool(util.cfgtoint(wd["auto_wave_cash"])), return_obtainables=True)
         if not (abslink.startswith("zr_bossrush") or abslink.startswith("zr_summercamp")): # TODO does bossrush give items for bosses?
             for obt in obtainables:
-                """
-                TODO: 
-                - Blitzkrieg's Army(donnerkrieg has entry and blitzkrieg doesnt)
-                """
-                if obt["item"] not in COMPLETE_ITEM_MAP:# and obt["npc_name"] not in TROPHY_NPC_BLACKLIST:
+                if obt["item"] not in COMPLETE_ITEM_MAP:
                     COMPLETE_ITEM_MAP[obt["item"]] = {
                         "name": f"{util.abslink_to_display(abslink,name)}|{obt["npc_name"]}",
                         "file": f"{abslink}.json&wv={wave_idx}"
@@ -1190,7 +1193,6 @@ DEFAULT_MISSION_CLIENT = parse_default_mission_client()
 MUSIC_BY_TITLE = {}
 ARTIFACTS = []
 COMPLETE_ITEM_MAP = {}
-#TROPHY_NPC_BLACKLIST = util.load_yaml("./config/trophy_npc_blacklist.yml")
 
 cfg_files = {
     "classic.cfg": "gh-pages/survival.html",
