@@ -55,6 +55,8 @@ for category, npc_list in sorted(NPCS_BY_CATEGORY.items()):
                 context["SRC_NAME"] = util.html_src(npc["source"]["name"])
                 if "flags" in npc["source"]:
                     context["SRC_FLAGS"] = util.html_src(npc["source"]["flags"])
+                else:
+                    context["SRC_FLAGS"] = "?#L-1"
                 context["SRC_DESC"] = util.html_src(npc["source"]["description"])
 
             npc_list_html += util.fill_template(util.read("templates/npc/npc_preview.html"),context)

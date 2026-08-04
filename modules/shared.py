@@ -265,9 +265,6 @@ class NPC:
         self.plugin = self.FILE_DATA.split(PLUGIN_STR)
         self.plugin = [item.split("\");")[0] for i,item in enumerate(self.plugin) if i > 0]
         self.source["plugin"] = [self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_SPLIT,PLUGIN_STR)]
-        if len(self.source["plugin"][1]) <= 1:
-            print("plugins:", self.plugin, self.source["plugin"])
-            #exit()
 
         CAT_STR = f"{self.main_prefix}.Category = "
         self.category = self.FILE_DATA.split(CAT_STR)
