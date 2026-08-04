@@ -53,6 +53,42 @@ static float f_GetHarvesterM2_CD(int pap)
 {
 	return f_HarvesterM2CD[pap+1];
 }
+public void OnStore_Fractal_Harvester_Initialised(ItemInfo Store_Item)
+{
+	Store_Item.Weapon_Bodygroup 		= RUINA_FRACTAL_HARVESTER;
+	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_4;
+	Store_Item.WeaponModelIndexOverride = PrecacheModel(RUINA_CUSTOM_MODELS_4);
+}
+public void OnStore_Fractal_Lens_Initialised(ItemInfo Store_Item)
+{
+	Store_Item.Weapon_Bodygroup 		= RUINA_FRACTAL_LENZ;
+	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_4;
+	Store_Item.WeaponModelIndexOverride = PrecacheModel(RUINA_CUSTOM_MODELS_4);
+}
+public void OnStore_Fractal_Fantasia_Initialised_0(ItemInfo Store_Item)
+{
+	Store_Item.Weapon_Bodygroup 		= RUINA_TWIRL_CREST_1;
+	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_3;
+	Store_Item.WeaponModelIndexOverride = PrecacheModel(RUINA_CUSTOM_MODELS_3);
+}
+public void OnStore_Fractal_Fantasia_Initialised_1(ItemInfo Store_Item)
+{
+	Store_Item.Weapon_Bodygroup 		= RUINA_TWIRL_CREST_2;
+	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_3;
+	Store_Item.WeaponModelIndexOverride = PrecacheModel(RUINA_CUSTOM_MODELS_3);
+}
+public void OnStore_Fractal_Fantasia_Initialised_2(ItemInfo Store_Item)
+{
+	Store_Item.Weapon_Bodygroup 		= RUINA_TWIRL_CREST_3;
+	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_3;
+	Store_Item.WeaponModelIndexOverride = PrecacheModel(RUINA_CUSTOM_MODELS_3);
+}
+public void OnStore_Fractal_Fantasia_Initialised_3(ItemInfo Store_Item)
+{
+	Store_Item.Weapon_Bodygroup 		= RUINA_TWIRL_CREST_4;
+	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_3;
+	Store_Item.WeaponModelIndexOverride = PrecacheModel(RUINA_CUSTOM_MODELS_3);
+}
 
 static void Adjust_Crystal_Stats(int client, int weapon)
 {

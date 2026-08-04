@@ -252,21 +252,19 @@ enum
 #define RUINA_CUSTOM_MODELS_3	"models/zombie_riot/weapons/ruina_models_3_3_test1.mdl"
 enum
 {
-	RUINA_UNUSED_BG_4_1		= 1,			//1
-	RUINA_UNUSED_BG_4_2		= 2,			//2
-	RUINA_MAGIA_TOWER_1		= 4,			//3
-	RUINA_MAGIA_TOWER_2		= 8,			//4
-	RUINA_MAGIA_TOWER_3		= 16,			//5
-	RUINA_MAGIA_TOWER_4		= 32,			//6
-	RUINA_TWIRL_MELEE_1		= 64,			//7
-	RUINA_TWIRL_CREST_1		= 128,			//8
-	RUINA_TWIRL_MELEE_2		= 256,			//9
-	RUINA_TWIRL_CREST_2		= 512,			//10
-	RUINA_TWIRL_CREST_3		= 1024,			//11
-	RUINA_TWIRL_MELEE_3		= 2048,			//12
-	RUINA_TWIRL_MELEE_4		= 4096,			//13
-	RUINA_TWIRL_CREST_4		= 8192,			//14
-	RUINA_QUINCY_BOW_3		= 16384			//15
+	RUINA_MAGIA_TOWER_1		= (1 << 0),		
+	RUINA_MAGIA_TOWER_2		= (1 << 1),	
+	RUINA_MAGIA_TOWER_3		= (1 << 2),	
+	RUINA_MAGIA_TOWER_4		= (1 << 3),	
+	RUINA_TWIRL_MELEE_1		= (1 << 4),	
+	RUINA_TWIRL_CREST_1		= (1 << 5),	
+	RUINA_TWIRL_MELEE_2		= (1 << 6),	
+	RUINA_TWIRL_CREST_2		= (1 << 7),	
+	RUINA_TWIRL_CREST_3		= (1 << 8),	
+	RUINA_TWIRL_MELEE_3		= (1 << 9),	
+	RUINA_TWIRL_MELEE_4		= (1 << 10),	
+	RUINA_TWIRL_CREST_4		= (1 << 11),	
+	RUINA_QUINCY_BOW_3		= (1 << 12)
 }
 #define RUINA_CUSTOM_MODELS_4	"models/zombie_riot/weapons/ruina_models_4_3.mdl"
 enum

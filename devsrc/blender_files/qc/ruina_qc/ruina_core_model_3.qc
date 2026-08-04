@@ -3,17 +3,6 @@
 
 $modelname "zombie_riot/weapons/ruina_models_3_3_test1.mdl"	//current one on the server:
 
-
-$bodygroup "unused_2"	
-{
-	blank
-	studio "v2/hand_crest_v2.smd"
-}
-$bodygroup "unused_3"	
-{
-	blank
-	studio "v2/hand_crest_v2.smd"
-}
 $bodygroup "tower_1"		//Converted
 {
 	blank
@@ -123,6 +112,19 @@ $cdmaterials "models\props_halloween\"
 //unlit_black		//is black
 
 $cdmaterials ""
+
+$cdmaterials "models/player/shared/"								//gold_player
+$cdmaterials "models/workshop/weapons/c_models/c_invasion_wrangler"	//c_invasion_wrangler_laser.vm
+
+//
+
+$texturegroup "skinfamilies"
+{
+	{ "c_invasion_wrangler_laser"			"neon_red_solid"			}		//red
+	{ "c_invasion_wrangler_laser_blue"		"neon_blue_solid"			}		//blue
+	//{	"australium_container_glass"		"neon_red_solid"		}		//uber red
+	//{	"australium_container_glass"		"neon_blue_solid"		}		//uber blue
+}
 
 $cbox 0 0 0 0 0 0
 

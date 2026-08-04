@@ -115,6 +115,7 @@ enum struct ItemInfo
 	Function Func_CustomTraceMelee;
 	Function Func_OnInteractAlly;
 	Function Func_OnEntityBuild;
+	Function Func_OnStoreIntialised;
 
 	Function FuncOnPap;
 
@@ -546,6 +547,19 @@ enum struct ItemInfo
 
 		Format(buffer, sizeof(buffer), "%scustom_name", prefix);
 		kv.GetString(buffer, this.Custom_Name, 64);
+
+		//make sure this is called last, that way all variables are initalised, and the called function has all data.
+		Format(buffer, sizeof(buffer), "%sfunc_onstoreinitialise", prefix);
+		kv.GetString(buffer, buffer, sizeof(buffer));
+		this.Func_OnStoreIntialised = GetFunctionByName(null, buffer);
+
+		if(this.Func_OnStoreIntialised && this.Func_OnStoreIntialised != INVALID_FUNCTION)
+		{
+			Call_StartFunction(null, this.Func_OnStoreIntialised);
+			Call_PushArrayEx(this, sizeof(this), SM_PARAM_COPYBACK);
+			Call_Finish();
+			//public void OnStore_<name>_Initialised(ItemInfo Item)
+		}
 
 		return true;
 	}

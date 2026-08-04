@@ -50,6 +50,13 @@ static const char Zap_Sound[][] = {
 };
 #define QUINCY_BOW_BASELINE_BATTERY 400.0	//this is kinda like the true mana cost of the weapon
 
+public void OnStore_QuincyBow3_Initialised(ItemInfo Store_Item)
+{
+	Store_Item.Weapon_Bodygroup 		= RUINA_QUINCY_BOW_3;
+	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_3;
+	Store_Item.WeaponModelIndexOverride = PrecacheModel(RUINA_CUSTOM_MODELS_3);
+}
+
 
 static float fl_Quincy_Barrage_Firerate[MAXPLAYERS + 1][QUINCY_BOW_MAX_HYPER_BARRAGE+1];
 

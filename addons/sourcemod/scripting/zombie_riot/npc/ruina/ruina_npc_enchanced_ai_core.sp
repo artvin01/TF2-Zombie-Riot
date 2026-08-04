@@ -2866,6 +2866,11 @@ stock int iGetTeamBeamIndex(int team)
 		default: return g_Ruina_BEAM_Combine_Black;
 	}
 }
+//custom weapon ruina model groups
+
+
+
+
 /*
 void Ruina_Move_Entity(int entity, float loc[3], float Ang[3], bool old=false)
 {
