@@ -59,7 +59,7 @@ static bool DarknessComing;
 static int setuptimes;
 static float ExtraAttackspeed;
 static bool thespewer;
-static bool ller;
+static bool sigmaller;
 static bool portalgalore;
 static bool refragportal;
 
@@ -201,7 +201,7 @@ void Freeplay_ResetAll()
 	setuptimes = 3;
 	ExtraAttackspeed = 1.0;
 	thespewer = false;
-	ller = false;
+	sigmaller = false;
 	portalgalore = false;
 	refragportal = false;
 	squeezerplus = false;
@@ -235,7 +235,7 @@ int Freeplay_EnemyCount()
 		if(thespewer)
 			amount++;
 
-		if(ller)
+		if(sigmaller)
 			amount++;
 
 		if(portalgalore)
@@ -294,7 +294,7 @@ int Freeplay_GetDangerLevelCurrent(int postWaves)
 void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = false)
 {
 	bool shouldscale = true;
-	if(RaidFight || friendunit || zombiecombine || moremen || immutable || Schizophrenia || DarknessComing || thespewer || ller || portalgalore || refragportal)
+	if(RaidFight || friendunit || zombiecombine || moremen || immutable || Schizophrenia || DarknessComing || thespewer || sigmaller || portalgalore || refragportal)
 	{
 		enemy.Is_Boss = 0;
 		enemy.WaitingTimeGive = 0.0;
