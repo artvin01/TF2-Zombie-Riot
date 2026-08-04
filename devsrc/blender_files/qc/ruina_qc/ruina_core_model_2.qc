@@ -112,9 +112,6 @@ $illumposition 0.096 -0.043 13.267
 
 $mostlyopaque
 
-$cdmaterials "models\custom_weaponry\"
-$cdmaterials "models\weapons\w_wrench\"				//it has gold!		w_wrench01_gold
-$cdmaterials "models\weapons\c_items\"				//MORE GOLD 		c_saxxy.vmt		//EVEN MORE GOLD 	c_frying_pan_gold.vmt 
 $cdmaterials "models\workshop_partner\weapons\c_models\c_ai_flamethrower\"
 $cdmaterials "models\props_skybox\"					//black							//legit just black
 $cdmaterials "models\props_doomsday\"				//australium_container_glass	//its like golden glass
@@ -127,6 +124,19 @@ $cdmaterials "models\props_mvm\"
 //../../../qc/ruina_qc/v2/
 
 $cdmaterials ""
+
+$cdmaterials "models/player/shared/"								//gold_player
+$cdmaterials "models/workshop/weapons/c_models/c_invasion_wrangler"	//c_invasion_wrangler_laser.vm
+
+//
+
+$texturegroup "skinfamilies"
+{
+	{ "c_invasion_wrangler_laser"       	"c_invasion_wrangler_laser"			"neon_red_solid"			}		//red
+	{ "c_invasion_wrangler_laser_blue"    	"c_invasion_wrangler_laser_blue"	"neon_blue_solid"			}		//blue
+	//{ "player_chrome1" 						"australium_container_glass"		"neon_red_solid"		}		//uber red
+	//{ "gold_player"							"australium_container_glass"		"neon_blue_solid"		}		//uber blue
+}
 
 $cbox 0 0 0 0 0 0
 
