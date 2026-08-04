@@ -132,10 +132,10 @@ $cdmaterials "models/workshop/weapons/c_models/c_invasion_wrangler"	//c_invasion
 
 $texturegroup "skinfamilies"
 {
-	{ "c_invasion_wrangler_laser"       	"c_invasion_wrangler_laser"			"neon_red_solid"			}		//red
-	{ "c_invasion_wrangler_laser_blue"    	"c_invasion_wrangler_laser_blue"	"neon_blue_solid"			}		//blue
-	//{ "player_chrome1" 						"australium_container_glass"		"neon_red_solid"		}		//uber red
-	//{ "gold_player"							"australium_container_glass"		"neon_blue_solid"		}		//uber blue
+	{ "c_invasion_wrangler_laser"			"neon_red_solid"			}		//red
+	{ "c_invasion_wrangler_laser_blue"		"neon_blue_solid"			}		//blue
+	//{	"australium_container_glass"		"neon_red_solid"		}		//uber red
+	//{	"australium_container_glass"		"neon_blue_solid"		}		//uber blue
 }
 
 $cbox 0 0 0 0 0 0
