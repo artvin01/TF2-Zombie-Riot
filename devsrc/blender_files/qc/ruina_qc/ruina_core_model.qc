@@ -100,8 +100,8 @@ $texturegroup "skinfamilies"
 {
 	{ "c_invasion_wrangler_laser"       	"c_invasion_wrangler_laser"			"neon_red_solid"	"dispenser"				}		//red
 	{ "c_invasion_wrangler_laser_blue"    	"c_invasion_wrangler_laser_blue"	"neon_blue_solid"	"dispenser_blue"		}		//blue
-	{ "player_chrome1" 						"australium_container_glass"		"neon_red_solid"	"player_chrome1"		}		//uber red
-	{ "gold_player"							"australium_container_glass"		"neon_blue_solid"	"gold_player"			}		//uber blue
+	//{ "player_chrome1" 						"australium_container_glass"		"neon_red_solid"	"player_chrome1"		}		//uber red
+	//{ "gold_player"							"australium_container_glass"		"neon_blue_solid"	"gold_player"			}		//uber blue
 }
 
 
