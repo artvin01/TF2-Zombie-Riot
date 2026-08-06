@@ -709,9 +709,6 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		if(enemy.ExtraDamage)
 			enemy.ExtraDamage = 25.0;
 
-		if(enemy.Is_Boss == 1)
-			HealthMulti *= 0.50;
-
 		enemy.ExtraSpeed = 1.25;
 		enemy.ExtraSize = 1.25;
 
