@@ -823,7 +823,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.ExtraDamage = 2.0;
 		enemy.Is_Boss = 0;
 
-		count = 10;
+		count = 13;
 		portalgalore = false;
 	}
 	else if(refragportal)
@@ -835,7 +835,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.ExtraDamage = 2.0;
 		enemy.Is_Boss = 0;
 
-		count = 2;
+		count = 7;
 		refragportal = false;
 	}
 	else
