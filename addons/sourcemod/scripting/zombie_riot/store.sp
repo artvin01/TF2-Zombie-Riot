@@ -549,6 +549,7 @@ enum struct ItemInfo
 		kv.GetString(buffer, this.Custom_Name, 64);
 
 		//make sure this is called last, that way all variables are initalised, and the called function has all data.
+		buffer = "";
 		Format(buffer, sizeof(buffer), "%sfunc_onstoreinitialise", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.Func_OnStoreIntialised = GetFunctionByName(null, buffer);
@@ -559,6 +560,10 @@ enum struct ItemInfo
 			Call_PushArrayEx(this, sizeof(this), SM_PARAM_COPYBACK);
 			Call_Finish();
 			//public void OnStore_<name>_Initialised(ItemInfo Item)
+		}
+		else if(buffer[0])	//we had a buffer value of somekind
+		{
+			PrintToServer("Invalid Func_OnStoreIntialised: \"%s\". Prefix: \"%s\"", buffer, prefix);
 		}
 
 		return true;

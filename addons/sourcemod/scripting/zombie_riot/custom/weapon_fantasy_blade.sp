@@ -30,6 +30,12 @@
 
 static Handle h_TimerFantasyManagement[MAXPLAYERS+1] = {null, ...};
 
+public void OnStore_FantasyBlade_Initialised(ItemInfo Store_Item)
+{
+	Store_Item.Weapon_Bodygroup 		= RUINA_FANTASY_BLADE;
+	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_4;
+	Store_Item.WeaponModelIndexOverride = PrecacheModel(Store_Item.WeaponModelOverride);
+}
 
 static float fl_Shard_Ammount[MAXPLAYERS+1];
 static float fl_blade_swing_reload_time[MAXPLAYERS+1];

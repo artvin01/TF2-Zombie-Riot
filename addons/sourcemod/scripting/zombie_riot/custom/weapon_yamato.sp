@@ -180,6 +180,13 @@ enum struct Yamato_Blades
 	}
 }
 
+public void OnStore_Yamato_Initialised(ItemInfo Store_Item)
+{
+	Store_Item.Weapon_Bodygroup 		= RUINA_ZANGETSU_2;
+	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_2;
+	Store_Item.WeaponModelIndexOverride = PrecacheModel(Store_Item.WeaponModelOverride);
+}
+
 static Action SetTransmitBlades(int entity, int target)
 {
 	if(GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity") == target)

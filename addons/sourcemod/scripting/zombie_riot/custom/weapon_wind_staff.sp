@@ -452,7 +452,12 @@ public Action Timer_Tornado_Think(Handle timer, int iCarrier)
 	return Plugin_Continue;
 }
 
-
+public void OnStore_RuinaDroneKnife_Initialised(ItemInfo Store_Item)
+{
+	Store_Item.Weapon_Bodygroup 		= RUINA_DAGGER_2;
+	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_2;
+	Store_Item.WeaponModelIndexOverride = PrecacheModel(Store_Item.WeaponModelOverride);
+}
 void RuinaNukeBackstabDo(int victim, int attacker,int weapon)
 {
 	if (Ability_Check_Cooldown(attacker, 1) > 0.0)

@@ -41,6 +41,25 @@ static const char Zap_Sound[][] = {
 	"ambient/energy/zap9.wav",
 };
 
+public void OnStore_Gravaton1_Initialised(ItemInfo Store_Item)
+{
+	Store_Item.Weapon_Bodygroup 		= RUINA_HAND_CREST_1;
+	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_1;
+	Store_Item.WeaponModelIndexOverride = PrecacheModel(Store_Item.WeaponModelOverride);
+}
+public void OnStore_Gravaton2_Initialised(ItemInfo Store_Item)
+{
+	Store_Item.Weapon_Bodygroup 		= RUINA_HAND_CREST_2;
+	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_2;
+	Store_Item.WeaponModelIndexOverride = PrecacheModel(Store_Item.WeaponModelOverride);
+}
+public void OnStore_Gravaton3_Initialised(ItemInfo Store_Item)
+{
+	Store_Item.Weapon_Bodygroup 		= RUINA_HAND_CREST_3;
+	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_2;
+	Store_Item.WeaponModelIndexOverride = PrecacheModel(Store_Item.WeaponModelOverride);
+}
+
 public void Gravaton_Wand_MapStart()
 {
 	PrecacheSound(GRAVATON_WAND_SHOWER_CAST_SOUND1, true);

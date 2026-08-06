@@ -54,7 +54,19 @@ public void OnStore_QuincyBow3_Initialised(ItemInfo Store_Item)
 {
 	Store_Item.Weapon_Bodygroup 		= RUINA_QUINCY_BOW_3;
 	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_3;
-	Store_Item.WeaponModelIndexOverride = PrecacheModel(RUINA_CUSTOM_MODELS_3);
+	Store_Item.WeaponModelIndexOverride = PrecacheModel(Store_Item.WeaponModelOverride);
+}
+public void OnStore_QuincyBow1_Initialised(ItemInfo Store_Item)
+{
+	Store_Item.Weapon_Bodygroup 		= RUINA_QUINCY_BOW_1;
+	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_1;
+	Store_Item.WeaponModelIndexOverride = PrecacheModel(Store_Item.WeaponModelOverride);
+}
+public void OnStore_QuincyBow2_Initialised(ItemInfo Store_Item)
+{
+	Store_Item.Weapon_Bodygroup 		= RUINA_QUINCY_BOW_2;
+	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_2;
+	Store_Item.WeaponModelIndexOverride = PrecacheModel(Store_Item.WeaponModelOverride);
 }
 
 

@@ -72,6 +72,13 @@ void Reiuji_Wand_OnMapStart()
 	PrecacheSoundArray(WandAttackSounds);
 	Zero(b_BarrageModeOn);
 }
+public void OnStore_Reiuji_Initialised(ItemInfo Store_Item)
+{
+	Store_Item.Weapon_Bodygroup 		= RUINA_REI_LAUNCHER;
+	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_2;
+	Store_Item.WeaponModelIndexOverride = PrecacheModel(Store_Item.WeaponModelOverride);
+}
+
 static void PlayWandAttackSound(int client, int soundlevel = 80, float volume = 1.0, int pitch = 100) { EmitSoundToAll(WandAttackSounds[GetRandomInt(0, sizeof(WandAttackSounds) - 1)], client, SNDCHAN_VOICE, soundlevel, _, volume, pitch);}
 
 void Enable_Reiuji_Wand(int client, int weapon)

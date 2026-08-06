@@ -22,6 +22,30 @@ public void Wand_Impact_Lance_Mapstart()
 	PrecacheSound(IMPACT_WAND_PARTICLE_LANCE_BOOM2);
 	PrecacheSound(IMPACT_WAND_PARTICLE_LANCE_BOOM3);
 }
+public void OnStore_ImpactLance1_Initialised(ItemInfo Store_Item)
+{
+	Store_Item.Weapon_Bodygroup 		= RUINA_IMPACT_LANCE_1;
+	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_2;
+	Store_Item.WeaponModelIndexOverride = PrecacheModel(Store_Item.WeaponModelOverride);
+}
+public void OnStore_ImpactLance2_Initialised(ItemInfo Store_Item)
+{
+	Store_Item.Weapon_Bodygroup 		= RUINA_IMPACT_LANCE_2;
+	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_2;
+	Store_Item.WeaponModelIndexOverride = PrecacheModel(Store_Item.WeaponModelOverride);
+}
+public void OnStore_ImpactLance3_Initialised(ItemInfo Store_Item)
+{
+	Store_Item.Weapon_Bodygroup 		= RUINA_IMPACT_LANCE_3;
+	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_2;
+	Store_Item.WeaponModelIndexOverride = PrecacheModel(Store_Item.WeaponModelOverride);
+}
+public void OnStore_ImpactLance4_Initialised(ItemInfo Store_Item)
+{
+	Store_Item.Weapon_Bodygroup 		= RUINA_IMPACT_LANCE_4;
+	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_2;
+	Store_Item.WeaponModelIndexOverride = PrecacheModel(Store_Item.WeaponModelOverride);
+}
 
 public void Wand_Impact_Lance_Multi_Hit(int client, float &CustomMeleeRange, float &CustomMeleeWide)
 {
