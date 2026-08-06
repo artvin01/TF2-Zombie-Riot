@@ -2338,9 +2338,9 @@
 	}
 	"Alchemist Potion Pap 7"
 	{
-		"en"	"-Increased Damage\n-Buffing Potion lasts a MUCH longer time, (100 seconds).\n-Buff strenghens to 25％ from 20％"
+		"en"	"-Increased Damage\n-Buffing Potion lasts a MUCH longer time, (300 seconds).\n-Buff strenghens to 25％ from 20％"
 		"it"	"La pozione di potenziamento del danno dura molto più a lungo (300 secondi). Il potenziamento del danno passa a 25％ da 20％"
-		"ko"	"-피해량 증가\n-버프 포션의 지속 시간이 100초로 증가\n-버프의 강화량이 20％에서 25％로 증가"
+		"ko"	"-피해량 증가\n-버프 포션의 지속 시간이 300초로 증가\n-버프의 강화량이 20％에서 25％로 증가"
 	}
 	"Alchemist Potion Pap 8"
 	{
