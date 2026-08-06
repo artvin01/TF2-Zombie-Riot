@@ -639,12 +639,13 @@ static void Umbral_WF_KickTouched(int entity, int enemy)
 void Umbral_WFKickLogic(int iNPC)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
-	static float vel[3];
-	static float flMyPos[3];
+	float vel[3];
+	float flMyPos[3];
 	npc.GetVelocity(vel);
-	fClamp(vel[0], -300.0, 300.0);
-	fClamp(vel[1], -300.0, 300.0);
-	fClamp(vel[2], -300.0, 300.0);
+	//clamping so insane speeds dont translate through hitting the entire map.
+	vel[0] = fClamp(vel[0], -300.0, 300.0);
+	vel[1] = fClamp(vel[1], -300.0, 300.0);
+	vel[2] = fClamp(vel[2], -300.0, 300.0);
 	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
 		
 	static float hullcheckmins[3];

@@ -1079,8 +1079,8 @@ static void Whiteflower_KickTouched(int entity, int enemy)
 void WhiteflowerKickLogic(int iNPC)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
-	static float vel[3];
-	static float flMyPos[3];
+	float vel[3];
+	float flMyPos[3];
 	npc.GetVelocity(vel);
 	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
 		
@@ -1107,7 +1107,7 @@ void WhiteflowerKickLogic(int iNPC)
 		hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );			
 	}
 	
-	static float flPosEnd[3];
+	float flPosEnd[3];
 	flPosEnd = flMyPos;
 	ScaleVector(vel, 0.1);
 	AddVectors(flMyPos, vel, flPosEnd);
