@@ -85,23 +85,43 @@ $illumposition 0.096 -0.043 13.267
 
 $mostlyopaque
 
-$cdmaterials "models\weapons\c_items\"					
-//c_saxxy					//gold
-//c_frying_pan_gold 		//gold
 
+$cdmaterials "models\props_skybox\"					
+//black							//legit just black
+
+$cdmaterials "models\props_doomsday\"				
+//australium_container_glass	//its like golden glass
+
+$cdmaterials "models\items\"						
+//crystal_ball_glass			//Emerald pulsating glass.
+
+$cdmaterials "passtime\neons\"						
+//neon_yellow_solid, neon_blue_solid
+
+$cdmaterials "models/props_moonbase/"
+//asteroid01			//can certainly work as a replacement for glow inner for large things.
+//moon_gravel_crystal
+
+$cdmaterials "models/props_halloween/"
+//unlit_black		//is black
+
+$cdmaterials "models/props_mvm/"
+//painted_wood_01
+
+$cdmaterials "models/weapons/c_items/"
+//festive_lights_red
+
+$cdmaterials ""
 $cdmaterials "models/player/shared/"								//gold_player
 $cdmaterials "models/workshop/weapons/c_models/c_invasion_wrangler"	//c_invasion_wrangler_laser.vm
 
-//
-
 $texturegroup "skinfamilies"
 {
-	{ "c_invasion_wrangler_laser"			"neon_red_solid"			}		//red
-	{ "c_invasion_wrangler_laser_blue"		"neon_blue_solid"			}		//blue
-	//{	"australium_container_glass"		"neon_red_solid"		}		//uber red
-	//{	"australium_container_glass"		"neon_blue_solid"		}		//uber blue
+	{ 	"c_invasion_wrangler_laser"			"neon_red_solid"			"festive_lights_red"		}		//red
+	{ 	"c_invasion_wrangler_laser_blue"		"neon_blue_solid"		"festive_lights_blue"		}		//blue
+	{	"crystal_ball_glass"				"neon_green_solid"			"festive_lights_white"		}		//uber red
+	{	"australium_container_glass"		"neon_yellow_solid"			"festive_lights_white"		}		//uber blue
 }
-
 
 $cdmaterials "passtime\neons\"	
 //neon_red_solid

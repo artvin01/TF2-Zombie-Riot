@@ -89,33 +89,29 @@ $cdmaterials "models\items\"
 $cdmaterials "passtime\neons\"						
 //neon_yellow_solid, neon_blue_solid
 
-$cdmaterials "models\player\items\heavy\"			
-//xms_colored_lights_white		//a gray like metalic finish
-
-$cdmaterials "models\props_moonbase\"
+$cdmaterials "models/props_moonbase/"
 //asteroid01			//can certainly work as a replacement for glow inner for large things.
 //moon_gravel_crystal
 
-$cdmaterials "models\props_mvm\"
-//painted_wood_01
-
-$cdmaterials "models\props_halloween\"
+$cdmaterials "models/props_halloween/"
 //unlit_black		//is black
 
+$cdmaterials "models/props_mvm/"
+//painted_wood_01
+
+$cdmaterials "models/weapons/c_items/"
+//festive_lights_red
+
 $cdmaterials ""
-//../../../qc/ruina_qc/v3/
-//D:\J's Stuff\Github Desktop\TF2-Zombie-Riot\devsrc\blender_files\jdeivid\ruina
 $cdmaterials "models/player/shared/"								//gold_player
 $cdmaterials "models/workshop/weapons/c_models/c_invasion_wrangler"	//c_invasion_wrangler_laser.vm
 
-//
-
 $texturegroup "skinfamilies"
 {
-	{ "c_invasion_wrangler_laser"			"neon_red_solid"			}		//red
-	{ "c_invasion_wrangler_laser_blue"		"neon_blue_solid"			}		//blue
-	//{	"australium_container_glass"		"neon_red_solid"		}		//uber red
-	//{	"australium_container_glass"		"neon_blue_solid"		}		//uber blue
+	{ 	"c_invasion_wrangler_laser"			"neon_red_solid"			"festive_lights_red"		}		//red
+	{ 	"c_invasion_wrangler_laser_blue"		"neon_blue_solid"		"festive_lights_blue"		}		//blue
+	{	"crystal_ball_glass"				"neon_green_solid"			"festive_lights_white"		}		//uber red
+	{	"australium_container_glass"		"neon_yellow_solid"			"festive_lights_white"		}		//uber blue
 }
 
 $cbox 0 0 0 0 0 0

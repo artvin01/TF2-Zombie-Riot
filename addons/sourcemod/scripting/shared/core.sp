@@ -266,7 +266,7 @@ enum
 	RUINA_TWIRL_CREST_4		= (1 << 11),	
 	RUINA_QUINCY_BOW_3		= (1 << 12)
 }
-#define RUINA_CUSTOM_MODELS_4	"models/zombie_riot/weapons/ruina_models_4_3.mdl"
+#define RUINA_CUSTOM_MODELS_4	"models/zombie_riot/weapons/ruina_models_4_4_test_1.mdl"
 enum
 {
 	RUINA_STELLA_CREST			= 1,			//1

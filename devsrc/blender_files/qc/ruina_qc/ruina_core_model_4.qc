@@ -1,7 +1,7 @@
 // Created by Crowbar 0.71
 // Warp_Ruina_Model
 
-$modelname "zombie_riot/weapons/ruina_models_4_3.mdl"	//current one on the server: 1
+$modelname "zombie_riot/weapons/ruina_models_4_4_test_1.mdl"	//current one on the server: 1
 
 $bodygroup "stella_crest_1"	
 {
@@ -46,14 +46,6 @@ $illumposition 0.096 -0.043 13.267
 
 $mostlyopaque
 
-$cdmaterials "models\custom_weaponry\"
-$cdmaterials "models\weapons\w_wrench\"				
-//it has gold!		w_wrench01_gold
-
-$cdmaterials "models\weapons\c_items\"					
-//c_saxxy					//gold
-//c_frying_pan_gold 		//gold
-
 $cdmaterials "models\props_skybox\"					
 //black							//legit just black
 
@@ -66,32 +58,33 @@ $cdmaterials "models\items\"
 $cdmaterials "passtime\neons\"						
 //neon_yellow_solid, neon_blue_solid
 
-$cdmaterials "models\player\items\heavy\"			
-//xms_colored_lights_white		//a gray like metalic finish
-
-$cdmaterials "models\props_moonbase\"
+$cdmaterials "models/props_moonbase/"
 //asteroid01			//can certainly work as a replacement for glow inner for large things.
 //moon_gravel_crystal
 
-$cdmaterials "models\props_halloween\"
+$cdmaterials "models/props_halloween/"
 //unlit_black		//is black
 
-$cdmaterials "models\workshop\weapons\c_models\c_invasion_bat\"
-//these ones work best on small objects
-//c_invasion_bat_laser_white.vmt	//glass like texture
-//c_invasion_bat_laser				//red glass.
-//c_invasion_bat_laser_blue			//cyan glass
+$cdmaterials "models/props_mvm/"
+//painted_wood_01
 
-$cdmaterials "models\player\items\sniper\"
-//sniper_owl_white	//it can work as a replacement for glow inner, asuming its tiny objects.
-
-
-$cdmaterials "models\workshop_partner\weapons\c_models\c_ai_flamethrower\"
-
-
-
+$cdmaterials "models/weapons/c_items/"
+//festive_lights_red
 
 $cdmaterials ""
+$cdmaterials "models/player/shared/"								//gold_player
+$cdmaterials "models/workshop/weapons/c_models/c_invasion_wrangler"	//c_invasion_wrangler_laser.vm
+
+$texturegroup "skinfamilies"
+{
+	{ 	"c_invasion_wrangler_laser"			"neon_red_solid"			"festive_lights_red"		}		//red
+	{ 	"c_invasion_wrangler_laser_blue"		"neon_blue_solid"		"festive_lights_blue"		}		//blue
+	{	"crystal_ball_glass"				"neon_green_solid"			"festive_lights_white"		}		//uber red
+	{	"australium_container_glass"		"neon_yellow_solid"			"festive_lights_white"		}		//uber blue
+}
+
+//../../../qc/ruina_qc/v4/
+//D:\J's Stuff\Github Desktop\TF2-Zombie-Riot\devsrc\blender_files\jdeivid\ruina
 
 $cbox 0 0 0 0 0 0
 
