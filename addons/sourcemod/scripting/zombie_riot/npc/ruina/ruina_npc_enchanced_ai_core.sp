@@ -2866,6 +2866,77 @@ stock int iGetTeamBeamIndex(int team)
 		default: return g_Ruina_BEAM_Combine_Black;
 	}
 }
+enum struct ModelSizer {
+	int host_ref;
+	int entity_ref;
+	float size_start;	//min
+	float size_end;		//max
+	float timer;
+	bool delete_entity_on_end;
+	float timer_base;
+}
+//this changes a models size from x to y over a set duration.
+//note: its size SCALE, so 1.0 = 100%, 0.5 == 50% scale, etc
+void StartModelSizeChange(CClotBody npc, int entity, float size_start, float start_end, float duration, bool delete_entity_on_end = false)
+{
+	static ModelSizer Sizer;
+	Sizer.host_ref		= EntIndexToEntRef(npc.index);
+	Sizer.entity_ref 	= EntIndexToEntRef(entity);
+	Sizer.size_start	= size_start;
+	Sizer.size_end		= start_end;
+	Sizer.timer_base	= duration;
+	Sizer.delete_entity_on_end 		= delete_entity_on_end;
+	Sizer.timer			= GetGameTime(npc.index) + Sizer.timer_base;
+	
+	DataPack pack = new DataPack();
+	pack.WriteCellArray(Sizer, sizeof(Sizer));
+	RequestFrame(ModelSizerTick, pack);
+}
+static void ModelSizerTick(DataPack pack)
+{
+	pack.Reset();
+	static ModelSizer Sizer;
+	pack.ReadCellArray(Sizer, sizeof(Sizer));
+
+	int host 	= Sizer.host_ref != 0 ? EntRefToEntIndex(Sizer.host_ref) : -4;	//if host is 0, assumed we do not have a host, and that its intentional, as such slightly modify logic to work with no host
+	int model 	= EntRefToEntIndex(Sizer.entity_ref);
+	if(!IsValidEntity(host) && host != -4)
+	{
+		delete pack;
+		if(Sizer.delete_entity_on_end && IsValidEntity(model))
+			RemoveEntity(model);	//only delete if the user wishes it to be deleted
+			
+		return;
+	}
+	if(!IsValidEntity(model))
+	{
+		delete pack;
+		return;
+	}
+	float GameTime;
+	if(host != -4)
+	{
+		CClotBody npc = view_as<CClotBody>(host);
+		GameTime = GetGameTime(npc.index);	//if its a valid npc, make it respect game time
+	}
+	else
+		GameTime = GetGameTime();
+
+	if(GameTime < Sizer.timer)
+	{
+		delete pack;
+		if(Sizer.delete_entity_on_end)
+			RemoveEntity(model);	//same thing, only delete if wanted.
+			
+		return;
+	}
+
+	float Ratio = (Sizer.timer - GameTime) / Sizer.timer_base;
+	float Size = (Sizer.size_start + (Sizer.size_end - Sizer.size_start) * Ratio);
+	SetEntPropFloat(model, Prop_Send, "m_flModelScale", Size);
+
+	RequestFrame(ModelSizerTick, pack);	//loop every tick.
+}
 //custom weapon ruina model groups
 
 
