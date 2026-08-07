@@ -3851,7 +3851,7 @@
 	"Waldch's Expidonsan Sword Desc"
 	{
 		"en"		"Wildingen is finally free, The hitman is taken out, sadly theres more, but he was the main one...\nEquip to disable its cosmetic effects."
-		"ko"		"와일딩겐은 마침내 해방되었고, 와일딩겐 히트맨을 제거하였습니다. 아직 더 많은 히트맨이 남아있지만, 적어도 핵심 인물은 쓰러트렸습니다.\n착용 시, 특수한 시각 이펙트를 제거합니다."
+		"ko"		"와일딩겐은 마침내 해방되었고, 와일딩겐 히트맨 역시 제거하였습니다. 아직 더 많은 히트맨들이 남아있지만, 적어도 핵심 인물은 쓰러트렸습니다.\n착용 시, 특수한 시각 이펙트를 제거합니다."
 	}
 	"Opened Void Portal"
 	{
