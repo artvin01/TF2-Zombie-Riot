@@ -432,8 +432,10 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 9:	
 			{
 				enemy.Index = NPC_GetByPlugin("npc_bob_the_first_last_savior");
-				enemy.Health = RoundToFloor((9000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((8000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.65);
+				enemy.ExtraMeleeRes *= 0.75;
+				enemy.ExtraRangedRes *= 0.75;
 				enemy.Data = "nobackup";
 			}
 			case 10:	
@@ -467,13 +469,13 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 					case 1: 
 					{
 						enemy.Index = NPC_GetByPlugin("npc_xeno_mrx");
-						enemy.Health = RoundToFloor((10000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.Health = RoundToFloor((12500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
 					}
 					default: 
 					{
 						enemy.Index = NPC_GetByPlugin("npc_xeno_mrx");
-						enemy.Health = RoundToFloor((10000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+						enemy.Health = RoundToFloor((12500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
 					}
 				}
@@ -805,10 +807,9 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Is_Boss = 1;
 		enemy.Index = NPC_GetByPlugin("npc_freeplay_sigmaller");
-		enemy.Health = RoundToFloor(((500000.0 + HealthBonus) / 65.0 * float(Waves_GetRound())) * HealthMulti);
-		enemy.ExtraDamage = 0.5;
+		enemy.Health = RoundToFloor(((750000.0 + HealthBonus) / 65.0 * float(Waves_GetRound())) * HealthMulti);
+		enemy.ExtraDamage = 1.0;
 		enemy.ExtraSpeed = 1.0;
-		enemy.ExtraSize = 1.0;
 		enemy.Credits += 100.0;
 		count = 1;
 		sigmaller = false;
@@ -822,7 +823,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.ExtraDamage = 2.0;
 		enemy.Is_Boss = 0;
 
-		count = 10;
+		count = 13;
 		portalgalore = false;
 	}
 	else if(refragportal)
@@ -834,7 +835,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.ExtraDamage = 2.0;
 		enemy.Is_Boss = 0;
 
-		count = 2;
+		count = 7;
 		refragportal = false;
 	}
 	else

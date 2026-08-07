@@ -5041,6 +5041,7 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.AttackspeedBuff			= (1.0 / 1.25);
 	data.Slot						= 11; //0 means ignored
 	data.SlotPriority				= 2; //if its higher, then the lower version is entirely ignored.
+	data.TimerRepeatCall_Func 		= MysteryBrew_Timer;
 	data.HudDisplay_Func			= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
 
@@ -5110,6 +5111,62 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	StatusEffect_AddGlobal(data);
 }
 
+static void MysteryBrew_Timer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(Apply_StatusEffect.DataForUse > GetGameTime())
+	{
+		return;
+	}
+	bool Found = false;
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if(Found)
+			break;
+		if(!Apply_StatusEffect.TotalOwners[client])
+			continue;
+		if (!IsValidClient(client))
+			continue;
+
+		if (IsEntityAlive(client))
+		{
+			int i, weapon1;
+			while(TF2_GetItem(client, weapon1, i))
+			{
+				if(i_CustomWeaponEquipLogic[weapon1] == WEAPON_BUFFPOTION)
+				{
+					Found = true;
+					break;
+				}
+			}
+			
+		}
+			
+	}
+	if(!Found)
+	{
+		for (int i = 0; i < i_MaxcountNpcTotal; i++)
+		{
+			int iNpc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+			if (iNpc != INVALID_ENT_REFERENCE)
+			{
+				if(Apply_StatusEffect.TotalOwners[iNpc])
+				{
+					Found = true;
+					break;
+				}
+			}
+		}
+	}
+	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	if(!Found)
+	{
+		Apply_StatusEffect.TimeUntillOver = 0.0;
+	}
+	Apply_StatusEffect.DataForUse = GetGameTime() + 2.0;
+	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
+
+	//spray particles
+}
 void HandOfSparkHud_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
 {
 	int owner = GetEntPropEnt(victim, Prop_Data, "m_hOwnerEntity");
@@ -12071,5 +12128,61 @@ void StatusEffects_ManaRecharge()
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "~~");
 	data.Positive 					= false;
 	data.ElementalLogic				= true;
+	data.TimerRepeatCall_Func 		= BlackFlames_Timer;
 	StatusEffect_AddGlobal(data);
+}
+static void BlackFlames_Timer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(Apply_StatusEffect.DataForUse > GetGameTime())
+	{
+		return;
+	}
+	bool Found = false;
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if(Found)
+			break;
+		if(!Apply_StatusEffect.TotalOwners[client])
+			continue;
+		if (!IsValidClient(client))
+			continue;
+
+		if (IsEntityAlive(client))
+		{
+			int i, weapon1;
+			while(TF2_GetItem(client, weapon1, i))
+			{
+				if(i_CustomWeaponEquipLogic[weapon1] == WEAPON_FIRE_WAND)
+				{
+					Found = true;
+					break;
+				}
+			}
+		}
+			
+	}
+	if(!Found)
+	{
+		for (int i = 0; i < i_MaxcountNpcTotal; i++)
+		{
+			int iNpc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+			if (iNpc != INVALID_ENT_REFERENCE)
+			{
+				if(Apply_StatusEffect.TotalOwners[iNpc])
+				{
+					Found = true;
+					break;
+				}
+			}
+		}
+	}
+	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	if(!Found)
+	{
+		Apply_StatusEffect.TimeUntillOver = 0.0;
+	}
+	Apply_StatusEffect.DataForUse = GetGameTime() + 2.0;
+	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
+
+	//spray particles
 }

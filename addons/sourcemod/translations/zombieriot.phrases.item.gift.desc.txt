@@ -3500,15 +3500,199 @@
 	{
 		"en"	"A Giant support unit of Vestan Chemical Platoon designed only for defense \n-its patient receives massive buff and never dies unless oneshot \n-It moves very slowly"
 	}
-	"Avangard's Processing Core-B"
+	
+	// Trophies goes here.
+	"Magia Wings Desc"
 	{
-		"en"	"Avangard's Processing Core-B"
-		"ko"	"아방가르드의 프로세싱 코어-B"
+		"en"		"Oh how the Stars shine upon those who rule Ruina..."
+		"ko"		"루이나를 다스리는 자들에겐 수많은 별이 찬란하게 빛나리라..."
 	}
-	"Avangard's Processing Core-B Desc"
+	"Silvester Wings Desc"
 	{
-		"en"	"After destroying the Radiomast at the Vestan outpost, along with the soldiers there, you find this on the ground. drop by one of the Avanguards we killed."
-		"ko"	"베스타 전초기지의 방송탑을 파괴한 후, 땅에 널부러진 병사들 사이에서 발견했습니다.\n쓰러뜨린 아방가르드 중 하나에게서 떨어져 나온 것 같습니다."
+		"en"		"Howd you get this? this is admin only."
+		"ko"		"당신. 이거 어떻게 얻은 거죠? 이건 어드민 전용이라고요."
+	}
+	
+	"ZR Content Creater Desc"
+	{
+		"en"		"You created enough content to be worthy!\nYou start with an extra 50 credits."
+		"ko"		"귀중한 콘텐츠를 만드신 당신!\n초기 자금으로 50$를 더 받습니다."
+	}
+	"ZR Contest 2024 Artist Desc"
+	{
+		"en"		"You joined the art contest. Start with extra 50 extra credits."
+		"ko"		"아트워크 대회에 참여하셨군요. 초기 자금으로 50$를 더 받습니다."
+	}
+	"ZR Contest 2024 Top 10 Desc"
+	{
+		"en"		"You won a contest. Start with extra 100 extra credits."
+		"ko"		"대회에서 우승했습니다. 초기 자금으로 100$를 더 받습니다."
+	}
+	"ZR Contest 2024 Top 20 Desc"
+	{
+		"en"		"You won a contest. Start with extra 75 extra credits."
+		"ko"		"대회에서 우수한 성적을 거뒀습니다. 초기 자금으로 75$를 더 받습니다."
+	}
+	"ZR Contest 2024 Top 30 Desc"
+	{
+		"en"		"You won a contest. Start with extra 50 extra credits."
+		"ko"		"대회에서 수상했습니다. 초기 자금으로 50$를 더 받습니다."
+	}
+	"ZR Contest Nominator 2023 Desc"
+	{
+		"en"		"You won a contest way back then. Does nothing now."
+		"ko"		"예전 대회에서 우승하셨군요. 아직 특별한 보상은 없습니다."
+	}
+	
+	"Cured Silvester"
+	{
+		"en"		"Cured Silvester"
+		"ko"		"치료된 실베스터"
+	}
+	"Cured Silvester Desc"
+	{
+		"en"		"Silvester must be glad to have lunatics like you!\nActivating The final pap of the default expidonsan blade gives you a halo!"
+		"ko"		"실베스터는 당신처럼 미친 사람이 있어서 기뻐할 겁니다!\n퓨전 블레이드 무기의 최종 강화 시, 헤일로가 생깁니다!"
+	}
+	"Blitzkrieg's destroyed Core"
+	{
+		"en"		"Blitzkrieg's destroyed Core"
+		"ko"		"블리츠크리그의 파괴된 코어"
+	}
+	"Blitzkrieg's destroyed Core Desc"
+	{
+		"en"		"With Blitzkrieg being defeated, his army is at your disposal..."
+		"ko"		"블리츠크리그가 파괴된 이후, 그의 군대는 이제 당신의 명령을 따릅니다..."
+	}
+	"Head Equipped Blue Goggles"
+	{
+		"en"		"Head Equipped Blue Goggles"
+		"ko"		"머리 장착형 파란 고글"
+	}
+	"Head Equipped Blue Goggles Desc"
+	{
+		"en"		"Seems like you beat Waldch and Silvester... are you ready?"
+		"ko"		"왈츠와 실베스터를 뿌리치는데 성공한 거 같네요... 준비되셨죠?"
+	}
+	"Calmaticus' Heart Piece"
+	{
+		"en"		"Calmaticus' Heart Piece"
+		"ko"		"칼마티커스의 심장 조각"
+	}
+	"Calmaticus' Heart Piece Desc"
+	{
+		"en"		"You beat the heart of the infection, however, the other is left..."
+		"ko"		"감염의 근원을 격파하는데 성공했습니다. 하지만, 하나가 더 남아있군요..."
+	}
+	"Medieval Crown"
+	{
+		"en"		"Medieval Crown"
+		"ko"		"중세 왕관"
+	}
+	"Medieval Crown Desc"
+	{
+		"en"		"You beat alaxios...?"
+		"ko"		"알락시오스와의 싸움에서 이겼...습니다...?"
+	}
+	"Alaxios's Godly assistance"
+	{
+		"en"		"Alaxios's Godly assistance"
+		"ko"		"알락시오스의 신성한 축복"
+	}
+	"Alaxios's Godly assistance Desc"
+	{
+		"en"		"You beat alaxios... Or did he just let you live?\nYour banners will be much louder!"
+		"ko"		"알락시오스를 이긴 걸까요..? 아님 그가 봐준 걸까요?\n당신의 나팔 소리가 더 우렁차게 나옵니다!"
+	}
+	"Expidonsan Battery Device"
+	{
+		"en"		"Expidonsan Battery Device"
+		"ko"		"엑스피돈사제 배터리 장치"
+	}
+	"Expidonsan Battery Device Desc"
+	{
+		"en"		"Sensal's scythe becomes red!\nActivating this will make it blue again."
+		"ko"		"센살의 낫이 빨간색이 됩니다!\n착용 시 다시 파란색이 됩니다."
+	}
+	"Bob's Curing Hand"
+	{
+		"en"		"Bob's Curing Hand"
+		"ko"		"밥의 치유의 손길"
+	}
+	"Bob's Curing Hand Desc"
+	{
+		"en"		"The Sea infection has been beaten, but so have you."
+		"ko"		"바다의 잠식을 물리쳤습니다. 당신 몸 속까지 말이죠."
+	}
+	"Alminan and Expidonsan Training"
+	{
+		"en"		"Alminan and Expidonsan Training"
+		"ko"		"알미나-엑스피돈사 연합 훈련"
+	}
+	"Alminan and Expidonsan Training Desc"
+	{
+		"en"		"The Angelica Shotgonnus, its halo and arm halo become more energetic.\nit also unlocks scythe recolour options!"
+		"ko"		"안젤리카 샷거누스의 헤일로와 팔에 에너지가 넘치게 됩니다.\n센살의 낫 색상 추가 옵션도 생겼어요!"
+	}
+	"Scythe Color Option 1"
+	{
+		"en"		"Scythe Color Option 1"
+		"ko"		"낫 색상 옵션 1"
+	}
+	"Scythe Color Option 1 Desc"
+	{
+		"en"		"After doing Alminan and Expidonsan Training...\nTurns your sensal scythe White!"
+		"ko"		"알미나-엑스피돈사 합동 훈련의 결과로...\n센살의 낫을 하얀색으로 바꿀 수 있습니다!"
+	}
+	"Scythe Color Option 2"
+	{
+		"en"		"Scythe Color Option 2"
+		"ko"		"낫 색상 옵션 2"
+	}
+	"Scythe Color Option 2 Desc"
+	{
+		"en"		"After doing Alminan and Expidonsan Training...\nTurns your sensal scythe Yellow!"
+		"ko"		"알미나-엑스피돈사 합동 훈련의 결과로...\n센살의 낫을 노란색으로 바꿀 수 있습니다!"
+	}
+	"Scythe Color Option 3"
+	{
+		"en"		"Scythe Color Option 3"
+		"ko"		"낫 색상 옵션 3"
+	}
+	"Scythe Color Option 3 Desc"
+	{
+		"en"		"After doing Alminan and Expidonsan Training...\nTurns your sensal scythe Purple!"
+		"ko"		"알미나-엑스피돈사 합동 훈련의 결과로...\n센살의 낫을 보라색으로 바꿀 수 있습니다!"
+	}
+	"Expidonsan Research Card"
+	{
+		"en"		"Expidonsan Research Card"
+		"ko"		"엑스피돈사 연구 카드"
+	}
+	"Expidonsan Research Card Desc"
+	{
+		"en"		"You beat Vincent, it's unknown how exactly you did it however...\nTrophy!\nWhen using, turns you into a robot!"
+		"ko"		"어떻게 했는지는 몰라도, 당신은 빈센트를 격파하는데 성공했습니다...\n트로피!\n착용 시, 당신을 로봇으로 만듭니다!"
+	}
+	"Twirl's Hairpins"
+	{
+		"en"		"Twirl's Hairpins"
+		"ko"		"트윌의 헤어핀"
+	}
+	"Twirl's Hairpins Desc"
+	{
+		"en"		"Strange that she gave you these."
+		"ko"		"그녀가 이걸 그냥 줬다니, 별 일이군요."
+	}
+	"Kahmlsteins Last Will"
+	{
+		"en"		"Kahmlsteins Last Will"
+		"ko"		"카멜슈타인의 유언장"
+	}
+	"Kahmlsteins Last Will Desc"
+	{
+		"en"		"Keep the void away.. at all costs, he begs of you..."
+		"ko"		"그의 마지막 유언... '공허를 최대한 몰아내라..'"
 	}
 	"Copycat Truthful Evidence"
 	{
@@ -3525,96 +3709,345 @@
 		"en"	"See some incomprehensible words, but think there's a hidden meaning\nThis seems to be why Vesta invaded Ziberia.\nyou became the primary target of Vestans due to this…"
 		"ko"	"이해못할 단어들이 보이지만 숨겨진 뜻이 있는거 같습니다. 이것이 베스타가 지베리아를 침공한 이유 같습니다.\n하지만 이것이 베스타인들과의 트러블을 만들었습니다."
 	}
+	"Kahml's Contained Chaos"
+	{
+		"en"		"Kahml's Contained Chaos"
+		"ko"		"격리된 카멜슈타인의 혼돈"
+	}
+	"Kahml's Contained Chaos Desc"
+	{
+		"en"		"You helped Kahml get rid of his chaos affliction.\nHe doesnt like to say thanks directly though."
+		"ko"		"당신은 카멜슈타인이 혼돈에 고통받는 것을 끝냈습니다.\n그러나 그는 직접적으로 감사를 표하진 않는군요."
+	}
+	
+	// Special.
+	"Chaos Machina Waldch Chip"
+	{
+		"en"		"Chaos Machina Waldch Chip"
+		"ko"		"혼돈 마키나 왈츠의 칩"
+	}
+	"Chaos Machina Waldch Chip Desc"
+	{
+		"en"		"You managed to kill off the machine, the impostor.."
+		"ko"		"당신은 이 따라쟁이 기계를 처치하는데에 성공했습니다.."
+	}
+	"Corrupted Barney's Chainsaw"
+	{
+		"en"		"Corrupted Barney's Chainsaw"
+		"ko"		"타락한 바니 칼훈의 전기톱"
+	}
+	"Corrupted Barney's Chainsaw Desc"
+	{
+		"en"		"I wonder what happened to Barney here..."
+		"ko"		"도대체 이 곳에서 바니한테 무슨 일이 있었던 거야..?"
+	}
+	"Matrix's Curse"
+	{
+		"en"		"Matrix's Curse"
+		"ko"		"매트릭스의 저주"
+	}
+	"Matrix's Curse Desc"
+	{
+		"en"		"You beat Agent Smith! However, I think that somehow, that was his goal..."
+		"ko"		"스미스 요원을 격퇴했습니다! 그런데.. 어쩌면 이게 그의 계획이었단 생각이 드는 군요..."
+	}
+	"Omega's Medallion"
+	{
+		"en"		"Omega's Medallion"
+		"ko"		"오메가의 메달리온"
+	}
+	"Omega's Medallion Desc"
+	{
+		"en"		"You got spared by Omega! He gave you one of his medallions as a treat.\nYou can wear it with pride, congratulations."
+		"ko"		"당신은 오메가와 오해를 풀고 친구가 되었습니다. 그가 기념으로 당신에게 자기 메달리언을 주었군요.\n장비하면 좀 더 간지나게 될 겁니다. 축하합니다."
+	}
+	"A Block of Cheese"
+	{
+		"en"		"A Block of Cheese"
+		"ko"		"치즈 한 덩이"
+	}
+	"A Block of Cheese Desc"
+	{
+		"en"		"WIP."
+		"ko"		"제작 중!"
+	}
+	"Xeno Virus Vial"
+	{
+		"en"		"Xeno Virus Vial"
+		"ko"		"제노 바이러스 바이알"
+	}
+	"Xeno Virus Vial Desc"
+	{
+		"en"		"It's over, you defeated it, go find Vivithorn, this was a facade, kill him, he can't restart the entirety of xeno anymore."
+		"ko"		"끝났어. 놈은 쓰러졌다고. 하지만 그건 전부 위장이었어. 비비쏜을 찾아내서 그를 죽여버려. 그 놈이 다시는 제노 감염을 만들어낼 수 없게."
+	}
+	"Mr. X's Files"
+	{
+		"en"		"Mr. X's Files"
+		"ko"		"Mr. X의 파일"
+	}
+	"Mr. X's Files Desc"
+	{
+		"en"		"Legacy Item, has no use, you just beat Calmaticus before the new update on abandoned lab.\nBut now you can obtain it in bossrush... Wow!!! You're so epic!!!"
+		"ko"		"버려진 연구실 업데이트 전 칼마티커스를 격퇴한 사람에게 주어진 레거시 아이템.\n하지만 이젠 보스 러시에서 얻을 수 있죠... 와우!!! 당신 존나 멋져요!!!"
+	}
+	"There Can Be Only One"
+	{
+		"en"		"There Can Be Only One"
+		"ko"		"오직 한 놈만 남는다"
+	}
+	"There Can Be Only One Desc"
+	{
+		"en"		"Buy grigori some ammo. he'll need it."
+		"ko"		"그리고리에게 탄약을 사주세요. 그가 필요로 할 겁니다."
+	}
+	
+	// Rogue.
+	"Overlords Final Wish"
+	{
+		"en"		"Overlords Final Wish"
+		"ko"		"대군주의 마지막 소원"
+	}
+	"Overlords Final Wish Desc"
+	{
+		"en"		"Restore and protect Bob the first, that is his final wish..."
+		"ko"		"밥 1세를 구하고 지켜라. 그것이 그의 마지막 소원이었습니다..."
+	}
+	"Bob's true fear"
+	{
+		"en"		"Bob's true fear"
+		"ko"		"밥의 진정한 공포"
+	}
+	"Bob's true fear Desc"
+	{
+		"en"		"It is the loss of family and friends, of which has happened..."
+		"ko"		"이것은 '누군가'의 기억. 가족과 친구를 잃은 끔찍한 기억..."
+	}
+	"Whiteflower's Elite Grenade"
+	{
+		"en"		"Whiteflower's Elite Grenade"
+		"ko"		"배풍등의 정예 수류탄"
+	}
+	"Whiteflower's Elite Grenade Desc"
+	{
+		"en"		"The traitor's end."
+		"ko"		"배신자의 최후."
+	}
+	"Major Steam's Rocket"
+	{
+		"en"		"Major Steam's Rocket"
+		"ko"		"증기 소령의 로켓"
+	}
+	"Major Steam's Rocket Desc"
+	{
+		"en"		"You beat rogue2's default ending!"
+		"ko"		"로그라이크2(rogue2)의 기본 엔딩을 봤습니다!"
+	}
+	"Waldch's Expidonsan Sword"
+	{
+		"en"		"Waldch's Expidonsan Sword"
+		"ko"		"왈츠의 엑스피돈사제 검"
+	}
+	"Waldch's Expidonsan Sword Desc"
+	{
+		"en"		"Wildingen is finally free, The hitman is taken out, sadly theres more, but he was the main one...\nEquip to disable its cosmetic effects."
+		"ko"		"와일딩겐들은 마침내 자유의 몸이 되었고, 와일딩겐 히트맨들은 자취를 감췄다. 모든 히트맨이 사라진 건 아니겠지만, 적어도 핵심 인물은 쓰러트렸다.\n착용 시, 특수한 시각 이펙트를 제거합니다."
+	}
+	"Opened Void Portal"
+	{
+		"en"		"Opened Void Portal"
+		"ko"		"열려진 공허 포탈"
+	}
+	"Opened Void Portal Desc"
+	{
+		"en"		"You released the void, you fool..!"
+		"ko"		"당신은 공허를 해방시키고 말았습니다..!"
+	}
+	"Gem from the Curtain"
+	{
+		"en"		"Gem from the Curtain"
+		"ko"		"장막 속의 보석"
+	}
+	"Gem from the Curtain Desc"
+	{
+		"en"		"A small crystal with a faint glow. A single word is etched on the back: Purgatory.\nTrophy!"
+		"ko"		"희미하게 빛나는 작은 수정입니다. 뒷면에는 '연옥'이라는 단어가 새겨져 있습니다.\n트로피!"
+	}
+	"Reila's Scorn Keycard"
+	{
+		"en"		"Reila's Scorn Keycard"
+		"ko"		"레일라의 스콘 키카드"
+	}
+	"Reila's Scorn Keycard Desc"
+	{
+		"en"		"She trusts you now, good work, take down shadowing darkness.\nTrophy!"
+		"ko"		"그녀는 이제 당신을 신뢰합니다. 아주 잘 하셨습니다. 이제 그림자 응달을 물리칠 시간입니다!\n트로피!"
+	}
+	"Jkei's Broken Entry Chip"
+	{
+		"en"		"Jkei's Broken Entry Chip"
+		"ko"		"제이케이의 파괴된 진입용 칩"
+	}
+	"Jkei's Broken Entry Chip Desc"
+	{
+		"en"		"Entry to the deeper castle.\nTrophy!"
+		"ko"		"더 깊은 성 내부로 진입하기 위해.\n트로피!"
+	}
+	"Shadow's Letter"
+	{
+		"en"		"Shadow's Letter"
+		"ko"		"그림자의 편지"
+	}
+	"Shadow's Letter Desc"
+	{
+		"en"		"Seems like a love letter to Guln.\nTrophy!\nMakes your dead teuton a mini shadow statue when using."
+		"ko"		"이건 굴른에게 보내는 러브레터같군요.\n트로피!\n착용 후 사망 시, 튜튼이 조그만 그림자 조각상이 됩니다."
+	}
+	
+	// Construction.
+	"Foreign Expidonsan Chip"
+	{
+		"en"		"Foreign Expidonsan Chip"
+		"ko"		"이국적인 엑스피돈사 칩"
+	}
+	"Foreign Expidonsan Chip Desc"
+	{
+		"en"		"You proved that you are actually useful to these expidonsans, and have setup a base for the curtain attack.\nTrophy!"
+		"ko"		"당신은 요새를 짓고 공격을 막아내어 이 곳의 엑스피돈사인들에게 당신의 실력를 증명했습니다.\n트로피!"
+	}
+	"Almagest Data Card"
+	{
+		"en"		"Almagest Data Card"
+		"ko"		"알마게스트 데이터 카드"
+	}
+	"Almagest Data Card Desc"
+	{
+		"en"		"You stopped the almagest from escaping with their spaceship and held your base!\nTrophy!"
+		"ko"		"당신은 알마게스트로부터 요새를 보호하고, 그들이 우주선을 타고 탈출하는 걸 저지했습니다!\n트로피!"
+	}
+	
+	// Survival.
 	"Dropped Secret Letter"
 	{
-		"en"	"Dropped Secret Letter"
-		"ko"	"유실된 비밀 편지"
+		"en"		"Dropped Secret Letter"
+		"ko"		"유실된 비밀 편지"
 	}
 	"Dropped Secret Letter Desc"
 	{
-		"en"	"Dropped on the floor after beating Blitz’s army. \nWritten on it is someone pleading for help from this machine? \nAnd it’s signed by someone named Karlas?"
-		"ko"	"블리츠크리그의 군단을 막아낸 후 바닥에서 발견했습니다.\n이 기계에게서 구해달라고 쓰여져있는데...\n''카를라스''란 인물의 서명이 있군요?"
+		"en"		"Dropped on the floor after beating Blitz’s army. \nWritten on it is someone pleading for help from this machine? \nAnd it’s signed by someone named Karlas?"
+		"ko"		"블리츠크리그의 군단을 막아낸 후 바닥에서 발견했습니다.\n이 기계에게서 구해달라고 쓰여져있는데...\n''카를라스''란 인물의 서명이 있군요?"
 	}
 	"Xeno Virus Sample"
 	{
-		"en"	"Xeno Virus Sample"
-		"ko"	"제노 바이러스 샘플"
+		"en"		"Xeno Virus Sample"
+		"ko"		"제노 바이러스 샘플"
 	}
 	"Xeno Virus Sample Desc"
 	{
-		"en"	"A sample of the Xeno virus after we beat them in Xeno Survival. \nMaybe this will help us find the source of the infection."
-		"ko"	"제노 위협을 몰아낸 후 얻은 제노 바이러스의 샘플입니다.\n감염의 근원을 찾아내는데 도움이 될 수 있을 것 같습니다."
+		"en"		"A sample of the Xeno virus after we beat them in Xeno Survival. \nMaybe this will help us find the source of the infection."
+		"ko"		"제노 위협을 몰아낸 후 얻은 제노 바이러스의 샘플입니다.\n감염의 근원을 찾아내는데 도움이 될 수 있을 것 같습니다."
 	}
 	"Son of Osiris’s Gift"
 	{
-		"en"	"Son of Osiris’s Gift"
-		"ko"	"오시리스의 아들의 선물"
+		"en"		"Son of Osiris’s Gift"
+		"ko"		"오시리스의 아들의 선물"
 	}
 	"Son of Osiris’s Gift Desc"
 	{
-		"en"	"Osiris gives us this for helping him and the rest of Alaxios’s army train. \nIt’s a book on how to become a Brawler…"
-		"ko"	"오시리스가 남은 알락시오스의 군단과 그의 훈련을 도운 보답으로 이것을 주었습니다.\n어떻게 난투꾼이 되는지에 대해 쓰여져있는 책이군요..."
+		"en"		"Osiris gives us this for helping him and the rest of Alaxios’s army train. \nIt’s a book on how to become a Brawler…"
+		"ko"		"오시리스가 남은 알락시오스의 군단과 그의 훈련을 도운 보답으로 이것을 주었습니다.\n어떻게 난투꾼이 되는지에 대해 쓰여져있는 책이군요..."
 	}
 	"Broken Expidonsan Tech"
 	{
-		"en"	"Broken Expidonsan Tech"
-		"ko"	"고장난 엑스피돈사제 기술력"
+		"en"		"Broken Expidonsan Tech"
+		"ko"		"고장난 엑스피돈사제 기술력"
 	}
 	"Broken Expidonsan Tech Desc"
 	{
-		"en"	"Broken off one of the elite rogue expidonsans. \nIt appears to be stronger than Sensal's tech, at least by the look of it."
-		"ko"	"정예 이탈자 엑스피돈사인들 중 하나에게서 떨어져 나온 것입니다.\n보아하니 센살의 기술력보다 더욱 강력한 것 같군요. 최소한 보이는 것으로는요."
+		"en"		"Broken off one of the elite rogue expidonsans. \nIt appears to be stronger than Sensal's tech, at least by the look of it."
+		"ko"		"정예 이탈자 엑스피돈사인들 중 하나에게서 떨어져 나온 것입니다.\n보아하니 센살의 기술력보다 더욱 강력한 것 같군요. 최소한 보이는 것으로는요."
 	}
-	"Major Voided’s Hat"
+	"Almina's Last Hope..."
 	{
-		"en"	"Major Voided’s Hat"
-		"ko"	"공허화된 소령의 모자"
+		"en"		"Almina's Last Hope..."
+		"ko"		"알미나의 마지막 희망..."
 	}
-	"Major Voided’s Hat Desc"
+	"Almina's Last Hope Trophy Desc"
 	{
-		"en"	"Somehow still intact after the explosion. A bit big but still usable."
-		"ko"	"어떻게인지 몰라도 폭발 이후에도 멀쩡하게 남아있습니다.\n좀 크긴 하지만 쓸 수는 있네요."
+		"en"		"You saved Almina from Whiteflower rule.\nBut can you save what’s left of Almina from the Dweller."
+		"ko"		"당신은 알미나를 배풍등의 지배에서 자유롭게 했습니다.\n하지만 드웰러에게서 알미나의 남은 도시를 구해낼 수 있을까요?"
 	}
 	"Alminan Badge of Honor"
 	{
-		"en"	"Alminan Badge of Honor"
-		"ko"	"알미나의 영광의 배지"
+		"en"		"Alminan Badge of Honor"
+		"ko"		"알미나의 영광의 배지"
 	}
 	"Alminan Badge of Honor Desc"
 	{
-		"en"	"Amphi gives you this for all you have done for Almina, \ndating back to before you were employed by Bob the Second."
-		"ko"	"암피가 당신이 알미나를 위해 행한 모든 것에 대한 감사로 이것을 주었습니다.\n당신이 밥 2세에게 고용되기 전의 날짜까지 거슬러 올라가네요."
+		"en"		"Amphi gives you this for all you have done for Almina, \ndating back to before you were employed by Bob the Second."
+		"ko"		"암피가 당신이 알미나를 위해 행한 모든 것에 대한 감사로 이것을 주었습니다.\n당신이 밥 2세에게 고용되기 전의 날짜까지 거슬러 올라가네요."
 	}
 	"Collector’s Backpack"
 	{
-		"en"	"Collector’s Backpack"
-		"ko"	"수집가의 가방"
+		"en"		"Collector’s Backpack"
+		"ko"		"수집가의 가방"
 	}
 	"Collector’s Backpack Desc"
 	{
-		"en"	"The backpack worn by the Aperture Collector. \nThe tech within looks extremely advanced."
-		"ko"	"애퍼처 수집가가 매고 있던 가방입니다.\n안에 들어있는 기술은 극도로 진보된 것 같습니다."
+		"en"		"The backpack worn by the Aperture Collector. \nThe tech within looks extremely advanced."
+		"ko"		"애퍼처 수집가가 매고 있던 가방입니다.\n안에 들어있는 기술은 극도로 진보된 것 같습니다."
 	}
 	"Ruianian Necklace"
 	{
-		"en"	"Ruianian Necklace"
-		"ko"	"루이나제 목걸이"
+		"en"		"Ruianian Necklace"
+		"ko"		"루이나제 목걸이"
 	}
 	"Ruianian Necklace Desc"
 	{
-		"en"	"A golden necklace with a gem at the end of it. \nRuliana gives it to us as a gift from Twirl."
-		"ko"	"끝부분에 보석이 달려있는 황금 목걸이입니다.\n루리아나가 트윌의 선물이라며 건네주었습니다."
+		"en"		"A golden necklace with a gem at the end of it. \nRuliana gives it to us as a gift from Twirl."
+		"ko"		"끝부분에 보석이 달려있는 황금 목걸이입니다.\n루리아나가 트윌의 선물이라며 건네주었습니다."
+	}
+	"Major Voided’s Hat"
+	{
+		"en"		"Major Voided’s Hat"
+		"ko"		"공허화된 소령의 모자"
+	}
+	"Major Voided’s Hat Desc"
+	{
+		"en"		"Somehow still intact after the explosion. A bit big but still usable."
+		"ko"		"어떻게인지 몰라도 폭발 이후에도 멀쩡하게 남아있습니다.\n좀 크긴 하지만 쓸 수는 있네요."
+	}
+	"Avangard's Processing Core-B"
+	{
+		"en"		"Avangard's Processing Core-B"
+		"ko"		"아방가르드의 프로세싱 코어-B"
+	}
+	"Avangard's Processing Core-B Desc"
+	{
+		"en"		"After destroying the Radiomast at the Vestan outpost, along with the soldiers there, you find this on the ground. drop by one of the Avanguards we killed."
+		"ko"		"베스타 전초기지의 방송탑을 파괴한 후, 땅에 널부러진 병사들 사이에서 발견했습니다.\n쓰러뜨린 아방가르드 중 하나에게서 떨어져 나온 것 같습니다."
 	}
 	"Ancient Demon Horn"
 	{
-		"en"	"Ancient Demon Horn"
-		"ko"	"고대 악마의 뿔"
+		"en"		"Ancient Demon Horn"
+		"ko"		"고대 악마의 뿔"
 	}
 	"Ancient Demon Horn Desc"
 	{
-		"en"	"Broken off an Ancient Demon we killed. \nWe have no idea what to use it for…"
-		"ko"	"처치한 고대 악마에게서 부러져 나온 뿔입니다.\n어디에 써야할지 도통 모르겠군요..."
+		"en"		"Broken off an Ancient Demon we killed. \nWe have no idea what to use it for…"
+		"ko"		"처치한 고대 악마에게서 부러져 나온 뿔입니다.\n어디에 써야할지 도통 모르겠군요..."
 	}
+	"Warped Crystal"
+	{
+		"en"		"Warped Crystal"
+		"ko"		"왜곡된 수정"
+	}
+	"Warped Crystal Desc"
+	{
+		"en"		"Made from the combination of Chaos and Void. \nLet's hope none of us crystallizes so we don’t get encased in one of these."
+		"ko"		"혼돈과 공허가 융화되어 만들어진 수정입니다.\n우리 중 누군가 결정화 되어 이런 수정에 갇히지 않길 바라야겠죠."
+	}
+	
 	"Tiny Flower"
 	{
 		"en"	"Tiny Flower"
@@ -3624,20 +4057,5 @@
 	{
 		"en"	"Another tiny flower from Flowering Darkness, a garden is being maintained by their army. \nAs a garden regrows, as such does their army."
 		"ko"	"어둠 개화자에게서 얻은 또 다른 작은 꽃입니다.\n정원은 그의 군단에 의해 가꾸어집니다.\n정원이 자라날 수록, 그의 군대 역시 자라납니다."
-	}
-	"Warped Crystal"
-	{
-		"en"	"Warped Crystal"
-		"ko"	"왜곡된 수정"
-	}
-	"Warped Crystal Desc"
-	{
-		"en"	"Made from the combination of Chaos and Void. \nLet's hope none of us crystallizes so we don’t get encased in one of these."
-		"ko"	"혼돈과 공허가 융화되어 만들어진 수정입니다.\n우리 중 누군가 결정화 되어 이런 수정에 갇히지 않길 바라야겠죠."
-	}
-	"Almagest Data Card"
-	{
-		"en"	"Almagest Data Card"
-		"ko"	"알마게스트 데이터 카드"
 	}
 }
