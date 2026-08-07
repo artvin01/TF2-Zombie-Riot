@@ -5929,39 +5929,39 @@
 		"en"		"Fire a wave of projectile.\nM2 to change if you attack vertically or horrizontally"
 		"ko"		"투사체를 일렬로 발사합니다.\nM2로 투사체를 세로 또는 가로로 날릴지 바꿀 수 있습니다."
 	}
-	"Junker Staff Extra Desc"
+	"Junker Staff Extra"
 	{
-		"en"		"Some abilities that heal scale off YOUR max HP when you have more hp then them."
-		"ko"		"일부 능력은 대상의 최대 HP보다 본인의 최대 HP가 더 높으면, 회복량을 본인 기준으로 계산합니다."
+		"en"		"Some abilities that heal scale off YOUR max HP when you have more HP then them."
+		"ko"		"치유를 제공하는 능력들은 대상의 최대 체력보다 사용자 본인의 최대 체력이 더 높으면, 회복량을 자신의 체력 기준으로 계산합니다."
 	}
 	"Ruilus Blade Desc"
 	{
-		"en"		"Increase Damage\nYou can enter angel mode with R, you gain x2 attackspeed but your mana drains.\nToggle again to deactivate."
-		"ko"		"피해량 증가\nR키로 마나가 지속적으로 감소하지만 공격 속도가 2배가 되는 천사 모드 발동\n발동 중 R키로 종료"
+		"en"		"-Increased Damage\n-You can enter angel mode with R, you gain x2 attackspeed but your mana drains.\n-Toggle again to deactivate."
+		"ko"		"-피해량 증가\n-R키 능력: 마나가 지속적으로 감소하지만 공격 속도가 2배가 되는 천사 모드 발동\n발동 중 R키로 종료"
 	}
 	"Ruina Elite Blade Desc"
 	{
-		"en"		"Increase Damage\nEach enemy hurt give you charge.\nIf you Press M2 While youre in your R ability, at max stacks, heal allies around you by 30％ of their max hp."
-		"ko"		"피해량 증가\n적중 시 스택 충전\n천사 모드에서 최대 스택을 쌓고 M2 사용 시, 주변 아군을 최대 체력의 30％만큼 회복시킴"
+		"en"		"-Increased Damage\n-Each enemy hurt give you charge.\n-If you Press M2 While youre in your R ability, at max stacks, heal allies around you by 30％ of their max hp."
+		"ko"		"-피해량 증가\n-적중 시 스택 충전\n-천사 모드에서 최대 스택을 쌓고 우클릭 시, 주변 아군을 최대 체력의 30％만큼 회복시킴"
 	}
 	"Scrapped Engineer Staff Desc"
 	{
-		"en"		"More damage and a new model"
-		"ko"		"피해량 증가, 새로운 외형"
+		"en"		"-More damage and a new model"
+		"ko"		"-피해량 증가, 새로운 외형"
 	}
 	"Dr DAM Staff Desc"
 	{
-		"en"		"Increase Damage\nHp > 50％:\nM2: Lose 10% hp to heal allies around you\nR:Lose 50% hp to gain resistance and heal allies around you.\n \nHP < 50%:\nGain res, heal on damage, lower range.\nM2:Lose 20% hp to deal AOE damage.\nR: Stun self but heal to full in 2 seconds."
-		"ko"		"피해량 증가\n체력 50％ 이상:\nM2: 체력 10％을 깎고 주변 아군 회복\nR:체력 50％을 깎고 저항을 획득. 주변 아군을 치유\n체력 50％ 이하:\n저항 획득, 적중 시 체력 회복, 사거리 감소\nM2: 체력 20％을 깎고 광역 피해\nR: 기절 후 최대 체력까지 회복"
+		"en"		"-Increased Damage\n-Hp > 50％:\nM2: Lose 10% hp to heal allies around you\nR:Lose 50% hp to gain resistance and heal allies around you.\n \n-HP < 50%:\nGain res, heal on damage, lower range.\nM2:Lose 20% hp to deal AOE damage.\nR: Stun self but heal to full in 2 seconds."
+		"ko"		"-피해량 증가\n-체력 50％ 이상:\n우클릭: 체력 10％을 깎고 주변 아군 회복\nR키:체력 50％을 깎고 저항을 획득. 주변 아군을 치유\n-체력 50％ 이하:\n저항 획득, 적중 시 체력 회복, 사거리 감소\n우클릭: 체력 20％을 깎고 광역 피해\nR키: 기절 후 최대 체력까지 회복"
 	}
 	"Hel's Hoe Desc"
 	{
-		"en"		"Increase Damage\nToggle R, When active, lose 100 hp, but each enemy hit you heal 50+ hp."
-		"ko"		"피해량 증가\nR키로 발동 시 체력 100을 잃지만, 적중 시 체력 50 회복하는 특수 모드 발동 가능"
+		"en"		"-Increased Damage\n-Toggle R, When active, lose 100 hp, but each enemy hit you heal 50+ hp."
+		"ko"		"-피해량 증가\n-R키로 발동 시 체력 100을 잃지만, 적중 시 체력을 50 회복하는 특수 모드 발동 가능"
 	}
 	"Nightmare's Hoe Desc"
 	{
-		"en"		"Increase Damage\nWhen R is active:\nPress M2 To drain your hp, but drains enemies around you aswell to heal you."
-		"ko"		"피해량 증가\nR키 능력 사용 중:\nM2 사용 시 체력을 서서히 깎지만 주변의 적에게서 체력을 흡수함"
+		"en"		"-Increased Damage\n-When R is active:\nPress M2 To drain your hp, but drains enemies around you as well to heal you."
+		"ko"		"-피해량 증가\n-R키 능력 사용 중:\nM2 사용 시 체력을 서서히 깎지만 주변의 적에게서 체력을 흡수함"
 	}
 }
