@@ -4113,6 +4113,26 @@
 		"en"	"Inflictor deals 15％ of damage dealt as bleed over 3 seconds."
 		"ko"	"부여자가 가한 피해량의 15％를 3초 가량의 출혈로 부여합니다."
 	}
+	"Mana Recharge"
+	{
+		"en"	"Mana Recharge"
+		"ko"	"마나 재생"
+	}
+	"Mana Recharge Desc"
+	{
+		"en"	"Dealing damage to an enemy nearby with mana gives mana regen for 2 seconds.\nRecharges mana slowly overtime."
+		"ko"	"마법 무기로 근처의 적에게 피해를 가할 시 2초 동안 마나 재생을 제공합니다.\n지속적으로 마나를 느리게 재생합니다."
+	}
+	"Black Flames"
+	{
+		"en"	"Black Flames"
+		"ko"	"흑염"
+	}
+	"Black Flames Desc"
+	{
+		"en"	"Target Burns forever and this cannot ever be stopped under any circumstances ever."
+		"ko"	"대상에게 붙은 불이 어떤 상황에서도 절대 꺼지지 않고 영원히 타오릅니다."
+	}
 	"Comfort in Hard Times"
 	{
 		"en"	"Comfort in Hard Times"

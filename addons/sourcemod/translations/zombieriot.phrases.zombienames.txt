@@ -689,6 +689,15 @@
 		"it"		"Soldato Xeno Evocatore Gigante"
 		"ko" 		"거대 제노 소환사 솔저"
 	}
+	"Xeno Soldier Summoner"
+	{
+		"en" 		"Xeno Soldier Summoner"
+		"ru" 		"Гигантский ксеносолдат-призыватель"
+		"pt"		"Xeno Soldado Invocador"
+		"nl"		"Xeno Soldatenoproeper" 
+		"it"		"Soldato Xeno Evocatore"
+		"ko" 		"제노 소환사 솔저"
+	}
 	"Xeno Spy Thief"
 	{
 		"en" 		"Xeno Spy Thief"
@@ -8153,5 +8162,10 @@
 	{
 		"en"	"Major Avangard"
 		"ko"	"아방가르드 소령"
+	}
+	"SIGMALLER"
+	{
+		"en"	"SIGMALLER"
+		"ko"	"시그마 전령병"
 	}
 }

@@ -1129,7 +1129,7 @@ public Action Neuvellete_tick(int client)
 		}
 
 		Neuvellete_Base_Central_Beam(Start_Loc, Target_Loc);
-		Prismatic_Damage_Trace(client, Start_Loc, Target_Loc, fl_main_damage[client]);	
+		Prismatic_Damage_Trace(client, Start_Loc, Target_Loc, fl_main_damage[client], weapon_active);	
 	}
 	
 	return Plugin_Continue;
@@ -1314,11 +1314,12 @@ static void Neuvellete_Create_Spinning_Beams_ALT_ALT(int client, float Origin[3]
 	}
 	
 }*/
-static void Prismatic_Damage_Trace(int client, float playerPos[3], float endVec_2[3], float damage)
+static void Prismatic_Damage_Trace(int client, float playerPos[3], float endVec_2[3], float damage, int weapon)
 {
 	Player_Laser_Logic Laser;
 	Laser.client = client;
 	Laser.Damage = damage;
+	Laser.weapon = weapon;
 	Laser.Radius = 25.0;
 	Laser.damagetype = DMG_PLASMA;
 	Laser.Start_Point = playerPos;

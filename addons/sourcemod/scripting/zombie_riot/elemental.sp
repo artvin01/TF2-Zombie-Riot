@@ -165,9 +165,13 @@ int Elemental_TriggerDamage(int entity, int type)
 		{
 			divide = 4.0;
 		}
-		case Element_Void, Element_Plasma:
+		case Element_Void:
 		{
 			divide = 2.0;
+		}
+		case Element_Plasma:
+		{
+			divide = 3.0;
 		}
 		case Element_Burger:
 		{

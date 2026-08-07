@@ -26,7 +26,13 @@ enum
 	BUY_RESULT_ALREADY_HAS_ITEM,
 	BUY_RESULT_SUCCESS,
 }
-
+enum
+{
+	WHITEOUT_DISABLE = 0,
+	WHITEOUT_ENABLE = 1,
+	WHITEOUT_ONLYLOADOUTAUTO = 2,
+	WHITEOUT_ONLYLOADOUTAUTO_BLOCKBEFORE = 3
+}
 enum struct ItemInfo
 {
 	int Cost;
@@ -560,7 +566,7 @@ enum struct Item
 	bool ChildKit;
 	bool MaxBarricadesBuild;
 	bool Hidden;
-	bool WhiteOut;
+	int WhiteOut;
 	bool IgnoreSlots;
 	char Tags[256];
 	char Author[128];
@@ -1259,7 +1265,7 @@ static void ConfigSetup(int section, KeyValues kv, int hiddenType, bool noKits, 
 	}
 
 	item.Starter = view_as<bool>(kv.GetNum("starter"));
-	item.WhiteOut = view_as<bool>(kv.GetNum("whiteout"));
+	item.WhiteOut = view_as<int>(kv.GetNum("whiteout"));
 	item.IgnoreSlots = view_as<bool>(kv.GetNum("ignore_equip_region"));
 	item.RogueAlwaysSell = view_as<bool>(kv.GetNum("rogue_always_sell", rogueSell ? 1 : 0));
 	item.NoKit = view_as<bool>(kv.GetNum("nokit", noKits ? 1 : 0));
@@ -3729,6 +3735,7 @@ static void MenuPage(int client, int section)
 		if(AutoLoadouts_IsClientUsing(client))
 		{
 			Autoloadout_DisplayCurrentAuto(client, buf, sizeof(buf));
+			AutoLoadouts_DisplayNextItem(client, buf, sizeof(buf));
 		}
 		if(WhatModifierSetting[0])
 			Format(buf, sizeof(buf), "%s\n%T: [%T]\n ", buf, "Current Modifier", client,WhatModifierSetting,client);
@@ -3806,7 +3813,10 @@ static void MenuPage(int client, int section)
 			else
 			{
 				Format(buffer, sizeof(buffer), "%T", "Owned Items", client);
-				menu.AddItem("-2", buffer);
+				if(Level[client] < 5 && (IsClientInBuyTutorial(client) || AutoLoadouts_IsClientUsing(client)))
+					menu.AddItem("-2", buffer, ITEMDRAW_DISABLED);
+				else
+					menu.AddItem("-2", buffer);
 			}
 		}
 	}
@@ -4023,8 +4033,17 @@ static void MenuPage(int client, int section)
 				{
 					Format(buffer, sizeof(buffer), "%s {$%s}", buffer, item.NPCSeller_Discount < 0.71 ? "$" : "");
 				}
+				int style = ITEMDRAW_DEFAULT;
+				if(Level[client] < 5 && item.WhiteOut == WHITEOUT_ONLYLOADOUTAUTO && (IsClientInBuyTutorial(client) || AutoLoadouts_IsClientUsing(client)))
+				{
+					style = ITEMDRAW_DISABLED;
+				}
+				else if(Level[client] < 5 && item.WhiteOut == WHITEOUT_ONLYLOADOUTAUTO_BLOCKBEFORE && IsClientInBuyTutorial(client) && !AutoLoadouts_IsClientUsing(client))
+				{
+					style = ITEMDRAW_DISABLED;
+				}
 				//category has some type of sale in it !
-				menu.AddItem(info.Classname, buffer);
+				menu.AddItem(info.Classname, buffer, style);
 				found = true;
 			}
 			else
@@ -4035,7 +4054,6 @@ static void MenuPage(int client, int section)
 					int style = ITEMDRAW_DEFAULT;
 					IntToString(i, info.Classname, sizeof(info.Classname));
 					TranslateItemName(client, item.Name, info.Custom_Name, info.Custom_Name, sizeof(info.Custom_Name));
-					
 					if(info.ScrapCost > 0)
 					{
 						Format(buffer, sizeof(buffer), "%s ($%d) [$%d]", info.Custom_Name, info.ScrapCost, Scrap[client]);
@@ -4062,14 +4080,24 @@ static void MenuPage(int client, int section)
 					{
 						continue;
 					}
-					else if(!item.WhiteOut && Rogue_UnlockStore() && !item.NPCSeller && (item.Hidden || (!RogueAlwaysSell(item))) && !CvarInfiniteCash.BoolValue)
+					else if(item.WhiteOut == WHITEOUT_DISABLE && Rogue_UnlockStore() && !item.NPCSeller && (item.Hidden || (!RogueAlwaysSell(item))) && !CvarInfiniteCash.BoolValue)
 					{
 						if(Rogue_UnlockStore() > 1)
 							continue;
 						
 						Format(buffer, sizeof(buffer), "%s [↑]", info.Custom_Name);
 					}
-					else if(!item.WhiteOut && !CvarUnlockStore.BoolValue && info.Cost_Unlock > 1000 && !Rogue_UnlockStore() && info.Cost_Unlock > CurrentCash)
+					else if(Level[client] < 5 && item.WhiteOut == WHITEOUT_ONLYLOADOUTAUTO && (IsClientInBuyTutorial(client) || AutoLoadouts_IsClientUsing(client)))
+					{
+						style = ITEMDRAW_DISABLED;
+						Format(buffer, sizeof(buffer), "%s", info.Custom_Name);
+					}
+					else if(Level[client] < 5 && item.WhiteOut == WHITEOUT_ONLYLOADOUTAUTO_BLOCKBEFORE && IsClientInBuyTutorial(client) && !AutoLoadouts_IsClientUsing(client))
+					{
+						style = ITEMDRAW_DISABLED;
+						Format(buffer, sizeof(buffer), "%s", info.Custom_Name);
+					}
+					else if(item.WhiteOut == WHITEOUT_DISABLE && !CvarUnlockStore.BoolValue && info.Cost_Unlock > 1000 && !Rogue_UnlockStore() && info.Cost_Unlock > CurrentCash)
 					{
 						Format(buffer, sizeof(buffer), "%s [%.0f％]", info.Custom_Name, float(CurrentCash) * 100.0 / float(info.Cost_Unlock));
 						style = ITEMDRAW_DISABLED;
@@ -4084,7 +4112,7 @@ static void MenuPage(int client, int section)
 						}
 						else
 						{
-							if(item.WhiteOut)
+							if(item.WhiteOut == WHITEOUT_ENABLE)
 							{
 								Format(buffer, sizeof(buffer), "%s", info.Custom_Name);
 								style = ITEMDRAW_DISABLED;
@@ -7200,7 +7228,7 @@ char[] TranslateItemDescription_Long(int client, const char Desc[256], const cha
 	return buffer;
 }
 */
-static void ItemCost(int client, Item item, int &cost)
+void ItemCost(int client, Item item, int &cost)
 {
 	bool Setup = !Waves_Started() || (!Rogue_NoDiscount() && !Construction_Mode() && !Dungeon_Mode() && Waves_InSetup());
 	bool GregSale = false;
@@ -7306,7 +7334,7 @@ static int ItemSell(int base, int discount)
 	return RoundToCeil(cost * ratio);
 }
 
-static stock void ItemCostPap(const Item item, int &cost)
+void ItemCostPap(const Item item, int &cost)
 {
 	if(Dungeon_Mode())
 	{
@@ -8036,7 +8064,7 @@ bool Store_IsItemInClientAutoPapList(int client, int index, int level)
 	return false;
 }
 
-void Store_HandleAutoPapList()
+void Store_HandleAutoPurchases()
 {
 	for (int client = 1; client <= MaxClients; client++)
 	{
@@ -8048,6 +8076,8 @@ void Store_HandleAutoPapList()
 			NextAutoBuy[client] = 0;
 			continue;
 		}
+		
+		// Autobuying items
 		
 		if (NextAutoBuy[client] > 0)
 		{
@@ -8066,8 +8096,16 @@ void Store_HandleAutoPapList()
 			}
 		}
 		
+		// Autobuying enhancements
+		
 		if (!AutoPapList[client])
 			continue;
+		
+		if (AutoPapList[client].Length == 0)
+		{
+			delete AutoPapList[client];
+			continue;
+		}
 		
 		Item item;
 		ItemInfo info;

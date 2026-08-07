@@ -135,6 +135,9 @@ bool AutoLoadouts_SpecificNameToPlayer(int client, char Name[64])
 void AutoLoadouts_SetPlayerLoadout(int client, int id)
 {
 	AutoLoadouts_RemovePlayerLoadout(client);
+	if(CvarDisableAutoLoadouts.BoolValue)
+		return;
+
 	
 	AutoLoadout loadout;
 	AutoLoadoutList.GetArray(id, loadout);
@@ -174,6 +177,11 @@ void AutoLoadouts_RemoveEnhancementsFromClientList(int client)
 bool AutoLoadouts_IsItemInClientList(int client, int index)
 {
 	return ClientAutoLoadout[client].itemList.FindValue(index, AutoLoadoutItem::index) != -1;
+}
+
+void AutoLoadouts_GetNextItem(int client, AutoLoadoutItem item)
+{
+	ClientAutoLoadout[client].itemList.GetArray(0, item);
 }
 
 void AutoLoadouts_Handle()
@@ -243,7 +251,34 @@ void Autoloadout_DisplayCurrentAuto(int client, char[] buffer, int sizeofbuffer)
 		Format(buffer, sizeofbuffer, "%s %T",buffer, ClientAutoLoadout[client].name, client);
 	else
 		Format(buffer, sizeofbuffer, "%s %T",buffer, "None", client);
-	Format(buffer, sizeofbuffer, "%s \n ",buffer);
+}
+
+void AutoLoadouts_DisplayNextItem(int client, char[] buffer, int sizeofbuffer)
+{
+	AutoLoadoutItem item;
+	AutoLoadouts_GetNextItem(client, item);
+	
+	char name[128];
+	FormatEx(name, sizeof(name), "%T", item.name, client);
+	if (item.level > 0)
+		Format(name, sizeof(name), "%T", "Autoloadout Next Item Is Enhancement", client, name);
+	
+	char nextItem[128];
+	
+	Item storeItem;
+	Store_GetItemByIndex(item.index, storeItem);
+	
+	ItemInfo info;
+	storeItem.GetItemInfo(item.level, info);
+	
+	int cost = info.Cost;
+	if (item.level == 0)
+		ItemCost(client, storeItem, cost);
+	else
+		ItemCostPap(storeItem, cost);
+	
+	FormatEx(nextItem, sizeof(nextItem), "%T", "Autoloadout Next Item", client, name, cost);
+	Format(buffer, sizeofbuffer, "%s\n%s\n ",buffer, nextItem);
 }
 
 void AutoLoadouts_DisplayLoadouts(int client)

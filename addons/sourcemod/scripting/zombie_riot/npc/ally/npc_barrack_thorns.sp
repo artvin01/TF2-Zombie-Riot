@@ -671,7 +671,6 @@ public Action BarrackThorns_OnTakeDamage(int victim, int &attacker, int &inflict
 	
 	float Maxhealth = ReturnEntityMaxHealth(npc.index) + 0.0;
 	int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
-	f_ArmorCurrosionImmunity[npc.index][Element_Warped] = GetGameTime() + 5.0;
 	if((ReturnEntityMaxHealth(npc.index)/2) <= damage) // If teutonic takes a single instance of damage higher than 1/2 of his max hp he instead takes only 50% of his max hp as dmg
 	{
 		damage = Maxhealth/2;

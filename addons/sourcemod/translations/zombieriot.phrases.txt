@@ -2832,10 +2832,10 @@
 	}
 	"Tutorial Show Hint Perk Machine Build One"
 	{
-		"en"		"There's no perk machine!\nTry building one, go to ''Builder Gear'' and grab a wrench.\nAccess its menu with R!\nGet enough metal and/or upgrades for more builder space!"
+		"en"		"There's no perk machine!\nTry building one, go to ''Builder Gear'' and grab a wrench.\nAccess its menu with R!\nUnder ''Support Buildings''\nGet enough metal and/or upgrades for more builder space!"
 		"ru"		"У вас нету Машины навыков!\nПопробуй построить её, зайди в ''снаряжение строителя'' возьми гаечный ключ.\nЗайди в меню через R\nКупи или получи достаточно маталла и/или улучшения для размещения больше построек."
 		"it"		"Non c'è una macchina per i vantaggi!\nProva a costruirne una, vai a ''Attrezzatura del costruttore'' e prendi una chiave inglese.\nAccedi al suo menu con R!\nOttieni abbastanza metallo e/o potenziamenti per avere più spazio per il costruttore!"
-		"ko"		"퍽 기계가 없습니다!\n''건축가 장비''로 들어가 렌치를 장착하고 렌치로 해당 구조물을 건설할 수 있습니다.\nR 키를 눌러 구조물 메뉴을 여세요!\n충분한 금속이 필요하며 더 많이 건설하려면 건축가 개선이 더 필요합니다!"
+		"ko"		"퍽 기계가 없습니다!\n''건축가 장비''로 들어가 렌치를 장착하고 렌치로 해당 구조물을 건설할 수 있습니다.\nR 키를 눌러 구조물 메뉴을 여세요!\n''지원 구조물''에 있습니다.\n충분한 금속이 필요하며 더 많이 건설하려면 건축가 개선이 더 필요합니다!"
 		"pl"		"Nie ma maszyny ulepszeń!\nSprobój zbudować jedną, idż do ''Rzeczy Budownicze'' i załóż klucz.\nOtwórz jego menu z R!\nZdobądź wystarczająco metalu lub ulepszeń budowlanych dla więcej miejsca na budowle."
 	}
 	"Tutorial Show Hint Pack a Punch"
@@ -4871,11 +4871,11 @@
 	}
 	"Xeno Desc"
 	{
-		"en"	"After defeating Blitzkrieg, we start an infection we last saw in Rogue 1, the Xeno infection. It seems to be mutating their victims with new abilities! We need to take this out before it gets bad."
+		"en"	"After defeating Blitzkrieg, we start seeing an infection we last saw in Rogue 1, the Xeno infection. It seems to be mutating their victims with new abilities! We need to take this out before it gets bad."
 		"fr"	"Les ennemis sont infectés avec l'infection Xéno, et reçoivent de nouvelles abilités!"
 		"chi"	"外界感染到来，僵尸们的变异也更加严重了。"
 		"it"	"L'infezione Xeno è arrivata, mutando i nemici con nuove abilità!"
-		"ko" 	"블리츠크리그를 쓰러뜨린 후, 로그라이크1에서 목격한 제노 감염원이 퍼집니다. 희생자들을 새로운 능력과 함께 변이시키는군요! 상황이 악화되기 전에 해결해야 합니다."
+		"ko" 	"블리츠크리그를 쓰러뜨린 후, 로그라이크1에서 목격한 감염원이 퍼지는걸 발견합니다. 희생자들을 새로운 능력과 함께 변이시키는군요! 상황이 악화되기 전에 해결해야 합니다."
 	}
 	"Silvester Waldch Desc"
 	{
@@ -6110,5 +6110,15 @@
 		"#format"	"{1:.1f}"
 		"en" 		"Card on cooldown ({1} seconds!)"
 		"ko"		"책장 쿨타임 상태 ({1}초)"
+	}
+	"Low On Ammo"
+	{
+		"en"		"You're low on ammo! Collect more ammo by interacting with ammo boxes or\nin the weapon's store page. (Open the menu and press [H])"
+		"ko"		"탄약이 부족합니다! 탄약 상자와 상호작용하거나 무기의 상점 페이지에서\n탄약을 구매하세요. (메뉴를 열고 H키를 누르세요!)"
+	}
+	"Show Ammo Box"
+	{
+		"en"		"Ammo box here!"
+		"ko"		"탄약 상자는 여기 있습니다!"
 	}
 }

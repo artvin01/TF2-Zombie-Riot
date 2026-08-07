@@ -573,40 +573,87 @@ public void OnPostThink(int client)
 #if defined ZR
 	bool Mana_Regen_Tick = false;
 
-	if(Rogue_CanRegen() && (Mana_Regen_Delay[client] < GameTime || (b_AggreviatedSilence[client] && Mana_Regen_Delay_Aggreviated[client] < GameTime)))
+	if(Rogue_CanRegen())
 	{
-		Mana_Regen_Delay[client] = GameTime + 0.4;
-		Mana_Regen_Delay_Aggreviated[client] = GameTime + 0.4;
-
-		has_mage_weapon[client] = false;
-		
-		Mana_Regen_Tick = true;
-
-		ManaCalculationsBefore(client);
-	
-		if(Current_Mana[client] < RoundToCeil(max_mana[client]) && Mana_Regen_Block_Timer[client] < GameTime)
+		if((Mana_Regen_Delay_Aggreviated[client] < GameTime || Mana_Regen_Delay[client] < GameTime))
 		{
-			Current_Mana[client] += RoundToCeil(mana_regen[client]);
-				
-			if(Current_Mana[client] > RoundToCeil(max_mana[client])) //Should only apply during actual regen
+			int RegenAutoDo = RechargeManaPassively(client);
+			
+			if(b_AggreviatedSilence[client])
+				RegenAutoDo = 2;
+			
+			if(RegenAutoDo == 1)
 			{
-				Current_Mana[client] = RoundToCeil(max_mana[client]);
-				mana_regen[client] = 0.0;
+				//We will check if auto regen from mana is allowed
+				if(Mana_Regen_Delay[client] < GameTime)
+				{
+					RegenAutoDo = 0;
+					//use normal regen
+				}
 			}
+
+			if(RegenAutoDo == 1 || RegenAutoDo == 2)
+			{
+				if(Mana_Regen_Delay_Aggreviated[client] < GameTime)
+				{
+					RegenAutoDo = 4;
+					//We auto regen
+					Mana_Regen_Delay_Aggreviated[client] = GameTime + 0.4;
+					if(f_TimeSinceLastRegenStop[client] < GetGameTime() + 0.4)
+						f_TimeSinceLastRegenStop[client] = GetGameTime() + 0.4;
+				}
+			}
+			else
+			{
+				//when regenrating normally, always trigger aggreviated.
+				Mana_Regen_Delay_Aggreviated[client] = GameTime + 0.4;
+				if(Mana_Regen_Delay[client] < GameTime)
+				{
+					RegenAutoDo = 5;
+					Mana_Regen_Delay[client] = GameTime + 0.4;
+				}
+				//normal regen
+			}
+
+				
+			
+			//small reuse of a bool to make it check for stuff
+			if(RegenAutoDo >= 4)
+			{
+				has_mage_weapon[client] = false;
+				ManaCalculationsBefore(client);
+				if(RegenAutoDo == 4)
+					mana_regen[client] *= 0.2;
+				//always set this
+
+				Mana_Regen_Tick = true;
+			
+				if(Current_Mana[client] < RoundToCeil(max_mana[client]) && Mana_Regen_Block_Timer[client] < GameTime)
+				{
+					Current_Mana[client] += RoundToCeil(mana_regen[client]);
+						
+					if(Current_Mana[client] > RoundToCeil(max_mana[client])) //Should only apply during actual regen
+					{
+						Current_Mana[client] = RoundToCeil(max_mana[client]);
+						mana_regen[client] = 0.0;
+					}
+				}
+				else
+				{
+					mana_regen[client] = 0.0;
+				}
+				if(HasSpecificBuff(client, "Dimensional Turbulence"))
+				{
+					Current_Mana[client] = 9999999;
+					mana_regen[client] = 9999999.9;
+					max_mana[client] = 9999999.9;
+				}
+							
+				if(!IsIn_HitDetectionCooldown(client,client, DontUpdateHudClient))
+					Mana_Hud_Delay[client] = 0.0;
+			}
+			
 		}
-		else
-		{
-			mana_regen[client] = 0.0;
-		}
-		if(HasSpecificBuff(client, "Dimensional Turbulence"))
-		{
-			Current_Mana[client] = 9999999;
-			mana_regen[client] = 9999999.9;
-			max_mana[client] = 9999999.9;
-		}
-					
-		if(!IsIn_HitDetectionCooldown(client,client, DontUpdateHudClient))
-			Mana_Hud_Delay[client] = 0.0;
 	}
 	//A part of Ruina's special mana "corrosion"
 	if(Current_Mana[client] > RoundToCeil(max_mana[client]+10.0))	
@@ -3628,7 +3675,7 @@ stock void SDKhooks_SetManaRegenDelayTime(int client, float time)
 		f_TimeSinceLastRegenStop[client] = GetGameTime() + time;
 		
 	//Set to 0 so hud is good
-	if(!b_AggreviatedSilence[client])
+	if(!RechargeManaPassively(client))
 		mana_regen[client] = 0.0;
 #endif
 }
@@ -3664,6 +3711,9 @@ void ManaCalculationsBefore(int client)
 	float ManaMaxExtra = 500.0;
 	if(ZR_Get_Modifier() == NOSTALGICA)
 		ManaRegen *= 0.75;
+	ManaRegen *= 1.10;
+	ManaMaxExtra *= 1.10;
+	
 	
 	while(TF2_GetItem(client, entity, i))
 	{
@@ -3898,3 +3948,16 @@ bool PlayersLeftAlive(int victim)
 	return Any_Left;
 }
 #endif
+
+
+bool RechargeManaPassively(int client)
+{
+	if(b_AggreviatedSilence[client])
+		return true;
+	
+	if(HasSpecificBuff(client, "Mana Recharge"))
+	{
+		return true;
+	}
+	return false;
+}

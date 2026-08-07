@@ -188,9 +188,8 @@ int AmmoboxUsed(int client, int entity)
 						Current_Mana[client] = RoundToCeil(max_mana[client] * 2.0);
 				}
 
-				ApplyBuildingCollectCooldown(entity, client, 5.0, true);
-				if(Dungeon_Mode())
-					ApplyBuildingCollectCooldown(entity, client, 2.5, true);
+				float CDForUsing = 15.0;
+				ApplyBuildingCollectCooldown(entity, client, CDForUsing, true);
 				Mana_Hud_Delay[client] = 0.0;
 				return 2;
 			}

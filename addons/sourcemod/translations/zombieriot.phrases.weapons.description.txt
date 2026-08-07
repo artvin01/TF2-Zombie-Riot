@@ -1276,9 +1276,8 @@
 	}
 	"Fire Wand Pap 3"
 	{
-		"en"	"-Increased damage\n-Increased attackspeed\n-Fires 5 fireballs in quick succession, subsequent fireballs deal less damage.\n-Your basic attacks deal much more damage."
-		"it"	"Aumenta i danni, spara 5 palle di fuoco in rapida successione, le palle di fuoco successive infliggono meno danni.\nI suoi attacchi base infliggono molti più danni."
-		"ko"	"피해량, 공격 속도 증가\n-우클릭이 파이어볼 5개를 연속으로 발사\n-늦게 발사되는 파이어볼은 더 적은 피해를 가함\n-기본 공격의 피해량이 크게 증가"
+		"en"	"-Increased damage\n-Increased attackspeed\n-Fires 5 fireballs in quick succession, subsequent fireballs deal less damage.\n-Your basic attacks deal much more damage.\n-Flames turn black upon burning enemies."
+		"ko"	"-피해량, 공격 속도 증가\n-우클릭 시 파이어볼 5개를 연속으로 발사\n-나중에 발사된 파이어볼은 더 적은 피해를 가함\n기본 공격의 피해량이 대폭 증가\n적중 시 화상 대신 흑염 부여"
 	}
 	
 	"Cryo Staff Desc"
@@ -1534,12 +1533,6 @@
 		"chi"   "一个近战扳手，随建造者伤害缩放。\nM2为突刺，下一次攻击将造成12倍伤害。你需要足够的金属才能让它工作。"
 		"it"	"Un'ascia da mischia che scala con i danni del costruttore.\nM2 per affondare e per far sì che l'attacco successivo infligga 12 volte i danni.\nBisogna avere abbastanza potenziamenti perché funzioni."
 		"ko"	"-건축가의 피해량에 영향을 받는 근접 무기입니다.\n-적을 보면서 우클릭 사용시 돌진하며 다음 공격이 12배의 추가 피해를 입힘.\n-충분한 건축가 개선을 보유해야 제 위력이 납니다.\n-적중 시 배럭 자원을 생성(수리 개선에 따라서 증가)"
-	}
-	"There Can Be Only One Desc"
-	{
-		"en"	"Buy grigori some ammo."
-		"it"	"Compra a Grigori delle munizioni."
-		"ko"	"그리고리에게 탄약을 사주세요."
 	}
 	
 	"Decorative Object Desc"
@@ -2073,20 +2066,14 @@
 
 	"Heavy Caliber Desc"
 	{
-		"en"	"-Gain 15％ more Weapon damage\n-15％ less firerate"
-		"fr"	"+15％ dégats, -15％ cadence de tir"
-		///"ru"	"На 15％ больше урон от оружия, но на 15％ меньше скорострельность"
-		"chi"   "武器伤害提高15％，但射速降低15％"
-		"it"	"15％ in più di danno da arma, ma 15％ in meno di potenza di fuoco"
-		"ko"	"-무기 피해량 +15％\n-공격 속도 -15％"
+		"en"	"-Gain 15％ more Weapon damage\n-15％ less attack speed and reload speed"
+		"ko"	"-무기 피해량 +15％\n-공격 속도 -15％\n-재장전 속도 -15％"
 	}
 	
 	"Army Belt Desc"
 	{
-		"en"	"-Gain 10％ Faster reload\n-1.45x Slower weapon switch speed."
-		"fr"	"+10％ vitesse de rechargement, 1.45x vitesse de changement d'arme plus lente"
-		"it"	"10％ Ricarica più veloce ma interruttore dell'arma più lungo di 1,45x"
-		"ko"	"-재장전 속도 +10％\n-무기 전환 속도 -1.45배"
+		"en"	"-Gain 15％ Faster reload\n-Lose 15% attack speed\n-1.45x Slower weapon switch speed."
+		"ko"	"-재장전 속도 +15％\n-공격 속도 -15％\n-무기 전환 속도 -1.45배"
 	}
 	
 	"Headshot Affinity Desc"
@@ -2346,9 +2333,9 @@
 	}
 	"Alchemist Potion Pap 7"
 	{
-		"en"	"-Increased Damage\n-Buffing Potion lasts a MUCH longer time, (100 seconds).\n-Buff strenghens to 25％ from 20％"
+		"en"	"-Increased Damage\n-Buffing Potion lasts a MUCH longer time, (300 seconds).\n-Buff strenghens to 25％ from 20％"
 		"it"	"La pozione di potenziamento del danno dura molto più a lungo (300 secondi). Il potenziamento del danno passa a 25％ da 20％"
-		"ko"	"-피해량 증가\n-버프 포션의 지속 시간이 100초로 증가\n-버프의 강화량이 20％에서 25％로 증가"
+		"ko"	"-피해량 증가\n-버프 포션의 지속 시간이 300초로 증가\n-버프의 강화량이 20％에서 25％로 증가"
 	}
 	"Alchemist Potion Pap 8"
 	{
@@ -5877,5 +5864,27 @@
 	{
 		"en" 	"When dashing, you dodge attacks for the next 0.5 seconds\nDodge attacks fully upto a damage treshhold (upgrades, melee dmg is 2x more lenient)\nIf damage is too high, you take 0.75x dmg instead."
 		"ko"	"대쉬할 때 다음 0.5초 동안 공격을 회피\n상한까지의 피해량을 완전 회피(개선 시 증가, 근접 피해는 상한 2배)\n피해량이 너무 높다면 대신 0.75배로 감소"
+	}
+	
+	// Barracks civ settings
+	"Almina and Expidonsan's Help Desc"
+	{
+		"en"		"Alminans Offer their assistance!\nThorns might join up if you help his cause..."
+		"ko"		"알미나인들이 도움을 주러 왔습니다!\n쏜즈도 그와 대의를 같이 한다면 합류할 겁니다..."
+	}
+	"Almina's Last Hope Desc"
+	{
+		"en"		"Replaces Monk and Hussar with Thorns\nMaybe Almina's Training might help...\nActivate if you only want thorsn with normal barracks."
+		"ko"		"수도사와 후사르의 자리를 쏜즈로 대체합니다.\n알미나와의 훈련이 아마 도움이 되었을 겁니다...\n일반 배럭과 쏜즈를 원한다면 활성화하세요."
+	}
+	"Blitzkrieg's Army Desc"
+	{
+		"en"		"With Blitzkrieg being defeated, his army is at your disposal..."
+		"ko"		"블리츠크리그가 패배한 후, 그의 군대는 이제 당신의 명령을 기다립니다..."
+	}
+	"Guln's Companions Desc"
+	{
+		"en"		"Retain chaos with guln's army!"
+		"ko"		"굴른의 부대원들과 함께 혼돈을 격리하세요!"
 	}
 }

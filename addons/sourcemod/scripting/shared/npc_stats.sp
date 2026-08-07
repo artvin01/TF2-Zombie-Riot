@@ -10369,13 +10369,13 @@ int ConvertTouchedResolve(int index)
 stock void ResolvePlayerCollisions_Npc(int iNPC, float damage, bool CauseKnockback = true)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
-	static float vel[3];
-	static float flMyPos[3];
+	float vel[3];
+	float flMyPos[3];
 	npc.GetVelocity(vel);
 	//clamping so insane speeds dont translate through hitting the entire map.
-	fClamp(vel[0], -300.0, 300.0);
-	fClamp(vel[1], -300.0, 300.0);
-	fClamp(vel[2], -300.0, 300.0);
+	vel[0] = fClamp(vel[0], -300.0, 300.0);
+	vel[1] = fClamp(vel[1], -300.0, 300.0);
+	vel[2] = fClamp(vel[2], -300.0, 300.0);
 	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
 		
 	static float hullcheckmins[3];
@@ -11338,6 +11338,10 @@ float Reapply_BurningCorpse[MAXENTITIES];
 
 void IgniteTargetEffect(int target, int ViewmodelSetting = 0, int viewmodelClient = 0, int type = 0, char typeoverride[255] = "")
 {
+	if(HasSpecificBuff(target, "Black Flames"))
+	{
+		type = 2;
+	}
 	Reapply_BurningCorpse[target] = GetGameTime() + 5.0;
 	if(ViewmodelSetting > 0)
 	{
@@ -11508,6 +11512,10 @@ public Action IgniteTimerVisual(Handle timer, DataPack pack)
 
 void IngiteTargetClientside(int target, int client, bool ingite, int type)
 {
+	if(HasSpecificBuff(target, "Black Flames"))
+	{
+		type = 2;
+	}
 	char typeEffect[255];
 	switch(type)
 	{
