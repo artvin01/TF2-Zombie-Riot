@@ -33,6 +33,11 @@ $bodygroup "fractal_harvester"
 	blank
 	studio "v4/fractal_harvester.smd"
 }
+$bodygroup "base_ring"	
+{
+	blank
+	studio "v4/base_ring.smd"
+}
 
 
 

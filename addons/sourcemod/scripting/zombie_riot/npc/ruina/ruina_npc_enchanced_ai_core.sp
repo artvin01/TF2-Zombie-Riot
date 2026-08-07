@@ -2866,6 +2866,35 @@ stock int iGetTeamBeamIndex(int team)
 		default: return g_Ruina_BEAM_Combine_Black;
 	}
 }
+/*
+	
+*/
+stock float fAdjustRuinaRingSize(const float size, const float base_size = 100.0) 
+{
+	return SquareRoot(size / base_size);
+}
+stock int iCreateRuinaRing(const float Loc[3], const char[] model, const int group, const float size = 1.0)
+{
+	int entity =  CreateEntityByName("prop_dynamic_override");
+
+	if(!IsValidEntity(entity))
+		return -1;
+
+	DispatchKeyValue(entity, "targetname", "rpg_fortress");
+	DispatchKeyValue(entity, "model", model);
+	DispatchKeyValue(entity, "solid", "0");
+	DispatchSpawn(entity);
+
+	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", size);
+	MakeObjectIntangeable(entity);
+	SetEntityMoveType(entity, MOVETYPE_NOCLIP);
+
+	SetVariantInt(group);
+	AcceptEntityInput(entity, "SetBodyGroup");
+
+	TeleportEntity(entity, Loc, NULL_VECTOR, NULL_VECTOR);
+	return entity;
+}
 enum struct ModelSizer {
 	int host_ref;
 	int entity_ref;
@@ -2877,16 +2906,16 @@ enum struct ModelSizer {
 }
 //this changes a models size from x to y over a set duration.
 //note: its size SCALE, so 1.0 = 100%, 0.5 == 50% scale, etc
-void StartModelSizeChange(CClotBody npc, int entity, float size_start, float start_end, float duration, bool delete_entity_on_end = false)
+stock void StartModelSizeChange(int host, int entity, float size_start, float start_end, float duration, bool delete_entity_on_end = true)
 {
 	static ModelSizer Sizer;
-	Sizer.host_ref		= EntIndexToEntRef(npc.index);
+	Sizer.host_ref		= host == 0 ? 0 : EntIndexToEntRef(host);
 	Sizer.entity_ref 	= EntIndexToEntRef(entity);
 	Sizer.size_start	= size_start;
 	Sizer.size_end		= start_end;
 	Sizer.timer_base	= duration;
 	Sizer.delete_entity_on_end 		= delete_entity_on_end;
-	Sizer.timer			= GetGameTime(npc.index) + Sizer.timer_base;
+	Sizer.timer			= GetGameTime(host) + Sizer.timer_base;
 	
 	DataPack pack = new DataPack();
 	pack.WriteCellArray(Sizer, sizeof(Sizer));
@@ -2916,13 +2945,12 @@ static void ModelSizerTick(DataPack pack)
 	float GameTime;
 	if(host != -4)
 	{
-		CClotBody npc = view_as<CClotBody>(host);
-		GameTime = GetGameTime(npc.index);	//if its a valid npc, make it respect game time
+		GameTime = GetGameTime(host);	//if its a valid npc, make it respect game time
 	}
 	else
 		GameTime = GetGameTime();
 
-	if(GameTime < Sizer.timer)
+	if(Sizer.timer < GameTime)
 	{
 		delete pack;
 		if(Sizer.delete_entity_on_end)
@@ -2932,7 +2960,7 @@ static void ModelSizerTick(DataPack pack)
 	}
 
 	float Ratio = (Sizer.timer - GameTime) / Sizer.timer_base;
-	float Size = (Sizer.size_start + (Sizer.size_end - Sizer.size_start) * Ratio);
+	float Size = (Sizer.size_start + (Sizer.size_end - Sizer.size_start) * (1.0 - Ratio));
 	SetEntPropFloat(model, Prop_Send, "m_flModelScale", Size);
 
 	RequestFrame(ModelSizerTick, pack);	//loop every tick.

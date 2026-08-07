@@ -302,10 +302,24 @@ methodmap Twirl < CClotBody
 		pack.WriteCell(this.iGetSicknessFlatPerWaveMulti(200));			//Sickness flat
 		pack.WriteCell(this.Anger);		//Override sickness timeout
 
-		float Sky_Loc[3]; Sky_Loc = Predicted_Pos; Sky_Loc[2]+=500.0; Predicted_Pos[2]-=100.0;
+		float Sky_Loc[3]; Sky_Loc = Predicted_Pos; Sky_Loc[2]+=500.0; 
 
 		if(!AtEdictLimit(EDICT_NPC))
 		{
+			float size_start 	= fAdjustRuinaRingSize(Radius);
+			float size_end 		= fAdjustRuinaRingSize(0.0);
+			int ring = iCreateRuinaRing(Predicted_Pos, RUINA_CUSTOM_MODELS_4, RUINA_BASE_RING);
+
+			if(IsValidEntity(ring))
+				StartModelSizeChange(0, ring, size_start, size_end, Time);
+
+			ring = iCreateRuinaRing(Predicted_Pos, RUINA_CUSTOM_MODELS_4, RUINA_BASE_RING);
+			if(IsValidEntity(ring))
+			{	
+				SetEntPropFloat(ring, Prop_Send, "m_flModelScale", size_start);
+				CreateTimer(Time, Timer_RemoveEntity, EntIndexToEntRef(ring), TIMER_FLAG_NO_MAPCHANGE);
+			}
+			Predicted_Pos[2]-=100.0;
 			int laser;
 			laser = ConnectWithBeam(-1, -1, color[0], color[1], color[2], 4.0, 4.0, 5.0, BEAM_COMBINE_BLACK, Predicted_Pos, Sky_Loc);
 			if(IsValidEntity(laser))
