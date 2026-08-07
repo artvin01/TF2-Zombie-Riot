@@ -198,56 +198,54 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 #define WINGS_MODELS_1 	"models/zombie_riot/weapons/custom_wings_1_4_test1.mdl"
 enum
 {
-	WINGS_FUSION 	= 1,
-	WINGS_LANCELOT	= 2,
-	WINGS_RULIANA	= 4,
-	WINGS_TWIRL		= 8,
-	WINGS_HELIA		= 16,
-	WINGS_STELLA	= 32,
-	WINGS_KARLAS	= 64
+	WINGS_FUSION 	= (1 << 0),
+	WINGS_LANCELOT	= (1 << 1),
+	WINGS_RULIANA	= (1 << 2),
+	WINGS_TWIRL		= (1 << 3),
+	WINGS_HELIA		= (1 << 4),
+	WINGS_STELLA	= (1 << 5),
+	WINGS_KARLAS	= (1 << 6)
 }
-
 #define RUINA_CUSTOM_MODELS_1	"models/zombie_riot/weapons/ruina_models_1_3_test2.mdl"
 enum	//it appears if I try to make it go above 14 it starts glitching out
 {		
-	RUINA_ICBM 				= 1,		//1
-	RUINA_HALO_1 			= 2,		//2
-	RUINA_QUINCY_BOW_1 		= 4,		//3
-	RUINA_BLADE_1			= 8,		//4
-	RUINA_MAGI_GUN_1		= 16,		//5
-	RUINA_STAFF_1			= 32,		//6
-	RUINA_HAND_CREST_1		= 64,		//7
-	RUINA_LAN_SWORD_1		= 128,		//8
-	RUINA_EUR_STAFF_1		= 256,		//9
-	RUINA_DAGGER_1			= 512,		//10
-	RUINA_RADAR_GUN_1		= 1024,		//11
-	RUINA_HEALING_STAFF_1	= 2048,		//12
-	RUINA_W30_HAND_CREST	= 4096,		//13
-	RUINA_IANA_BLADE		= 8192,		//14
+	RUINA_ICBM 				= (1 << 0),	
+	RUINA_HALO_1 			= (1 << 1),	
+	RUINA_QUINCY_BOW_1 		= (1 << 2),	
+	RUINA_BLADE_1			= (1 << 3),	
+	RUINA_MAGI_GUN_1		= (1 << 4),	
+	RUINA_STAFF_1			= (1 << 5),	
+	RUINA_HAND_CREST_1		= (1 << 6),	
+	RUINA_LAN_SWORD_1		= (1 << 7),	
+	RUINA_EUR_STAFF_1		= (1 << 8),	
+	RUINA_DAGGER_1			= (1 << 9),	
+	RUINA_RADAR_GUN_1		= (1 << 10),
+	RUINA_HEALING_STAFF_1	= (1 << 11),
+	RUINA_W30_HAND_CREST	= (1 << 12),
+	RUINA_IANA_BLADE		= (1 << 13)
 }
 #define RUINA_CUSTOM_MODELS_2	"models/zombie_riot/weapons/ruina_models_2_6_test3.mdl"
 enum
 {
-	RUINA_QUINCY_BOW_2		= 1,			//1
-	RUINA_HAND_CREST_2		= 2,			//2
-	RUINA_LAN_SWORD_2		= 4,			//3
-	RUINA_EUR_STAFF_2		= 8,			//4
-	RUINA_BLADE_2			= 16,			//5
-	RUINA_LAZER_CANNON_1	= 32,			//6
-	RUINA_DAGGER_2			= 64,			//7
-	RUINA_HEALING_STAFF_2	= 128,			//8
-	RUINA_REI_LAUNCHER		= 256,			//9
-	RUINA_UNUSED_BG_2_1		= 512,			//10
-	RUINA_IMPACT_LANCE_1	= 1024,			//11
-	RUINA_IMPACT_LANCE_2	= 2048,			//12
-	RUINA_IMPACT_LANCE_3	= 4096,			//13
-	RUINA_IMPACT_LANCE_4	= 8192,			//14
-	RUINA_HAND_CREST_3		= 16384,		//15
-	RUINA_ZANGETSU			= 32768,		//16
-	RUINA_ZANGETSU_2		= 65536,		//17
-	RUINA_BLADE_3			= 131072,		//18
-	RUINA_LAN_SWORD_3		= 262144,		//19
-	RUINA_LAZER_CANNON_2	= 524288		//20
+	RUINA_QUINCY_BOW_2		= (1 << 0),	
+	RUINA_HAND_CREST_2		= (1 << 1),	
+	RUINA_LAN_SWORD_2		= (1 << 2),	
+	RUINA_EUR_STAFF_2		= (1 << 3),	
+	RUINA_BLADE_2			= (1 << 4),	
+	RUINA_LAZER_CANNON_1	= (1 << 5),	
+	RUINA_DAGGER_2			= (1 << 6),	
+	RUINA_HEALING_STAFF_2	= (1 << 7),	
+	RUINA_REI_LAUNCHER		= (1 << 8),	
+	RUINA_IMPACT_LANCE_1	= (1 << 9),	
+	RUINA_IMPACT_LANCE_2	= (1 << 10),
+	RUINA_IMPACT_LANCE_3	= (1 << 11),
+	RUINA_IMPACT_LANCE_4	= (1 << 12),
+	RUINA_HAND_CREST_3		= (1 << 13),
+	RUINA_ZANGETSU			= (1 << 14),
+	RUINA_ZANGETSU_2		= (1 << 15),
+	RUINA_BLADE_3			= (1 << 16),
+	RUINA_LAN_SWORD_3		= (1 << 17),
+	RUINA_LAZER_CANNON_2	= (1 << 18)	
 }
 #define RUINA_CUSTOM_MODELS_3	"models/zombie_riot/weapons/ruina_models_3_3_test1.mdl"
 enum
@@ -269,12 +267,12 @@ enum
 #define RUINA_CUSTOM_MODELS_4	"models/zombie_riot/weapons/ruina_models_4_4_test_1.mdl"
 enum
 {
-	RUINA_STELLA_CREST			= 1,			//1
-	RUINA_STELLA_CREST_CHARGING	= 2,			//2
-	RUINA_KARLAS_PROJECTILE		= 4,			//4 ITS A SPACE SHIP, BUT ACTUALLY NOT!
-	RUINA_FANTASY_BLADE			= 8,			//8 its a sword, that looks like a spaceship..
-	RUINA_FRACTAL_LENZ			= 16,			//16 the primary medic weapon animation is ASSSSSSSS for making a magic-spell weapon specifically for what I wanted. so the model effort is "eh". but I had no choice :(
-	RUINA_FRACTAL_HARVESTER		= 32
+	RUINA_STELLA_CREST			= (1 << 0),			//1
+	RUINA_STELLA_CREST_CHARGING	= (1 << 1),			//2
+	RUINA_KARLAS_PROJECTILE		= (1 << 2),			//4 ITS A SPACE SHIP, BUT ACTUALLY NOT!
+	RUINA_FANTASY_BLADE			= (1 << 3),			//8 its a sword, that looks like a spaceship..
+	RUINA_FRACTAL_LENZ			= (1 << 4),			//16 the primary medic weapon animation is ASSSSSSSS for making a magic-spell weapon specifically for what I wanted. so the model effort is "eh". but I had no choice :(
+	RUINA_FRACTAL_HARVESTER		= (1 << 5)
 }
 enum
 {

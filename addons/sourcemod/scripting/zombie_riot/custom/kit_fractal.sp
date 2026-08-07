@@ -65,25 +65,25 @@ public void OnStore_Fractal_Lens_Initialised(ItemInfo Store_Item)
 	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_4;
 	Store_Item.WeaponModelIndexOverride = PrecacheModel(RUINA_CUSTOM_MODELS_4);
 }
-public void OnStore_Fractal_Fantasia_Initialised_0(ItemInfo Store_Item)
+public void OnStore_Fractal_Fantasia_Initialised_1(ItemInfo Store_Item)
 {
 	Store_Item.Weapon_Bodygroup 		= RUINA_TWIRL_CREST_1;
 	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_3;
 	Store_Item.WeaponModelIndexOverride = PrecacheModel(RUINA_CUSTOM_MODELS_3);
 }
-public void OnStore_Fractal_Fantasia_Initialised_1(ItemInfo Store_Item)
+public void OnStore_Fractal_Fantasia_Initialised_2(ItemInfo Store_Item)
 {
 	Store_Item.Weapon_Bodygroup 		= RUINA_TWIRL_CREST_2;
 	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_3;
 	Store_Item.WeaponModelIndexOverride = PrecacheModel(RUINA_CUSTOM_MODELS_3);
 }
-public void OnStore_Fractal_Fantasia_Initialised_2(ItemInfo Store_Item)
+public void OnStore_Fractal_Fantasia_Initialised_3(ItemInfo Store_Item)
 {
 	Store_Item.Weapon_Bodygroup 		= RUINA_TWIRL_CREST_3;
 	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_3;
 	Store_Item.WeaponModelIndexOverride = PrecacheModel(RUINA_CUSTOM_MODELS_3);
 }
-public void OnStore_Fractal_Fantasia_Initialised_3(ItemInfo Store_Item)
+public void OnStore_Fractal_Fantasia_Initialised_4(ItemInfo Store_Item)
 {
 	Store_Item.Weapon_Bodygroup 		= RUINA_TWIRL_CREST_4;
 	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_3;

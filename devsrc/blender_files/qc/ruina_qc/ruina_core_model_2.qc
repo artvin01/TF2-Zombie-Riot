@@ -48,11 +48,6 @@ $bodygroup "rei_launcher"		//Converted
 	blank
 	studio "v2/rei_launcher.smd"
 }
-$bodygroup "unused"				//aaaa This needs to exist so the body group indexes don't get fucked inside the weapons.cfg
-{
-	blank
-	studio "v2/hand_crest_v2.smd"
-}
 $bodygroup "lance_1"			//Converted
 {
 	blank

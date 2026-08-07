@@ -545,17 +545,14 @@ enum struct ItemInfo
 		Format(buffer, sizeof(buffer), "%spapskip", prefix);
 		this.PackSkip = kv.GetNum(buffer);
 
-		Format(buffer, sizeof(buffer), "%scustom_name", prefix);
-		kv.GetString(buffer, this.Custom_Name, 64);
-
 		//make sure this is called last, that way all variables are initalised, and the called function has all data.
-		buffer = "";
 		Format(buffer, sizeof(buffer), "%sfunc_onstoreinitialise", prefix);
 		kv.GetString(buffer, buffer, sizeof(buffer));
 		this.Func_OnStoreIntialised = GetFunctionByName(null, buffer);
 
 		if(this.Func_OnStoreIntialised && this.Func_OnStoreIntialised != INVALID_FUNCTION)
 		{
+			//PrintToServer("%sfunc_onstoreinitialise: \"%s\"", prefix, buffer);
 			Call_StartFunction(null, this.Func_OnStoreIntialised);
 			Call_PushArrayEx(this, sizeof(this), SM_PARAM_COPYBACK);
 			Call_Finish();
@@ -563,8 +560,11 @@ enum struct ItemInfo
 		}
 		else if(buffer[0])	//we had a buffer value of somekind
 		{
-			PrintToServer("Invalid Func_OnStoreIntialised: \"%s\". Prefix: \"%s\"", buffer, prefix);
+			PrintToServer("INVALID: %sfunc_onstoreinitialise: \"%s\"", prefix, buffer);
 		}
+		//this needs to be bellow, because this fucks with the "prefix" (it wipes it. BRUH, I love memory pointers)
+		Format(buffer, sizeof(buffer), "%scustom_name", prefix);
+		kv.GetString(buffer, this.Custom_Name, 64);
 
 		return true;
 	}
