@@ -1358,7 +1358,7 @@
 	"Raigeki Extra Desc 0"
 	{
 		"en"	"-Resistance granted while charging Raigeki increases based on charge amount.\n-Raigeki takes 3s to strike once cast, during which you are stunned, but resistance is increased."
-		"ko"	"-뇌격 충전 중 부여되는 저항력이 충전량에 따라 증가\n-뇌격은 시전 후 타격까지 3초가 소요되며\n-이 기간 동안 기절 상태가 되지만 저항력이 증가"
+		"ko"	"-뇌격 충전 중 부여되는 저항력이 충전량에 따라 증가\n-뇌격은 시전 후 타격까지 3초가 소요\n-이 기간 동안 기절 상태가 되지만 저항력이 증가"
 	}
 
 	"Raigeki Desc 1"
@@ -3517,6 +3517,11 @@
 		"it"	"Un fucile da caccia di Expidonsa.\nLa maggior parte della guarigione che ricevi è tagliata del 75％.\nColpisci più nemici e guarisci al colpo.\nOgni quarto attacco è un doppio attacco.\nLa guarigione al colpo permette di surriscaldare.\nL'abilità permette doppi colpi e più danni."
 		"ko"	"엑스피돈사제 산탄총입니다.\n-받는 대부분의 치유 효과가 75％ 감소\n-다수의 적을 타격할 수 있으며, 적중시 체력 회복(과치료 가능)\n-매 4번째 공격은 2연속 공격이 됨.\n-능력 사용시 2연속 공격이 되며 피해량 증가."
 	}
+	"Angelic Shotgonnus Extra"
+	{
+		"en"	"VS raids you gain more charge, heal 2x as much against raids, and do 10％ more damage.\nYou deal random crits, each pap increases the chances, using ability and having lower ammo during ability increases crit chance.\nCrits heal you extra."
+		"ko"	"레이드 보스 적중 시 능력 충전량 증가, 치유량 2배, 공격 피해량 10％ 증가\n무작위로 치명타를 가하며, 강화 시 확률 증가. 능력 사용 및 능력의 탄약이 낮을 수록 확률 증가\n치명타 시 치유량 증가"
+	}
 	"Angelic Shotgonnus Desc Pap 1"
 	{
 		"en"	"-Increased Damage\n-Ability gets more capacity.\n-You hit more enemies at once.\n-Overheal is increased.\n-Crit Chance Increases."
@@ -3530,6 +3535,11 @@
 		"en" 	"Weapon changes:\n-M2 Ability causes multi 3 hit, with more damage & cooldown\n-Gain 2.4x max HP and 1.8x Vuln\n-Heal on hit, Lower hp = faster atk.\n-You cant gain armor.\n-Armor -> Hp."
 		"it"	"Modifiche all'arma:\nM2 L'abilità provoca più di 3 colpi, con più danni e cooldown.\nGuadagna 2,4 volte gli HP massimi e 1,8 volte la vulnerabilità."
 		"ko" 	"-무기 능력 변경:\n우클릭 능력 사용 시 공격이 3연타를 하게 되며, 피해량이 증가하지만 쿨타임도 증가.\n-최대 체력 +2.4배, 대신 받는 피해 1.8배 증가\n-적중시 체력 회복, 체력이 감소할 수록 공격 속도 증가\n-아머 획득 불가능, 대신 아머가 체력으로 전환됨"
+	}
+	"Half Moon Extra"
+	{
+		"en" 	"VS raids you heal half as much. Ability heals 50％ more against raidbosses."
+		"ko" 	"레이드 보스 적중 시 치유량이 절반으로 감소합니다. 능력 사용 시 레이드 보스 적중 시 치유량이 50％ 증가합니다."
 	}
 	"Half Moon Desc2"
 	{
