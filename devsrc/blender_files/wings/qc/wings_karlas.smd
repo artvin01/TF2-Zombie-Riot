@@ -1,6 +1,6 @@
 version 1
 nodes
-0 "bip_spine_0" -1
+0 "bip_pelvis" -1
 end
 skeleton
 time 0
