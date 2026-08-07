@@ -891,7 +891,6 @@ methodmap Twirl < CClotBody
 		}
 		
 		b_allow_final = StrContains(data, "final_item") != -1;
-		TwirlEarsApply(npc.index,_,0.75);
 
 		if(b_allow_final)
 		{
@@ -993,7 +992,7 @@ methodmap Twirl < CClotBody
 		
 		SetVariantInt(npc.i_weapon_type());
 		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
-		SetVariantInt(WINGS_TWIRL);
+		SetVariantInt(WINGS_TWIRL|RUINA_GAMER_HEADSET);
 		AcceptEntityInput(npc.m_iWearable2, "SetBodyGroup");
 
 		npc.Anger = false;

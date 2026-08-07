@@ -198,13 +198,14 @@ bool b_MarkForReload = false; //When you wanna reload the plugin on map change..
 #define WINGS_MODELS_1 	"models/zombie_riot/weapons/custom_wings_1_4_test1.mdl"
 enum
 {
-	WINGS_FUSION 	= (1 << 0),
-	WINGS_LANCELOT	= (1 << 1),
-	WINGS_RULIANA	= (1 << 2),
-	WINGS_TWIRL		= (1 << 3),
-	WINGS_HELIA		= (1 << 4),
-	WINGS_STELLA	= (1 << 5),
-	WINGS_KARLAS	= (1 << 6)
+	WINGS_FUSION 		= (1 << 0),
+	WINGS_LANCELOT		= (1 << 1),
+	WINGS_RULIANA		= (1 << 2),
+	WINGS_TWIRL			= (1 << 3),
+	WINGS_HELIA			= (1 << 4),
+	WINGS_STELLA		= (1 << 5),
+	WINGS_KARLAS		= (1 << 6),
+	RUINA_GAMER_HEADSET	= (1 << 7)	//maybe those golbin ears can work as a base, then modify. 
 }
 #define RUINA_CUSTOM_MODELS_1	"models/zombie_riot/weapons/ruina_models_1_3_test2.mdl"
 enum	//it appears if I try to make it go above 14 it starts glitching out

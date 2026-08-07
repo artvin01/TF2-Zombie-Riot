@@ -38,6 +38,11 @@ $bodygroup "wings_karlas"			//64
 	blank
 	studio "wings_karlas.smd"
 }
+$bodygroup "ruina_gamer_headset"			//64
+{
+	blank
+	studio "ruina_gamer_headset.smd"
+}
 
 
 

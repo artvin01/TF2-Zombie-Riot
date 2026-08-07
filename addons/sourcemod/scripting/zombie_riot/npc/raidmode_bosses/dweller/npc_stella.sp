@@ -719,7 +719,6 @@ methodmap Stella < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		TwirlEarsApply(npc.index,_,0.75);
 
 		if(!IsValidEntity(RaidBossActive))
 			RaidBossActive = EntIndexToEntRef(npc.index);
@@ -860,7 +859,7 @@ methodmap Stella < CClotBody
 
 		SetVariantInt(RUINA_STELLA_CREST);
 		AcceptEntityInput(npc.m_iWearable8, "SetBodyGroup");
-		SetVariantInt(WINGS_STELLA);
+		SetVariantInt(WINGS_STELLA|RUINA_GAMER_HEADSET);
 		AcceptEntityInput(npc.m_iWingSlot, "SetBodyGroup");
 
 		npc.Set_Particle("raygun_projectile_blue_crit", "effect_hand_r");

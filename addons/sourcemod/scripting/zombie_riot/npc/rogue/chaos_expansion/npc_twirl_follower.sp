@@ -361,11 +361,10 @@ methodmap TwirlFollower < CClotBody
 		NpcColourCosmetic_ViaPaint(npc.m_iWearable4, 16777215);
 		
 		npc.m_fbGunout = true;
-		SetVariantInt(WINGS_TWIRL);
+		SetVariantInt(WINGS_TWIRL|RUINA_GAMER_HEADSET);
 		AcceptEntityInput(npc.m_iWearable2, "SetBodyGroup");
 		SetVariantInt(npc.i_weapon_type());
 		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
-		TwirlEarsApply(npc.index,_,0.75);
 
 		npc.m_flNextIdleSound = GetGameTime(npc.index) + 60.0;
 
