@@ -5910,7 +5910,7 @@
 	"Blitzkrieg's Army Desc"
 	{
 		"en"		"With Blitzkrieg being defeated, his army is at your disposal..."
-		"ko"		"블리츠크리그가 패배한 후, 그의 군대는 이제 당신의 명령을 기다립니다..."
+		"ko"		"블리츠크리그가 파괴된 이후, 그의 군대는 이제 당신의 명령을 따릅니다..."
 	}
 	"Guln's Companions Desc"
 	{
