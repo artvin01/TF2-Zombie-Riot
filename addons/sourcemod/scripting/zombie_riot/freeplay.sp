@@ -36,8 +36,6 @@ static int StrangleDebuff;
 static int ProsperityDebuff;
 static bool SilenceDebuff;
 static float ExtraEnemySize;
-static bool UnlockedSpeed;
-static bool UnlockedMegeHPRegen;
 static bool CheesyPresence;
 static int EloquenceBuff;
 static int RampartBuff;
@@ -179,8 +177,6 @@ void Freeplay_ResetAll()
 	ProsperityDebuff = 0;
 	SilenceDebuff = false;
 	ExtraEnemySize = 1.0;
-	UnlockedSpeed = false;
-	UnlockedMegeHPRegen = false;
 	CheesyPresence = false;
 	EloquenceBuff = 0;
 	RampartBuff = 0;
@@ -2377,7 +2373,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 93;
+		rand = GetURandomInt() % 87;
 	/*
 	if(wrathofirln)
 	{
@@ -3289,49 +3285,15 @@ void Freeplay_SetupStart(bool extra = false)
 			/// SAMU'S SKULLS (new!) ///
 			case 41:
 			{
-				strcopy(message, sizeof(message), "{red}Enemies will now move 10% faster!");
-				SpeedMult += 0.1;
-			}
-			case 42:
-			{
-				strcopy(message, sizeof(message), "{red}Enemies will now move 15% faster!");
-				SpeedMult += 0.15;
-			}
-			case 43:
-			{
-				if(SpeedMult < 0.25)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{green}Enemies will now move 5% slower.");
-				SpeedMult -= 0.05;
-				if(SpeedMult < 0.25)
-					SpeedMult = 0.25;
-			}
-			case 44:
-			{
-				if(SpeedMult < 0.25)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{green}Enemies will now move 10% slower.");
-				SpeedMult -= 0.10;
-				if(SpeedMult < 0.25)
-					SpeedMult = 0.25;
-			}
-			case 45:
-			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 15% more melee damage.");
 				MeleeMult += 0.15;
 			}
-			case 46:
+			case 42:
 			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 20% more melee damage.");
 				MeleeMult += 0.2;
 			}
-			case 47:
+			case 43:
 			{
 				if(MeleeMult < 0.01) // 95% melee res max
 				{
@@ -3345,7 +3307,7 @@ void Freeplay_SetupStart(bool extra = false)
 					MeleeMult = 0.01;
 				}
 			}
-			case 48:
+			case 44:
 			{
 				if(MeleeMult < 0.01)
 				{
@@ -3359,27 +3321,27 @@ void Freeplay_SetupStart(bool extra = false)
 					MeleeMult = 0.01;
 				}
 			}
-			case 49:
+			case 45:
 			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 15% more ranged damage.");
 				RangedMult += 0.15;
 			}
-			case 50:
+			case 46:
 			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 20% more ranged damage.");
 				RangedMult += 0.2;
 			}
-			case 51:
+			case 47:
 			{
 				strcopy(message, sizeof(message), "{red}Enemy attackspeed has been multiplied by x0.9!");
 				ExtraAttackspeed *= 0.9;
 			}
-			case 52:
+			case 48:
 			{
 				strcopy(message, sizeof(message), "{green}Enemy attackspeed has been reduced by an additional 5%.");
 				ExtraAttackspeed += 0.05;
 			}
-			case 53:
+			case 49:
 			{
 				if(RangedMult < 0.01) // 95% ranged res max
 				{
@@ -3393,7 +3355,7 @@ void Freeplay_SetupStart(bool extra = false)
 					RangedMult = 0.01;
 				}
 			}
-			case 54:
+			case 50:
 			{
 				if(RangedMult < 0.01)
 				{
@@ -3407,7 +3369,7 @@ void Freeplay_SetupStart(bool extra = false)
 					RangedMult = 0.01;
 				}
 			}
-			case 55, 56:
+			case 51, 52:
 			{
 				if(ExplodingNPC)
 				{
@@ -3420,7 +3382,7 @@ void Freeplay_SetupStart(bool extra = false)
 				EmitSoundToAll("ui/mm_medal_silver.wav");
 			}
 			
-			case 57:
+			case 53:
 			{
 				Freeplay_SetupStart();
 				return;
@@ -3435,7 +3397,7 @@ void Freeplay_SetupStart(bool extra = false)
 				EnemyShields += 3;
 				*/
 			}
-			case 58:
+			case 54:
 			{
 				Freeplay_SetupStart();
 				/*
@@ -3450,7 +3412,7 @@ void Freeplay_SetupStart(bool extra = false)
 				EnemyShields += 6;
 				*/
 			}
-			case 59:
+			case 55:
 			{
 				Freeplay_SetupStart();
 				return;
@@ -3465,7 +3427,7 @@ void Freeplay_SetupStart(bool extra = false)
 				EnemyShields -= 2;
 				*/
 			}
-			case 60:
+			case 56:
 			{
 				Freeplay_SetupStart();
 				return;
@@ -3481,7 +3443,7 @@ void Freeplay_SetupStart(bool extra = false)
 				*/
 			}
 			
-			case 61:
+			case 57:
 			{
 				if(VoidBuff > 2)
 				{
@@ -3494,7 +3456,7 @@ void Freeplay_SetupStart(bool extra = false)
 					VoidBuff++;
 				}
 			}
-			case 62:
+			case 58:
 			{
 				if(VestaBuff)
 				{
@@ -3507,7 +3469,7 @@ void Freeplay_SetupStart(bool extra = false)
 					VestaBuff = true;
 				}
 			}
-			case 63:
+			case 59:
 			{
 				if(SquadBuff)
 				{
@@ -3520,7 +3482,7 @@ void Freeplay_SetupStart(bool extra = false)
 					SquadBuff = true;
 				}
 			}
-			case 64:
+			case 60:
 			{
 				if(Coffee)
 				{
@@ -3533,7 +3495,7 @@ void Freeplay_SetupStart(bool extra = false)
 					Coffee = true;
 				}
 			}
-			case 65:
+			case 61:
 			{
 				if(StrangleDebuff > 3)
 				{
@@ -3546,7 +3508,7 @@ void Freeplay_SetupStart(bool extra = false)
 					StrangleDebuff++;
 				}
 			}
-			case 66:
+			case 62:
 			{
 				if(ProsperityDebuff > 3)
 				{
@@ -3559,7 +3521,7 @@ void Freeplay_SetupStart(bool extra = false)
 					ProsperityDebuff++;
 				}
 			}
-			case 67:
+			case 63:
 			{
 				if(SilenceDebuff)
 				{
@@ -3572,7 +3534,7 @@ void Freeplay_SetupStart(bool extra = false)
 					SilenceDebuff = true;
 				}
 			}
-			case 68:
+			case 64:
 			{
 				// 25% chance, otherwise retry.
 				if(GetRandomFloat(0.0, 1.0) <= 0.25)
@@ -3586,18 +3548,7 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 			}
-			case 69:
-			{
-				if(UnlockedSpeed)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				UnlockedSpeed = true;
-				Store_DiscountNamedItem("Adrenaline", 999);
-				strcopy(message, sizeof(message), "{green}Adrenaline is now buyable in the passive store!");
-			}
-			case 70:
+			case 65:
 			{
 				if(CheesyPresence)
 				{
@@ -3610,7 +3561,7 @@ void Freeplay_SetupStart(bool extra = false)
 					CheesyPresence = true;
 				}
 			}
-			case 71:
+			case 66:
 			{
 				if(EloquenceBuff > 2)
 				{
@@ -3623,7 +3574,7 @@ void Freeplay_SetupStart(bool extra = false)
 					EloquenceBuff++;
 				}
 			}
-			case 72:
+			case 67:
 			{
 				if(RampartBuff > 2)
 				{
@@ -3636,7 +3587,7 @@ void Freeplay_SetupStart(bool extra = false)
 					RampartBuff++;
 				}
 			}
-			case 73:
+			case 68:
 			{
 				if(zombiecombine)
 				{
@@ -3646,7 +3597,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}Hey, im thinking of something.... What if, a {gold}combine, {red}and a {gold}zombie, {red}were...");
 				zombiecombine = true;
 			}
-			case 74:
+			case 69:
 			{
 				if(moremen)
 				{
@@ -3656,7 +3607,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}III THINK YOU NEED MORE MEN!!!");
 				moremen = 1;
 			}
-			case 75:
+			case 70:
 			{
 				if(immutable)
 				{
@@ -3666,7 +3617,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{purple}Otherworldly beings approach from a dimensional rip...");
 				immutable = true;
 			}
-			case 76:
+			case 71:
 			{
 				if(merlton)
 				{
@@ -3679,7 +3630,7 @@ void Freeplay_SetupStart(bool extra = false)
 					merlton = true;
 				}
 			}
-			case 77:
+			case 72:
 			{
 				if(EloquenceBuffEnemies > 2)
 				{
@@ -3692,7 +3643,7 @@ void Freeplay_SetupStart(bool extra = false)
 					EloquenceBuffEnemies++;
 				}
 			}
-			case 78:
+			case 73:
 			{
 				if(RampartBuffEnemies > 2)
 				{
@@ -3705,7 +3656,7 @@ void Freeplay_SetupStart(bool extra = false)
 					RampartBuffEnemies++;
 				}
 			}
-			case 79:
+			case 74:
 			{
 				if(HurtleBuffEnemies > 2)
 				{
@@ -3718,7 +3669,7 @@ void Freeplay_SetupStart(bool extra = false)
 					HurtleBuffEnemies++;
 				}
 			}
-			case 80:
+			case 75:
 			{
 				if(HurtleBuff > 2)
 				{
@@ -3731,7 +3682,7 @@ void Freeplay_SetupStart(bool extra = false)
 					HurtleBuff++;
 				}
 			}
-			case 81:
+			case 76:
 			{
 				if(LoveNahTonic)
 				{
@@ -3744,26 +3695,26 @@ void Freeplay_SetupStart(bool extra = false)
 					LoveNahTonic = true;
 				}
 			}
-			case 82:
+			case 77:
 			{
 				strcopy(message, sizeof(message), "{yellow}Y'know what? I'll throw in another extra skull.");
 				ExtraSkulls++;
 			}
-			case 83:
+			case 78:
 			{
 				strcopy(message, sizeof(message), "{yellow}Y'know what? I'll throw in another extra skull.");
 				ExtraSkulls++;
 			//	strcopy(message, sizeof(message), "{yellow}Actually, y'know what? Maybe i'll throw in TWO extra skulls even.");
 			//	ExtraSkulls += 2;
 			}
-			case 84:
+			case 79:
 			{
 				strcopy(message, sizeof(message), "{yellow}Y'know what? I'll throw in another extra skull.");
 				ExtraSkulls++;
 			//	strcopy(message, sizeof(message), "{red}ffffFFFFF-{crimson}FUCK {red}it, THREE EXTRA SKULLS!!!");
 			//	ExtraSkulls += 3;
 			}
-			case 85:
+			case 80:
 			{
 				if(Schizophrenia)
 				{
@@ -3773,7 +3724,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}As you pick this skull, you begin to hear voices in your head...");
 				Schizophrenia = true;
 			}
-			case 86:
+			case 81:
 			{
 				if(DarknessComing)
 				{
@@ -3783,7 +3734,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}THE DARKNESS IS COMING! {crimson}YOU NEED TO RUN!!");
 				DarknessComing = true;
 			}
-			case 87:
+			case 82:
 			{
 				if(thespewer)
 				{
@@ -3793,7 +3744,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}Your final challenge.... a {crimson}Nourished Spewer!");
 				thespewer = true;
 			}
-			case 88:
+			case 83:
 			{
 				if(sigmaller)
 				{
@@ -3803,18 +3754,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}Holy smokes, it's him. {crimson}The SIGMALLER!");
 				sigmaller = true;
 			}
-			case 89:
-			{
-				if(UnlockedMegeHPRegen)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				UnlockedMegeHPRegen = true;
-				Store_DiscountNamedItem("Sigmar's Curage", 999);
-				strcopy(message, sizeof(message), "{green}Sigmar's Curage is now buyable in the passive store!");
-			}
-			case 90:
+			case 84:
 			{
 				if(friendunit)
 				{
@@ -3824,7 +3764,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{green}You will gain a strong, friendly unit.");
 				friendunit = true;
 			}
-			case 91:
+			case 85:
 			{
 				if(portalgalore)
 				{
@@ -3834,7 +3774,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}Here's a gift from {purple}Unspeakable{red}. {purple}Five Hundred Void Portals!!");
 				portalgalore = true;
 			}
-			case 92:
+			case 86:
 			{
 				if(refragportal)
 				{
