@@ -3655,12 +3655,6 @@
 		"ru"		"Жезл Осмоса"
 		"ko"		"삼투성 완드"
 	}
-	"Hel's Hoe"
-	{
-		"en"		"Hel's Hoe"
-		"ru"		"Мотыга Хель"
-		"ko"		"헬의 낫"
-	}
 	"Worn Expidonsan Repair Device"
 	{
 		"en"		"Worn Expidonsan Repair Device"
@@ -4397,6 +4391,17 @@
 		"en"		"Dr DAM Staff"
 		"ru"		"Посох Д-р.ЧЁРТ"
 		"ko"		"된장 박사의 스태프"
+	}
+	"Hel's Hoe"
+	{
+		"en"		"Hel's Hoe"
+		"ru"		"Мотыга Хель"
+		"ko"		"헬의 낫"
+	}
+	"Nightmare's Hoe"
+	{
+		"en"		"Nightmare's Hoe"
+		"ko"		"악몽의 낫"
 	}
 	"Nightmare Cannon"
 	{
@@ -5990,5 +5995,11 @@
 	{
 		"en"    "Prescript Scythe"
 		"ko"	"낫으로... 누군가처럼 공간을 따라 베어내야 할 때는..."
+	}
+	
+	"Bob's Sexy Gun"
+	{
+		"en"		"Bob's Sexy Gun"
+		"ko"		"밥의 섹시한 권총"
 	}
 }
