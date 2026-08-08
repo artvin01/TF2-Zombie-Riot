@@ -761,7 +761,7 @@ float f_NpcAdjustFriction[MAXENTITIES];
 
 
 int g_iLaserMaterial_Trace, g_iHaloMaterial_Trace;
-
+#define TF2_MAX_PITCH			254
 
 #define EXPLOSION_AOE_DAMAGE_FALLOFF 0.64
 #define LASER_AOE_DAMAGE_FALLOFF 0.6

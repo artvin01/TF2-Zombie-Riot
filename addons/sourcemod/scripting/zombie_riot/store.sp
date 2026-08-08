@@ -6792,7 +6792,6 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false, bo
 		Activate_Beam_Wand_Pap(client, entity);
 		Activate_Yamato(client, entity);
 		Activate_Fantasy_Blade(client, entity);
-		Activate_Quincy_Bow(client, entity);
 		Enable_Amphi(client, entity);
 		Enable_LappLand(client, entity);
 		Enable_PHLOG(client, entity);

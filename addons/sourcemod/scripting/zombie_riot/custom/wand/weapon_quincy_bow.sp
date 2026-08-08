@@ -1,11 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static Handle h_TimerQuincy_BowManagement[MAXPLAYERS+1] = {null, ...};
-static float fl_hud_timer[MAXPLAYERS+1];
-static float fl_Quincy_Charge[MAXPLAYERS + 1];
-static float fl_Quincy_Max_Battery[MAXPLAYERS + 1];
-static float fl_Quincy_Charge_Multi[MAXPLAYERS + 1];
 
 #define QUINCY_BOW_HYPER_BARRAGE_DRAIN 10.0		//how much charge is drained per shot
 #define QUINCY_BOW_HYPER_BARRAGE_MINIMUM 50.0	//what % of charge does the battery need to start firing
@@ -48,7 +43,6 @@ static const char Zap_Sound[][] = {
 	"ambient/energy/zap8.wav",
 	"ambient/energy/zap9.wav",
 };
-#define QUINCY_BOW_BASELINE_BATTERY 400.0	//this is kinda like the true mana cost of the weapon
 public void OnStore_QuincyBow1_Initialised(ItemInfo Store_Item)
 {
 	Store_Item.Weapon_Bodygroup 		= RUINA_QUINCY_BOW_1_VIEWMODEL;
@@ -93,139 +87,179 @@ public void QuincyMapStart()
 	
 	Zero(fl_quincy_hyper_arrow_timeout);
 	Zero2(fl_Quincy_Barrage_Firerate);
-	Zero(fl_sound_timer);
-	Zero(fl_Quincy_Charge_Multi);
-	Zero(fl_Quincy_Charge);
-	Zero(h_TimerQuincy_BowManagement);
-	Zero(fl_hud_timer);
 	
 	g_particleImpactTornado = PrecacheParticleSystem("lowV_debrischunks");
-	
-	for(int client=1 ; client <= MAXPLAYERS ; client++)
-	{
-		fl_Quincy_Charge_Multi[client] = 1.0;
-		fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY;
-	}
 }
 static int Get_Quincy_Pap(int weapon)
 {
 	return RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0));
 }
-public void Activate_Quincy_Bow(int client, int weapon)
-{
-	if (h_TimerQuincy_BowManagement[client] != null)
+
+enum struct QuincyChargeEnum {
+	int weapon_ref;
+	int client_ref;
+
+	float throttle;
+	float last_known_timer;
+
+	float mana_cost;
+	float timer_base;
+	void SetManaCost(int weapon)
 	{
-		//This timer already exists.
-		if(bIsQuincy(weapon))
-		{
-			//Is the weapon it again?
-			//Yes?
-			delete h_TimerQuincy_BowManagement[client];
-			h_TimerQuincy_BowManagement[client] = null;			
-				
-			int pap = Get_Quincy_Pap(weapon);
+		this.mana_cost = Attributes_Get(weapon, 733, 1.0) / (this.timer_base*66.0);
+	}
+}
+public void Quincy_HookChargeLogic(int client, int weapon)
+{
+	float timer_max, current, ratio;
+	QuincyGetBowStats(weapon, timer_max, current, ratio);
 
-			switch(pap)
-			{
-				case 0:
-				{
-					fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY;
-					fl_Quincy_Charge_Multi[client] = 1.0;	//how efficient it is: charge += mana_cost*this.
-				}
-				case 1:
-				{
-					fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY*1.25;
-					fl_Quincy_Charge_Multi[client] = 1.5;
-				}
-				case 2:
-				{
-					fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY*1.5;
-					fl_Quincy_Charge_Multi[client] = 2.0;
-				}
-				case 3:
-				{
-					fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY*1.75;
-					fl_Quincy_Charge_Multi[client] = 2.25;
-				}
-				case 4:	//hyper barrage
-				{
-					fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY*2.0;
-					fl_Quincy_Charge_Multi[client] = 2.5;
-				}
-				case 5:	//hyper arrow
-				{
-					fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY*5.0;
-					fl_Quincy_Charge_Multi[client] = 2.0;
-				}
-			}
+	int mana_cost;
+	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
 
-			DataPack pack;
-			h_TimerQuincy_BowManagement[client] = CreateDataTimer(0.1, Timer_Management_Quincy_Bow, pack, TIMER_REPEAT);
-			pack.WriteCell(client);
-			pack.WriteCell(EntIndexToEntRef(weapon));
-		}
+	if(Current_Mana[client] < mana_cost * 0.1)
+	{
+		//m_bNoFire
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", RoundFloat(mana_cost * 0.1));
+
+		SDKhooks_SetManaRegenDelayTime(client, 1.0);
+		SetEntProp(weapon, Prop_Send, "m_bNoFire", 1);
 		return;
 	}
-		
-	if(bIsQuincy(weapon))
+	SDKhooks_SetManaRegenDelayTime(client, 1.0);
+	SetEntProp(weapon, Prop_Send, "m_bNoFire", 0);
+
+	QuincyChargeEnum Data;
+	Data.weapon_ref = EntIndexToEntRef(weapon);
+	Data.client_ref = EntIndexToEntRef(client);
+	Data.throttle	= 0.0;
+	Data.timer_base = timer_max;
+	Data.SetManaCost(weapon);
+	Data.last_known_timer = 0.0;
+	
+
+	DataPack pack = new DataPack();
+	pack.WriteCellArray(Data, sizeof(Data));
+	RequestFrame(ChargeHook_Tick, pack);
+}
+static void PlayChargeSoundPassive(int client, int soundlevel = 80, float volume = 1.0, int pitch = 100) { EmitSoundToAll(Spark_Sound[GetRandomInt(0, sizeof(Spark_Sound) - 1)], client, SNDCHAN_VOICE, soundlevel, _, volume, pitch);}
+static void ChargeHook_Tick(DataPack pack)
+{
+	pack.Reset();
+	static QuincyChargeEnum Data; 
+	pack.ReadCellArray(Data, sizeof(Data));
+	delete pack;
+
+	int client = EntRefToEntIndex(Data.client_ref);
+	int weapon = EntRefToEntIndex(Data.weapon_ref);
+
+	if(!IsValidEntity(weapon) || !IsValidClient(client))
 	{
-		int pap = Get_Quincy_Pap(weapon);
-		switch(pap)
-		{
-			case 0:
-			{
-				fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY;
-				fl_Quincy_Charge_Multi[client] = 1.0;
-			}
-			case 1:
-			{
-				fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY*1.25;
-				fl_Quincy_Charge_Multi[client] = 1.5;
-			}
-			case 2:
-			{
-				fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY*1.5;
-				fl_Quincy_Charge_Multi[client] = 2.0;
-			}
-			case 3:
-			{
-				fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY*1.75;
-				fl_Quincy_Charge_Multi[client] = 2.25;
-			}
-			case 4:	//hyper barrage
-			{
-				fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY*2.0;
-				fl_Quincy_Charge_Multi[client] = 2.5;
-			}
-			case 5:	//hyper arrow
-			{
-				fl_Quincy_Max_Battery[client] = QUINCY_BOW_BASELINE_BATTERY*5.0;
-				fl_Quincy_Charge_Multi[client] = 1.8;
-			}
-		}
-		
-		DataPack pack;
-		h_TimerQuincy_BowManagement[client] = CreateDataTimer(0.1, Timer_Management_Quincy_Bow, pack, TIMER_REPEAT);
-		pack.WriteCell(client);
-		pack.WriteCell(EntIndexToEntRef(weapon));
+		return;
 	}
+
+	int buttons = GetClientButtons(client);
+	int held_weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
+
+	if(buttons & IN_ATTACK2)
+	{
+		//We are retracting the bow.
+		return;
+	}
+
+	//we want to fire. or somehow are nolonger holding our weapon.
+	if(!(buttons & IN_ATTACK) || held_weapon != weapon || GetEntProp(weapon, Prop_Send, "m_bNoFire"))
+	{
+		return;	//ATTACK!
+	}
+
+	float GameTime = GetGameTime();
+
+	if(GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack") > GameTime)
+	{
+		DataPack Pack = new DataPack();
+		Pack.WriteCellArray(Data, sizeof(Data));
+		RequestFrame(ChargeHook_Tick, Pack);
+		return;
+	}
+
+	if(Data.last_known_timer <= Data.timer_base)
+	{
+		if(Current_Mana[client] < RoundToCeil(Data.mana_cost))
+		{
+			SetEntPropFloat(weapon, Prop_Send, "m_flChargeBeginTime", GameTime + Data.last_known_timer);	//lock the sniper charge bar in place.
+		}
+		else
+		{
+			Current_Mana[client] -= RoundToFloor(Data.mana_cost);
+			Data.last_known_timer = GameTime - GetEntPropFloat(weapon, Prop_Send, "m_flChargeBeginTime");
+		}
+	}
+	
+	if(Data.throttle > GameTime)
+	{
+		DataPack Pack = new DataPack();
+		Pack.WriteCellArray(Data, sizeof(Data));
+		RequestFrame(ChargeHook_Tick, Pack);
+		return;
+	}
+
+	Data.throttle = GameTime + 0.1;
+
+	float timer_max, ratio, current;
+	QuincyGetBowStats(weapon, timer_max, current, ratio);
+	Data.timer_base = timer_max;
+	Data.SetManaCost(weapon);	//update mana cost every 0.1s if we happened to get new data.
+	SDKhooks_SetManaRegenDelayTime(client, 1.0);
+	Mana_Hud_Delay[client] = 0.0;
+
+	int pitch = RoundToFloor(25.0 + (60.0 - 25.0) * (1.0-ratio));
+	if(pitch > TF2_MAX_PITCH)
+		pitch = TF2_MAX_PITCH;
+
+	PlayChargeSoundPassive(client, 80, 0.5, pitch);
+
+	DataPack Pack = new DataPack();
+	Pack.WriteCellArray(Data, sizeof(Data));
+	RequestFrame(ChargeHook_Tick, Pack);
+}
+static void QuincyGetBowStats(int weapon, float &charge_max, float &charge_current, float &charge_ratio)
+{
+	charge_current =  GetGameTime() - GetEntPropFloat(weapon, Prop_Send, "m_flChargeBeginTime");
+ 	charge_max = 1.0;	//https://github.com/ValveSoftware/source-sdk-2013/blob/22288b919617be6c8ca3cefd7cca979cbb39a88c/src/game/shared/tf/tf_weapon_compound_bow.cpp#L272
+
+	charge_max *= Attributes_Get(weapon, 6, 1.0);
+	charge_max *= Attributes_Get(weapon, 5, 1.0);
+	charge_max *= Attributes_Get(weapon, 318, 1.0);
+
+	if(charge_current > charge_max)
+		charge_current = charge_max;
+
+	charge_ratio = (charge_current / charge_max);
 }
 public void Quincy_Generic_M1(int client, int weapon, bool crit, int slot)
 {
-	float time = GetEntPropFloat(weapon, Prop_Send, "m_flChargeBeginTime");
-	float base = 1.0;	//https://github.com/ValveSoftware/source-sdk-2013/blob/22288b919617be6c8ca3cefd7cca979cbb39a88c/src/game/shared/tf/tf_weapon_compound_bow.cpp#L272
+	float timer_max, ratio, current;
+	QuincyGetBowStats(weapon, timer_max, current, ratio);
 
-	base *= Attributes_Get(weapon, 6, 1.0);
-	base *= Attributes_Get(weapon, 5, 1.0);
-	base *= Attributes_Get(weapon, 318, 1.0);
+	float damage = 100.0;
+	damage *= Attributes_Get(weapon, 410, 1.0);
 
-	CPrintToChatAll("base: %.3f", base);
-	CPrintToChatAll("Adjusted: %.3f", GetGameTime()-time);
+	float minmulti, maxmulti;
+	maxmulti = Attributes_Get(weapon, Attrib_Weapon_MaxDmgMulti, 1.0);
+	minmulti = Attributes_Get(weapon, Attrib_Weapon_MinDmgMulti, 1.0);
 
-	if(time > base)
-		time = base;
+	float multi = (minmulti + (maxmulti - minmulti) * ratio);
+	damage *=multi;
 
-	CPrintToChatAll("ratio clamped: %.3f", time / base);
+	float speed = 2500.0;
+	float time = 2.5;
+
+	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, "raygun_projectile_blue");
+	WandProjectile_ApplyFunctionToEntity(projectile, Quincy_Touch);
 
 	//use
 	//Attrib_Weapon_MaxDmgMulti = 4047, 
@@ -236,6 +270,32 @@ public void Quincy_Generic_M1(int client, int weapon, bool crit, int slot)
 	pack.WriteCell(EntIndexToEntRef(client));
 	pack.WriteFloat(1.0);
 	RequestFrames(RF_OffsetNextAttack, 3, pack);
+}
+static void Quincy_Touch(int entity, int target)
+{
+	if(target < 0)
+		return;
+
+	int owner = EntRefToEntIndex(i_WandOwner[entity]);
+	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+	static float angles[3], vecForward[3], targetVec[3];
+	GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
+	GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
+	WorldSpaceCenter(target, targetVec);
+	float damageForce[3]; CalculateDamageForce(vecForward, 10000.0, damageForce);
+
+	SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, damageForce, targetVec);
+
+	EmitSoundToAll(QUINCY_BOW_ARROW_TOUCH_SOUND, entity, SNDCHAN_STATIC, 70, _, 0.9);
+
+	float pos1[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
+	TE_ParticleInt(g_particleImpactTornado, pos1);
+	TE_SendToAll();
+
+	TE_Particle("mvm_soldier_shockwave", pos1, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+
+	RemoveEntity(entity);
 }
 static void RF_OffsetNextAttack(DataPack pack)
 {
@@ -399,119 +459,6 @@ static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
 	return false;
 }
 
-public Action Timer_Management_Quincy_Bow(Handle timer, DataPack pack)
-{
-	pack.Reset();
-	int client = pack.ReadCell();
-	int weapon = EntRefToEntIndex(pack.ReadCell());
-	if(!IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
-	{
-		h_TimerQuincy_BowManagement[client] = null;
-		return Plugin_Stop;
-	}	
-
-	Quincy_Bow_Loop_Logic(client, weapon);
-		
-	return Plugin_Continue;
-}
-static bool b_lockout[MAXPLAYERS+1];
-static void Quincy_Bow_Loop_Logic(int client, int weapon)
-{
-	int weapon_holding = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-	if(weapon_holding==weapon)	//And this will only work if they have the weapon in there hands and bought
-	{
-		float GameTime = GetGameTime();
-		int buttons = GetClientButtons(client);
-		bool attack = (buttons & IN_ATTACK) != 0;
-		bool attack2 = (buttons & IN_ATTACK2) != 0;
-
-		int pap = Get_Quincy_Pap(weapon);
-		
-		float charge_percent = (fl_Quincy_Charge[client] / QUINCY_BOW_BASELINE_BATTERY) * 100.0;
-		
-		if(fl_hud_timer[client]<GameTime)
-		{
-			fl_hud_timer[client] = GameTime + 0.5;//0.5;
-			Quincy_Bow_Show_Hud(client, charge_percent, weapon);
-		}
-		if(!attack && !attack2 && b_lockout[client])
-		{
-			b_lockout[client] = false;
-			fl_Quincy_Charge[client] = 0.0;
-			charge_percent = 0.0;
-		}
-		
-		if(attack && !b_lockout[client])	//eat mana if the client is holding m1
-		{
-			if(attack2)
-			{
-				b_lockout[client] = true;	//if the client preses m2 while charging the charge will go bye bye.
-			}
-			
-			SDKhooks_SetManaRegenDelayTime(client, 1.0);
-			Mana_Hud_Delay[client] = 0.0;
-			
-			float charge_percent_sound = (fl_Quincy_Charge[client] / fl_Quincy_Max_Battery[client]) * 100.0;
-			
-			if(fl_sound_timer[client]<GameTime)
-			{
-				fl_sound_timer[client] = GameTime + 0.1;
-				
-				switch(GetRandomInt(1, 2))
-				{
-					case 1:
-					{
-						EmitSoundToAll(Zap_Sound[GetRandomInt(0, sizeof(Zap_Sound)-1)], client, SNDCHAN_STATIC, 80, _, 0.15, RoundToFloor(charge_percent_sound)+25);
-					}
-					case 2:
-					{
-						EmitSoundToAll(Spark_Sound[GetRandomInt(0, sizeof(Spark_Sound)-1)], client, SNDCHAN_STATIC, 80, _, 0.15, RoundToFloor(charge_percent_sound)+25);
-					}
-					
-				}		
-			}
-			if(fl_Quincy_Max_Battery[client]>fl_Quincy_Charge[client])
-			{
-				int mana_cost;
-				mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
-				
-				if(Current_Mana[client]>mana_cost)
-				{
-					fl_Quincy_Charge[client] += mana_cost*fl_Quincy_Charge_Multi[client];					
-					Current_Mana[client] -=mana_cost;
-				}
-
-				if(fl_Quincy_Charge[client] > fl_Quincy_Max_Battery[client] && pap !=4)
-					fl_Quincy_Charge[client] = fl_Quincy_Max_Battery[client];
-			}
-		}
-		else if(charge_percent>10.0 && !b_lockout[client])
-		{
-			Quincy_Bow_Fire(client, weapon, charge_percent);
-			fl_Quincy_Charge[client] = 0.0;
-			charge_percent = 0.0;
-		}
-		else if(charge_percent>0 && !b_lockout[client])
-		{
-			fl_Quincy_Charge[client] = 0.0;
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client,  SyncHud_Notifaction, "Insufficient Charge");
-		}
-		if(pap==4 && !b_lockout[client])	//Hyper Barrage
-		{
-			if(charge_percent>QUINCY_BOW_HYPER_BARRAGE_MINIMUM)
-			{
-				Quincy_Hyper_Barrage(client, charge_percent, GameTime, weapon);
-			}
-		}
-	}
-	else
-	{
-		fl_Quincy_Charge[client] = 0.0;
-	}
-}
 static void Quincy_Hyper_Barrage(int client, float charge_percent, float GameTime, int weapon)
 {
 	float angles[3];
@@ -575,8 +522,6 @@ static void Quincy_Hyper_Barrage(int client, float charge_percent, float GameTim
 			firerate *= Attributes_Get(weapon, 6, 1.0);
 			
 			fl_Quincy_Barrage_Firerate[client][i] = GameTime + firerate + GetRandomFloat(firerate/-2.0, firerate/2.0);
-			
-			fl_Quincy_Charge[client] -= QUINCY_BOW_HYPER_BARRAGE_DRAIN;
 
 			if(i>speed/2)
 			{
@@ -687,8 +632,7 @@ static void Quincy_Bow_Fire(int client, int weapon, float charge_percent)
 
 	int iAmmoTable = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
 	SetEntData(weapon, iAmmoTable, 1, 4, true);
-	
-	fl_Quincy_Charge[client] = 0.0;
+
 }
 static void Quincy_Do_Homing(int client, int projectile, float charge_percent)
 {
@@ -936,71 +880,6 @@ static void Quincy_Bow_Show_Hud(int client, float charge_percent, int weapon)
 	
 	PrintHintText(client, HUDText);
 	
-}
-
-public void Quincy_Touch(int entity, int target)
-{
-	int particle = EntRefToEntIndex(i_WandParticle[entity]);
-	if (target > 0)	
-	{
-		//Code to do damage position and ragdolls
-		static float angles[3];
-		GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
-		float vecForward[3];
-		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
-		static float Entity_Position[3];
-		WorldSpaceCenter(target, Entity_Position);
-
-		int owner = EntRefToEntIndex(i_WandOwner[entity]);
-		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
-
-//		float GameTime = GetGameTime();
-
-		
-		if(!IsIn_HitDetectionCooldown(entity,target))
-		{
-			Set_HitDetectionCooldown(entity,target, FAR_FUTURE);
-			float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-			
-			SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity]*fl_quincy_penetrated[entity], DMG_PLASMA, weapon, Dmg_Force, Entity_Position, _ , ZR_DAMAGE_LASER_NO_BLAST);	// 2048 is DMG_NOGIB?
-
-			fl_quincy_penetrated[entity] *= LASER_AOE_DAMAGE_FALLOFF;	//LASER_AOE_DAMAGE_FALLOFF;
-
-			fl_hyper_arrow_charge[owner] +=QUINCY_BOW_ONHIT_GAIN;
-			if(fl_hyper_arrow_charge[owner] > QUINCY_BOW_HYPER_CHARGE)
-				fl_hyper_arrow_charge[owner] = QUINCY_BOW_HYPER_CHARGE;
-
-			i_quincy_penetration_amt[entity]--;
-			if(i_quincy_penetration_amt[entity]<=0)
-			{
-				float pos1[3];
-				GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
-				TE_ParticleInt(g_particleImpactTornado, pos1);
-				TE_SendToAll();
-
-				if(IsValidEntity(particle))
-				{
-					RemoveEntity(particle);
-				}
-				RemoveEntity(entity);
-			}
-			
-			EmitSoundToAll(QUINCY_BOW_ARROW_TOUCH_SOUND, entity, SNDCHAN_STATIC, 70, _, 0.9);
-		}
-	}
-	else if(target == 0)
-	{
-		if(IsValidEntity(particle))
-		{
-			RemoveEntity(particle);
-		}
-		float pos1[3];
-		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
-		TE_ParticleInt(g_particleImpactTornado, pos1);
-		TE_SendToAll();
-		EmitSoundToAll(QUINCY_BOW_ARROW_TOUCH_SOUND, entity, SNDCHAN_STATIC, 70, _, 0.9);
-		RemoveEntity(entity);
-	}
 }
 
 static void Quincy_MultiArroTouch(int entity, int target)
