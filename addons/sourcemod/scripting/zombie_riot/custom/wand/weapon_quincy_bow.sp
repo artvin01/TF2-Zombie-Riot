@@ -49,27 +49,28 @@ static const char Zap_Sound[][] = {
 	"ambient/energy/zap9.wav",
 };
 #define QUINCY_BOW_BASELINE_BATTERY 400.0	//this is kinda like the true mana cost of the weapon
-
-public void OnStore_QuincyBow3_Initialised(ItemInfo Store_Item)
-{
-	Store_Item.Weapon_Bodygroup 		= RUINA_QUINCY_BOW_3;
-	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_3;
-	Store_Item.WeaponModelIndexOverride = PrecacheModel(Store_Item.WeaponModelOverride);
-}
 public void OnStore_QuincyBow1_Initialised(ItemInfo Store_Item)
 {
-	Store_Item.Weapon_Bodygroup 		= RUINA_QUINCY_BOW_1;
-	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_1;
+	Store_Item.Weapon_Bodygroup 		= RUINA_QUINCY_BOW_1_VIEWMODEL;
+	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_4;
 	Store_Item.WeaponModelIndexOverride = PrecacheModel(Store_Item.WeaponModelOverride);
 }
 public void OnStore_QuincyBow2_Initialised(ItemInfo Store_Item)
 {
-	Store_Item.Weapon_Bodygroup 		= RUINA_QUINCY_BOW_2;
-	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_2;
+	Store_Item.Weapon_Bodygroup 		= RUINA_QUINCY_BOW_2_VIEWMODEL;
+	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_4;
 	Store_Item.WeaponModelIndexOverride = PrecacheModel(Store_Item.WeaponModelOverride);
 }
-
-
+public void OnStore_QuincyBow3_Initialised(ItemInfo Store_Item)
+{
+	Store_Item.Weapon_Bodygroup 		= RUINA_QUINCY_BOW_3_VIEWMODEL;
+	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_4;
+	Store_Item.WeaponModelIndexOverride = PrecacheModel(Store_Item.WeaponModelOverride);
+}
+static bool bIsQuincy(int weapon)
+{
+	return i_CustomWeaponEquipLogic[weapon] == WEAPON_QUINCY_BOW;
+}
 static float fl_Quincy_Barrage_Firerate[MAXPLAYERS + 1][QUINCY_BOW_MAX_HYPER_BARRAGE+1];
 
 static int g_particleImpactTornado;
@@ -115,7 +116,7 @@ public void Activate_Quincy_Bow(int client, int weapon)
 	if (h_TimerQuincy_BowManagement[client] != null)
 	{
 		//This timer already exists.
-		if(i_CustomWeaponEquipLogic[weapon] == WEAPON_QUINCY_BOW)
+		if(bIsQuincy(weapon))
 		{
 			//Is the weapon it again?
 			//Yes?
@@ -166,7 +167,7 @@ public void Activate_Quincy_Bow(int client, int weapon)
 		return;
 	}
 		
-	if(i_CustomWeaponEquipLogic[weapon] == WEAPON_QUINCY_BOW)
+	if(bIsQuincy(weapon))
 	{
 		int pap = Get_Quincy_Pap(weapon);
 		switch(pap)
@@ -209,7 +210,57 @@ public void Activate_Quincy_Bow(int client, int weapon)
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
 }
+public void Quincy_Generic_M1(int client, int weapon, bool crit, int slot)
+{
+	float time = GetEntPropFloat(weapon, Prop_Send, "m_flChargeBeginTime");
+	float base = 1.0;	//https://github.com/ValveSoftware/source-sdk-2013/blob/22288b919617be6c8ca3cefd7cca979cbb39a88c/src/game/shared/tf/tf_weapon_compound_bow.cpp#L272
 
+	base *= Attributes_Get(weapon, 6, 1.0);
+	base *= Attributes_Get(weapon, 5, 1.0);
+	base *= Attributes_Get(weapon, 318, 1.0);
+
+	CPrintToChatAll("base: %.3f", base);
+	CPrintToChatAll("Adjusted: %.3f", GetGameTime()-time);
+
+	if(time > base)
+		time = base;
+
+	CPrintToChatAll("ratio clamped: %.3f", time / base);
+
+	//use
+	//Attrib_Weapon_MaxDmgMulti = 4047, 
+	//Attrib_Weapon_MinDmgMulti = 4048, 
+
+	DataPack pack = new DataPack();
+	pack.WriteCell(EntIndexToEntRef(weapon));
+	pack.WriteCell(EntIndexToEntRef(client));
+	pack.WriteFloat(1.0);
+	RequestFrames(RF_OffsetNextAttack, 3, pack);
+}
+static void RF_OffsetNextAttack(DataPack pack)
+{
+	pack.Reset();
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	int client = EntRefToEntIndex(pack.ReadCell());
+	float when = pack.ReadFloat();
+	delete pack;
+
+	if(!IsValidClient(client))
+		return;
+
+	if(!IsValidEntity(weapon))
+		return;
+
+	float Ratio = (when / 1.0);
+	int viewmodel = GetEntPropEnt(client, Prop_Send, "m_hViewModel");
+	if(viewmodel>MaxClients && IsValidEntity(viewmodel))
+	{
+		DispatchKeyValueFloat(viewmodel, "playbackrate", 2.0 * Ratio);
+	}
+
+	SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + when);
+	DispatchKeyValueFloat(weapon, "playbackrate", 2.0 * Ratio);
+}
 
 public void Quincy_Bow_M2(int client, int weapon, bool crit, int slot)
 {

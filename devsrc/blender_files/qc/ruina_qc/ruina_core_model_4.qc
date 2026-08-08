@@ -38,6 +38,25 @@ $bodygroup "base_ring"
 	blank
 	studio "v4/base_ring.smd"
 }
+//../../../qc/ruina_qc/bow_hell/
+//for some unholy reason, the bow viewmodel inverts normals. like huh????
+//btw, the fix I chose was to quite literally duplicate the whole model in blender, and flip normals.
+//SO TECHNICALLY THERE ARE 2 BOWS IN 1 BOW. YEAH. which is why these aren't used by npc's and only players.
+$bodygroup "ruina_bow_3_player"	
+{
+	blank
+	studio "bow_hell/ruina_bow_3_player.smd"
+}
+$bodygroup "ruina_bow_2_player"	
+{
+	blank
+	studio "bow_hell/ruina_bow_2_player.smd"
+}
+$bodygroup "quincy_bow_player"	
+{
+	blank
+	studio "bow_hell/quincy_bow_player.smd"
+}
 
 
 

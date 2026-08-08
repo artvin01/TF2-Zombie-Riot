@@ -274,7 +274,10 @@ enum
 	RUINA_FANTASY_BLADE			= (1 << 3),			//8 its a sword, that looks like a spaceship..
 	RUINA_FRACTAL_LENZ			= (1 << 4),			//16 the primary medic weapon animation is ASSSSSSSS for making a magic-spell weapon specifically for what I wanted. so the model effort is "eh". but I had no choice :(
 	RUINA_FRACTAL_HARVESTER		= (1 << 5),
-	RUINA_BASE_RING				= (1 << 6)
+	RUINA_BASE_RING				= (1 << 6),
+	RUINA_QUINCY_BOW_3_VIEWMODEL= (1 << 7),
+	RUINA_QUINCY_BOW_2_VIEWMODEL= (1 << 8),
+	RUINA_QUINCY_BOW_1_VIEWMODEL= (1 << 9)
 }
 enum
 {
