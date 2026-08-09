@@ -38,10 +38,10 @@ $bodygroup "wings_karlas"			//64
 	blank
 	studio "wings_karlas.smd"
 }
-$bodygroup "ruina_gamer_headset"			//64
+$bodygroup "ruina_ears"			//64
 {
 	blank
-	studio "ruina_gamer_headset.smd"
+	studio "ruina_ears.smd"
 }
 
 
@@ -88,7 +88,7 @@ $cdmaterials "models/workshop/weapons/c_models/c_invasion_wrangler"	//c_invasion
 $texturegroup "skinfamilies"
 {
 	{ 	"c_invasion_wrangler_laser"			"neon_red_solid"			"festive_lights_red"		}		//red
-	{ 	"c_invasion_wrangler_laser_blue"		"neon_blue_solid"		"festive_lights_blue"		}		//blue
+	{ 	"c_invasion_wrangler_laser_blue"	"neon_blue_solid"		"festive_lights_blue"		}		//blue
 	{	"crystal_ball_glass"				"neon_green_solid"			"festive_lights_white"		}		//uber red
 	{	"australium_container_glass"		"neon_yellow_solid"			"festive_lights_white"		}		//uber blue
 }
@@ -109,4 +109,39 @@ $sequence "idle" {
 	fadein 0.2
 	fadeout 0.2
 	fps 30
+}
+$definebone "bip_head" "" 0 76.533752 -0.565174 0 0 179.999964 0 0 0 0 0 0
+$definebone "jiggle_ear_R" "bip_head" -1.883940 -1.530663 -0.491922 89.086977 59.932376 -74.863272 0 0 0 0 0 0 
+$definebone "jiggle_ear_L" "bip_head" 2.005804 -1.611977 -0.491921 89.086581 59.930962 15.136092 0 0 0 0 0 0
+ 
+
+$jigglebone "jiggle_ear_R"
+{
+	is_flexible
+	{
+		length 5
+		tip_mass 0
+		pitch_stiffness 80
+		pitch_damping 18
+		yaw_stiffness 80
+		yaw_damping 18
+		along_stiffness 100
+		along_damping 0
+		angle_constraint 5.0
+	}
+}
+$jigglebone "jiggle_ear_L"
+{
+	is_flexible
+	{
+		length 5
+		tip_mass 0
+		pitch_stiffness 80
+		pitch_damping 18
+		yaw_stiffness 80
+		yaw_damping 18
+		along_stiffness 100
+		along_damping 0
+		angle_constraint 5.0
+	}
 }
