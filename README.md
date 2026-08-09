@@ -78,4 +78,3 @@ Use the `clear_page.py` script to remove all automatically generated content in 
   - [ ] Special wavesets
     - [ ] ZR: Construction
         - [ ] (Full support) Construction 2
-  - [ ] Proper waveset sorting

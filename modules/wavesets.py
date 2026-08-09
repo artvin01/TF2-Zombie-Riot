@@ -1,4 +1,4 @@
-# Parse all NPCs & Wavesets (Normal & Custom, wavesets like Construction are yet to be supported.)
+# Parse all NPCs & Wavesets
 import util
 import os
 import subprocess
@@ -15,6 +15,7 @@ from typing import Any
 TODO
 [ ] Complete const2 support
 [ ] Include main music parts somehow
+[ ] Sort wavesets properly
 """
 
 # General ================================
@@ -456,15 +457,30 @@ def parse_waveset(file: str, data: dict[str, Any], abslink: str, name: str, desc
             continue
         wave_idx += 1
         output["waves"][wave_idx], obtainables = parse_wave(wave_idx, wave_data, bool(util.cfgtoint(wd["auto_wave_cash"])), return_obtainables=True)
-        if not (abslink.startswith("zr_bossrush") or abslink.startswith("zr_summercamp")): # TODO does bossrush give items for bosses?
+        if not (abslink.startswith("zr_bossrush") or abslink.startswith("zr_summercamp")): # does bossrush give items for bosses?
             for obt in obtainables:
                 if obt["item"] not in COMPLETE_ITEM_MAP:
                     COMPLETE_ITEM_MAP[obt["item"]] = {
                         "name": f"{util.abslink_to_display(abslink,name)}|{obt["npc_name"]}",
-                        "file": f"{abslink}.json&wv={wave_idx}"
+                        "file": f"{abslink}.json&wv={wave_idx}",
+                        "context": {
+                            "match": abslink+obt["npc_name"],
+                            "wave_idx": wave_idx
+                        }
                     }
                 else:
-                    util.log(f"Duplicate {obt["item"]} in w:{abslink}|wv:{wave_idx}|npc:{obt["npc_name"]}", "WARNING")
+                    item_context = COMPLETE_ITEM_MAP[obt["item"]]["context"] # may error if prior item is given for completing a waveset instead of beating a boss
+                    if item_context["match"]==(abslink+obt["npc_name"]) and item_context["wave_idx"] < wave_idx:
+                        COMPLETE_ITEM_MAP[obt["item"]] = {
+                            "name": f"{util.abslink_to_display(abslink,name)}|{obt["npc_name"]}",
+                            "file": f"{abslink}.json&wv={wave_idx}",
+                            "context": {
+                                "match": abslink+obt["npc_name"],
+                                "wave_idx": wave_idx
+                            }
+                        }
+                    else:
+                        util.log(f"Duplicate {obt["item"]} in w:{abslink}|wv:{wave_idx}|npc:{obt["npc_name"]}", "WARNING")
 
     waveset_cache[file] = output
     return output
