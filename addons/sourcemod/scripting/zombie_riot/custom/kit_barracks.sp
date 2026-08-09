@@ -232,7 +232,7 @@ public void Barracks_OnTakeDamage_Hunter(int victim, int &attacker, int &inflict
 		if(!HasSpecificBuff(attacker, "Healing Decay"))	// Skip targets that cannot be healed
 		{
 			float ShotgunUserHeal = ShotgunHeal[attacker]/5;	// 20% of your dmg, buuut with a cap
-			float MaxAllowedHeal = ReturnEntityMaxHealth(attacker) * (0.01 + (0.1 * WeaponPap[attacker]));	// Hard cap for the amount of healing to the user, 1% max hp + 10% per pap lvl"
+			float MaxAllowedHeal = ReturnEntityMaxHealth(attacker) * (0.11 + (0.07 * WeaponPap[attacker]));	// Hard cap for the amount of healing to the user, 11% max hp + 7% per pap lvl"
 			
 			if(ShotgunUserHeal > MaxAllowedHeal)
 			{
