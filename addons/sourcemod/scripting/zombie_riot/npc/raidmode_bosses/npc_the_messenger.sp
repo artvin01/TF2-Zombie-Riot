@@ -1406,7 +1406,7 @@ public void TheMessenger_OnTakeDamagePost(int victim, int attacker, int inflicto
 		{
 			case 0:
 			{
-				NPCTalkMessage(npc.index, "AHAHAHAHAHHA, all of you are so{crimson}FUCKED!!");
+				NPCTalkMessage(npc.index, "AHAHAHAHAHHA, all of you are so {crimson}FUCKED!!");
 			}
 			case 1:
 			{

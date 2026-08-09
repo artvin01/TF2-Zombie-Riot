@@ -4834,7 +4834,7 @@
 	}
 	"Default Desc"
 	{
-		"en"	"Fight against the classic zombies and Whiteflower soldiers!"
+		"en"	"Someone contacted us that there's a surge of zombies in Crowholm. Bob the Second sent us, the secondary mercs, to check it out."
 		"fr"	"Allez face-à-face contre les zombies et Combine classiques!"
 		"chi"	"击败尸群，打败联合军！"
 		"it"	"Combatti contro i classici zombie e combatti contro le combinazioni!"
