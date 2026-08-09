@@ -716,7 +716,11 @@ def parse_rogue(name: str, data: dict[str, Any], html_mapsets: str) -> tuple[str
 
     # List in rogue.html
     n = name.split("/")[-1].replace(".cfg","")
-    html_mapsets += f"<li><a href=\"{n}.html\">{n} - Rogue {rogue_num}</a></li>"
+    html_link = f"<li><a href=\"{n}.html\">{n} - Rogue {rogue_num}</a></li>"
+    if rogue_num == 1:
+        html_mapsets = html_link + html_mapsets
+    else:
+        html_mapsets += html_link
 
 
     context = { # startcash, wavesetlistdata
@@ -982,7 +986,11 @@ def parse_const1(name: str, data: dict[str, Any], html_mapsets: str) -> tuple[st
 
     # List in construction.html
     n = name.split("/")[-1].replace(".cfg","")
-    html_mapsets += f"<li><a href=\"{n}.html\">{n} - Construction 1</a></li>"
+    html_link = f"<li><a href=\"{n}.html\">{n} - Construction 1</a></li>"
+    if "Construction 2" not in html_mapsets:
+        html_mapsets += html_link
+    else:
+        html_mapsets = html_link + html_mapsets
 
 
     wd = defaultdict(str,data)
@@ -993,8 +1001,8 @@ def parse_const1(name: str, data: dict[str, Any], html_mapsets: str) -> tuple[st
         "character_hired_by": util.apply_morecolors(DEFAULT_MISSION_CLIENT)
     }
     HTML_WAVESET_LIST = util.fill_template(util.read("templates/rogue/roguedata.html"),context)
-    # HTML_WAVESET_LIST -> what will be linked to on the ZR: rogue page
-    # html_mapsets ->
+    # HTML_WAVESET_LIST -> what will be linked to on the ZR: const page
+    # html_mapsets -> link list
     return HTML_WAVESET_LIST, html_mapsets
 
 def parse_const_research(name: str, obj: dict[str, Any]):
@@ -1186,7 +1194,11 @@ def parse_const2(name: str, data: dict[str, Any], html_mapsets: str) -> tuple[st
 
     # List in construction.html
     n = name.split("/")[-1].replace(".cfg","")
-    html_mapsets += f"<li><a href=\"{n}.html\">{n} - Construction 2</a></li>"
+    html_link = f"<li><a href=\"{n}.html\">{n} - Construction 2</a></li>"
+    if "Construction 1" in html_mapsets:
+        html_mapsets += html_link
+    else:
+        html_mapsets = html_link + html_mapsets
 
     wd = defaultdict(str,data)
     context = {
