@@ -470,7 +470,7 @@ public void Weapon_Wand_PotionBuffPermaTouch(int entity, int target)
 				{
 					i_ExtraPlayerPoints[owner] += 20;
 
-					ApplyStatusEffect(client, client, "Mystery Brew", 300.0);
+					ApplyStatusEffect(owner, client, "Mystery Brew", 300.0);
 				}
 			}
 		}
@@ -485,7 +485,7 @@ public void Weapon_Wand_PotionBuffPermaTouch(int entity, int target)
 			{
 				i_ExtraPlayerPoints[owner] += 20;
 
-				ApplyStatusEffect(entity1, entity1, "Mystery Brew", 300.0);
+				ApplyStatusEffect(owner, entity1, "Mystery Brew", 300.0);
 			}
 		}
 	}
