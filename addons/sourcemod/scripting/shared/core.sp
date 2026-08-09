@@ -205,7 +205,7 @@ enum
 	WINGS_HELIA			= (1 << 4),
 	WINGS_STELLA		= (1 << 5),
 	WINGS_KARLAS		= (1 << 6),
-	RUINA_GAMER_HEADSET	= (1 << 7)	//maybe those golbin ears can work as a base, then modify. 
+	RUINA_GAMER_HEADSET	= (1 << 7)	
 }
 #define RUINA_CUSTOM_MODELS_1	"models/zombie_riot/weapons/ruina_models_1_3_test2.mdl"
 enum	//it appears if I try to make it go above 14 it starts glitching out

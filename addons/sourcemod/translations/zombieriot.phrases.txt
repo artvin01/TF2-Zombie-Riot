@@ -6121,4 +6121,8 @@
 		"en"		"Ammo box here!"
 		"ko"		"탄약 상자는 여기 있습니다!"
 	}
+	"Clip Is Full"
+	{
+		"en"		"Your Clip is already full!"
+	}
 }

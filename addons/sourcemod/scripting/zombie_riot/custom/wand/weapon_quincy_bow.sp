@@ -61,6 +61,12 @@ public void OnStore_QuincyBow3_Initialised(ItemInfo Store_Item)
 	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_4;
 	Store_Item.WeaponModelIndexOverride = PrecacheModel(Store_Item.WeaponModelOverride);
 }
+public void OnStore_QuincyBallista1_Initialised(ItemInfo Store_Item)
+{
+	Store_Item.Weapon_Bodygroup 		= RUINA_REI_LAUNCHER|RUINA_LAZER_CANNON_2|RUINA_HEALING_STAFF_2;	//tmp
+	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_2;
+	Store_Item.WeaponModelIndexOverride = PrecacheModel(Store_Item.WeaponModelOverride);
+}
 static bool bIsQuincy(int weapon)
 {
 	return i_CustomWeaponEquipLogic[weapon] == WEAPON_QUINCY_BOW;
@@ -104,7 +110,7 @@ enum struct QuincyChargeEnum {
 
 	float mana_cost;
 	float timer_base;
-	void SetManaCost(int weapon)
+	void SetManaCost(int weapon)	//rework mana use logic. its currently wonky (miss calculations due to floats / ints)
 	{
 		this.mana_cost = Attributes_Get(weapon, 733, 1.0) / (this.timer_base*66.0);
 	}
@@ -258,6 +264,13 @@ public void Quincy_Generic_M1(int client, int weapon, bool crit, int slot)
 	float speed = 2500.0;
 	float time = 2.5;
 
+	speed *= Attributes_Get(weapon, 103, 1.0);
+	speed *= Attributes_Get(weapon, 104, 1.0);
+	speed *= Attributes_Get(weapon, 475, 1.0);
+
+	time *= Attributes_Get(weapon, 101, 1.0);
+	time *= Attributes_Get(weapon, 102, 1.0);
+
 	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, "raygun_projectile_blue");
 	WandProjectile_ApplyFunctionToEntity(projectile, Quincy_Touch);
 
@@ -268,7 +281,8 @@ public void Quincy_Generic_M1(int client, int weapon, bool crit, int slot)
 	DataPack pack = new DataPack();
 	pack.WriteCell(EntIndexToEntRef(weapon));
 	pack.WriteCell(EntIndexToEntRef(client));
-	pack.WriteFloat(1.0);
+	pack.WriteFloat(1.0);	//wanted
+	pack.WriteFloat(1.0);	//base
 	RequestFrames(RF_OffsetNextAttack, 3, pack);
 }
 static void Quincy_Touch(int entity, int target)
@@ -303,6 +317,7 @@ static void RF_OffsetNextAttack(DataPack pack)
 	int weapon = EntRefToEntIndex(pack.ReadCell());
 	int client = EntRefToEntIndex(pack.ReadCell());
 	float when = pack.ReadFloat();
+	float base = pack.ReadFloat();
 	delete pack;
 
 	if(!IsValidClient(client))
@@ -311,7 +326,7 @@ static void RF_OffsetNextAttack(DataPack pack)
 	if(!IsValidEntity(weapon))
 		return;
 
-	float Ratio = (when / 1.0);
+	float Ratio = (when / base);
 	int viewmodel = GetEntPropEnt(client, Prop_Send, "m_hViewModel");
 	if(viewmodel>MaxClients && IsValidEntity(viewmodel))
 	{
@@ -321,6 +336,83 @@ static void RF_OffsetNextAttack(DataPack pack)
 	SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + when);
 	DispatchKeyValueFloat(weapon, "playbackrate", 2.0 * Ratio);
 }
+
+///BALISTA
+
+public void Quincy_Balista_M1(int client, int weapon, bool crit, int slot)
+{
+	int iAmmoTable  = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
+	int current 	= GetEntData(weapon, iAmmoTable, 4);
+	CPrintToChatAll("current: %i", current);
+	SetEntData(weapon, iAmmoTable, 0, 4, true);
+	
+}
+public void Quincy_Balist_M2(int client, int weapon, bool crit, int slot)
+{
+	int mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
+
+	if(Current_Mana[client] < mana_cost)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Not Enough Mana", mana_cost);
+		return;
+	}
+
+	if (Ability_Check_Cooldown(client, slot) > 0.0)
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+		
+		if(Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+			
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
+		return;	
+	}
+	//868
+	int iAmmoTable  = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
+	int max_ammo 	= RoundFloat(Attributes_Get(weapon, 868, 1.0) * Attributes_Get(weapon, 4, 1.0));
+	int current 	= GetEntData(weapon, iAmmoTable, 4);
+
+	if(current >= max_ammo)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%T", "Clip Is Full");
+		return;
+	}
+
+	float base_cd = 0.5;
+	Current_Mana[client] -=mana_cost;
+	SDKhooks_SetManaRegenDelayTime(client, 1.0);
+	Mana_Hud_Delay[client] = 0.0;
+	Ability_Apply_Cooldown(client, slot, CvarInfiniteCash.BoolValue ? 0.0 : base_cd);
+
+	SetEntData(weapon, iAmmoTable, current+1, 4, true);
+
+	int viewmodel = GetEntPropEnt(client, Prop_Send, "m_hViewModel");
+	if(viewmodel>MaxClients && IsValidEntity(viewmodel))
+	{
+		float lockout = 1.0;
+		int animation = 10;
+		SetEntProp(viewmodel, Prop_Send, "m_nSequence", animation);
+		SetEntProp(weapon, Prop_Send, "m_nSequence", animation);
+
+		DataPack pack = new DataPack();
+		pack.WriteCell(EntIndexToEntRef(weapon));
+		pack.WriteCell(EntIndexToEntRef(client));
+		pack.WriteFloat(lockout);
+		pack.WriteFloat(1.0);
+		RequestFrames(RF_OffsetNextAttack, 3, pack);
+	}
+}
+
+
 
 public void Quincy_Bow_M2(int client, int weapon, bool crit, int slot)
 {
