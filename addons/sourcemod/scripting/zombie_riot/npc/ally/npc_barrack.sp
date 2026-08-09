@@ -812,8 +812,11 @@ public Action BarrackBody_OnTakeDamage(int victim, int &attacker, int &inflictor
 	
 	if(SpawnProtection[victim])	// Makes the unit that 75% less dmg from the first instance of dmg taken since it spawns, then deactivates
     {
-		damage *= 0.25;
-		SpawnProtection[victim] = false;
+		if(!(damagetype & DMG_TRUEDAMAGE))
+		{
+			damage *= 0.25;
+			SpawnProtection[victim] = false;
+		}
     }
 	if(HasSpecificBuff(attacker, "Marked"))
 	{
