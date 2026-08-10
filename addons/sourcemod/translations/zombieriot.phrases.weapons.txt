@@ -4876,6 +4876,14 @@
 		"ru"	"Фрактал Реюдзи"
 		"ko"	"프랙탈-레이우지"
 	}
+	"Quincy LongBow"
+	{
+		"en"	"Quincy LongBow"
+	}
+	"Quincy Balista"
+	{
+		"en"	"Quincy Balista"
+	}
 	"Heavy Particle Rifle"
 	{
 		"en"	"Heavy Particle Rifle"

@@ -297,7 +297,7 @@ public void Blitzkrieg_Kit_Primary_Reload(int client, int weapon, bool crit, int
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%T", "Clip Is Full");
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Clip Is Full");
 		return;
 	}
 

@@ -2073,6 +2073,13 @@ static bool Player_Laser_BEAM_TraceWallsOnly(int entity, int contentsMask)
 {
 	return !entity;
 }
+bool Player_Laser_BEAM_TraceWallsAndEnemiesOnly(int entity, int contentsMask, int client)
+{
+	if(IsValidEnemy(client, entity))
+		return true;
+
+	return !entity;
+}
 
 static bool Player_Laser_BEAM_TraceUsers(int entity, int contentsMask, int client)
 {

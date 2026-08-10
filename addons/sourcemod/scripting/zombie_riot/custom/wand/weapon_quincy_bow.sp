@@ -61,12 +61,6 @@ public void OnStore_QuincyBow3_Initialised(ItemInfo Store_Item)
 	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_4;
 	Store_Item.WeaponModelIndexOverride = PrecacheModel(Store_Item.WeaponModelOverride);
 }
-public void OnStore_QuincyBallista1_Initialised(ItemInfo Store_Item)
-{
-	Store_Item.Weapon_Bodygroup 		= RUINA_REI_LAUNCHER|RUINA_LAZER_CANNON_2|RUINA_HEALING_STAFF_2;	//tmp
-	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_2;
-	Store_Item.WeaponModelIndexOverride = PrecacheModel(Store_Item.WeaponModelOverride);
-}
 static bool bIsQuincy(int weapon)
 {
 	return i_CustomWeaponEquipLogic[weapon] == WEAPON_QUINCY_BOW;
@@ -326,7 +320,7 @@ static void RF_OffsetNextAttack(DataPack pack)
 	if(!IsValidEntity(weapon))
 		return;
 
-	float Ratio = (when / base);
+	float Ratio = (base / when);
 	int viewmodel = GetEntPropEnt(client, Prop_Send, "m_hViewModel");
 	if(viewmodel>MaxClients && IsValidEntity(viewmodel))
 	{
@@ -338,13 +332,17 @@ static void RF_OffsetNextAttack(DataPack pack)
 }
 
 ///BALISTA
-
+public void OnStore_QuincyBallista1_Initialised(ItemInfo Store_Item)
+{
+	Store_Item.Weapon_Bodygroup 		= RUINA_LAZER_CANNON_2|RUINA_IMPACT_LANCE_4;	//tmp
+	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_2;
+	Store_Item.WeaponModelIndexOverride = PrecacheModel(Store_Item.WeaponModelOverride);
+}
 public void Quincy_Balista_M1(int client, int weapon, bool crit, int slot)
 {
 	int iAmmoTable  = FindSendPropInfo("CTFWeaponBase", "m_iClip1");
 	int current 	= GetEntData(weapon, iAmmoTable, 4);
-	CPrintToChatAll("current: %i", current);
-	SetEntData(weapon, iAmmoTable, 0, 4, true);
+	SetEntData(weapon, iAmmoTable, 1, 4, true);
 
 	float speed = 2000.0;
 	float damage= 100.0;
@@ -362,23 +360,26 @@ public void Quincy_Balista_M1(int client, int weapon, bool crit, int slot)
 	float sideways_dist = 150.0;
 
 	float Angles[3]; GetClientEyeAngles(client, Angles);
-	float Origin[3]; GetClientEyePosition(client, Origin);
+	float Origin[3]; GetClientEyePosition(client, Origin); Origin[2]-=20.0;
 
 	Player_Laser_Logic Laser;
 	Laser.client = client;
-	Laser.DoForwardTrace_Basic();
+	Laser.DoForwardTrace_Basic(_, Player_Laser_BEAM_TraceWallsAndEnemiesOnly);
 
-	float dist_add = sideways_dist/float(current);
-	for(int i=0 ; i < current ; i ++)
+	float dist_add = (current > 1) ? (sideways_dist / float(current - 1)) : 0.0;
+	for(int i = 0; i < current; i++)
 	{
 		float vecForward[3], vecRight[3];
 		float spawnLoc[3];
 		
-		float SidewaysOffset = (-0.5*sideways_dist) + (dist_add * i);
-   	 	float ForwardSet =  distoffset * Sine(3.1416 * (float(i) / float(current)));
+		float SidewaysOffset = (current > 1) ? ((-0.5 * sideways_dist) + (dist_add * i)) : 0.0;
+		float ExtraCalc = (current > 1) ? (float(i) / float(current - 1)) : 0.5;
+		float ForwardSet = distoffset * Sine(3.14159265 * ExtraCalc);
+
 		GetAngleVectors(Angles, vecForward, vecRight, NULL_VECTOR);
 		ScaleVector(vecForward, ForwardSet);
 		ScaleVector(vecRight, SidewaysOffset);
+		
 		AddVectors(Origin, vecForward, spawnLoc);
 		AddVectors(spawnLoc, vecRight, spawnLoc);
 
@@ -402,8 +403,11 @@ public void Quincy_Balista_M1(int client, int weapon, bool crit, int slot)
 		}
 	}
 }
-public void Quincy_Balist_M2(int client, int weapon, bool crit, int slot)
+public void Quincy_Balista_M2(int client, int weapon, bool crit, int slot)
 {
+	if(GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack") > GetGameTime())
+		return;
+
 	int mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
 
 	if(Current_Mana[client] < mana_cost)
@@ -438,33 +442,52 @@ public void Quincy_Balist_M2(int client, int weapon, bool crit, int slot)
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
-		ShowSyncHudText(client,  SyncHud_Notifaction, "%T", "Clip Is Full");
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Clip Is Full");
 		return;
 	}
 
-	float base_cd = 0.5;
+	float base_cd = 1.0;
+	base_cd *= Attributes_Get(weapon, 6, 1.0);	//scale on attack rate rathen then reload rate for reloading
+	base_cd *= Attributes_Get(weapon, 5, 1.0);
+
 	Current_Mana[client] -=mana_cost;
-	SDKhooks_SetManaRegenDelayTime(client, 1.0);
+	SDKhooks_SetManaRegenDelayTime(client, base_cd*2.0);
 	Mana_Hud_Delay[client] = 0.0;
-	Ability_Apply_Cooldown(client, slot, CvarInfiniteCash.BoolValue ? 0.0 : base_cd);
+	Ability_Apply_Cooldown(client, slot, base_cd);
 
 	SetEntData(weapon, iAmmoTable, current+1, 4, true);
 
 	int viewmodel = GetEntPropEnt(client, Prop_Send, "m_hViewModel");
 	if(viewmodel>MaxClients && IsValidEntity(viewmodel))
 	{
-		float lockout = 1.0;
 		int animation = 10;
+		int was = 8;	//GetEntProp(viewmodel, Prop_Send, "m_nSequence");
+		//CPrintToChatAll("was: %i",was);
 		SetEntProp(viewmodel, Prop_Send, "m_nSequence", animation);
-		SetEntProp(weapon, Prop_Send, "m_nSequence", animation);
 
 		DataPack pack = new DataPack();
 		pack.WriteCell(EntIndexToEntRef(weapon));
 		pack.WriteCell(EntIndexToEntRef(client));
-		pack.WriteFloat(lockout);
-		pack.WriteFloat(1.0);
+		pack.WriteFloat(base_cd*0.8);
+		pack.WriteFloat(0.8);
 		RequestFrames(RF_OffsetNextAttack, 3, pack);
+
+		pack = new DataPack();
+		pack.WriteCell(EntIndexToEntRef(viewmodel));
+		pack.WriteCell(was);
+		RequestFrames(RF_SetSequence, RoundFloat(base_cd * 60), pack);
 	}
+}
+static void RF_SetSequence(DataPack pack)
+{
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	int seq = pack.ReadCell();
+	delete pack;
+	if(!IsValidEntity(entity))
+		return;
+
+	SetEntProp(entity, Prop_Send, "m_nSequence", seq);
 }
 
 
