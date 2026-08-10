@@ -367,18 +367,19 @@ static void RF_OffsetNextAttack(DataPack pack)
 		return;
 
 	float Ratio = (base / when);
-
-	if(Ratio > 6.0)
-		Ratio = 6.0;
+	
+	Ratio *=2.0;
+	if(Ratio > 12.0)
+		Ratio = 12.0;
 
 	int viewmodel = GetEntPropEnt(client, Prop_Send, "m_hViewModel");
 	if(viewmodel>MaxClients && IsValidEntity(viewmodel))
 	{
-		DispatchKeyValueFloat(viewmodel, "playbackrate", 2.0 * Ratio);
+		DispatchKeyValueFloat(viewmodel, "playbackrate", Ratio);
 	}
 
 	SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + when);
-	DispatchKeyValueFloat(weapon, "playbackrate", 2.0 * Ratio);
+	DispatchKeyValueFloat(weapon, "playbackrate", Ratio);
 }
 
 ///BALISTA
