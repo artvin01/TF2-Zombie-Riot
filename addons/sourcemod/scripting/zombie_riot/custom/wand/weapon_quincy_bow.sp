@@ -155,7 +155,7 @@ public void Quincy_HookChargeLogic(int client, int weapon)
 	pack.WriteCellArray(Data, sizeof(Data));
 	RequestFrame(ChargeHook_Tick, pack);
 }
-static void PlayChargeSoundPassive(int client, int soundlevel = 80, float volume = 1.0, int pitch = 100) { EmitSoundToAll(Spark_Sound[GetRandomInt(0, sizeof(Spark_Sound) - 1)], client, SNDCHAN_VOICE, soundlevel, _, volume, pitch);}
+static void PlayChargeSoundPassive(int client, int soundlevel = 80, float volume = 1.0, int pitch = 100) { EmitSoundToAll(Spark_Sound[GetRandomInt(0, sizeof(Spark_Sound) - 1)], client, SNDCHAN_STATIC, soundlevel, _, volume, pitch);}
 static void ChargeHook_Tick(DataPack pack)
 {
 	pack.Reset();
