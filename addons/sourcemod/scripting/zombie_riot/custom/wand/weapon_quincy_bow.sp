@@ -107,7 +107,7 @@ enum struct QuincyChargeEnum {
 	bool cannon;
 	float mana_cost;
 	float timer_base;
-	void SetManaCost(int weapon)	//rework mana use logic. its currently wonky (miss calculations due to floats / ints)
+	void SetManaCost(int weapon)	//bug: taunting while charging and holding m1 breaks it, it doesn't wipe mana used up.
 	{
 		this.mana_cost = Attributes_Get(weapon, 733, 1.0) / (this.timer_base*66.0);
 	}
