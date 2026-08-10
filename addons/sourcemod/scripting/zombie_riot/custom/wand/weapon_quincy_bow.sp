@@ -72,12 +72,14 @@ static int g_particleImpactTornado;
 static int i_combine_laser;
 static int i_halo_laser;
 
-public void QuincyMapStart()
+static float fQuincyManaConsumedForCharge[MAXPLAYERS];
+void QuincyMapStart()
 {
 	PrecacheSound(QUINCY_BOW_ARROW_TOUCH_SOUND);
 
 	i_halo_laser		= PrecacheModel("materials/sprites/halo01.vmt", true);
 	i_combine_laser 	= PrecacheModel("materials/sprites/combineball_trail_blue_1.vmt", true);
+	Zero(fQuincyManaConsumedForCharge);
 
 	Zero(fl_hyper_arrow_charge);
 
@@ -102,12 +104,19 @@ enum struct QuincyChargeEnum {
 	float throttle;
 	float last_known_timer;
 
+	bool cannon;
 	float mana_cost;
 	float timer_base;
 	void SetManaCost(int weapon)	//rework mana use logic. its currently wonky (miss calculations due to floats / ints)
 	{
 		this.mana_cost = Attributes_Get(weapon, 733, 1.0) / (this.timer_base*66.0);
 	}
+}
+public void Quincy_ChargeLoopOnEquip(int client, int weapon)
+{
+	int buttons = GetClientButtons(client);
+	if(buttons & IN_ATTACK)
+		Quincy_HookChargeLogic(client, weapon);
 }
 public void Quincy_HookChargeLogic(int client, int weapon)
 {
@@ -133,6 +142,7 @@ public void Quincy_HookChargeLogic(int client, int weapon)
 	SetEntProp(weapon, Prop_Send, "m_bNoFire", 0);
 
 	QuincyChargeEnum Data;
+	Data.cannon = false;
 	Data.weapon_ref = EntIndexToEntRef(weapon);
 	Data.client_ref = EntIndexToEntRef(client);
 	Data.throttle	= 0.0;
@@ -167,17 +177,23 @@ static void ChargeHook_Tick(DataPack pack)
 	if(buttons & IN_ATTACK2)
 	{
 		//We are retracting the bow.
+		Current_Mana_DispalyOffeset[client] = 0;
 		return;
 	}
 
 	//we want to fire. or somehow are nolonger holding our weapon.
-	if(!(buttons & IN_ATTACK) || held_weapon != weapon || GetEntProp(weapon, Prop_Send, "m_bNoFire"))
+	if(held_weapon != weapon || (!Data.cannon && GetEntProp(weapon, Prop_Send, "m_bNoFire")))
 	{
+		Current_Mana_DispalyOffeset[client] = 0;
 		return;	//ATTACK!
 	}
 
 	float GameTime = GetGameTime();
-
+	if(!(buttons & IN_ATTACK))
+	{
+		Current_Mana_DispalyOffeset[client] = 0;
+		return;
+	}
 	if(GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack") > GameTime)
 	{
 		DataPack Pack = new DataPack();
@@ -185,17 +201,25 @@ static void ChargeHook_Tick(DataPack pack)
 		RequestFrame(ChargeHook_Tick, Pack);
 		return;
 	}
+	
 
 	if(Data.last_known_timer <= Data.timer_base)
 	{
-		if(Current_Mana[client] < RoundToCeil(Data.mana_cost))
+		if(Current_Mana[client] <= RoundToCeil(fQuincyManaConsumedForCharge[client]))
 		{
-			SetEntPropFloat(weapon, Prop_Send, "m_flChargeBeginTime", GameTime + Data.last_known_timer);	//lock the sniper charge bar in place.
+			if(Data.cannon)
+				SetEntPropFloat(weapon, Prop_Send, "m_flDetonateTime", GameTime + Data.last_known_timer);	//lock the sniper charge bar in place.
+			else 
+				SetEntPropFloat(weapon, Prop_Send, "m_flChargeBeginTime", GameTime - Data.last_known_timer);	//lock the sniper charge bar in place.
 		}
 		else
 		{
-			Current_Mana[client] -= RoundToFloor(Data.mana_cost);
-			Data.last_known_timer = GameTime - GetEntPropFloat(weapon, Prop_Send, "m_flChargeBeginTime");
+			fQuincyManaConsumedForCharge[client]+=Data.mana_cost;
+			Current_Mana_DispalyOffeset[client] = -RoundToFloor(fQuincyManaConsumedForCharge[client]);
+			if(Data.cannon)
+				Data.last_known_timer = GameTime - GetEntPropFloat(weapon, Prop_Send, "m_flDetonateTime");
+			else
+				Data.last_known_timer = GameTime - GetEntPropFloat(weapon, Prop_Send, "m_flChargeBeginTime");
 		}
 	}
 	
@@ -210,7 +234,7 @@ static void ChargeHook_Tick(DataPack pack)
 	Data.throttle = GameTime + 0.1;
 
 	float timer_max, ratio, current;
-	QuincyGetBowStats(weapon, timer_max, current, ratio);
+	QuincyGetBowStats(weapon, timer_max, current, ratio, Data.cannon);
 	Data.timer_base = timer_max;
 	Data.SetManaCost(weapon);	//update mana cost every 0.1s if we happened to get new data.
 	SDKhooks_SetManaRegenDelayTime(client, 1.0);
@@ -219,6 +243,8 @@ static void ChargeHook_Tick(DataPack pack)
 	int pitch = RoundToFloor(25.0 + (60.0 - 25.0) * (1.0-ratio));
 	if(pitch > TF2_MAX_PITCH)
 		pitch = TF2_MAX_PITCH;
+	if(pitch < 5)
+		pitch = 5;
 
 	PlayChargeSoundPassive(client, 80, 0.5, pitch);
 
@@ -226,25 +252,45 @@ static void ChargeHook_Tick(DataPack pack)
 	Pack.WriteCellArray(Data, sizeof(Data));
 	RequestFrame(ChargeHook_Tick, Pack);
 }
-static void QuincyGetBowStats(int weapon, float &charge_max, float &charge_current, float &charge_ratio)
+static void QuincyGetBowStats(int weapon, float &charge_max, float &charge_current, float &charge_ratio, bool cannon = false)
 {
-	charge_current =  GetGameTime() - GetEntPropFloat(weapon, Prop_Send, "m_flChargeBeginTime");
+	if(cannon)
+	{
+		charge_current = GetEntPropFloat(weapon, Prop_Send, "m_flDetonateTime") - GetGameTime();
+	}
+	else
+	{
+		charge_current = GetGameTime() - GetEntPropFloat(weapon, Prop_Send, "m_flChargeBeginTime");
+	}
+	
  	charge_max = 1.0;	//https://github.com/ValveSoftware/source-sdk-2013/blob/22288b919617be6c8ca3cefd7cca979cbb39a88c/src/game/shared/tf/tf_weapon_compound_bow.cpp#L272
 
 	charge_max *= Attributes_Get(weapon, 6, 1.0);
 	charge_max *= Attributes_Get(weapon, 5, 1.0);
 	charge_max *= Attributes_Get(weapon, 318, 1.0);
+	
+	if(cannon)
+	{
+		charge_max *= Attributes_Get(weapon, 466, 1.0);
+	}
 
 	if(charge_current > charge_max)
 		charge_current = charge_max;
 
-	charge_ratio = (charge_current / charge_max);
+	if(cannon)
+		charge_ratio = 1.0 - (charge_current / charge_max);
+	else
+		charge_ratio = (charge_current / charge_max);
 }
 public void Quincy_Generic_M1(int client, int weapon, bool crit, int slot)
 {
 	float timer_max, ratio, current;
 	QuincyGetBowStats(weapon, timer_max, current, ratio);
 
+	Current_Mana_DispalyOffeset[client] = 0;
+	Current_Mana[client] -= RoundToFloor(fQuincyManaConsumedForCharge[client]);
+	fQuincyManaConsumedForCharge[client] = 0.0;
+	
 	float damage = 100.0;
 	damage *= Attributes_Get(weapon, 410, 1.0);
 
@@ -301,7 +347,7 @@ static void Quincy_Touch(int entity, int target)
 	TE_ParticleInt(g_particleImpactTornado, pos1);
 	TE_SendToAll();
 
-	TE_Particle("mvm_soldier_shockwave", pos1, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+	//TE_Particle("mvm_soldier_shockwave", pos1, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 
 	RemoveEntity(entity);
 }
@@ -321,6 +367,10 @@ static void RF_OffsetNextAttack(DataPack pack)
 		return;
 
 	float Ratio = (base / when);
+
+	if(Ratio > 6.0)
+		Ratio = 6.0;
+
 	int viewmodel = GetEntPropEnt(client, Prop_Send, "m_hViewModel");
 	if(viewmodel>MaxClients && IsValidEntity(viewmodel))
 	{
@@ -487,11 +537,109 @@ static void RF_SetSequence(DataPack pack)
 	if(!IsValidEntity(entity))
 		return;
 
+	DispatchKeyValueFloat(entity, "playbackrate", 1.0);
 	SetEntProp(entity, Prop_Send, "m_nSequence", seq);
 }
+////REPEATER
+public void OnStore_QuincyRepeater1_Initialised(ItemInfo Store_Item)
+{
+	Store_Item.Weapon_Bodygroup 		= RUINA_QUINCY_BOW_2_VIEWMODEL;	//temp
+	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_4;
+	Store_Item.WeaponModelIndexOverride = PrecacheModel(Store_Item.WeaponModelOverride);
+}
+public void Quincy_Repeater_M1(int client, int weapon, bool crit, int slot)
+{
+	float timer_max, ratio, current;
+	QuincyGetBowStats(weapon, timer_max, current, ratio);
+	Current_Mana_DispalyOffeset[client] = 0;
+	Current_Mana[client] -= RoundToFloor(fQuincyManaConsumedForCharge[client]);
+	fQuincyManaConsumedForCharge[client] = 0.0;
+	if(ratio < 0.2)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Your Weapon is not charged enough None");	
+		return;
+	}
+	SDKhooks_SetManaRegenDelayTime(client, 2.0);
 
+	float speed = 2000.0;
+	float damage= 100.0;
+	float time 	= 1.5;
+	damage *= Attributes_Get(weapon, 410, 1.0);
 
+	float minmulti, maxmulti;
+	maxmulti = Attributes_Get(weapon, Attrib_Weapon_MaxDmgMulti, 1.0);
+	minmulti = Attributes_Get(weapon, Attrib_Weapon_MinDmgMulti, 1.0);
 
+	float multi = (minmulti + (maxmulti - minmulti) * ratio);
+	damage *=multi;
+
+	speed *= Attributes_Get(weapon, 103, 1.0);
+	speed *= Attributes_Get(weapon, 104, 1.0);
+	speed *= Attributes_Get(weapon, 475, 1.0);
+
+	time *= Attributes_Get(weapon, 101, 1.0);
+	time *= Attributes_Get(weapon, 102, 1.0);
+
+	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, "");
+	if(IsValidEntity(projectile))
+	{
+		WandProjectile_ApplyFunctionToEntity(projectile, Quincy_Touch);
+		float SpawnAngles[3]; GetClientEyeAngles(client, SpawnAngles);
+		int particle = Trail_Attach(projectile, BEAM_COMBINE_BLUE,  255, 1.0, 22.0, 0.0, 4);
+		SDKCall_SetAbsAngle(particle, SpawnAngles);
+		SetParent(projectile, particle);	
+		SetEntityCollisionGroup(particle, 27);
+		i_WandParticle[projectile] = EntIndexToEntRef(particle);
+	}
+
+	float delay = Attributes_Get(weapon, 122, 0.1);
+	int amt = RoundFloat(Attributes_Get(weapon, 868, 3.0));
+	for(int i=1 ; i < amt ; i++)
+	{
+		DataPack pack = new DataPack();
+		pack.WriteCell(EntIndexToEntRef(client));
+		pack.WriteCell(EntIndexToEntRef(weapon));
+		pack.WriteFloat(speed);
+		pack.WriteFloat(time);
+		pack.WriteFloat(damage);
+		RequestFrames(RF_ShootExtraQuincyArrow, RoundToCeil(66.0 * (delay * i)), pack);
+	}
+
+	DataPack pack = new DataPack();
+	pack.WriteCell(EntIndexToEntRef(weapon));
+	pack.WriteCell(EntIndexToEntRef(client));
+	pack.WriteFloat(1.0);	//wanted
+	pack.WriteFloat(1.0);	//base
+	RequestFrames(RF_OffsetNextAttack, 3, pack);
+}
+static void RF_ShootExtraQuincyArrow(DataPack pack)
+{
+	pack.Reset();
+	int client = EntRefToEntIndex(pack.ReadCell());
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	float speed	= pack.ReadFloat();
+	float time	= pack.ReadFloat();
+	float damage= pack.ReadFloat();
+	delete pack;
+
+	if(!IsValidClient(client) || !IsValidEntity(weapon))
+		return;
+
+	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, "");
+	if(IsValidEntity(projectile))
+	{
+		WandProjectile_ApplyFunctionToEntity(projectile, Quincy_Touch);
+		int particle = Trail_Attach(projectile, BEAM_COMBINE_BLUE,  255, 1.0, 22.0, 0.0, 4);
+		float SpawnAngles[3]; GetClientEyeAngles(client, SpawnAngles);
+		SDKCall_SetAbsAngle(particle, SpawnAngles);
+		SetParent(projectile, particle);	
+		SetEntityCollisionGroup(particle, 27);
+		i_WandParticle[projectile] = EntIndexToEntRef(particle);
+	}
+}
 public void Quincy_Bow_M2(int client, int weapon, bool crit, int slot)
 {
 	

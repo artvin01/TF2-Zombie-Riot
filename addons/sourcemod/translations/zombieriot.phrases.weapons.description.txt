@@ -2511,36 +2511,28 @@
 		"it"	"Ultima unità di base da mischia."
 		"ko"	"기본 근접 유닛의 최상위 등급."
 	}
-	"quincy pap0"
-    {
-        "en"    "A bow made of pure energy\n-Hold mouse1 to charge it\n-Damage dealt depends on how much mana you pump into it"
+	"quincy base desc"
+	{
+		"en"	"A bow made of pure energy\n-Hold mouse1 to charge it\n-Damage dealt depends on how much mana you pump into it"
 		"ko"	"순수한 에너지로 제작된 활.\n-M1를 꾹 눌러 충전 가능\n-이 활에 충전시킨 마나량에 따라 피해량 증가"
-    }
-    "quincy pap"
-    {
-        "en"    "-Increased Damage\n-Your arrows gain the ability to home onto targets, if you can see one\n-Homing power is dependant on how raishi ％ charge"
-        "ko"    "-피해량 증가\n-화살이 시야 내의 적을 추적하는 유도탄이 됩니다.\n-충전량에 따라 유도력이 더욱 강화됩니다."
-    }
-    "quincy pap arrow"
-    {
-        "en"    "-Increased Damage\n-Once you charge you weapon enough you gain the ability to shoot more arrows at once!"
-        "ko"    "-피해량 증가\n-충분히 충전할 경우 한 번에 화살을 많이 사격하는 능력이 발동됩니다!"
-    }
-    "quincy pap1"
-    {
-        "en"    "-Increased Damage\n-Extra Arrows on Multi Shot."
-        "ko"    "-피해량 증가\n-다중 사격의 화살 발사량 증가"
-    }
-    "quincy pap hyper"
-    {
-        "en"    "-Increased Damage\n-You can now fire a constant stream of magic arrows!"
-        "ko"    "-피해량 증가\n-이제 지속적으로 마법 화살 세례를 연사할 수 있습니다!"
-    }
-    "quincy pap arrow hyper"
-    {
-        "en"    "-Increased Damage\n-After hitting enough enemy combatants, you gain the ability to fire a DEVESTATING hyper arrow."
-        "ko"    "-피해량 증가\n-적을 충분히 적중했다면, 파괴적인 화살을 발사하는 능력이 활성화됩니다."
-    }
+	}
+	"quincy base desc 2"
+	{
+		"en"	"-Increased Damage"
+		"ko"	"피해량 증가"
+	}
+	"quincy repeater desc"
+	{
+		"en"	"DESCRIBE ME"
+	}
+	"quincy balista desc"
+	{
+		"en"	"DESCRIBE ME"
+	}
+	"quincy longbow desc"
+	{
+		"en"	"DESCRIBE ME"
+	}
 	"Monk Desc"
 	{
 		"en"	"Provides AOE damage around it but lacks self defense"

@@ -1253,10 +1253,11 @@ public void OnPostThink(int client)
 					Format(buffer, sizeof(buffer), "%s\n", buffer);
 				}
 	#if defined ZR
-				if(Current_Mana[client] < max_mana[client])
+				int currentMana = Current_Mana[client] + Current_Mana_DispalyOffeset[client];	//an offset for displayed mana.
+				if(currentMana < max_mana[client])	//use mana displayed
 				{
-					red = Current_Mana[client] * 255  / (RoundToFloor(max_mana[client]) + 1); //DO NOT DIVIDE BY 0
-					blue = Current_Mana[client] * 255  / (RoundToFloor(max_mana[client]) + 1);
+					red = currentMana * 255  / (RoundToFloor(max_mana[client]) + 1); //DO NOT DIVIDE BY 0
+					blue = currentMana * 255  / (RoundToFloor(max_mana[client]) + 1);
 					red = 255 - red;
 					if(red > 255)
 						red = 255;
@@ -1276,7 +1277,7 @@ public void OnPostThink(int client)
 					green 	= 200;
 					blue	= 200;
 
-					float OverMana_Ratio = Current_Mana[client]/max_mana[client];
+					float OverMana_Ratio = Current_Mana[client]/max_mana[client];	//use true mana value
 
 					if(OverMana_Ratio > 1.05)
 					{
@@ -1312,17 +1313,18 @@ public void OnPostThink(int client)
 
 				if(!InfMana)
 				{
+					
 					for(int i=1; i<21; i++)
 					{
-						if(Current_Mana[client] >= max_mana[client]*(i*0.05))
+						if(currentMana >= max_mana[client]*(i*0.05))
 						{
 							Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_FULL);
 						}
-						else if(Current_Mana[client] > max_mana[client]*(i*0.05 - 1.0/60.0))
+						else if(currentMana > max_mana[client]*(i*0.05 - 1.0/60.0))
 						{
 							Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTFULL);
 						}
-						else if(Current_Mana[client] > max_mana[client]*(i*0.05 - 1.0/30.0))
+						else if(currentMana > max_mana[client]*(i*0.05 - 1.0/30.0))
 						{
 							Format(buffer, sizeof(buffer), "%s%s", buffer, CHAR_PARTEMPTY);
 						}
@@ -1336,7 +1338,7 @@ public void OnPostThink(int client)
 				SetGlobalTransTarget(client);
 	#if defined ZR
 				if(!InfMana)
-					Format(buffer, sizeof(buffer), "%t\n%s", "Current Mana", Current_Mana[client], max_mana[client], mana_regen[client], buffer);
+					Format(buffer, sizeof(buffer), "%t\n%s", "Current Mana", currentMana, max_mana[client], mana_regen[client], buffer);
 				else
 					Format(buffer, sizeof(buffer), "%t\n%s", "Current Mana Inf", buffer);
 	#elseif defined RPG

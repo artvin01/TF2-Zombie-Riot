@@ -4884,6 +4884,10 @@
 	{
 		"en"	"Quincy Balista"
 	}
+	"Quincy Repeater"
+	{
+		"en"	"Quincy Repeater"
+	}
 	"Heavy Particle Rifle"
 	{
 		"en"	"Heavy Particle Rifle"

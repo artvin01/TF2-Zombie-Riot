@@ -638,7 +638,8 @@ float max_mana[MAXPLAYERS];
 
 
 
-int Current_Mana[MAXPLAYERS];
+int Current_Mana[MAXPLAYERS];		//this being an int is gonna be the end of me. oh well, time to work around it
+int Current_Mana_DispalyOffeset[MAXPLAYERS];	//actual mana is above. this just affects displayed mana on hud. note: should only really be used for specific weapons while active. and you also need to manually reset it to 0, otherwise it will show a false mana value to the client
 float Mana_Hud_Delay[MAXPLAYERS];
 int i_WandIdNumber[MAXENTITIES]; //This is to see what wand is even used. so it does its own logic and so on.
 

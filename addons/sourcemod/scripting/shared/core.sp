@@ -1146,6 +1146,7 @@ public void OnMapStart()
 	Zero(Mana_Hud_Delay);
 	Zero(Mana_Regen_Delay);
 	Zero(Mana_Regen_Delay_Aggreviated);
+	Zero(Current_Mana_DispalyOffeset);
 //	Zero(RollAngle_Regen_Delay);
 	Zero(f_InBattleHudDisableDelay);
 	Zero(f_InBattleDelay);
@@ -1696,6 +1697,7 @@ public void OnClientDisconnect(int client)
 	KillFeed_ClientDisconnect(client);
 	Store_ClientDisconnect(client);
 	Current_Mana[client] = 0;
+	Current_Mana_DispalyOffeset[client] = 0;
 #endif
 
 #if defined RTS
