@@ -345,7 +345,62 @@ public void Quincy_Balista_M1(int client, int weapon, bool crit, int slot)
 	int current 	= GetEntData(weapon, iAmmoTable, 4);
 	CPrintToChatAll("current: %i", current);
 	SetEntData(weapon, iAmmoTable, 0, 4, true);
-	
+
+	float speed = 2000.0;
+	float damage= 100.0;
+	float time 	= 1.5;
+	damage *= Attributes_Get(weapon, 410, 1.0);
+
+	speed *= Attributes_Get(weapon, 103, 1.0);
+	speed *= Attributes_Get(weapon, 104, 1.0);
+	speed *= Attributes_Get(weapon, 475, 1.0);
+
+	time *= Attributes_Get(weapon, 101, 1.0);
+	time *= Attributes_Get(weapon, 102, 1.0);
+
+	float distoffset = 100.0;
+	float sideways_dist = 150.0;
+
+	float Angles[3]; GetClientEyeAngles(client, Angles);
+	float Origin[3]; GetClientEyePosition(client, Origin);
+
+	Player_Laser_Logic Laser;
+	Laser.client = client;
+	Laser.DoForwardTrace_Basic();
+
+	float dist_add = sideways_dist/float(current);
+	for(int i=0 ; i < current ; i ++)
+	{
+		float vecForward[3], vecRight[3];
+		float spawnLoc[3];
+		
+		float SidewaysOffset = (-0.5*sideways_dist) + (dist_add * i);
+   	 	float ForwardSet =  distoffset * Sine(3.1416 * (float(i) / float(current)));
+		GetAngleVectors(Angles, vecForward, vecRight, NULL_VECTOR);
+		ScaleVector(vecForward, ForwardSet);
+		ScaleVector(vecRight, SidewaysOffset);
+		AddVectors(Origin, vecForward, spawnLoc);
+		AddVectors(spawnLoc, vecRight, spawnLoc);
+
+		float SpawnAngles[3];
+		MakeVectorFromPoints(spawnLoc, Laser.End_Point, SpawnAngles);
+		GetVectorAngles(SpawnAngles, SpawnAngles);
+
+		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, "",
+		.CustomAng = SpawnAngles,
+		.CustomPos = spawnLoc
+		);
+
+		if(IsValidEntity(projectile))
+		{
+			WandProjectile_ApplyFunctionToEntity(projectile, Quincy_Touch);
+			int particle = Trail_Attach(projectile, BEAM_COMBINE_BLACK,  255, 1.0, 22.0, 0.0, 4);
+			SDKCall_SetAbsAngle(particle, SpawnAngles);
+			SetParent(projectile, particle);	
+			SetEntityCollisionGroup(particle, 27);
+			i_WandParticle[projectile] = EntIndexToEntRef(particle);
+		}
+	}
 }
 public void Quincy_Balist_M2(int client, int weapon, bool crit, int slot)
 {
