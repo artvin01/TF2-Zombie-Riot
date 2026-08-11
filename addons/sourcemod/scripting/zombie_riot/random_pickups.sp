@@ -41,7 +41,7 @@ public Action RandomPickup_DelayBetweenSpawns(Handle timer)
 	if(!IsValidClient(RandomClient))
 		return Plugin_Continue;
 
-	float FailCdRegive = 0.0;
+	float FailCdRegive = 1.0;
 	int MaxCratesGive = CountPlayersOnRed(0);
 	MaxCratesGive *= 2;
 	if(MaxCratesGive >= MAX_PICKUPS_ALLOWED)
