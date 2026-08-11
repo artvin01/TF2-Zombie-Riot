@@ -1004,4 +1004,273 @@
 	{
 		"en"	"Hello, mercs. I'm back to help out, and this time it's with a void outbreak."
 	}
+
+
+	//unhinged twirl yapping:
+	//w10
+	"Twirl Intro1_1"
+	{
+		"en"	"Ahhh, it feels nice to venture out into the world every once in a while..."
+	}
+	"Twirl Intro1_2"
+	{
+		"en"	"Oh the joy I will get from {crimson}fighting{snow} you all"
+	}
+	"Twirl Intro1_3"
+	{
+		"en"	"From what {aqua}Stella{snow}'s told, this should be great {purple}fun{snow}.."
+	}
+	"Twirl Intro1_4"
+	{
+		"en"	"Let's see who dies {crimson}first{snow}!"
+	}
+	"Twirl Intro1_5"
+	{
+		"en"	"Huh interesting, who might you be? no matter, you look strong, {crimson}ima fight you"
+	}
+	"Twirl Intro1_6"
+	{
+		"en"	"Its time to \"Twirl\" like a beyblade"
+	}
+	//w20
+	"Twirl Intro2_1"
+	{
+		"en"	"Last time, it was a great workout, {crimson}Time to do it again{snow}!"
+	}
+	"Twirl Intro2_2"
+	{
+		"en"	"Our last fight was so fun, I hope this fight is as fun as the last one!"
+	}
+	"Twirl Intro2_3"
+	{
+		"en"	"{aqua}Stella{snow} was right, you all ARE great fun to play with!"
+	}
+	"Twirl Intro2_4"
+	{
+		"en"	"Ehe, now who will die {crimson}last{snow}?"
+	}
+	"Twirl Intro2_5"
+	{
+		"en"	"You spin me right round.."
+	}
+	//w30:
+	"Twirl Intro3_1"
+	{
+		"en"	"My Oh my, you're still here, {purple}how wonderful!"
+	}
+	"Twirl Intro3_2"
+	{
+		"en"	 "You must enjoy fighting as much as {purple}I do{snow}, considering you've made it this far!"
+	}
+	"Twirl Intro3_3"
+	{
+		"en"	"{aqua}Stella{snow}, you understated how {purple}fun{snow} this would be!"
+	}
+	"Twirl Intro3_4"
+	{
+		"en"	"I've brought some {purple}Heavy Equipment{snow} heh"
+	}
+	"Twirl Intro3_5"
+	{
+		"en"	"Time to \"Twirl\", heh"
+	}
+	//w40
+	"Twirl Intro4_1"
+	{
+		"en"	"Its time for the final show, {purple}I hope you're all as excited as I am{snow}!"
+	}
+	"Twirl Intro4_2"
+	{
+		"en"	 "Ah, the fun that {aqua}Stella{snow}'s missing out on,{purple} a shame{snow}."
+	}
+	"Twirl Intro4_3"
+	{
+		"en"	"I hope you're ready for this final {purple}battle{snow}."
+	}
+	"Twirl Intro4_4"
+	{
+		"en"	"Kuru Kuru~"
+	}
+	"Twirl Intro4_5"
+	{
+		"en"	"Kururing~"
+	}
+	//w40-rare
+	//this is more like a single string rather then rng choices.
+	"Twirl Intro4_rare1"
+	{
+		"en"	"I have a question for you all..."
+	}
+	"Twirl Intro4_rare2"
+	{
+		"en"	"With equipment that bad, how did you make it this far?"
+	}
+	"Twirl Intro4_rare3"
+	{
+		"en"	"Like seriously, acording to the simulations we had done, you should have lost a long while ago"
+	}
+	"Twirl Intro4_rare4"
+	{
+		"en"	"At which point we would have given you a lecture on why you failed, and yet somehow, you've subverted the simulations"
+	}
+	"Twirl Intro4_rare5"
+	{
+		"en"	"...Then again we did have a recently hired intern do those simulations...."
+	}
+	"Twirl Intro4_rare6"
+	{
+		"en"	"oh."
+	}
+	//freeplay:
+	"Twirl Intro5_1"
+	{
+		"en"	"So the flow of magic lead me here, {purple}how interesting{snow}..."
+	}
+	"Twirl Intro5_2"
+	{
+		"en"	 "Oh, its you all, hey, wanna {crimson}fight{snow}? {purple}of course you do{snow}!"
+	}
+	"Twirl Intro5_3"
+	{
+		"en"	"I need to unwind, and you all look {crimson}perfect{snow} for that!"
+	}
+	"Twirl Intro5_4"
+	{
+		"en"	"By the gods, there are Mercenaries on the lose!"
+	}
+	//tripple enemies
+	"Twirl Intro tripple_1"
+	{
+		"en"	"Oh my, looks like the expidonsans went easy on you, we sure wont my dears. Us ruanians work differently~"
+	}
+	"Twirl Intro tripple_2"
+	{
+		"en"	"... Except Karlas but shhhh!"
+	}
+
+	//win by kill:
+	"Twirl Win Kill_1"
+	{
+		"en"	"Wait, you're all dead already??"
+	}
+	"Twirl Win Kill_2"
+	{
+		"en"	"This was quite fun, I thank you for the experience!"
+	}
+	"Twirl Win Kill_3"
+	{
+		"en"	"Huh, I guess this was all you were capable of, a shame"
+	}
+	"Twirl Win Kill_4"
+	{
+		"en"	"I, as the empress, thank you for this wonderful time"
+	}
+	"Twirl Win Kill_5"
+	{
+		"en"	"Ahhh, that was a great workout, time to hit the showers"
+	}
+	"Twirl Win Kill_6"
+	{
+		"en"	"You call this fighting? We call this a difficulty tweak"
+	}
+	"Twirl Win Kill_7"
+	{
+		"en"	"Another one bites the dust"
+	}
+	"Twirl Win Kill_8"
+	{
+		"en"	"Ah foolish Mercenaries, maybe next time think about a proper strategy"
+	}
+	"Twirl Win Kill_9"
+	{
+		"en"	"Raw power is good and all, but you know what's better? {crimson}Debuffs"
+	}
+	"Twirl Win Kill_10"
+	{
+		"en"	"Perhaps if you all had more {aqua}supports{snow} you'd might have won. Allas"
+	}
+	"Twirl Win Kill_11"
+	{
+		"en"	"{crimson}How Cute{snow}."
+	}
+	"Twirl Win Kill_12"
+	{
+		"en"	"And you're all supposed to be strong?"
+	}
+	//Transform:
+	"Twirl Transform_1"
+	{
+		"en"	"Time to ramp up the {purple}heat"
+	}
+	"Twirl Transform_2"
+	{
+		"en"	"Ahhh, this is {purple}fun{snow}, lets step it up a notch"
+	}
+	"Twirl Transform_3"
+	{
+		"en"	"Round 2. Fight!"
+	}
+	"Twirl Transform_4"
+	{
+		"en"	"Ai, this is getting fun"
+	}
+	"Twirl Transform_5"
+	{
+		"en"	"I’m extremely curious to see how you fair {purple}against this"
+	}
+	"Twirl Transform_6"
+	{
+		"en"	"Ahahahah, the joy of battle, don't act like you’re not enjoying this"
+	}
+	"Twirl Transform_7"
+	{
+		"en"	"The flow of {aqua}mana{snow} is so {purple}intense{snow}, I love this oh so much!"
+	}
+	//angry transform:
+	"Twirl Transform_angry_1"
+	{
+		"en"	"You ain't getting a normal phase shift"
+	}
+	"Twirl Transform_angry_2"
+	{
+		"en"	"This time, I ain't waiting"
+	}
+	"Twirl Transform_angry_3"
+	{
+		"en"	"Its time to ramp the heater up to {crimson}max"
+	}
+	//lastmann:
+	"Twirl LastMann_1"
+	{
+		"en"	"Oh my, quite the situation you’re in here"
+	}
+	"Twirl LastMann_2"
+	{
+		"en"	"Come now, {purple}is this all you can do{snow}? Prove me wrong."
+	}
+	"Twirl LastMann_3"
+	{
+		"en"	"I know you're capable more than just this"
+	}
+	"Twirl LastMann_4"
+	{
+		"en"	"You're the last one alive, {purple}but{snow} are you the strongest?"
+	}
+	"Twirl LastMann_5"
+	{
+		"en"	"Interesting, perhaps I overestimated you all."
+	}
+	"Twirl LastMann_6"
+	{
+		"en"	"If you have some form of {purple}secret weapon{snow}, its best to use it now."
+	}
+	"Twirl LastMann_7"
+	{
+		"en"	"Such is the battlefield, {purple}they all die one by one{snow}, until there is but one standing..."
+	}
+	"Twirl LastMann_8"
+	{
+		"en"	"{crimson}How Cute{snow}. You alone, its such a view"
+	}
+
 }

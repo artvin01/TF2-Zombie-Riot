@@ -94,7 +94,7 @@ static char gGlow1;	//blue
 
 
 #define TWIRL_MAGIA_OVERFLOW_DURATION 8.0
-
+static bool bAltTwirl;
 static bool PrecacheTwirl;
 void Twirl_OnMapStart_NPC()
 {
@@ -490,9 +490,13 @@ methodmap Twirl < CClotBody
 			{
 				return RUINA_TWIRL_CREST_3;
 			}
-			else
+			else if(wave <= 40 || !bAltTwirl)	
 			{
 				return RUINA_TWIRL_CREST_4;
+			}
+			else
+			{
+				return RUINA_TWIRL_CREST_4|RUINA_TWIRL_CREST_3|RUINA_TWIRL_CREST_2;
 			}
 		}
 		else				//melee
@@ -509,9 +513,13 @@ methodmap Twirl < CClotBody
 			{
 				return RUINA_TWIRL_MELEE_3;
 			}
-			else
+			else if(wave <= 40 || !bAltTwirl)	
 			{
 				return RUINA_TWIRL_MELEE_4;
+			}
+			else
+			{
+				return RUINA_TWIRL_MELEE_4|RUINA_TWIRL_MELEE_3;
 			}
 		}
 	}
@@ -826,7 +834,7 @@ methodmap Twirl < CClotBody
 	{
 		Twirl npc = view_as<Twirl>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
 
-		//data: sc%% ; test, verkia, force10, force20, force30, force40, triple_enemies, final_item, blockinv, anger
+		//data: sc%% ; test, verkia, force10, force20, force30, force40, triple_enemies, final_item, blockinv, anger, alternative
 		
 		npc.m_iChanged_WalkCycle = 1;
 		npc.m_iBarrageAmmo = 0;
@@ -855,6 +863,13 @@ methodmap Twirl < CClotBody
 			wave = 30;
 		if(StrContains(data, "force40") != -1)
 			wave = 40;
+
+		bAltTwirl = (StrContains(data, "alternative") != -1);
+
+		if(bAltTwirl)
+		{
+			wave +=10;
+		}
 
 		npc.m_bDissapearOnDeath = true;
 		npc.m_fbGunout = true;
@@ -1025,12 +1040,12 @@ methodmap Twirl < CClotBody
 			npc.m_iRangedAmmo = 5;
 			switch(GetRandomInt(0, 5))
 			{
-				case 0: Twirl_Lines(npc, "Ahhh, it feels nice to venture out into the world every once in a while...");
-				case 1: Twirl_Lines(npc, "Oh the joy I will get from {crimson}fighting{snow} you all");
-				case 2: Twirl_Lines(npc, "From what {aqua}Stella{snow}'s told, this should be great {purple}fun{snow}..");
-				case 3: Twirl_Lines(npc, "Let's see who dies {crimson}first{snow}!");
-				case 4: Twirl_Lines(npc, "Huh interesting, who might you be? no matter, you look strong, {crimson}ima fight you");	//HEY ITS ME GOKU, I HEARD YOUR ADDICTION IS STRONG, LET ME FIGHT IT
-				case 5: Twirl_Lines(npc, "Its time to \"Twirl\" like a beyblade");
+				case 0: Twirl_Lines(npc, "Twirl Intro1_1", true);
+				case 1: Twirl_Lines(npc, "Twirl Intro1_2", true);
+				case 2: Twirl_Lines(npc, "Twirl Intro1_3", true);
+				case 3: Twirl_Lines(npc, "Twirl Intro1_4", true);
+				case 4: Twirl_Lines(npc, "Twirl Intro1_5", true);
+				case 5: Twirl_Lines(npc, "Twirl Intro1_6", true);
 			}
 		}
 		else if(wave <=20)
@@ -1038,11 +1053,11 @@ methodmap Twirl < CClotBody
 			npc.m_iRangedAmmo = 7;
 			switch(GetRandomInt(0, 4))
 			{
-				case 0: Twirl_Lines(npc, "Last time, it was a great workout, {crimson}Time to do it again{snow}!");
-				case 1: Twirl_Lines(npc, "Our last fight was so fun, I hope this fight is as fun as the last one!");
-				case 2: Twirl_Lines(npc, "{aqua}Stella{snow} was right, you all ARE great fun to play with!");
-				case 3: Twirl_Lines(npc, "Ehe, now who will die {crimson}last{snow}?");
-				case 4: Twirl_Lines(npc, "You spin me right round..");
+				case 0: Twirl_Lines(npc, "Twirl Intro2_1", true);
+				case 1: Twirl_Lines(npc, "Twirl Intro2_2", true);
+				case 2: Twirl_Lines(npc, "Twirl Intro2_3", true);
+				case 3: Twirl_Lines(npc, "Twirl Intro2_4", true);
+				case 4: Twirl_Lines(npc, "Twirl Intro2_5", true);
 			}
 		}
 		else if(wave <=30)
@@ -1050,11 +1065,11 @@ methodmap Twirl < CClotBody
 			npc.m_iRangedAmmo = 9;
 			switch(GetRandomInt(0, 4))
 			{
-				case 0: Twirl_Lines(npc, "My Oh my, you're still here, {purple}how wonderful!");
-				case 1: Twirl_Lines(npc, "You must enjoy fighting as much as {purple}I do{snow}, considering you've made it this far!");
-				case 2: Twirl_Lines(npc, "{aqua}Stella{snow}, you understated how {purple}fun{snow} this would be!");
-				case 3: Twirl_Lines(npc, "I've brought some {purple}Heavy Equipment{snow} heh");
-				case 4: Twirl_Lines(npc, "Time to \"Twirl\", heh");
+				case 0: Twirl_Lines(npc, "Twirl Intro3_1", true);
+				case 1: Twirl_Lines(npc, "Twirl Intro3_2", true);
+				case 2: Twirl_Lines(npc, "Twirl Intro3_3", true);
+				case 3: Twirl_Lines(npc, "Twirl Intro3_4", true);
+				case 4: Twirl_Lines(npc, "Twirl Intro3_5", true);
 			}
 		}
 		else if(wave <=40)
@@ -1062,22 +1077,25 @@ methodmap Twirl < CClotBody
 			npc.m_iRangedAmmo = 12;
 			switch(GetRandomInt(0, 4))
 			{
-				case 0: Twirl_Lines(npc, "Its time for the final show, {purple}I hope you're all as excited as I am{snow}!");
-				case 1: Twirl_Lines(npc, "Ah, the fun that {aqua}Stella{snow}'s missing out on,{purple} a shame{snow}.");
-				case 2: Twirl_Lines(npc, "I hope you're ready for this final {purple}battle{snow}.");
-				case 3: Twirl_Lines(npc, "Kuru Kuru~");
+				case 0: Twirl_Lines(npc, "Twirl Intro4_1", true);
+				case 1: Twirl_Lines(npc, "Twirl Intro4_2", true);
+				case 2: Twirl_Lines(npc, "Twirl Intro4_3", true);
+				case 3: Twirl_Lines(npc, "Twirl Intro4_4", true);
+
 				case 4:
 				{
 					switch(GetRandomInt(0, 2))
 					{
 						case 1:	//1/6*1/3 ~ 5.(5)% of it happening
 						{
-							Twirl_Lines(npc, "You know, there's something I've always wondered about, why do you people keep on calling me a masochist.");
-							Twirl_Lines(npc, "Since like, I'm not one for the record, and yet some of the \"people\" I've fought in the past keep calling me that.");
-							Twirl_Lines(npc, "And I'm at a loss as to WHY they say that, if anything it would be more accurate to call me a sadist, for the record, I'm not..");
-							Twirl_Lines(npc, "So yaknow, if you can, try and explain it, please?");
+							Twirl_Lines(npc, "Twirl Intro4_rare1", true);
+							Twirl_Lines(npc, "Twirl Intro4_rare2", true);
+							Twirl_Lines(npc, "Twirl Intro4_rare3", true);
+							Twirl_Lines(npc, "Twirl Intro4_rare4", true);
+							Twirl_Lines(npc, "Twirl Intro4_rare5", true);
+							Twirl_Lines(npc, "Twirl Intro4_rare6", true);
 						}
-						default: Twirl_Lines(npc, "Kururing~");
+						default: Twirl_Lines(npc, "Twirl Intro4_5", true);
 					}
 				}
 			}
@@ -1086,14 +1104,13 @@ methodmap Twirl < CClotBody
 		}
 		else	//freeplay
 		{
-			if(!b_tripple_raid)
-				RaidModeScaling *=0.9;
-			npc.m_iRangedAmmo = 12;
+			npc.m_iRangedAmmo = 16;
 			switch(GetRandomInt(0, 3))
 			{
-				case 1: Twirl_Lines(npc, "So the flow of magic lead me here, {purple}how interesting{snow}...");
-				case 2: Twirl_Lines(npc, "Oh, its you all, hey, wanna {crimson}fight{snow}? {purple}of course you do{snow}!");
-				case 3: Twirl_Lines(npc, "I need to unwind, and you all look {crimson}perfect{snow} for that!");
+				case 0: Twirl_Lines(npc, "Twirl Intro5_1", true);
+				case 1: Twirl_Lines(npc, "Twirl Intro5_2", true);
+				case 2: Twirl_Lines(npc, "Twirl Intro5_3", true);
+				case 3: Twirl_Lines(npc, "Twirl Intro5_4", true);
 			}
 		}
 
@@ -1250,18 +1267,18 @@ static void Twirl_WinLine(int entity)
 
 	switch(GetRandomInt(0, 11))
 	{
-		case 0: Twirl_Lines(npc, "Wait, you're all dead already??");
-		case 1: Twirl_Lines(npc, "This was quite fun, I thank you for the experience!");
-		case 2: Twirl_Lines(npc, "Huh, I guess this was all you were capable of, a shame");
-		case 3: Twirl_Lines(npc, "I, as the empress, thank you for this wonderful time");
-		case 4: Twirl_Lines(npc, "Ahhh, that was a great workout, time to hit the showers");
-		case 5: Twirl_Lines(npc, "You call this fighting? We call this resisting arrest");
-		case 6: Twirl_Lines(npc, "Another one bites the dust");
-		case 7: Twirl_Lines(npc, "Ah foolish Mercenaries, maybe next time think about a proper strategy");
-		case 8: Twirl_Lines(npc, "Raw power is good and all, but you know what's better? {crimson}Debuffs");
-		case 9: Twirl_Lines(npc, "Perhaps if you all had more {aqua}supports{snow} you'd might have won. Allas");
-		case 10: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
-		case 11: Twirl_Lines(npc, "And you're all supposed to be strong?");
+		case 0: 	Twirl_Lines(npc, "Twirl Win Kill_1", true);
+		case 1: 	Twirl_Lines(npc, "Twirl Win Kill_2", true);
+		case 2: 	Twirl_Lines(npc, "Twirl Win Kill_3", true);
+		case 3: 	Twirl_Lines(npc, "Twirl Win Kill_4", true);
+		case 4: 	Twirl_Lines(npc, "Twirl Win Kill_5", true);
+		case 5: 	Twirl_Lines(npc, "Twirl Win Kill_6", true);
+		case 6: 	Twirl_Lines(npc, "Twirl Win Kill_7", true);
+		case 7: 	Twirl_Lines(npc, "Twirl Win Kill_8", true);
+		case 8: 	Twirl_Lines(npc, "Twirl Win Kill_9", true);
+		case 9: 	Twirl_Lines(npc, "Twirl Win Kill_10", true);
+		case 10: 	Twirl_Lines(npc, "Twirl Win Kill_11", true);
+		case 11: 	Twirl_Lines(npc, "Twirl Win Kill_12", true);
 	}
 
 }
@@ -1338,14 +1355,14 @@ static void ClotThink(int iNPC)
 		{
 			switch(GetRandomInt(0, 7))
 			{
-				case 0: Twirl_Lines(npc, "Oh my, quite the situation you’re in here");
-				case 1: Twirl_Lines(npc, "Come now, {purple}is this all you can do{snow}? Prove me wrong.");
-				case 2: Twirl_Lines(npc, "I know you're capable more than just this");
-				case 3: Twirl_Lines(npc, "You're the last one alive, {purple}but{snow} are you the strongest?");
-				case 4: Twirl_Lines(npc, "Interesting, perhaps I overestimated you all.");
-				case 5: Twirl_Lines(npc, "If you have some form of {purple}secret weapon{snow}, its best to use it now.");
-				case 6: Twirl_Lines(npc, "Such is the battlefield, {purple}they all die one by one{snow}, until there is but one standing...");
-				case 7: Twirl_Lines(npc, "{crimson}How Cute{snow}. You alone, its such a view");
+				case 0: Twirl_Lines(npc, "Twirl LastMann_1", true);
+				case 1: Twirl_Lines(npc, "Twirl LastMann_2", true);
+				case 2: Twirl_Lines(npc, "Twirl LastMann_3", true);
+				case 3: Twirl_Lines(npc, "Twirl LastMann_4", true);
+				case 4: Twirl_Lines(npc, "Twirl LastMann_5", true);
+				case 5: Twirl_Lines(npc, "Twirl LastMann_6", true);
+				case 6: Twirl_Lines(npc, "Twirl LastMann_7", true);
+				case 7: Twirl_Lines(npc, "Twirl LastMann_8", true);
 			}
 		}
 	}
@@ -1363,22 +1380,22 @@ static void ClotThink(int iNPC)
 		{
 			switch(GetRandomInt(0, 2))
 			{
-				case 0: Twirl_Lines(npc, "You ain't getting a normal phase shift");
-				case 1: Twirl_Lines(npc, "This time, I ain't waiting");
-				case 2: Twirl_Lines(npc, "Its time to ramp the heater up to {crimson}max");
+				case 0: Twirl_Lines(npc, "Twirl Transform_angry_1", true);
+				case 1: Twirl_Lines(npc, "Twirl Transform_angry_2", true);
+				case 2: Twirl_Lines(npc, "Twirl Transform_angry_3", true);
 			}
 		}
 		else
 		{
 			switch(GetRandomInt(0, 6))
 			{
-				case 0: Twirl_Lines(npc, "Time to ramp up the {purple}heat");
-				case 1: Twirl_Lines(npc, "Ahhh, this is {purple}fun{snow}, lets step it up a notch");
-				case 2: Twirl_Lines(npc, "Round 2. Fight!");
-				case 3: Twirl_Lines(npc, "Ai, this is getting fun");
-				case 4: Twirl_Lines(npc, "I’m extremely curious to see how you fair {purple}against this");
-				case 5: Twirl_Lines(npc, "Ahahahah, the joy of battle, don't act like you’re not enjoying this");
-				case 6: Twirl_Lines(npc, "The flow of {aqua}mana{snow} is so {purple}intense{snow}, I love this oh so much!");
+				case 0: Twirl_Lines(npc, "Twirl Transform_1", true);
+				case 1: Twirl_Lines(npc, "Twirl Transform_2", true);
+				case 2: Twirl_Lines(npc, "Twirl Transform_3", true);
+				case 3: Twirl_Lines(npc, "Twirl Transform_4", true);
+				case 4: Twirl_Lines(npc, "Twirl Transform_5", true);
+				case 5: Twirl_Lines(npc, "Twirl Transform_6", true);
+				case 6: Twirl_Lines(npc, "Twirl Transform_7", true);
 			}
 		}
 		
@@ -4577,12 +4594,14 @@ static bool Similar(float val1, float val2)
 	return fabs(val1 - val2) < 2.0;
 }
 
-static void Twirl_Lines(Twirl npc, const char[] text)
+static void Twirl_Lines(Twirl npc, const char[] text, bool translate = false)
 {
 	if(b_test_mode)
 		return;
 
-	PrintNPCMessageWithPrefixes(npc.index, NameColour, text, .messageColor = TextColour);
+	PrintNPCMessageWithPrefixes(npc.index, NameColour, text, 
+	.messageIsTranslated = translate,
+	.messageColor = TextColour);
 }
 static float[] GetNPCAngles(CClotBody npc)
 {
@@ -4857,9 +4876,9 @@ static void Timer_Twirl_TripleIntro(Handle timer, bool shouldKarlasChat)
 	{
 		// Twirl's turn
 		Twirl npc = view_as<Twirl>(raids[0]);
-		
-		Twirl_Lines(npc, "Oh my, looks like the expidonsans went easy on you, we sure wont my dears. Us ruanians work differently~");
-		Twirl_Lines(npc, "... Except Karlas but shhhh!");
+
+		Twirl_Lines(npc, "Twirl Intro tripple_1", true);
+		Twirl_Lines(npc, "Twirl Intro tripple_2", true);
 		
 		// We have to wait for Karlas to spawn...
 		CreateTimer(1.0, Timer_Twirl_TripleIntro, true, TIMER_FLAG_NO_MAPCHANGE);
