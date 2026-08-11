@@ -245,7 +245,7 @@ int AmmoboxUsed(int client, int entity)
 				ClientCommand(client, "playgamesound items/ammo_pickup.wav");
 				AddAmmoClient(client, Ammo_type ,_,2.0);
 				Ammo_Count_Used[client] += 1;
-				if(ZR_Get_Modifier() == 8)
+				if(ZR_Get_Modifier() == 8 && Ammo_type != Ammo_Metal)
 					Ammo_Count_Used[client] += 1;
 				for(int i; i<Ammo_MAX; i++)
 				{
