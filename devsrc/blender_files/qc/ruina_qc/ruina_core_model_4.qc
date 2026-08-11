@@ -57,6 +57,28 @@ $bodygroup "quincy_bow_player"
 	blank
 	studio "bow_hell/quincy_bow_player.smd"
 }
+$bodygroup "repeater_bow_1"	//90%
+{
+	blank
+	studio "bow_hell/repeater_bow_1.smd"
+}
+
+
+$bodygroup "quincy_arrow"	
+{
+	blank
+	studio "v4/quincy_arrow.smd"
+}
+$bodygroup "quincy_balista_handle"	
+{
+	blank
+	studio "v4/quincy_balista_handle.smd"
+}
+$bodygroup "quincy_balista_head_1"	
+{
+	blank
+	studio "v4/quincy_balista_head_1.smd"
+}
 
 
 

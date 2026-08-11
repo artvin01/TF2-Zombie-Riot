@@ -277,7 +277,11 @@ enum
 	RUINA_BASE_RING				= (1 << 6),
 	RUINA_QUINCY_BOW_3_VIEWMODEL= (1 << 7),
 	RUINA_QUINCY_BOW_2_VIEWMODEL= (1 << 8),
-	RUINA_QUINCY_BOW_1_VIEWMODEL= (1 << 9)
+	RUINA_QUINCY_BOW_1_VIEWMODEL= (1 << 9),
+	RUINA_QUINCY_BOW_REPEATER_1_VIEWMODEL	= (1 << 10),
+	RUINA_QUINCY_ARROW			= (1 << 11),			//The humble magia penetrator, brought to you by lockheed-elf
+	RUINA_QUINCY_BALISTA_HANDLE = (1 << 12),
+	RUINA_QUINCY_BALISTA_HEAD_1 = (1 << 13)
 }
 enum
 {

@@ -312,7 +312,16 @@ public void Quincy_Generic_M1(int client, int weapon, bool crit, int slot)
 	time *= Attributes_Get(weapon, 102, 1.0);
 
 	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, "raygun_projectile_blue");
+	if(!IsValidEntity(projectile))
+		return;
+
 	WandProjectile_ApplyFunctionToEntity(projectile, Quincy_Touch);
+	int ModelApply = ApplyCustomModelToWandProjectile(projectile, RUINA_CUSTOM_MODELS_4, 1.0, "icbm_idle");
+	if(IsValidEntity(ModelApply))
+	{
+		SetVariantInt(RUINA_QUINCY_ARROW);
+		AcceptEntityInput(ModelApply, "SetBodyGroup");
+	}
 
 	//use
 	//Attrib_Weapon_MaxDmgMulti = 4047, 
@@ -385,8 +394,8 @@ static void RF_OffsetNextAttack(DataPack pack)
 ///BALISTA
 public void OnStore_QuincyBallista1_Initialised(ItemInfo Store_Item)
 {
-	Store_Item.Weapon_Bodygroup 		= RUINA_LAZER_CANNON_2|RUINA_IMPACT_LANCE_4;	//tmp
-	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_2;
+	Store_Item.Weapon_Bodygroup 		= RUINA_QUINCY_BALISTA_HANDLE|RUINA_QUINCY_BALISTA_HEAD_1;	//tmp
+	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_4;
 	Store_Item.WeaponModelIndexOverride = PrecacheModel(Store_Item.WeaponModelOverride);
 }
 public void Quincy_Balista_M1(int client, int weapon, bool crit, int slot)
@@ -425,7 +434,7 @@ public void Quincy_Balista_M1(int client, int weapon, bool crit, int slot)
 		
 		float SidewaysOffset = (current > 1) ? ((-0.5 * sideways_dist) + (dist_add * i)) : 0.0;
 		float ExtraCalc = (current > 1) ? (float(i) / float(current - 1)) : 0.5;
-		float ForwardSet = distoffset * Sine(3.14159265 * ExtraCalc);
+		float ForwardSet = distoffset * Sine(FLOAT_PI * ExtraCalc);
 
 		GetAngleVectors(Angles, vecForward, vecRight, NULL_VECTOR);
 		ScaleVector(vecForward, ForwardSet);
@@ -445,6 +454,13 @@ public void Quincy_Balista_M1(int client, int weapon, bool crit, int slot)
 
 		if(IsValidEntity(projectile))
 		{
+			int ModelApply = ApplyCustomModelToWandProjectile(projectile, RUINA_CUSTOM_MODELS_4, 1.0, "icbm_idle");
+			if(IsValidEntity(ModelApply))
+			{
+				SetVariantInt(RUINA_QUINCY_ARROW);
+				AcceptEntityInput(ModelApply, "SetBodyGroup");
+			}
+
 			WandProjectile_ApplyFunctionToEntity(projectile, Quincy_Touch);
 			int particle = Trail_Attach(projectile, BEAM_COMBINE_BLACK,  255, 1.0, 22.0, 0.0, 4);
 			SDKCall_SetAbsAngle(particle, SpawnAngles);
@@ -544,7 +560,7 @@ static void RF_SetSequence(DataPack pack)
 ////REPEATER
 public void OnStore_QuincyRepeater1_Initialised(ItemInfo Store_Item)
 {
-	Store_Item.Weapon_Bodygroup 		= RUINA_QUINCY_BOW_2_VIEWMODEL;	//temp
+	Store_Item.Weapon_Bodygroup 		= RUINA_QUINCY_BOW_REPEATER_1_VIEWMODEL;	
 	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_4;
 	Store_Item.WeaponModelIndexOverride = PrecacheModel(Store_Item.WeaponModelOverride);
 }
@@ -587,6 +603,12 @@ public void Quincy_Repeater_M1(int client, int weapon, bool crit, int slot)
 	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, "");
 	if(IsValidEntity(projectile))
 	{
+		int ModelApply = ApplyCustomModelToWandProjectile(projectile, RUINA_CUSTOM_MODELS_4, 1.0, "icbm_idle");
+		if(IsValidEntity(ModelApply))
+		{
+			SetVariantInt(RUINA_QUINCY_ARROW);
+			AcceptEntityInput(ModelApply, "SetBodyGroup");
+		}
 		WandProjectile_ApplyFunctionToEntity(projectile, Quincy_Touch);
 		float SpawnAngles[3]; GetClientEyeAngles(client, SpawnAngles);
 		int particle = Trail_Attach(projectile, BEAM_COMBINE_BLUE,  255, 1.0, 22.0, 0.0, 4);
@@ -632,6 +654,12 @@ static void RF_ShootExtraQuincyArrow(DataPack pack)
 	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, "");
 	if(IsValidEntity(projectile))
 	{
+		int ModelApply = ApplyCustomModelToWandProjectile(projectile, RUINA_CUSTOM_MODELS_4, 1.0, "icbm_idle");
+		if(IsValidEntity(ModelApply))
+		{
+			SetVariantInt(RUINA_QUINCY_ARROW);
+			AcceptEntityInput(ModelApply, "SetBodyGroup");
+		}
 		WandProjectile_ApplyFunctionToEntity(projectile, Quincy_Touch);
 		int particle = Trail_Attach(projectile, BEAM_COMBINE_BLUE,  255, 1.0, 22.0, 0.0, 4);
 		float SpawnAngles[3]; GetClientEyeAngles(client, SpawnAngles);
