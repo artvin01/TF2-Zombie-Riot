@@ -13,10 +13,19 @@
 #define QUINCY_BOW_ONHIT_GAIN	50.0
 #define QUINCY_BOW_ONHIT_MULTI_ARROW 10.0
 static float fl_hyper_arrow_charge[MAXPLAYERS];
-
-
 static float fl_quincy_hyper_arrow_timeout[MAXPLAYERS];
-static float fl_sound_timer[MAXPLAYERS + 1];
+
+
+#define QUINCY_ARROW_PARTICLE_LONGBOW 		""	//raygun_projectile_blue
+#define QUINCY_ARROW_PARTICLE_BALISTA 		""
+#define QUINCY_ARROW_PARTICLE_REPEATER 		""
+#define QUINCY_ARROW_PARTICLE_PENETRATOR 	""
+
+#define QUINCY_ARROW_TRAIL_LONGBOW 			BEAM_DIAMOND
+#define QUINCY_ARROW_TRAIL_BALISTA 			BEAM_COMBINE_BLACK
+#define QUINCY_ARROW_TRAIL_REPEATER 		BEAM_COMBINE_BLUE
+#define QUINCY_ARROW_TRAIL_PENETRATOR 		""
+
 
 static const char hyper_arrow_sounds[][] = {
 	"ambient_mp3/halloween/thunder_01.mp3",
@@ -31,17 +40,6 @@ static const char Spark_Sound[][] = {
 	"ambient/energy/spark4.wav",
 	"ambient/energy/spark5.wav",
 	"ambient/energy/spark6.wav",
-};
-
-static const char Zap_Sound[][] = {
-	"ambient/energy/zap1.wav",
-	"ambient/energy/zap2.wav",
-	"ambient/energy/zap3.wav",
-	"ambient/energy/zap5.wav",
-	"ambient/energy/zap6.wav",
-	"ambient/energy/zap7.wav",
-	"ambient/energy/zap8.wav",
-	"ambient/energy/zap9.wav",
 };
 public void OnStore_QuincyBow1_Initialised(ItemInfo Store_Item)
 {
@@ -83,7 +81,6 @@ void QuincyMapStart()
 
 	Zero(fl_hyper_arrow_charge);
 
-	PrecacheSoundArray(Zap_Sound);
 	PrecacheSoundArray(Spark_Sound);
 	PrecacheSoundArray(hyper_arrow_sounds);
 	
@@ -311,17 +308,22 @@ public void Quincy_Generic_M1(int client, int weapon, bool crit, int slot)
 	time *= Attributes_Get(weapon, 101, 1.0);
 	time *= Attributes_Get(weapon, 102, 1.0);
 
-	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, "raygun_projectile_blue");
+	float SpawnLoc[3];	GetClientEyePosition(client, SpawnLoc);
+	float Angles[3]; 	GetClientEyeAngles(client, Angles);
+
+	Offset_Vector({0.0, -8.0, -10.0}, Angles, SpawnLoc);
+	Angles = AdjustAngleAimForOffset(client, SpawnLoc);
+
+	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, QUINCY_ARROW_PARTICLE_LONGBOW,
+		.CustomAng = Angles,
+		.CustomPos = SpawnLoc
+	);
 	if(!IsValidEntity(projectile))
 		return;
 
+	ApplyQuincyArrowTrail(projectile, Angles, QUINCY_ARROW_TRAIL_LONGBOW);
 	WandProjectile_ApplyFunctionToEntity(projectile, Quincy_Touch);
-	int ModelApply = ApplyCustomModelToWandProjectile(projectile, RUINA_CUSTOM_MODELS_4, 1.0, "icbm_idle");
-	if(IsValidEntity(ModelApply))
-	{
-		SetVariantInt(RUINA_QUINCY_ARROW);
-		AcceptEntityInput(ModelApply, "SetBodyGroup");
-	}
+	ApplyQuincyArrowModel(projectile);
 
 	//use
 	//Attrib_Weapon_MaxDmgMulti = 4047, 
@@ -333,62 +335,6 @@ public void Quincy_Generic_M1(int client, int weapon, bool crit, int slot)
 	pack.WriteFloat(1.0);	//wanted
 	pack.WriteFloat(1.0);	//base
 	RequestFrames(RF_OffsetNextAttack, 3, pack);
-}
-static void Quincy_Touch(int entity, int target)
-{
-	if(target < 0)
-		return;
-
-	int owner = EntRefToEntIndex(i_WandOwner[entity]);
-	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
-	static float angles[3], vecForward[3], targetVec[3];
-	GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
-	GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
-	WorldSpaceCenter(target, targetVec);
-	float damageForce[3]; CalculateDamageForce(vecForward, 10000.0, damageForce);
-
-	SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, damageForce, targetVec);
-
-	EmitSoundToAll(QUINCY_BOW_ARROW_TOUCH_SOUND, entity, SNDCHAN_STATIC, 70, _, 0.9);
-
-	float pos1[3];
-	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
-	TE_ParticleInt(g_particleImpactTornado, pos1);
-	TE_SendToAll();
-
-	//TE_Particle("mvm_soldier_shockwave", pos1, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
-
-	RemoveEntity(entity);
-}
-static void RF_OffsetNextAttack(DataPack pack)
-{
-	pack.Reset();
-	int weapon = EntRefToEntIndex(pack.ReadCell());
-	int client = EntRefToEntIndex(pack.ReadCell());
-	float when = pack.ReadFloat();
-	float base = pack.ReadFloat();
-	delete pack;
-
-	if(!IsValidClient(client))
-		return;
-
-	if(!IsValidEntity(weapon))
-		return;
-
-	float Ratio = (base / when);
-	
-	Ratio *=2.0;
-	if(Ratio > 12.0)
-		Ratio = 12.0;
-
-	int viewmodel = GetEntPropEnt(client, Prop_Send, "m_hViewModel");
-	if(viewmodel>MaxClients && IsValidEntity(viewmodel))
-	{
-		DispatchKeyValueFloat(viewmodel, "playbackrate", Ratio);
-	}
-
-	SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + when);
-	DispatchKeyValueFloat(weapon, "playbackrate", Ratio);
 }
 
 ///BALISTA
@@ -447,26 +393,16 @@ public void Quincy_Balista_M1(int client, int weapon, bool crit, int slot)
 		MakeVectorFromPoints(spawnLoc, Laser.End_Point, SpawnAngles);
 		GetVectorAngles(SpawnAngles, SpawnAngles);
 
-		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, "",
+		int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, QUINCY_ARROW_PARTICLE_BALISTA,
 		.CustomAng = SpawnAngles,
 		.CustomPos = spawnLoc
 		);
 
 		if(IsValidEntity(projectile))
 		{
-			int ModelApply = ApplyCustomModelToWandProjectile(projectile, RUINA_CUSTOM_MODELS_4, 1.0, "icbm_idle");
-			if(IsValidEntity(ModelApply))
-			{
-				SetVariantInt(RUINA_QUINCY_ARROW);
-				AcceptEntityInput(ModelApply, "SetBodyGroup");
-			}
-
-			WandProjectile_ApplyFunctionToEntity(projectile, Quincy_Touch);
-			int particle = Trail_Attach(projectile, BEAM_COMBINE_BLACK,  255, 1.0, 22.0, 0.0, 4);
-			SDKCall_SetAbsAngle(particle, SpawnAngles);
-			SetParent(projectile, particle);	
-			SetEntityCollisionGroup(particle, 27);
-			i_WandParticle[projectile] = EntIndexToEntRef(particle);
+			ApplyQuincyArrowModel(projectile);
+			WandProjectile_ApplyFunctionToEntity(projectile, Quincy_Touch);  
+			ApplyQuincyArrowTrail(projectile, Angles, QUINCY_ARROW_TRAIL_BALISTA);
 		}
 	}
 }
@@ -517,10 +453,12 @@ public void Quincy_Balista_M2(int client, int weapon, bool crit, int slot)
 	base_cd *= Attributes_Get(weapon, 6, 1.0);	//scale on attack rate rathen then reload rate for reloading
 	base_cd *= Attributes_Get(weapon, 5, 1.0);
 
+	//base_cd *= CooldownReductionAmount(client);
+
 	Current_Mana[client] -=mana_cost;
 	SDKhooks_SetManaRegenDelayTime(client, base_cd*2.0);
 	Mana_Hud_Delay[client] = 0.0;
-	Ability_Apply_Cooldown(client, slot, base_cd);
+	Ability_Apply_Cooldown(client, slot, base_cd, _, true);
 
 	SetEntData(weapon, iAmmoTable, current+1, 4, true);
 
@@ -545,18 +483,7 @@ public void Quincy_Balista_M2(int client, int weapon, bool crit, int slot)
 		RequestFrames(RF_SetSequence, RoundFloat(base_cd * 60), pack);
 	}
 }
-static void RF_SetSequence(DataPack pack)
-{
-	pack.Reset();
-	int entity = EntRefToEntIndex(pack.ReadCell());
-	int seq = pack.ReadCell();
-	delete pack;
-	if(!IsValidEntity(entity))
-		return;
 
-	DispatchKeyValueFloat(entity, "playbackrate", 1.0);
-	SetEntProp(entity, Prop_Send, "m_nSequence", seq);
-}
 ////REPEATER
 public void OnStore_QuincyRepeater1_Initialised(ItemInfo Store_Item)
 {
@@ -600,22 +527,22 @@ public void Quincy_Repeater_M1(int client, int weapon, bool crit, int slot)
 	time *= Attributes_Get(weapon, 101, 1.0);
 	time *= Attributes_Get(weapon, 102, 1.0);
 
-	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, "");
+	float SpawnLoc[3];	GetClientEyePosition(client, SpawnLoc);
+	float Angles[3]; 	GetClientEyeAngles(client, Angles);
+
+	Offset_Vector({0.0, -8.0, -10.0}, Angles, SpawnLoc);
+	Angles = AdjustAngleAimForOffset(client, SpawnLoc);
+
+	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, QUINCY_ARROW_PARTICLE_REPEATER,
+		.CustomAng = Angles,
+		.CustomPos = SpawnLoc
+	);
+
 	if(IsValidEntity(projectile))
 	{
-		int ModelApply = ApplyCustomModelToWandProjectile(projectile, RUINA_CUSTOM_MODELS_4, 1.0, "icbm_idle");
-		if(IsValidEntity(ModelApply))
-		{
-			SetVariantInt(RUINA_QUINCY_ARROW);
-			AcceptEntityInput(ModelApply, "SetBodyGroup");
-		}
+		ApplyQuincyArrowModel(projectile);
 		WandProjectile_ApplyFunctionToEntity(projectile, Quincy_Touch);
-		float SpawnAngles[3]; GetClientEyeAngles(client, SpawnAngles);
-		int particle = Trail_Attach(projectile, BEAM_COMBINE_BLUE,  255, 1.0, 22.0, 0.0, 4);
-		SDKCall_SetAbsAngle(particle, SpawnAngles);
-		SetParent(projectile, particle);	
-		SetEntityCollisionGroup(particle, 27);
-		i_WandParticle[projectile] = EntIndexToEntRef(particle);
+		ApplyQuincyArrowTrail(projectile, Angles, QUINCY_ARROW_TRAIL_REPEATER);
 	}
 
 	float delay = Attributes_Get(weapon, 122, 0.1);
@@ -651,24 +578,126 @@ static void RF_ShootExtraQuincyArrow(DataPack pack)
 	if(!IsValidClient(client) || !IsValidEntity(weapon))
 		return;
 
-	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, "");
+	float SpawnLoc[3];	GetClientEyePosition(client, SpawnLoc);
+	float Angles[3]; 	GetClientEyeAngles(client, Angles);
+
+	Offset_Vector({0.0, -8.0, -10.0}, Angles, SpawnLoc);
+	Angles = AdjustAngleAimForOffset(client, SpawnLoc);
+
+	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, QUINCY_ARROW_PARTICLE_REPEATER,
+		.CustomAng = Angles,
+		.CustomPos = SpawnLoc
+	);
 	if(IsValidEntity(projectile))
 	{
-		int ModelApply = ApplyCustomModelToWandProjectile(projectile, RUINA_CUSTOM_MODELS_4, 1.0, "icbm_idle");
-		if(IsValidEntity(ModelApply))
-		{
-			SetVariantInt(RUINA_QUINCY_ARROW);
-			AcceptEntityInput(ModelApply, "SetBodyGroup");
-		}
+		ApplyQuincyArrowModel(projectile);
+		ApplyQuincyArrowTrail(projectile, Angles, QUINCY_ARROW_TRAIL_REPEATER);
 		WandProjectile_ApplyFunctionToEntity(projectile, Quincy_Touch);
-		int particle = Trail_Attach(projectile, BEAM_COMBINE_BLUE,  255, 1.0, 22.0, 0.0, 4);
-		float SpawnAngles[3]; GetClientEyeAngles(client, SpawnAngles);
-		SDKCall_SetAbsAngle(particle, SpawnAngles);
-		SetParent(projectile, particle);	
-		SetEntityCollisionGroup(particle, 27);
-		i_WandParticle[projectile] = EntIndexToEntRef(particle);
+		
 	}
 }
+
+/// UTILS:
+static void ApplyQuincyArrowModel(int projectile)
+{
+	int ModelApply = ApplyCustomModelToWandProjectile(projectile, RUINA_CUSTOM_MODELS_4, 1.0, "icbm_idle");
+	if(IsValidEntity(ModelApply))
+	{
+		SetVariantInt(RUINA_QUINCY_ARROW);
+		AcceptEntityInput(ModelApply, "SetBodyGroup");
+	}
+}
+static void ApplyQuincyArrowTrail(int projectile, float Angles[3], char[] trail)
+{
+	if(!trail[0])
+		return;
+
+	int particle = Trail_Attach(projectile, trail, 255, 1.0, 22.0, 0.0, 4);
+	SDKCall_SetAbsAngle(particle, Angles);
+	SetParent(projectile, particle);	
+	SetEntityCollisionGroup(particle, 27);
+	i_WandParticle[projectile] = EntIndexToEntRef(particle);
+}
+static void Quincy_Touch(int entity, int target)
+{
+	if(target < 0)
+		return;
+
+	int owner = EntRefToEntIndex(i_WandOwner[entity]);
+	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+	static float angles[3], vecForward[3], targetVec[3];
+	GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
+	GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
+	WorldSpaceCenter(target, targetVec);
+	float damageForce[3]; CalculateDamageForce(vecForward, 10000.0, damageForce);
+
+	SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, damageForce, targetVec);
+
+	EmitSoundToAll(QUINCY_BOW_ARROW_TOUCH_SOUND, entity, SNDCHAN_STATIC, 70, _, 0.9);
+
+	float pos1[3];
+	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
+	TE_ParticleInt(g_particleImpactTornado, pos1);
+	TE_SendToAll();
+
+	//TE_Particle("mvm_soldier_shockwave", pos1, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+
+	RemoveEntity(entity);
+}
+float[] AdjustAngleAimForOffset(int client, float Start_Point[3], float range = -1.0, float End_Point[3] = {0.0, 0.0, 0.0})
+{
+	Player_Laser_Logic Laser;
+	Laser.client = client;
+	Laser.DoForwardTrace_Basic(_, Player_Laser_BEAM_TraceWallsAndEnemiesOnly);
+	float SpawnAngles[3];
+	End_Point = Laser.End_Point;
+	MakeVectorFromPoints(Start_Point, Laser.End_Point, SpawnAngles);
+	GetVectorAngles(SpawnAngles, SpawnAngles);
+	return SpawnAngles;
+}
+static void RF_OffsetNextAttack(DataPack pack)
+{
+	pack.Reset();
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	int client = EntRefToEntIndex(pack.ReadCell());
+	float when = pack.ReadFloat();
+	float base = pack.ReadFloat();
+	delete pack;
+
+	if(!IsValidClient(client))
+		return;
+
+	if(!IsValidEntity(weapon))
+		return;
+
+	float Ratio = (base / when);
+	
+	Ratio *=2.0;
+	if(Ratio > 12.0)
+		Ratio = 12.0;
+
+	int viewmodel = GetEntPropEnt(client, Prop_Send, "m_hViewModel");
+	if(viewmodel>MaxClients && IsValidEntity(viewmodel))
+	{
+		DispatchKeyValueFloat(viewmodel, "playbackrate", Ratio);
+	}
+
+	SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", GetGameTime() + when);
+	DispatchKeyValueFloat(weapon, "playbackrate", Ratio);
+}
+static void RF_SetSequence(DataPack pack)
+{
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	int seq = pack.ReadCell();
+	delete pack;
+	if(!IsValidEntity(entity))
+		return;
+
+	DispatchKeyValueFloat(entity, "playbackrate", 1.0);
+	SetEntProp(entity, Prop_Send, "m_nSequence", seq);
+}
+
 public void Quincy_Bow_M2(int client, int weapon, bool crit, int slot)
 {
 	
