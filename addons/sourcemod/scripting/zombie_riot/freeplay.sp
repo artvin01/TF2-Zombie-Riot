@@ -1,4 +1,4 @@
-`#pragma semicolon 1
+#pragma semicolon 1
 #pragma newdecls required
 
 static float HealthMulti;
