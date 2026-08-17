@@ -1,4 +1,4 @@
-#pragma semicolon 1
+`#pragma semicolon 1
 #pragma newdecls required
 
 static float HealthMulti;
@@ -144,7 +144,7 @@ void Freeplay_ResetAll()
 {
 	HealthMulti = 1.0;
 	HealthBonus = 0;
-	EnemyChance = 10;
+	EnemyChance = 9;
 	EnemyBosses = 0;
 	ImmuneNuke = 0;
 	CashBonus = 0;
@@ -264,8 +264,8 @@ int Freeplay_GetDangerLevelCurrent(int postWaves)
 	}
 	int DangerLevel = 1;
 
-	float DefaultChance = 0.03 * float(EnemyChance);
-	DefaultChance += 0.003 * float(postWaves - 40);
+	float DefaultChance = 0.02 * float(EnemyChance);
+	DefaultChance += 0.002 * float(postWaves - 41);
 	
 	if(DefaultChance > 0.40)
 	{
