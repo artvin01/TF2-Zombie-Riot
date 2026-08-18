@@ -3708,21 +3708,6 @@
 		"en"	"Make the most out of this cruel world with a propeller hat and lollipop."
 		"ko"	"프로펠러 모자와 롤리팝과 함께 이 잔인한 세상을 최대한 즐깁니다."
 	}
-	"Seraph Prefix"
-	{
-		"en"	"Seraph Prefix"
-		"ko"	"세라프 접두사"
-	}
-	"Seraph"
-	{
-		"en"	"Seraph"
-		"ko"	"세라프"
-	}
-	"Seraph Prefix Desc"
-	{
-		"en"	"Receives several stacks of damage-blocking shield on spawn and when reaching 66％/33％ health."
-		"ko"	"스폰 직후, 그리고 체력이 66％/33％가 될 시 다수의 피해 무효화 보호막을 얻습니다."
-	}
 	"Party Popper Prefix"
 	{
 		"en"	"Party Popper Prefix"
