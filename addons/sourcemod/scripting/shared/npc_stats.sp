@@ -6613,7 +6613,7 @@ public void NpcBaseThink(int iNPC)
 	}
 	
 	if (HasSpecificBuff(iNPC, "Trampling Prefix"))
-		ResolvePlayerCollisions_Npc(iNPC, 6.0, true);
+		ResolvePlayerCollisions_Npc(iNPC, 2.0, true);
 #endif
 #if defined RPG
 	if(i_HpRegenInBattle[iNPC] > 1 && f_QuickReviveHealing[iNPC] < GetGameTime() && !f_TimeFrozenStill[iNPC])
