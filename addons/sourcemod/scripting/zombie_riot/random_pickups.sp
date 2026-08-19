@@ -2,8 +2,9 @@
 
 #define SUPPLIES_MODEL_RANDOM "models/items/ammopack_large.mdl"
 #define PICKUP_SOUND "playgamesound items/gunpickup2.wav"
-#define DELAY_BETWEEN_PICKUPS 45.0
-#define MAX_PICKUPS_ALLOWED 8
+#define DELAY_BETWEEN_PICKUPS 200.0
+#define MAX_PICKUPS_ALLOWED 7
+#define PICKUPS_TIME_LAST 450.0
 
 
 static float DelayBetweenSpawns;
@@ -40,24 +41,32 @@ public Action RandomPickup_DelayBetweenSpawns(Handle timer)
 	if(!IsValidClient(RandomClient))
 		return Plugin_Continue;
 
-	float VectorSave[3];
-	VectorSave[1] = 1.0;
-	int Decicion = TeleportDiversioToRandLocation(RandomClient, true, 4000.0, 1500.0, true, false, VectorSave);
-	switch(Decicion)
+	float FailCdRegive = 1.0;
+	int MaxCratesGive = CountPlayersOnRed(0);
+	MaxCratesGive *= 2;
+	if(MaxCratesGive >= MAX_PICKUPS_ALLOWED)
+		MaxCratesGive = MAX_PICKUPS_ALLOWED;
+	for(int i; i<MAX_PICKUPS_ALLOWED; i++)
 	{
-		case 2:
+		float VectorSave[3];
+		VectorSave[1] = 1.0;
+		int Decicion = TeleportDiversioToRandLocation(RandomClient, true, 9000.0, 100.1, true, false, VectorSave);
+		switch(Decicion)
 		{
-			Decicion = TeleportDiversioToRandLocation(RandomClient, true, 1500.0, 500.0, true, false, VectorSave);
-			if(Decicion == 2)
+			case 2:
 			{
-				//fail, try again later.
-				return Plugin_Continue;
+				Decicion = TeleportDiversioToRandLocation(RandomClient, true, 9000.1, 0.1, true, false, VectorSave);
+				if(Decicion == 2)
+				{
+					FailCdRegive *= 0.8;
+					continue;
+				}
 			}
 		}
+		RandomPickup_SpawnPickup(VectorSave);
+		//spawn a pickup at this location.
 	}
-	RandomPickup_SpawnPickup(VectorSave);
-	//spawn a pickup at this location.
-	float RandomPickupTime = DELAY_BETWEEN_PICKUPS; 
+	float RandomPickupTime = (DELAY_BETWEEN_PICKUPS * FailCdRegive); 
 	if(ZR_Get_Modifier() == KITERS_DREAM)
 	{
 		RandomPickupTime *= 0.5;
@@ -99,13 +108,7 @@ bool RandomPickup_SpawnPickup(float VectorGoal[3])
 		SetEntityCollisionGroup(prop, 27);
 		SDKHook(prop, SDKHook_Touch, RandomPickup_TouchPickup);
 		i_WandIdNumber[prop] = 999;
-		float RandomPickupTime = DELAY_BETWEEN_PICKUPS; 
-		int MaxPickups = MAX_PICKUPS_ALLOWED; 
-		if(ZR_Get_Modifier() == KITERS_DREAM)
-		{
-			MaxPickups *= 2;
-		}
-		CreateTimer(RandomPickupTime * MaxPickups, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(PICKUPS_TIME_LAST, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 	}	
 	return true;
 }
