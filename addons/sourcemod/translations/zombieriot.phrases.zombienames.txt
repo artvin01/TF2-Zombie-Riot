@@ -3662,9 +3662,21 @@
 		"it"	"Xeno infetto precocemente"
 		"ko"	"제노 초기 감염자"
 	}
+	"Xeno Very Early Infected"
+	{
+		"en"	"Xeno Very Early Infected"
+		"it"	"Xeno infetto precocemente"
+		"ko"	"제노 초기 감염자"
+	}
 	"Xeno Patient Few"
 	{
 		"en"	"Xeno Patient Few"
+		"it"	"Pochi pazienti Xeno"
+		"ko"	"제노 소수 환자"
+	}
+	"Xeno Very Patient Few"
+	{
+		"en"	"Xeno Very Patient Few"
 		"it"	"Pochi pazienti Xeno"
 		"ko"	"제노 소수 환자"
 	}
