@@ -6611,6 +6611,9 @@ public void NpcBaseThink(int iNPC)
 			HealEntityGlobal(iNPC, iNPC, HealingAmount, 1.25, 0.0, HEAL_SELFHEAL);
 		}
 	}
+	
+	if (HasSpecificBuff(iNPC, "Trampling Prefix"))
+		ResolvePlayerCollisions_Npc(iNPC, 2.0, true);
 #endif
 #if defined RPG
 	if(i_HpRegenInBattle[iNPC] > 1 && f_QuickReviveHealing[iNPC] < GetGameTime() && !f_TimeFrozenStill[iNPC])
@@ -12280,6 +12283,21 @@ void NPCStats_HandlePaintedWearables()
 			h_ColoredWearables.Erase(i);
 		}
 	}
+}
+
+void NPCStats_ClearPaintedWearables()
+{
+	for (int i = 0; i < h_ColoredWearables.Length; i++)
+	{
+		WearableColor wearableColor;
+		h_ColoredWearables.GetArray(i, wearableColor);
+		if (IsValidEntity(wearableColor.wearableRef))
+			RemoveEntity(wearableColor.wearableRef);
+		
+		delete wearableColor.entities;
+	}
+	
+	h_ColoredWearables.Clear();
 }
 
 Action NPCStats_Timer_HandleCustomNPCChatNames(Handle timer)

@@ -368,7 +368,7 @@ public void KevinMery_ClotThink(int iNPC)
 			}
 			case 1:
 			{
-				ApplyStatusEffect(npc.index, npc.index, "Trampling Prefix", 5.0);
+				ResolvePlayerCollisions_Npc(npc.index, 6.0, true);
 			}
 		}
 

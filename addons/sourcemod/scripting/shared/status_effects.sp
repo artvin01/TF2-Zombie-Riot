@@ -8014,7 +8014,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.ShouldScaleWithPlayerCount = false;
 	data.OnBuffStarted				= INVALID_FUNCTION;
 	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
-	data.TimerRepeatCall_Func 		= TramplingPrefix_Think;
+	data.TimerRepeatCall_Func 		= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Scrambled Prefix");
@@ -8097,23 +8097,6 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.OnBuffStarted				= WhimsicalPrefix_Start;
 	data.OnBuffEndOrDeleted			= Perfected_InstinctEnd;
 	data.TimerRepeatCall_Func 		= INVALID_FUNCTION;
-	StatusEffect_AddGlobal(data);
-	
-	strcopy(data.BuffName, sizeof(data.BuffName), "Seraph Prefix");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
-	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Seraph");
-	//-1.0 means unused
-	data.DamageTakenMulti 			= -1.0;
-	data.DamageDealMulti			= -1.0;
-	data.MovementspeedModif			= -1.0;
-	data.AttackspeedBuff			= -1.0;
-	data.MovementspeedModifPlayer	= -1.0;
-	data.Positive 					= true;
-	data.ShouldScaleWithPlayerCount = false;
-	data.OnBuffStarted				= SeraphPrefix_Start;
-	data.OnBuffEndOrDeleted			= SeraphPrefix_End;
-	data.TimerRepeatCall_Func 		= SeraphPrefix_Think;
 	StatusEffect_AddGlobal(data);
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Party Popper Prefix");
@@ -9030,6 +9013,16 @@ float Glug_TakeDamage_Spread(int attacker, int victim, StatusEffect Apply_Master
 	{
 		return 1.0;
 	}
+	
+	if (!b_thisNpcIsARaid[victim])
+	{
+		if (attacker == 0 || attacker > MaxClients)
+			return 1.0;
+		
+		if (GetEntProp(victim, Prop_Data, "m_iHealth") > GetEntProp(victim, Prop_Data, "m_iMaxHealth") * 0.9)
+			return 1.0;
+	}
+	
 	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
 	Apply_StatusEffect.DataForUse = GetGameTime() + 10.0;
 	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
@@ -9067,8 +9060,6 @@ float Glug_TakeDamage_Spread(int attacker, int victim, StatusEffect Apply_Master
 	}
 	return 1.0;
 }
-
-
 
 void Const2Modifs_Explosive_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
@@ -9815,19 +9806,6 @@ void SteamHappy_Prefix_Start(int victim, StatusEffect Apply_MasterStatusEffect, 
 	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 }
 
-static void TramplingPrefix_Think(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
-{
-	if(Apply_StatusEffect.DataForUse > GetGameTime())
-		return;
-	
-	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
-	Apply_StatusEffect.DataForUse = GetGameTime() + 0.1;
-	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
-	
-	float damage = 10.0;
-	ResolvePlayerCollisions_Npc(entity, damage, true);
-}
-
 static const char ScrambledBlacklist[][] =
 {
 	"Stalker Prefix",
@@ -10079,44 +10057,6 @@ void WhimsicalPrefix_Start(int entity, StatusEffect Apply_MasterStatusEffect, E_
 	Apply_StatusEffect.WearableUse = EntIndexToEntRef(Wearable);
 	Apply_StatusEffect.WearableUse2 = EntIndexToEntRef(Wearable2);
 	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
-}
-
-static void SeraphPrefix_GiveShield(int entity)
-{
-	int shieldCount = RoundToNearest((CurrentCash / 5000) * (CountPlayersOnRed(1) * 0.5));
-	if (shieldCount < 3)
-		shieldCount = 3;
-	
-	VausMagicaGiveShield(entity, shieldCount, true, 250); //Give self a shield
-}
-
-static void SeraphPrefix_Start(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
-{
-	SeraphPrefix_GiveShield(entity);
-}
-
-static void SeraphPrefix_End(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
-{
-	VausMagicaRemoveShield(entity, true);
-}
-
-static void SeraphPrefix_Think(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
-{
-	int stage = Apply_StatusEffect.WearableUse; // Using this variable to track how many stages we've gone through
-	int health = GetEntProp(entity, Prop_Data, "m_iHealth");
-	
-	if (stage == 0 && RoundToFloor(ReturnEntityMaxHealth(entity) * 0.66) >= health
-	|| stage == 1 && RoundToFloor(ReturnEntityMaxHealth(entity) * 0.33) >= health)
-	{
-		SeraphPrefix_GiveShield(entity);
-		Apply_StatusEffect.WearableUse++;
-	}
-	
-	if (stage != Apply_StatusEffect.WearableUse)
-	{
-		int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
-		E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
-	}
 }
 
 static void PartyPopperPrefix_Start(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)

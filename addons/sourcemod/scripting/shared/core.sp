@@ -1033,6 +1033,8 @@ public void OnPluginEnd()
 //	Waves_MapEnd(); DO NOT CALL THIS ON PLUGIN END, plugin ends anways, why change anything???
 	RemoveMVMLogicSafety();
 	Vehicle_PluginEnd();
+	RandomPickup_Clear();
+	NPCStats_ClearPaintedWearables();
 #endif
 	float WaitingForPlayersTime = FindConVar("mp_waitingforplayers_time").FloatValue;
 	if(WaitingForPlayersTime <= 0.0)

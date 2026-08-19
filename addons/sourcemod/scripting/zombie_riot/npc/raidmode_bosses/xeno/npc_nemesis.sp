@@ -363,7 +363,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return;
 	}
-	if(npc.m_flNextRangedAttackHappening && npc.flXenoInfectedSpecialHurtTime - 0.45 < gameTime)
+	if(npc.m_flNextRangedAttackHappening && npc.flXenoInfectedSpecialHurtTime - 0.45 < gameTime && !f_NemesisSpecialDeathAnimation[npc.index])
 	{
 		ResolvePlayerCollisions_Npc(npc.index, /*damage crush*/ 90.0, true);
 	}
