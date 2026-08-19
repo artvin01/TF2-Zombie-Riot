@@ -24,7 +24,7 @@ static float fl_quincy_hyper_arrow_timeout[MAXPLAYERS];
 #define QUINCY_ARROW_TRAIL_LONGBOW 			BEAM_DIAMOND
 #define QUINCY_ARROW_TRAIL_BALISTA 			BEAM_COMBINE_BLACK
 #define QUINCY_ARROW_TRAIL_REPEATER 		BEAM_COMBINE_BLUE
-#define QUINCY_ARROW_TRAIL_PENETRATOR 		""
+#define QUINCY_ARROW_TRAIL_PENETRATOR 		BEAM_LIGHTNING_MODEL
 
 
 static const char hyper_arrow_sounds[][] = {
@@ -597,10 +597,134 @@ static void RF_ShootExtraQuincyArrow(DataPack pack)
 	}
 }
 
+///PENETRATOR 
+public void OnStore_QuincyPenetrator1_Initialised(ItemInfo Store_Item)
+{
+	Store_Item.Weapon_Bodygroup 		= RUINA_QUINCY_BOW_REPEATER_1_VIEWMODEL;	
+	Store_Item.WeaponModelOverride 		= RUINA_CUSTOM_MODELS_4;
+	Store_Item.WeaponModelIndexOverride = PrecacheModel(Store_Item.WeaponModelOverride);
+}
+public void Quincy_Penetrator_M1(int client, int weapon, bool crit, int slot)
+{
+	float timer_max, ratio, current;
+	QuincyGetBowStats(weapon, timer_max, current, ratio);
+	Current_Mana_DispalyOffeset[client] = 0;
+	Current_Mana[client] -= RoundToFloor(fQuincyManaConsumedForCharge[client]);
+	fQuincyManaConsumedForCharge[client] = 0.0;
+	if(ratio < 0.2)
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Your Weapon is not charged enough None");	
+		return;
+	}
+	SDKhooks_SetManaRegenDelayTime(client, 2.0);
+
+	float speed = 2000.0;
+	float damage= 100.0;
+	float time 	= 1.5;
+	damage *= Attributes_Get(weapon, 410, 1.0);
+
+	float minmulti, maxmulti;
+	maxmulti = Attributes_Get(weapon, Attrib_Weapon_MaxDmgMulti, 1.0);
+	minmulti = Attributes_Get(weapon, Attrib_Weapon_MinDmgMulti, 1.0);
+
+	float multi = (minmulti + (maxmulti - minmulti) * ratio);
+	damage *=multi;
+
+	speed *= Attributes_Get(weapon, 103, 1.0);
+	speed *= Attributes_Get(weapon, 104, 1.0);
+	speed *= Attributes_Get(weapon, 475, 1.0);
+
+	time *= Attributes_Get(weapon, 101, 1.0);
+	time *= Attributes_Get(weapon, 102, 1.0);
+
+	float SpawnLoc[3];	GetClientEyePosition(client, SpawnLoc);
+	float Angles[3]; 	GetClientEyeAngles(client, Angles);
+
+	Offset_Vector({0.0, -8.0, -10.0}, Angles, SpawnLoc);
+	Angles = AdjustAngleAimForOffset(client, SpawnLoc);
+
+	int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 0, weapon, QUINCY_ARROW_PARTICLE_PENETRATOR,
+		.CustomAng = Angles,
+		.CustomPos = SpawnLoc
+	);
+
+	if(IsValidEntity(projectile))
+	{
+		ApplyQuincyArrowModel(projectile);
+		WandProjectile_ApplyFunctionToEntity(projectile, Quincy_Touch_Penetrator);
+		ApplyQuincyArrowTrail(projectile, Angles, QUINCY_ARROW_TRAIL_PENETRATOR);
+	}
+
+	float pen_multi = Attributes_Get(weapon, 122, 0.1);
+	int penetration = RoundFloat(Attributes_Get(weapon, 868, 3.0));
+
+	i_AmountProjectiles[projectile] = 0;
+	i_NemesisEntitiesHitAoeSwing[projectile] = penetration;
+	fl_BEAM_ThrottleTime[projectile][0] = pen_multi;
+
+	
+
+	DataPack pack = new DataPack();
+	pack.WriteCell(EntIndexToEntRef(weapon));
+	pack.WriteCell(EntIndexToEntRef(client));
+	pack.WriteFloat(1.0);	//wanted
+	pack.WriteFloat(1.0);	//base
+	RequestFrames(RF_OffsetNextAttack, 3, pack);
+}
+static void Quincy_Touch_Penetrator(int entity, int target)
+{
+	if(target < 0)
+		return;
+
+	if(target == 0)
+	{
+		float pos1[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
+		TE_ParticleInt(g_particleImpactTornado, pos1);
+		TE_SendToAll();
+
+		TE_Particle("mvm_soldier_shockwave", pos1, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+
+		RemoveEntity(entity);
+		return;
+	}
+
+	i_AmountProjectiles[entity]++;
+
+	int owner = EntRefToEntIndex(i_WandOwner[entity]);
+	int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
+	static float angles[3], vecForward[3], targetVec[3];
+	GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
+	GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
+	WorldSpaceCenter(target, targetVec);
+	float damageForce[3]; CalculateDamageForce(vecForward, 10000.0, damageForce);
+
+	float damage = f_WandDamage[entity] * (fl_BEAM_ThrottleTime[entity][0] ^ view_as<float>(i_AmountProjectiles[entity]));
+
+	SDKHooks_TakeDamage(target, owner, owner, damage, DMG_PLASMA, weapon, damageForce, targetVec);
+
+	EmitSoundToAll(QUINCY_BOW_ARROW_TOUCH_SOUND, entity, SNDCHAN_STATIC, 70, _, 0.9);
+
+	if(i_AmountProjectiles[entity] >= i_NemesisEntitiesHitAoeSwing[entity])
+	{
+		float pos1[3];
+		GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos1);
+		TE_ParticleInt(g_particleImpactTornado, pos1);
+		TE_SendToAll();
+
+		TE_Particle("mvm_soldier_shockwave", pos1, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+
+		RemoveEntity(entity);
+	}
+}
+
 /// UTILS:
 static void ApplyQuincyArrowModel(int projectile)
 {
-	int ModelApply = ApplyCustomModelToWandProjectile(projectile, RUINA_CUSTOM_MODELS_4, 1.0, "icbm_idle");
+	int ModelApply = ApplyCustomModelToWandProjectile(projectile, RUINA_CUSTOM_MODELS_4, 2.0, "icbm_idle");
 	if(IsValidEntity(ModelApply))
 	{
 		SetVariantInt(RUINA_QUINCY_ARROW);
@@ -648,7 +772,7 @@ float[] AdjustAngleAimForOffset(int client, float Start_Point[3], float range = 
 {
 	Player_Laser_Logic Laser;
 	Laser.client = client;
-	Laser.DoForwardTrace_Basic(_, Player_Laser_BEAM_TraceWallsAndEnemiesOnly);
+	Laser.DoForwardTrace_Basic(range, Player_Laser_BEAM_TraceWallsAndEnemiesOnly);
 	float SpawnAngles[3];
 	End_Point = Laser.End_Point;
 	MakeVectorFromPoints(Start_Point, Laser.End_Point, SpawnAngles);

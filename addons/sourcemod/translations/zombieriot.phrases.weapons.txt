@@ -4888,6 +4888,10 @@
 	{
 		"en"	"Quincy Repeater"
 	}
+	"Quincy Penetrator"
+	{
+		"en"	"Quincy Penetrator"
+	}
 	"Heavy Particle Rifle"
 	{
 		"en"	"Heavy Particle Rifle"

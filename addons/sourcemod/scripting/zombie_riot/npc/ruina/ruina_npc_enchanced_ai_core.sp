@@ -109,10 +109,13 @@ static float fl_ontake_sound_timer[MAXENTITIES];
 #define RUINA_ION_CANNON_SOUND_TOUCHDOWN 			"ambient/machines/thumper_hit.wav"
 #define RUINA_ION_CANNON_SOUND_ATTACK 				"ambient/machines/thumper_dust.wav"
 
-#define BEAM_COMBINE_BLACK	"materials/sprites/combineball_trail_black_1.vmt"
-#define BEAM_COMBINE_BLUE	"materials/sprites/combineball_trail_blue_1.vmt"
-#define BEAM_COMBINE_RED	"materials/sprites/combineball_trail_red_1.vmt"
-#define BEAM_DIAMOND 		"materials/sprites/physring1.vmt"
+#define BEAM_COMBINE_BLACK		"materials/sprites/combineball_trail_black_1.vmt"
+#define BEAM_COMBINE_BLUE		"materials/sprites/combineball_trail_blue_1.vmt"
+#define BEAM_COMBINE_RED		"materials/sprites/combineball_trail_red_1.vmt"
+#define BEAM_DIAMOND 			"materials/sprites/physring1.vmt"
+#define BEAM_HALO				"materials/sprites/halo01.vmt"
+#define BEAM_LASERBEAM			"materials/sprites/laserbeam.vmt"
+#define BEAM_LIGHTNING_MODEL 	"materials/sprites/lgtning.vmt"
 
 int i_Ruina_Overlord_Ref;
 

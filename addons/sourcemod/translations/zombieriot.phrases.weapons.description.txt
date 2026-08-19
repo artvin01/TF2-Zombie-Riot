@@ -2533,6 +2533,10 @@
 	{
 		"en"	"DESCRIBE ME"
 	}
+	"quincy penetrator desc"
+	{
+		"en"	"DESCRIBE ME"
+	}
 	"Monk Desc"
 	{
 		"en"	"Provides AOE damage around it but lacks self defense"
