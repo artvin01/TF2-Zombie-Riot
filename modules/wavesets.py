@@ -15,7 +15,6 @@ from typing import Any
 TODO
 [ ] Complete const2 support
 [ ] Include main music parts somehow
-[ ] Sort wavesets properly
 """
 
 # General ================================

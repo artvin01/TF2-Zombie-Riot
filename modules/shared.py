@@ -144,7 +144,7 @@ class NPC:
 
             desc_key = f"{self.name} Desc"
             # Lots of NPCs with intentionally missing descriptions, hence silent=True
-            self.description: str = util.get_key(desc_key, empty_on_fail=True, silent=True).replace("\\n", "<div class=\"flex_break\"></div>\n")
+            self.description: str = util.get_key(desc_key, empty_on_fail=True, silent=True)#.replace("\\n", "<div class=\"flex_break\"></div>\n")
             self.source["description"] = util.get_key_src(desc_key)
 
             # may be a problem if for example a file has multiple npcs with one that doesn't have the logic

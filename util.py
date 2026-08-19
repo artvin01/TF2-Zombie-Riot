@@ -282,11 +282,11 @@ def log(message:str, color:str="OKGREEN"):
     pre = "[INFO] "
     if color == "WARNING":
         pre="[WARN] "
-    if color == "FAIL":
+    elif color == "FAIL":
         pre="[ERR] "
-    if "OK" in color:
+    elif "OK" in color:
         pre="[LOG] "
-    print(bcolors["FAINT"] + time + bcolors["ENDC"] + bcolors[color]  + pre + message.replace("\n","\\n") + bcolors["ENDC"])
+    print(bcolors["FAINT"] + time + bcolors["ENDC"] + bcolors[color] + pre + message.replace("\n","\\n") + bcolors["ENDC"])
 
 
 # --------------------------- CORE ---------------------------

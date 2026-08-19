@@ -9,6 +9,8 @@ for _, modal in sorted(music_by_title.items()):
     modal["musictitle"] = modal["musictitle"].replace("zombiesurvival/","")
     if modal["file_exists"] and "intro" not in modal["filepath"]:
         modal['audio"'] = f'audio" id="{music_idx}"' # class="audio" => class="audio" id="<int>"
+        modal["musictitle"] = modal["musictitle"].replace("'","&apos;")
+        modal["musicartist"] = modal["musicartist"].replace("'","&apos;")
         music_idx += 1
         music_list_html += util.musicmodal_to_html(modal)
 
