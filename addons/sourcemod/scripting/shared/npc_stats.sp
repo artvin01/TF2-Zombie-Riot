@@ -12285,6 +12285,21 @@ void NPCStats_HandlePaintedWearables()
 	}
 }
 
+void NPCStats_ClearPaintedWearables()
+{
+	for (int i = 0; i < h_ColoredWearables.Length; i++)
+	{
+		WearableColor wearableColor;
+		h_ColoredWearables.GetArray(i, wearableColor);
+		if (IsValidEntity(wearableColor.wearableRef))
+			RemoveEntity(wearableColor.wearableRef);
+		
+		delete wearableColor.entities;
+	}
+	
+	h_ColoredWearables.Clear();
+}
+
 Action NPCStats_Timer_HandleCustomNPCChatNames(Handle timer)
 {
 	NPCStats_HandleCustomNPCChatNames();
