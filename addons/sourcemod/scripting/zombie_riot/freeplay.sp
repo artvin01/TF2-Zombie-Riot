@@ -264,7 +264,7 @@ int Freeplay_GetDangerLevelCurrent(int postWaves)
 	}
 	int DangerLevel = 1;
 
-	float DefaultChance = 0.02 * float(EnemyChance);
+	float DefaultChance = 0.025 * float(EnemyChance);
 	DefaultChance += 0.003 * float(postWaves - 41);
 	
 	if(DefaultChance > 0.40)
@@ -301,7 +301,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.ignore_max_cap = 0;
 		enemy.Is_Immune_To_Nuke = 0;
 		enemy.Is_Static = false;
-		enemy.Team = 1;
+		enemy.Team = 3;
 		enemy.Is_Static = false;
 		enemy.ExtraMeleeRes = 1.0;
 		enemy.ExtraRangedRes = 1.0;
