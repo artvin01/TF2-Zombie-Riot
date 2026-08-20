@@ -265,7 +265,7 @@ int Freeplay_GetDangerLevelCurrent(int postWaves)
 	int DangerLevel = 1;
 
 	float DefaultChance = 0.02 * float(EnemyChance);
-	DefaultChance += 0.002 * float(postWaves - 41);
+	DefaultChance += 0.003 * float(postWaves - 41);
 	
 	if(DefaultChance > 0.40)
 	{
@@ -2373,7 +2373,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 87;
+		rand = GetURandomInt() % 85;
 	/*
 	if(wrathofirln)
 	{
@@ -3744,17 +3744,17 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}Your final challenge.... a {crimson}Nourished Spewer!");
 				thespewer = true;
 			}
+			//case 83:
+			//{
+				//if(sigmaller)
+				//{
+					//Freeplay_SetupStart();
+					//return;
+				//}
+				//strcopy(message, sizeof(message), "{red}Holy smokes, it's him. {crimson}The SIGMALLER!");
+				//sigmaller = true;
+			//}
 			case 83:
-			{
-				if(sigmaller)
-				{
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{red}Holy smokes, it's him. {crimson}The SIGMALLER!");
-				sigmaller = true;
-			}
-			case 84:
 			{
 				if(friendunit)
 				{
@@ -3764,7 +3764,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{green}You will gain a strong, friendly unit.");
 				friendunit = true;
 			}
-			case 85:
+			case 84:
 			{
 				if(portalgalore)
 				{
@@ -3774,7 +3774,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}Here's a gift from {purple}Unspeakable{red}. {purple}Five Hundred Void Portals!!");
 				portalgalore = true;
 			}
-			case 86:
+			case 85:
 			{
 				if(refragportal)
 				{
