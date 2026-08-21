@@ -10,7 +10,6 @@ static int CashBonus;
 static float KillBonus;
 static float MiniBossChance;
 static bool HussarBuff;
-static bool PernellBuff;
 static int IceDebuff;
 static int TeslarDebuff;
 static int FusionBuff;
@@ -151,7 +150,6 @@ void Freeplay_ResetAll()
 	KillBonus = 0.0;
 	MiniBossChance = 0.025;
 	HussarBuff = false;
-	PernellBuff = false;
 	IceDebuff = 0;
 	TeslarDebuff = 0;
 	FusionBuff = 0;
@@ -1980,9 +1978,6 @@ void Freeplay_SpawnEnemy(int entity)
 		if(HussarBuff)
 			Freeplay_ApplyStatusEffect(entity, "Hussar's Warscream", 45.0);	
 	
-		if(PernellBuff)
-			Freeplay_ApplyStatusEffect(entity, "False Therapy", 9.0);
-	
 		if(FusionBuff > 1)
 			Freeplay_ApplyStatusEffect(entity, "Self Empowerment", 30.0);	
 	
@@ -3001,19 +2996,6 @@ void Freeplay_SetupStart(bool extra = false)
 				{
 					strcopy(message, sizeof(message), "{red}All enemies now gain the Hussar buff!");
 					HussarBuff = true;
-				}
-			}
-			case 12:
-			{
-				if(PernellBuff)
-				{
-					strcopy(message, sizeof(message), "{green}All enemies have lost the Purnell buff.");
-					PernellBuff = false;
-				}
-				else
-				{
-					strcopy(message, sizeof(message), "{red}All enemies now gain the Purnell buff!");
-					PernellBuff = true;
 				}
 			}
 			case 13:
