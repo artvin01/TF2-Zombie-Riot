@@ -144,7 +144,7 @@ void Freeplay_ResetAll()
 {
 	HealthMulti = 1.0;
 	HealthBonus = 0;
-	EnemyChance = ;
+	EnemyChance = 10;
 	EnemyBosses = 0;
 	ImmuneNuke = 0;
 	CashBonus = 0;
