@@ -144,7 +144,7 @@ void Freeplay_ResetAll()
 {
 	HealthMulti = 1.0;
 	HealthBonus = 0;
-	EnemyChance = 9;
+	EnemyChance = ;
 	EnemyBosses = 0;
 	ImmuneNuke = 0;
 	CashBonus = 0;
@@ -264,12 +264,12 @@ int Freeplay_GetDangerLevelCurrent(int postWaves)
 	}
 	int DangerLevel = 1;
 
-	float DefaultChance = 0.025 * float(EnemyChance);
+	float DefaultChance = 0.01 * float(EnemyChance);
 	DefaultChance += 0.003 * float(postWaves - 41);
 	
-	if(DefaultChance > 0.40)
+	if(DefaultChance > 0.45)
 	{
-		DefaultChance = 0.40;
+		DefaultChance = 0.45;
 	}
 
 	for(int LoopMax = 1; LoopMax < 6 ; LoopMax++)
