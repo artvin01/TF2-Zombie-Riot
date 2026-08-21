@@ -66,7 +66,9 @@ enum
 	Attrib_MultiBuildingDamage = 4059,
 	Attrib_ASPD_StatusCalc,	// Only used in status_effect to determine their current ASPD amount
 	Attrib_RegenElementalOutOfBattleScaling = 4061,
-	Attrib_MaxHpNerfForAbility = 4062
+	Attrib_MaxHpNerfForAbility = 4062,
+
+	Attrib_WeaponDedicated_1 = 4063	//I needed more then 122, 868
 }
 
 StringMap WeaponAttributes[MAXENTITIES + 1];

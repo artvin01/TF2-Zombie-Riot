@@ -1430,26 +1430,6 @@ methodmap RegaliaClass < CClotBody
 	
 	}
 }
-stock void CommLines(const char[] SoundString, const char[] TextLines, any...)
-{
-	if(SoundString[0])
-	{
-		EmitSoundToAll(SoundString);
-	}
-	CCheckTrie();
-	for(int i=1 ; i <= MaxClients ; i++)
-	{
-		if(!IsValidClient(i))
-			continue;
-
-		char buffer[MAX_BUFFER_LENGTH], buffer2[MAX_BUFFER_LENGTH];
-		SetGlobalTransTarget(i);
-		Format(buffer, sizeof(buffer), "\x01%s", TextLines);
-		VFormat(buffer2, sizeof(buffer2), buffer, 3);
-		CReplaceColorCodes(buffer2);
-		CSendMessage(i, buffer2);
-	}
-}
 static void SummonBeaconsFrameLater(int ref)
 {
 	int iNPC = EntRefToEntIndex(ref);

@@ -378,7 +378,15 @@ static void Spin_To_Win_attack(int client, float endVec[3], float endVec_2[3], i
 		BEAM_Targets_Hit *= LASER_AOE_DAMAGE_FALLOFF;
 	}
 }
-
+void Set_HullTrace(float radius, float hullMin[3], float hullMax[3])
+{
+	hullMin[0] = -radius;
+	hullMin[1] = hullMin[0];
+	hullMin[2] = hullMin[0];
+	hullMax[0] = -hullMin[0];
+	hullMax[1] = -hullMin[1];
+	hullMax[2] = -hullMin[2];
+}
 static void Yamato_Rainsword_Skill_1_Loop(int client)
 {
 

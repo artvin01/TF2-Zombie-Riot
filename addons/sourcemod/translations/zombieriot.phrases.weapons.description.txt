@@ -2516,26 +2516,33 @@
 		"en"	"A bow made of pure energy\n-Hold mouse1 to charge it\n-Damage dealt depends on how much mana you pump into it"
 		"ko"	"순수한 에너지로 제작된 활.\n-M1를 꾹 눌러 충전 가능\n-이 활에 충전시킨 마나량에 따라 피해량 증가"
 	}
-	"quincy base desc 2"
+	"quincy repeater desc base"
 	{
-		"en"	"-Increased Damage"
-		"ko"	"피해량 증가"
+		"en"	"-Max potential damage is lower\n-Fast draw speed\n-Upon releasing bow, you fire additional shots, each one dealing a bit less dmg then the last."
 	}
 	"quincy repeater desc"
 	{
-		"en"	"DESCRIBE ME"
+		"en"	"-Increased Damage\n-Higher max mana draw\n-Additional shots fired."
+	}
+	"quincy balista desc base"
+	{
+		"en"	"-Instead of holing M1 to charge your weapon, hold M2 to load up ''Shots'', each shot costs mana\nFiring the stored shots does not cost mana\n-All fired shots automatically turn towards where you were looking when fired."
 	}
 	"quincy balista desc"
 	{
-		"en"	"DESCRIBE ME"
+		"en"	"-Increased Damage\n-More Shots\n-Increased Mana Cost per reload."
 	}
 	"quincy longbow desc"
 	{
-		"en"	"DESCRIBE ME"
+		"en"	"-Increased Damage\n-Longer Pull Time\n-Higher max mana draw."
+	}
+	"quincy penetrator desc base"
+	{
+		"en"	"-Max potential damage is lower\n-Projectiles gains penetration."
 	}
 	"quincy penetrator desc"
 	{
-		"en"	"DESCRIBE ME"
+		"en"	"-Increased Damage\n-Longer Pull Time\n-Higher max mana draw\n-Higher Penetration."
 	}
 	"Monk Desc"
 	{

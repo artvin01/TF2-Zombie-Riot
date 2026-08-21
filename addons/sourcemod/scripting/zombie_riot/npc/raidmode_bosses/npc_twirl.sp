@@ -757,10 +757,10 @@ methodmap Twirl < CClotBody
 		public set(float TempValueForProperty) 	{ fl_ThrowDelay[this.index] = TempValueForProperty; }
 	}
 
-	public char[] GetName()
+	public char[] GetName(bool no_trans = false)
 	{
 		char Name[255];
-		Format(Name, sizeof(Name), "%s%s%s:", NameColour, NpcStats_ReturnNpcName(this.index), TextColour);
+		Format(Name, sizeof(Name), "%s%s%s:", NameColour, NpcStats_ReturnNpcName(this.index, no_trans), TextColour);
 		return Name;
 	}
 	public void AdjustWalkCycle()
@@ -1026,6 +1026,8 @@ methodmap Twirl < CClotBody
 
 		npc.Anger = false;
 
+		c_NpcName[npc.index] = "Twirl";
+
 		if(b_tripple_raid)
 		{
 			WaveStart_SubWaveStart(GetGameTime() + 700.0);	//due to lots and lots of time
@@ -1038,66 +1040,33 @@ methodmap Twirl < CClotBody
 		else if(wave <=10)
 		{
 			npc.m_iRangedAmmo = 5;
-			switch(GetRandomInt(0, 5))
-			{
-				case 0: Twirl_Lines(npc, "Twirl Intro1_1", true);
-				case 1: Twirl_Lines(npc, "Twirl Intro1_2", true);
-				case 2: Twirl_Lines(npc, "Twirl Intro1_3", true);
-				case 3: Twirl_Lines(npc, "Twirl Intro1_4", true);
-				case 4: Twirl_Lines(npc, "Twirl Intro1_5", true);
-				case 5: Twirl_Lines(npc, "Twirl Intro1_6", true);
-			}
+			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Intro1"));
 		}
 		else if(wave <=20)
 		{
 			npc.m_iRangedAmmo = 7;
-			switch(GetRandomInt(0, 4))
-			{
-				case 0: Twirl_Lines(npc, "Twirl Intro2_1", true);
-				case 1: Twirl_Lines(npc, "Twirl Intro2_2", true);
-				case 2: Twirl_Lines(npc, "Twirl Intro2_3", true);
-				case 3: Twirl_Lines(npc, "Twirl Intro2_4", true);
-				case 4: Twirl_Lines(npc, "Twirl Intro2_5", true);
-			}
+			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Intro2"));
 		}
 		else if(wave <=30)
 		{
 			npc.m_iRangedAmmo = 9;
-			switch(GetRandomInt(0, 4))
-			{
-				case 0: Twirl_Lines(npc, "Twirl Intro3_1", true);
-				case 1: Twirl_Lines(npc, "Twirl Intro3_2", true);
-				case 2: Twirl_Lines(npc, "Twirl Intro3_3", true);
-				case 3: Twirl_Lines(npc, "Twirl Intro3_4", true);
-				case 4: Twirl_Lines(npc, "Twirl Intro3_5", true);
-			}
+			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Intro3"));
 		}
 		else if(wave <=40)
 		{	
 			npc.m_iRangedAmmo = 12;
-			switch(GetRandomInt(0, 4))
+			switch(GetRandomInt(0, 5))
 			{
-				case 0: Twirl_Lines(npc, "Twirl Intro4_1", true);
-				case 1: Twirl_Lines(npc, "Twirl Intro4_2", true);
-				case 2: Twirl_Lines(npc, "Twirl Intro4_3", true);
-				case 3: Twirl_Lines(npc, "Twirl Intro4_4", true);
-
 				case 4:
 				{
-					switch(GetRandomInt(0, 2))
-					{
-						case 1:	//1/6*1/3 ~ 5.(5)% of it happening
-						{
-							Twirl_Lines(npc, "Twirl Intro4_rare1", true);
-							Twirl_Lines(npc, "Twirl Intro4_rare2", true);
-							Twirl_Lines(npc, "Twirl Intro4_rare3", true);
-							Twirl_Lines(npc, "Twirl Intro4_rare4", true);
-							Twirl_Lines(npc, "Twirl Intro4_rare5", true);
-							Twirl_Lines(npc, "Twirl Intro4_rare6", true);
-						}
-						default: Twirl_Lines(npc, "Twirl Intro4_5", true);
-					}
+					Twirl_Lines(npc, "Twirl Intro4_rare1", true);
+					Twirl_Lines(npc, "Twirl Intro4_rare2", true);
+					Twirl_Lines(npc, "Twirl Intro4_rare3", true);
+					Twirl_Lines(npc, "Twirl Intro4_rare4", true);
+					Twirl_Lines(npc, "Twirl Intro4_rare5", true);
+					Twirl_Lines(npc, "Twirl Intro4_rare6", true);
 				}
+				default: SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Intro4"));
 			}
 			if(!b_tripple_raid)
 				RaidModeScaling *=0.9;
@@ -1105,16 +1074,8 @@ methodmap Twirl < CClotBody
 		else	//freeplay
 		{
 			npc.m_iRangedAmmo = 16;
-			switch(GetRandomInt(0, 3))
-			{
-				case 0: Twirl_Lines(npc, "Twirl Intro5_1", true);
-				case 1: Twirl_Lines(npc, "Twirl Intro5_2", true);
-				case 2: Twirl_Lines(npc, "Twirl Intro5_3", true);
-				case 3: Twirl_Lines(npc, "Twirl Intro5_4", true);
-			}
+			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Intro5"));
 		}
-
-		c_NpcName[npc.index] = "Twirl";
 
 		i_current_Text = 0;
 
@@ -1264,23 +1225,7 @@ static void Twirl_WinLine(int entity)
 		Twirl_Lines(npc, "{crimson}Perish");
 		return;
 	}
-
-	switch(GetRandomInt(0, 11))
-	{
-		case 0: 	Twirl_Lines(npc, "Twirl Win Kill_1", true);
-		case 1: 	Twirl_Lines(npc, "Twirl Win Kill_2", true);
-		case 2: 	Twirl_Lines(npc, "Twirl Win Kill_3", true);
-		case 3: 	Twirl_Lines(npc, "Twirl Win Kill_4", true);
-		case 4: 	Twirl_Lines(npc, "Twirl Win Kill_5", true);
-		case 5: 	Twirl_Lines(npc, "Twirl Win Kill_6", true);
-		case 6: 	Twirl_Lines(npc, "Twirl Win Kill_7", true);
-		case 7: 	Twirl_Lines(npc, "Twirl Win Kill_8", true);
-		case 8: 	Twirl_Lines(npc, "Twirl Win Kill_9", true);
-		case 9: 	Twirl_Lines(npc, "Twirl Win Kill_10", true);
-		case 10: 	Twirl_Lines(npc, "Twirl Win Kill_11", true);
-		case 11: 	Twirl_Lines(npc, "Twirl Win Kill_12", true);
-	}
-
+	SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Win Kill"));
 }
 
 static void ClotThink(int iNPC)
@@ -1353,17 +1298,7 @@ static void ClotThink(int iNPC)
 		b_lastman = true;
 		if(!b_force_transformation)
 		{
-			switch(GetRandomInt(0, 7))
-			{
-				case 0: Twirl_Lines(npc, "Twirl LastMann_1", true);
-				case 1: Twirl_Lines(npc, "Twirl LastMann_2", true);
-				case 2: Twirl_Lines(npc, "Twirl LastMann_3", true);
-				case 3: Twirl_Lines(npc, "Twirl LastMann_4", true);
-				case 4: Twirl_Lines(npc, "Twirl LastMann_5", true);
-				case 5: Twirl_Lines(npc, "Twirl LastMann_6", true);
-				case 6: Twirl_Lines(npc, "Twirl LastMann_7", true);
-				case 7: Twirl_Lines(npc, "Twirl LastMann_8", true);
-			}
+			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl LastMann"));
 		}
 	}
 
@@ -1378,25 +1313,11 @@ static void ClotThink(int iNPC)
 
 		if(b_force_transformation)
 		{
-			switch(GetRandomInt(0, 2))
-			{
-				case 0: Twirl_Lines(npc, "Twirl Transform_angry_1", true);
-				case 1: Twirl_Lines(npc, "Twirl Transform_angry_2", true);
-				case 2: Twirl_Lines(npc, "Twirl Transform_angry_3", true);
-			}
+			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Transform_angry"));
 		}
 		else
 		{
-			switch(GetRandomInt(0, 6))
-			{
-				case 0: Twirl_Lines(npc, "Twirl Transform_1", true);
-				case 1: Twirl_Lines(npc, "Twirl Transform_2", true);
-				case 2: Twirl_Lines(npc, "Twirl Transform_3", true);
-				case 3: Twirl_Lines(npc, "Twirl Transform_4", true);
-				case 4: Twirl_Lines(npc, "Twirl Transform_5", true);
-				case 5: Twirl_Lines(npc, "Twirl Transform_6", true);
-				case 6: Twirl_Lines(npc, "Twirl Transform_7", true);
-			}
+			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Transform"));
 		}
 		
 		npc.m_flMagiaOverflowRecharge -= 15.0;
@@ -4289,6 +4210,7 @@ static void Twirl_Ruina_Weapon_Lines(Twirl npc, int client)
 
 	bool ruina_wings = IsValidEntity(Cosmetic_WearableExtra[client]) ? MagiaWingsDo(client) : false;
 
+	bool translate = false;
 	if(ruina_wings)
 	{
 		if(GetRandomFloat(0.0, 3.0) < 0.01)
@@ -4349,10 +4271,12 @@ static void Twirl_Ruina_Weapon_Lines(Twirl npc, int client)
 
 	//switch(GetRandomInt(0,2)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "", client); 	case 1: Format(Text_Lines, sizeof(Text_Lines), "", client); case 2: Format(Text_Lines, sizeof(Text_Lines), "", client);}
 
+	
 	switch(i_CustomWeaponEquipLogic[weapon])
 	{
-		case WEAPON_MAGNESIS: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "I've had it up to here MISTER {gold}%N{snow}.", client); 												case 1: Format(Text_Lines, sizeof(Text_Lines), "How would you feel {gold}%N{snow} if I grabbed YOU?", client);}
-		case WEAPON_YAKUZA: switch(GetRandomInt(0,1)) 				{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh god another one. YOUR STRENGTH {gold}%N{snow} IS FAKE", client); 									case 1: Format(Text_Lines, sizeof(Text_Lines), "I would prefer if your arms did not touch me mr {gold}%N{snow}.", client);}
+		case WEAPON_QUINCY_CROSSBOW: 	{translate = true; SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Quincy Balista Yap"), client);}
+		case WEAPON_MAGNESIS:			{translate = true; SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Magnesis Yap"), client);}
+		case WEAPON_YAKUZA:				{translate = true; SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Yakuza Yap"), client);}
 		
 		case WEAPON_KIT_BLITZKRIEG_CORE: switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh my, {gold}%N{snow}, you're trying to copy the Machine?", client); 									case 1: Format(Text_Lines, sizeof(Text_Lines), "Ah, how foolish {gold}%N{snow} Blitzkrieg was a poor mistake to copy...", client);}	//IT ACTUALLY WORKS, LMFAO
 		case WEAPON_COSMIC_TERROR: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Ah, the Cosmic Terror, haven't seen that relic in a long while"); 										case 1: Format(Text_Lines, sizeof(Text_Lines), "The moon is a deadly laser, am I right {gold}%N{snow}?",client);}
@@ -4415,10 +4339,30 @@ static void Twirl_Ruina_Weapon_Lines(Twirl npc, int client)
 
 	if(valid)
 	{
-		Twirl_Lines(npc, Text_Lines);
+		if(!translate)
+			Twirl_Lines(npc, Text_Lines);
+		else
+		{
+
+		}
 		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
 		b_said_player_weaponline[client] = true;
 	}
+}
+static char[] sGetRandomTranslationString(const char[] text)
+{
+	int MaxEntries = 0;
+	MaxEntries++;
+	char TipText[255];
+	Format(TipText, sizeof(TipText), "%s %i", text, MaxEntries);
+	while(TranslationPhraseExists(TipText))
+	{
+		MaxEntries++;
+		Format(TipText, sizeof(TipText), "%s %i", text, MaxEntries);
+	}
+	char RageText[255];
+	Format(RageText, sizeof(RageText), "%s %i", text, GetRandomInt(0,MaxEntries- 1));
+	return RageText;
 }
 
 static void Kill_Abilities(Twirl npc)
@@ -4490,65 +4434,29 @@ static void NPC_Death(int entity)
 		int wave = i_current_wave[npc.index];
 		if(b_force_transformation)
 		{
-			switch(GetRandomInt(0, 1))
-			{
-				case 0: Twirl_Lines(npc, "{crimson}Bye");
-				case 1: Twirl_Lines(npc, "{crimson}I'm Leaving.");
-			}
+			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl End4 Angry"));
 		}
 		else if(wave <=10)
 		{
-			switch(GetRandomInt(0, 4))
-			{
-				case 0: Twirl_Lines(npc, "Ah, this is great, I have high hopes for our next encounter");
-				case 1: Twirl_Lines(npc, "You're strong, I like that, till next time");						//HEY ITS ME GOKU, I HEARD YOUR ADDICTION IS STRONG, LET ME FIGHT IT
-				case 2: Twirl_Lines(npc, "Ahaha, toodles");
-				case 3: Twirl_Lines(npc, "Magnificent, just what I was hoping for");
-				case 4: Twirl_Lines(npc, "How interesting..");
-			}
+			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl End1"));
 		}
 		else if(wave <=20)
 		{
-			switch(GetRandomInt(0, 4))
-			{
-				case 0: Twirl_Lines(npc, "This was great fun, better not let me down and not make it to our next battle!");
-				case 1: Twirl_Lines(npc, "Oh my, I may have underestimated you, this is great news");
-				case 2: Twirl_Lines(npc, "I'll have to give {aqua}Stella{snow} a little treat, this has been great fun");
-				case 3: Twirl_Lines(npc, "Most excellent, you bested me, hope to see you again!");
-				case 4: Twirl_Lines(npc, "The simulations seem to be off..");
-			}
+			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl End2"));
 		}
 		else if(wave <=30)
 		{
-			switch(GetRandomInt(0, 4))
-			{
-				case 0: Twirl_Lines(npc, "Even with my {purple}''Heavy Equipment''{snow} you bested me, good work");
-				case 1: Twirl_Lines(npc, "You're quite strong, can't wait for our next match");
-				case 2: Twirl_Lines(npc, "I hope you all had as much fun as I did");
-				case 3: Twirl_Lines(npc, "You've all exceeded my expectations, I do believe our next and final battle will be the {crimson}most fun{snow}!");
-				case 4: Twirl_Lines(npc, "Whoever made those simulations is gonna get fired..");
-			}
+			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl End3"));
 		}
 		else
 		{
 			if(b_tripple_raid)
 			{
-				switch(GetRandomInt(0, 2))
-				{
-					case 0: Twirl_Lines(npc, "Nice job.");
-					case 1: Twirl_Lines(npc, "Ehe, this has been quite entertaining, I hope we meet again in the future");
-					case 2: Twirl_Lines(npc, "Good luck with the rest~");
-				}
+				SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl End4 Tripple"));
 			}
 			else
 			{
-				switch(GetRandomInt(1, 4))
-				{
-					case 1: Twirl_Lines(npc, "Ehe, this has been quite entertaining, I hope we meet again in the future");
-					case 2: Twirl_Lines(npc, "And so, our battle has ended, you've won this.");
-					case 3: Twirl_Lines(npc, "toodles!");
-					case 4: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
-				}
+				SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl End4"));
 			}
 		}
 	}
@@ -4602,6 +4510,28 @@ static void Twirl_Lines(Twirl npc, const char[] text, bool translate = false)
 	PrintNPCMessageWithPrefixes(npc.index, NameColour, text, 
 	.messageIsTranslated = translate,
 	.messageColor = TextColour);
+}
+static void SpecialLines(Twirl npc, const char[] TextLines, any...)	//have fun making this support prefixes. because I have ZERO clue how to do that while keeping the logic I want.
+{
+	if(!TextLines[0])
+	{
+		LogStackTrace("Empty String");
+		return;
+	}	
+	CCheckTrie();
+	for(int i=1 ; i <= MaxClients ; i++)
+	{
+		if(!IsValidClient(i))
+			continue;
+
+		char buffer[MAX_BUFFER_LENGTH], buffer2[MAX_BUFFER_LENGTH];
+		SetGlobalTransTarget(i);
+		Format(buffer, sizeof(buffer), "\x01%s", TextLines);
+		VFormat(buffer2, sizeof(buffer2), buffer, 3);
+		Format(buffer2, sizeof(buffer2), "%s %s", npc.GetName(), buffer2);
+		CReplaceColorCodes(buffer2);
+		CSendMessage(i, buffer2);
+	}
 }
 static float[] GetNPCAngles(CClotBody npc)
 {

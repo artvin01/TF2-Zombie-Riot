@@ -5815,6 +5815,12 @@
 		"en"	"Your Weapon is not charged enough. [{1}/{2}]"
 		"ko"	"당신의 무기가 충분히 충전되지 않았습니다. [{1}/{2}]"
 	}
+	"Your Weapon is not charged enough float"
+	{
+		"#format"	"{1:.1f},{2:.1f}"
+		"en"	"Your Weapon is not charged enough. [{1}/{2}]"
+		"ko"	"당신의 무기가 충분히 충전되지 않았습니다. [{1}/{2}]"
+	}
 	"Your Weapon is not charged enough Single"
 	{
 		"#format"	"{1:d}"
