@@ -85,7 +85,6 @@ static const char g_RTDPrefixes[][] = {
 	"Indecisive Prefix",
 	"Depressing Prefix",
 	"Whimsical Prefix",
-	"Seraph Prefix",
 	"Party Popper Prefix",
 };
 

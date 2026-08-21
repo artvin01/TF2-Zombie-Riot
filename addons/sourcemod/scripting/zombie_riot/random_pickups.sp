@@ -15,6 +15,20 @@ void RandomPickup_OnMapStart()
 	PrecacheModel(SUPPLIES_MODEL_RANDOM);
 	CreateTimer(5.0, RandomPickup_DelayBetweenSpawns, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 }
+
+void RandomPickup_Clear()
+{
+	int entity = -1;
+	while ((entity = FindEntityByClassname(entity, "prop_dynamic*")) != -1)
+	{
+		char targetname[64];
+		GetEntPropString(entity, Prop_Send, "m_iName", targetname, sizeof(targetname));
+		
+		if (StrEqual(targetname, "zr_random_pickup"))
+			RemoveEntity(entity);
+	}
+}
+
 void RandomPickup_ResetTimer()
 {
 	DelayBetweenSpawns = 0.0;
@@ -96,6 +110,7 @@ bool RandomPickup_SpawnPickup(float VectorGoal[3])
 	{
 		b_ToggleTransparency[prop] = false;
 		DispatchKeyValue(prop, "model", SUPPLIES_MODEL_RANDOM);
+		DispatchKeyValue(prop, "targetname", "zr_random_pickup");
 		DispatchKeyValue(prop, "StartDisabled", "false");
 		DispatchKeyValue(prop, "Solid", "2");
 		
