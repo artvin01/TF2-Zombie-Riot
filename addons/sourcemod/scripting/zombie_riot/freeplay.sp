@@ -199,8 +199,8 @@ void Freeplay_ResetAll()
 	portalgalore = false;
 	refragportal = false;
 	squeezerplus = false;
-	FM_Health = 0.25;
-	FM_Damage = 0.5;
+	FM_Health = 0.5;
+	FM_Damage = 0.75;
 }
 
 int Freeplay_EnemyCount()
