@@ -26,10 +26,7 @@ static int SkullTimes;
 static bool ExplodingNPC;
 static bool IsExplodeWave; // to prevent the message from popping up twice
 static int ExplodeNPCDamage;
-static int EnemyShields;
-static int VoidBuff;
 static bool VestaBuff;
-static bool SquadBuff;
 static bool Coffee;
 static int StrangleDebuff;
 static int ProsperityDebuff;
@@ -166,10 +163,7 @@ void Freeplay_ResetAll()
 	ExplodeNPCDamage = 0;
 	ExplodingNPC = false;
 	IsExplodeWave = false;
-	EnemyShields = 0;
-	VoidBuff = 0;
 	VestaBuff = false;
-	SquadBuff = false;
 	Coffee = false;
 	StrangleDebuff = 0;
 	ProsperityDebuff = 0;
@@ -1988,19 +1982,10 @@ void Freeplay_SpawnEnemy(int entity)
 			Freeplay_ApplyStatusEffect(entity, "Oceanic Scream", 30.0);	
 	
 		if(OceanBuff > 0)
-			Freeplay_ApplyStatusEffect(entity, "Oceanic Singing", 30.0);	
-	
-		if(VoidBuff > 1)
-			Freeplay_ApplyStatusEffect(entity, "Void Strength II", 12.0);
-	
-		if(VoidBuff > 0)
-			Freeplay_ApplyStatusEffect(entity, "Void Strength I", 6.0);
-	
+			Freeplay_ApplyStatusEffect(entity, "Oceanic Singing", 30.0);
+
 		if(VestaBuff)
 			Freeplay_ApplyStatusEffect(entity, "Call To Vesta", 10.0);
-	
-		if(SquadBuff)
-			Freeplay_ApplyStatusEffect(entity, "Squad Leader", 20.0);	
 	
 		if(Coffee)
 		{
@@ -2092,8 +2077,6 @@ void Freeplay_SpawnEnemy(int entity)
 		fl_Extra_Speed[entity] *= SpeedMult;
 		fl_Extra_MeleeArmor[entity] *= MeleeMult;
 		fl_Extra_RangedArmor[entity] *= RangedMult;
-		if(EnemyShields > 0)
-			VausMagicaGiveShield(entity, EnemyShields);
 	}
 }
 
@@ -3069,26 +3052,6 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 	
 			/// CREDIT SKULLS //
-			case 20:
-			{
-				strcopy(message, sizeof(message), "{green}All enemies now give out 1 extra credits on death.");
-				KillBonus += 1;
-			}
-			case 21:
-			{
-				strcopy(message, sizeof(message), "{green}All enemies now give out 2 extra credits on death.");
-				KillBonus += 2;
-			}
-			case 22:
-			{
-				strcopy(message, sizeof(message), "{green}All enemies now give out 3 extra credits on death.");
-				KillBonus += 3;
-			}
-			case 23:
-			{
-				strcopy(message, sizeof(message), "{green}All enemies now give out 4 extra credits on death.");
-				KillBonus += 4;
-			}
 			case 24:
 			{
 				strcopy(message, sizeof(message), "{green}All enemies now give out 5 extra credits on death.");
@@ -3115,11 +3078,6 @@ void Freeplay_SetupStart(bool extra = false)
 	
 				strcopy(message, sizeof(message), "{red}Reduced extra credits gained per wave by 50!");
 				CashBonus -= 50;
-			}
-			case 27:
-			{
-				strcopy(message, sizeof(message), "{green}You now gain 150 extra credits per wave.");
-				CashBonus += 150;
 			}
 			case 28:
 			{
@@ -3363,81 +3321,6 @@ void Freeplay_SetupStart(bool extra = false)
 				ExplodingNPC = true;
 				EmitSoundToAll("ui/mm_medal_silver.wav");
 			}
-			
-			case 53:
-			{
-				Freeplay_SetupStart();
-				return;
-				/*
-				if(EnemyShields >= 15)
-				{
-					EnemyShields = 15;
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{red}All enemies receieve 3 expidonsan shields!");
-				EnemyShields += 3;
-				*/
-			}
-			case 54:
-			{
-				Freeplay_SetupStart();
-				/*
-				return;
-				if(EnemyShields >= 15)
-				{
-					EnemyShields = 15;
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{red}All enemies receieve 6 expidonsan shields!");
-				EnemyShields += 6;
-				*/
-			}
-			case 55:
-			{
-				Freeplay_SetupStart();
-				return;
-				/*
-				if(EnemyShields <= 0)
-				{
-					EnemyShields = 0;
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{green}All enemies lose 2 expidonsan shields.");
-				EnemyShields -= 2;
-				*/
-			}
-			case 56:
-			{
-				Freeplay_SetupStart();
-				return;
-				/*
-				if(EnemyShields <= 0)
-				{
-					EnemyShields = 0;
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{green}All enemies lose 4 expidonsan shields.");
-				EnemyShields -= 4;
-				*/
-			}
-			
-			case 57:
-			{
-				if(VoidBuff > 2)
-				{
-					strcopy(message, sizeof(message), "{green}All enemies have lost the Void buff.");
-					VoidBuff = 0;
-				}
-				else
-				{
-					strcopy(message, sizeof(message), "{red}All enemies now gain a layer of the Void buff!");
-					VoidBuff++;
-				}
-			}
 			case 58:
 			{
 				if(VestaBuff)
@@ -3449,19 +3332,6 @@ void Freeplay_SetupStart(bool extra = false)
 				{
 					strcopy(message, sizeof(message), "{red}All enemies now gain the Call to Vesta buff!");
 					VestaBuff = true;
-				}
-			}
-			case 59:
-			{
-				if(SquadBuff)
-				{
-					strcopy(message, sizeof(message), "{green}All enemies have lost the Squad Leader buff.");
-					SquadBuff = false;
-				}
-				else
-				{
-					strcopy(message, sizeof(message), "{red}All enemies now gain the Squad Leader buff!");
-					SquadBuff = true;
 				}
 			}
 			case 60:
