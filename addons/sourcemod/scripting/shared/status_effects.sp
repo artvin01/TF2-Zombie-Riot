@@ -12049,33 +12049,3 @@ static void FuriosoAbilityEnd(int victim, StatusEffect Apply_MasterStatusEffect,
 	ExtinguishTarget(victim);
 
 }
-
-int StatusEffects_GetCount()
-{
-	return AL_StatusEffects ? AL_StatusEffects.Length : 0;
-}
-
-bool StatusEffects_GetByIndex(int index, StatusEffect data)
-{
-	if(!AL_StatusEffects || index < 0 || index >= AL_StatusEffects.Length)
-		return false;
-
-	AL_StatusEffects.GetArray(index, data);
-	return true;
-}
-
-int StatusEffects_FindIndexByName(const char[] name)
-{
-	if(!AL_StatusEffects)
-		return -1;
-
-	StatusEffect data;
-	int length = AL_StatusEffects.Length;
-	for(int i; i < length; i++)
-	{
-		AL_StatusEffects.GetArray(i, data);
-		if(data.BuffName[0] && StrEqual(data.BuffName, name, false))
-			return i;
-	}
-	return -1;
-}
