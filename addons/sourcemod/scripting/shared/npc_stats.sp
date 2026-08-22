@@ -6611,6 +6611,9 @@ public void NpcBaseThink(int iNPC)
 			HealEntityGlobal(iNPC, iNPC, HealingAmount, 1.25, 0.0, HEAL_SELFHEAL);
 		}
 	}
+	
+	if (HasSpecificBuff(iNPC, "Trampling Prefix"))
+		ResolvePlayerCollisions_Npc(iNPC, 2.0, true);
 #endif
 #if defined RPG
 	if(i_HpRegenInBattle[iNPC] > 1 && f_QuickReviveHealing[iNPC] < GetGameTime() && !f_TimeFrozenStill[iNPC])
@@ -10369,13 +10372,13 @@ int ConvertTouchedResolve(int index)
 stock void ResolvePlayerCollisions_Npc(int iNPC, float damage, bool CauseKnockback = true)
 {
 	CClotBody npc = view_as<CClotBody>(iNPC);
-	static float vel[3];
-	static float flMyPos[3];
+	float vel[3];
+	float flMyPos[3];
 	npc.GetVelocity(vel);
 	//clamping so insane speeds dont translate through hitting the entire map.
-	fClamp(vel[0], -300.0, 300.0);
-	fClamp(vel[1], -300.0, 300.0);
-	fClamp(vel[2], -300.0, 300.0);
+	vel[0] = fClamp(vel[0], -300.0, 300.0);
+	vel[1] = fClamp(vel[1], -300.0, 300.0);
+	vel[2] = fClamp(vel[2], -300.0, 300.0);
 	GetEntPropVector(iNPC, Prop_Data, "m_vecAbsOrigin", flMyPos);
 		
 	static float hullcheckmins[3];
@@ -11338,6 +11341,10 @@ float Reapply_BurningCorpse[MAXENTITIES];
 
 void IgniteTargetEffect(int target, int ViewmodelSetting = 0, int viewmodelClient = 0, int type = 0, char typeoverride[255] = "")
 {
+	if(HasSpecificBuff(target, "Black Flames"))
+	{
+		type = 2;
+	}
 	Reapply_BurningCorpse[target] = GetGameTime() + 5.0;
 	if(ViewmodelSetting > 0)
 	{
@@ -11508,6 +11515,10 @@ public Action IgniteTimerVisual(Handle timer, DataPack pack)
 
 void IngiteTargetClientside(int target, int client, bool ingite, int type)
 {
+	if(HasSpecificBuff(target, "Black Flames"))
+	{
+		type = 2;
+	}
 	char typeEffect[255];
 	switch(type)
 	{
@@ -12272,6 +12283,21 @@ void NPCStats_HandlePaintedWearables()
 			h_ColoredWearables.Erase(i);
 		}
 	}
+}
+
+void NPCStats_ClearPaintedWearables()
+{
+	for (int i = 0; i < h_ColoredWearables.Length; i++)
+	{
+		WearableColor wearableColor;
+		h_ColoredWearables.GetArray(i, wearableColor);
+		if (IsValidEntity(wearableColor.wearableRef))
+			RemoveEntity(wearableColor.wearableRef);
+		
+		delete wearableColor.entities;
+	}
+	
+	h_ColoredWearables.Clear();
 }
 
 Action NPCStats_Timer_HandleCustomNPCChatNames(Handle timer)

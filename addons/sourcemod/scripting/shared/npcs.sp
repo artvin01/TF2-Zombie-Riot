@@ -670,7 +670,7 @@ public Action Timer_Delay_BossSpawn(Handle timer, DataPack pack)
 
 void NPC_Ignite(int entity, int attacker, float duration, int weapon, float damageoverride = 8.0, bool colored = false)
 {
-	if(HasSpecificBuff(entity, "Hardened Aura"))
+	if(!HasSpecificBuff(entity, "Black Flames") && HasSpecificBuff(entity, "Hardened Aura"))
 		return;
 	
 	bool wasBurning = view_as<bool>(IgniteFor[entity]);
@@ -831,6 +831,12 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 			//Also yes this means burn and bleed are basically the same, excluding that burn doesnt stack.
 			//In this case ill buff it so its 2x as good as bleed! or more in the future
 			//Also now allows hp gain and other stuff for that reason. pretty cool.
+			if(HasSpecificBuff(entity, "Black Flames"))
+			{
+				//burn forever
+				IgniteFor[entity] = 20;
+				return Plugin_Continue;
+			}
 			if(IgniteFor[entity] <= 0)
 			{
 				ExtinguishTarget(entity);
@@ -1090,7 +1096,7 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 			}
 		}
 		
-		if(damagetype & DMG_BULLET)
+		if((damagetype & DMG_BULLET) || (damagetype & DMG_BUCKSHOT))
 		{
 			if(i_WeaponDamageFalloff[weapon] != 1.0) //dont do calculations if its the default value, meaning no extra or less dmg from more or less range!
 			{
@@ -1441,7 +1447,7 @@ public void NPC_OnTakeDamage_Post(int victim, int attacker, int inflictor, float
 		OnPostAttackUniqueWeapon(attacker, victim, weapon, i_HexCustomDamageTypes[victim]);
 #endif
 		//Do not show this event if they are attacked with DOT. Earls bleedin.
-		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+	//	if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 		{
 			Event event = CreateEvent("npc_hurt");
 			if(event) 

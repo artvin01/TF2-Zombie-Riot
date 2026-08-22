@@ -224,8 +224,10 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 		{
 			delete h_Onrush_Check_Timer[client];
 			h_Onrush_Check_Timer[client] = null;
+			//PrintToChatAll("redashes deleted timer");
 		}
 		redashes[client] = 0;
+		//PrintToChatAll("redashes set to 0");
 		Ability_Apply_Cooldown(client, 2, 20.0, weapon);
 	}
 	if(LastMann)
@@ -1068,7 +1070,7 @@ public void Red_Mist_Onrush(int client, int weapon)
 		redashes[client] += 1;
 	}
 	
-	Ability_Apply_Cooldown(client, 2, 0.5);
+	Ability_Apply_Cooldown(client, 2, 0.5);//give tiny cd between each redash
 	if(redashes[client] >= 3)
 	{
 		Ability_Apply_Cooldown(client, 2, 20.0);
@@ -1128,7 +1130,7 @@ public Action Onrush_Check_Distance(Handle timer, DataPack Onrush_pack)
 	int weapon = EntRefToEntIndex(Onrush_pack.ReadCell());
 	int target = EntRefToEntIndex(Onrush_pack.ReadCell());
 
-	if(!IsEntityAlive(target) || !IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
+	if(!IsEntityAlive(target) || !IsValidClient(client) || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon) || Onrush_Redash_Window[client] < GetGameTime())
 	{
 		h_Onrush_Check_Timer[clientindx] = null;
 		return Plugin_Stop;
@@ -1140,11 +1142,13 @@ public Action Onrush_Check_Distance(Handle timer, DataPack Onrush_pack)
 	float VecVictim[3];
 	WorldSpaceCenter(target, VecVictim);
 	float dist = GetVectorDistance(VecMe, VecVictim, true);
+	//PrintToChatAll("%f", "Distance", dist);
 	float DistanceMin = 125.0;
 	if(b_IsGiant[target])
 		DistanceMin = 150.0;
 	if(dist < (DistanceMin * DistanceMin))
 	{
+		//PrintToChatAll("hit enemy ?");
 		float OnrushDamage = 65.0;
 		OnrushDamage *= WeaponDamageAttributeMultipliers(weapon,_,client);
 		float Strenght_boost;

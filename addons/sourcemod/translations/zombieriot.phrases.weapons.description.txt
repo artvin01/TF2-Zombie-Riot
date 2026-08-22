@@ -1276,9 +1276,8 @@
 	}
 	"Fire Wand Pap 3"
 	{
-		"en"	"-Increased damage\n-Increased attackspeed\n-Fires 5 fireballs in quick succession, subsequent fireballs deal less damage.\n-Your basic attacks deal much more damage."
-		"it"	"Aumenta i danni, spara 5 palle di fuoco in rapida successione, le palle di fuoco successive infliggono meno danni.\nI suoi attacchi base infliggono molti più danni."
-		"ko"	"피해량, 공격 속도 증가\n-우클릭이 파이어볼 5개를 연속으로 발사\n-늦게 발사되는 파이어볼은 더 적은 피해를 가함\n-기본 공격의 피해량이 크게 증가"
+		"en"	"-Increased damage\n-Increased attackspeed\n-Fires 5 fireballs in quick succession, subsequent fireballs deal less damage.\n-Your basic attacks deal much more damage.\n-Flames turn black upon burning enemies."
+		"ko"	"-피해량, 공격 속도 증가\n-우클릭 시 파이어볼 5개를 연속으로 발사\n-나중에 발사된 파이어볼은 더 적은 피해를 가함\n-기본 공격의 피해량이 대폭 증가\n-적중 시 화상 대신 흑염 부여"
 	}
 	
 	"Cryo Staff Desc"
@@ -1359,7 +1358,7 @@
 	"Raigeki Extra Desc 0"
 	{
 		"en"	"-Resistance granted while charging Raigeki increases based on charge amount.\n-Raigeki takes 3s to strike once cast, during which you are stunned, but resistance is increased."
-		"ko"	"-뇌격 충전 중 부여되는 저항력이 충전량에 따라 증가\n-뇌격은 시전 후 타격까지 3초가 소요되며\n-이 기간 동안 기절 상태가 되지만 저항력이 증가"
+		"ko"	"-뇌격 충전 중 부여되는 저항력이 충전량에 따라 증가\n-뇌격은 시전 후 타격까지 3초가 소요\n-이 기간 동안 기절 상태가 되지만 저항력이 증가"
 	}
 
 	"Raigeki Desc 1"
@@ -1534,12 +1533,6 @@
 		"chi"   "一个近战扳手，随建造者伤害缩放。\nM2为突刺，下一次攻击将造成12倍伤害。你需要足够的金属才能让它工作。"
 		"it"	"Un'ascia da mischia che scala con i danni del costruttore.\nM2 per affondare e per far sì che l'attacco successivo infligga 12 volte i danni.\nBisogna avere abbastanza potenziamenti perché funzioni."
 		"ko"	"-건축가의 피해량에 영향을 받는 근접 무기입니다.\n-적을 보면서 우클릭 사용시 돌진하며 다음 공격이 12배의 추가 피해를 입힘.\n-충분한 건축가 개선을 보유해야 제 위력이 납니다.\n-적중 시 배럭 자원을 생성(수리 개선에 따라서 증가)"
-	}
-	"There Can Be Only One Desc"
-	{
-		"en"	"Buy grigori some ammo."
-		"it"	"Compra a Grigori delle munizioni."
-		"ko"	"그리고리에게 탄약을 사주세요."
 	}
 	
 	"Decorative Object Desc"
@@ -2077,20 +2070,14 @@
 
 	"Heavy Caliber Desc"
 	{
-		"en"	"-Gain 15％ more Weapon damage\n-15％ less firerate"
-		"fr"	"+15％ dégats, -15％ cadence de tir"
-		///"ru"	"На 15％ больше урон от оружия, но на 15％ меньше скорострельность"
-		"chi"   "武器伤害提高15％，但射速降低15％"
-		"it"	"15％ in più di danno da arma, ma 15％ in meno di potenza di fuoco"
-		"ko"	"-무기 피해량 +15％\n-공격 속도 -15％"
+		"en"	"-Gain 15％ more Weapon damage\n-15％ less attack speed and reload speed"
+		"ko"	"-무기 피해량 +15％\n-공격 속도 -15％\n-재장전 속도 -15％"
 	}
 	
 	"Army Belt Desc"
 	{
-		"en"	"-Gain 10％ Faster reload\n-1.45x Slower weapon switch speed."
-		"fr"	"+10％ vitesse de rechargement, 1.45x vitesse de changement d'arme plus lente"
-		"it"	"10％ Ricarica più veloce ma interruttore dell'arma più lungo di 1,45x"
-		"ko"	"-재장전 속도 +10％\n-무기 전환 속도 -1.45배"
+		"en"	"-Gain 15％ Faster reload\n-Lose 15% attack speed\n-1.45x Slower weapon switch speed."
+		"ko"	"-재장전 속도 +15％\n-공격 속도 -15％\n-무기 전환 속도 -1.45배"
 	}
 	
 	"Headshot Affinity Desc"
@@ -2188,6 +2175,36 @@
 		"chi"   "你做的很好了，奖励你这把枪。虽然很废物，但他的确是免费的。（憋"
 		"it"	"Sei andato abbastanza lontano da meritare questa pistola gratis all'inizio.\nÈ un po' peggiore delle altre, ma andrà bene. (lol)"
 		"ko"	"당신은 시작부터 이 총을 받을 자격이 있으십니다.\n-무한 탄창, 최저성능의 권총\n-막대한 성능의 무기로 강화될 수 있음"
+	}
+	"Level 20 Peashooter Desc"
+	{
+		"en"	"Slightly Less Bad."
+		"ko"	"아주 조금 나아졌다."
+	}
+	"Level 30 Peashooter Desc"
+	{
+		"en"	"Slightly Less not so bad."
+		"ko"	"아주 조금 더 좋아졌다."
+	}
+	"Level 50 Peashooter Desc"
+	{
+		"en"	"Slightly good."
+		"ko"	"조금 나아졌다."
+	}
+	"Level 75 Peashooter Desc"
+	{
+		"en"	"Pretty Good."
+		"ko"	"꽤 쓸만해졌다."
+	}
+	"Peashooter Singularity Desc"
+	{
+		"en"	"Good."
+		"ko"	"좋아졌다."
+	}
+	"Peashooter Singularity Singularity Desc"
+	{
+		"en"	"Suprisingly Good."
+		"ko"	"놀라울 정도로 좋아졌다."
 	}
 	
 	"Fusion Blade Desc"
@@ -2350,9 +2367,9 @@
 	}
 	"Alchemist Potion Pap 7"
 	{
-		"en"	"-Increased Damage\n-Buffing Potion lasts a MUCH longer time, (100 seconds).\n-Buff strenghens to 25％ from 20％"
+		"en"	"-Increased Damage\n-Buffing Potion lasts a MUCH longer time, (300 seconds).\n-Buff strenghens to 25％ from 20％"
 		"it"	"La pozione di potenziamento del danno dura molto più a lungo (300 secondi). Il potenziamento del danno passa a 25％ da 20％"
-		"ko"	"-피해량 증가\n-버프 포션의 지속 시간이 100초로 증가\n-버프의 강화량이 20％에서 25％로 증가"
+		"ko"	"-피해량 증가\n-버프 포션의 지속 시간이 300초로 증가\n-버프의 강화량이 20％에서 25％로 증가"
 	}
 	"Alchemist Potion Pap 8"
 	{
@@ -3504,6 +3521,11 @@
 		"it"	"Un fucile da caccia di Expidonsa.\nLa maggior parte della guarigione che ricevi è tagliata del 75％.\nColpisci più nemici e guarisci al colpo.\nOgni quarto attacco è un doppio attacco.\nLa guarigione al colpo permette di surriscaldare.\nL'abilità permette doppi colpi e più danni."
 		"ko"	"엑스피돈사제 산탄총입니다.\n-받는 대부분의 치유 효과가 75％ 감소\n-다수의 적을 타격할 수 있으며, 적중시 체력 회복(과치료 가능)\n-매 4번째 공격은 2연속 공격이 됨.\n-능력 사용시 2연속 공격이 되며 피해량 증가."
 	}
+	"Angelic Shotgonnus Extra"
+	{
+		"en"	"VS raids you gain more charge, heal 2x as much against raids, and do 10％ more damage.\nYou deal random crits, each pap increases the chances, using ability and having lower ammo during ability increases crit chance.\nCrits heal you extra."
+		"ko"	"레이드 보스 적중 시 능력 충전량 증가, 치유량 2배, 공격 피해량 10％ 증가\n무작위로 치명타를 가하며, 강화 시 확률 증가. 능력 사용 및 능력의 탄약이 낮을 수록 확률 증가\n치명타 시 치유량 증가"
+	}
 	"Angelic Shotgonnus Desc Pap 1"
 	{
 		"en"	"-Increased Damage\n-Ability gets more capacity.\n-You hit more enemies at once.\n-Overheal is increased.\n-Crit Chance Increases."
@@ -3517,6 +3539,11 @@
 		"en" 	"Weapon changes:\n-M2 Ability causes multi 3 hit, with more damage & cooldown\n-Gain 2.4x max HP and 1.8x Vuln\n-Heal on hit, Lower hp = faster atk.\n-You cant gain armor.\n-Armor -> Hp."
 		"it"	"Modifiche all'arma:\nM2 L'abilità provoca più di 3 colpi, con più danni e cooldown.\nGuadagna 2,4 volte gli HP massimi e 1,8 volte la vulnerabilità."
 		"ko" 	"-무기 능력 변경:\n우클릭 능력 사용 시 공격이 3연타를 하게 되며, 피해량이 증가하지만 쿨타임도 증가.\n-최대 체력 +2.4배, 대신 받는 피해 1.8배 증가\n-적중시 체력 회복, 체력이 감소할 수록 공격 속도 증가\n-아머 획득 불가능, 대신 아머가 체력으로 전환됨"
+	}
+	"Half Moon Extra"
+	{
+		"en" 	"VS raids you heal half as much. Ability heals 50％ more against raidbosses."
+		"ko" 	"레이드 보스 적중 시 치유량이 절반으로 감소합니다. 능력 사용 시 레이드 보스 적중 시 치유량이 50％ 증가합니다."
 	}
 	"Half Moon Desc2"
 	{
@@ -5881,5 +5908,74 @@
 	{
 		"en" 	"When dashing, you dodge attacks for the next 0.5 seconds\nDodge attacks fully upto a damage treshhold (upgrades, melee dmg is 2x more lenient)\nIf damage is too high, you take 0.75x dmg instead."
 		"ko"	"대쉬할 때 다음 0.5초 동안 공격을 회피\n상한까지의 피해량을 완전 회피(개선 시 증가, 근접 피해는 상한 2배)\n피해량이 너무 높다면 대신 0.75배로 감소"
+	}
+	
+	// Barracks civ settings
+	"Almina and Expidonsan's Help Desc"
+	{
+		"en"		"Alminans Offer their assistance!\nThorns might join up if you help his cause..."
+		"ko"		"알미나인들이 도움을 주러 왔습니다!\n쏜즈도 그와 대의를 같이 한다면 합류할 겁니다..."
+	}
+	"Almina's Last Hope Desc"
+	{
+		"en"		"Replaces Monk and Hussar with Thorns\nMaybe Almina's Training might help...\nActivate if you only want thorsn with normal barracks."
+		"ko"		"수도사와 후사르의 자리를 쏜즈로 대체합니다.\n알미나와의 훈련이 아마 도움이 되었을 겁니다...\n일반 배럭과 쏜즈를 원한다면 활성화하세요."
+	}
+	"Blitzkrieg's Army Desc"
+	{
+		"en"		"With Blitzkrieg being defeated, his army is at your disposal..."
+		"ko"		"블리츠크리그가 파괴된 이후, 그의 군대는 이제 당신의 명령을 따릅니다..."
+	}
+	"Guln's Companions Desc"
+	{
+		"en"		"Retain chaos with guln's army!"
+		"ko"		"굴른의 부대원들과 함께 혼돈을 격리하세요!"
+	}
+	
+	"Bob's Sexy Gun Desc"
+	{
+		"en"		"Bobs Pistol."
+		"ko"		"밥의 권총."
+	}
+	
+	"Junker Staff Desc"
+	{
+		"en"		"Fire a wave of projectile.\nM2 to change if you attack vertically or horrizontally"
+		"ko"		"투사체를 일렬로 발사합니다.\nM2로 투사체를 세로 또는 가로로 날릴지 바꿀 수 있습니다."
+	}
+	"Junker Staff Extra"
+	{
+		"en"		"Some abilities that heal scale off YOUR max HP when you have more HP then them."
+		"ko"		"치유를 제공하는 능력들은 대상의 최대 체력보다 사용자 본인의 최대 체력이 더 높으면, 회복량을 자신의 체력 기준으로 계산합니다."
+	}
+	"Ruilus Blade Desc"
+	{
+		"en"		"-Increased Damage\n-You can enter angel mode with R, you gain x2 attackspeed but your mana drains.\n-Toggle again to deactivate."
+		"ko"		"-피해량 증가\n-R키 능력: 마나가 지속적으로 감소하지만 공격 속도가 2배가 되는 천사 모드 발동\n발동 중 R키로 종료"
+	}
+	"Ruina Elite Blade Desc"
+	{
+		"en"		"-Increased Damage\n-Each enemy hurt give you charge.\n-If you Press M2 While youre in your R ability, at max stacks, heal allies around you by 30％ of their max hp."
+		"ko"		"-피해량 증가\n-적중 시 스택 충전\n-천사 모드에서 최대 스택을 쌓고 우클릭 시, 주변 아군을 최대 체력의 30％만큼 회복시킴"
+	}
+	"Scrapped Engineer Staff Desc"
+	{
+		"en"		"-More damage and a new model"
+		"ko"		"-피해량 증가, 새로운 외형"
+	}
+	"Dr DAM Staff Desc"
+	{
+		"en"		"-Increased Damage\n-Hp > 50％:\nM2: Lose 10% hp to heal allies around you\nR:Lose 50% hp to gain resistance and heal allies around you.\n \n-HP < 50%:\nGain res, heal on damage, lower range.\nM2:Lose 20% hp to deal AOE damage.\nR: Stun self but heal to full in 2 seconds."
+		"ko"		"-피해량 증가\n-체력 50％ 이상:\n우클릭: 체력 10％을 깎고 주변 아군 회복\nR키:체력 50％을 깎고 저항을 획득. 주변 아군을 치유\n-체력 50％ 이하:\n저항 획득, 적중 시 체력 회복, 사거리 감소\n우클릭: 체력 20％을 깎고 광역 피해\nR키: 기절 후 최대 체력까지 회복"
+	}
+	"Hel's Hoe Desc"
+	{
+		"en"		"-Increased Damage\n-Toggle R, When active, lose 100 hp, but each enemy hit you heal 50+ hp."
+		"ko"		"-피해량 증가\n-R키로 발동 시 체력 100을 잃지만, 적중 시 체력을 50 회복하는 특수 모드 발동 가능"
+	}
+	"Nightmare's Hoe Desc"
+	{
+		"en"		"-Increased Damage\n-When R is active:\nPress M2 To drain your hp, but drains enemies around you as well to heal you."
+		"ko"		"-피해량 증가\n-R키 능력 사용 중:\nM2 사용 시 체력을 서서히 깎지만 주변의 적에게서 체력을 흡수함"
 	}
 }

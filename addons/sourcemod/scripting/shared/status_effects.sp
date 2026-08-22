@@ -282,6 +282,7 @@ void InitStatusEffects()
 	StatusEffects_Barracks();
 	StatusEffects_IndexNurseFather();
 	StatusEffects_Gunsaw();
+	StatusEffects_ManaRecharge();
 }
 
 static int CategoryPage[MAXPLAYERS];
@@ -5040,6 +5041,7 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.AttackspeedBuff			= (1.0 / 1.25);
 	data.Slot						= 11; //0 means ignored
 	data.SlotPriority				= 2; //if its higher, then the lower version is entirely ignored.
+	data.TimerRepeatCall_Func 		= MysteryBrew_Timer;
 	data.HudDisplay_Func			= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
 
@@ -5109,6 +5111,62 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	StatusEffect_AddGlobal(data);
 }
 
+static void MysteryBrew_Timer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(Apply_StatusEffect.DataForUse > GetGameTime())
+	{
+		return;
+	}
+	bool Found = false;
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if(Found)
+			break;
+		if(!Apply_StatusEffect.TotalOwners[client])
+			continue;
+		if (!IsValidClient(client))
+			continue;
+
+		if (IsEntityAlive(client))
+		{
+			int i, weapon1;
+			while(TF2_GetItem(client, weapon1, i))
+			{
+				if(i_CustomWeaponEquipLogic[weapon1] == WEAPON_BUFFPOTION)
+				{
+					Found = true;
+					break;
+				}
+			}
+			
+		}
+			
+	}
+	if(!Found)
+	{
+		for (int i = 0; i < i_MaxcountNpcTotal; i++)
+		{
+			int iNpc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+			if (iNpc != INVALID_ENT_REFERENCE)
+			{
+				if(Apply_StatusEffect.TotalOwners[iNpc])
+				{
+					Found = true;
+					break;
+				}
+			}
+		}
+	}
+	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	if(!Found)
+	{
+		Apply_StatusEffect.TimeUntillOver = 0.0;
+	}
+	Apply_StatusEffect.DataForUse = GetGameTime() + 2.0;
+	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
+
+	//spray particles
+}
 void HandOfSparkHud_Func(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
 {
 	int owner = GetEntPropEnt(victim, Prop_Data, "m_hOwnerEntity");
@@ -6615,7 +6673,7 @@ static void Warped_FuncTimer(int entity, StatusEffect Apply_MasterStatusEffect, 
 		}
 
 		Elemental_AddWarpedDamage(entity, attacker, RoundFloat(ReturnEntityMaxHealth(entity) * 0.027), false, _, true);
-		if(!Citizen_IsIt(entity))
+		if(!Citizen_IsIt(entity) && !IsBarrackTroop(entity))
 			if(f_AttackSpeedNpcIncrease[entity] > 0.2)
 				f_AttackSpeedNpcIncrease[entity] *= 0.979;
 	}
@@ -7956,7 +8014,7 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.ShouldScaleWithPlayerCount = false;
 	data.OnBuffStarted				= INVALID_FUNCTION;
 	data.OnBuffEndOrDeleted			= INVALID_FUNCTION;
-	data.TimerRepeatCall_Func 		= TramplingPrefix_Think;
+	data.TimerRepeatCall_Func 		= INVALID_FUNCTION;
 	StatusEffect_AddGlobal(data);
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Scrambled Prefix");
@@ -8039,23 +8097,6 @@ void StatusEffects_Construct2_EnemyModifs()
 	data.OnBuffStarted				= WhimsicalPrefix_Start;
 	data.OnBuffEndOrDeleted			= Perfected_InstinctEnd;
 	data.TimerRepeatCall_Func 		= INVALID_FUNCTION;
-	StatusEffect_AddGlobal(data);
-	
-	strcopy(data.BuffName, sizeof(data.BuffName), "Seraph Prefix");
-	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
-	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
-	strcopy(data.PrefixEnemyName, sizeof(data.PrefixEnemyName), "Seraph");
-	//-1.0 means unused
-	data.DamageTakenMulti 			= -1.0;
-	data.DamageDealMulti			= -1.0;
-	data.MovementspeedModif			= -1.0;
-	data.AttackspeedBuff			= -1.0;
-	data.MovementspeedModifPlayer	= -1.0;
-	data.Positive 					= true;
-	data.ShouldScaleWithPlayerCount = false;
-	data.OnBuffStarted				= SeraphPrefix_Start;
-	data.OnBuffEndOrDeleted			= SeraphPrefix_End;
-	data.TimerRepeatCall_Func 		= SeraphPrefix_Think;
 	StatusEffect_AddGlobal(data);
 	
 	strcopy(data.BuffName, sizeof(data.BuffName), "Party Popper Prefix");
@@ -8972,6 +9013,16 @@ float Glug_TakeDamage_Spread(int attacker, int victim, StatusEffect Apply_Master
 	{
 		return 1.0;
 	}
+	
+	if (!b_thisNpcIsARaid[victim])
+	{
+		if (attacker == 0 || attacker > MaxClients)
+			return 1.0;
+		
+		if (GetEntProp(victim, Prop_Data, "m_iHealth") > GetEntProp(victim, Prop_Data, "m_iMaxHealth") * 0.9)
+			return 1.0;
+	}
+	
 	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
 	Apply_StatusEffect.DataForUse = GetGameTime() + 10.0;
 	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
@@ -9009,8 +9060,6 @@ float Glug_TakeDamage_Spread(int attacker, int victim, StatusEffect Apply_Master
 	}
 	return 1.0;
 }
-
-
 
 void Const2Modifs_Explosive_Start(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
@@ -9757,19 +9806,6 @@ void SteamHappy_Prefix_Start(int victim, StatusEffect Apply_MasterStatusEffect, 
 	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 }
 
-static void TramplingPrefix_Think(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
-{
-	if(Apply_StatusEffect.DataForUse > GetGameTime())
-		return;
-	
-	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
-	Apply_StatusEffect.DataForUse = GetGameTime() + 0.1;
-	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
-	
-	float damage = 10.0;
-	ResolvePlayerCollisions_Npc(entity, damage, true);
-}
-
 static const char ScrambledBlacklist[][] =
 {
 	"Stalker Prefix",
@@ -10021,44 +10057,6 @@ void WhimsicalPrefix_Start(int entity, StatusEffect Apply_MasterStatusEffect, E_
 	Apply_StatusEffect.WearableUse = EntIndexToEntRef(Wearable);
 	Apply_StatusEffect.WearableUse2 = EntIndexToEntRef(Wearable2);
 	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
-}
-
-static void SeraphPrefix_GiveShield(int entity)
-{
-	int shieldCount = RoundToNearest((CurrentCash / 5000) * (CountPlayersOnRed(1) * 0.5));
-	if (shieldCount < 3)
-		shieldCount = 3;
-	
-	VausMagicaGiveShield(entity, shieldCount, true, 250); //Give self a shield
-}
-
-static void SeraphPrefix_Start(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
-{
-	SeraphPrefix_GiveShield(entity);
-}
-
-static void SeraphPrefix_End(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
-{
-	VausMagicaRemoveShield(entity, true);
-}
-
-static void SeraphPrefix_Think(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
-{
-	int stage = Apply_StatusEffect.WearableUse; // Using this variable to track how many stages we've gone through
-	int health = GetEntProp(entity, Prop_Data, "m_iHealth");
-	
-	if (stage == 0 && RoundToFloor(ReturnEntityMaxHealth(entity) * 0.66) >= health
-	|| stage == 1 && RoundToFloor(ReturnEntityMaxHealth(entity) * 0.33) >= health)
-	{
-		SeraphPrefix_GiveShield(entity);
-		Apply_StatusEffect.WearableUse++;
-	}
-	
-	if (stage != Apply_StatusEffect.WearableUse)
-	{
-		int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
-		E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
-	}
 }
 
 static void PartyPopperPrefix_Start(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
@@ -12048,4 +12046,83 @@ static void FuriosoAbilityEnd(int victim, StatusEffect Apply_MasterStatusEffect,
 {
 	ExtinguishTarget(victim);
 
+}
+void StatusEffects_ManaRecharge()
+{
+	StatusEffect data;
+	strcopy(data.BuffName, sizeof(data.BuffName), "Mana Recharge");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "✫");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	//Make sure it isnt ignored, set it to 0.0, on need for extra func checks either.
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.ElementalLogic				= false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Black Flames");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "~~");
+	data.Positive 					= false;
+	data.ElementalLogic				= true;
+	data.TimerRepeatCall_Func 		= BlackFlames_Timer;
+	StatusEffect_AddGlobal(data);
+}
+static void BlackFlames_Timer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(Apply_StatusEffect.DataForUse > GetGameTime())
+	{
+		return;
+	}
+	bool Found = false;
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if(Found)
+			break;
+		if(!Apply_StatusEffect.TotalOwners[client])
+			continue;
+		if (!IsValidClient(client))
+			continue;
+
+		if (IsEntityAlive(client))
+		{
+			int i, weapon1;
+			while(TF2_GetItem(client, weapon1, i))
+			{
+				if(i_CustomWeaponEquipLogic[weapon1] == WEAPON_FIRE_WAND)
+				{
+					Found = true;
+					break;
+				}
+			}
+		}
+			
+	}
+	if(!Found)
+	{
+		for (int i = 0; i < i_MaxcountNpcTotal; i++)
+		{
+			int iNpc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+			if (iNpc != INVALID_ENT_REFERENCE)
+			{
+				if(Apply_StatusEffect.TotalOwners[iNpc])
+				{
+					Found = true;
+					break;
+				}
+			}
+		}
+	}
+	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	if(!Found)
+	{
+		Apply_StatusEffect.TimeUntillOver = 0.0;
+	}
+	Apply_StatusEffect.DataForUse = GetGameTime() + 2.0;
+	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
+
+	//spray particles
 }

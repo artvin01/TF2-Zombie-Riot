@@ -313,17 +313,23 @@
 		"ru"		"Рэйлган Бандита"
 		"ko"		"무법자의 레일캐논"
 	}
-	"The Pompson 7000"
+	"Pomson 7000"
 	{
-		"en"		"The Pompson 7000"
-		"fr"		"Pompson 7000"
+		"en"		"The Pomson 7000"
+		"fr"		"Pomson 7000"
 		"ru"		"Помсон 7000"
-		"de"		"The Pompson 7000"
+		"de"		"The Pomson 7000"
 		"pt"		"A Pomson 7000"
-		"nl"		"De Pompson 7000"
+		"nl"		"De Pomson 7000"
 		"chi"       	"歼灭者7000"
-		"it"		"Il Pompson 7000"
+		"it"		"Il Pomson 7000"
 		"ko" 		"폼슨 7000"
+	}
+	"Pomson 7000 MK2"
+	{
+		"en"       "The Pomson 7000 MK2"
+		"fr"       "Pomson 7000 MK2"
+		"ko"		"폼슨 7000 MK2"
 	}
 	"Dragon's Fury"
 	{
@@ -2339,18 +2345,6 @@
 		"it"		"Poteri del mago"
 		"ko"		"마법 전용 퍽"
 	}
-	"Mage Fragility"
-	{
-		"en"		"Mage Fragility"
-		"fr"		"Fragilité du Magicien"
-		"ru"		"Хрупкость мага"
-		"de"		"Magier Zerbrechlichkeit"
-		"pt"		"Fragilidade de Mago"
-		"nl"		"Magische breekbaarheid"
-		"chi"       	"纯粹法师"
-		"it"		"Fragilità del mago"
-		"ko"		"마법사의 취약성"
-	}
 	"Mystical Overcharge"
 	{
 		"en"		"Mystical Overcharge"
@@ -2561,156 +2555,6 @@
 		"en"		"Morphine"
 		"ru"		"Морфин"
 		"ko"		"모르핀"
-	}
-	"Cured Silvester"
-	{
-		"en"		"Cured Silvester"
-		"ko"		"치료된 실베스터"
-	}
-	"Head Equipped Blue Goggles"
-	{
-		"en"		"Head Equipped Blue Goggles"
-		"ko"		"머리 장착형 파란 고글"
-	}
-	"Calmaticus' Heart Piece"
-	{
-		"en"		"Calmaticus' Heart Piece"
-		"ko"		"칼마티커스의 심장 조각"
-	}
-	"Medieval Crown"
-	{
-		"en"		"Medieval Crown"
-		"ko"		"중세 왕관"
-	}
-	"Alaxios's Godly assistance"
-	{
-		"en"		"Alaxios's Godly assistance"
-		"ko"		"알락시오스의 신성한 축복"
-	}
-	"Twirl's Hairpins"
-	{
-		"en"		"Twirl's Hairpins"
-		"ko"		"트윌의 헤어핀"
-	}
-	"Bob's Curing Hand"
-	{
-		"en"		"Bob's Curing Hand"
-		"ko"		"밥의 치유의 손길"
-	}
-	"Kahml's Contained Chaos"
-	{
-		"en"		"Kahml's Contained Chaos"
-		"ko"		"격리된 카멜슈타인의 혼돈"
-	}
-	"Xeno Virus Vial"
-	{
-		"en"		"Xeno Virus Vial"
-		"ko"		"제노 바이러스 바이알"
-	}
-	"Chaos Machina Waldch Chip"
-	{
-		"en"		"Chaos Machina Waldch Chip"
-		"ko"		"혼돈 마키나 왈츠의 칩"
-	}
-	"Corrupted Barney's Chainsaw"
-	{
-		"en"		"Corrupted Barney's Chainsaw"
-		"ko"		"타락한 바니 칼훈의 전기톱"
-	}
-	"Kahmlsteins Last Will"
-	{
-		"en"		"Kahmlsteins Last Will"
-		"ko"		"카멜슈타인의 유언장"
-	}
-	"Matrix's Curse"
-	{
-		"en"		"Matrix's Curse"
-		"ko"		"매트릭스의 저주"
-	}
-	"Overlords Final Wish"
-	{
-		"en"		"Overlords Final Wish"
-		"ko"		"대군주의 마지막 소원"
-	}
-	"Bob's true fear"
-	{
-		"en"		"Bob's true fear"
-		"ko"		"밥의 진정한 공포"
-	}
-	"Major Steam's Rocket"
-	{
-		"en"		"Major Steam's Rocket"
-		"ko"		"증기 소령의 로켓"
-	}
-	"Waldch's Expidonsan Sword"
-	{
-		"en"		"Waldch's Expidonsan Sword"
-		"ko"		"왈츠의 엑스피돈사제 검"
-	}
-	"Opened Void Portal"
-	{
-		"en"		"Opened Void Portal"
-		"ko"		"열려진 공허 포탈"
-	}
-	"Expidonsan Battery Device"
-	{
-		"en"		"Expidonsan Battery Device"
-		"ko"		"엑스피돈사 배터리 장치"
-	}
-	"Gem from the Curtain"
-	{
-		"en"		"Gem from the Curtain"
-		"ko"		"장막 속의 보석"
-	}
-	"Foreign Expidonsan Chip"
-	{
-		"en"		"Foreign Expidonsan Chip"
-		"ko"		"이국적인 엑스피돈사 칩"
-	}
-	"Reila's Scorn Keycard"
-	{
-		"en"		"Reila's Scorn Keycard"
-		"ko"		"레일라의 스콘 키카드"
-	}
-	"Jkei's Broken Entry Chip"
-	{
-		"en"		"Jkei's Broken Entry Chip"
-		"ko"		"제이케이의 파괴된 진입용 칩"
-	}
-	"Shadow's Letter"
-	{
-		"en"		"Shadow's Letter"
-		"ko"		"그림자의 편지"
-	}
-	"Avangard's Processing Core-B"
-	{
-		"en"		"Avangard's Processing Core-B"
-		"ko"		"아방가르드의 프로세싱 코어-B"
-	}
-	"Alminan and Expidonsan Training"
-	{
-		"en"		"Alminan and Expidonsan Training"
-		"ko"		"알미나-엑스피돈사 연합 훈련"
-	}
-	"Expidonsan Research Card"
-	{
-		"en"		"Expidonsan Research Card"
-		"ko"		"엑스피돈사 연구 카드"
-	}
-	"Whiteflower's Elite Grenade"
-	{
-		"en"		"Whiteflower's Elite Grenade"
-		"ko"		"배풍등의 정예 수류탄"
-	}
-	"Omega's Medallion"
-	{
-		"en"		"Omega's Medallion"
-		"ko"		"오메가의 메달리온"
-	}
-	"Mr. X's Files"
-	{
-		"en"		"Mr. X's Files"
-		"ko"		"Mr. X의 파일"
 	}
 	"Inventory"//Inventory here
 	{
@@ -3233,19 +3077,19 @@
 		"ru"		"Помощь Иберии и Экспидонса"
 		"ko"		"알미나와 엑스피돈사인들의 도움"
 	}
-	"Almina's Last Hope..."
+	"Almina's Last Hope"
 	{
 		"en"		"Almina's Last Hope"
 		"ru"		"Последняя Надежда Иберии"
 		"ko"		"알미나의 마지막 희망"
 	}
-	"Blitzkrieg's destroyed Core"
+	"Blitzkrieg's Army"
 	{
 		"en"		"Blitzkrieg's Army"
 		"ru"		"Армия Блицкрига"
 		"ko"		"블리츠크리그의 군대"
 	}
-	"Guln's Dying Wish"
+	"Guln's Companions"
 	{
 		"en"		"Guln's Companions"
 		"ru"		"Компаньоны Гюльна"
@@ -3270,15 +3114,6 @@
 		"chi"       "弹片爆破抢"
 		"it"		"Trituratore di schegge"
 		"ko"		"파편 분쇄기"
-	}
-	"The Pomson 7000"
-	{
-		"en"       "The Pomson 7000"
-		"fr"       "Pomson 7000"
-		"ru"       "Помсон 7000"
-		"chi"       "歼灭者7000"
-		"it"		"Il Pomson 7000"
-		"ko"		"폼슨 7000"
 	}
 	"Leone 12 Gauge Super"
 	{
@@ -3824,12 +3659,6 @@
 		"ru"		"Жезл Осмоса"
 		"ko"		"삼투성 완드"
 	}
-	"Hel's Hoe"
-	{
-		"en"		"Hel's Hoe"
-		"ru"		"Мотыга Хель"
-		"ko"		"헬의 낫"
-	}
 	"Worn Expidonsan Repair Device"
 	{
 		"en"		"Worn Expidonsan Repair Device"
@@ -4026,6 +3855,11 @@
 	{
 		"en"		"Merc's Revolver"
 		"ko"		"용병의 리볼버"
+	}
+	"Wanted's Revolver"
+	{
+		"en"		"Wanted's Revolver"
+		"ko"		"현상 수배자의 리볼버"
 	}
 	"Greater Garbage"
 	{
@@ -4561,6 +4395,17 @@
 		"en"		"Dr DAM Staff"
 		"ru"		"Посох Д-р.ЧЁРТ"
 		"ko"		"된장 박사의 스태프"
+	}
+	"Hel's Hoe"
+	{
+		"en"		"Hel's Hoe"
+		"ru"		"Мотыга Хель"
+		"ko"		"헬의 낫"
+	}
+	"Nightmare's Hoe"
+	{
+		"en"		"Nightmare's Hoe"
+		"ko"		"악몽의 낫"
 	}
 	"Nightmare Cannon"
 	{
@@ -6154,5 +5999,11 @@
 	{
 		"en"    "Prescript Scythe"
 		"ko"	"낫으로... 누군가처럼 공간을 따라 베어내야 할 때는..."
+	}
+	
+	"Bob's Sexy Gun"
+	{
+		"en"		"Bob's Sexy Gun"
+		"ko"		"밥의 섹시한 권총"
 	}
 }

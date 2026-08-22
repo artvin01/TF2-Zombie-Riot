@@ -165,9 +165,13 @@ int Elemental_TriggerDamage(int entity, int type)
 		{
 			divide = 4.0;
 		}
-		case Element_Void, Element_Plasma:
+		case Element_Void:
 		{
 			divide = 2.0;
+		}
+		case Element_Plasma:
+		{
+			divide = 3.0;
 		}
 		case Element_Burger:
 		{
@@ -1599,8 +1603,11 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 			}
 			else
 			{
-				fl_Extra_MeleeArmor[victim] *= 6.0;
-				fl_Extra_RangedArmor[victim] *= 6.0;
+				fl_Extra_MeleeArmor[victim] = 1.0;
+				fl_Extra_RangedArmor[victim] = 1.0;
+				fl_MeleeArmor[victim] = 1.0;
+				fl_RangedArmor[victim] = 1.0;
+				fl_TotalArmor[victim] = 6.0;
 				fl_GibVulnerablity[victim] = 5000000.0;
 				SetEntProp(victim, Prop_Data, "m_iMaxHealth", 1);
 				//any TOUCH will gib them.
@@ -1616,6 +1623,25 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 				
 				npc.m_bDissapearOnDeath = true;
 				Format(c_NpcName[npc.index], sizeof(c_NpcName[]), "Pure Crystal");
+				b_NpcIsInvulnerable[npc.index] = false;
+				b_thisNpcIsABoss[npc.index] = false;
+				b_thisNpcIsARaid[npc.index] = false;
+				RemoveSpecificBuff(npc.index, "Infinite Will");
+				RemoveSpecificBuff(npc.index, "Unstoppable Force");
+				func_NPCOnTakeDamage[npc.index] = INVALID_FUNCTION;
+				func_NPCSpawnForward[npc.index] = INVALID_FUNCTION;
+				func_NPCOnTakeDamagePost[npc.index] = INVALID_FUNCTION;
+				func_NPCThink[npc.index] = INVALID_FUNCTION;
+				func_NPCDeathForward[npc.index] = INVALID_FUNCTION;
+				func_NPCFuncWin[npc.index] = INVALID_FUNCTION;
+				func_NPCAnimEvent[npc.index] = INVALID_FUNCTION;
+				func_NPCActorEmoted[npc.index] = INVALID_FUNCTION;
+				func_NPCInteract[npc.index] = INVALID_FUNCTION;
+				FuncShowInteractHud[npc.index] = INVALID_FUNCTION;
+				func_NPCLostHealthBar[npc.index] = INVALID_FUNCTION;
+				
+
+
 				if (!IsValidEntity(npc.m_iFreezeWearable))
 				{
 					float offsetToHeight = 40.0;

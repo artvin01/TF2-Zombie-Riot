@@ -2528,6 +2528,10 @@ void TriggerLastmanLogic(int killed, int Hurtviasdkhook)
 						{
 							CPrintToChatAll("{blue}Soldiers arm their best gears, remebering what cruel fate they had to go through under Whiteflower and Dwellers",client);
 						}
+						case Almina_Thornless:
+						{
+							CPrintToChatAll("{blue}Soldiers arm their best gears, remembering what cruel fate they had to go through under Whiteflower and Dwellers",client);
+						}
 						case Thorns:
 						{
 							CPrintToChatAll("{blue}Expidonsa declares code Epsilon, use of experimental technology has been authorized, no more holding back.",client);

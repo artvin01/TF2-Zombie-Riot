@@ -192,10 +192,23 @@ public void ZRModifsPlayer_Nostalica(int entity, StringMap map)
 		// +10% less speed
 		value = 1.0;
 		map.GetValue("107", value);
-		if(!LastMann)
-			map.SetValue("107", value * 0.9);
-		else
-			map.SetValue("107", value * 0.75);
+		map.SetValue("107", value * 0.9);
+	}
+	else
+	{
+		// +15% damage bonus for melee's
+		char classname[36];
+		GetEntityClassname(entity, classname, sizeof(classname));
+		int WeaponSlot = TF2_GetClassnameSlot(classname, entity);
+		if(i_OverrideWeaponSlot[entity] != -1)
+		{
+			WeaponSlot = i_OverrideWeaponSlot[entity];
+		}
+		//melee or mage weapons that are melee
+		if(WeaponSlot == TFWeaponSlot_Melee || i_IsWandWeapon[entity] == 2)
+		{
+			Attributes_SetMulti(entity, 54, (1.0 / 0.9));
+		}
 	}
 }
 float ZRModifs_MaxSpawnsAlive()

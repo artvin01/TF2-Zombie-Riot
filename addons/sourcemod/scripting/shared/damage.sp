@@ -722,9 +722,33 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 		
 	}
 
+	if(!CheckInHud())
+		MageAttackDamageCheck_NpcTakeDamagePost(victim, attacker, weapon, i_HexCustomDamageTypes[victim]);
+	
 	return false;
 }
 
+void MageAttackDamageCheck_NpcTakeDamagePost(int victim, int attacker, int weapon, int zrcustomdamage)
+{
+	if(attacker > MaxClients)
+		return;
+	if((zrcustomdamage & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+		return;
+
+	if(weapon < 0)
+		return;
+
+	if(!i_IsWandWeapon[weapon])
+		return;
+
+	float vecTarget[3]; WorldSpaceCenter(attacker, vecTarget );
+	float VecSelfNpc[3]; WorldSpaceCenter(victim, VecSelfNpc);
+	float flDistanceToTarget = GetVectorDistance(vecTarget, VecSelfNpc, true);
+	if(flDistanceToTarget > (500.0 * 500.0))
+		return;
+	ApplyStatusEffect(attacker, attacker, "Mana Recharge", 2.0);
+	
+}
 void NpcArmorExtra(int victim, int &attacker, int &inflictor, float &damage, int &damagetype)
 {
 	CClotBody npc = view_as<CClotBody>(victim);

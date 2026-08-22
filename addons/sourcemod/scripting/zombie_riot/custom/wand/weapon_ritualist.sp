@@ -103,6 +103,8 @@ void Weapon_Ritualist_ProjectileTouch(int entity, int target)
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		static float Entity_Position[3];
 		WorldSpaceCenter(target, Entity_Position);
+		static float PosMe[3];
+		WorldSpaceCenter(entity, PosMe);
 
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		if(owner != -1)
@@ -121,9 +123,7 @@ void Weapon_Ritualist_ProjectileTouch(int entity, int target)
 				}
 				case Ritualist_Nervous:
 				{
-					ApplyStatusEffect(owner, target, "Elemental Amplification", 0.5);
-					Explode_Logic_Custom(f_WandDamage[entity] * 0.2, owner, entity, weapon, .FunctionToCallBeforeHit = NervousExplodeBefore);
-					EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 65, _, 0.65);
+					Explode_Logic_Custom(f_WandDamage[entity] * 0.5, owner, owner, weapon,PosMe, .FunctionToCallBeforeHit = NervousExplodeBefore);
 
 					//float pos[3];
 					//GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
@@ -151,6 +151,8 @@ void Weapon_Ritualist_ProjectileTouch(int entity, int target)
 		int owner = EntRefToEntIndex(i_WandOwner[entity]);
 		if(owner != -1)
 		{
+			static float PosMe[3];
+			WorldSpaceCenter(entity, PosMe);
 			int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 			
 			switch(WeaponType[owner])
@@ -161,7 +163,7 @@ void Weapon_Ritualist_ProjectileTouch(int entity, int target)
 				}
 				case Ritualist_Nervous:
 				{
-					Explode_Logic_Custom(f_WandDamage[entity] * 2.5, owner, owner, weapon, .FunctionToCallBeforeHit = NervousExplodeBefore);
+					Explode_Logic_Custom(f_WandDamage[entity] * 0.5, owner, owner, weapon,PosMe, .FunctionToCallBeforeHit = NervousExplodeBefore);
 					EmitSoundToAll(SOUND_ZAP, entity, SNDCHAN_STATIC, 65, _, 0.65);
 
 					//float pos[3];

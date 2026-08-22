@@ -288,6 +288,7 @@ public Action Event_Tornado_OnHatTouch(int entity, int other)
 	int target = Target_Hit_Wand_Detection(entity, other);
 	if (target > 0)	
 	{
+		int Weapon = EntRefToEntIndex(Projectile_To_Weapon[entity]);
 		//Code to do damage position and ragdolls
 		static float angles[3];
 		GetEntPropVector(entity, Prop_Send, "m_angRotation", angles);
@@ -297,7 +298,7 @@ public Action Event_Tornado_OnHatTouch(int entity, int other)
 		WorldSpaceCenter(target, Entity_Position);
 		//Code to do damage position and ragdolls
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-		SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, -1, Dmg_Force,Entity_Position);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(target, Projectile_To_Client[entity], Projectile_To_Client[entity], Damage_Projectile[entity], DMG_PLASMA, Weapon, Dmg_Force,Entity_Position);	// 2048 is DMG_NOGIB?
 		
 		int particle = EntRefToEntIndex(Projectile_To_Particle[entity]);
 		if(IsValidEntity(particle) && particle != 0)
@@ -397,7 +398,7 @@ static void Wand_Create_Tornado(int client, int iCarrier)
 		flCarrierPos[2] += 5.0;
 		
 		TE_SetupBeamRingPoint(flCarrierPos, TORNADO_Radius[client]*2.0, (TORNADO_Radius[client]*2.0)+0.5, Beam_Laser, Beam_Glow, 0, 10, 1.0, 25.0, 0.8, {50, 50, 250, 85}, 10, 0);
-		TE_SendToAll(0.0);
+		TE_SendToClient(client);
 		
 		CreateTimer(0.5, Timer_Tornado_Think, iCarrier, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
 	}
@@ -445,7 +446,8 @@ public Action Timer_Tornado_Think(Handle timer, int iCarrier)
 
 //	i_ExplosiveProjectileHexArray[weapon] = EP_DEALS_PLASMA_DAMAGE;
 	
-	Explode_Logic_Custom(Damage_Tornado[iCarrier], client, client, -1, flCarrierPos, TORNADO_Radius[client],0.45,_,false, 4);
+	int Weapon = EntRefToEntIndex(Projectile_To_Weapon[iCarrier]);
+	Explode_Logic_Custom(Damage_Tornado[iCarrier], client, client, Weapon, flCarrierPos, TORNADO_Radius[client],0.45,_,false, 4);
 	
 	return Plugin_Continue;
 }

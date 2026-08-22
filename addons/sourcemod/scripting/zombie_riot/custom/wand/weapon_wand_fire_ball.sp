@@ -361,3 +361,20 @@ public Action FireMultipleFireBalls(Handle Timer, int ref)
 	}
 	return Plugin_Stop;
 }
+
+public void FireballDealDamageFinalPap(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int zr_custom_damage)
+{
+	if(CheckInHud())
+		return;
+
+	if((zr_custom_damage & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+		return;
+
+	int HadBuff = HasSpecificBuff(victim, "Black Flames");
+	ApplyStatusEffect(attacker, victim, "Black Flames", 999.0);
+	if(!HadBuff)
+	{
+		ExtinguishTarget(victim);
+		IgniteTargetEffect(victim);
+	}
+}

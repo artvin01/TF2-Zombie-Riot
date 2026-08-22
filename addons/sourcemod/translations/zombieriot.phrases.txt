@@ -4834,7 +4834,7 @@
 	}
 	"Default Desc"
 	{
-		"en"	"Fight against the classic zombies and Whiteflower soldiers!"
+		"en"	"Someone contacted us that there's a surge of zombies in Crowholm. Bob the Second sent us, the secondary mercs, to check it out."
 		"fr"	"Allez face-à-face contre les zombies et Combine classiques!"
 		"chi"	"击败尸群，打败联合军！"
 		"it"	"Combatti contro i classici zombie e combatti contro le combinazioni!"
@@ -4871,11 +4871,11 @@
 	}
 	"Xeno Desc"
 	{
-		"en"	"After defeating Blitzkrieg, we start an infection we last saw in Rogue 1, the Xeno infection. It seems to be mutating their victims with new abilities! We need to take this out before it gets bad."
+		"en"	"After defeating Blitzkrieg, we start seeing an infection we last saw in Rogue 1, the Xeno infection. It seems to be mutating their victims with new abilities! We need to take this out before it gets bad."
 		"fr"	"Les ennemis sont infectés avec l'infection Xéno, et reçoivent de nouvelles abilités!"
 		"chi"	"外界感染到来，僵尸们的变异也更加严重了。"
 		"it"	"L'infezione Xeno è arrivata, mutando i nemici con nuove abilità!"
-		"ko" 	"블리츠크리그를 쓰러뜨린 후, 로그라이크1에서 목격한 제노 감염원이 퍼집니다. 희생자들을 새로운 능력과 함께 변이시키는군요! 상황이 악화되기 전에 해결해야 합니다."
+		"ko" 	"블리츠크리그를 쓰러뜨린 후, 로그라이크1에서 목격한 감염원이 퍼지는걸 발견합니다. 희생자들을 새로운 능력과 함께 변이시키는군요! 상황이 악화되기 전에 해결해야 합니다."
 	}
 	"Silvester Waldch Desc"
 	{

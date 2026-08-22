@@ -1326,6 +1326,7 @@ void WavesDeleteSet(int ArrayDo = Rounds_Default)
 		delete Rounds[ArrayDo];
 	}
 }
+
 void Waves_SetupWaves(KeyValues kv, bool start, int ArrayDo = Rounds_Default)
 {
 	Round round;
@@ -4570,15 +4571,15 @@ bool Waves_NextFreeplayCall(bool donotAdvanceRound)
 
 		for(int i; i < Max_Enemy_Get; i++)
 		{
-			int dangerlevel = Freeplay_GetDangerLevelCurrent();
+			int dangerlevel = Freeplay_GetDangerLevelCurrent(postWaves);
 			bool isBoss = !(GetURandomInt() % 9);
 
 			if(isBoss)
 			{
 				int bossdanger = dangerlevel;
 				
-				if(bossdanger >= 5)
-					bossdanger = 4;
+				if(bossdanger >= 7)
+					bossdanger = 6;
 
 				int index = boss.FindValue(bossdanger, Wave::DangerLevel);
 				if(index == -1)

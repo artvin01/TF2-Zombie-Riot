@@ -135,6 +135,9 @@ bool AutoLoadouts_SpecificNameToPlayer(int client, char Name[64])
 void AutoLoadouts_SetPlayerLoadout(int client, int id)
 {
 	AutoLoadouts_RemovePlayerLoadout(client);
+	if(CvarDisableAutoLoadouts.BoolValue)
+		return;
+
 	
 	AutoLoadout loadout;
 	AutoLoadoutList.GetArray(id, loadout);

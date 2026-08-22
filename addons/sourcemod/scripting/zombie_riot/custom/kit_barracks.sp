@@ -80,7 +80,6 @@ public void Enable_Barracks(int client, int weapon)
 	ResourceGen[client] = RoundFloat(Attributes_Get(weapon, 4050, 0.0));
 	h_Barrack_Timer[client] = CreateDataTimer(0.1, Timer_Barracks, pack, TIMER_REPEAT);
 	pack.WriteCell(client);
-	pack.WriteCell(EntIndexToEntRef(weapon));
 	pack.WriteCell(EntIndexToEntRef(client));
 	PrecacheBarracksMusic();
 }
@@ -88,20 +87,19 @@ static Action Timer_Barracks(Handle timer, DataPack pack)
 {
 	pack.Reset();
 	int clientindx = pack.ReadCell();
-	int weapon = EntRefToEntIndex(pack.ReadCell());
 	int client = EntRefToEntIndex(pack.ReadCell());
 	
 	bool valid = IsValidClient(client);
-	if(valid && i_ClientHasCustomGearEquipped[client] != CUSTOMGEAR_NONE)
+	if(!valid)
 	{
-		// Don't nuke our stuff if we have quantum suit or similar gear equipped
-		return Plugin_Continue;
-	}
-	else if(!valid || !IsClientInGame(client) || !IsPlayerAlive(client) || !IsValidEntity(weapon))
-	{	
 		h_Barrack_Timer[clientindx] = null;
 		return Plugin_Stop;
 	}
+	if(i_ClientHasCustomGearEquipped[client] != CUSTOMGEAR_NONE || !IsEntityAlive(client,_, true))
+	{
+		return Plugin_Continue;
+	}
+	
 	Barracks_HUD(client);
 	return Plugin_Continue;
 }
@@ -231,8 +229,19 @@ public void Barracks_OnTakeDamage_Hunter(int victim, int &attacker, int &inflict
 			}
 		}
 		DesertYadeamDoHealEffect(attacker, 600.0);
-		HealEntityGlobal(attacker, attacker, (ShotgunHeal[attacker]/20), _, 3.0); // User heals themselves for 5% of that much
-		ApplyStatusEffect(attacker, attacker, "Healing Decay", 15.0);	// You can only heal yourself once every 15s even on LMS, i don't wanna give too much self healing
+		if(!HasSpecificBuff(attacker, "Healing Decay"))	// Skip targets that cannot be healed
+		{
+			float ShotgunUserHeal = ShotgunHeal[attacker]/5;	// 20% of your dmg, buuut with a cap
+			float MaxAllowedHeal = ReturnEntityMaxHealth(attacker) * (0.11 + (0.07 * WeaponPap[attacker]));	// Hard cap for the amount of healing to the user, 11% max hp + 7% per pap lvl"
+			
+			if(ShotgunUserHeal > MaxAllowedHeal)
+			{
+				ShotgunUserHeal = MaxAllowedHeal;
+			}
+				
+			HealEntityGlobal(attacker, attacker, ShotgunUserHeal, _, 3.0);
+			ApplyStatusEffect(attacker, attacker, "Healing Decay", 15.0);	// You can only heal yourself once every 15s even on LMS, i don't wanna give too much self healing
+		}
 		if(!LastMann)
 		{
 			Ability_Apply_Cooldown(attacker, 2, 15.0);
@@ -436,11 +445,22 @@ public void Barracks_OnTakeDamage_Italian(int victim, int &attacker, int &inflic
 		}
 	}
 }
+public void CommanderKit_Unequip(int client)
+{
+	if(h_Barrack_Timer[client] != null)
+	{
+		if(IsValidHandle(h_Barrack_Timer[client]))
+			delete h_Barrack_Timer[client];
+		h_Barrack_Timer[client] = null;
+	}
+	Barrack_HUDDelay[client] = 0.0;
+	PrintHintText(client, "");
+}
 public int Barracks_GetInfo(int client, int choice)
 {
 	if (client > 0 && client <= MaxClients)
 	{
-		if (!IsBarracks(client))
+		if(!IsBarracks(client))
 		return -1;
 		
 		switch(choice)
@@ -460,31 +480,31 @@ public void HealingCap(int client)
 	{
 		case 1:
 		{
-			Targets = 1;
+			Targets = 2;
 		}
 		case 2:
 		{
-			Targets = 2;
+			Targets = 3;
 		}
 		case 3:
 		{
-			Targets = 3;
+			Targets = 4;
 		}
 		case 4:
 		{
-			Targets = 3;
+			Targets = 5;
 		}
 		case 5:
 		{
-			Targets = 3;
+			Targets = 6;
 		}
 		case 6:
 		{
-			Targets = 3;
+			Targets = 6;
 		}
 		case 7:
 		{
-			Targets = 3;
+			Targets = 6;
 		}
 	}
 	ShotgunHeal_Targets[client] = Targets; 
@@ -564,6 +584,8 @@ public void ShotgunBuffs(int client, int entity)
 }
 static void Barracks_HUD(int client)
 {
+	if (!IsBarracks(client))
+        return;
 	if (Barrack_HUDDelay[client] > GetGameTime())
 		return;
 
