@@ -1870,6 +1870,10 @@
 		"it"		"Pozione di affrettamento"
 		"ko"		"신속 포션"
 	}
+	"Precision Potion"
+	{
+		"en"		"Precision Potion"
+	}
 	"The Bombinomicon"
 	{
 		"en"		"The Bombinomicon"
