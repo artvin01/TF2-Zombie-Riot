@@ -1016,7 +1016,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				}
 			}
 	
-			count = RoundToFloor((count * (((postWaves * 1.5) + 80) * 0.009)) * 0.5);
+			count = RoundToFloor((count * (((postWaves * 1.5) + 80) * 0.03)) * 0.112);
 		}
 
 		if(EnemyBosses && !((enemy.Index + 1) % EnemyBosses))
