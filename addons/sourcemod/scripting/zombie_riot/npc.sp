@@ -2648,7 +2648,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/construction/enemies/npc_zeina_prison.sp"
 #include "npc/construction/enemies/npc_zeina_freed.sp"
 
-
 //Aperture
 #include "npc/aperture/npc_base_aperture.sp"
 #include "npc/aperture/npc_base_refragmented.sp"
