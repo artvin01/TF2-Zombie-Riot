@@ -731,7 +731,6 @@ void NPC_ConfigSetup()
 	Vestan_Tacticalunit_OnMapStart_NPC();
 	Vestan_TacticalProtector_OnMapStart_NPC();
 	TEST_Dummy_OnMapStart_NPC();
-	
 
 	//Alt Barracks
 	Barrack_Alt_Ikunagae_MapStart();
@@ -1037,9 +1036,6 @@ void NPC_ConfigSetup()
 	TrollPistol_OnMapStart_NPC();
 	TrollRPG_OnMapStart_NPC();
 	TrollBrawler_OnMapStart_NPC();
-
-	//Testing Range
-	DPSDummy_OnMapStart_NPC();
 
 	//Expidonsa Rogue forces in Construction
 	Eirasus_OnMapStart_NPC();
@@ -2652,8 +2648,6 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/construction/enemies/npc_zeina_prison.sp"
 #include "npc/construction/enemies/npc_zeina_freed.sp"
 
-//Testing Range
-#include "npc/testing_range/npc_dps_dummy.sp"
 
 //Aperture
 #include "npc/aperture/npc_base_aperture.sp"
