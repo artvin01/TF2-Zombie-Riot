@@ -27,7 +27,6 @@ static int SkullTimes;
 static bool ExplodingNPC;
 static bool IsExplodeWave; // to prevent the message from popping up twice
 static int ExplodeNPCDamage;
-static int EnemyShields;
 static int VoidBuff;
 static bool VestaBuff;
 static bool SquadBuff;
@@ -168,7 +167,6 @@ void Freeplay_ResetAll()
 	ExplodeNPCDamage = 0;
 	ExplodingNPC = false;
 	IsExplodeWave = false;
-	EnemyShields = 0;
 	VoidBuff = 0;
 	VestaBuff = false;
 	SquadBuff = false;
@@ -1018,7 +1016,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				}
 			}
 	
-			count = RoundToFloor((count * (((postWaves * 1.5) + 80) * 0.009)) * 0.5);
+			count = RoundToFloor((count * (((postWaves * 1.5) + 80) * 0.03)) * 0.112);
 		}
 
 		if(EnemyBosses && !((enemy.Index + 1) % EnemyBosses))
@@ -2097,8 +2095,6 @@ void Freeplay_SpawnEnemy(int entity)
 		fl_Extra_Speed[entity] *= SpeedMult;
 		fl_Extra_MeleeArmor[entity] *= MeleeMult;
 		fl_Extra_RangedArmor[entity] *= RangedMult;
-		if(EnemyShields > 0)
-			VausMagicaGiveShield(entity, EnemyShields);
 	}
 }
 
@@ -3087,26 +3083,6 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 	
 			/// CREDIT SKULLS //
-			case 20:
-			{
-				strcopy(message, sizeof(message), "{green}All enemies now give out 1 extra credits on death.");
-				KillBonus += 1;
-			}
-			case 21:
-			{
-				strcopy(message, sizeof(message), "{green}All enemies now give out 2 extra credits on death.");
-				KillBonus += 2;
-			}
-			case 22:
-			{
-				strcopy(message, sizeof(message), "{green}All enemies now give out 3 extra credits on death.");
-				KillBonus += 3;
-			}
-			case 23:
-			{
-				strcopy(message, sizeof(message), "{green}All enemies now give out 4 extra credits on death.");
-				KillBonus += 4;
-			}
 			case 24:
 			{
 				strcopy(message, sizeof(message), "{green}All enemies now give out 5 extra credits on death.");
@@ -3125,7 +3101,7 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 26:
 			{
-				if(CashBonus < 100)
+				if(CashBonus < 50)
 				{
 					Freeplay_SetupStart();
 					return;
@@ -3133,11 +3109,6 @@ void Freeplay_SetupStart(bool extra = false)
 	
 				strcopy(message, sizeof(message), "{red}Reduced extra credits gained per wave by 50!");
 				CashBonus -= 50;
-			}
-			case 27:
-			{
-				strcopy(message, sizeof(message), "{green}You now gain 150 extra credits per wave.");
-				CashBonus += 150;
 			}
 			case 28:
 			{
@@ -3380,67 +3351,6 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}Now, enemies will explode on death!");
 				ExplodingNPC = true;
 				EmitSoundToAll("ui/mm_medal_silver.wav");
-			}
-			
-			case 53:
-			{
-				Freeplay_SetupStart();
-				return;
-				/*
-				if(EnemyShields >= 15)
-				{
-					EnemyShields = 15;
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{red}All enemies receieve 3 expidonsan shields!");
-				EnemyShields += 3;
-				*/
-			}
-			case 54:
-			{
-				Freeplay_SetupStart();
-				/*
-				return;
-				if(EnemyShields >= 15)
-				{
-					EnemyShields = 15;
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{red}All enemies receieve 6 expidonsan shields!");
-				EnemyShields += 6;
-				*/
-			}
-			case 55:
-			{
-				Freeplay_SetupStart();
-				return;
-				/*
-				if(EnemyShields <= 0)
-				{
-					EnemyShields = 0;
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{green}All enemies lose 2 expidonsan shields.");
-				EnemyShields -= 2;
-				*/
-			}
-			case 56:
-			{
-				Freeplay_SetupStart();
-				return;
-				/*
-				if(EnemyShields <= 0)
-				{
-					EnemyShields = 0;
-					Freeplay_SetupStart();
-					return;
-				}
-				strcopy(message, sizeof(message), "{green}All enemies lose 4 expidonsan shields.");
-				EnemyShields -= 4;
-				*/
 			}
 			
 			case 57:
