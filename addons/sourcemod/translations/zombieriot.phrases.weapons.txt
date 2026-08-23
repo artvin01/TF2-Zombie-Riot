@@ -1879,6 +1879,7 @@
 	"Precision Potion"
 	{
 		"en"		"Precision Potion"
+		"ko"		"정밀 포션"
 	}
 	"The Bombinomicon"
 	{
