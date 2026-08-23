@@ -1865,9 +1865,13 @@
 	
 	"Hastening Potion Desc"
 	{
-		"en"	"-Gain 15％ Faster Mage Fire Speed\n-Gain 50％ Mana Regen and Max Mana\n-Gain 7％ more mage damage.\n-Gain 50+ HP\n-Gain 5％ melee resistance while magic weapon is active"
-		"it"	"15％ Velocità del fuoco del mago più veloce e 50％ Rigenerazione del mana e mana massimo, 50+ HP e 5％ resistenza in mischia, 7％ danni da mago in più."
-		"ko"	"-마법 공격 속도 +15％\n-최대 마나와 마나 재생량 +50％\n-마법 무기 피해량 +7％\n-최대 체력 +50\n-마법 무기 장착 시 근접 피해 저항력 +5％."
+		"en"	"-Gain 15％ Faster Mage Fire Speed\n-Gain 30％ Mana Regen and Max Mana\n-Gain 7％ more mage damage.\n-Gain 50+ HP\n-Gain 5％ melee resistance while magic weapon is active"
+		"it"	"15％ Velocità del fuoco del mago più veloce e 30％ Rigenerazione del mana e mana massimo, 50+ HP e 5％ resistenza in mischia, 7％ danni da mago in più."
+		"ko"	"-마법 공격 속도 +15％\n-최대 마나와 마나 재생량 +30％\n-마법 무기 피해량 +7％\n-최대 체력 +50\n-마법 무기 장착 시 근접 피해 저항력 +5％."
+	}
+	"Precision Potion Desc"
+	{
+		"en"	"-Gain 40％ Faster Mage Projectile Speed\n-Gain 20％ Mana Regen and Max Mana"
 	}
 	
 	"The Bombinomicon Desc"
