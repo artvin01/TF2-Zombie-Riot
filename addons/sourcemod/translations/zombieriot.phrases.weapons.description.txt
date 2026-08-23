@@ -1872,6 +1872,7 @@
 	"Precision Potion Desc"
 	{
 		"en"	"-Gain 40％ Faster Mage Projectile Speed\n-Gain 20％ Mana Regen and Max Mana"
+		"ko"	"-마법 투사체 비행 속도 +40％\n-최대 마나와 마나 재생량 +30％"
 	}
 	
 	"The Bombinomicon Desc"
