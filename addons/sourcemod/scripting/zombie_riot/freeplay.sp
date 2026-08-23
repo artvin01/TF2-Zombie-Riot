@@ -2953,7 +2953,7 @@ void Freeplay_SetupStart(bool extra = false)
 					EloquenceBuff++;
 				}
 			}
-			case 57:
+			case 58:
 			{
 				if(RampartBuff > 2)
 				{
@@ -2966,7 +2966,7 @@ void Freeplay_SetupStart(bool extra = false)
 					RampartBuff++;
 				}
 			}
-			case 58:
+			case 59:
 			{
 				if(zombiecombine)
 				{
