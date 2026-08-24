@@ -39,6 +39,18 @@ public void Barracks_OnMapStart()
 	//precache + zero stuff
 	PrecacheSound(WEAPON_SWITCH_SOUND);
 	PrecacheSound(CRIME_SOUND);
+	Barracks_Reset();
+	
+	BR_Precached = false;
+}
+
+void Barracks_RoundStart()
+{
+	Barracks_Reset();
+}
+
+static void Barracks_Reset()
+{
 	Zero(CivType);
 	Zero(WeaponPap);
 	Zero(ShotgunHeal);
@@ -50,8 +62,10 @@ public void Barracks_OnMapStart()
 	Zero(Barracks_NovaCDTime);
 	Zero(Barracks_PowerHitTime);
 	
-	BR_Precached = false;
+	for (int client = 1; client <= MaxClients; client++)
+		CommanderKit_Unequip(client);
 }
+
 void PrecacheBarracksMusic()
 {
 	if(!BR_Precached)
@@ -452,9 +466,10 @@ public void CommanderKit_Unequip(int client)
 		if(IsValidHandle(h_Barrack_Timer[client]))
 			delete h_Barrack_Timer[client];
 		h_Barrack_Timer[client] = null;
+		
+		Barrack_HUDDelay[client] = 0.0;
+		PrintHintText(client, "");
 	}
-	Barrack_HUDDelay[client] = 0.0;
-	PrintHintText(client, "");
 }
 public int Barracks_GetInfo(int client, int choice)
 {

@@ -598,19 +598,11 @@
 	}
 	"Elite Sniper Pap 1"
 	{
-		"en"		"-Increased damage\n-applies apply debuff on hit\n-half charge within scope at minimum to apply debuff."
-		"fr"		"Dégats améliorés, et ralentis les cibles, les rendant plus vulnérables aux dégats.\nCet affaiblissement a besoin d'au moins une demie de charge."
-		"it"		"Per applicare il debuff, è necessario applicare almeno metà carica nel raggio d'azione."
-		"ko"		"-피해량 증가\n-조준 상태에서 50％ 이상 충전하여 적중시 대상에게 디버프 부여\n-디버프는 대상이 받는 피해를 증가시키고 이동 속도를 둔화시킴"
+		"en"		"-Increased damage\n-Consumes less ammo\n-Applies the Maimed debuff on hits with at least 70％ charge\n-Maimed enemies move slower"
 	}
 	"Elite Sniper Pap 2"
 	{
-		"en"		"-Increased damage\n-Calls in supply drops that gives extra ammo to\nall players and weapon consumes much less ammo."
-		"fr"		"Arme utilise moins de munitions.\nAbilité appèle pour des approvisionnements qui donne des munitions à tous les joueurs."
-		///"ru"		"Вызывает сброс припасов с воздуха, которые дают доп. патроны\nвсем игрокам, а оружие потребляет гораздо меньше патронов."
-		"chi"       "升级补给，给所有玩家额外的弹药和武器消耗更少的弹药。"
-		"it"		"Richiama i drop di rifornimento che danno munizioni extra a tutti i giocatori e l'arma consuma molte meno munizioni."
-		"ko"		"-피해량 증가\n-탄약을 보급할 수 있는 보급 상자를 호출할 수 있게 됩니다.\n-무기의 탄약 소모량이 감소."
+		"en"		"-Increased damage\n-Consumes less ammo\n-Calls in supply drops that deploy ammo pickups over teammates."
 	}
 	"Elite Sniper Pap 3"
 	{
@@ -623,21 +615,11 @@
 	}
 	"Elite Sniper Pap 4"
 	{
-		"en"		"-Increased damage\n-Cripples targets heavily, making them slower and take more damage."
-		"fr"		"Infirme les ennemis, les ralentissant et les font prendre plus de dégats."
-		///"ru"		"Сильно калечит цели, делая их медленнее и нанося на больше урона."
-		"chi"       "严重致残目标，使他们变慢并受到的伤害。"
-		"it"		"Storpia pesantemente i bersagli, rendendoli più lenti e subendo più danni."
-		"ko"		"-피해량 증가\n-적중시 대상의 이동 속도를 둔화시키고 받는 피해를 40％ 증가시킴."
+		"en"		"-Increased damage\n-Consumes less ammo\n-Also applies the Crippled debuff on hits with at least 70％ charge\n-Crippled enemies take more damage"
 	}
 	"Elite Sniper Pap 5"
 	{
-		"en"		"-Increased damage\n-Decreased cooldown on supply drops, increased attack speed, and bouncing\n-bullets for all players is now smart and will target high health targets."
-		"fr"		"Cadence de tir amélioré, temps de rechargement de l'abilité réduite.\nBalles rebondissantes priorisent les cibles plus durables."
-		///"ru"		"Уменьшено время восст. сброса припасов, увеличена скорость атаки, а отскакивающие\nпули для всех игроков теперь умные и нацелены на цели с высоким уровнем здоровья."
-		"chi"       "加大补给掉落的频率，增加攻击速度\n所有玩家弹子弹现在是智能的，将瞄准高血量的目标"
-		"it"		"Il cooldown dei rifornimenti è diminuito, la velocità d'attacco è aumentata e i\nproiettili rimbalzanti per tutti i giocatori sono ora intelligenti e mirano a bersagli con salute elevata."
-		"ko"		"-피해량, 공격 속도, 탄환 튕김 증가\n-보급 상자 호출의 쿨타임 감소\n이제 튕기는 탄환은 현재 체력이 많은 적을 최우선으로 추적."
+		"en"		"-Increased damage and attack speed\n-Consumes less ammo\n-Adds one extra supply drop that gives a global powerup\n-All Elite Snipers' bouncing bullets now prioritize high health targets"
 	}
 	"Elite Sniper Pap 6"
 	{
@@ -1788,12 +1770,7 @@
 	
 	"Accurate Marksman Desc"
 	{
-		"en"	"-Gain 10％ more accuracy\n-Gain 20％ faster projectile speed"
-		"fr"	"10％ moins de déviation, +20％ vitesse des projectiles"
-		///"ru"	"На 10％ выше точность и на 20％ выше скорость снаряда."
-		"chi"   "射击精度提高10％、射速提高20％"
-		"it"	"10％ più precisione e 20％ più velocità del proiettile"
-		"ko"	"-집탄율 +10％\n-투사체 비행 속도 +20％"
+		"en"	"-Gain 10％ more accuracy\n-Gain 20％ faster projectile speed\n-Gain 25％ faster Sniper Rifle charge rate"
 	}
 	
 	"Ammo Coat Desc"

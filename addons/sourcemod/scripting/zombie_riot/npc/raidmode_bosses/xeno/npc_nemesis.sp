@@ -363,10 +363,6 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		func_NPCThink[npc.index] = INVALID_FUNCTION;
 		return;
 	}
-	if(npc.m_flNextRangedAttackHappening && npc.flXenoInfectedSpecialHurtTime - 0.45 < gameTime && !f_NemesisSpecialDeathAnimation[npc.index])
-	{
-		ResolvePlayerCollisions_Npc(npc.index, /*damage crush*/ 90.0, true);
-	}
 	if(npc.m_flNextDelayTime < GetGameTime(npc.index))
 	{
 		//Set raid to this one incase the previous one has died or somehow vanished
@@ -662,11 +658,7 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 		{
 			if(npc.m_flNextRangedAttackHappening < gameTime)
 			{
-				if(npc.m_bIsEnraged)
-				{
-					ResolvePlayerCollisions_Npc(npc.index, /*damage crush*/ 350.0);
-				}
-				else
+				if(!npc.m_bIsEnraged)
 				{
 							
 					float flPos[3]; // original
@@ -792,7 +784,10 @@ public void RaidbossNemesis_ClotThink(int iNPC)
 							f_NpcTurnPenalty[npc.index] = 1.0;
 						}
 					}
-					
+				}
+				else
+				{
+					ResolvePlayerCollisions_Npc(npc.index, /*damage crush*/ 90.0);
 				}
 			}
 			if(npc.m_iChanged_WalkCycle != 5) 
