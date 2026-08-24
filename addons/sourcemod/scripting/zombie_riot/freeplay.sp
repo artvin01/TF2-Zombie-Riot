@@ -9,8 +9,6 @@ static int ImmuneNuke;
 static int CashBonus;
 static float KillBonus;
 static float MiniBossChance;
-static bool HussarBuff;
-static bool PernellBuff;
 static int IceDebuff;
 static int TeslarDebuff;
 static int FusionBuff;
@@ -30,8 +28,6 @@ static int ExplodeNPCDamage;
 static int VoidBuff;
 static bool VoidAfflictedBuff;
 static bool VestaBuff;
-static bool SquadBuff;
-static bool Coffee;
 static int StrangleDebuff;
 static int ProsperityDebuff;
 static bool SilenceDebuff;
@@ -46,7 +42,6 @@ static bool zombiecombine;
 static int moremen;
 static bool immutable;
 static int RandomStats;
-static bool merlton;
 static float gay;
 static bool friendunit;
 static int HurtleBuff;
@@ -60,6 +55,8 @@ static bool thespewer;
 static bool sigmaller;
 static bool portalgalore;
 static bool refragportal;
+static bool XenoLabBuff;
+static bool SeaLabBuff;
 
 static int FreeplayModifActive = 0;
 static float FM_Health;
@@ -150,8 +147,6 @@ void Freeplay_ResetAll()
 	CashBonus = 0;
 	KillBonus = 0.0;
 	MiniBossChance = 0.025;
-	HussarBuff = false;
-	PernellBuff = false;
 	IceDebuff = 0;
 	TeslarDebuff = 0;
 	FusionBuff = 0;
@@ -171,8 +166,6 @@ void Freeplay_ResetAll()
 	VoidBuff = 0;
 	VoidAfflictedBuff = false;
 	VestaBuff = false;
-	SquadBuff = false;
-	Coffee = false;
 	StrangleDebuff = 0;
 	ProsperityDebuff = 0;
 	SilenceDebuff = false;
@@ -186,7 +179,6 @@ void Freeplay_ResetAll()
 	zombiecombine = false;
 	moremen = 0;
 	RandomStats = 0;
-	merlton = false;
 	gay = 0.0;
 	friendunit = false;
 	HurtleBuff = 0;
@@ -200,6 +192,8 @@ void Freeplay_ResetAll()
 	sigmaller = false;
 	portalgalore = false;
 	refragportal = false;
+	XenoLabBuff = false;
+	SeaLabBuff = false;
 	squeezerplus = false;
 	FM_Health = 0.4;
 	FM_Damage = 0.65;
@@ -1959,12 +1953,6 @@ void Freeplay_SpawnEnemy(int entity)
 		if(HurtleBuffEnemies == 3)
 			Freeplay_ApplyStatusEffect(entity, "Freeplay Hurtle III", 10.0);
 	
-		if(HussarBuff)
-			Freeplay_ApplyStatusEffect(entity, "Hussar's Warscream", 45.0);	
-	
-		if(PernellBuff)
-			Freeplay_ApplyStatusEffect(entity, "False Therapy", 9.0);
-	
 		if(FusionBuff > 1)
 			Freeplay_ApplyStatusEffect(entity, "Self Empowerment", 30.0);	
 	
@@ -1984,28 +1972,22 @@ void Freeplay_SpawnEnemy(int entity)
 			Freeplay_ApplyStatusEffect(entity, "Void Strength I", 6.0);
 	
 		if(VoidAfflictedBuff)
-			Freeplay_ApplyStatusEffect(entity, "Void Afflicted", 10.0);
+			Freeplay_ApplyStatusEffect(entity, "Void Afflicted", 20.0);
 
 		if(VestaBuff)
-			Freeplay_ApplyStatusEffect(entity, "Call To Vesta", 10.0);
-	
-		if(SquadBuff)
-			Freeplay_ApplyStatusEffect(entity, "Squad Leader", 20.0);	
-	
-		if(Coffee)
-		{
-			Freeplay_ApplyStatusEffect(entity, "Caffinated", 8.0);
-			Freeplay_ApplyStatusEffect(entity, "Caffinated Drain", 8.0);
-		}
-	
-		if(merlton)
-			Freeplay_ApplyStatusEffect(entity, "MERLT0N-BUFF", 5.0);	
+			Freeplay_ApplyStatusEffect(entity, "Call To Vesta", 10.0);	
 
 		if(LoveNahTonic)
 		{
 			Freeplay_ApplyStatusEffect(entity, "Tonic Affliction", 8.0);
 			Freeplay_ApplyStatusEffect(entity, "Tonic Affliction Hide", 8.0);
 		}
+
+		if(XenoLabBuff)
+			Freeplay_ApplyStatusEffect(entity, "Xeno's Territory", 20.0);	
+
+		if(SeaLabBuff)
+			Freeplay_ApplyStatusEffect(entity, "Corrupted Godly Power", 20.0);	
 	
 		//// DEBUFFS ////
 	
@@ -2385,57 +2367,33 @@ void Freeplay_SetupStart(bool extra = false)
 			/// HEALTH SKULLS ///
 			case 0:
 			{
-				strcopy(message, sizeof(message), "{red}All enemies now have 2000 more health!");
-				HealthBonus += 2000;
+				strcopy(message, sizeof(message), "{red}All enemies now have 2500 more health!");
+				HealthBonus += 2500;
 			}
 			case 1:
 			{
-				strcopy(message, sizeof(message), "{red}All enemies now have 4000 more health!");
-				HealthBonus += 4000;
+				strcopy(message, sizeof(message), "{red}All enemies now have 5000 more health!");
+				HealthBonus += 5000;
 			}
 			case 2:
 			{
-				strcopy(message, sizeof(message), "{red}All enemies now have 4% more health!");
-				HealthMulti *= 1.04;
+				strcopy(message, sizeof(message), "{red}All enemies now have 5% more health!");
+				HealthMulti *= 1.05;
 			}
 			case 3:
 			{
-				strcopy(message, sizeof(message), "{red}All enemies now have 2% more health!");
-				HealthMulti *= 1.02;
+				strcopy(message, sizeof(message), "{red}All enemies now have 10% more health!");
+				HealthMulti *= 1.1;
 			}
 			case 4:
 			{
-				strcopy(message, sizeof(message), "{green}All enemies now have 4% less health.");
-				HealthMulti *= 0.96;
+				strcopy(message, sizeof(message), "{green}All enemies now have 5% less health.");
+				HealthMulti *= 0.95;
 			}
 			case 5:
 			{
-				strcopy(message, sizeof(message), "{green}All enemies now have 2% less health.");
-				HealthMulti *= 0.98;
-			}
-			case 6:
-			{
-				strcopy(message, sizeof(message), "{yellow}All enemies now have {green}2500 less health {yellow}but {red}5% more health.");
-				HealthBonus -= 2500;
-				HealthMulti *= 1.05;
-			}
-			case 7:
-			{
-				strcopy(message, sizeof(message), "{yellow}All enemies now have {green}5000 less health {yellow}but {red}7.5% more health.");
-				HealthBonus -= 5000;
-				HealthMulti *= 1.075;
-			}
-			case 8:
-			{
-				strcopy(message, sizeof(message), "{yellow}All enemies now have {red}2500 more health {yellow}but {green}5% less health.");
-				HealthBonus += 2500;
-				HealthMulti /= 1.05;
-			}
-			case 9:
-			{
-				strcopy(message, sizeof(message), "{yellow}All enemies now have {red}5000 more health {yellow}but {green}7.5% less health.");
-				HealthBonus += 5000;
-				HealthMulti /= 1.075;
+				strcopy(message, sizeof(message), "{green}All enemies now have 2.5% less health.");
+				HealthMulti *= 0.975;
 			}
 
 			/// BUFF/DEBUFF SKULLS //
@@ -2454,32 +2412,6 @@ void Freeplay_SetupStart(bool extra = false)
 					EscapeModeForNpc = true;
 				}
 				*/
-			}
-			case 11:
-			{
-				if(HussarBuff)
-				{
-					strcopy(message, sizeof(message), "{green}All enemies have lost the Hussar buff.");
-					HussarBuff = false;
-				}
-				else
-				{
-					strcopy(message, sizeof(message), "{red}All enemies now gain the Hussar buff!");
-					HussarBuff = true;
-				}
-			}
-			case 12:
-			{
-				if(PernellBuff)
-				{
-					strcopy(message, sizeof(message), "{green}All enemies have lost the Purnell buff.");
-					PernellBuff = false;
-				}
-				else
-				{
-					strcopy(message, sizeof(message), "{red}All enemies now gain the Purnell buff!");
-					PernellBuff = true;
-				}
 			}
 			case 13:
 			{
@@ -2848,32 +2780,6 @@ void Freeplay_SetupStart(bool extra = false)
 					VestaBuff = true;
 				}
 			}
-			case 50:
-			{
-				if(SquadBuff)
-				{
-					strcopy(message, sizeof(message), "{green}All enemies have lost the Squad Leader buff.");
-					SquadBuff = false;
-				}
-				else
-				{
-					strcopy(message, sizeof(message), "{red}All enemies now gain the Squad Leader buff!");
-					SquadBuff = true;
-				}
-			}
-			case 51:
-			{
-				if(Coffee)
-				{
-					strcopy(message, sizeof(message), "{green}All enemies have lost the Caffinated buff.");
-					Coffee = false;
-				}
-				else
-				{
-					strcopy(message, sizeof(message), "{red}All enemies now gain the Caffinated buff! {yellow}(Includes Caffinated Drain)");
-					Coffee = true;
-				}
-			}
 			case 52:
 			{
 				if(StrangleDebuff > 3)
@@ -2995,19 +2901,6 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				strcopy(message, sizeof(message), "{purple}Otherworldly beings approach from a dimensional rip...");
 				immutable = true;
-			}
-			case 62:
-			{
-				if(merlton)
-				{
-					strcopy(message, sizeof(message), "{green}All enemies have lost the Merlton buff.");
-					merlton = false;
-				}
-				else
-				{
-					strcopy(message, sizeof(message), "{red}All enemies now gain the Merlton buff!");
-					merlton = true;
-				}
 			}
 			case 63:
 			{
@@ -3164,6 +3057,32 @@ void Freeplay_SetupStart(bool extra = false)
 				{
 					strcopy(message, sizeof(message), "{red}All enemies now are now Void Afflicted!");
 					VoidAfflictedBuff = true;
+				}
+			}
+			case 78:
+			{
+				if(XenoLabBuff)
+				{
+					strcopy(message, sizeof(message), "{green}All enemies have lost the Xeno's Territory buff.");
+					XenoLabBuff = false;
+				}
+				else
+				{
+					strcopy(message, sizeof(message), "{red}All enemies now gain the Xeno's Territory buff!");
+					XenoLabBuff = true;
+				}
+			}
+			case 89:
+			{
+				if(SeaLabBuff)
+				{
+					strcopy(message, sizeof(message), "{green}All enemies have lost the Corrupted Godly Power buff.");
+					SeaLabBuff = false;
+				}
+				else
+				{
+					strcopy(message, sizeof(message), "{red}All enemies now gain the Corrupted Godly Power buff!");
+					SeaLabBuff = true;
 				}
 			}
 			//case 78:
