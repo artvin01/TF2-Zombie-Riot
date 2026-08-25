@@ -6610,10 +6610,12 @@ public void NpcBaseThink(int iNPC)
 			
 			HealEntityGlobal(iNPC, iNPC, HealingAmount, 1.25, 0.0, HEAL_SELFHEAL);
 		}
+		
+		// borrowing this 0.1 sec timer
+		if (HasSpecificBuff(iNPC, "Trampling Prefix"))
+			ResolvePlayerCollisions_Npc(iNPC, 2.0, true);
 	}
-	
-	if (HasSpecificBuff(iNPC, "Trampling Prefix"))
-		ResolvePlayerCollisions_Npc(iNPC, 2.0, true);
+
 #endif
 #if defined RPG
 	if(i_HpRegenInBattle[iNPC] > 1 && f_QuickReviveHealing[iNPC] < GetGameTime() && !f_TimeFrozenStill[iNPC])

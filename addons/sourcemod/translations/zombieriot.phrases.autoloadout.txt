@@ -187,8 +187,7 @@
 	
 	"Accurate Marksman Mini Desc"
 	{
-		"en"		"Better accuracy and faster projectile speed with ranged weapons."
-		"ko"		"원거리 무기의 정확도와 투사체 속도가 증가합니다."
+		"en"		"Better accuracy, faster projectile speed and faster Sniper Rifle charge rate with ranged weapons."
 	}
 	
 	"Compacted Rounds Mini Desc"
@@ -215,6 +214,11 @@
 	{
 		"en"		"Deal more damage, gain faster firing speed, mana regen and more max mana with mage weapons."
 		"ko"		"마법 무기의 피해량, 공격 속도, 마나 재생, 최대 마나가 증가합니다."
+	}
+	
+	"Precision Potion Mini Desc"
+	{
+		"en"		"Gain faster projectile speed, mana regen and more max mana with mage weapons."
 	}
 	
 	"Hastening Potion Mini Desc"

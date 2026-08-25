@@ -22,7 +22,7 @@ void RandomPickup_Clear()
 	while ((entity = FindEntityByClassname(entity, "prop_dynamic*")) != -1)
 	{
 		char targetname[64];
-		GetEntPropString(entity, Prop_Send, "m_iName", targetname, sizeof(targetname));
+		GetEntPropString(entity, Prop_Data, "m_iName", targetname, sizeof(targetname));
 		
 		if (StrEqual(targetname, "zr_random_pickup"))
 			RemoveEntity(entity);
@@ -89,7 +89,7 @@ public Action RandomPickup_DelayBetweenSpawns(Handle timer)
 	return Plugin_Continue;
 }
 
-bool RandomPickup_SpawnPickup(float VectorGoal[3])
+bool RandomPickup_SpawnPickup(float VectorGoal[3], float lifetime = PICKUPS_TIME_LAST)
 {
 	static float hullcheckmaxs_Player[3];
 	static float hullcheckmins_Player[3];
@@ -123,7 +123,7 @@ bool RandomPickup_SpawnPickup(float VectorGoal[3])
 		SetEntityCollisionGroup(prop, 27);
 		SDKHook(prop, SDKHook_Touch, RandomPickup_TouchPickup);
 		i_WandIdNumber[prop] = 999;
-		CreateTimer(PICKUPS_TIME_LAST, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(lifetime, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 	}	
 	return true;
 }
