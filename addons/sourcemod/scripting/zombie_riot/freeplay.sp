@@ -2337,7 +2337,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 78;
+		rand = GetURandomInt() % 72;
 	
 	if(guaranteedraid)
 	{
@@ -3109,7 +3109,7 @@ void Freeplay_SetupStart(bool extra = false)
 					SeaLabBuff = true;
 				}
 			}
-			//case 78:
+			//case 72:
 			//{
 				//if(sigmaller)
 				//{
