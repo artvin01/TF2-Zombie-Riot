@@ -57,6 +57,7 @@ static bool portalgalore;
 static bool refragportal;
 static bool XenoLabBuff;
 static bool SeaLabBuff;
+static int SpecialistDebuff;
 
 static int FreeplayModifActive = 0;
 static float FM_Health;
@@ -194,6 +195,7 @@ void Freeplay_ResetAll()
 	refragportal = false;
 	XenoLabBuff = false;
 	SeaLabBuff = false;
+	SpecialistDebuff = 0;
 	squeezerplus = false;
 	FM_Health = 0.4;
 	FM_Damage = 0.65;
@@ -2027,6 +2029,15 @@ void Freeplay_SpawnEnemy(int entity)
 		if(TeslarDebuff > 0)
 			ApplyStatusEffect(entity, entity, "Teslar Shock", 999999.0);	
 	
+		if(SpecialistDebuff > 2)
+			ApplyStatusEffect(entity, entity, "Molecular Collapse", 999999.0);	
+	
+		if(SpecialistDebuff > 1)
+			ApplyStatusEffect(entity, entity, "Cellular Breakdown", 999999.0);	
+	
+		if(SpecialistDebuff > 0)
+			ApplyStatusEffect(entity, entity, "Hypodermic Toxin Injection", 999999.0);	
+	
 		if(CrippleDebuff > 0)
 		{
 			ApplyStatusEffect(entity, entity, "Cripple", 999999.0);	
@@ -2397,7 +2408,7 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 
 			/// BUFF/DEBUFF SKULLS //
-			case 10:
+			case 6:
 			{
 				strcopy(message, sizeof(message), "{darkgray}Nothing happend, probably a good thing...");
 				/*
@@ -2413,7 +2424,7 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				*/
 			}
-			case 13:
+			case 7:
 			{
 				if(IceDebuff > 3)
 				{
@@ -2426,7 +2437,7 @@ void Freeplay_SetupStart(bool extra = false)
 					IceDebuff++;
 				}
 			}
-			case 14:
+			case 8:
 			{
 				if(TeslarDebuff > 1)
 				{
@@ -2440,7 +2451,7 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 	
 			}
-			case 15:
+			case 9:
 			{
 				if(FusionBuff > 2)
 				{
@@ -2454,7 +2465,7 @@ void Freeplay_SetupStart(bool extra = false)
 				}
 				
 			}
-			case 16:
+			case 10:
 			{
 				if(OceanBuff > 1)
 				{
@@ -2467,29 +2478,42 @@ void Freeplay_SetupStart(bool extra = false)
 					OceanBuff++;
 				}
 			}
-			case 17:
+			case 11:
 			{
 				strcopy(message, sizeof(message), "{green}The next 400 enemies will now gain the Crippled debuff.");
 				CrippleDebuff += 400;
 			}
-			case 18:
+			case 12:
 			{
 				strcopy(message, sizeof(message), "{green}The next 400 enemies will now gain the Cudgel debuff.");
 				CudgelDebuff += 400;
 			}
-			case 19:
+			case 13:
 			{
 				RandomStats += GetRandomInt(3, 6);
 				strcopy(message, sizeof(message), "{red}A random amount of random enemies will randomly receive randomized stats randomly!");
 			}
+			case 14:
+			{
+				if(SpecialistDebuff > 3)
+				{
+					strcopy(message, sizeof(message), "{red}All enemies have lost the Cellular Breakdown debuff!");
+					SpecialistDebuff = 0;
+				}
+				else
+				{
+					strcopy(message, sizeof(message), "{green}All enemies now gain a layer of Cellular Breakdown debuff.");
+					SpecialistDebuff++;
+				}
+			}
 	
 			/// CREDIT SKULLS //
-			case 20:
+			case 15:
 			{
 				strcopy(message, sizeof(message), "{green}All enemies now give out 5 extra credits on death.");
 				KillBonus += 5;
 			}
-			case 21:
+			case 16:
 			{
 				if(KillBonus < 1)
 				{
@@ -2500,7 +2524,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}Reduced the credit per enemy kill by 1!");
 				KillBonus--;
 			}
-			case 22:
+			case 17:
 			{
 				if(CashBonus < 50)
 				{
@@ -2511,14 +2535,14 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}Reduced extra credits gained per wave by 50!");
 				CashBonus -= 50;
 			}
-			case 23:
+			case 18:
 			{
 				strcopy(message, sizeof(message), "{green}You now gain 200 extra credits per wave.");
 				CashBonus += 200;
 			}
 	
 			/// PERK SKULLS ///
-			case 24:
+			case 19:
 			{
 				if(PerkMachine == 1)
 				{
@@ -2529,7 +2553,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}All enemies are now using the Obsidian Oaf perk, And thus gain +20% resist and +15% HP!");
 				PerkMachine = 1;
 			}
-			case 25:
+			case 20:
 			{
 				if(PerkMachine == 2)
 				{
@@ -2540,7 +2564,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}All enemies are now using the Morning Coffee perk, And thus gain 35% Extra Damage!");
 				PerkMachine = 2;
 			}
-			case 26: // YOUR ATTEMPTS AT DEATH ARE IN, VAIN
+			case 21: // YOUR ATTEMPTS AT DEATH ARE IN, VAIN
 			{
 				if(PerkMachine == 3)
 				{
@@ -2551,7 +2575,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}All enemies are now using the Marksman Beer perk, and thus gain 15% Extra Damage!");
 				PerkMachine = 3;
 			}
-			case 27:
+			case 22:
 			{
 				if(PerkMachine == 4)
 				{
@@ -2562,7 +2586,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}All enemies are now using the Hasty Hops perk, and thus cannot be slowed!");
 				PerkMachine = 4;
 			}
-			case 28:
+			case 23:
 			{
 				if(PerkMachine == 0)
 				{
@@ -2575,7 +2599,7 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 	
 			/// MISCELANEOUS SKULLS ///
-			case 29:
+			case 24:
 			{
 				if(friendunit)
 				{
@@ -2585,17 +2609,17 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{green}You will gain a strong, friendly unit.");
 				friendunit = true;
 			}
-			case 30:
+			case 25:
 			{
 				strcopy(message, sizeof(message), "{red}Mini-boss spawn rate has been multiplied by 25%!");
 				MiniBossChance *= 1.25;
 			}
-			case 31:
+			case 26:
 			{
 				strcopy(message, sizeof(message), "{green}Mini-boss spawn rate has been divided by 25%.");
 				MiniBossChance *= 0.75;
 			}
-			case 32:
+			case 27:
 			{
 				if(EnemyBosses == 1)
 				{
@@ -2613,7 +2637,7 @@ void Freeplay_SetupStart(bool extra = false)
 					EnemyBosses = 6;
 				}
 			}
-			case 33:
+			case 28:
 			{
 				if(ImmuneNuke == 1)
 				{
@@ -2631,7 +2655,7 @@ void Freeplay_SetupStart(bool extra = false)
 					ImmuneNuke = 4;
 				}
 			}
-			case 34:
+			case 29:
 			{
 				//if(EnemyChance > 8)
 				//{
@@ -2642,7 +2666,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}Stronger enemy types are now more likely to appear!");
 				EnemyChance++;
 			}
-			case 35:
+			case 30:
 			{
 				if(EnemyChance < 3)
 				{
@@ -2655,17 +2679,17 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 	
 			/// SAMU'S SKULLS (new!) ///
-			case 36:
+			case 31:
 			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 15% more melee damage.");
 				MeleeMult += 0.15;
 			}
-			case 37:
+			case 32:
 			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 20% more melee damage.");
 				MeleeMult += 0.2;
 			}
-			case 38:
+			case 33:
 			{
 				if(MeleeMult < 0.01) // 95% melee res max
 				{
@@ -2679,7 +2703,7 @@ void Freeplay_SetupStart(bool extra = false)
 					MeleeMult = 0.01;
 				}
 			}
-			case 39:
+			case 34:
 			{
 				if(MeleeMult < 0.01)
 				{
@@ -2693,27 +2717,27 @@ void Freeplay_SetupStart(bool extra = false)
 					MeleeMult = 0.01;
 				}
 			}
-			case 40:
+			case 35:
 			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 15% more ranged damage.");
 				RangedMult += 0.15;
 			}
-			case 41:
+			case 36:
 			{
 				strcopy(message, sizeof(message), "{green}Enemies will now take 20% more ranged damage.");
 				RangedMult += 0.2;
 			}
-			case 42:
+			case 37:
 			{
 				strcopy(message, sizeof(message), "{red}Enemy attackspeed has been multiplied by x0.9!");
 				ExtraAttackspeed *= 0.9;
 			}
-			case 43:
+			case 38:
 			{
 				strcopy(message, sizeof(message), "{green}Enemy attackspeed has been reduced by an additional 5%.");
 				ExtraAttackspeed += 0.05;
 			}
-			case 44:
+			case 39:
 			{
 				if(RangedMult < 0.01) // 95% ranged res max
 				{
@@ -2727,7 +2751,7 @@ void Freeplay_SetupStart(bool extra = false)
 					RangedMult = 0.01;
 				}
 			}
-			case 45:
+			case 40:
 			{
 				if(RangedMult < 0.01)
 				{
@@ -2741,7 +2765,7 @@ void Freeplay_SetupStart(bool extra = false)
 					RangedMult = 0.01;
 				}
 			}
-			case 46, 47:
+			case 41, 42:
 			{
 				if(ExplodingNPC)
 				{
@@ -2754,7 +2778,7 @@ void Freeplay_SetupStart(bool extra = false)
 				EmitSoundToAll("ui/mm_medal_silver.wav");
 			}
 			
-			case 48:
+			case 43:
 			{
 				if(VoidBuff > 2)
 				{
@@ -2767,7 +2791,7 @@ void Freeplay_SetupStart(bool extra = false)
 					VoidBuff++;
 				}
 			}
-			case 49:
+			case 44:
 			{
 				if(VestaBuff)
 				{
@@ -2780,7 +2804,7 @@ void Freeplay_SetupStart(bool extra = false)
 					VestaBuff = true;
 				}
 			}
-			case 52:
+			case 45:
 			{
 				if(StrangleDebuff > 3)
 				{
@@ -2793,7 +2817,7 @@ void Freeplay_SetupStart(bool extra = false)
 					StrangleDebuff++;
 				}
 			}
-			case 53:
+			case 46:
 			{
 				if(ProsperityDebuff > 3)
 				{
@@ -2806,7 +2830,7 @@ void Freeplay_SetupStart(bool extra = false)
 					ProsperityDebuff++;
 				}
 			}
-			case 54:
+			case 47:
 			{
 				if(SilenceDebuff)
 				{
@@ -2819,7 +2843,7 @@ void Freeplay_SetupStart(bool extra = false)
 					SilenceDebuff = true;
 				}
 			}
-			case 55:
+			case 48:
 			{
 				// 25% chance, otherwise retry.
 				if(GetRandomFloat(0.0, 1.0) <= 0.25)
@@ -2833,7 +2857,7 @@ void Freeplay_SetupStart(bool extra = false)
 					return;
 				}
 			}
-			case 56:
+			case 49:
 			{
 				if(CheesyPresence)
 				{
@@ -2846,7 +2870,7 @@ void Freeplay_SetupStart(bool extra = false)
 					CheesyPresence = true;
 				}
 			}
-			case 57:
+			case 50:
 			{
 				if(EloquenceBuff > 2)
 				{
@@ -2859,7 +2883,7 @@ void Freeplay_SetupStart(bool extra = false)
 					EloquenceBuff++;
 				}
 			}
-			case 58:
+			case 51:
 			{
 				if(RampartBuff > 2)
 				{
@@ -2872,7 +2896,7 @@ void Freeplay_SetupStart(bool extra = false)
 					RampartBuff++;
 				}
 			}
-			case 59:
+			case 52:
 			{
 				if(zombiecombine)
 				{
@@ -2882,7 +2906,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}Hey, im thinking of something.... What if, a {gold}combine, {red}and a {gold}zombie, {red}were...");
 				zombiecombine = true;
 			}
-			case 60:
+			case 53:
 			{
 				if(moremen)
 				{
@@ -2892,7 +2916,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}III THINK YOU NEED MORE MEN!!!");
 				moremen = 1;
 			}
-			case 61:
+			case 54:
 			{
 				if(immutable)
 				{
@@ -2902,7 +2926,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{purple}Otherworldly beings approach from a dimensional rip...");
 				immutable = true;
 			}
-			case 63:
+			case 55:
 			{
 				if(EloquenceBuffEnemies > 2)
 				{
@@ -2915,7 +2939,7 @@ void Freeplay_SetupStart(bool extra = false)
 					EloquenceBuffEnemies++;
 				}
 			}
-			case 64:
+			case 56:
 			{
 				if(RampartBuffEnemies > 2)
 				{
@@ -2928,7 +2952,7 @@ void Freeplay_SetupStart(bool extra = false)
 					RampartBuffEnemies++;
 				}
 			}
-			case 65:
+			case 57:
 			{
 				if(HurtleBuffEnemies > 2)
 				{
@@ -2941,7 +2965,7 @@ void Freeplay_SetupStart(bool extra = false)
 					HurtleBuffEnemies++;
 				}
 			}
-			case 66:
+			case 58:
 			{
 				if(HurtleBuff > 2)
 				{
@@ -2954,7 +2978,7 @@ void Freeplay_SetupStart(bool extra = false)
 					HurtleBuff++;
 				}
 			}
-			case 67:
+			case 59:
 			{
 				if(LoveNahTonic)
 				{
@@ -2967,26 +2991,26 @@ void Freeplay_SetupStart(bool extra = false)
 					LoveNahTonic = true;
 				}
 			}
-			case 68:
+			case 60:
 			{
 				strcopy(message, sizeof(message), "{yellow}Y'know what? I'll throw in another extra skull.");
 				ExtraSkulls++;
 			}
-			case 69:
+			case 61:
 			{
 				strcopy(message, sizeof(message), "{yellow}Y'know what? I'll throw in another extra skull.");
 				ExtraSkulls++;
 			//	strcopy(message, sizeof(message), "{yellow}Actually, y'know what? Maybe i'll throw in TWO extra skulls even.");
 			//	ExtraSkulls += 2;
 			}
-			case 70:
+			case 62:
 			{
 				strcopy(message, sizeof(message), "{yellow}Y'know what? I'll throw in another extra skull.");
 				ExtraSkulls++;
 			//	strcopy(message, sizeof(message), "{red}ffffFFFFF-{crimson}FUCK {red}it, THREE EXTRA SKULLS!!!");
 			//	ExtraSkulls += 3;
 			}
-			case 71:
+			case 63:
 			{
 				if(Schizophrenia)
 				{
@@ -2996,7 +3020,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}As you pick this skull, you begin to hear voices in your head...");
 				Schizophrenia = true;
 			}
-			case 72:
+			case 64:
 			{
 				if(DarknessComing)
 				{
@@ -3006,7 +3030,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}THE DARKNESS IS COMING! {crimson}YOU NEED TO RUN!!");
 				DarknessComing = true;
 			}
-			case 73:
+			case 65:
 			{
 				if(thespewer)
 				{
@@ -3016,7 +3040,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}Your final challenge.... a {crimson}Nourished Spewer!");
 				thespewer = true;
 			}
-			case 74:
+			case 66:
 			{
 				if(friendunit)
 				{
@@ -3026,7 +3050,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{green}You will gain a strong, friendly unit.");
 				friendunit = true;
 			}
-			case 75:
+			case 67:
 			{
 				if(portalgalore)
 				{
@@ -3036,7 +3060,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}Here's a gift from {purple}Unspeakable{red}. {purple}Five Hundred Void Portals!!");
 				portalgalore = true;
 			}
-			case 76:
+			case 68:
 			{
 				if(refragportal)
 				{
@@ -3046,7 +3070,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}Here's a gift from {darkblue}C.H.I.M.E.R.A.{red}. {darkblue}Five Hundred Portal Gate!");
 				refragportal = true;
 			}
-			case 77:
+			case 69:
 			{
 				if(VoidAfflictedBuff)
 				{
@@ -3059,7 +3083,7 @@ void Freeplay_SetupStart(bool extra = false)
 					VoidAfflictedBuff = true;
 				}
 			}
-			case 78:
+			case 70:
 			{
 				if(XenoLabBuff)
 				{
@@ -3072,7 +3096,7 @@ void Freeplay_SetupStart(bool extra = false)
 					XenoLabBuff = true;
 				}
 			}
-			case 89:
+			case 71:
 			{
 				if(SeaLabBuff)
 				{
