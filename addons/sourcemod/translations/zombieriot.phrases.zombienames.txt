@@ -3666,7 +3666,7 @@
 	{
 		"en"	"Xeno Very Early Infected"
 		"it"	"Xeno infetto precocemente"
-		"ko"	"제노 초기 감염자"
+		"ko"	"제노 극초기 감염자"
 	}
 	"Xeno Patient Few"
 	{
@@ -3678,7 +3678,7 @@
 	{
 		"en"	"Xeno Very Patient Few"
 		"it"	"Pochi pazienti Xeno"
-		"ko"	"제노 소수 환자"
+		"ko"	"제노 극소수 환자"
 	}
 	"Xeno Ouroboros Ekas"
 	{

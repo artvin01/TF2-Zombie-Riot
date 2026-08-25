@@ -4838,7 +4838,7 @@
 		"fr"	"Allez face-à-face contre les zombies et Combine classiques!"
 		"chi"	"击败尸群，打败联合军！"
 		"it"	"Combatti contro i classici zombie e combatti contro le combinazioni!"
-		"ko" 	"기본적인 좀비들과 배풍등의 병사들을 상대로 살아남으세요!"
+		"ko" 	"누군가 크로우홈에 좀비 떼가 대거 출몰하고 있다고 연락을 해왔습니다. 확인을 하기 위해 밥 2세가 우리, 두 번째 용병 부대를 보냈습니다."
 	}
 	"True Fusion Warrior Wave Desc"
 	{
