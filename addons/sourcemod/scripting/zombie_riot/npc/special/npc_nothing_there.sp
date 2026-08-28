@@ -80,9 +80,9 @@ static void ClotPrecache()
 	PrecacheSoundCustom("#zombie_riot/nothing_there/second_warning_fix.mp3");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return Nothing_There(vecPos, vecAng, team, data);
+	return Nothing_There(vecPos, vecAng, team);
 }
 
 methodmap Nothing_There < CClotBody
@@ -158,7 +158,7 @@ methodmap Nothing_There < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][5] = TempValueForProperty; }
 	}
 	
-	public Nothing_There(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public Nothing_There(float vecPos[3], float vecAng[3], int ally)
 	{
 		ally = TFTeam_Stalkers;
 		Nothing_There npc = view_as<Nothing_There>(CClotBody(vecPos, vecAng, "models/slender/stone_m/nothing/nt_normal_v3.mdl", "1.5", MinibossHealthScaling(50.0), ally, false, true, true));
