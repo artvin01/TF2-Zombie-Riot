@@ -161,7 +161,7 @@ methodmap Nothing_There < CClotBody
 	public Nothing_There(float vecPos[3], float vecAng[3], int ally)
 	{
 		ally = TFTeam_Stalkers;
-		Nothing_There npc = view_as<Nothing_There>(CClotBody(vecPos, vecAng, "models/slender/stone_m/nothing/nt_normal_v3.mdl", "1.5", MinibossHealthScaling(50.0), ally, false, true, true));
+		Nothing_There npc = view_as<Nothing_There>(CClotBody(vecPos, vecAng, "models/slender/stone_m/nothing/nt_normal_v3.mdl", "1.5", MinibossHealthScaling(200.0), ally, false, true, true));
 		
 		i_NpcWeight[npc.index] = 4;
 		
@@ -211,7 +211,7 @@ methodmap Nothing_There < CClotBody
 		npc.m_flDoingAnimation = 1.0;
 		b_thisNpcIsAMiniboss[npc.index] = true;
 		b_thisNpcIsABoss[npc.index] = true;
-		fl_TotalArmor[npc.index] = 0.1;
+		fl_TotalArmor[npc.index] = 0.2;
 	//	b_thisNpcIsARaid[npc.index] = true;
 		npc.m_flSpawnRabitProtocol = GetGameTime() + GetRandomFloat( 10.0 , 15.0);
 		if(!IsValidEntity(RaidBossActive))
