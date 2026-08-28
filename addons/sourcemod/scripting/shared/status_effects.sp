@@ -12176,6 +12176,9 @@ void ApplyNothingThereBuff(int victim)
 		return;
 	if(CurrentRound[Rounds_Default] <= 20)
 		return;
+	int AverageLevel = Waves_AverageLevelGet(120);
+	if(AverageLevel <= 75) //dontn spawn if too many noobs
+		return;
 	if(GurannteedForce || GetRandomFloat(0.0,1.0) < (0.01))
 	{
 		GurannteedForce = false;
