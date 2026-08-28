@@ -6121,4 +6121,16 @@
 		"en"		"Ammo box here!"
 		"ko"		"탄약 상자는 여기 있습니다!"
 	}
+	"Rabbit Protocol"
+	{
+		"en" 		"⚠ RABBIT PROTOCOL ⚠\n⚠ RABBIT PROTOCOL ⚠\n⚠ RABBIT PROTOCOL ⚠"
+	}
+	"NT Retry Day"
+	{
+		"en" 		"{cyan}[Day ??? rewind to the memory repository, {crimson}all agents dead.{cyan}]"
+	}
+	"NT Death Msg"
+	{
+		"en" 		"And the many shells cried out one word, ''Manager''"
+	}
 }

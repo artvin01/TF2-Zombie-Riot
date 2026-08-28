@@ -8180,4 +8180,8 @@
 		"en"	"SIGMALLER"
 		"ko"	"시그마 전령병"
 	}
+	"Nothing There"
+	{
+		"en"	"Nothing There"
+	}
 }

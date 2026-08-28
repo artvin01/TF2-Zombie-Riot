@@ -2736,11 +2736,11 @@ public void Citizen_ClotThink(int iNPC)
 	// This heal happens every second on players, for npcs this think happens way more often, subtract.
 	HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) * 0.04 * 0.01, (npc.m_iClassRole == Cit_Medic ? 1.0 : 0.5), 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);
 
-	bool noSafety = (npc.m_bCamo || VIPBuilding_Active());
+	bool noSafety = (b_Anger[npc.index] || npc.m_bCamo || VIPBuilding_Active());
 	bool autoSeek = (noSafety || npc.m_bRebelAgressive || RaidbossIgnoreBuildingsLogic(1) || GetTeam(npc.index) != TFTeam_Red);
 	bool helpAlly;
 
-	if(Construction_Mode() && Construction_InSetup())
+	if(Construction_Mode() && Construction_InSetup() || b_Anger[npc.index])
 		autoSeek = true;
 
 	// See if our target is still valid
@@ -2760,6 +2760,11 @@ public void Citizen_ClotThink(int iNPC)
 	else if((ally <= MaxClients && dieingstate[ally] > 0) || Citizen_ThatIsDowned(ally))
 	{
 		helpAlly = true;
+	}
+	if(b_Anger[npc.index])
+	{
+		helpAlly = false;
+		i_TargetAlly[npc.index] = -1;
 	}
 	
 	// Cancel any seeking
@@ -2872,7 +2877,11 @@ public void Citizen_ClotThink(int iNPC)
 	int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 	int maxhealth = ReturnEntityMaxHealth(npc.index);
 	bool injured = (health < 60) || (health < (maxhealth / 5));
+	if(b_Anger[npc.index])
+		injured = false;
 	bool seakAlly = npc.m_bGetClosestTargetTimeAlly;
+	if(b_Anger[npc.index])
+		seakAlly = false;
 	
 
 	float vecTarget[3];
@@ -4515,11 +4524,11 @@ public void Citizen_ClotThink(int iNPC)
 			}
 		}
 
-		if(!walkStatus && ally > 0)
+		if(!b_Anger[npc.index] && !walkStatus && ally > 0)
 		{
 			WorldSpaceCenter(ally, vecTarget);
 			float distance = GetVectorDistance(vecTarget, vecMe, true);
-			if((ally <= MaxClients && dieingstate[ally] > 0) || Citizen_ThatIsDowned(ally))
+			if(((ally <= MaxClients && dieingstate[ally] > 0) || Citizen_ThatIsDowned(ally)))
 			{
 				if(distance > 10000.0)
 					walkStatus = 5;	// Run to ally (activity handled)
@@ -4714,7 +4723,7 @@ public void Citizen_ClotThink(int iNPC)
 	bool isReviving;
 
 	// Revive check
-	if(walkStatus < 1 && ally > 0 && team == TFTeam_Red)
+	if(walkStatus < 1 && ally > 0 && team == TFTeam_Red && !b_Anger[npc.index])
 	{
 		bool medic = npc.m_iClassRole == Cit_Medic && npc.m_iHasPerk == npc.m_iGunType;
 		
@@ -5179,7 +5188,7 @@ stock void Citizen_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 			int health = GetEntProp(victim, Prop_Data, "m_iHealth") - RoundToCeil(damage);
 			if(health < 1)
 			{
-				if(GetTeam(victim) == TFTeam_Red)
+				if(GetTeam(victim) == TFTeam_Red && !b_Anger[victim])
 				{
 					KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype);
 					npc.SetDowned(1);
@@ -5213,6 +5222,12 @@ public void Citizen_NPCDeath(int entity)
 	
 	if(npc.m_iWearable4 > 0 && IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
+		
+	if(npc.m_iWearable7 > 0 && IsValidEntity(npc.m_iWearable7))
+		RemoveEntity(npc.m_iWearable7);
+		
+	if(npc.m_iWearable8 > 0 && IsValidEntity(npc.m_iWearable8))
+		RemoveEntity(npc.m_iWearable8);
 }
 
 // 1 is sentry

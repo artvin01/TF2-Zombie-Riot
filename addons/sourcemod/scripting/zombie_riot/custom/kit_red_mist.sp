@@ -35,6 +35,7 @@ static int swing_type[MAXPLAYERS];
 static float GradeWeaponAm[MAXPLAYERS];
 static int RandomSeedDo[MAXPLAYERS];
 static bool ValueGoUpOrDown[MAXPLAYERS];
+static bool HasSaidSpecialLine;
 static float Special_Cooldowns[MAXPLAYERS][4]; //IT WORKS :D, who needs premade cooldowns when you can make your own
 // Note from artvin: this will not work with any cooldown reductions or any "on hit" cooldown reductions unless its specifically coded in.
 
@@ -147,6 +148,24 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 			Disable_Everything_Red_Mist(client);
 		}
 		return Plugin_Stop;
+	}
+	if(GetNTBuff(client) && !HasSaidSpecialLine)
+	{
+		HasSaidSpecialLine = true;
+		
+		char TextChar[255];
+		switch(GetRandomInt(1,2))
+		{
+			case 1:
+				TextChar = "Hearing it mimic the voice of my coworker almost made me barf.";
+			case 2:
+				TextChar = "That's just the shape i remember... A creature trying to mimic humans...";
+			case 3:
+				TextChar = "Ugh... The nightmares are coming back...";
+		}
+		NpcSpeechBubble(client, TextChar, 7, {255, 65, 65, 255}, {0.0,0.0,120.0}, "");
+		CPrintToChatAll("{crimson}%N : %s",client, TextChar);
+		CPrintToChat(client, "{crimson}%t", "Explain NT Buff");
 	}
 	if(dieingstate[client] || TeutonType[client] != TEUTON_NONE)
 	{
@@ -313,10 +332,17 @@ static Action Timer_Red_Mist_Ego(Handle timer, int client)
 		//PrintToChatAll("ego energy [%d]", Ego_Energy[client]);
 		if(!LastMann)
 		{
+			//double ego duration
+			int EgoDrain = 0;
 			if(HasSpecificBuff(client, "Ego Grace"))
-				Ego_Energy[client] -= 25;
+				EgoDrain = 25;
 			else
-				Ego_Energy[client] -= 35;
+				EgoDrain = 35;
+			
+			if(GetNTBuff(client))
+				EgoDrain /= 2;
+
+			Ego_Energy[client] -= EgoDrain;
 
 			if(Ego_Energy[client] <= 0)
 				Ego_Energy[client] = 0;
@@ -369,6 +395,7 @@ public void RedMist_ResetAbnorms()
 }
 public void Red_Mist_OnMapStart()
 {
+	HasSaidSpecialLine = false;
 	PrecacheSound(ABNORM_ENTER_SOUND);
 	PrecacheSound(ABNORM_EXIT_SOUND);
 	PrecacheSound(PAGE_SELECT_SOUND);
@@ -515,6 +542,11 @@ public void Red_Mist_OnTakeDamage_Take(int victim, int &attacker, int &inflictor
 {
 	if(CheckInHud())
 		return;
+	if(GetNTBuff(victim))
+	{
+		//reduce flat dmg
+		damage -= 12.0;
+	}
 	if(zr_custom_damage & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
 		return;
 	
@@ -893,6 +925,7 @@ void AddEgoEnergy(int client, int dividing = 1)
 {
 	if(Ego_Active[client])
 	{
+
 		Ego_Energy[client] += (75 / dividing);
 		if(Ego_Energy[client] > 1000)
 		{

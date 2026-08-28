@@ -283,6 +283,7 @@ void InitStatusEffects()
 	StatusEffects_IndexNurseFather();
 	StatusEffects_Gunsaw();
 	StatusEffects_ManaRecharge();
+	StatusEffects_NothingThere();
 }
 
 static int CategoryPage[MAXPLAYERS];
@@ -12125,4 +12126,89 @@ static void BlackFlames_Timer(int entity, StatusEffect Apply_MasterStatusEffect,
 	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
 
 	//spray particles
+}
+
+
+
+void StatusEffects_NothingThere()
+{
+	StatusEffect data;
+	//No translations
+	strcopy(data.BuffName, sizeof(data.BuffName), "Nothing There Internal");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//-1.0 means unused
+	data.DamageTakenMulti 			= -1.0;
+	data.DamageDealMulti			= -1.0;
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ElementalLogic 			= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	data.OnBuffEndOrDeleted			= NothingThereSpawn;
+	data.TimerRepeatCall_Func 		= NTTimerSpawnWarn;
+	StatusEffect_AddGlobal(data);
+}
+static void NTTimerSpawnWarn(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(Apply_StatusEffect.DataForUse > GetGameTime())
+	{
+		return;
+	}
+	if(!NTCheckValidNpc(entity))
+		return;
+	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	if(Apply_StatusEffect.TimeUntillOver - 5.0 > GetGameTime())
+		return;
+
+	
+	FreezeNpcInTime(entity, 5.0);
+	Apply_StatusEffect.DataForUse = GetGameTime() + 999999.0;
+	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
+
+	//spray particles
+}
+bool GurannteedForce;
+void ApplyNothingThereBuff(int victim)
+{
+	if(!HasNTOnServer())
+		return;
+	if(CurrentRound[Rounds_Default] <= 20)
+		return;
+	if(GurannteedForce || GetRandomFloat(0.0,1.0) < (0.01))
+	{
+		GurannteedForce = false;
+		ApplyStatusEffect(victim, victim, "Nothing There Internal", GetRandomFloat(30.0,60.0));
+	}
+}
+bool NTCheckValidNpc(int victim)
+{
+	//Prevent specific things from getting it
+	char npc_classname[60];
+	NPC_GetPluginById(i_NpcInternalId[victim], npc_classname, sizeof(npc_classname));
+	if(StrEqual(npc_classname, "npc_john_the_allmighty") || 
+	StrEqual(npc_classname, "npc_medival_villager") || 
+	StrEqual(npc_classname, "npc_stalker_goggles") || 
+	StrEqual(npc_classname, "npc_drdam_special_delivery") || 
+	StrEqual(npc_classname, "npc_beheaded_kami"))
+	{
+		GurannteedForce = true;
+		return false;
+	}
+	return true;
+}
+static void NothingThereSpawn(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(!NTCheckValidNpc(victim))
+		return;
+	
+	RequestFrame(KillNpc, EntIndexToEntRef(victim));
+	for(int i; i < 20; i++)
+		Npc_DoGibLogic(victim, 1.0, true);
+	float pos[3], ang[3];
+	GetEntPropVector(victim, Prop_Data, "m_vecOrigin", pos);
+	GetEntPropVector(victim, Prop_Data, "m_angRotation", ang);
+	
+	NPC_CreateByName("npc_nothing_there", -1, pos, ang, TFTeam_Red);
 }
