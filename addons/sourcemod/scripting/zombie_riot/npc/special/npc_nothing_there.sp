@@ -411,7 +411,7 @@ void Nothing_ThereSelfDefense(Nothing_There npc, float gameTime, float distance)
 				}
 				else
 				{
-					npc.m_flRangeSpikeAttack -= 1.0;
+					npc.m_flRangeSpikeAttack -= 2.0;
 				}
 				delete swingTrace;
 			}
@@ -534,7 +534,7 @@ void Nothing_ThereSelfDefense(Nothing_There npc, float gameTime, float distance)
 				}
 				else
 				{
-					npc.m_flRangeSpikeAttack -= 1.0;
+					npc.m_flRangeSpikeAttack -= 2.0;
 				}
 				delete swingTrace;
 			}
