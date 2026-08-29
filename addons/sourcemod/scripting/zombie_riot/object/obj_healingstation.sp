@@ -45,7 +45,7 @@ methodmap ObjectHealingStation < ObjectGeneric
 
 		for (int i = 1; i <= MaxClients; i++)
 		{
-			ApplyBuildingCollectCooldown(npc.index, i, 90.0);
+			ApplyBuildingCollectCooldown(npc.index, i, 45.0);
 		}
 		return npc;
 	}
