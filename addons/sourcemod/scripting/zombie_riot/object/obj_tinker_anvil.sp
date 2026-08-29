@@ -46,9 +46,9 @@ methodmap ObjectTinkerAnvil < ObjectGeneric
 		SetRotateByDefaultReturn(npc.index, 90.0);
 		i_PlayerToCustomBuilding[client] = EntIndexToEntRef(npc.index);
 
-		for(int i = 1; i <= MaxClients; i++)
+		for (int i = 1; i <= MaxClients; i++)
 		{
-			ApplyBuildingCollectCooldown(npc.index, i, 0.0);
+			ApplyBuildingCollectCooldown(npc.index, i, 45.0);
 		}
 
 		return npc;
