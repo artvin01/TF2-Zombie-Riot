@@ -418,7 +418,7 @@ static void VestanAssaultVehicle_Work(VestanAssaultVehicle npc, float gameTime, 
 				Handle swingTrace;
 				float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
 				npc.FaceTowards(vecTarget, 20000.0);
-				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget))
+				if(npc.DoSwingTrace(swingTrace, npc.m_iTarget,_,_,_,1))
 				{
 					int target = TR_GetEntityIndex(swingTrace);	
 					
