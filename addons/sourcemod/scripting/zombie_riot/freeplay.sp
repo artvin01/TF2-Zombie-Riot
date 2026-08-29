@@ -1207,11 +1207,15 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 7:	
 		{
-			switch(GetRandomInt(1, 2))
+			switch(GetRandomInt(1, 3))
 			{
 				case 1:
 				{
-						CPrintToChatAll("{crimson}THE PURGE! {gold}- {lightcyan}The only Ziberian that stood up to Kahml, Ivan Petrova. Now he's this cyborg after Kahml killed him with 1 punch.");
+					CPrintToChatAll("{crimson}THE PURGE! {gold}- {lightcyan}The only Ziberian that stood up to Kahml, Ivan Petrova. Now he's this cyborg after Kahml killed him with 1 punch.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{crimson}THE PURGE! {gold}- {red}I wish i got to know Ivan before Kahml made him into Purge.");
 				}
 				default:
 				{
@@ -1305,7 +1309,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 12:	
 		{
-			switch(GetRandomInt(1, 3))
+			switch(GetRandomInt(1, 4))
 			{
 				case 1:
 				{
@@ -1314,6 +1318,10 @@ static Action Freeplay_RouletteMessage(Handle timer)
 				case 2:
 				{
 					CPrintToChatAll("{green}VIROTHORN! {gold}- {red}Oops, misspelled Vivithorn. :P");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{green}VIVITHORN! {gold}- {red}Wait at the abandoned lab did Vivithorn escape?");
 				}
 				/*case 3:
 				{
@@ -1521,7 +1529,11 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{blue}ATOMIZER! {gold}- {red}The captain of Vesta's Leatherboots Scoutsquad!");
+					CPrintToChatAll("{blue}ATOMIZER! {gold}- {lightcyan}The captain of Vesta's Leatherboots Scoutsquad!");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{blue}ATOMIZER! {gold}- {paleturquoise}Don't get too cocky or else you won't beable to get away from him.");
 				}
 				default:
 				{
@@ -1531,11 +1543,15 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 24:
 		{
-			switch(GetRandomInt(1, 2))
+			switch(GetRandomInt(1, 3))
 			{
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}HUSCARLS! {gold}- {red}The lieutenant of Vesta's Irongate defence unit!");
+					CPrintToChatAll("{lightblue}HUSCARLS! {gold}- {lightcyan}The lieutenant of Vesta's Irongate Defence Unit!");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{lightblue}HUSCARLS! {gold}- {paleturquoise}Hey remember to not hit him when he dares you to. You guys loved to do that when we fought him.");
 				}
 				default:
 				{
@@ -1545,11 +1561,15 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 25:
 		{
-			switch(GetRandomInt(1, 2))
+			switch(GetRandomInt(1, 3))
 			{
 				case 1:
 				{
-					CPrintToChatAll("{skyblue}HARRISON! {gold}- {red}The lieutenant colonel of Vesta's Stormtrooper team!");
+					CPrintToChatAll("{skyblue}HARRISON! {gold}- {lightcyan}The lieutenant colonel of Vesta's Trooper Team!");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{skyblue}HARRISON! {gold}- {paleturquoise}Watch out for the constant artillery he uses.");
 				}
 				default:
 				{
@@ -1559,11 +1579,15 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 26:	
 		{
-			switch(GetRandomInt(1, 2))
+			switch(GetRandomInt(1, 3))
 			{
 				case 1:
 				{
-					CPrintToChatAll("{steelblue}CASTELLAN! {gold}- {red}The colonel of Vesta's army!");
+					CPrintToChatAll("{steelblue}CASTELLAN! {gold}- {lightcyan}The colonel of Vesta's army!");
+				}
+				case 1:
+				{
+					CPrintToChatAll("{steelblue}CASTELLAN! {gold}- {paleturquoise}He uses calls in the other 3 for backup. Make sure you're ready for them.");
 				}
 				default:
 				{
@@ -2348,7 +2372,7 @@ void Freeplay_SetupStart(bool extra = false)
 		CPrintToChatAll("{green}-=({lime}Winning this wave will reward you with 5000 extra credits.{green})=-");
 		CreateTimer(5.0, Freeplay_RouletteMessage, _, TIMER_FLAG_NO_MAPCHANGE);
 
-		switch(GetRandomInt(1, 4))
+		switch(GetRandomInt(1, 12))
 		{
 			case 1:
 			{
