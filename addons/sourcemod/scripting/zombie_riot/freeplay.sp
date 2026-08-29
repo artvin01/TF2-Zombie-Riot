@@ -2376,13 +2376,21 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 			case 7:
 			{
-				CPrintToChatAll("{blue}Sensal{white}: The next enemy you will face is...");
+				CPrintToChatAll("{lightcyan}Zeina{white}: Your next fight will be against...");
 			}
 			case 8:
 			{
-				CPrintToChatAll("{yellow}Silvester{white}: Hmm.. The simulation will send...");
+				CPrintToChatAll("{lightcyan}Zeina{white}: This next wave you will fight...");
 			}
 			case 9:
+			{
+				CPrintToChatAll("{blue}Sensal{white}: The next enemy you will face is...");
+			}
+			case 10:
+			{
+				CPrintToChatAll("{yellow}Silvester{white}: Hmm.. The simulation will send...");
+			}
+			case 11:
 			{
 				CPrintToChatAll("{lightblue}Nemal{white}: Oooooo. Oh! Oh! Ummm the simulation is about to send...");
 			}
