@@ -161,7 +161,7 @@ methodmap Nothing_There < CClotBody
 	public Nothing_There(float vecPos[3], float vecAng[3], int ally)
 	{
 		ally = TFTeam_Stalkers;
-		Nothing_There npc = view_as<Nothing_There>(CClotBody(vecPos, vecAng, "models/slender/stone_m/nothing/nt_normal_v3.mdl", "1.5", MinibossHealthScaling(300.0), ally, false, true, true));
+		Nothing_There npc = view_as<Nothing_There>(CClotBody(vecPos, vecAng, "models/slender/stone_m/nothing/nt_normal_v3.mdl", "1.5", MinibossHealthScaling(250.0), ally, false, true, true));
 		
 		i_NpcWeight[npc.index] = 4;
 		

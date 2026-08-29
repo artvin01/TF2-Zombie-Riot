@@ -284,16 +284,8 @@ void StartZombieRiotFrame(bool NothingThere = false)
 			case 0:
 			{
 				// 1 in 5 rebels will be medics
-				if(!NothingThere)
-				{
-					role = Cit_Medic;
-					type = MedicRangedWeapons[GetURandomInt() % sizeof(MedicRangedWeapons)];
-				}
-				else
-				{
-					role = Cit_Fighter;
-					type = Cit_Melee;
-				}
+				role = Cit_Medic;
+				type = MedicRangedWeapons[GetURandomInt() % sizeof(MedicRangedWeapons)];
 			}
 			
 			case 1:
@@ -309,6 +301,11 @@ void StartZombieRiotFrame(bool NothingThere = false)
 				role = Cit_Fighter;
 				type = DPSRangedWeapons[GetURandomInt() % sizeof(DPSRangedWeapons)];
 			}
+		}
+		if(NothingThere)
+		{
+			role = Cit_Fighter;
+			type = DPSRangedWeapons[GetURandomInt() % sizeof(DPSRangedWeapons)];
 		}
 		
 		Citizen_UpdateStats(spawnNpc, type, role);
