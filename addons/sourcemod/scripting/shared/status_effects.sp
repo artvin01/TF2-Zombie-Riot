@@ -12152,7 +12152,7 @@ void StatusEffects_NothingThere()
 }
 static void NTTimerSpawnWarn(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
-	if(Apply_StatusEffect.DataForUse > GetGameTime())
+	if(Apply_StatusEffect.DataForUse != 0.0)
 	{
 		return;
 	}
@@ -12164,7 +12164,7 @@ static void NTTimerSpawnWarn(int entity, StatusEffect Apply_MasterStatusEffect, 
 
 	
 	FreezeNpcInTime(entity, 5.0);
-	Apply_StatusEffect.DataForUse = GetGameTime() + 999999.0;
+	Apply_StatusEffect.DataForUse = 1.0;
 	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
 
 	//spray particles
@@ -12205,7 +12205,13 @@ static void NothingThereSpawn(int victim, StatusEffect Apply_MasterStatusEffect,
 {
 	if(!NTCheckValidNpc(victim))
 		return;
+	if(Apply_StatusEffect.DataForUse == 2.0)
+		return;
 	
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	Apply_StatusEffect.DataForUse = 2.0;
+	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+
 	RequestFrame(KillNpc, EntIndexToEntRef(victim));
 	for(int i; i < 20; i++)
 		Npc_DoGibLogic(victim, 1.0, true);

@@ -587,6 +587,7 @@ enum struct Item
 	float Cooldown2[MAXPLAYERS];
 	float Cooldown3[MAXPLAYERS];
 	int CurrentClipSaved[MAXPLAYERS];
+	float m_flNextPrimaryAttack[MAXPLAYERS];
 	bool BoughtBefore[MAXPLAYERS];
 	int RogueBoughtRecently[MAXPLAYERS];
 	bool AutoBought[MAXPLAYERS];
@@ -1794,6 +1795,7 @@ void Store_Reset()
 			item.BoughtBefore[c] = false;
 			item.RogueBoughtRecently[c] = 0;
 			item.CurrentClipSaved[c] = 0;
+			item.m_flNextPrimaryAttack[c] = 0.0;
 		}
 		StoreItems.SetArray(i, item);
 	}
@@ -7449,6 +7451,7 @@ void ClipSaveSingle(int client, int weapon)
 	}
 
 	StoreItems.GetArray(StoreWeapon[weapon], item);
+	item.m_flNextPrimaryAttack[client] = GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack");
 	if(item.CurrentClipSaved[client] == -5)
 	{
 		item.CurrentClipSaved[client] = 0;
@@ -7486,9 +7489,15 @@ void Clip_GiveWeaponClipBack(int client, int weapon)
 	if(!item.Owned[client])
 		return;
 
+
 	ItemInfo info;
 	if(item.GetItemInfo(item.Owned[client]-1, info))
 	{
+		float PrimaryAttack = GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack");
+		if(PrimaryAttack < item.m_flNextPrimaryAttack[client])
+		{
+			SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", item.m_flNextPrimaryAttack[client]);
+		}
 		if(info.HasNoClip)
 		{
 			return;
