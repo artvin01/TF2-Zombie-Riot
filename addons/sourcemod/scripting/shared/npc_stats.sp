@@ -10547,7 +10547,7 @@ void NpcStartTouch(int TouchedTarget, int target, bool DoNotLoop = false)
 #if defined ZR
 	if(target > 0 && entity > MaxClients && i_npcspawnprotection[entity] > NPC_SPAWNPROT_INIT && i_npcspawnprotection[entity] != NPC_SPAWNPROT_UNSTUCK)
 	{
-		if(IsValidEnemy(entity, target, true, true)) //Must detect camo.
+		if(IsValidEnemy(entity, target, true, true) && GetTeam(target) != TFTeam_Stalkers) //Must detect camo.
 		{
 			int DamageFlags = DMG_CRUSH|DMG_TRUEDAMAGE;
 			float DamageDeal = float(ReturnEntityMaxHealth(target));

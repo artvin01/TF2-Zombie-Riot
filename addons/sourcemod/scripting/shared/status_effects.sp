@@ -9818,6 +9818,7 @@ static const char ScrambledBlacklist[][] =
 	"Decapitate",
 	"Red Mist",
 	"Call of the Heartbroken",
+	"Nothing There Internal",
 };
 
 ArrayList ScrambledBuffList;
