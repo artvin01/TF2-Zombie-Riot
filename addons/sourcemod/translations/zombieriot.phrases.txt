@@ -4990,9 +4990,9 @@
 	}
 	"Laboratories Raid Desc"
 	{
-		"en"	"Lore order: (11) After construction and zilius's attack, Izan sends you to an old facility, it seems to have an exact replica of some places..."
-		"it"	"Ordine Lore: (11) Dopo la struttura e l'attacco di Zilius, Izan ti manda in una vecchia struttura, che sembra avere una replica esatta di alcuni luoghi..."
-		"ko"	"설정 순서: (11) 생존연산에서 질리우스의 습격을 버텨낸 후, 이잔은 당신을 오래된 시설로 보냈습니다. 그곳에는 몇몇 장소와 완전히 동일한 복제물이 존재하는 것처럼 보입니다…"
+		"en"	"Lore order: (12) After construction and zilius's attack, Izan sends you to an old facility, it seems to have an exact replica of some places..."
+		"it"	"Ordine Lore: (12) Dopo la struttura e l'attacco di Zilius, Izan ti manda in una vecchia struttura, che sembra avere una replica esatta di alcuni luoghi..."
+		"ko"	"설정 순서: (12) 생존연산에서 질리우스의 습격을 버텨낸 후, 이잔은 당신을 오래된 시설로 보냈습니다. 그곳에는 몇몇 장소와 완전히 동일한 복제물이 존재하는 것처럼 보입니다…"
 	}
 	"Twirl Raid Desc"
 	{
