@@ -1531,7 +1531,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 				{
 					CPrintToChatAll("{blue}ATOMIZER! {gold}- {lightcyan}The captain of Vesta's Leatherboots Scoutsquad!");
 				}
-				case 1:
+				case 2:
 				{
 					CPrintToChatAll("{blue}ATOMIZER! {gold}- {paleturquoise}Don't get too cocky or else you won't beable to get away from him.");
 				}
@@ -1585,7 +1585,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 				{
 					CPrintToChatAll("{steelblue}CASTELLAN! {gold}- {lightcyan}The colonel of Vesta's army!");
 				}
-				case 1:
+				case 2:
 				{
 					CPrintToChatAll("{steelblue}CASTELLAN! {gold}- {paleturquoise}He uses calls in the other 3 for backup. Make sure you're ready for them.");
 				}
