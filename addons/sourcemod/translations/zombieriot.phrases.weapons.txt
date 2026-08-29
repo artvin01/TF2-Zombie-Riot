@@ -3880,15 +3880,17 @@
 	"Supply Drop"
 	{
 		"en"		"Supply Drop"
-		"ko"		"물품 드롭"
+		"ko"		"보급품 투하"
 	}
 	"Supply Drop Wave Hasn't Started"
 	{
 		"en"		"This ability can only be used during active waves."
+		"ko"		"이 능력은 웨이브가 시작된 동안에만 사용할 수 있습니다."
 	}
 	"Supply Drop Wave Limit Reached"
 	{
 		"en"		"Supply Drop limit for this wave has been reached."
+		"ko"		"현재 웨이브의 보급품 투하 상한에 도달했습니다."
 	}
 	"Cripple MOAB"
 	{

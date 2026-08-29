@@ -599,10 +599,12 @@
 	"Elite Sniper Pap 1"
 	{
 		"en"		"-Increased damage\n-Consumes less ammo\n-Applies the Maimed debuff on hits with at least 70％ charge\n-Maimed enemies move slower"
+		"ko"		"-피해량 증가\n-탄약 소모량 감소\n-조준 상태에서 70％ 이상 충전하여 적중시 '신체 장애' 디버프 부여\n-신체 장애는 대상의 이동 속도를 둔화시킴"
 	}
 	"Elite Sniper Pap 2"
 	{
 		"en"		"-Increased damage\n-Consumes less ammo\n-Calls in supply drops that deploy ammo pickups over teammates."
+		"ko"		"-피해량 증가\n-탄약 소모량 감소\n-아군의 위로 탄약 상자를 전달하는 보급품 투하를 호출할 수 있습니다."
 	}
 	"Elite Sniper Pap 3"
 	{
@@ -616,10 +618,12 @@
 	"Elite Sniper Pap 4"
 	{
 		"en"		"-Increased damage\n-Consumes less ammo\n-Also applies the Crippled debuff on hits with at least 70％ charge\n-Crippled enemies take more damage"
+		"ko"		"-피해량 증가\n-탄약 소모량 감소\n-조준 상태에서 70％ 이상 충전하여 적중시 '신경 쇠약' 디버프 부여\n-신체 장애는 대상이 받는 피해량을 증가시킴"
 	}
 	"Elite Sniper Pap 5"
 	{
 		"en"		"-Increased damage and attack speed\n-Consumes less ammo\n-Adds one extra supply drop that gives a global powerup\n-All Elite Snipers' bouncing bullets now prioritize high health targets"
+		"ko"		"-피해량, 공격 속도 증가\n-탄약 소모량 감소\n-글로벌 파워업을 제공하는 보급품 추가\n-모든 튕겨진 탄환이 현재 체력이 많은 적을 최우선으로 추적"
 	}
 	"Elite Sniper Pap 6"
 	{
@@ -1771,6 +1775,7 @@
 	"Accurate Marksman Desc"
 	{
 		"en"	"-Gain 10％ more accuracy\n-Gain 20％ faster projectile speed\n-Gain 25％ faster Sniper Rifle charge rate"
+		"ko"	"-집탄율 +10％\n-투사체 비행 속도 +20％\n-저격소총 충전 속도 +25%"
 	}
 	
 	"Ammo Coat Desc"
