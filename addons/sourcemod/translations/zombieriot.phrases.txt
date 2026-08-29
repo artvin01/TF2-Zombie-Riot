@@ -4990,9 +4990,9 @@
 	}
 	"Laboratories Raid Desc"
 	{
-		"en"	"Lore order: (10) After construction and zilius's attack, Izan sends you to an old facility, it seems to have an exact replica of some places..."
-		"it"	"Ordine Lore: (10) Dopo la struttura e l'attacco di Zilius, Izan ti manda in una vecchia struttura, che sembra avere una replica esatta di alcuni luoghi..."
-		"ko"	"설정 순서: (10) 생존연산에서 질리우스의 습격을 버텨낸 후, 이잔은 당신을 오래된 시설로 보냈습니다. 그곳에는 몇몇 장소와 완전히 동일한 복제물이 존재하는 것처럼 보입니다…"
+		"en"	"Lore order: (11) After construction and zilius's attack, Izan sends you to an old facility, it seems to have an exact replica of some places..."
+		"it"	"Ordine Lore: (11) Dopo la struttura e l'attacco di Zilius, Izan ti manda in una vecchia struttura, che sembra avere una replica esatta di alcuni luoghi..."
+		"ko"	"설정 순서: (11) 생존연산에서 질리우스의 습격을 버텨낸 후, 이잔은 당신을 오래된 시설로 보냈습니다. 그곳에는 몇몇 장소와 완전히 동일한 복제물이 존재하는 것처럼 보입니다…"
 	}
 	"Twirl Raid Desc"
 	{
@@ -5454,9 +5454,9 @@
 	}
 	"Almina Nemal Desc"
 	{
-		"en" "(10) Almina and Expidonsa offer training to help against the true final battle against the void... Although alminans seem to take it extremly seriously."
+		"en" "Lore order: (10) Almina and Expidonsa offer training to help against the true final battle against the void... Although alminans seem to take it extremly seriously."
 		"fr" "Almina et Expidonsa vous offrent un entraînement qui vous aiderait pour le combat final contre le Void... Il semblerait que les Alminans prennent ceci extrêmement sérieusement, pourtant."
-		"it"	"(10) Almina e expidonsa offrono addestramento per aiutare contro la vera battaglia finale contro il vuoto... Anche se gli iberici sembrano prenderla estremamente sul serio."
+		"it"	"Lore order: (10) Almina e expidonsa offrono addestramento per aiutare contro la vera battaglia finale contro il vuoto... Anche se gli iberici sembrano prenderla estremamente sul serio."
 		"ko" "설정 순서: (10) 알미나와 엑스피돈사가 공허와의 최후의 전투를 돕기 위한 대비 훈련을 제공하려고 합니다... 비록 알미나인들은 이를 매우 심각하게 받아들이는 것 같지만요."
 	}
 	"Revenant's Shadow"

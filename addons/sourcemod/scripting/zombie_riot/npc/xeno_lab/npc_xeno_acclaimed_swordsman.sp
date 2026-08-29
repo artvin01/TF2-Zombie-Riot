@@ -330,7 +330,7 @@ public void XenoAcclaimedSwordsman_ClotThink(int iNPC)
 				NormalizeVector(vecDir, vecDir);
 				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-				FireBullet(npc.index, npc.index, WorldSpaceVec, vecDir, 300.0, 400.0, DMG_BULLET, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
+				FireBullet(npc.index, npc.index, WorldSpaceVec, vecDir, 300.0, 400.0, DMG_CLUB, "bullet_tracer02_blue", _,_,"anim_attachment_LH");
 			}
 			npc.m_flDoingAnimation = 0.0;
 		}
