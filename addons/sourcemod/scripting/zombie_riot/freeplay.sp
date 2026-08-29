@@ -2337,7 +2337,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 72;
+		rand = GetURandomInt() % 71;
 	
 	if(guaranteedraid)
 	{
@@ -2361,6 +2361,30 @@ void Freeplay_SetupStart(bool extra = false)
 			case 3:
 			{
 				CPrintToChatAll("{gold}Koshi{white}: Todaaaay's punching bag will be.... {crimson}hehe...");
+			}
+			case 4:
+			{
+				CPrintToChatAll("{gold}Koshi{white}: The {orange}RAID ROULETTE {white}has chosen your fate, {crimson}and rolled...");
+			}
+			case 5:
+			{
+				CPrintToChatAll("{lightcyan}Zeina{white}: The enemy you'll be getting is...");
+			}
+			case 6:
+			{
+				CPrintToChatAll("{lightcyan}Zeina{white}: The ''raid roulette'' has rolled...");
+			}
+			case 7:
+			{
+				CPrintToChatAll("{blue}Sensal{white}: The next enemy you will face is...");
+			}
+			case 8:
+			{
+				CPrintToChatAll("{yellow}Silvester{white}: Hmm.. The simulation will send...");
+			}
+			case 9:
+			{
+				CPrintToChatAll("{lightblue}Nemal{white}: Oooooo. Oh! Oh! Ummm the simulation is about to send...");
 			}
 			default:
 			{
@@ -2506,14 +2530,27 @@ void Freeplay_SetupStart(bool extra = false)
 					SpecialistDebuff++;
 				}
 			}
+			case 15:
+			{
+				if(VoidAfflictedBuff)
+				{
+					strcopy(message, sizeof(message), "{green}All enemies are now not Void Afflicted, besides the already void afflicted enemies.");
+					VoidAfflictedBuff = false;
+				}
+				else
+				{
+					strcopy(message, sizeof(message), "{red}All enemies now are now Void Afflicted!");
+					VoidAfflictedBuff = true;
+				}
+			}
 	
 			/// CREDIT SKULLS //
-			case 15:
+			case 16:
 			{
 				strcopy(message, sizeof(message), "{green}All enemies now give out 5 extra credits on death.");
 				KillBonus += 5;
 			}
-			case 16:
+			case 17:
 			{
 				if(KillBonus < 1)
 				{
@@ -2524,7 +2561,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}Reduced the credit per enemy kill by 1!");
 				KillBonus--;
 			}
-			case 17:
+			case 18:
 			{
 				if(CashBonus < 50)
 				{
@@ -2535,14 +2572,14 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}Reduced extra credits gained per wave by 50!");
 				CashBonus -= 50;
 			}
-			case 18:
+			case 19:
 			{
 				strcopy(message, sizeof(message), "{green}You now gain 200 extra credits per wave.");
 				CashBonus += 200;
 			}
 	
 			/// PERK SKULLS ///
-			case 19:
+			case 20:
 			{
 				if(PerkMachine == 1)
 				{
@@ -2553,7 +2590,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}All enemies are now using the Obsidian Oaf perk, And thus gain +20% resist and +15% HP!");
 				PerkMachine = 1;
 			}
-			case 20:
+			case 21:
 			{
 				if(PerkMachine == 2)
 				{
@@ -2564,7 +2601,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}All enemies are now using the Morning Coffee perk, And thus gain 35% Extra Damage!");
 				PerkMachine = 2;
 			}
-			case 21: // YOUR ATTEMPTS AT DEATH ARE IN, VAIN
+			case 22: // YOUR ATTEMPTS AT DEATH ARE IN, VAIN
 			{
 				if(PerkMachine == 3)
 				{
@@ -2575,7 +2612,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}All enemies are now using the Marksman Beer perk, and thus gain 15% Extra Damage!");
 				PerkMachine = 3;
 			}
-			case 22:
+			case 23:
 			{
 				if(PerkMachine == 4)
 				{
@@ -2586,7 +2623,7 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{red}All enemies are now using the Hasty Hops perk, and thus cannot be slowed!");
 				PerkMachine = 4;
 			}
-			case 23:
+			case 24:
 			{
 				if(PerkMachine == 0)
 				{
@@ -2599,7 +2636,7 @@ void Freeplay_SetupStart(bool extra = false)
 			}
 	
 			/// MISCELANEOUS SKULLS ///
-			case 24:
+			case 25:
 			{
 				if(friendunit)
 				{
@@ -2609,15 +2646,10 @@ void Freeplay_SetupStart(bool extra = false)
 				strcopy(message, sizeof(message), "{green}You will gain a strong, friendly unit.");
 				friendunit = true;
 			}
-			case 25:
+			case 26:
 			{
 				strcopy(message, sizeof(message), "{red}Mini-boss spawn rate has been multiplied by 25%!");
 				MiniBossChance *= 1.25;
-			}
-			case 26:
-			{
-				strcopy(message, sizeof(message), "{green}Mini-boss spawn rate has been divided by 25%.");
-				MiniBossChance *= 0.75;
 			}
 			case 27:
 			{
@@ -3071,19 +3103,6 @@ void Freeplay_SetupStart(bool extra = false)
 				refragportal = true;
 			}
 			case 69:
-			{
-				if(VoidAfflictedBuff)
-				{
-					strcopy(message, sizeof(message), "{green}All enemies are now not Void Afflicted, besides the already void afflicted enemies.");
-					VoidAfflictedBuff = false;
-				}
-				else
-				{
-					strcopy(message, sizeof(message), "{red}All enemies now are now Void Afflicted!");
-					VoidAfflictedBuff = true;
-				}
-			}
-			case 70:
 			{
 				if(XenoLabBuff)
 				{
