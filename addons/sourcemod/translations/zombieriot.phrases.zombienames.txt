@@ -8184,4 +8184,8 @@
 	{
 		"en"	"Nothing There"
 	}
+	"Warm-up Vivithorn"
+	{
+		"en"	"Warm-up Vivithorn"
+	}
 }
