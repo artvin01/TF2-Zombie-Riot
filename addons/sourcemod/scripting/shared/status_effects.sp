@@ -11931,9 +11931,9 @@ stock void StatusEffects_PoiseAddStuff_Internal(int victim, int value, float tim
 				Apply_StatusEffect.DataForUse = float(MAXPOISE_COUNT);
 			}
 			Apply_StatusEffect.TimeUntillOver += time;
-			if(Apply_StatusEffect.TimeUntillOver - GetGameTime() >= 15.0)
+			if(Apply_StatusEffect.TimeUntillOver - GetGameTime() >= 25.0)
 			{
-				Apply_StatusEffect.TimeUntillOver = GetGameTime() + 15.0;
+				Apply_StatusEffect.TimeUntillOver = GetGameTime() + 25.0;
 			}
 			E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 		}
