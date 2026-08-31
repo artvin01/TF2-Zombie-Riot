@@ -2174,7 +2174,7 @@ int IndexFather_MaxStacksForFurioso(int client)
 
 	//each grace reduces by 10
 	ReduceBy *= 10;
-	return (100 - ReduceBy / 2);
+	return ((100 - ReduceBy) / 2);
 }
 
 void IndexFather_AllyDodgedAttack(int client)
