@@ -2360,7 +2360,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 71;
+		rand = GetURandomInt() % 72;
 	
 	if(guaranteedraid)
 	{
