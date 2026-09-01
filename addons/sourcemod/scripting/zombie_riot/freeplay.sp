@@ -586,7 +586,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 33:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_boss_reila");
-				enemy.Health = RoundToFloor((7000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((7500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "force_final_battle";
 				enemy.ExtraDamage = 0.40;
 				enemy.ExtraSpeed = 1.05;
@@ -594,7 +594,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 34:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_almagest_jkei");
-				enemy.Health = RoundToFloor((7000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((7500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "force_final_battle";
 				enemy.ExtraThinkSpeed = 0.75;
 				enemy.ExtraDamage = 1.15;
@@ -603,7 +603,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 35:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_shadowing_darkness_boss");
-				enemy.Health = RoundToFloor((9000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((10000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "sc20;force_final_battle";
 				enemy.ExtraThinkSpeed = 1.25;
 				enemy.ExtraSpeed = 0.90;
@@ -808,7 +808,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.ExtraDamage = 2.0;
 		enemy.Is_Boss = 0;
 
-		count = 7;
+		count = 5;
 		refragportal = false;
 	}
 	else
@@ -2360,7 +2360,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 72;
+		rand = GetURandomInt() % 73;
 	
 	if(guaranteedraid)
 	{
@@ -2860,11 +2860,13 @@ void Freeplay_SetupStart(bool extra = false)
 				{
 					strcopy(message, sizeof(message), "{green}All enemies have lost the Call to Vesta buff.");
 					VestaBuff = false;
+					SpeedMult += 0.15;
 				}
 				else
 				{
 					strcopy(message, sizeof(message), "{red}All enemies now gain the Call to Vesta buff!");
 					VestaBuff = true;
+					SpeedMult -= 0.15;
 				}
 			}
 			case 45:
@@ -3139,11 +3141,13 @@ void Freeplay_SetupStart(bool extra = false)
 				{
 					strcopy(message, sizeof(message), "{green}All enemies have lost the Xeno's Territory buff.");
 					XenoLabBuff = false;
+					SpeedMult += 0.15;
 				}
 				else
 				{
 					strcopy(message, sizeof(message), "{red}All enemies now gain the Xeno's Territory buff!");
 					XenoLabBuff = true;
+					SpeedMult -= 0.15;
 				}
 			}
 			case 71:
@@ -3157,6 +3161,19 @@ void Freeplay_SetupStart(bool extra = false)
 				{
 					strcopy(message, sizeof(message), "{red}All enemies now gain the Corrupted Godly Power buff!");
 					SeaLabBuff = true;
+				}
+			}
+			case 72:
+			{
+				if(VoidAfflictedBuff)
+				{
+					strcopy(message, sizeof(message), "{green}All enemies are now not Void Afflicted, besides the already void afflicted enemies.");
+					VoidAfflictedBuff = false;
+				}
+				else
+				{
+					Freeplay_SetupStart();
+					return;
 				}
 			}
 			//case 72:
