@@ -444,7 +444,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 					{
 						enemy.Index = NPC_GetByPlugin("npc_xeno_mrx");
 						enemy.Health = RoundToFloor((12500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-						enemy.ExtraDamage = (f_FreeplayDamageExtra * 0.5);
+						enemy.ExtraSpeed = 0.9;
 					}
 					default: 
 					{
@@ -586,7 +586,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 33:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_boss_reila");
-				enemy.Health = RoundToFloor((7000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((7500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "force_final_battle";
 				enemy.ExtraDamage = 0.40;
 				enemy.ExtraSpeed = 1.05;
@@ -594,7 +594,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 34:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_almagest_jkei");
-				enemy.Health = RoundToFloor((7000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((7500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "force_final_battle";
 				enemy.ExtraThinkSpeed = 0.75;
 				enemy.ExtraDamage = 1.15;
@@ -603,7 +603,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			case 35:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_shadowing_darkness_boss");
-				enemy.Health = RoundToFloor((9000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
+				enemy.Health = RoundToFloor((10000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "sc20;force_final_battle";
 				enemy.ExtraThinkSpeed = 1.25;
 				enemy.ExtraSpeed = 0.90;
@@ -641,7 +641,6 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Data = "sc40";
 				enemy.ExtraThinkSpeed = 1.15;
 				enemy.ExtraDamage = 0.7;
-				enemy.ExtraSpeed = 0.9;
 			}
 			case 40:
 			{
@@ -809,7 +808,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.ExtraDamage = 2.0;
 		enemy.Is_Boss = 0;
 
-		count = 7;
+		count = 5;
 		refragportal = false;
 	}
 	else
@@ -1207,11 +1206,15 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 7:	
 		{
-			switch(GetRandomInt(1, 2))
+			switch(GetRandomInt(1, 3))
 			{
 				case 1:
 				{
-						CPrintToChatAll("{crimson}THE PURGE! {gold}- {lightcyan}The only Ziberian that stood up to Kahml, Ivan Petrova. Now he's this cyborg after Kahml killed him with 1 punch.");
+					CPrintToChatAll("{crimson}THE PURGE! {gold}- {lightcyan}The only Ziberian that stood up to Kahml, Ivan Petrova. Now he's this cyborg after Kahml killed him with 1 punch.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{crimson}THE PURGE! {gold}- {red}I wish i got to know Ivan before Kahml made him into Purge.");
 				}
 				default:
 				{
@@ -1305,7 +1308,7 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 12:	
 		{
-			switch(GetRandomInt(1, 3))
+			switch(GetRandomInt(1, 4))
 			{
 				case 1:
 				{
@@ -1314,6 +1317,10 @@ static Action Freeplay_RouletteMessage(Handle timer)
 				case 2:
 				{
 					CPrintToChatAll("{green}VIROTHORN! {gold}- {red}Oops, misspelled Vivithorn. :P");
+				}
+				case 3:
+				{
+					CPrintToChatAll("{green}VIVITHORN! {gold}- {red}Wait at the abandoned lab did Vivithorn escape?");
 				}
 				/*case 3:
 				{
@@ -1521,7 +1528,11 @@ static Action Freeplay_RouletteMessage(Handle timer)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{blue}ATOMIZER! {gold}- {red}The captain of Vesta's Leatherboots Scoutsquad!");
+					CPrintToChatAll("{blue}ATOMIZER! {gold}- {lightcyan}The captain of Vesta's Leatherboots Scoutsquad!");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{blue}ATOMIZER! {gold}- {paleturquoise}Don't get too cocky or else you won't beable to get away from him.");
 				}
 				default:
 				{
@@ -1531,11 +1542,15 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 24:
 		{
-			switch(GetRandomInt(1, 2))
+			switch(GetRandomInt(1, 3))
 			{
 				case 1:
 				{
-					CPrintToChatAll("{lightblue}HUSCARLS! {gold}- {red}The lieutenant of Vesta's Irongate defence unit!");
+					CPrintToChatAll("{lightblue}HUSCARLS! {gold}- {lightcyan}The lieutenant of Vesta's Irongate Defence Unit!");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{lightblue}HUSCARLS! {gold}- {paleturquoise}Hey remember to not hit him when he dares you to. You guys loved to do that when we fought him.");
 				}
 				default:
 				{
@@ -1545,11 +1560,15 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 25:
 		{
-			switch(GetRandomInt(1, 2))
+			switch(GetRandomInt(1, 3))
 			{
 				case 1:
 				{
-					CPrintToChatAll("{skyblue}HARRISON! {gold}- {red}The lieutenant colonel of Vesta's Stormtrooper team!");
+					CPrintToChatAll("{skyblue}HARRISON! {gold}- {lightcyan}The lieutenant colonel of Vesta's Trooper Team!");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{skyblue}HARRISON! {gold}- {paleturquoise}Watch out for the constant artillery he uses.");
 				}
 				default:
 				{
@@ -1559,11 +1578,15 @@ static Action Freeplay_RouletteMessage(Handle timer)
 		}
 		case 26:	
 		{
-			switch(GetRandomInt(1, 2))
+			switch(GetRandomInt(1, 3))
 			{
 				case 1:
 				{
-					CPrintToChatAll("{steelblue}CASTELLAN! {gold}- {red}The colonel of Vesta's army!");
+					CPrintToChatAll("{steelblue}CASTELLAN! {gold}- {lightcyan}The colonel of Vesta's army!");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{steelblue}CASTELLAN! {gold}- {paleturquoise}He uses calls in the other 3 for backup. Make sure you're ready for them.");
 				}
 				default:
 				{
@@ -2337,7 +2360,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 71;
+		rand = GetURandomInt() % 73;
 	
 	if(guaranteedraid)
 	{
@@ -2348,7 +2371,7 @@ void Freeplay_SetupStart(bool extra = false)
 		CPrintToChatAll("{green}-=({lime}Winning this wave will reward you with 5000 extra credits.{green})=-");
 		CreateTimer(5.0, Freeplay_RouletteMessage, _, TIMER_FLAG_NO_MAPCHANGE);
 
-		switch(GetRandomInt(1, 4))
+		switch(GetRandomInt(1, 12))
 		{
 			case 1:
 			{
@@ -2837,11 +2860,13 @@ void Freeplay_SetupStart(bool extra = false)
 				{
 					strcopy(message, sizeof(message), "{green}All enemies have lost the Call to Vesta buff.");
 					VestaBuff = false;
+					SpeedMult += 0.15;
 				}
 				else
 				{
 					strcopy(message, sizeof(message), "{red}All enemies now gain the Call to Vesta buff!");
 					VestaBuff = true;
+					SpeedMult -= 0.15;
 				}
 			}
 			case 45:
@@ -3116,11 +3141,13 @@ void Freeplay_SetupStart(bool extra = false)
 				{
 					strcopy(message, sizeof(message), "{green}All enemies have lost the Xeno's Territory buff.");
 					XenoLabBuff = false;
+					SpeedMult += 0.15;
 				}
 				else
 				{
 					strcopy(message, sizeof(message), "{red}All enemies now gain the Xeno's Territory buff!");
 					XenoLabBuff = true;
+					SpeedMult -= 0.15;
 				}
 			}
 			case 71:
@@ -3134,6 +3161,19 @@ void Freeplay_SetupStart(bool extra = false)
 				{
 					strcopy(message, sizeof(message), "{red}All enemies now gain the Corrupted Godly Power buff!");
 					SeaLabBuff = true;
+				}
+			}
+			case 72:
+			{
+				if(VoidAfflictedBuff)
+				{
+					strcopy(message, sizeof(message), "{green}All enemies are now not Void Afflicted, besides the already void afflicted enemies.");
+					VoidAfflictedBuff = false;
+				}
+				else
+				{
+					Freeplay_SetupStart();
+					return;
 				}
 			}
 			//case 72:
