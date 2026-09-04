@@ -53,6 +53,10 @@ bool HasNTOnServer()
 {
 	return HasNT;
 }
+bool IsNTEntity(int entity)
+{
+	return (i_NpcInternalId[entity] == NPCID);
+}
 bool GetNTBuff(int client)
 {
 	if(IsValidEntity(RaidBossActive))

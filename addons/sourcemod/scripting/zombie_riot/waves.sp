@@ -4518,7 +4518,7 @@ void Waves_AllySpawned(int entity)
 
 void Waves_EnemySpawned(int entity)
 {
-	if(ModFuncEnemy != INVALID_FUNCTION)
+	if(ModFuncEnemy != INVALID_FUNCTION && !IsNTEntity(entity))
 	{
 		Call_StartFunction(null, ModFuncEnemy);
 		Call_PushCell(entity);
