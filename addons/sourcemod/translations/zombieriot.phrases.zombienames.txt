@@ -8188,6 +8188,6 @@
 	"Warm-up Vivithorn"
 	{
 		"en"	"Warm-up Vivithorn"
-		"ko"	"몸풀기 비비쏜"
+		"ko"	"몸풀기 중인 비비쏜"
 	}
 }
