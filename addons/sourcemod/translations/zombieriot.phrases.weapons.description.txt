@@ -618,7 +618,7 @@
 	"Elite Sniper Pap 4"
 	{
 		"en"		"-Increased damage\n-Consumes less ammo\n-Also applies the Crippled debuff on hits with at least 70％ charge\n-Crippled enemies take more damage"
-		"ko"		"-피해량 증가\n-탄약 소모량 감소\n-조준 상태에서 70％ 이상 충전하여 적중시 '신경 쇠약' 디버프 부여\n-신체 장애는 대상이 받는 피해량을 증가시킴"
+		"ko"		"-피해량 증가\n-탄약 소모량 감소\n-조준 상태에서 70％ 이상 충전하여 적중시 '신경 쇠약' 디버프 부여\n-신경 쇠약은 대상이 받는 피해량을 증가시킴"
 	}
 	"Elite Sniper Pap 5"
 	{
