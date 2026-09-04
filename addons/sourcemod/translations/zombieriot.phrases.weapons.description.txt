@@ -1930,19 +1930,22 @@
 		"en"	"-Increased Max Armor.\n-Gain +200HP\n-Extra Passive resistances if no armor is active."
 		"fr"	"Armure reçu et armure maximalle améliorées. +150 santé.\nDonne une résistance passive qui s'améliore avec vos améliorations pour armure, si votre armure est brisée."
 		"it"	"Aumento della quantità di armatura per uso e tetto massimo. +150 HP\nFornisce una resistenza passiva in caso di rottura dell'armatura e aumenta con i potenziamenti dell'armatura."
-		"ko"	"-최대 아머 증가\n-최대 체력 +150\n-아머가 없으면 추가 저항력 증가(생존 개선에 따라 증가함)"
+		"ko"	"-최대 아머 증가\n-최대 체력 +200\n-아머가 없으면 추가 저항력 증가(생존 개선에 따라 증가함)"
 	}
 	"E.G.O. Mimicry Shell"
 	{
 		"en"	"E.G.O. Mimicry Shell"
+		"ko"	"E.G.O. 미미크리 껍데기"
 	}
 	"E.G.O. Mimicry Shell Desc"
 	{
 		"en"	"-Increased Max Armor.\n-Gain +250HP\n-Extra Passive resistances if no armor is active.\nIncreases healing from all sources by 1.15x"
+		"ko"	"-최대 아머 증가\n-최대 체력 +250\n-아머가 없으면 추가 저항력 증가(생존 개선에 따라 증가함)\n-받는 모든 치유 효과가 1.15배로 증가"
 	}
 	"Explain NT Buff"
 	{
 		"en"	"While fighting nothing there you gain 2x ego duration and take 12 flat less damage\nYou also obtain this while having ''E.G.O. Mimicry Shell''"
+		"ko"	"'아무 것도 없는'과 전투 중 E.G.O. 발현 지속 시간이 2배로 증가, 피해를 고정적으로 12만큼 덜 받습니다.\n''E.G.O. 미미크리 껍데기''를 장착하는 동안에도 이 효과를 받습니다."
 	}
 	"Grigoris Special Antidote Desc"
 	{
