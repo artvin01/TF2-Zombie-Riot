@@ -1928,8 +1928,8 @@
 	"Full Riot Gear Desc"
 	{
 		"en"	"-Increased Max Armor.\n-Gain +200HP\n-Extra Passive resistances if no armor is active."
-		"fr"	"Armure reçu et armure maximalle améliorées. +150 santé.\nDonne une résistance passive qui s'améliore avec vos améliorations pour armure, si votre armure est brisée."
-		"it"	"Aumento della quantità di armatura per uso e tetto massimo. +150 HP\nFornisce una resistenza passiva in caso di rottura dell'armatura e aumenta con i potenziamenti dell'armatura."
+		"fr"	"Armure reçu et armure maximalle améliorées. +200 santé.\nDonne une résistance passive qui s'améliore avec vos améliorations pour armure, si votre armure est brisée."
+		"it"	"Aumento della quantità di armatura per uso e tetto massimo. +200 HP\nFornisce una resistenza passiva in caso di rottura dell'armatura e aumenta con i potenziamenti dell'armatura."
 		"ko"	"-최대 아머 증가\n-최대 체력 +200\n-아머가 없으면 추가 저항력 증가(생존 개선에 따라 증가함)"
 	}
 	"E.G.O. Mimicry Shell"
