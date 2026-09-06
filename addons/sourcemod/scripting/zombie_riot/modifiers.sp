@@ -196,7 +196,10 @@ public void ZRModifsPlayer_Nostalica(int entity, StringMap map)
 	}
 	else
 	{
+		if(b_ThisWasAnNpc[entity])
+			return;
 		// +15% damage bonus for melee's
+		
 		char classname[36];
 		GetEntityClassname(entity, classname, sizeof(classname));
 		int WeaponSlot = TF2_GetClassnameSlot(classname, entity);

@@ -3078,6 +3078,13 @@ public void OnEntityCreated(int entity, const char[] classname)
 			b_ThisEntityIgnored_NoTeam[entity] = true;
 			b_EntityCantBeColoured[entity] = true;
  		}
+		else if(!StrContains(classname, "env_spritetrail"))
+		{
+		//	Hook_DHook_UpdateTransmitState(entity);
+			b_ThisEntityIgnored[entity] = true;
+			b_ThisEntityIgnored_NoTeam[entity] = true;
+			b_EntityCantBeColoured[entity] = true;
+ 		}
 		else if(!StrContains(classname, "info_target"))
 		{
 			b_ThisEntityIgnored[entity] = true;
