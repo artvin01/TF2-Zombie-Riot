@@ -6128,9 +6128,11 @@
 	"NT Retry Day"
 	{
 		"en" 		"{cyan}[Day ??? rewind to the memory repository, {crimson}all agents dead.{cyan}]"
+		"ko"		"{cyan}[Day ??? 기억저장소로 돌아가기, {crimson}모든 직원이 사망했습니다.{cyan}]"
 	}
 	"NT Death Msg"
 	{
 		"en" 		"And the many shells cried out one word, ''Manager''"
+		"ko"		"그리고 많은 껍데기들은 '관리자님' 만을 부르짖었다."
 	}
 }

@@ -8183,9 +8183,11 @@
 	"Nothing There"
 	{
 		"en"	"Nothing There"
+		"ko"	"아무 것도 없는"
 	}
 	"Warm-up Vivithorn"
 	{
 		"en"	"Warm-up Vivithorn"
+		"ko"	"몸풀기 중인 비비쏜"
 	}
 }
