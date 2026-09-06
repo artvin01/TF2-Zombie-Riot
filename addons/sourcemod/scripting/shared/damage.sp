@@ -271,7 +271,7 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 				case 150:
 					damage *= 0.2;
 
-				case 200:
+				case 200, 250, 300:
 					damage *= 0.1;
 			}
 		}

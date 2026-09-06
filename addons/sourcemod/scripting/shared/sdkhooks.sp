@@ -730,13 +730,14 @@ public void OnPostThink(int client)
 		if(f_LivingArmorPenalty[client] < GetGameTime() && Attributes_Get(client, Attrib_Armor_AliveMode, 0.0) != 0.0)
 		{
 			//regen armor if out of battle
-			if(f_TimeUntillNormalHeal[client] < GetGameTime() && dieingstate[client] == 0)
+			if((f_TimeUntillNormalHeal[client] - 1.0) < GetGameTime() && dieingstate[client] == 0)
 			{
-				if(Armor_Charge[client] >= 0)
-				{
+			//	if(Armor_Charge[client] >= 0)
+			//	{
 					float DefaultRegenArmor = 0.06666;
+					DefaultRegenArmor *= 1.5;
 					GiveArmorViaPercentage(client, DefaultRegenArmor, 1.0);
-				}
+			//	}
 			}
 		}
 
@@ -758,7 +759,7 @@ public void OnPostThink(int client)
 						
 					if(Rogue_Rift_HolyBlessing())
 						MaxHealth *= 2.0;
-					HealEntityGlobal(client, client, MaxHealth / 100.0, Rogue_Rift_HolyBlessing() ? 1.0 : 0.5, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
+					HealEntityGlobal(client, client, MaxHealth / 100.0, Rogue_Rift_HolyBlessing() ? 1.0 : 0.75, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
 					
 					float attrib = Attributes_Get(client, Attrib_BlessingBuff, 1.0);
 					if(f_TimeUntillNormalHeal[client] < GetGameTime())
@@ -769,7 +770,7 @@ public void OnPostThink(int client)
 							attrib -= 1.0; //1.0 is default
 							if(Rogue_Rift_HolyBlessing())
 								MaxHealth *= 0.5;
-							HealEntityGlobal(client, client, (MaxHealth * attrib), Rogue_Rift_HolyBlessing() ? 1.0 : 0.5, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
+							HealEntityGlobal(client, client, (MaxHealth * attrib), Rogue_Rift_HolyBlessing() ? 1.0 : 0.75, 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);	
 					//		DefaultRegenArmor += attrib;
 						}
 					//	if(Armor_Charge[client] >= 0)
@@ -3321,6 +3322,34 @@ float ArmorPlayerReduction(int victim)
 	{
 		case 50:
 		{
+			return 0.9;
+		}
+		case 100:
+		{
+			return 0.85;
+		}
+		case 150:
+		{
+			return 0.8;
+		}
+		case 200:
+		{
+			return 0.75;
+		}
+		case 250, 300:
+		{
+			return 0.7;
+		}
+		default:
+		{
+			return 1.0;
+		}
+	}
+	/*
+	switch(Armor_Level[victim])
+	{
+		case 50:
+		{
 			return 0.95;
 		}
 		case 100:
@@ -3335,7 +3364,7 @@ float ArmorPlayerReduction(int victim)
 		{
 			return 0.9;
 		}
-		case 250:
+		case 250, 300:
 		{
 			return 0.88;
 		}
@@ -3344,6 +3373,7 @@ float ArmorPlayerReduction(int victim)
 			return 1.0;
 		}
 	}
+	*/
 }
 
 void DisplayCosmeticExtraClient(int client, bool deleteOverride = false)
