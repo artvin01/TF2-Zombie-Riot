@@ -1629,7 +1629,7 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 				}
 				else
 				{
-					if(attacker > 0 && attacker < MaxClients)
+					if(attacker > 0 && attacker <= MaxClients)
 						TE_SendToClient(attacker);
 				}
 			}
@@ -1643,7 +1643,7 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 				}
 				else
 				{
-					if(attacker > 0 && attacker < MaxClients)
+					if(attacker > 0 && attacker <= MaxClients)
 						TE_SendToClient(attacker);
 				}
 			}
@@ -1656,7 +1656,7 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 				}
 				else
 				{
-					if(attacker > 0 && attacker < MaxClients)
+					if(attacker > 0 && attacker <= MaxClients)
 						TE_SendToClient(attacker);
 				}
 			}
@@ -1670,7 +1670,7 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 				}
 				else
 				{
-					if(attacker > 0 && attacker < MaxClients)
+					if(attacker > 0 && attacker <= MaxClients)
 						TE_SendToClient(attacker);
 				}
 			}
@@ -1684,7 +1684,7 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 				}
 				else
 				{
-					if(attacker > 0 && attacker < MaxClients)
+					if(attacker > 0 && attacker <= MaxClients)
 						TE_SendToClient(attacker);
 				}
 			}
@@ -1698,7 +1698,7 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 				}
 				else
 				{
-					if(attacker > 0 && attacker < MaxClients)
+					if(attacker > 0 && attacker <= MaxClients)
 						TE_SendToClient(attacker);
 				}
 			}
@@ -1712,7 +1712,7 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 				}
 				else
 				{
-					if(attacker > 0 && attacker < MaxClients)
+					if(attacker > 0 && attacker <= MaxClients)
 						TE_SendToClient(attacker);
 				}
 			}
@@ -1725,7 +1725,7 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 				}
 				else
 				{
-					if(attacker > 0 && attacker < MaxClients)
+					if(attacker > 0 && attacker <= MaxClients)
 						TE_SendToClient(attacker);
 				}
 			}

@@ -3537,7 +3537,7 @@ public void Harvester_Logic(DataPack pack)
 public void Harvester_OnHit(int attacker, int victim, float damage, int weapon)
 {
 	int healing = RoundToCeil(damage * Harvester_HealRatio[SSB_WavePhase]);
-	if (healing > 0 && victim > 0 && victim < MaxClients)
+	if (healing > 0 && victim > 0 && victim <= MaxClients)
 	{
 		int hp = GetEntProp(attacker, Prop_Data, "m_iHealth");
 
