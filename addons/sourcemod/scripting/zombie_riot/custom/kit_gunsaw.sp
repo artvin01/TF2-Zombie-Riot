@@ -597,7 +597,7 @@ void Gunsaw_NPCTakeDamage(int victim, int client)
 {
 	if(!CheckInHud() && WeaponTimer[client] && (dieingstate[client] || (GetClientButtons(client) & IN_DUCK)))
 	{
-		if(!dieingstate[client] && i_AmountDowned[client] < TotalDowns())
+		if(!dieingstate[client] && i_AmountDowned[client] >= TotalDowns())
 		{
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
@@ -605,7 +605,7 @@ void Gunsaw_NPCTakeDamage(int victim, int client)
 			return;
 		}
 
-		if(!ValidSwapTarget(client))
+		if(!ValidSwapTarget(victim))
 		{
 			if(dieingstate[client])
 			{
@@ -1107,7 +1107,7 @@ static Action GunsawHudTimer(Handle timer, DataPack pack)
 				
 				if(!ModelNPCName[client])
 				{
-					PrintHintText(client, "%s\n \nCrouched melee hit to steal an enemy body");
+					PrintHintText(client, "%s\n \nCrouched melee hit to steal an enemy body", name);
 				}
 				else
 				//int active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
