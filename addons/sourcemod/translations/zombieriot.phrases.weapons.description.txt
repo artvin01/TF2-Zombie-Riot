@@ -5572,8 +5572,7 @@
 	}
 	"The Red Mist Desc 5"
 	{
-		"en"	"-Gain an upgrade point\nUnlocks new special card\n-Overall Stat Increases"
-		"ko"	"-개선 포인트 획득\n-새로운 특별 책장 해금\n-전반적인 능력치 증가"
+		"en"	"-Gain an upgrade point\nUnlocks new special card\n-Overall Stat Increases\n-Special card CD reduced on hit with any ability or melee."
 	}
 	"The Red Mist Desc 6"
 	{

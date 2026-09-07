@@ -1312,8 +1312,19 @@ void Heartbroken_WildHunt(int client, bool ForceRevive = false)
 	if(!ForceRevive)
 		ApplyStatusEffect(client, RandomWildHunted, "Coffin's Return", Duration);
 
+	ReviveAllyResetCD(RandomWildHunted);
 	ApplyStatusEffect(client, RandomWildHunted,	"Call of the Heartbroken Internal", Duration + 1.0);
 	ApplyStatusEffect(client, RandomWildHunted, "Shielding", 10.0);
 	Shielding_Add(RandomWildHunted, ReturnEntityMaxHealth(RandomWildHunted) / 2);
 	CheckAlivePlayers();
+}
+
+void ReviveAllyResetCD(int revived)
+{
+	RedMistReduceCD(revived, 500.0);
+	int i, other;
+	while(TF2_GetItem(revived, other, i))
+	{
+		Saga_ChargeReduction(revived, other, 999.9);
+	}
 }

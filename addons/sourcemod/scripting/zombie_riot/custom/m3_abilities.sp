@@ -2082,6 +2082,7 @@ public Action OnBombDrop(const char [] output, int caller, int activator, float 
 				DHook_RespawnPlayer(RandomHELLDIVER);
 				ForcePlayerCrouch(RandomHELLDIVER, false);
 				DataPack pack;
+				ReviveAllyResetCD(RandomHELLDIVER);
 				CreateDataTimer(0.5, Timer_DelayTele, pack, TIMER_FLAG_NO_MAPCHANGE);
 				Music_EndLastmann(true);
 				LastMann = false;
