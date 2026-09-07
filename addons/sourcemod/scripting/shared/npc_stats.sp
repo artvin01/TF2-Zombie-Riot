@@ -8114,8 +8114,6 @@ stock void PredictSubjectPosition(CClotBody npc, int subject, float Extra_lead =
 		vec = f_PredictPos[subject];
 		return;
 	}
-	if(ClientAndNoTypeMove(subject))
-		return;
 
 	PredictSubjectPositionInternal(npc, subject, Extra_lead);
 	f_PredictDuration[subject] = GetGameTime() + 0.05;
@@ -8148,7 +8146,7 @@ static void PredictSubjectPositionInternal(CClotBody npc, int subject, float Ext
 #if defined RTS
 	if(IsObject(subject) || i_IsABuilding[subject])
 #elseif defined ZR
-	if(Npc_Is_Targeted_In_Air(npc.index) || i_IsABuilding[subject])
+	if(Npc_Is_Targeted_In_Air(npc.index) || i_IsABuilding[subject] || ClientAndNoTypeMove(subject))
 #else
 	if(i_IsABuilding[subject])
 #endif
@@ -8159,7 +8157,7 @@ static void PredictSubjectPositionInternal(CClotBody npc, int subject, float Ext
 
 	float SubjectAbsVelocity[3];
 	GetEntPropVector(subject, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
-	if(MovementSpreadSpeedTooLow(SubjectAbsVelocity) || ClientAndNoTypeMove(subject))
+	if(MovementSpreadSpeedTooLow(SubjectAbsVelocity))
 	{
 		f_PredictPos[subject] = subjectPos;
 		return;
