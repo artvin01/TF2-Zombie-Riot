@@ -3923,7 +3923,7 @@ void FullyReviveClient(int target, int client, int extralogic = 0, bool teleport
 	SetEntityHealth(target, 50);
 	RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(target));
 	Rogue_TriggerFunction(Artifact::FuncRevive, target);
-	//Gunsaw_TryBodySteal(target, false, pos);
+	Gunsaw_TryBodySteal(target, false, pos, true);
 	int entity, i;
 	while(TF2U_GetWearable(target, entity, i))
 	{

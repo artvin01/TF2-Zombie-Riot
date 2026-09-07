@@ -57,6 +57,7 @@ enum
 }
 
 //static ArrayList GunListing[2][5];
+static bool InSelfRevive;
 static int ModelHealth[MAXPLAYERS];
 static float ModelMeleeRes[MAXPLAYERS];
 static float ModelRangedRes[MAXPLAYERS];
@@ -550,8 +551,9 @@ bool Gunsaw_LastmanSecret()
 	return true;
 }
 
-void Gunsaw_NPCDeath(int entity)
+public void Gunsaw_NPCDeath(int entity)
 {
+	/*
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(WeaponTimer[client] && dieingstate[client])
@@ -588,14 +590,59 @@ void Gunsaw_NPCDeath(int entity)
 			}
 		}
 	}
+	*/
 }
 
-
-void Gunsaw_TryBodySteal(int client, bool regen, float pos[3] = {0.0,0.0,0.0})
+void Gunsaw_NPCTakeDamage(int victim, int client)
 {
+	if(!CheckInHud() && WeaponTimer[client] && (dieingstate[client] || (GetClientButtons(client) & IN_DUCK)))
+	{
+		if(!dieingstate[client] && i_AmountDowned[client] < TotalDowns())
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			ShowSyncHudText(client, SyncHud_Notifaction, "No downs left!");
+			return;
+		}
+
+		if(!ValidSwapTarget(client))
+		{
+			if(dieingstate[client])
+			{
+				if(GetClientHealth(client) < 200)
+					SetEntityHealth(client, 200);
+			}
+
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			ShowSyncHudText(client, SyncHud_Notifaction, "Can not steal this body!");
+			return;
+		}
+
+		i_AmountDowned[client]++;
+		StealBodyForm(client, victim);
+
+		view_as<CClotBody>(victim).m_iHealthBar = 0;
+		SetEntityHealth(victim, 1);
+		b_DissapearOnDeath[victim] = true;
+		RemoveSpecificBuff(victim, "Infinite Will");
+		SDKHooks_TakeDamage(victim, client, client, GetRandomFloat(99999.0,9999999.0), DMG_BLAST, -1, {0.1,0.1,0.1}, _, _, ZR_SLAY_DAMAGE);
+
+		f_InBattleHudDisableDelay[client] = GetGameTime() + 1.0;
+	}
+}
+
+bool Gunsaw_TryBodySteal(int client, bool regen, float pos[3] = {0.0,0.0,0.0}, bool onlyIfFree = false, float distance = 1000.0)
+{
+	if(InSelfRevive)
+		return true;
+	
+	if(ModelModels[client] && onlyIfFree)
+		return false;
+	
 	if(WeaponTimer[client])
 	{
-		int target = GetClosestTarget(client, true, 1000.0, true, .EntityLocation = pos, .fldistancelimitAllyNPC = 1000.0, .IgnorePlayers = true, .ExtraValidityFunction = StealBodyFunc);
+		int target = GetClosestTarget(client, true, distance, true, .EntityLocation = pos, .fldistancelimitAllyNPC = 1000.0, .IgnorePlayers = true, .ExtraValidityFunction = StealBodyFunc);
 		if(target != -1)
 		{
 			StealBodyForm(client, target);
@@ -606,7 +653,7 @@ void Gunsaw_TryBodySteal(int client, bool regen, float pos[3] = {0.0,0.0,0.0})
 			RemoveSpecificBuff(target, "Infinite Will");
 			SDKHooks_TakeDamage(target, client, client, GetRandomFloat(99999.0,9999999.0), DMG_BLAST, -1, {0.1,0.1,0.1}, _, _, ZR_SLAY_DAMAGE);
 
-			f_InBattleHudDisableDelay[client] = GetGameTime() + 1.0; 
+			f_InBattleHudDisableDelay[client] = GetGameTime() + 1.0;
 		}
 		else
 		{
@@ -628,7 +675,11 @@ void Gunsaw_TryBodySteal(int client, bool regen, float pos[3] = {0.0,0.0,0.0})
 		
 		if(regen)
 			RequestFrame(SetHealthAfterReviveRaid, EntIndexToEntRef(client));
+		
+		return target != -1;
 	}
+
+	return false;
 }
 
 static bool StealBodyFunc(int client, int target)
@@ -827,7 +878,9 @@ static void StealBodyFrame(DataPack pack)
 	int client = GetClientOfUserId(pack.ReadCell());
 	if(client)
 	{
+		InSelfRevive = true;
 		FullyReviveClient(client, client);
+		InSelfRevive = false;
 		
 		float pos[3], ang[3];
 		pack.ReadFloatArray(pos, sizeof(pos));
@@ -1022,9 +1075,21 @@ static Action GunsawHudTimer(Handle timer, DataPack pack)
 		int weapon = EntRefToEntIndex(pack.ReadCell());
 		if(weapon != -1)
 		{
-			if(dieingstate[client])
+			if(ZombieMusicPlayed && MonologueMoodLevel(client) < -3)
 			{
-				PrintHintText(client, "Kill a nearby enemy to self-revive");
+				float mood = MonologueMood(client);
+				if(mood < -100.0)
+					mood = -100.0;
+				
+				PrintHintText(client, " \n \n \n \n \n \n \n \n \n \n \n \n%.1f\n \n \n \n \n \n \n \n \n \n \n \n ", mood);
+			}
+			else if(b_HoldingInspectWeapon[client])
+			{
+				PrintHintText(client, "%.1f", fClamp(MonologueMood(client), -100.0, 100.0));
+			}
+			else if(dieingstate[client])
+			{
+				PrintHintText(client, "Melee hit a nearby enemy to self-revive");
 			}
 			else
 			{
@@ -1039,7 +1104,12 @@ static Action GunsawHudTimer(Handle timer, DataPack pack)
 				{
 					strcopy(name, sizeof(name), ModelNPCName[client] ? "Abomination" : "Experiment");
 				}
-
+				
+				if(!ModelNPCName[client])
+				{
+					PrintHintText(client, "%s\n \nCrouched melee hit to steal an enemy body");
+				}
+				else
 				//int active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 				//if(weapon == active)
 				{
@@ -1158,7 +1228,7 @@ static Action GunsawHudTimer(Handle timer, DataPack pack)
 
 			if(dieingstate[client])
 			{
-				if(MonologueMoodBonus[client] > -50.0)
+				if(MonologueMoodBonus[client] > -100.0)
 					MonologueMoodBonus[client] -= 0.1;
 			}
 			else if(GetClientHealth(client) >= ReturnEntityMaxHealth(client))
@@ -1168,7 +1238,7 @@ static Action GunsawHudTimer(Handle timer, DataPack pack)
 			}
 			else if(GetClientHealth(client) < (ReturnEntityMaxHealth(client) / 2))
 			{
-				if(MonologueMoodBonus[client] > -50.0)
+				if(MonologueMoodBonus[client] > -70.0)
 					MonologueMoodBonus[client] -= 0.05;
 			}
 
@@ -1766,14 +1836,14 @@ static void PlayMonologue(int client, const char[] text, bool fast = false, bool
 	}
 }
 
-static int MonologueMood(int client)
+static float MonologueMood(int client)
 {
-	int mood;
+	float mood;
 	
 	if(LastMann)
 	{
 		if(!IsValidEntity(EntRefToEntIndex(RaidBossActive)))
-			mood = -100;
+			mood = -100.0;
 	}
 	else
 	{
@@ -1791,18 +1861,18 @@ static int MonologueMood(int client)
 			}
 		}
 		
-		mood = (alive * 50 / total) - 30;
+		mood = (float(alive) * 70.0 / float(total)) - 50.0;
 	}
 	
 	if(dieingstate[client])
-		mood -= 30;
+		mood -= 30.0;
 
-	return iClamp(RoundFloat(MonologueMoodBonus[client] + mood), -100, 100);
+	return fClamp(MonologueMoodBonus[client] + mood, -100.0, 100.0);
 }
 
 static int MonologueMoodLevel(int client)
 {
-	int mood = MonologueMood(client);
+	float mood = MonologueMood(client);
 
 	if(mood > -10.0)
 		return 0;
@@ -2249,6 +2319,8 @@ void Gunsaw_Monologue_PlayerDeath(const float pos[3])
 			
 			PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
 		}
+		
+		Gunsaw_Monologue_AddMood(client, -1.0);
 	}
 }
 
@@ -2310,6 +2382,8 @@ static void Monologue_Drug(int client)
 
 		PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
 	}
+	
+	Gunsaw_Monologue_AddMood(client, 3.0);
 }
 
 static void Monologue_Idle(int client)
@@ -2720,7 +2794,6 @@ static void Monologue_Idle(int client)
 			"Time for a bath!",
 			"How'd I get so dirty?",
 			"Gosh, I am COVERED in gunk!",
-			"My fur is so yucky!",
 			"Guh! I'm completely covered in filth.",
 			"I feel filthy. I really need a bath, or something...",
 			"Could do with a shower!",
