@@ -1,6 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define GLOBAL_ELEMENTAL_NERF_PLAYER 0.5
 enum				// Types
 {
 	Element_Nervous, 	// 0
@@ -329,6 +330,8 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 	{
 		damage = RoundToNearest(float(damage) * 1.3);
 	}
+	if(victim <= MaxClients)
+		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);
 	if(victim <= MaxClients && victim > 0)
 	{
 		// Warped overrides
@@ -473,6 +476,8 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 		damage = RoundToNearest(float(damage) * 1.3);
 	}
 	if(victim <= MaxClients)
+		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);
+	if(victim <= MaxClients)
 	{
 		// Warped overrides
 		if(Armor_Charge[victim] < 0 && (Armor_DebuffType[victim] == Element_Void || Armor_DebuffType[victim] == Element_Warped))
@@ -614,6 +619,8 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 	{
 		damage = RoundToNearest(float(damage) * 1.3);
 	}
+	if(victim <= MaxClients)
+		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);
 
 	if(victim <= MaxClients)
 	{
@@ -838,6 +845,8 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 	{
 		damage = RoundToNearest(float(damage) * 1.3);
 	}
+	if(victim <= MaxClients)
+		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);
 
 	if(victim <= MaxClients)
 	{
@@ -1056,6 +1065,8 @@ void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, boo
 		damage = RoundToNearest(float(damage) * 1.3);
 	}
 	if(victim <= MaxClients)
+		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);
+	if(victim <= MaxClients)
 	{
 		/*
 		if(Items_HasNamedItem(victim, "Matrix's Curse") && !Items_HasNamedItem(victim, "A Block of Cheese"))
@@ -1251,6 +1262,8 @@ void Elemental_AddBurgerDamage(int victim, int attacker, int damagebase)
 		return;
 	
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
+	if(victim <= MaxClients)
+		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);
 	if(!b_NpcHasDied[victim] && GetTeam(victim) != TFTeam_Red && !i_NpcIsABuilding[victim])	// NPCs
 	{
 		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Burger));
@@ -1301,6 +1314,8 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 	{
 		damage = RoundToNearest(float(damage) * 1.3);
 	}
+	if(victim <= MaxClients)
+		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);
 	if(victim <= MaxClients) // VS Players
 	{
 		// Warped overrides
@@ -1493,6 +1508,8 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 		damage = RoundToNearest(float(damage) * 1.3);
 	
 	if(victim <= MaxClients)
+		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);
+	if(victim <= MaxClients)
 	{
 		bool fresh = (Armor_DebuffType[victim] != Element_Warped || Armor_Charge[victim] >= 0);
 
@@ -1603,8 +1620,11 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 			}
 			else
 			{
-				fl_Extra_MeleeArmor[victim] *= 6.0;
-				fl_Extra_RangedArmor[victim] *= 6.0;
+				fl_Extra_MeleeArmor[victim] = 1.0;
+				fl_Extra_RangedArmor[victim] = 1.0;
+				fl_MeleeArmor[victim] = 1.0;
+				fl_RangedArmor[victim] = 1.0;
+				fl_TotalArmor[victim] = 6.0;
 				fl_GibVulnerablity[victim] = 5000000.0;
 				SetEntProp(victim, Prop_Data, "m_iMaxHealth", 1);
 				//any TOUCH will gib them.
@@ -1620,6 +1640,25 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 				
 				npc.m_bDissapearOnDeath = true;
 				Format(c_NpcName[npc.index], sizeof(c_NpcName[]), "Pure Crystal");
+				b_NpcIsInvulnerable[npc.index] = false;
+				b_thisNpcIsABoss[npc.index] = false;
+				b_thisNpcIsARaid[npc.index] = false;
+				RemoveSpecificBuff(npc.index, "Infinite Will");
+				RemoveSpecificBuff(npc.index, "Unstoppable Force");
+				func_NPCOnTakeDamage[npc.index] = INVALID_FUNCTION;
+				func_NPCSpawnForward[npc.index] = INVALID_FUNCTION;
+				func_NPCOnTakeDamagePost[npc.index] = INVALID_FUNCTION;
+				func_NPCThink[npc.index] = INVALID_FUNCTION;
+				func_NPCDeathForward[npc.index] = INVALID_FUNCTION;
+				func_NPCFuncWin[npc.index] = INVALID_FUNCTION;
+				func_NPCAnimEvent[npc.index] = INVALID_FUNCTION;
+				func_NPCActorEmoted[npc.index] = INVALID_FUNCTION;
+				func_NPCInteract[npc.index] = INVALID_FUNCTION;
+				FuncShowInteractHud[npc.index] = INVALID_FUNCTION;
+				func_NPCLostHealthBar[npc.index] = INVALID_FUNCTION;
+				
+
+
 				if (!IsValidEntity(npc.m_iFreezeWearable))
 				{
 					float offsetToHeight = 40.0;
@@ -1772,6 +1811,8 @@ void Elemental_AddStaggerDamage(int victim, int attacker, int damagebase)
 			damage = RoundToNearest(float(damage) * 1.3);
 		}
 	}
+	if(victim <= MaxClients)
+		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);
 	
 	if(!b_NpcHasDied[victim])	// NPCs
 	{

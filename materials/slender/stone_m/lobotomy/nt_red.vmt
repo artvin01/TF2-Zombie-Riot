@@ -1,0 +1,13 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "slender\stone_m\lobotomy\nt_red"
+	"$detail" "slender\stone_m\lobotomy\detail"
+	"$halflambert" 1
+	"$phong" "1"
+	"$phongexponent" 50
+	"$phongboost"	".05"
+	"$phongfresnelranges"	"[0.01 0.5 1]"
+	"$rimlight" "1"
+	"$rimlightexponent" "4"	
+	"$rimlightboost" ".5"	
+}

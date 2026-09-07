@@ -6610,7 +6610,12 @@ public void NpcBaseThink(int iNPC)
 			
 			HealEntityGlobal(iNPC, iNPC, HealingAmount, 1.25, 0.0, HEAL_SELFHEAL);
 		}
+		
+		// borrowing this 0.1 sec timer
+		if (HasSpecificBuff(iNPC, "Trampling Prefix"))
+			ResolvePlayerCollisions_Npc(iNPC, 2.0, true);
 	}
+
 #endif
 #if defined RPG
 	if(i_HpRegenInBattle[iNPC] > 1 && f_QuickReviveHealing[iNPC] < GetGameTime() && !f_TimeFrozenStill[iNPC])
@@ -8115,6 +8120,16 @@ stock void PredictSubjectPosition(CClotBody npc, int subject, float Extra_lead =
 	vec = f_PredictPos[subject];
 }
 
+stock bool ClientAndNoTypeMove(int entity)
+{
+	if(entity > MaxClients)
+		return false;
+	if(GetEntityMoveType(entity) != MOVETYPE_NONE)
+		return false;
+
+	return true;
+}
+
 static void PredictSubjectPositionInternal(CClotBody npc, int subject, float Extra_lead = 0.0)
 {
 	float botPos[3];
@@ -8131,7 +8146,7 @@ static void PredictSubjectPositionInternal(CClotBody npc, int subject, float Ext
 #if defined RTS
 	if(IsObject(subject) || i_IsABuilding[subject])
 #elseif defined ZR
-	if(Npc_Is_Targeted_In_Air(npc.index) || i_IsABuilding[subject])
+	if(Npc_Is_Targeted_In_Air(npc.index) || i_IsABuilding[subject] || ClientAndNoTypeMove(subject))
 #else
 	if(i_IsABuilding[subject])
 #endif
@@ -8405,6 +8420,11 @@ stock void PredictSubjectPositionForProjectiles(CClotBody npc, int subject, floa
 	
 	float subjectPos[3];
 	WorldSpaceCenter(subject, subjectPos);
+	if(ClientAndNoTypeMove(subject))
+	{
+		pathTarget = subjectPos;
+		return;
+	}
 	
 	float to[3];
 	SubtractVectors(subjectPos, botPos, to);
@@ -8468,92 +8488,6 @@ stock void PredictSubjectPositionForProjectiles(CClotBody npc, int subject, floa
 	}
 	*/
 	//replace this with a trace.
-}
-
-stock void PredictSubjectPositionHook(CClotBody npc, int subject, float subjectPos[3])
-{
-	float botPos[3];
-	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", botPos);
-	
-	GetEntPropVector(subject, Prop_Data, "m_vecAbsOrigin", subjectPos);
-	
-	float to[3];
-	SubtractVectors(subjectPos, botPos, to);
-	to[2] = 0.0;
-	
-	float flRangeSq = GetVectorLength(to, true);
-
-	// don't lead if subject is very far away
-	float flLeadRadiusSq = npc.GetLeadRadius(); 
-	
-	if ( flRangeSq > flLeadRadiusSq )
-		return;
-	
-	// Normalize in place
-	float range = SquareRoot( flRangeSq );
-	to[0] /= ( range + 0.0001 );	// avoid divide by zero
-	to[1] /= ( range + 0.0001 );	// avoid divide by zero
-	to[2] /= ( range + 0.0001 );	// avoid divide by zero
-	
-	// estimate time to reach subject, assuming maximum speed
-	float leadTime = 0.1 + ( range / ( npc.GetRunSpeed() + 0.0001 ) );
-	
-	// estimate amount to lead the subject	
-	float SubjectAbsVelocity[3];
-	GetEntPropVector(subject, Prop_Data, "m_vecAbsVelocity", SubjectAbsVelocity);
-	float lead[3];	
-	lead[0] = leadTime * SubjectAbsVelocity[0];
-	lead[1] = leadTime * SubjectAbsVelocity[1];
-	lead[2] = 0.0;	
-
-	if(GetVectorDotProduct(to, lead) < 0.0)
-	{
-		// the subject is moving towards us - only pay attention 
-		// to his perpendicular velocity for leading
-		float to2D[3]; to2D = to;
-		to2D[2] = 0.0;
-		NormalizeVector(to2D, to2D);
-		
-		float perp[2];
-		perp[0] = -to2D[1];
-		perp[1] = to2D[0];
-
-		float enemyGroundSpeed = lead[0] * perp[0] + lead[1] * perp[1];
-
-		lead[0] = enemyGroundSpeed * perp[0];
-		lead[1] = enemyGroundSpeed * perp[1];
-	}
-
-	// compute our desired destination
-	float pathTarget[3];
-	AddVectors(subjectPos, lead, pathTarget);
-
-	// validate this destination
-
-	// don't lead through walls
-	if (GetVectorLength(lead, true) > 36.0)
-	{
-		float fraction;
-		if(view_as<CClotBody>(npc).GetLocomotionInterface().IsPotentiallyTraversable(botPos, subjectPos, IMMEDIATELY, fraction))
-		{
-			// tried to lead through an unwalkable area - clip to walkable space
-			pathTarget[0] = subjectPos[0] + fraction * ( pathTarget[0] - subjectPos[0] );
-			pathTarget[1] = subjectPos[1] + fraction * ( pathTarget[1] - subjectPos[1] );
-			pathTarget[2] = subjectPos[2] + fraction * ( pathTarget[2] - subjectPos[2] );
-		}
-	}
-	
-//	CNavArea leadArea = TheNavMesh.GetNavArea(pathTarget, 50.0);
-	CNavArea leadArea = TheNavMesh.GetNearestNavArea( pathTarget );
-	
-	
-	if (leadArea == NULL_AREA || leadArea.GetZ(pathTarget[0], pathTarget[1]) < pathTarget[2] - npc.GetMaxJumpHeight())
-	{
-		// would fall off a cliff
-		return;	
-	}
-
-	subjectPos = pathTarget;
 }
 
 
@@ -10542,7 +10476,7 @@ void NpcStartTouch(int TouchedTarget, int target, bool DoNotLoop = false)
 #if defined ZR
 	if(target > 0 && entity > MaxClients && i_npcspawnprotection[entity] > NPC_SPAWNPROT_INIT && i_npcspawnprotection[entity] != NPC_SPAWNPROT_UNSTUCK)
 	{
-		if(IsValidEnemy(entity, target, true, true)) //Must detect camo.
+		if(IsValidEnemy(entity, target, true, true) && GetTeam(target) != TFTeam_Stalkers) //Must detect camo.
 		{
 			int DamageFlags = DMG_CRUSH|DMG_TRUEDAMAGE;
 			float DamageDeal = float(ReturnEntityMaxHealth(target));
@@ -12280,6 +12214,21 @@ void NPCStats_HandlePaintedWearables()
 			h_ColoredWearables.Erase(i);
 		}
 	}
+}
+
+void NPCStats_ClearPaintedWearables()
+{
+	for (int i = 0; i < h_ColoredWearables.Length; i++)
+	{
+		WearableColor wearableColor;
+		h_ColoredWearables.GetArray(i, wearableColor);
+		if (IsValidEntity(wearableColor.wearableRef))
+			RemoveEntity(wearableColor.wearableRef);
+		
+		delete wearableColor.entities;
+	}
+	
+	h_ColoredWearables.Clear();
 }
 
 Action NPCStats_Timer_HandleCustomNPCChatNames(Handle timer)

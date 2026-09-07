@@ -3718,7 +3718,7 @@ static void IonPillarRadiusIndicator(float Loc[3], float radius, int color[4])
 {
 	float offset_radius = radius * 4.0;
 	float dist_Check = (offset_radius * offset_radius);
-	for(int i=1 ; i < MaxClients ; i++)
+	for(int i=1 ; i <= MaxClients ; i++)
 	{
 		if(!IsValidClient(i) || !IsClientInGame(i))
 			continue;

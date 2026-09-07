@@ -25,7 +25,7 @@ void VestanOfflineAvangard_MapStart()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_avangard");
 	strcopy(data.Icon, sizeof(data.Icon), "victoria_avangard");
 	data.IconCustom = true;
-	data.Flags = 0;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;

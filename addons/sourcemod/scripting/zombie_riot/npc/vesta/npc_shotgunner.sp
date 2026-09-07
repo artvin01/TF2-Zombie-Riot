@@ -75,7 +75,7 @@ methodmap VestanShotgunner < CClotBody
 	}
 	public void PlayRangeSound() 
 	{
-		EmitSoundToAll(g_RangeAttackSounds[GetRandomInt(0, sizeof(g_RangeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 85);
+		EmitSoundToAll(g_RangeAttackSounds, this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, 85);
 	}
 	
 	public VestanShotgunner(float vecPos[3], float vecAng[3], int ally)

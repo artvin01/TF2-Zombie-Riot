@@ -3696,18 +3696,18 @@
 	}
 	"Copycat Truthful Evidence"
 	{
-		"en"	"A copy of Truthful Evidence"
-		"ko"	"진실된 증거자료 [사본]"
+		"en"		"A copy of Truthful Evidence"
+		"ko"		"진실된 증거자료 [사본]"
 	}
 	"Copycat Truthful Evidence Desc"
 	{
-		"en"	"This is a Copy of the evidence received from Sensal.\Vesta Clear Trophy"
-		"ko"	"센살에게 받은 진실된 증거자료[사본] 입니다.\n베스타 클리어로 흭득"
+		"en"		"This is a Copy of the evidence received from Sensal.\Vesta Clear Trophy"
+		"ko"		"센살에게 받은 진실된 증거자료[사본] 입니다.\n베스타 클리어로 흭득"
 	}
 	"Copycat Truthful Evidence Desc Lore"
 	{
-		"en"	"See some incomprehensible words, but think there's a hidden meaning\nThis seems to be why Vesta invaded Ziberia.\nyou became the primary target of Vestans due to this…"
-		"ko"	"이해못할 단어들이 보이지만 숨겨진 뜻이 있는거 같습니다. 이것이 베스타가 지베리아를 침공한 이유 같습니다.\n하지만 이것이 베스타인들과의 트러블을 만들었습니다."
+		"en"		"See some incomprehensible words, but think there's a hidden meaning\nThis seems to be why Vesta invaded Ziberia.\nyou became the primary target of Vestans due to this…"
+		"ko"		"이해못할 단어들이 보이지만 숨겨진 뜻이 있는거 같습니다. 이것이 베스타가 지베리아를 침공한 이유 같습니다.\n하지만 이것이 베스타인들과의 트러블을 만들었습니다."
 	}
 	"Kahml's Contained Chaos"
 	{
@@ -3717,7 +3717,7 @@
 	"Kahml's Contained Chaos Desc"
 	{
 		"en"		"You helped Kahml get rid of his chaos affliction.\nHe doesnt like to say thanks directly though."
-		"ko"		"당신은 카멜슈타인이 혼돈에 고통받는 것을 끝냈습니다.\n그러나 그는 직접적으로 감사를 표하진 않는군요."
+		"ko"		"당신은 카멜슈타인을 침식한 혼돈을 제거하는데 성공했습니다.\n그러나 그는 직접 감사를 표하는 걸 좋아하지 않는 것 같네요."
 	}
 	
 	// Special.
@@ -3759,7 +3759,7 @@
 	"Omega's Medallion Desc"
 	{
 		"en"		"You got spared by Omega! He gave you one of his medallions as a treat.\nYou can wear it with pride, congratulations."
-		"ko"		"당신은 오메가와 오해를 풀고 친구가 되었습니다. 그가 기념으로 당신에게 자기 메달리언을 주었군요.\n장비하면 좀 더 간지나게 될 겁니다. 축하합니다."
+		"ko"		"당신은 오메가와 오해를 풀고 친구가 되었습니다.\n그가 기념으로 당신에게 자신의 메달리온 중 하나를 주었군요.\n자랑스럽게 옷에 매달아도 될 겁니다. 축하합니다."
 	}
 	"A Block of Cheese"
 	{
@@ -3779,7 +3779,7 @@
 	"Xeno Virus Vial Desc"
 	{
 		"en"		"It's over, you defeated it, go find Vivithorn, this was a facade, kill him, he can't restart the entirety of xeno anymore."
-		"ko"		"끝났어. 놈은 쓰러졌다고. 하지만 그건 전부 위장이었어. 비비쏜을 찾아내서 그를 죽여버려. 그 놈이 다시는 제노 감염을 만들어낼 수 없게."
+		"ko"		"끝났습니다. 그를 쓰러뜨렸군요. 하지만 그건 전부 위장이었습니다. 비비쏜을 찾아내서 제거하세요. 제노 감염원을 다시 만들어 낼 수 없도록."
 	}
 	"Mr. X's Files"
 	{
@@ -3789,7 +3789,7 @@
 	"Mr. X's Files Desc"
 	{
 		"en"		"Legacy Item, has no use, you just beat Calmaticus before the new update on abandoned lab.\nBut now you can obtain it in bossrush... Wow!!! You're so epic!!!"
-		"ko"		"버려진 연구실 업데이트 전 칼마티커스를 격퇴한 사람에게 주어진 레거시 아이템.\n하지만 이젠 보스 러시에서 얻을 수 있죠... 와우!!! 당신 존나 멋져요!!!"
+		"ko"		"버려진 연구실 업데이트 전 칼마티커스를 격퇴한 사람에게 주어진 유산 아이템입니다.\n하지만 이젠 보스 러시에서 얻을 수 있죠... 와우!!! 당신 존나 멋져요!!!"
 	}
 	"There Can Be Only One"
 	{
@@ -3821,7 +3821,7 @@
 	"Bob's true fear Desc"
 	{
 		"en"		"It is the loss of family and friends, of which has happened..."
-		"ko"		"이것은 '누군가'의 기억. 가족과 친구를 잃은 끔찍한 기억..."
+		"ko"		"그것은 가족과 친구의 상실, 그리고 이미 일어나버린 일..."
 	}
 	"Whiteflower's Elite Grenade"
 	{
@@ -3851,7 +3851,7 @@
 	"Waldch's Expidonsan Sword Desc"
 	{
 		"en"		"Wildingen is finally free, The hitman is taken out, sadly theres more, but he was the main one...\nEquip to disable its cosmetic effects."
-		"ko"		"와일딩겐들은 마침내 자유의 몸이 되었고, 와일딩겐 히트맨들은 자취를 감췄다. 모든 히트맨이 사라진 건 아니겠지만, 적어도 핵심 인물은 쓰러트렸다.\n착용 시, 특수한 시각 이펙트를 제거합니다."
+		"ko"		"와일딩겐은 마침내 해방되었고, 와일딩겐 히트맨 역시 제거하였습니다. 아직 더 많은 히트맨들이 남아있지만, 적어도 핵심 인물은 쓰러트렸습니다.\n착용 시, 특수한 시각 이펙트를 제거합니다."
 	}
 	"Opened Void Portal"
 	{
@@ -3861,7 +3861,7 @@
 	"Opened Void Portal Desc"
 	{
 		"en"		"You released the void, you fool..!"
-		"ko"		"당신은 공허를 해방시키고 말았습니다..!"
+		"ko"		"당신은 공허를 해방시키고 말았습니다. 이 바보 같으니..!"
 	}
 	"Gem from the Curtain"
 	{
@@ -3913,7 +3913,7 @@
 	"Foreign Expidonsan Chip Desc"
 	{
 		"en"		"You proved that you are actually useful to these expidonsans, and have setup a base for the curtain attack.\nTrophy!"
-		"ko"		"당신은 요새를 짓고 공격을 막아내어 이 곳의 엑스피돈사인들에게 당신의 실력를 증명했습니다.\n트로피!"
+		"ko"		"당신은 이탈자 엑스피돈사인들에게 당신의 실력를 증명했으며, 장막에서의 공격으로부터 대비할 기지를 세웠습니다.\n트로피!"
 	}
 	"Almagest Data Card"
 	{
@@ -4047,15 +4047,14 @@
 		"en"		"Made from the combination of Chaos and Void. \nLet's hope none of us crystallizes so we don’t get encased in one of these."
 		"ko"		"혼돈과 공허가 융화되어 만들어진 수정입니다.\n우리 중 누군가 결정화 되어 이런 수정에 갇히지 않길 바라야겠죠."
 	}
-	
 	"Tiny Flower"
 	{
-		"en"	"Tiny Flower"
-		"ko"	"작은 꽃"
+		"en"		"Tiny Flower"
+		"ko"		"작은 꽃"
 	}
 	"Tiny Flower Desc"
 	{
-		"en"	"Another tiny flower from Flowering Darkness, a garden is being maintained by their army. \nAs a garden regrows, as such does their army."
-		"ko"	"어둠 개화자에게서 얻은 또 다른 작은 꽃입니다.\n정원은 그의 군단에 의해 가꾸어집니다.\n정원이 자라날 수록, 그의 군대 역시 자라납니다."
+		"en"		"Another tiny flower from Flowering Darkness, a garden is being maintained by their army. \nAs a garden regrows, as such does their army."
+		"ko"		"어둠 개화자에게서 얻은 또 다른 작은 꽃입니다.\n정원은 그의 군단에 의해 가꾸어집니다.\n정원이 자라날 수록, 그의 군대 역시 자라납니다."
 	}
 }

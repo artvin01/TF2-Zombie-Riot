@@ -136,6 +136,7 @@ static int SupplyCount[MAXENTITIES];
 static bool b_WalkToPosition[MAXENTITIES];
 static int i_RalleyTarget[MAXENTITIES];
 float f_ConfirmSuicide[MAXPLAYERS];
+static bool SpawnProtection[MAXENTITIES];
 
 methodmap BarrackBody < CClotBody
 {
@@ -363,6 +364,7 @@ methodmap BarrackBody < CClotBody
 		npc.m_flAttackHappenswillhappen = false;
 		npc.m_fbRangedSpecialOn = false;
 		b_NpcIsInvulnerable[npc.index] = isInvuln;
+		SpawnProtection[npc.index] = true;
 		
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 1.0;
@@ -807,7 +809,15 @@ public Action BarrackBody_OnTakeDamage(int victim, int &attacker, int &inflictor
 	
 	if(i_NpcIsABuilding[victim])
 		return Plugin_Continue;
-		
+	
+	if(SpawnProtection[victim])	// Makes the unit that 75% less dmg from the first instance of dmg taken since it spawns, then deactivates
+    {
+		if(!(damagetype & DMG_TRUEDAMAGE))
+		{
+			damage *= 0.25;
+			SpawnProtection[victim] = false;
+		}
+    }
 	if(HasSpecificBuff(attacker, "Marked"))
 	{
 		damage *= 0.9;
@@ -1036,6 +1046,8 @@ public int BarrackBody_MenuH(Menu menu, MenuAction action, int client, int choic
 
 void BarrackBody_NPCDeath(int entity)
 {
+	SpawnProtection[entity] = false;	// Extra cleanup just in case
+	
 	BarrackOwner[entity] = 0;
 
 	BarrackBody npc = view_as<BarrackBody>(entity);

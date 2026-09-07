@@ -143,11 +143,14 @@ methodmap VestaBreachcart < CClotBody
 		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/w_models/w_bat.mdl");
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/sum20_hazard_headgear/sum20_hazard_headgear.mdl", .model_size=3.5);
+		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/demo/sum20_hazard_headgear/sum20_hazard_headgear.mdl");
+		SetVariantString("1.3");
+		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 
 		npc.m_iWearable2 = npc.EquipItemSeperate("models/bots/tw2/boss_bot/static_boss_tank.mdl");
 		SetVariantString("0.3");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+
 
 		return npc;
 

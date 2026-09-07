@@ -39,6 +39,18 @@ public void Barracks_OnMapStart()
 	//precache + zero stuff
 	PrecacheSound(WEAPON_SWITCH_SOUND);
 	PrecacheSound(CRIME_SOUND);
+	Barracks_Reset();
+	
+	BR_Precached = false;
+}
+
+void Barracks_RoundStart()
+{
+	Barracks_Reset();
+}
+
+static void Barracks_Reset()
+{
 	Zero(CivType);
 	Zero(WeaponPap);
 	Zero(ShotgunHeal);
@@ -50,8 +62,10 @@ public void Barracks_OnMapStart()
 	Zero(Barracks_NovaCDTime);
 	Zero(Barracks_PowerHitTime);
 	
-	BR_Precached = false;
+	for (int client = 1; client <= MaxClients; client++)
+		CommanderKit_Unequip(client);
 }
+
 void PrecacheBarracksMusic()
 {
 	if(!BR_Precached)
@@ -229,8 +243,19 @@ public void Barracks_OnTakeDamage_Hunter(int victim, int &attacker, int &inflict
 			}
 		}
 		DesertYadeamDoHealEffect(attacker, 600.0);
-		HealEntityGlobal(attacker, attacker, (ShotgunHeal[attacker]/20), _, 3.0); // User heals themselves for 5% of that much
-		ApplyStatusEffect(attacker, attacker, "Healing Decay", 15.0);	// You can only heal yourself once every 15s even on LMS, i don't wanna give too much self healing
+		if(!HasSpecificBuff(attacker, "Healing Decay"))	// Skip targets that cannot be healed
+		{
+			float ShotgunUserHeal = ShotgunHeal[attacker]/5;	// 20% of your dmg, buuut with a cap
+			float MaxAllowedHeal = ReturnEntityMaxHealth(attacker) * (0.11 + (0.07 * WeaponPap[attacker]));	// Hard cap for the amount of healing to the user, 11% max hp + 7% per pap lvl"
+			
+			if(ShotgunUserHeal > MaxAllowedHeal)
+			{
+				ShotgunUserHeal = MaxAllowedHeal;
+			}
+				
+			HealEntityGlobal(attacker, attacker, ShotgunUserHeal, _, 3.0);
+			ApplyStatusEffect(attacker, attacker, "Healing Decay", 15.0);	// You can only heal yourself once every 15s even on LMS, i don't wanna give too much self healing
+		}
 		if(!LastMann)
 		{
 			Ability_Apply_Cooldown(attacker, 2, 15.0);
@@ -436,8 +461,16 @@ public void Barracks_OnTakeDamage_Italian(int victim, int &attacker, int &inflic
 }
 public void CommanderKit_Unequip(int client)
 {
-	h_Barrack_Timer[client] = null;
-	delete h_Barrack_Timer[client];
+	if(h_Barrack_Timer[client] != null)
+	{
+		if(IsValidHandle(h_Barrack_Timer[client]))
+			delete h_Barrack_Timer[client];
+		h_Barrack_Timer[client] = null;
+		
+		Barrack_HUDDelay[client] = 0.0;
+		if(IsValidClient(client))
+			PrintHintText(client, "");
+	}
 }
 public int Barracks_GetInfo(int client, int choice)
 {
@@ -463,31 +496,31 @@ public void HealingCap(int client)
 	{
 		case 1:
 		{
-			Targets = 1;
+			Targets = 2;
 		}
 		case 2:
 		{
-			Targets = 2;
+			Targets = 3;
 		}
 		case 3:
 		{
-			Targets = 3;
+			Targets = 4;
 		}
 		case 4:
 		{
-			Targets = 3;
+			Targets = 5;
 		}
 		case 5:
 		{
-			Targets = 3;
+			Targets = 6;
 		}
 		case 6:
 		{
-			Targets = 3;
+			Targets = 6;
 		}
 		case 7:
 		{
-			Targets = 3;
+			Targets = 6;
 		}
 	}
 	ShotgunHeal_Targets[client] = Targets; 
@@ -567,6 +600,8 @@ public void ShotgunBuffs(int client, int entity)
 }
 static void Barracks_HUD(int client)
 {
+	if (!IsBarracks(client))
+        return;
 	if (Barrack_HUDDelay[client] > GetGameTime())
 		return;
 

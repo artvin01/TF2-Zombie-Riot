@@ -637,6 +637,7 @@ public Action Timer_Delay_BossSpawn(Handle timer, DataPack pack)
 		{
 			GiveNpcOutLineLastOrBoss(entity, true);
 			npcstats.m_bThisNpcIsABoss = true; //Set to true!
+			ApplyNothingThereBuff(entity);
 		}
 		else
 		{
@@ -1628,7 +1629,7 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 				}
 				else
 				{
-					if(attacker > 0 && attacker < MaxClients)
+					if(attacker > 0 && attacker <= MaxClients)
 						TE_SendToClient(attacker);
 				}
 			}
@@ -1642,7 +1643,7 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 				}
 				else
 				{
-					if(attacker > 0 && attacker < MaxClients)
+					if(attacker > 0 && attacker <= MaxClients)
 						TE_SendToClient(attacker);
 				}
 			}
@@ -1655,7 +1656,7 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 				}
 				else
 				{
-					if(attacker > 0 && attacker < MaxClients)
+					if(attacker > 0 && attacker <= MaxClients)
 						TE_SendToClient(attacker);
 				}
 			}
@@ -1669,7 +1670,7 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 				}
 				else
 				{
-					if(attacker > 0 && attacker < MaxClients)
+					if(attacker > 0 && attacker <= MaxClients)
 						TE_SendToClient(attacker);
 				}
 			}
@@ -1683,7 +1684,7 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 				}
 				else
 				{
-					if(attacker > 0 && attacker < MaxClients)
+					if(attacker > 0 && attacker <= MaxClients)
 						TE_SendToClient(attacker);
 				}
 			}
@@ -1697,7 +1698,7 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 				}
 				else
 				{
-					if(attacker > 0 && attacker < MaxClients)
+					if(attacker > 0 && attacker <= MaxClients)
 						TE_SendToClient(attacker);
 				}
 			}
@@ -1711,7 +1712,7 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 				}
 				else
 				{
-					if(attacker > 0 && attacker < MaxClients)
+					if(attacker > 0 && attacker <= MaxClients)
 						TE_SendToClient(attacker);
 				}
 			}
@@ -1724,7 +1725,7 @@ void OnTakeDamageBleedNpc(int victim, int &attacker, int &inflictor, float &dama
 				}
 				else
 				{
-					if(attacker > 0 && attacker < MaxClients)
+					if(attacker > 0 && attacker <= MaxClients)
 						TE_SendToClient(attacker);
 				}
 			}

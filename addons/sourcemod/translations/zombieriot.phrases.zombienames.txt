@@ -3662,11 +3662,23 @@
 		"it"	"Xeno infetto precocemente"
 		"ko"	"제노 초기 감염자"
 	}
+	"Xeno Very Early Infected"
+	{
+		"en"	"Xeno Very Early Infected"
+		"it"	"Xeno infetto precocemente"
+		"ko"	"제노 극초기 감염자"
+	}
 	"Xeno Patient Few"
 	{
 		"en"	"Xeno Patient Few"
 		"it"	"Pochi pazienti Xeno"
 		"ko"	"제노 소수 환자"
+	}
+	"Xeno Very Patient Few"
+	{
+		"en"	"Xeno Very Patient Few"
+		"it"	"Pochi pazienti Xeno"
+		"ko"	"제노 극소수 환자"
 	}
 	"Xeno Ouroboros Ekas"
 	{
@@ -8167,5 +8179,15 @@
 	{
 		"en"	"SIGMALLER"
 		"ko"	"시그마 전령병"
+	}
+	"Nothing There"
+	{
+		"en"	"Nothing There"
+		"ko"	"아무 것도 없는"
+	}
+	"Warm-up Vivithorn"
+	{
+		"en"	"Warm-up Vivithorn"
+		"ko"	"몸풀기 중인 비비쏜"
 	}
 }

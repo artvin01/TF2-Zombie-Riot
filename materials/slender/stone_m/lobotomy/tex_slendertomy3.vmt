@@ -1,0 +1,19 @@
+"VertexLitGeneric"
+{
+	"$basetexture" "slender\stone_m\lobotomy\tex_slendertomy3"
+	"$bumpmap" "slender\stone_m\lobotomy\tex_slendertomy3_norm"
+"$nocull" "1"
+
+"$rimlightboost" ".5"
+"$rimmask" "1"
+"$rimlight" "1"
+"$rimlightexponent" "3"
+
+
+	"$halflambert" "1"
+
+$phong 1
+$phongboost .1
+$phongexponent 5
+$phongfresnelranges "[0.5 0 .05]"
+}

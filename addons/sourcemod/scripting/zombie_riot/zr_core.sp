@@ -1130,6 +1130,7 @@ void ZR_MapStart()
 	ResetMapStartExploARWeapon();
 	Gunsaw_MapStart();
 	IndexFather_MapStart();
+	SupplyDrop_MapStart();
 	
 	Zombies_Currently_Still_Ongoing = 0;
 	// An info_populator entity is required for a lot of MvM-related stuff (preserved entity)
@@ -1968,7 +1969,7 @@ public Action Timer_Dieing(Handle timer, int client)
 				SetEntityHealth(client, 50);
 				RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(client));
 				Rogue_TriggerFunction(Artifact::FuncRevive, client);
-				//Gunsaw_TryBodySteal(client, false, pos);
+				Gunsaw_TryBodySteal(client, false, pos, true);
 				int entity, i;
 				while(TF2U_GetWearable(client, entity, i))
 				{
@@ -2751,11 +2752,12 @@ stock int MaxArmorCalculation(int ArmorLevel = -1, int client, float multiplyier
 	}
 	//half armor if they have this thing, but only if they arent under corrosion.
 	if((f_LivingArmorPenalty[client] > GetGameTime() || (Attributes_Get(client, Attrib_Armor_AliveMode, 0.0)) != 0.0) && Armor_Charge[client] >= 0)
-		Armor_Max /= 2;
+		multiplyier *= 0.75;	//Armor_Max /= 2;
 		
 	if(ZR_Get_Modifier() == NOSTALGICA)
 		Armor_Max = RoundToCeil(float(Armor_Max) * 0.75);
 		
+	multiplyier *= GLOBAL_ELEMENTAL_NERF_PLAYER;
 	return (RoundToCeil(float(Armor_Max) * multiplyier));
 	
 }
@@ -3720,7 +3722,7 @@ void SetCustomFog(int fogType, int color1[4], int color2[4], float start, float 
 		else if (count == 1)
 		{
 			// We only found 1 env_fog_controller, this has to be the map's
-			MapFogEntity = mapFog;
+			MapFogEntity = EntIndexToEntRef(mapFog);
 		}
 		else
 		{
@@ -3749,7 +3751,7 @@ void SetCustomFog(int fogType, int color1[4], int color2[4], float start, float 
 				lastController = controller;
 			}
 			
-			MapFogEntity = lastController;
+			MapFogEntity = EntIndexToEntRef(lastController);
 		}
 	}
 	

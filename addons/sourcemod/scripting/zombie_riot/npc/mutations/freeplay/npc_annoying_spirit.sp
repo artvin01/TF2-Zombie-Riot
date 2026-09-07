@@ -78,10 +78,10 @@ methodmap AnnoyingSpirit < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		npc.m_flSpeed = 275.0;
-		npc.m_bCamo = true;
+		npc.m_bCamo = false;
 		Is_a_Medic[npc.index] = true;
 
-		npc.m_fTimeBefore = GetGameTime(npc.index) + 240.0;
+		npc.m_fTimeBefore = GetGameTime(npc.index) + 60.0;
 
 		SetEntityRenderMode(npc.index, RENDER_TRANSCOLOR);
 		SetEntityRenderColor(npc.index, 50, 50, 50, 30);

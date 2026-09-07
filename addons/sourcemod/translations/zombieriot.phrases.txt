@@ -4834,11 +4834,11 @@
 	}
 	"Default Desc"
 	{
-		"en"	"Fight against the classic zombies and Whiteflower soldiers!"
+		"en"	"Someone contacted us that there's a surge of zombies in Crowholm. Bob the Second sent us, the secondary mercs, to check it out."
 		"fr"	"Allez face-à-face contre les zombies et Combine classiques!"
 		"chi"	"击败尸群，打败联合军！"
 		"it"	"Combatti contro i classici zombie e combatti contro le combinazioni!"
-		"ko" 	"기본적인 좀비들과 배풍등의 병사들을 상대로 살아남으세요!"
+		"ko" 	"누군가 크로우홈에 좀비 떼가 대거 출몰하고 있다고 연락을 해왔습니다. 확인을 하기 위해 밥 2세가 우리, 두 번째 용병 부대를 보냈습니다."
 	}
 	"True Fusion Warrior Wave Desc"
 	{
@@ -4990,9 +4990,9 @@
 	}
 	"Laboratories Raid Desc"
 	{
-		"en"	"Lore order: (10) After construction and zilius's attack, Izan sends you to an old facility, it seems to have an exact replica of some places..."
-		"it"	"Ordine Lore: (10) Dopo la struttura e l'attacco di Zilius, Izan ti manda in una vecchia struttura, che sembra avere una replica esatta di alcuni luoghi..."
-		"ko"	"설정 순서: (10) 생존연산에서 질리우스의 습격을 버텨낸 후, 이잔은 당신을 오래된 시설로 보냈습니다. 그곳에는 몇몇 장소와 완전히 동일한 복제물이 존재하는 것처럼 보입니다…"
+		"en"	"Lore order: (12) After construction and zilius's attack, Izan sends you to an old facility, it seems to have an exact replica of some places..."
+		"it"	"Ordine Lore: (12) Dopo la struttura e l'attacco di Zilius, Izan ti manda in una vecchia struttura, che sembra avere una replica esatta di alcuni luoghi..."
+		"ko"	"설정 순서: (12) 생존연산에서 질리우스의 습격을 버텨낸 후, 이잔은 당신을 오래된 시설로 보냈습니다. 그곳에는 몇몇 장소와 완전히 동일한 복제물이 존재하는 것처럼 보입니다…"
 	}
 	"Twirl Raid Desc"
 	{
@@ -5454,9 +5454,9 @@
 	}
 	"Almina Nemal Desc"
 	{
-		"en" "(10) Almina and Expidonsa offer training to help against the true final battle against the void... Although alminans seem to take it extremly seriously."
+		"en" "Lore order: (10) Almina and Expidonsa offer training to help against the true final battle against the void... Although alminans seem to take it extremly seriously."
 		"fr" "Almina et Expidonsa vous offrent un entraînement qui vous aiderait pour le combat final contre le Void... Il semblerait que les Alminans prennent ceci extrêmement sérieusement, pourtant."
-		"it"	"(10) Almina e expidonsa offrono addestramento per aiutare contro la vera battaglia finale contro il vuoto... Anche se gli iberici sembrano prenderla estremamente sul serio."
+		"it"	"Lore order: (10) Almina e expidonsa offrono addestramento per aiutare contro la vera battaglia finale contro il vuoto... Anche se gli iberici sembrano prenderla estremamente sul serio."
 		"ko" "설정 순서: (10) 알미나와 엑스피돈사가 공허와의 최후의 전투를 돕기 위한 대비 훈련을 제공하려고 합니다... 비록 알미나인들은 이를 매우 심각하게 받아들이는 것 같지만요."
 	}
 	"Revenant's Shadow"
@@ -6120,5 +6120,19 @@
 	{
 		"en"		"Ammo box here!"
 		"ko"		"탄약 상자는 여기 있습니다!"
+	}
+	"Rabbit Protocol"
+	{
+		"en" 		"⚠ RABBIT PROTOCOL ⚠\n⚠ RABBIT PROTOCOL ⚠\n⚠ RABBIT PROTOCOL ⚠"
+	}
+	"NT Retry Day"
+	{
+		"en" 		"{cyan}[Day ??? rewind to the memory repository, {crimson}all agents dead.{cyan}]"
+		"ko"		"{cyan}[Day ??? 기억저장소로 돌아가기, {crimson}모든 직원이 사망했습니다.{cyan}]"
+	}
+	"NT Death Msg"
+	{
+		"en" 		"And the many shells cried out one word, ''Manager''"
+		"ko"		"그리고 많은 껍데기들은 '관리자님' 만을 부르짖었다."
 	}
 }

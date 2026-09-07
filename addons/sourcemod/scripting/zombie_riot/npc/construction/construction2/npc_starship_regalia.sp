@@ -1849,7 +1849,7 @@ static void HandleBeacons(RegaliaClass npc)
 	
 	Beacon = NPC_CreateByName("npc_starship_beacon", npc.index, fl_BeaconSpawnPos[selection], {0.0, 0.0, 0.0}, GetTeam(npc.index), npc.Anger ? "style1;lifeloss" : "style1");
 	int health = RoundToFloor(ReturnEntityMaxHealth(npc.index) * 0.07);	//like 7% hp of ship
-	if(Beacon < MaxClients)
+	if(Beacon <= MaxClients)
 		return;
 
 	npc.m_flBeaconRespawnTimer = GameTime + GetRandomFloat(10.0, 11.0 + (5.0 * npc.m_iBeaconsExist));

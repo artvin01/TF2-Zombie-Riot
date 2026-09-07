@@ -28,7 +28,7 @@ void Vestan_Radioguard_OnMapStart_NPC()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_radioguard");
 	strcopy(data.Icon, sizeof(data.Icon), "victoria_radioguard");
 	data.IconCustom = true;
-	data.Flags = 0;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;
@@ -84,7 +84,7 @@ methodmap Vestan_Radioguard < CClotBody
 	{
 		Vestan_Radioguard npc = view_as<Vestan_Radioguard>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.3", "80000", ally, .isGiant = true));
 		
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_PRIMARY");

@@ -1876,6 +1876,11 @@
 		"it"		"Pozione di affrettamento"
 		"ko"		"신속 포션"
 	}
+	"Precision Potion"
+	{
+		"en"		"Precision Potion"
+		"ko"		"정밀 포션"
+	}
 	"The Bombinomicon"
 	{
 		"en"		"The Bombinomicon"
@@ -2415,8 +2420,7 @@
 	}
 	"Living Armor Desc"
 	{
-		"en"		"-Armor now regens over 15 seconds if not hurt\n-Armor icon changes\n-Max Armor is halved\n-Armor protects only 50％ instead of 75％\n-Cant get armor from buildings\n-Armor corrosion disables this perk"
-		"ko"		"-피해를 입지 않으면 아머가 15초에 거쳐 재생\n-아머 아이콘 변경, 최대 아머가 절반으로 감소\n-아머의 피해 방어가 75％에서 50％로 감소\n-구조물에서 아머 획득 불가, 아머 부식이 있으면 퍽 비활성화"
+		"en"		"-Armor now regens 3 seconds after being hurt\n-Armor icon changes\n-Max Armor is 25％ less\n-Armor protects only 50％ instead of 75％\n-Cant get armor from buildings"
 	}
 	"Living Armor Chat"
 	{
@@ -3875,7 +3879,17 @@
 	"Supply Drop"
 	{
 		"en"		"Supply Drop"
-		"ko"		"물품 드롭"
+		"ko"		"보급품 투하"
+	}
+	"Supply Drop Wave Hasn't Started"
+	{
+		"en"		"This ability can only be used during active waves."
+		"ko"		"이 능력은 웨이브가 시작된 동안에만 사용할 수 있습니다."
+	}
+	"Supply Drop Wave Limit Reached"
+	{
+		"en"		"Supply Drop limit for this wave has been reached."
+		"ko"		"현재 웨이브의 보급품 투하 상한에 도달했습니다."
 	}
 	"Cripple MOAB"
 	{

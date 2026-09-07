@@ -335,6 +335,7 @@ methodmap GodAlaxios < CClotBody
 		}
 		if(StrContains(data, "seainfection") != -1)
 		{
+			WaveStart_SubWaveStart(GetGameTime() + 700.0);
 			b_NpcUnableToDie[npc.index] = true;
 			i_RaidGrantExtra[npc.index] = ALAXIOS_SEA_INFECTED;
 		}

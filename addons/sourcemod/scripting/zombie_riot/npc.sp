@@ -305,6 +305,7 @@ void NPC_ConfigSetup()
 	Donnerkrieg_OnMapStart_NPC();
 	Schwertkrieg_OnMapStart_NPC();
 	PhantomKnight_OnMapStart_NPC();
+	Nothing_There_OnMapStart_NPC();
 	BeheadedKamiKaze_OnMapStart_NPC();
 	Alt_Medic_Constructor_OnMapStart_NPC();	//3rd alt medic.
 	/*
@@ -1261,6 +1262,9 @@ void NPC_ConfigSetup()
 	KevinmeryFollower_Setup();
 
 	VScript_CacheNPCs();
+	//precache instantlyx
+	if(HasNTOnServer())
+		NPC_GetByPlugin("npc_nothing_there");
 }
 
 void NPC_MapEnd()
@@ -1795,6 +1799,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/special/npc_sawrunner.sp"
 #include "npc/special/npc_l4d2_tank.sp"
 #include "npc/special/npc_phantom_knight.sp"
+#include "npc/special/npc_nothing_there.sp"
 #include "npc/special/npc_beheaded_kamikaze.sp"
 #include "npc/special/npc_doctor.sp"
 #include "npc/special/npc_drdam_special_delivery.sp"

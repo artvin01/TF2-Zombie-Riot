@@ -1028,7 +1028,10 @@ bool VoidUnspeakable_MatterAbsorber_Pull(VoidUnspeakable npc)
 			continue;
 		
 		if (!IsValidClient(client))
+		{
+			b_PlayersPulled[client] = false;
 			continue;
+		}
 		
 		GetAbsOrigin(client, cpos);
 		MakeVectorFromPoints(cpos, pos, velocity);

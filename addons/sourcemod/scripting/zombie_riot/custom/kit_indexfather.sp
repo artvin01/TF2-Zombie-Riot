@@ -1345,7 +1345,7 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 	{
 		i_FuriosoHits[attacker]++;
 		f_SwitchWeaponsRandomly[attacker] = GetGameTime() + 0.25;
-		f_FuriosoInUse[attacker] = GetGameTime() + 5.0;
+		f_FuriosoInUse[attacker] = GetGameTime() + 10.0;
 		IndexFather_ScytheEffect(victim);
 		if(i_FuriosoHits[attacker] >= 9)
 		{
@@ -1395,11 +1395,12 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 			}
 			case PrescriptWeapon_Hammer:
 			{
+				StatusEffects_PoiseAddStuff(attacker, 1, 1.5);
 
 			}
 			case PrescriptWeapon_Whip:
 			{
-				
+				StatusEffects_PoiseAddStuff(attacker, 1, 1.5);
 			}
 			case PrescriptWeapon_Stiletto:
 			{
@@ -1420,7 +1421,7 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 			}
 			case PrescriptWeapon_Greatsword:
 			{
-
+				StatusEffects_PoiseAddStuff(attacker, 1, 1.5);
 			}
 			case PrescriptWeapon_Sycthe:
 			{
@@ -1429,6 +1430,8 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 			}
 		}
 		AddWeaponToFurioso(attacker, 1);
+		if(WasARaidboss[attacker])
+			AddWeaponToFurioso(attacker, 1);
 	}
 	if(ResetFurioso)
 	{
@@ -1716,6 +1719,7 @@ void IndexFather_GrantRandomWeapon(int client, int originalweapon, int ForceWeap
 	Attributes_SetMulti(weapon_index, 205, Attributes_Get(originalweapon, 205, 1.0));
 	Attributes_SetMulti(weapon_index, 206, Attributes_Get(originalweapon, 206, 1.0));
 	Attributes_SetAdd(weapon_index, 180, Attributes_Get(originalweapon, 180, 1.0));
+	Attributes_SetMulti(weapon_index, 6, 0.9);
 	EmitSoundToAll(g_AquireNewWeapon[GetRandomInt(0, sizeof(g_AquireNewWeapon) - 1)], client, SNDCHAN_STATIC, 70, _, 0.5, 100);
 	i_PreviousWeapon[client] = EntIndexToEntRef(weapon_index);
 	Store_SwapToItem(client, weapon_index, true);
@@ -2170,7 +2174,7 @@ int IndexFather_MaxStacksForFurioso(int client)
 
 	//each grace reduces by 10
 	ReduceBy *= 10;
-	return 100 - ReduceBy;
+	return ((100 - ReduceBy) / 2);
 }
 
 void IndexFather_AllyDodgedAttack(int client)

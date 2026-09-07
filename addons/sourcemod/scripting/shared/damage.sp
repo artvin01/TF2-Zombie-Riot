@@ -271,7 +271,7 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 				case 150:
 					damage *= 0.2;
 
-				case 200:
+				case 200, 250, 300:
 					damage *= 0.1;
 			}
 		}
@@ -1521,6 +1521,10 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		case WEAPON_BURNINGTHUMB:
 		{
 			BurningThumb_NPCTakeDamage(victim, attacker, damage, weapon);
+		}
+		case WEAPON_GUNSAW:
+		{
+			Gunsaw_NPCTakeDamage(victim, attacker);
 		}
 	}
 #endif

@@ -726,6 +726,7 @@ public void Timer_Do_Melee_Attack_Internal(DataPack pack)
 		{
 			char SoundStringToPlay[256];
 			bool OverrideSound = false;
+			int Pitch = 100;
 #if defined ZR
 			switch(i_CustomWeaponEquipLogic[weapon])
 			{
@@ -734,13 +735,21 @@ public void Timer_Do_Melee_Attack_Internal(DataPack pack)
 					OverrideSound = true;
 					Format(SoundStringToPlay,sizeof(SoundStringToPlay),"replay/snip.wav");	
 				}
+				
+			}
+			if(IsRedMistWeapon(client, weapon) && RedMistFinalSwing(weapon))
+			{
+				OverrideSound = true;
+				
+				Format(SoundStringToPlay,sizeof(SoundStringToPlay),	"weapons/samurai/tf_katana_slice_0%i.wav", GetRandomInt(1,3));
+				Pitch = 95;
 			}
 #endif
 			if(soundIndex == MELEE_HIT && OverrideSound)
 			{
 				
 				EmitSoundToAll(SoundStringToPlay, client, SNDCHAN_STATIC, RoundToNearest(90.0 * f_WeaponVolumeSetRange[weapon])
-				, _, 1.0 * f_WeaponVolumeStiller[weapon]);
+				, _, 1.0 * f_WeaponVolumeStiller[weapon], Pitch);
 			}
 			else if(i_WeaponSoundIndexOverride[weapon] != -1)
 			{

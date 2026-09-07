@@ -116,7 +116,7 @@ methodmap VestanPayback < CClotBody
 	{
 		VestanPayback npc = view_as<VestanPayback>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_2_MODEL, "1.5", "8000", ally, false, true));
 		
-		i_NpcWeight[npc.index] = 1;
+		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_TEUTON_WALK_NEW");
