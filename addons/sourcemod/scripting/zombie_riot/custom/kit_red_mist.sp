@@ -1240,7 +1240,7 @@ public Action Onrush_Check_Distance(Handle timer, DataPack Onrush_pack)
 		Strenght_boost = 1.0 + (0.05 * Strenght_Amount[client]);
 		OnrushDamage *= Strenght_boost;
 		OnrushDamage *= 2.5; //yes
-		RedMistReduceCD(weapon, 1.0);
+		RedMistReduceCD(client, 1.0);
 		static float angles[3];
 		GetEntPropVector(client, Prop_Send, "m_angRotation", angles);
 		float vecForward[3];
