@@ -1389,8 +1389,7 @@ public void Weapon_GunsawShotgun_M1(int client, int weapon, bool crit, int slot)
 		TF2_RemoveCondition(client, TFCond_FocusBuff);
 
 		float ratio = BoomstickAdjustDamageAndAmmoCount(weapon, 1);
-		float cooldown = 1.0 + (ratio * 0.5);
-		Ability_Apply_Cooldown(client, 2, 1.25 * cooldown * cooldown);
+		Ability_Apply_Cooldown(client, 2, 2.0 * ratio);
 		
 		float vec[3], vel[3];
 		GetClientEyePosition(client, vec);
