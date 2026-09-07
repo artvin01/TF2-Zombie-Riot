@@ -62,6 +62,8 @@ static float Onrush_Redash_Window[MAXPLAYERS];
 #define VERTICAL_SLASH_SOUND "items/pumpkin_explode1.wav"
 #define HORIZONTAL_SLASH_SOUND "npc/manhack/grind_flesh2.wav"
 
+#define DMG_BUFF_SWING 0.75
+
 #define SWING_TYPE_NORMAL 0
 #define SWING_TYPE_SPECIAL 1
 #define MAX_EGO_CHARGE 1000
@@ -596,7 +598,6 @@ public void Red_Mist_OnTakeDamage_Take(int victim, int &attacker, int &inflictor
 	}
 	if(zr_custom_damage & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
 		return;
-	
 
 	float RMC_damage_cap = 0.0;
 	float current = GetEntPropFloat(equipped_weapon, Prop_Send, "m_flNextPrimaryAttack");
@@ -639,7 +640,7 @@ public void Red_Mist_OnTakeDamage_Take(int victim, int &attacker, int &inflictor
 					if(b_WeaponAttackSpeedModified[equipped_weapon] == 0)
 					{
 						//inside final swing logic
-						CounterDamage *= 0.75;
+						CounterDamage *= DMG_BUFF_SWING;
 					}
 					static float angles[3];
 					GetEntPropVector(victim, Prop_Send, "m_angRotation", angles);
@@ -834,12 +835,15 @@ public void Red_Mist_OnTakeDamage_Deal(int victim, int &attacker, int &inflictor
 {
 	if(CheckInHud())
 		return;
+	damage /= DMG_BUFF_SWING;
 	if(zr_custom_damage & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
 		return;
 	
 	//dmg nerf overall
 	damage *= 0.95;
 	damage *= 0.9;
+
+	//buff calcs stuff lol
 
 	RedMistReduceCD(attacker, 0.3);
 	float Strenght_boost;
@@ -1002,7 +1006,7 @@ public void Red_Mist_Main_Attack(int client, int weapon)
 			b_WeaponAttackSpeedModified[weapon] = 2;
 			attackspeed = (attackspeed * 0.33);
 			Attributes_Set(weapon, 6, attackspeed);
-			damagestat = (damagestat * 0.75);
+			damagestat = (damagestat * DMG_BUFF_SWING);
 			Attributes_Set(weapon, 2, damagestat); //Make it really fast for 2 hits!
 		}
 		//PrintToChatAll("Special attack");
@@ -1081,7 +1085,7 @@ public void Red_Mist_Main_Attack(int client, int weapon)
 			b_WeaponAttackSpeedModified[weapon] = 2;
 			attackspeed = (attackspeed * 0.33);
 			Attributes_Set(weapon, 6, attackspeed);
-			damagestat = (damagestat * 0.75);
+			damagestat = (damagestat * DMG_BUFF_SWING);
 			Attributes_Set(weapon, 2, damagestat); //Make it really fast for 2 hits!
 		}
 		else
@@ -1090,7 +1094,7 @@ public void Red_Mist_Main_Attack(int client, int weapon)
 			{
 				attackspeed = (attackspeed / 0.33);
 				Attributes_Set(weapon, 6, attackspeed); //Make it really fast for 2 hits!
-				damagestat = (damagestat / 0.75);
+				damagestat = (damagestat / DMG_BUFF_SWING);
 				Attributes_Set(weapon, 2, damagestat); //Make it really fast for 2 hits!
 			}
 			b_WeaponAttackSpeedModified[weapon] -= 1;
@@ -1234,7 +1238,7 @@ public Action Onrush_Check_Distance(Handle timer, DataPack Onrush_pack)
 		if(b_WeaponAttackSpeedModified[weapon] == 0)
 		{
 			//inside final swing logic
-			OnrushDamage *= 0.75;
+			OnrushDamage *= DMG_BUFF_SWING;
 		}
 		float Strenght_boost;
 		Strenght_boost = 1.0 + (0.05 * Strenght_Amount[client]);
