@@ -1921,6 +1921,7 @@
 	"Grigori's Blessing Desc"
 	{
 		"en"	"-Gain +300 Health\n-Life regen 1％ of your max hp per second up to 75％ max hp\n-During bleedout, you also will survive for longer.\n-Out of battle, heals extra with more melee upgrades."
+		"ko"	"-최대 체력 +300\n-초당 최대 체력의 1％만큼 체력을 회복하며 최대 체력의 75％까지 회복\n-다운시 더 오래 생존\n-비전투 상태라면 보유한 근접 개선에 따라 추가 회복"
 	}
 	
 	"Full Riot Gear Desc"
@@ -5573,6 +5574,7 @@
 	"The Red Mist Desc 5"
 	{
 		"en"	"-Gain an upgrade point\nUnlocks new special card\n-Overall Stat Increases\n-Special card CD reduced on hit with any ability or melee."
+		"ko"	"-개선 포인트 획득\n-새로운 특별 책장 해금\n-전반적인 능력치 증가\n-능력 혹은 근접 적중 시 특별 책장의 쿨타임 감소"
 	}
 	"The Red Mist Desc 6"
 	{
@@ -5782,7 +5784,7 @@
 	"Gunsaw Mercenary Desc"
 	{
 		"en"	"-Shotgun and pistol, build cheap buildings, but no repairing\n-Able to body swap you to an enemy's body\n  -Takes the stats and weapons of the enemy\n  -Swap by melee hitting a nearby enemy while downed or crouched"
-		"ko"	"-산탄총과 권총 보유, 저렴한 구조물을 건설할 수 있으나 수리 불가\n-적의 몸으로 육체를 치환 할 수 있음:\n   적의 능력치와 무기를 탈취\n   다운 상태일 때 적을 처치하여 치환"
+		"ko"	"-산탄총과 권총 보유, 저렴한 구조물을 건설할 수 있으나 수리 불가\n-적의 몸으로 육체를 치환 할 수 있음:\n   적의 능력치와 무기를 탈취\n   다운 상태, 혹은 웅크리고 있을 때 적을 근접 무기로 적중하여 치환"
 	}
 	"Gunsaw Mercenary Pap 1"
 	{
