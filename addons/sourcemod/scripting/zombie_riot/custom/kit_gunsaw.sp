@@ -1219,27 +1219,27 @@ static Action GunsawHudTimer(Handle timer, DataPack pack)
 			
 			if(MonologueMoodBonus[client] > 0.0)
 			{
-				MonologueMoodBonus[client] -= 0.01;
+				MonologueMoodBonus[client] -= 0.1;
 			}
 			else if(MonologueMoodBonus[client] < 0.0)
 			{
-				MonologueMoodBonus[client] += 0.01;
+				MonologueMoodBonus[client] += 0.1;
 			}
 
 			if(dieingstate[client])
 			{
 				if(MonologueMoodBonus[client] > -100.0)
-					MonologueMoodBonus[client] -= 0.1;
+					MonologueMoodBonus[client] -= 1.0;
 			}
 			else if(GetClientHealth(client) >= ReturnEntityMaxHealth(client))
 			{
 				if(MonologueMoodBonus[client] < 50.0)
-					MonologueMoodBonus[client] += 0.05;
+					MonologueMoodBonus[client] += 0.5;
 			}
 			else if(GetClientHealth(client) < (ReturnEntityMaxHealth(client) / 2))
 			{
 				if(MonologueMoodBonus[client] > -70.0)
-					MonologueMoodBonus[client] -= 0.05;
+					MonologueMoodBonus[client] -= 0.5;
 			}
 
 			Monologue_Idle(client);
@@ -2078,7 +2078,7 @@ void Gunsaw_Monologue_UseFridge(int client)
 			"Mmmmm..."
 		};
 		
-		Gunsaw_Monologue_AddMood(client, 1.0);
+		Gunsaw_Monologue_AddMood(client, 5.0);
 		PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
 	}
 }
@@ -2319,7 +2319,7 @@ void Gunsaw_Monologue_PlayerDeath(const float pos[3])
 			PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
 		}
 		
-		Gunsaw_Monologue_AddMood(client, -1.0);
+		Gunsaw_Monologue_AddMood(client, -5.0);
 	}
 }
 
@@ -2382,7 +2382,7 @@ static void Monologue_Drug(int client)
 		PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
 	}
 	
-	Gunsaw_Monologue_AddMood(client, 3.0);
+	Gunsaw_Monologue_AddMood(client, 20.0);
 }
 
 static void Monologue_Idle(int client)
@@ -2904,7 +2904,7 @@ void Gunsaw_Monologue_Pet(int client)
 	};
 
 	PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
-	Gunsaw_Monologue_AddMood(client, 10.0);
+	Gunsaw_Monologue_AddMood(client, 30.0);
 }
 
 void Gunsaw_Monologue_LiveExpieReaction(int client, int entity)
