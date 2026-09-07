@@ -12029,16 +12029,14 @@ void StatusEffects_Gunsaw()
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "*");
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = false;
-	data.OnTakeDamage_TakenFunc		= ShrapnelDamageTaken;
+	data.OnTakeDamage_PostVictim		= ShrapnelDamageTaken;
 	StatusEffect_AddGlobal(data);
 }
 
-static float ShrapnelDamageTaken(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float damage)
+static void ShrapnelDamageTaken(int attacker, int victim, float damage, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
-	if(Apply_StatusEffect.TotalOwners[attacker])
+	if(Apply_StatusEffect.TotalOwners[attacker] && !(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS))
 		StartBleedingTimer(victim, attacker, damage * 0.15, 6, -1, damagetype);
-
-	return 1.0;
 }
 static void FuriosoAbilityStart(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {

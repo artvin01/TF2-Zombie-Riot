@@ -1969,7 +1969,7 @@ public Action Timer_Dieing(Handle timer, int client)
 				SetEntityHealth(client, 50);
 				RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(client));
 				Rogue_TriggerFunction(Artifact::FuncRevive, client);
-				//Gunsaw_TryBodySteal(client, false, pos);
+				Gunsaw_TryBodySteal(client, false, pos, true);
 				int entity, i;
 				while(TF2U_GetWearable(client, entity, i))
 				{
