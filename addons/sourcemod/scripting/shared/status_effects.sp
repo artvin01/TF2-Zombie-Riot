@@ -12179,7 +12179,7 @@ void ApplyNothingThereBuff(int victim)
 	int AverageLevel = Waves_AverageLevelGet(120);
 	if(AverageLevel <= 75) //dontn spawn if too many noobs
 		return;
-	if(GurannteedForce || GetRandomFloat(0.0,1.0) < (0.01))
+	if(GurannteedForce || GetRandomFloat(0.0,1.0) < (0.015))
 	{
 		GurannteedForce = false;
 		ApplyStatusEffect(victim, victim, "Nothing There Internal", GetRandomFloat(30.0,60.0));
@@ -12190,11 +12190,8 @@ bool NTCheckValidNpc(int victim)
 	//Prevent specific things from getting it
 	char npc_classname[60];
 	NPC_GetPluginById(i_NpcInternalId[victim], npc_classname, sizeof(npc_classname));
-	if(StrEqual(npc_classname, "npc_john_the_allmighty") || 
-	StrEqual(npc_classname, "npc_medival_villager") || 
-	StrEqual(npc_classname, "npc_stalker_goggles") || 
-	StrEqual(npc_classname, "npc_drdam_special_delivery") || 
-	StrEqual(npc_classname, "npc_beheaded_kami"))
+	if(StrEqual(npc_classname, "npc_stalker_goggles") || 
+	StrEqual(npc_classname, "npc_drdam_special_delivery"))
 	{
 		GurannteedForce = true;
 		return false;

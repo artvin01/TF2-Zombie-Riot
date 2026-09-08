@@ -51,6 +51,15 @@ static float Onrush_Redash_Window[MAXPLAYERS];
 #define ABNORMPAGE_VAMPIRISM        (1 << 6)
 #define ABNORMPAGE_DEEP_WOUND       (1 << 7)
 
+#define REDMIST_STRONG_SWING 1
+
+static const char g_AttackSound_3[][] = {
+	"zombie_riot/nothing_there/nt_attack3.mp3",
+};
+static const char g_HitSound_3[][] = {
+	"zombie_riot/nothing_there/nt_skill3_hit.mp3",
+};
+
 #define ABNORM_ENTER_SOUND "replay/enterperformancemode.wav"
 #define ABNORM_EXIT_SOUND	"replay/exitperformancemode.wav"
 #define PAGE_SELECT_SOUND	"passtime/scroll_open.wav"
@@ -66,6 +75,7 @@ static float Onrush_Redash_Window[MAXPLAYERS];
 
 #define SWING_TYPE_NORMAL 0
 #define SWING_TYPE_SPECIAL 1
+#define SWING_TYPE_GOODBYE 2
 #define MAX_EGO_CHARGE 1000
 
 static int BeamWand_Laser;
@@ -398,6 +408,13 @@ void Red_Mist_Horizontal_Slash_DoSwingTrace(int client, float &CustomMeleeRange,
 			enemies_hit_aoe = 1;
 			ignore_walls = false;
 		}
+		case SWING_TYPE_GOODBYE:
+		{
+			CustomMeleeRange = MELEE_RANGE * 1.8;
+			CustomMeleeWide = MELEE_BOUNDS * 5.0;
+			enemies_hit_aoe = 25; //lol
+			ignore_walls = false;
+		}
 		case SWING_TYPE_SPECIAL:
 		{
 			CustomMeleeRange = MELEE_RANGE * 1.8;
@@ -409,7 +426,15 @@ void Red_Mist_Horizontal_Slash_DoSwingTrace(int client, float &CustomMeleeRange,
 	}
 }
 bool RM_Precached = false;
-
+void RedMistEndGoodbye(int client)
+{
+	if(GetNTBuff(client) && Ego_Active[client] && current_card_selection[client] == 1)
+	{
+		swing_type[client] = SWING_TYPE_NORMAL;
+		current_card_selection[client] = 0;
+		Special_Active[client] = false;
+	}
+}
 public void RedMist_ResetAbnorms()
 {
 	Zero(Abno_Pages);
@@ -430,7 +455,7 @@ public void Red_Mist_OnMapStart()
 	PrecacheSound("physics/nearmiss/whoosh_large1.wav");
 	PrecacheSound("npc/roller/blade_cut.wav");
 	PrecacheSound("npc/antlion_guard/shove1.wav");
-
+	PrecacheSound("weapons/grappling_hook_impact_flesh.wav");
     //precache stuff
 	Zero(Abno_Pages);
 	Zero2(Special_Cooldowns);
@@ -500,7 +525,7 @@ bool IsRedMistWeapon(int client, int weapon)
 }
 bool RedMistFinalSwing(int weapon)
 {
-	if(b_WeaponAttackSpeedModified[weapon] == 0)
+	if(b_WeaponAttackSpeedModified[weapon] == REDMIST_STRONG_SWING)
 	{
 		return true;
 	}
@@ -637,7 +662,7 @@ public void Red_Mist_OnTakeDamage_Take(int victim, int &attacker, int &inflictor
 					float CounterDamage = 65.0;
 					CounterDamage *= WeaponDamageAttributeMultipliers(equipped_weapon,_,victim);
 					CounterDamage *= 0.5; //1-1 swing damage is too strong
-					if(b_WeaponAttackSpeedModified[equipped_weapon] == 0)
+					if(b_WeaponAttackSpeedModified[equipped_weapon] == REDMIST_STRONG_SWING)
 					{
 						//inside final swing logic
 						CounterDamage *= DMG_BUFF_SWING;
@@ -835,7 +860,7 @@ public void Red_Mist_OnTakeDamage_Deal(int victim, int &attacker, int &inflictor
 {
 	if(CheckInHud())
 		return;
-	damage /= DMG_BUFF_SWING;
+		
 	if(zr_custom_damage & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
 		return;
 	
@@ -845,7 +870,7 @@ public void Red_Mist_OnTakeDamage_Deal(int victim, int &attacker, int &inflictor
 
 	//buff calcs stuff lol
 
-	RedMistReduceCD(attacker, 0.3);
+	RedMistReduceCD(attacker, 0.5);
 	float Strenght_boost;
 	Strenght_boost = 1.0 + (0.05 * Strenght_Amount[attacker]);
 	damage *= Strenght_boost;
@@ -897,34 +922,49 @@ public void Red_Mist_OnTakeDamage_Deal(int victim, int &attacker, int &inflictor
 	{
 		if(current_card_selection[attacker] == 1)//vertical slash, single target, m1 ability
 		{
-			damage *= 11.0;
-			Special_Active[attacker] = false;
-			Rogue_OnAbilityUse(attacker, weapon);
-			Special_Cooldowns[attacker][1] = GetGameTime() + (60.00 * CooldownReductionAmount(attacker));
-			WeaponSpawnGibForce(victim, weapon);
-			WeaponSpawnGibForce(victim, weapon);
-			for(int listener=1; listener<=MaxClients; listener++)//for special manual download sounds
+			if(GetNTBuff(attacker) && Ego_Active[attacker])
 			{
-				if(!IsValidClient(listener))
-					continue;
+				damage *= 20.0;
+				for(int listener=1; listener<=6; listener++)
+				{
+					WeaponSpawnGibForce(victim, weapon);
+				}
+				if(!Hori_Sound_Played[attacker])
+					EmitCustomToAll(g_HitSound_3[GetRandomInt(0, sizeof(g_HitSound_3) - 1)], attacker, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+			
+				Hori_Sound_Played[attacker] = true;
+			}
+			else
+			{
+				damage *= 11.0;
+				Special_Active[attacker] = false;
+				Rogue_OnAbilityUse(attacker, weapon);
+				Special_Cooldowns[attacker][1] = GetGameTime() + (60.00 * CooldownReductionAmount(attacker));
+				WeaponSpawnGibForce(victim, weapon);
+				WeaponSpawnGibForce(victim, weapon);
+				for(int listener=1; listener<=MaxClients; listener++)//for special manual download sounds
+				{
+					if(!IsValidClient(listener))
+						continue;
 
-				if(SoundManualHas(listener))
-				{	
-					switch(GetRandomInt(1,2))
-					{
-						case 1:
+					if(SoundManualHas(listener))
+					{	
+						switch(GetRandomInt(1,2))
 						{
-							EmitSoundToClient(listener, "zr_manual/red_mist/kali_special_vert_fin.mp3", attacker, _, 70, _, 1.0, 100);
-						}
-						case 2:
-						{
-							EmitSoundToClient(listener, "zr_manual/red_mist/kali_special_cut.mp3", attacker, _, 70, _, 1.0, 100);
+							case 1:
+							{
+								EmitSoundToClient(listener, "zr_manual/red_mist/kali_special_vert_fin.mp3", attacker, _, 70, _, 1.0, 100);
+							}
+							case 2:
+							{
+								EmitSoundToClient(listener, "zr_manual/red_mist/kali_special_cut.mp3", attacker, _, 70, _, 1.0, 100);
+							}
 						}
 					}
-				}
-				else
-				{
-					EmitSoundToClient(listener, VERTICAL_SLASH_SOUND, attacker, _, 70, _, 1.0, 50);
+					else
+					{
+						EmitSoundToClient(listener, VERTICAL_SLASH_SOUND, attacker, _, 70, _, 1.0, 50);
+					}
 				}
 			}
 		}
@@ -998,24 +1038,33 @@ public void Red_Mist_Main_Attack(int client, int weapon)
 {
 	if(Special_Active[client])
 	{
-		float attackspeed = Attributes_Get(weapon, 6, 1.0); //thanks judgement of iberia :D
-		float damagestat = Attributes_Get(weapon, 2, 1.0); //thanks judgement of iberia :D
-		if(b_WeaponAttackSpeedModified[weapon] == 0)
-		{
-			//reset stats so dmg isnt bs here
-			b_WeaponAttackSpeedModified[weapon] = 2;
-			attackspeed = (attackspeed * 0.33);
-			Attributes_Set(weapon, 6, attackspeed);
-			damagestat = (damagestat * DMG_BUFF_SWING);
-			Attributes_Set(weapon, 2, damagestat); //Make it really fast for 2 hits!
-		}
+		MultiHitLogicRedMist(weapon, true);
 		//PrintToChatAll("Special attack");
-		if(current_card_selection[client] == 1)//vertical
+		if(GetNTBuff(client) && Ego_Active[client] && current_card_selection[client] == 1)
 		{
+			EmitCustomToAll(g_AttackSound_3[GetRandomInt(0, sizeof(g_AttackSound_3) - 1)], client, SNDCHAN_AUTO, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+			swing_type[client] = SWING_TYPE_GOODBYE;
+
 			DataPack pack = new DataPack();
 			pack.WriteCell(EntIndexToEntRef(client));
 			pack.WriteFloat(GetGameTime() + 0.07);	
 			RequestFrame(Greather_Split_Effect, pack);
+			Special_Damage_Boost[client] = false;
+
+			Hori_Sound_Played[client] = false;
+			Rogue_OnAbilityUse(client, weapon);
+			Special_Cooldowns[client][1] = GetGameTime() + (60.00 * CooldownReductionAmount(client));
+			return;
+		}
+		else
+		{
+			if(current_card_selection[client] == 1)//vertical
+			{
+				DataPack pack = new DataPack();
+				pack.WriteCell(EntIndexToEntRef(client));
+				pack.WriteFloat(GetGameTime() + 0.07);	
+				RequestFrame(Greather_Split_Effect, pack);
+			}
 		}
 		if(current_card_selection[client] == 2)//ego
 		{
@@ -1078,33 +1127,61 @@ public void Red_Mist_Main_Attack(int client, int weapon)
 	}
 	else
 	{
-		float attackspeed = Attributes_Get(weapon, 6, 1.0); //thanks judgement of iberia :D
-		float damagestat = Attributes_Get(weapon, 2, 1.0); //thanks judgement of iberia :D
-		if(b_WeaponAttackSpeedModified[weapon] <= 0)
-		{
-			b_WeaponAttackSpeedModified[weapon] = 2;
-			attackspeed = (attackspeed * 0.33);
-			Attributes_Set(weapon, 6, attackspeed);
-			damagestat = (damagestat * DMG_BUFF_SWING);
-			Attributes_Set(weapon, 2, damagestat); //Make it really fast for 2 hits!
-		}
-		else
-		{
-			if(b_WeaponAttackSpeedModified[weapon] == 1)
-			{
-				attackspeed = (attackspeed / 0.33);
-				Attributes_Set(weapon, 6, attackspeed); //Make it really fast for 2 hits!
-				damagestat = (damagestat / DMG_BUFF_SWING);
-				Attributes_Set(weapon, 2, damagestat); //Make it really fast for 2 hits!
-			}
-			b_WeaponAttackSpeedModified[weapon] -= 1;
-		}
+		MultiHitLogicRedMist(weapon);
 	}
-	if(Special_Damage_Boost[client])//we do this cuz "special_active" gets disabled before this function gets called, so this is a small workaround
-	{
-		Special_Damage_Boost[client] = false;
-	}
+	Special_Damage_Boost[client] = false;
 	swing_type[client] = SWING_TYPE_NORMAL;
+}
+
+void MultiHitLogicRedMist(int weapon, bool reset = false)
+{
+	if(reset && b_WeaponAttackSpeedModified[weapon] == 0)
+		return;
+	float attackspeed = Attributes_Get(weapon, 6, 1.0);
+	float damagestat = Attributes_Get(weapon, 2, 1.0); 
+	if(b_WeaponAttackSpeedModified[weapon] == 0)
+	{
+		b_WeaponAttackSpeedModified[weapon] = 3;
+		attackspeed = (attackspeed * 0.33);
+		Attributes_Set(weapon, 6, attackspeed);
+		return;
+	}
+
+	//both of these make the weapon attack really fast, the below one reduces the damage back down to normal as it had the super swing.
+	if(reset)
+	{
+		if(b_WeaponAttackSpeedModified[weapon] == REDMIST_STRONG_SWING)
+		{
+			damagestat = (damagestat * DMG_BUFF_SWING);
+			Attributes_Set(weapon, 2, damagestat);
+		}
+		else if(b_WeaponAttackSpeedModified[weapon] >= 2)
+		{
+			attackspeed = (attackspeed / 0.33);
+			Attributes_Set(weapon, 6, attackspeed);
+		}
+		b_WeaponAttackSpeedModified[weapon] = 0;
+		return;
+	}
+	if(b_WeaponAttackSpeedModified[weapon] == REDMIST_STRONG_SWING)
+	{
+		attackspeed = (attackspeed * 0.33);
+		Attributes_Set(weapon, 6, attackspeed);
+		damagestat = (damagestat * DMG_BUFF_SWING);
+		Attributes_Set(weapon, 2, damagestat);
+		b_WeaponAttackSpeedModified[weapon] = 3;
+	}
+	else
+	{
+		if(b_WeaponAttackSpeedModified[weapon] == 2)
+		{
+			attackspeed = (attackspeed / 0.33);
+			Attributes_Set(weapon, 6, attackspeed);
+			damagestat = (damagestat / DMG_BUFF_SWING);
+			Attributes_Set(weapon, 2, damagestat);
+		}
+		b_WeaponAttackSpeedModified[weapon] -= 1;
+	}
 }
 
 public void Red_Mist_Onrush(int client, int weapon)
@@ -1235,7 +1312,7 @@ public Action Onrush_Check_Distance(Handle timer, DataPack Onrush_pack)
 		//PrintToChatAll("hit enemy ?");
 		float OnrushDamage = 65.0;
 		OnrushDamage *= WeaponDamageAttributeMultipliers(weapon,_,client);
-		if(b_WeaponAttackSpeedModified[weapon] == 0)
+		if(b_WeaponAttackSpeedModified[weapon] == REDMIST_STRONG_SWING)
 		{
 			//inside final swing logic
 			OnrushDamage *= DMG_BUFF_SWING;
@@ -1244,7 +1321,7 @@ public Action Onrush_Check_Distance(Handle timer, DataPack Onrush_pack)
 		Strenght_boost = 1.0 + (0.05 * Strenght_Amount[client]);
 		OnrushDamage *= Strenght_boost;
 		OnrushDamage *= 2.5; //yes
-		RedMistReduceCD(client, 1.0);
+		RedMistReduceCD(client, 1.5);
 		static float angles[3];
 		GetEntPropVector(client, Prop_Send, "m_angRotation", angles);
 		float vecForward[3];
@@ -1490,7 +1567,10 @@ void Abornmality_Page_Display(int client)
 		}
 		else
 		{
-			ShowSyncHudText(client, SyncHud_WandMana, "%t", "Greater Slash Vertical", "\n [M1]");
+			if(GetNTBuff(client) && Ego_Active[client])
+				ShowSyncHudText(client, SyncHud_WandMana, "%t", "Greater Slash Vertical Goodbye", "\n [M1]");
+			else
+				ShowSyncHudText(client, SyncHud_WandMana, "%t", "Greater Slash Vertical", "\n [M1]");
 		}
 	}
 	

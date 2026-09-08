@@ -6085,6 +6085,10 @@
 		"en"	"Perform a powerful single target slash\nSwing your sword once the page is selected\n[M1]"
 		"ko"	"강력한 단일 대상 공격을 시전\n선택 후 공격 시 발동\n[M1]"
 	}
+	"Greater Slash Vertical Goodbye"
+	{
+		"en"	"Goodbye.\n[M1]"
+	}
 	"Greater Slash Horizontal"
 	{
 		"en"	"Perform a powerful aoe slash \nin front of yourself\nSwing your sword once the page is selected\n[M2]"
