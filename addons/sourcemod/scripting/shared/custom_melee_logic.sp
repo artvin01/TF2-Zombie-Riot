@@ -741,7 +741,7 @@ public void Timer_Do_Melee_Attack_Internal(DataPack pack)
 			{
 				OverrideSound = true;
 				
-				Format(SoundStringToPlay,sizeof(SoundStringToPlay),	"weapons/samurai/tf_katana_slice_0%i.wav", GetRandomInt(1,3));
+				Format(SoundStringToPlay,sizeof(SoundStringToPlay),	"weapons/grappling_hook_impact_flesh.wav");
 				Pitch = 95;
 			}
 #endif
@@ -899,6 +899,10 @@ public void Timer_Do_Melee_Attack_Internal(DataPack pack)
 			i_EntitiesHitAoeSwing[i] = -1;
 		}
 #if defined ZR
+		if(IsRedMistWeapon(client, weapon))
+		{
+			RedMistEndGoodbye(client);
+		}
 		switch(i_CustomWeaponEquipLogic[weapon])
 		{
 			case WEAPON_SUPERUBERSAW: //yes, if we miss, then we do other stuff.
