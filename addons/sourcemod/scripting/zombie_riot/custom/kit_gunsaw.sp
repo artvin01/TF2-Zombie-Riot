@@ -953,6 +953,9 @@ static bool ValidSwapTarget(int entity, bool ignoreSome = false)
 	if(entity <= MaxClients)
 		return ignoreSome;
 	
+	if(Citizen_IsIt(entity))
+		return false;
+
 	if(ignoreSome)
 	{
 		if(b_thisNpcIsARaid[entity] ||
