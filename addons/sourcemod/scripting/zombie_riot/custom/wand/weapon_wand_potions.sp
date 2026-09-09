@@ -813,10 +813,7 @@ public void Weapon_Wand_PotionShrinkTouch(int entity, int target)
 {
 	if(target)
 	{
-		if(target <= MaxClients)
-			return;
-		
-		if(GetTeam(target) == 2)
+		if(GetTeam(target) == GetTeam(entity))
 			return;
 	}
 	
@@ -861,12 +858,10 @@ public void WandPotion_PotionShrinkDo(int entity, int enemy, float damage_Dontus
 
 	if(enemy)
 	{
-		if(enemy <= MaxClients)
-			return;
-		
-		if(GetTeam(enemy) == TFTeam_Red)
+		if(GetTeam(entity) == GetTeam(enemy))
 			return;
 	}
+	
 	if(HasSpecificBuff(enemy, "Hardened Aura"))
 	{
 		return;
@@ -888,6 +883,9 @@ public void WandPotion_PotionShrinkDo(int entity, int enemy, float damage_Dontus
 	}
 	else
 	{
-		ApplyStatusEffect(owner, enemy, "Weakening Compound", 999999.0);	
+		if(enemy <= MaxClients)
+			ApplyStatusEffect(owner, enemy, "Weakening Compound", 20.0);	
+		else
+			ApplyStatusEffect(owner, enemy, "Weakening Compound", 999999.0);	
 	}
 }

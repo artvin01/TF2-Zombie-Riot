@@ -2623,6 +2623,16 @@ methodmap CClotBody < CBaseCombatCharacter
 	}
 	public bool IsOnGround()
 	{
+		if(this.index <= MaxClients)
+		{
+			int RefGround =  GetEntPropEnt(this.index, Prop_Send, "m_hGroundEntity");
+			int GroundEntity = EntRefToEntIndex(RefGround);
+			if(GroundEntity >= 0 && GroundEntity < MAXENTITIES)
+			{
+				return true;
+			}
+			return false;
+		}
 		if(i_IsNpcType[this.index] == 1)
 		{
 			return true;
@@ -3029,6 +3039,11 @@ methodmap CClotBody < CBaseCombatCharacter
 	public void GetVelocity(float vecOut[3])											   { this.GetLocomotionInterface().GetVelocity(vecOut);						   }	
 	public void SetVelocity(const float vec[3])	
 	{
+		if(this.index <= MaxClients)
+		{
+			TeleportEntity(this.index, NULL_VECTOR, NULL_VECTOR, vec);   
+			return;  
+		}
 		if(i_IsNpcType[this.index] == 1)
 			return;
 		//dont do anything.

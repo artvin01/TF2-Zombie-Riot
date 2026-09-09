@@ -10877,15 +10877,22 @@ float Sinking_DamageDealFunc(int attacker, int victim, StatusEffect Apply_Master
 void Func_SinkingMaxStacks(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
 {
 	//only display to client
-	if(HasSpecificBuff(attacker, "Call of the Heartbroken") || Apply_StatusEffect.TotalOwners[attacker])
+	if(attacker == -1)
 	{
-		if(RoundToNearest(Apply_StatusEffect.DataForUse) >= MAXSINKING_STACKS)
-			Format(HudToDisplay, SizeOfChar, "Si", RoundToNearest(Apply_StatusEffect.DataForUse), MAXSINKING_STACKS);
-		else
-			Format(HudToDisplay, SizeOfChar, "Si(%i/%i)", RoundToNearest(Apply_StatusEffect.DataForUse), MAXSINKING_STACKS);
+		Format(HudToDisplay, SizeOfChar, "Si");
 	}
 	else
-		Format(HudToDisplay, SizeOfChar, "");
+	{
+		if(HasSpecificBuff(attacker, "Call of the Heartbroken") || Apply_StatusEffect.TotalOwners[attacker])
+		{
+			if(RoundToNearest(Apply_StatusEffect.DataForUse) >= MAXSINKING_STACKS)
+				Format(HudToDisplay, SizeOfChar, "Si");
+			else
+				Format(HudToDisplay, SizeOfChar, "Si(%i/%i)", RoundToNearest(Apply_StatusEffect.DataForUse), MAXSINKING_STACKS);
+		}
+		else
+			Format(HudToDisplay, SizeOfChar, "");
+	}
 }
 
 void Sinking_TakeDamageAttackerPost(int attacker, int victim, float damage, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
@@ -12035,9 +12042,11 @@ void StatusEffects_Gunsaw()
 
 static void ShrapnelDamageTaken(int attacker, int victim, float damage, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
-	if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS))
-		if(Apply_StatusEffect.TotalOwners[attacker])
-			StartBleedingTimer(victim, attacker, damage * 0.15, 6, -1, damagetype);
+	if(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
+		return;
+	
+	if(Apply_StatusEffect.TotalOwners[attacker])
+		StartBleedingTimer(victim, attacker, damage * 0.15, 6, -1, damagetype);
 }
 static void FuriosoAbilityStart(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {

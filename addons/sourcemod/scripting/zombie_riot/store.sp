@@ -5640,6 +5640,7 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("201", f_DelayAttackspeedPreivous[client]);
 	map.SetValue("343", 1.0); //sentry attackspeed fix
 	map.SetValue("526", 1.0);//
+	map.SetValue("527", 1.0);// no tf2 afterburn
 	map.SetValue("4049", 1.0);// Elemental Res
 	
 	if(PapModeDo == PAP_MODE_BUILDING_ONLY)

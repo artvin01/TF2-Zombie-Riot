@@ -239,7 +239,8 @@ static stock bool IsValidHomingTarget(int projectile, int target, int owner)
 		   !b_StaticNPC[target] &&
 		   !b_thisNpcHasAnOutline[target] &&
 		   !b_ThisNpcIsImmuneToNuke[target] &&
-		   !b_IsGiant[target])
+		   !b_IsGiant[target] &&
+		   target > MaxClients)
 			return false;
 	}
 

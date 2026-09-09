@@ -473,6 +473,10 @@ static Action Timer_Base(Handle timer, DataPack pack)
 		if(WeaponLevel[client] >= 4)
 			UnlockedShin[client] = true;
 	}
+	if(Arena_Mode())
+	{
+		GraceOfPrescript[client] = MaxPrescriptGrace(client);
+	}
 	if(UnlockedShin[client])
 		ApplyStatusEffect(client, client, "Shin - Rien", 1.0);
 	if(GraceOfPrescript[client])

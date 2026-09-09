@@ -499,6 +499,50 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 		NPC_Ability_TrueStrength_OnTakeDamage(attacker, victim, weapon, damagetype, i_HexCustomDamageTypes[victim]);
 #endif	// RPG
 
+	if(!CheckInHud() && attacker <= MaxClients && attacker > 0)
+		OnTakeDamagePlayerSpecific(victim, attacker, inflictor, damage, damagetype, weapon);
+
+	if(attacker <= MaxClients && attacker > 0)
+	{
+		if(!CheckInHud())
+			DoClientHitmarker(attacker);
+		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+		{
+			if(IsValidEntity(weapon))
+			{
+				float damageForce[3];
+				//dummy value
+				damage = NPC_OnTakeDamage_Equipped_Weapon_Logic(victim, attacker, inflictor, damage, damagetype, weapon, damageForce, damagePosition, i_HexCustomDamageTypes[victim]);
+
+				if(!CheckInHud())
+				{
+#if defined ZR
+					OnTakeDamage_HandOfElderMages(attacker, weapon);
+					OsmosisElementalEffect_Detection(attacker, victim);
+#endif
+
+#if !defined RTS
+					OnTakeDamageOldExtraWeapons(victim, attacker, weapon);
+					OnTakeDamageBackstab(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
+#endif
+				}
+			}
+		}
+	}
+	
+	if(!CheckInHud())
+	{
+		//Do armor.
+		if(!(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS))
+		{
+			if(attacker <= MaxClients && attacker > 0)
+			{
+				if(IsValidEntity(weapon))
+					NPC_OnTakeDamage_Equipped_Weapon_Logic_PostCalc(victim, attacker, inflictor, damage, damagetype, weapon);	
+			}
+		}
+		
+	}
 	return false;
 }
 #endif	// Non-RTS

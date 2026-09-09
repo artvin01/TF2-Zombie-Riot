@@ -1765,7 +1765,7 @@ void Kit_Fractal_ResetRound()
 
 void Send_Te_Client_ZR(int client)
 {
-	if(LastMann)
+	if(LastMann || Arena_Mode())
 		TE_SendToAll();
 	else
 		TE_SendToClient(client);

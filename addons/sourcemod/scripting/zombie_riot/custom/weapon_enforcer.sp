@@ -249,11 +249,9 @@ void Enforcer_AbilityM2(int client, int weapon, int slot, int pushLevel, float p
 
 public bool Enforcer_TraceTargets(int entity, int contentsMask, int client)
 {
-	static char classname[64];
 	if(IsValidEntity(entity))
 	{
-		GetEntityClassname(entity, classname, sizeof(classname));
-		if(((b_ThisWasAnNpc[entity] && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetTeam(entity) != GetTeam(client)))
+		if(IsValidEnemy(client, entity, true))
 		{
 			for(int i; i < sizeof(EnemiesHit); i++)
 			{

@@ -760,7 +760,7 @@ public int Skull_GetClosestTarget(int ent, float range)
 				if (TR_DidHit(Trace))
 				{
 					int iHit = TR_GetEntityIndex(Trace);
-					if (b_ThisWasAnNpc[iHit] && dist < ShortestDistance)
+					if (iHit && dist < ShortestDistance)
 					{
 						Closest = i;
 						ShortestDistance = dist;
@@ -1010,7 +1010,7 @@ public bool Skull_DontHitSkulls(int entity, int contentsMask) //Borrowed from Ap
 	
 	if (hit && IsValidEntity(entity))
 	{
-		hit = b_ThisWasAnNpc[entity];
+		hit = true;
 	}
 	
 	return hit;
