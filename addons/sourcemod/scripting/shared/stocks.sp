@@ -1408,6 +1408,10 @@ stock int HealEntityGlobal(int healer,
 				HealTotal *= 0.5;
 
 	}
+	if(Arena_Mode())
+	{
+		HealTotal *= 2.0;
+	}
 	if(HealTotal < 0)
 	{
 		if(healer > 0)
