@@ -227,7 +227,7 @@ public any Native_GiveNamedItem(Handle plugin, int numParams)
 public any Native_GetAliveStatus(Handle plugin, int numParams)
 {
 	int client = GetNativeCell(1);
-	if(TeutonType[client] == TEUTON_WAITING || GetClientTeam(client) != 2)
+	if(TeutonType[client] == TEUTON_WAITING || GetClientTeam(client) < 2)
 		return 4;	// *SPEC*
 	
 	if(!IsPlayerAlive(client))

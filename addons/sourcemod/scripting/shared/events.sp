@@ -22,7 +22,7 @@ void Events_PluginStart()
 	HookEvent("mvm_mission_complete", OnWinPanel, EventHookMode_Pre);
 	HookEvent("restart_timer_time", OnRestartTimer, EventHookMode_Pre);
 	HookEvent("arrow_impact", EventOverride_ArrowImpact, EventHookMode_Pre);
-
+	HookEvent("tournament_stateupdate", OnStateUpdate, EventHookMode_Post);
 #endif	
 	
 	HookUserMessage(GetUserMessageId("SayText2"), Hook_BlockUserMessageEx, true);
@@ -114,7 +114,9 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 		}	
 	}
 	
-	CreateMVMPopulator();
+	if(!Arena_Mode())
+		CreateMVMPopulator();
+	
 	Zero(b_BobsCuringHand_Revived);
 	
 	Escape_RoundStart();
@@ -194,6 +196,12 @@ public void OnSetupFinished(Event event, const char[] name, bool dontBroadcast)
 	BuildingVoteEndResetCD();
 	Waves_SetReadyStatus(0);
 	Waves_Progress();
+}
+
+public void OnStateUpdate(Event event, const char[] name, bool dontBroadcast)
+{
+	int ready = event.GetInt("readystate");
+	Arena_StateUpdate(ready);
 }
 #endif
 
@@ -280,6 +288,7 @@ public Action OnRoundEnd(Event event, const char[] name, bool dontBroadcast)
 	Escape_RoundEnd();
 	Rogue_RoundEnd();
 	BetWar_RoundEnd();
+	Arena_RoundEnd();
 	CurrentGame = 0;
 	RoundStartTime = 0.0;
 	if(event != INVALID_HANDLE && event.GetInt("team") == 3)
@@ -740,7 +749,7 @@ void CheckAndValidifyTeam()
 {
 	for(int client=1; client<=MaxClients; client++)
 	{
-		if(IsValidClient(client) && TeamNumber[client] <= 4) //If their team is customly set, dont do this
+		if(IsValidClient(client) && TeamNumber[client] < 4) //If their team is customly set, dont do this
 			TeamNumber[client] = GetEntProp(client, Prop_Data, "m_iTeamNum");
 	}
 }
@@ -815,14 +824,17 @@ void DeleteAllBadEntities_NonZrMaps()
 			continue;
 		static char classname[36];
 		GetEntityClassname(i, classname, sizeof(classname));
-		if(!StrContains(classname, "prop_door") ||
-		!StrContains(classname, "item_teamflag") ||
-		!StrContains(classname, "func_regenerate") ||
-		!StrContains(classname, "func_respawnroom") ||
-		!StrContains(classname, "func_respawnroomvisualizer") ||
-		!StrContains(classname, "func_door"))
+		if(!StrContains(classname, "item_teamflag") ||
+			!StrContains(classname, "func_regenerate") ||
+			!StrContains(classname, "func_respawnroom") ||
+			!StrContains(classname, "func_respawnroomvisualizer"))
 		{
 			RemoveEntity(i);
+		}
+		else if(!StrContains(classname, "prop_door") || !StrContains(classname, "func_door"))
+		{
+			if(!Arena_Mode())
+				RemoveEntity(i);
 		}
 	}
 }

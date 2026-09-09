@@ -3538,13 +3538,11 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false, in
 			static char buffer[64];
 			if(GetEntityClassname(entity, buffer, sizeof(buffer)))
 			{
-				if (GetTeam(entity) != TFTeam_Red)
-				{
-					if(Construction_Material_Interact(client, entity))
-						return false;
-
+				if(Construction_Material_Interact(client, entity))
 					return false;
-				}
+
+				if (GetTeam(entity) != TFTeam_Red && !Arena_Mode())
+					return false;
 				
 				if(Object_Interact(client, weapon, entity))
 					return true;

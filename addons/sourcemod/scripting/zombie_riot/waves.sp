@@ -267,6 +267,8 @@ float MinibossScalingReturn()
 		return 1.0;
 	if(Dungeon_Mode())
 		return 1.0;
+	if(Arena_Mode())
+		return 1.0;
 
 	return MinibossScalingHandle;
 }
@@ -522,7 +524,7 @@ public Action Waves_AdminsRaidTimeAddCmd(int client, int args)
 
 bool Waves_InVote()
 {
-	return (Rogue_Mode() || Construction_Mode() || Dungeon_Mode() || Voting || VotingMods);
+	return (Rogue_Mode() || Construction_Mode() || Dungeon_Mode() || Arena_Mode() || Voting || VotingMods);
 }
 
 public Action Waves_RevoteCmd(int client, int args)
@@ -531,7 +533,7 @@ public Action Waves_RevoteCmd(int client, int args)
 	{
 		BetWar_RevoteCmd(client);
 	}
-	else if(Rogue_Mode() || Construction_Mode() || Dungeon_Mode())
+	else if(Rogue_Mode() || Construction_Mode() || Dungeon_Mode() || Arena_Mode())
 	{
 		Rogue_RevoteCmd(client);
 	}
@@ -553,7 +555,7 @@ bool Waves_CallVote(int client, int force = 0)
 	if(BetWar_Mode())
 		return BetWar_CallVote(client);
 	
-	if(Rogue_Mode() || Construction_Mode() || Dungeon_Mode())
+	if(Rogue_Mode() || Construction_Mode() || Dungeon_Mode() || Arena_Mode())
 		return Rogue_CallVote(client);
 	
 	if((Voting || VotingMods) && (force || !VotedFor[client]))
@@ -862,6 +864,18 @@ void Waves_SetupVote(KeyValues map, bool modifierOnly = false)
 	
 	if(!modifierOnly)
 		StartCash = kv.GetNum("cash", 700);
+	
+	// Arena Gamemode
+	if(map && kv.GetNum("arenapvp"))
+	{
+		if(!modifierOnly)
+			Arena_SetupVote(kv);
+
+		if(kv != map)
+			delete kv;
+		
+		return;
+	}
 	
 	// Dungeon Gamemode
 	if(map && kv.GetNum("dungeon"))
@@ -1743,7 +1757,7 @@ void Waves_RoundStart(bool event = false)
 
 	Kit_Fractal_ResetRound();
 	
-	if(Construction_Mode() || Rogue_Mode() || BetWar_Mode() || Dungeon_Mode())
+	if(Construction_Mode() || Rogue_Mode() || BetWar_Mode() || Dungeon_Mode() || Arena_Mode())
 	{
 		
 	}
@@ -1819,7 +1833,11 @@ void Waves_RoundStart(bool event = false)
 	if(CvarInfiniteCash.BoolValue)
 		CurrentCash = 999999;
 	
-	if(Dungeon_Mode())
+	if(Arena_Mode())
+	{
+		Arena_StartSetup();
+	}
+	else if(Dungeon_Mode())
 	{
 		Dungeon_StartSetup();
 	}
@@ -1855,7 +1873,7 @@ void Waves_RoundEnd()
 	CurrentWave[Rounds_Default] = -1;
 	Medival_Difficulty_Level = 0.0; //make sure to set it to 0 othrerwise waves will become impossible
 
-	if(Rogue_Mode() || Construction_Mode() || Dungeon_Mode())
+	if(Rogue_Mode() || Construction_Mode() || Dungeon_Mode() || Arena_Mode())
 		delete Rounds[Rounds_Default];
 }
 
@@ -2162,7 +2180,7 @@ bool Waves_Progress(bool donotAdvanceRound = false,
 	int length = Rounds[WaveWhich].Length-1;
 	bool panzer_spawn = false;
 	bool panzer_sound = false;
-	bool subgame = (Rogue_Mode() || Construction_Mode() || Dungeon_Mode());
+	bool subgame = (Rogue_Mode() || Construction_Mode() || Dungeon_Mode() || Arena_Mode());
 	static int panzer_chance;
 	bool GiveAmmoSupplies = !Dungeon_Mode();
 
@@ -3370,6 +3388,9 @@ void Waves_ClearWaveCurrentSpawningEnemies(int WaveWhich = Rounds_Default)
 
 bool Waves_Started()
 {
+	if(Arena_Mode())
+		return Arena_Started();
+	
 	if(Dungeon_Mode())
 		return Dungeon_Started();
 	
@@ -3398,6 +3419,9 @@ int Waves_GetRoundScale()
 	
 	if(BetWar_Mode())
 		return 1;
+	
+	if(Arena_Mode())
+		return Arena_GetRound();
 
 	if(Waves_InFreeplay())
 	{
@@ -3538,7 +3562,7 @@ void Zombie_Delay_Warning()
 		}
 		case 1:
 		{
-			if(f_ZombieAntiDelaySpeedUp + 15.0 < GetGameTime())
+			if(f_ZombieAntiDelaySpeedUp + (Arena_Mode() ? 5.0 : 15.0) < GetGameTime())
 			{
 				i_ZombieAntiDelaySpeedUp = 2;
 				CPrintToChatAll("{crimson}Enemies grow annoyed and go faster...");
@@ -3546,7 +3570,7 @@ void Zombie_Delay_Warning()
 		}
 		case 2:
 		{
-			if(f_ZombieAntiDelaySpeedUp + 35.0 < GetGameTime())
+			if(f_ZombieAntiDelaySpeedUp + (Arena_Mode() ? 10.0 : 35.0) < GetGameTime())
 			{
 				i_ZombieAntiDelaySpeedUp = 3;
 				CPrintToChatAll("{crimson}Enemies grow furious and become even faster...");
@@ -3554,7 +3578,7 @@ void Zombie_Delay_Warning()
 		}
 		case 3:
 		{
-			if(f_ZombieAntiDelaySpeedUp + 55.0 < GetGameTime())
+			if(f_ZombieAntiDelaySpeedUp + (Arena_Mode() ? 15.0 : 55.0) < GetGameTime())
 			{
 				i_ZombieAntiDelaySpeedUp = 4;
 				CPrintToChatAll("{crimson}Enemies become pissed off and gain super speed...");
@@ -3562,7 +3586,7 @@ void Zombie_Delay_Warning()
 		}
 		case 4:
 		{
-			if(f_ZombieAntiDelaySpeedUp + 75.0 < GetGameTime())
+			if(f_ZombieAntiDelaySpeedUp + (Arena_Mode() ? 20.0 : 75.0) < GetGameTime())
 			{
 				i_ZombieAntiDelaySpeedUp = 5;
 				CPrintToChatAll("{crimson}Enemies become infuriated and will reach you...");
@@ -3570,7 +3594,7 @@ void Zombie_Delay_Warning()
 		}
 		case 5:
 		{
-			if(f_ZombieAntiDelaySpeedUp + 100.0 < GetGameTime())
+			if(f_ZombieAntiDelaySpeedUp + (Arena_Mode() ? 30.0 : 100.0) < GetGameTime())
 			{
 				i_ZombieAntiDelaySpeedUp = 6;
 				CPrintToChatAll("{crimson}Die.");
@@ -3580,12 +3604,18 @@ void Zombie_Delay_Warning()
 				
 				if(Dungeon_Mode())
 					Dungeon_AntiStalled();
+				
+				if(Arena_Mode())
+					Arena_AntiStalled();
 			}
 		}
 		case 6:
 		{
 			if(f_ZombieAntiDelaySpeedUp + 400.0 < GetGameTime())
 			{
+				if(Arena_Mode())
+					ForcePlayerLoss();
+				
 				i_ZombieAntiDelaySpeedUp = 7;
 				CPrintToChatAll("{crimson}You are probably abusing something, perish, go my uber swordsmen.");
 				if(!Rogue_Mode())
@@ -4361,6 +4391,9 @@ void Waves_SetReadyStatus(int status, bool stopmusic = true)
 			ReadyUpTimer = null;
 		}
 	}
+
+	if(Arena_Mode())
+		Arena_SetReadyStatus(status);
 }
 
 static void WaveSizeLimit(int objective, int &asize1 = 0, int &asize2 = 0, int &aname1 = 0, int &aname2 = 0)
@@ -4834,6 +4867,8 @@ void Waves_TrySpawnBarney()
 	if(NoBarneySpawn)
 		return;
 	if(BetWar_Mode())
+		return;
+	if(Arena_Mode())
 		return;
 		
 	//check for barney.

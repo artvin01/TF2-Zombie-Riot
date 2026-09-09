@@ -552,7 +552,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 		if(damage < 1)
 			return;
 		
-		if(attacker > MaxClients/* || Rogue_Mode()*/ || Elemental_GetDamage(victim, Element_Warped) > 0)
+		if(attacker > MaxClients || Arena_Mode() || Elemental_GetDamage(victim, Element_Warped) > 0)
 		{
 			// Element mixing into Warped
 			if(view_as<CClotBody>(victim).m_iBleedType == BLEEDTYPE_VOID || GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Void) > 0.4 || Elemental_GetDamage(victim, Element_Void) > 0 || Elemental_GetDamage(victim, Element_Warped) > 0)
@@ -698,7 +698,7 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 		if(damage < 1)
 			return;
 
-		if(attacker > MaxClients/* || Rogue_Mode()*/ || Elemental_GetDamage(victim, Element_Warped) > 0)
+		if(attacker > MaxClients || Arena_Mode() || Elemental_GetDamage(victim, Element_Warped) > 0)
 		{
 			// Element mixing into Warped
 			if(Elemental_GetDamage(victim, Element_Chaos) > 0 || Elemental_GetDamage(victim, Element_Warped) > 0)

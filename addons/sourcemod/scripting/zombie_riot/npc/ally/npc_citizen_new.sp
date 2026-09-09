@@ -936,7 +936,7 @@ methodmap Citizen < CClotBody
 		}
 		else
 		{
-			Citizen_GenerateModel(seed, female, Cit_Unarmed, buffer, sizeof(buffer));
+			Citizen_GenerateModel(seed, female, (!Arena_Mode() || team % 2) ? Cit_Unarmed : Cit_Normal, buffer, sizeof(buffer));
 		}
 		
 		Citizen npc = view_as<Citizen>(CClotBody(vecPos, vecAng, buffer, "1.15", "150", team, true));
@@ -950,7 +950,7 @@ methodmap Citizen < CClotBody
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
-		b_NpcUnableToDie[npc.index] = team == TFTeam_Red;
+		b_NpcUnableToDie[npc.index] = Arena_Mode() || team == TFTeam_Red;
 		f3_NpcSavePos[npc.index][0] = 0.0;
 		f3_NpcSavePos[npc.index][1] = 0.0;
 		f3_NpcSavePos[npc.index][2] = 0.0;
@@ -1016,7 +1016,7 @@ methodmap Citizen < CClotBody
 		BuildOrderedByPlayer[npc.index] = 0.0;
 	//	Zero(CommandCooldown);
 
-		if(team != TFTeam_Red || TempRebel[npc.index])
+		if((!Arena_Mode() && team != TFTeam_Red) || TempRebel[npc.index])
 		{
 			npc.SetDowned(0);
 			if(!chaos)
@@ -1263,6 +1263,10 @@ methodmap Citizen < CClotBody
 			{
 				type = Cit_Medic;
 			}
+			else if(Arena_Mode())
+			{
+				type = (GetTeam(this.index) % 2) ? Cit_Unarmed : Cit_Normal;
+			}
 			else if(this.m_iGunType != Cit_None)
 			{
 				type = this.m_bCamo ? Cit_Camo : Cit_Normal;
@@ -1382,9 +1386,17 @@ methodmap Citizen < CClotBody
 			
 			this.m_iWearable3 = TF2_CreateGlow(this.index);
 			
-			SetVariantColor(view_as<int>({0, 255, 0, 255}));
-			AcceptEntityInput(this.m_iWearable3, "SetGlowColor");
-			
+			if(Arena_Mode())
+			{
+				SetVariantColor((GetTeam(this.index) % 2) ? {88, 133, 162, 255} : {184, 56, 59, 255});
+				AcceptEntityInput(this.m_iWearable3, "SetGlowColor");
+			}
+			else
+			{
+				SetVariantColor({0, 255, 0, 255});
+				AcceptEntityInput(this.m_iWearable3, "SetGlowColor");
+			}
+
 			SetEntityRenderMode(this.index, RENDER_TRANSALPHA);
 			SetEntityRenderColor(this.index, 255, 255, 255, 125);
 		}
@@ -1397,9 +1409,12 @@ methodmap Citizen < CClotBody
 			PendingGesture[this.index] = 2;
 			this.m_flReloadDelay = GetGameTime(this.index) + 0.8;
 			
-			int glow = this.m_iTeamGlow;
-			if(glow > 0)
-				AcceptEntityInput(glow, "Enable");
+			if(!Arena_Mode())
+			{
+				int glow = this.m_iTeamGlow;
+				if(glow > 0)
+					AcceptEntityInput(glow, "Enable");
+			}
 			
 			if(this.m_iWearable1 > 0)
 				AcceptEntityInput(this.m_iWearable1, "Enable");
@@ -1626,7 +1641,7 @@ stock void Citizen_PlayerReplacement(int client, bool disconnect)
 	Citizen_SpawnAtPoint("temp", 0, f3_VecTeleportBackSave_OutOfBounds[client]);
 }
 
-int Citizen_SpawnAtPoint(const char[] data = "", int client = 0, float VecPos[3] = {0.0,0.0,0.0})
+int Citizen_SpawnAtPoint(const char[] data = "", int client = 0, float VecPos[3] = {0.0,0.0,0.0}, int team = TFTeam_Red)
 {
 	int count;
 	int[] list = new int[i_MaxcountSpawners];
@@ -1642,7 +1657,7 @@ int Citizen_SpawnAtPoint(const char[] data = "", int client = 0, float VecPos[3]
 			int entity = i_ObjectsSpawners[i];
 			if(IsValidEntity(entity))
 			{
-				if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetTeam(entity) == 2)
+				if(!GetEntProp(entity, Prop_Data, "m_bDisabled") && GetTeam(entity) == team)
 					list[count++] = entity;
 			}
 		}
@@ -1651,7 +1666,7 @@ int Citizen_SpawnAtPoint(const char[] data = "", int client = 0, float VecPos[3]
 		{
 			for(int target = 1; target <= MaxClients; target++)
 			{
-				if(IsClientInGame(target) && IsPlayerAlive(target))
+				if(IsClientInGame(target) && IsPlayerAlive(target) && GetTeam(target) == team)
 					list[count++] = target;
 			}
 		}
@@ -1672,7 +1687,7 @@ int Citizen_SpawnAtPoint(const char[] data = "", int client = 0, float VecPos[3]
 			pos = VecPos;
 		}
 		
-		entity = NPC_CreateByName("npc_citizen", client, pos, ang, TFTeam_Red, data);
+		entity = NPC_CreateByName("npc_citizen", client, pos, ang, team, data);
 		if(IsValidEntity(entity))
 		{
 			Citizen npc = view_as<Citizen>(entity);
@@ -1734,7 +1749,7 @@ int Citizen_ReviveTicks(int entity, int amount, int client, bool NoAutoRevive = 
 
 int Citizen_ShowInteractionHud(int entity, int client)
 {
-	if(i_NpcInternalId[entity] == NPCId && GetTeam(entity) == TFTeam_Red)
+	if(i_NpcInternalId[entity] == NPCId && GetTeam(entity) == GetTeam(client))
 	{
 		Citizen npc = view_as<Citizen>(entity);
 		
@@ -2353,8 +2368,8 @@ void Citizen_UpdateStats(int entity, int type, int role)
 
 	//Building_ClearRefBuffs(EntIndexToEntRef(entity));
 	
-	int health = (npc.m_bAlyx ? 380 : 180) + npc.m_iGunValue / 50;
-	if(GetTeam(entity) != TFTeam_Red)
+	int health = ((npc.m_bAlyx && !Arena_Mode()) ? 380 : 180) + npc.m_iGunValue / 50;
+	if(!Arena_Mode() && GetTeam(entity) != TFTeam_Red)
 		health *= 200;
 	
 	SetEntProp(npc.index, Prop_Data, "m_iHealth", RoundToCeil(float(GetEntProp(npc.index, Prop_Data, "m_iHealth")) / float(ReturnEntityMaxHealth(npc.index)) * float(health)));
@@ -2414,8 +2429,11 @@ void Citizen_UpdateStats(int entity, int type, int role)
 	
 	if(npc.m_bAlyx)
 	{
-		npc.m_fGunDamage *= 1.5;
-		npc.m_fGunFirerate *= 2.0;
+		if(!Arena_Mode())
+		{
+			npc.m_fGunDamage *= 1.5;
+			npc.m_fGunFirerate *= 2.0;
+		}
 	}
 	else
 	{
@@ -2474,7 +2492,7 @@ void Citizen_UpdateStats(int entity, int type, int role)
 		}
 	}
 
-	if(GetTeam(entity) != TFTeam_Red)
+	if(!Arena_Mode() && GetTeam(entity) != TFTeam_Red)
 		npc.m_fGunDamage /= 50.0;
 	
 	//npc.m_fGunRangeBonus = 1.0;
@@ -2586,7 +2604,7 @@ void Citizen_WaveStart()
 			}
 
 			int team = GetTeam(i);
-			if(team == TFTeam_Red)
+			if(team == TFTeam_Red || Arena_Mode())
 			{
 				int maxValue = 0;
 				npc.m_iCanBuild = (BuildingAmountRebel(npc.index, 1, maxValue) > 0) ? 0 : 1;
@@ -2737,10 +2755,10 @@ public void Citizen_ClotThink(int iNPC)
 	HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) * 0.04 * 0.01, (npc.m_iClassRole == Cit_Medic ? 1.0 : 0.5), 0.0, HEAL_SELFHEAL|HEAL_PASSIVE_NO_NOTIF);
 
 	bool noSafety = (b_Anger[npc.index] || npc.m_bCamo || VIPBuilding_Active());
-	bool autoSeek = (noSafety || npc.m_bRebelAgressive || RaidbossIgnoreBuildingsLogic(1) || GetTeam(npc.index) != TFTeam_Red);
+	bool autoSeek = (noSafety || npc.m_bRebelAgressive || RaidbossIgnoreBuildingsLogic(1) || GetTeam(npc.index) != TFTeam_Red || Arena_Mode());
 	bool helpAlly;
 
-	if(Construction_Mode() && Construction_InSetup() || b_Anger[npc.index])
+	if((Construction_Mode() && Construction_InSetup()) || b_Anger[npc.index])
 		autoSeek = true;
 
 	// See if our target is still valid
@@ -2792,10 +2810,8 @@ public void Citizen_ClotThink(int iNPC)
 		{
 			MaxRange = FAR_FUTURE;
 		}
-
 		
-
-		int newTarget = GetClosestTarget(npc.index, false, MaxRange, npc.m_bCamo,_,_,VecOverridePos, .CanSee = !autoSeek);
+		int newTarget = GetClosestTarget(npc.index, false, MaxRange, npc.m_bCamo, .EntityLocation = VecOverridePos, .CanSee = !autoSeek);
 		if(newTarget > 0)
 		{
 			target = newTarget;
@@ -2946,7 +2962,7 @@ public void Citizen_ClotThink(int iNPC)
 
 					if(Citizen_ThatIsDowned(entity))
 					{
-						if(GetClosestTarget(entity, true, 600.0, true, .IgnorePlayers = true) > MaxClients)
+						if(GetClosestTarget(entity, true, 600.0, true) > MaxClients)
 							continue;
 					}
 					else if(combat)
@@ -2971,36 +2987,33 @@ public void Citizen_ClotThink(int iNPC)
 				}
 			}
 
-			if(team == TFTeam_Red)
+			for(int client = 1; client <= MaxClients; client++)
 			{
-				for(int client = 1; client <= MaxClients; client++)
+				if(TeutonType[client] == TEUTON_NONE && IsClientInGame(client) && IsPlayerAlive(client) && GetTeam(client) == team)
 				{
-					if(TeutonType[client] == TEUTON_NONE && IsClientInGame(client) && IsPlayerAlive(client))
+					if(dieingstate[client] > 0)
 					{
-						if(dieingstate[client] > 0)
-						{
-							if(GetClosestTarget(client, true, 600.0, true, .IgnorePlayers = true) > MaxClients)
-								continue;
-						}
-						else if(combat)
-						{
-							if(GetClientHealth(client) > (ReturnEntityMaxHealth(client) / 2))
-								continue;
-						}
-						else if(GetClientHealth(client) >= ReturnEntityMaxHealth(client))
-						{
+						if(GetClosestTarget(client, true, 600.0, true) > MaxClients)
 							continue;
-						}
+					}
+					else if(combat)
+					{
+						if(GetClientHealth(client) > (ReturnEntityMaxHealth(client) / 2))
+							continue;
+					}
+					else if(GetClientHealth(client) >= ReturnEntityMaxHealth(client))
+					{
+						continue;
+					}
 
-						WorldSpaceCenter(client, vecTarget);
-						float dist = GetVectorDistance(vecTarget, vecMe, true);
-						if(dist < distance)
-						{
-							distance = dist;
-							ally = client;
-							npc.m_iTargetAlly = ally;
-							npc.m_iSeakingObject = 4;
-						}
+					WorldSpaceCenter(client, vecTarget);
+					float dist = GetVectorDistance(vecTarget, vecMe, true);
+					if(dist < distance)
+					{
+						distance = dist;
+						ally = client;
+						npc.m_iTargetAlly = ally;
+						npc.m_iSeakingObject = 4;
 					}
 				}
 			}
@@ -3012,7 +3025,7 @@ public void Citizen_ClotThink(int iNPC)
 		}
 
 		// Forced ally revive check
-		else if(team == TFTeam_Red && !(GetURandomInt() % 19))
+		else if(!(GetURandomInt() % 19))
 		{
 			npc.ThinkFriendly("Nobody to revive...");
 
@@ -3025,7 +3038,7 @@ public void Citizen_ClotThink(int iNPC)
 			{
 				if(entity != npc.index && Citizen_ThatIsDowned(entity) && GetTeam(entity) == team)
 				{
-					if(GetClosestTarget(entity, true, 600.0, true, .IgnorePlayers = true) > MaxClients)
+					if(GetClosestTarget(entity, true, 600.0, true) > MaxClients)
 						continue;
 					
 					WorldSpaceCenter(entity, vecTarget);
@@ -3042,9 +3055,9 @@ public void Citizen_ClotThink(int iNPC)
 
 			for(int client = 1; client <= MaxClients; client++)
 			{
-				if(TeutonType[client] == TEUTON_NONE && dieingstate[client] > 0 && IsClientInGame(client) && IsPlayerAlive(client))
+				if(TeutonType[client] == TEUTON_NONE && dieingstate[client] > 0 && IsClientInGame(client) && IsPlayerAlive(client) && GetTeam(client) == team)
 				{
-					if(GetClosestTarget(client, true, 600.0, true, .IgnorePlayers = true) > MaxClients)
+					if(GetClosestTarget(client, true, 600.0, true) > MaxClients)
 						continue;
 
 					WorldSpaceCenter(client, vecTarget);
@@ -3069,28 +3082,51 @@ public void Citizen_ClotThink(int iNPC)
 
 			float distance = FAR_FUTURE;
 
-			if(team == TFTeam_Red)
+			int entity = MaxClients + 1;
+			while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
 			{
-				int entity = MaxClients + 1;
-				while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
-				{
-					if(b_ThisEntityIgnored[entity])
-						continue;
-					
-					if(GetTeam(entity) != TFTeam_Red)
-						continue;
-					
-					if(GetEntProp(entity, Prop_Data, "m_iHealth") >= ReturnEntityMaxHealth(entity))
-						continue;
-					
-					if(Object_GetRepairHealth(entity) < 1)
-						continue;
+				if(b_ThisEntityIgnored[entity])
+					continue;
+				
+				if(GetTeam(entity) != team)
+					continue;
+				
+				if(GetEntProp(entity, Prop_Data, "m_iHealth") >= ReturnEntityMaxHealth(entity))
+					continue;
+				
+				if(Object_GetRepairHealth(entity) < 1)
+					continue;
 
-					GetAbsOrigin(entity, vecTarget);
-					float dist = GetVectorDistance(vecTarget, VecOverridePos, true);
-					if(dist > distance)
-						continue;
+				GetAbsOrigin(entity, vecTarget);
+				float dist = GetVectorDistance(vecTarget, VecOverridePos, true);
+				if(dist > distance)
+					continue;
+				
+				if(!npc.CanPathToAlly(entity))
+					continue;
+				
+				distance = dist;
+				ally = entity;
+				npc.m_iTargetAlly = ally;
+				npc.m_iSeakingObject = 5;
+			}
+			
+			int a;
+			while((entity = FindEntityByNPC(a)) != -1)
+			{
+				if(i_NpcIsABuilding[entity] && GetTeam(entity) == team)
+				{
+					if(i_NpcInternalId[entity] != MedivalBuilding_Id() || i_AttacksTillMegahit[entity] > 254)
+					{
+						if(GetEntProp(entity, Prop_Data, "m_iHealth") >= ReturnEntityMaxHealth(entity))
+							continue;
+					}
 					
+					GetAbsOrigin(entity, vecTarget);
+					float dist = GetVectorDistance(vecTarget, vecMe, true);
+					if(dist < distance)
+						continue;
+				
 					if(!npc.CanPathToAlly(entity))
 						continue;
 					
@@ -3100,38 +3136,10 @@ public void Citizen_ClotThink(int iNPC)
 					npc.m_iSeakingObject = 5;
 				}
 			}
-			else
-			{
-				int a, entity;
-				while((entity = FindEntityByNPC(a)) != -1)
-				{
-					if(i_NpcIsABuilding[entity] && GetTeam(entity) == team)
-					{
-						if(i_NpcInternalId[entity] != MedivalBuilding_Id() || i_AttacksTillMegahit[entity] > 254)
-						{
-							if(GetEntProp(entity, Prop_Data, "m_iHealth") >= ReturnEntityMaxHealth(entity))
-								continue;
-						}
-						
-						GetAbsOrigin(entity, vecTarget);
-						float dist = GetVectorDistance(vecTarget, vecMe, true);
-						if(dist < distance)
-							continue;
-					
-						if(!npc.CanPathToAlly(entity))
-							continue;
-						
-						distance = dist;
-						ally = entity;
-						npc.m_iTargetAlly = ally;
-						npc.m_iSeakingObject = 5;
-					}
-				}
-			}
 		}
 
 		// Sentry Buildings
-		else if(team == TFTeam_Red && (npc.m_iCanBuild & 1) && (npc.m_iClassRole == Cit_Medic || npc.m_iClassRole == Cit_Builder) && (GetURandomInt() % 2))
+		else if(team == TFTeam_Red && !Arena_Mode() && (npc.m_iCanBuild & 1) && (npc.m_iClassRole == Cit_Medic || npc.m_iClassRole == Cit_Builder) && (GetURandomInt() % 2))
 		{
 			npc.ThinkFriendly("Nowhere to build my sentry...");
 
@@ -3145,7 +3153,7 @@ public void Citizen_ClotThink(int iNPC)
 				if(b_ThisEntityIgnored[entity])
 					continue;
 				
-				if(GetTeam(entity) != TFTeam_Red)
+				if(GetTeam(entity) != team)
 					continue;
 				
 				if(IsValidEntity(Building_HasThisBuilding(entity)) || Building_OnThisBuilding(entity) != -1)
@@ -3192,7 +3200,7 @@ public void Citizen_ClotThink(int iNPC)
 		}
 
 		// Enemy Rebel Building
-		else if(team != TFTeam_Red && npc.m_iCanBuild && npc.m_iClassRole == Cit_Builder && !Waves_InSetup())
+		else if(team != TFTeam_Red && !Arena_Mode() && npc.m_iCanBuild && npc.m_iClassRole == Cit_Builder && !Waves_InSetup())
 		{
 			npc.ThinkFriendly("Nowhere to build my tower...");
 
@@ -3265,7 +3273,7 @@ public void Citizen_ClotThink(int iNPC)
 		}
 
 		// Support Buildings
-		else if(team == TFTeam_Red && npc.m_iCanBuild > 1 && (GetURandomInt() % 2))
+		else if((team == TFTeam_Red || Arena_Mode()) && npc.m_iCanBuild > 1 && (GetURandomInt() % 2))
 		{
 			npc.ThinkFriendly("Nowhere to build my buildings...");
 
@@ -3279,7 +3287,7 @@ public void Citizen_ClotThink(int iNPC)
 				if(b_ThisEntityIgnored[entity])
 					continue;
 				
-				if(GetTeam(entity) != TFTeam_Red)
+				if(GetTeam(entity) != team)
 					continue;
 				
 				if(IsValidEntity(Building_HasThisBuilding(entity)) || Building_OnThisBuilding(entity) != -1)
@@ -3359,7 +3367,7 @@ public void Citizen_ClotThink(int iNPC)
 		}
 
 		// Healing check
-		else if(team == TFTeam_Red && health < maxhealth && (!combat || injured || (target == -1 && (health < (maxhealth / 3)))))
+		else if(health < maxhealth && (!combat || injured || (target == -1 && (health < (maxhealth / 3)))))
 		{
 			npc.ThinkFriendly("No Free Healing Station...");
 
@@ -3372,7 +3380,7 @@ public void Citizen_ClotThink(int iNPC)
 			{
 				if(HealingCooldown[entity] < gameTime)
 				{
-					if(GetTeam(entity) != TFTeam_Red)
+					if(GetTeam(entity) != team)
 						continue;
 					
 					NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
@@ -3395,7 +3403,7 @@ public void Citizen_ClotThink(int iNPC)
 			}
 		}
 		// Look for Perk Machines
-		else if(team == TFTeam_Red && (!combat || (target == -1 && npc.m_iClassRole != Cit_Fighter)) && npc.m_iGunType != Cit_None && npc.m_iHasPerk != npc.m_iGunType)
+		else if((!combat || (target == -1 && npc.m_iClassRole != Cit_Fighter)) && npc.m_iGunType != Cit_None && npc.m_iHasPerk != npc.m_iGunType)
 		{
 			npc.ThinkFriendly("No Free Perk Machine...");
 
@@ -3408,7 +3416,7 @@ public void Citizen_ClotThink(int iNPC)
 			{
 				if(HealingCooldown[entity] < gameTime)
 				{
-					if(GetTeam(entity) != TFTeam_Red)
+					if(GetTeam(entity) != team)
 						continue;
 					
 					NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
@@ -3431,7 +3439,7 @@ public void Citizen_ClotThink(int iNPC)
 			}
 		}
 		// Look for Armor Tables
-		else if((team == TFTeam_Red && (Elemental_HasDamage(npc.index) || npc.m_flArmorCount <= 0.0)) && (!combat || (target == -1 && Elemental_GoingCritical(npc.index))))
+		else if(((Elemental_HasDamage(npc.index) || npc.m_flArmorCount <= 0.0)) && (!combat || (target == -1 && Elemental_GoingCritical(npc.index))))
 		{
 			npc.ThinkFriendly("No Free Armor Table...");
 
@@ -3444,7 +3452,7 @@ public void Citizen_ClotThink(int iNPC)
 			{
 				if(HealingCooldown[entity] < gameTime)
 				{
-					if(GetTeam(entity) != TFTeam_Red)
+					if(GetTeam(entity) != team)
 						continue;
 					
 					NPC_GetPluginById(i_NpcInternalId[entity], buffer, sizeof(buffer));
@@ -3511,12 +3519,12 @@ public void Citizen_ClotThink(int iNPC)
 						if(healing > 50)
 							healing = 50;
 						
-						if(team != TFTeam_Red)
+						if(team != TFTeam_Red && !Arena_Mode())
 							healing *= 200;
 						
 						int buildingMax = ReturnEntityMaxHealth(ally);
 						int buildingHP = GetEntProp(ally, Prop_Data, "m_iHealth");
-						int repairHP = team == TFTeam_Red ? GetEntProp(ally, Prop_Data, "m_iRepair") : 99999;
+						int repairHP = HasEntProp(ally, Prop_Data, "m_iRepair") ? GetEntProp(ally, Prop_Data, "m_iRepair") : 99999;
 
 						// Limit max health
 						if((buildingHP + healing) > buildingMax)
@@ -3538,7 +3546,7 @@ public void Citizen_ClotThink(int iNPC)
 								npc.m_iSeakingObject = 0;
 							}
 							
-							if(team == TFTeam_Red)
+							if(HasEntProp(ally, Prop_Data, "m_iRepair"))
 								SetEntProp(ally, Prop_Data, "m_iRepair", repairHP);
 							
 							switch(GetURandomInt() % 2)
@@ -3606,7 +3614,7 @@ public void Citizen_ClotThink(int iNPC)
 							HealingCooldown[npc.index] = gameTime + 10.0;
 
 							float healing = npc.m_iGunValue * 0.03;
-							if(team != TFTeam_Red)
+							if(team != TFTeam_Red && !Arena_Mode())
 								healing *= 100;
 							
 							if(f_TimeUntillNormalHeal[ally] - 2.0 > GetGameTime())
@@ -4377,60 +4385,57 @@ public void Citizen_ClotThink(int iNPC)
 			npc.m_iTargetAlly = 0;
 			npc.m_iSeakingObject = 0;
 
-			if(team == TFTeam_Red)
+			// Find an downed client to walk to
+			float distance = 65000000.0;
+			for(int client = 1; client <= MaxClients; client++)
 			{
-				// Find an downed client to walk to
-				float distance = 65000000.0;
+				if(dieingstate[client] > 0 && TeutonType[client] == TEUTON_NONE && IsClientInGame(client) && IsPlayerAlive(client) && GetTeam(client) == team)
+				{
+					WorldSpaceCenter(client, vecTarget);
+					float dist = GetVectorDistance(vecTarget, vecMe, true);
+					if(dist < distance)
+					{
+						distance = dist;
+						ally = client;
+						npc.m_iTargetAlly = ally;
+					}
+				}
+			}
+
+			// Find an downed rebel to walk to
+			if(ally == 0)
+			{
+				int a, entity;
+				while((entity = FindEntityByNPC(a)) != -1)
+				{
+					if(entity != npc.index && Citizen_ThatIsDowned(entity) && GetTeam(entity) == team)
+					{
+						WorldSpaceCenter(entity, vecTarget);
+						float dist = GetVectorDistance(vecTarget, vecMe, true);
+						if(dist < distance)
+						{
+							distance = dist;
+							ally = entity;
+							npc.m_iTargetAlly = ally;
+						}
+					}
+				}
+			}
+
+			// Find an alive client to walk to
+			if(ally == 0 && (!combat || !npc.m_bRebelAgressive))
+			{
 				for(int client = 1; client <= MaxClients; client++)
 				{
-					if(dieingstate[client] > 0 && TeutonType[client] == TEUTON_NONE && IsClientInGame(client) && IsPlayerAlive(client))
+					if(!IgnorePlayer[client] && IsClientInGame(client) && IsEntityAlive(client) && GetTeam(client) == team)
 					{
 						WorldSpaceCenter(client, vecTarget);
-						float dist = GetVectorDistance(vecTarget, vecMe, true);
+						float dist = GetVectorDistance(vecTarget, VecOverridePos, true);
 						if(dist < distance)
 						{
 							distance = dist;
 							ally = client;
 							npc.m_iTargetAlly = ally;
-						}
-					}
-				}
-
-				// Find an downed rebel to walk to
-				if(ally == 0)
-				{
-					int a, entity;
-					while((entity = FindEntityByNPC(a)) != -1)
-					{
-						if(entity != npc.index && Citizen_ThatIsDowned(entity))
-						{
-							WorldSpaceCenter(entity, vecTarget);
-							float dist = GetVectorDistance(vecTarget, vecMe, true);
-							if(dist < distance)
-							{
-								distance = dist;
-								ally = entity;
-								npc.m_iTargetAlly = ally;
-							}
-						}
-					}
-				}
-
-				// Find an alive client to walk to
-				if(ally == 0 && (!combat || !npc.m_bRebelAgressive))
-				{
-					for(int client = 1; client <= MaxClients; client++)
-					{
-						if(!IgnorePlayer[client] && IsClientInGame(client) && IsEntityAlive(client))
-						{
-							WorldSpaceCenter(client, vecTarget);
-							float dist = GetVectorDistance(vecTarget, VecOverridePos, true);
-							if(dist < distance)
-							{
-								distance = dist;
-								ally = client;
-								npc.m_iTargetAlly = ally;
-							}
 						}
 					}
 				}
@@ -4440,14 +4445,13 @@ public void Citizen_ClotThink(int iNPC)
 			{
 				//we are the builder...
 				//find closest ally building
-				float distance = 65000000.0;
 				int entity = MaxClients + 1;
 				while((entity = FindEntityByClassname(entity, "obj_building")) != -1)
 				{
 					if(b_ThisEntityIgnored[entity])
 						continue;
 					
-					if(GetTeam(entity) != TFTeam_Red)
+					if(GetTeam(entity) != team)
 						continue;
 
 					GetAbsOrigin(entity, vecTarget);
@@ -4723,7 +4727,7 @@ public void Citizen_ClotThink(int iNPC)
 	bool isReviving;
 
 	// Revive check
-	if(walkStatus < 1 && ally > 0 && team == TFTeam_Red && !b_Anger[npc.index])
+	if(walkStatus < 1 && ally > 0 && !b_Anger[npc.index])
 	{
 		bool medic = npc.m_iClassRole == Cit_Medic && npc.m_iHasPerk == npc.m_iGunType;
 		
@@ -5070,7 +5074,7 @@ void Citizen_PlayerDeath(int client)
 		int i = -1;
 		while((i = FindEntityByClassname(i, "zr_base_npc")) != -1)
 		{
-			if(i_NpcInternalId[i] == NPCId && GetTeam(i) == TFTeam_Red)
+			if(i_NpcInternalId[i] == NPCId && GetTeam(i) == GetTeam(client))
 			{
 				view_as<Citizen>(i).m_flidle_talk = 0.0;
 				
@@ -5134,27 +5138,36 @@ stock void Citizen_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 		}
 		else
 		{
+			if(Arena_Mode())
+				damage *= 0.35;
+			
 			if(npc.m_bRebelAgressive)
-			{
 				damage *= 0.85;
-			}
 
 			int value = npc.m_iGunValue;
 			if(value > 40000)
 			{
 				damage *= 0.8;
+				if(Arena_Mode())
+					damage *= 0.1;
 			}
 			else if(value > 20000)
 			{
 				damage *= 0.85;
+				if(Arena_Mode())
+					damage *= 0.2;
 			}
 			else if(value > 10000)
 			{
 				damage *= 0.9;
+				if(Arena_Mode())
+					damage *= 0.45;
 			}
-			else if(value > 5000)
+			else if(value > 4500)
 			{
 				damage *= 0.95;
+				if(Arena_Mode())
+					damage *= 0.75;
 			}
 			
 			if(npc.m_iGunType == Cit_Melee)
@@ -5188,11 +5201,14 @@ stock void Citizen_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 			int health = GetEntProp(victim, Prop_Data, "m_iHealth") - RoundToCeil(damage);
 			if(health < 1)
 			{
-				if(GetTeam(victim) == TFTeam_Red && !b_Anger[victim])
+				if((GetTeam(victim) == TFTeam_Red || Arena_Mode()) && !b_Anger[victim])
 				{
 					KillFeed_Show(victim, inflictor, attacker, 0, weapon, damagetype);
 					npc.SetDowned(1);
 					damage = 0.0;
+
+					if(Arena_Mode())
+						CheckAlivePlayers();
 				}
 			}
 			else

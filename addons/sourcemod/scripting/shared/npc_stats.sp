@@ -813,7 +813,7 @@ methodmap CClotBody < CBaseCombatCharacter
 
 
 #if defined ZR
-		if(Ally == TFTeam_Red && !Ally_Collideeachother)
+		if(Ally == TFTeam_Red && !Arena_Mode() && !Ally_Collideeachother)
 		{
 			npcstats.m_iTeamGlow = TF2_CreateGlow(npc);
 			
@@ -5438,6 +5438,11 @@ stock int GetClosestTarget(int entity,
 
 	int SearcherNpcTeam = GetTeam(entity); //do it only once lol
 #if defined ZR
+	if(Arena_Mode())
+	{
+		if(Waves_InSetup())
+			return -1;
+	}
 	if(BetWar_Mode())
 	{
 		IgnorePlayers = false;
@@ -5503,7 +5508,7 @@ stock int GetClosestTarget(int entity,
 	{
 		ForceIgnorePlayers = true;
 	}
-	if(SearcherNpcTeam != TFTeam_Red && !IgnorePlayers && !ForceIgnorePlayers)
+	if(!IgnorePlayers && !ForceIgnorePlayers)
 #else
 	if(!IgnorePlayers)
 #endif
@@ -5522,7 +5527,6 @@ stock int GetClosestTarget(int entity,
 							continue;
 					}
 #endif
-
 					if(CanSee)
 					{
 						if(!Can_I_See_Enemy_Only(entity, i))
@@ -5553,7 +5557,7 @@ stock int GetClosestTarget(int entity,
 	//This is for Player sided NPCS.
 	//They have pretty much infinite range when targetting other npcs!
 #if defined ZR
-	if(SearcherNpcTeam == TFTeam_Red)
+	if(SearcherNpcTeam == TFTeam_Red && !Arena_Mode())
 #endif
 	{
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
@@ -5613,7 +5617,7 @@ stock int GetClosestTarget(int entity,
 		The npc is not on the player team, it will target players first
 		other enemy npcs are preffered only when too close.
 	*/
-	if(SearcherNpcTeam != TFTeam_Red && !IgnorePlayers)
+	if((SearcherNpcTeam != TFTeam_Red || Arena_Mode()) && !IgnorePlayers)
 	{
 		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 		{
@@ -5649,7 +5653,7 @@ stock int GetClosestTarget(int entity,
 					}
 					if (!npc.m_bCamo || camoDetection)
 					{
-						if(GetTeam(entity_close) == TFTeam_Red)
+						if(GetTeam(entity_close) == TFTeam_Red && !Arena_Mode())
 							GetClosestTarget_AddTarget(entity_close, 3);
 						else
 							GetClosestTarget_AddTarget(entity_close, 2);
@@ -5664,7 +5668,7 @@ stock int GetClosestTarget(int entity,
 #if defined ZR
 	//In Construction2 we want them to always try to target buildings.
 	 //dunggons ignore this if its a raid attack
-	if(SearcherNpcTeam != TFTeam_Red && !RaidbossIgnoreBuildingsLogic(1) && !IgnoreBuildings && ((view_as<CClotBody>(entity).m_iTarget > 0 && i_IsABuilding[view_as<CClotBody>(entity).m_iTarget]) || IgnorePlayers ||
+	if((SearcherNpcTeam != TFTeam_Red || Arena_Mode()) && !RaidbossIgnoreBuildingsLogic(1) && !IgnoreBuildings && ((view_as<CClotBody>(entity).m_iTarget > 0 && i_IsABuilding[view_as<CClotBody>(entity).m_iTarget]) || IgnorePlayers ||
 	 (Dungeon_Mode() && Dungeon_AttackType() >= 2))) 
 	 //If the previous target was a building, then we try to find another, otherwise we will only go for collisions.
 #else
@@ -5856,7 +5860,7 @@ int GetClosestTarget_Internal(int entity, float fldistancelimit, float fldistanc
 							continue;
 						}
 					}
-
+					
 					if(dist < closeDist)
 					{
 						closeNav = area2;

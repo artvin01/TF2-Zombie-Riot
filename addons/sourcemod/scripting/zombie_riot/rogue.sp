@@ -1036,6 +1036,17 @@ public Action Rogue_RoundStartTimer(Handle timer)
 		{
 			PrintToChatAll("zr_noroundstart is enabled");
 		}
+		else if(Arena_Mode())
+		{
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(IsClientInGame(client) && !IsFakeClient(client))
+				{
+					Arena_Start();
+					return Plugin_Stop;
+				}
+			}
+		}
 		else if(Dungeon_Mode())
 		{
 			for(int client=1; client<=MaxClients; client++)

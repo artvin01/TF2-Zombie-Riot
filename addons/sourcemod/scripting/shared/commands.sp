@@ -28,6 +28,7 @@ void Commands_PluginStart()
 #if defined ZR
 	AddCommandListener(OnKillBind, "kill");
 	AddCommandListener(OnKillBind, "explode");
+	AddCommandListener(OnTeamName, "tournament_teamname");
 #endif
 
 } 
@@ -417,5 +418,10 @@ bool DoInteractKeyLogic(float angles[3], int client)
 static Action OnKillBind(int client, const char[] command, int args)
 {
 	return Gunsaw_KillBind(client) ? Plugin_Handled : Plugin_Continue;
+}
+
+static Action OnTeamName(int client, const char[] command, int args)
+{
+	return Native_CanRenameNpc(client) ? Plugin_Continue : Plugin_Handled;
 }
 #endif

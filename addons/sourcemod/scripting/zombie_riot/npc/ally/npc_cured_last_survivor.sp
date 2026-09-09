@@ -690,7 +690,7 @@ methodmap CuredFatherGrigori < CClotBody
 			
 			for(int client=1; client<=MaxClients; client++)
 			{
-				if(IsClientInGame(client) && GetTeam(client) == TFTeam_Red && TeutonType[client] != TEUTON_WAITING)
+				if(IsClientInGame(client) && GetTeam(client) == ally && TeutonType[client] != TEUTON_WAITING)
 				{
 					if(i_PlayerModelOverrideIndexWearable[client] == NIKO_2)
 						ThereIsANiko++;
@@ -698,7 +698,7 @@ methodmap CuredFatherGrigori < CClotBody
 					TotalPlayers++;
 				}
 			}
-			if(GetRandomFloat(0.0,1.0) < (ThereIsANiko / TotalPlayers))
+			if(TotalPlayers && GetRandomFloat(0.0,1.0) < (ThereIsANiko / TotalPlayers))
 				i_SpecialGrigoriReplace = 2;
 		}
 

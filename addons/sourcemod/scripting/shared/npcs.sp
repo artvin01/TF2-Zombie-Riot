@@ -662,6 +662,9 @@ public Action Timer_Delay_BossSpawn(Handle timer, DataPack pack)
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToCeil(float(ReturnEntityMaxHealth(entity)) * 0.5));
 			fl_Extra_Damage[entity] 			*= 0.65;
 		}
+
+		if(Arena_Mode())
+			fl_Extra_Damage[entity] *= 30.0;
 	}
 
 	return Plugin_Stop;

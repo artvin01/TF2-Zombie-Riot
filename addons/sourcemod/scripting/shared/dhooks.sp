@@ -1466,7 +1466,11 @@ public MRESReturn DHook_ForceRespawn(int client)
 		return MRES_Supercede;
 	}
 	
+#if defined ZR
+	if(!Arena_Mode() && GetClientTeam(client) != 2)
+#else
 	if(GetClientTeam(client) != 2)
+#endif
 	{
 		SetTeam(client, 2);
 		return MRES_Supercede;
@@ -1488,6 +1492,9 @@ public MRESReturn DHook_ForceRespawn(int client)
 		return MRES_Supercede;
 	}
 #if defined ZR
+
+	if(!IsRespawning && Arena_Mode() && !Waves_InSetup())
+		return MRES_Supercede;
 	
 	if(!IsRespawning && Dungeon_InRespawnTimer(client))
 		return MRES_Supercede;
@@ -1495,7 +1502,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 	DoTutorialStep(client, false);
 	SetTutorialUpdateTime(client, GetGameTime() + 1.0);
 	
-	if(Construction_InSetup() || BetWar_Mode() || Dungeon_CanRespawn())
+	if(Construction_InSetup() || BetWar_Mode() || Dungeon_CanRespawn() || Arena_Mode())
 	{
 		b_AntiLateSpawn_Allow[client] = true;
 		TeutonType[client] = TEUTON_NONE;
@@ -1545,7 +1552,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 		i_AmountDowned[client] = 0;
 	f_TimeAfterSpawn[client] = GetGameTime() + 1.0;
 
-	if(f_WasRecentlyRevivedViaNonWave[client] < GetGameTime() && Dungeon_Mode())
+	if(f_WasRecentlyRevivedViaNonWave[client] < GetGameTime() && (Dungeon_Mode() || Arena_Mode()))
 	{
 		//tele to base spawn yippie
 		CreateTimer(0.1, Dhook_TeleportToCenter, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
@@ -2299,15 +2306,16 @@ static MRESReturn DHookCallback_RecalculateChargeEffects_Pre(Address pShared, DH
 
 
 #if defined ZR
-
+static bool wasMvMIn;
 MRESReturn FPlayerCanTakeDamagePre(Address pThis, Handle hReturn, Handle hParams)
 {
+	wasMvMIn = view_as<bool>(GameRules_GetProp("m_bPlayingMannVsMachine"));
 	GameRules_SetProp("m_bPlayingMannVsMachine", false);
 	return MRES_Ignored;
 }
 MRESReturn FPlayerCanTakeDamagePost(Address pThis, Handle hReturn, Handle hParams)
 {
-	GameRules_SetProp("m_bPlayingMannVsMachine", true);
+	GameRules_SetProp("m_bPlayingMannVsMachine", wasMvMIn);
 	return MRES_Ignored;
 }
 #endif
