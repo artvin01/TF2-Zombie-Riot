@@ -97,7 +97,6 @@ static bool b_AntiSameFrameUpdate[MAXPLAYERS];
 
 #if defined ZR
 static int TeutonModelIndex;
-bool b_IsRobot[MAXPLAYERS];
 #endif
 
 void ViewChange_MapStart()

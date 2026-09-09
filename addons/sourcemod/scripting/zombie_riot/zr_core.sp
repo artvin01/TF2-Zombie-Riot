@@ -424,6 +424,7 @@ int PlayersInGame;
 bool ZombieMusicPlayed;
 int GlobalIntencity;
 bool b_HasBeenHereSinceStartOfWave[MAXPLAYERS];
+bool b_IsRobot[MAXPLAYERS];
 bool WasHereSinceStartOfWave(int client)
 {
 //	if(Dungeon_Mode())
