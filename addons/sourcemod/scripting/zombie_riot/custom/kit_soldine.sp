@@ -62,6 +62,8 @@ void ChargeSoldineMeleeHit(int client, int victim, bool Melee, float Multi = 1.0
 	}
 
 	MeleeChargeDo *= Multi;
+	if(Arena_Mode())
+		MeleeChargeDo *= 5.0;
 
 	i_SoldineMeleeCharge[client] += MeleeChargeDo;
 
@@ -121,6 +123,9 @@ void ChargeSoldineRocketJump(int client, int victim, bool Melee, float Multi = 1
 		MeleeChargeDo *= 1.5;
 	}
 
+	if(Arena_Mode())
+		MeleeChargeDo *= 5.0;
+		
 	MeleeChargeDo *= Multi;
 
 	i_SoldineRocketjumpCharge[client] += MeleeChargeDo;

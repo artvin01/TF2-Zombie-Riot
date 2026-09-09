@@ -1195,6 +1195,10 @@ stock void GiveCoffinOnDamage(int client, int victim, float damage, float Percen
 		DamageForMaxCharge = (Percentage / float(MAX_COFFINS));
 		if(StatusEffects_SinkingDebuffMaxStacks(victim))
 			DamageForMaxCharge *= 2.0;
+		if(Arena_Mode())
+		{
+			DamageForMaxCharge *= 5.0;
+		}
 		CoffinCharge[client] += DamageForMaxCharge;
 	}
 	else
@@ -1203,6 +1207,10 @@ stock void GiveCoffinOnDamage(int client, int victim, float damage, float Percen
 		if(StatusEffects_SinkingDebuffMaxStacks(victim))
 			DamageForMaxCharge *= 0.5;
 
+		if(Arena_Mode())
+		{
+			DamageForMaxCharge *= 0.25;
+		}
 		CoffinCharge[client] += (damage / DamageForMaxCharge);
 	}
 	if(WeaponLevel[client] >= 6)
