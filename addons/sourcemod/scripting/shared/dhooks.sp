@@ -965,7 +965,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			return false;
 		}
 #endif
-		if(b_IsAProjectile[entity1] && GetTeam(entity1) != TFTeam_Red)
+		if(b_IsAProjectile[entity1] && (GetTeam(entity1) != TFTeam_Red && !Arena_Mode()))
 		{
 			if(b_IsATrigger[entity2])
 			{
@@ -988,7 +988,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				return false;
 			}
 		}
-		else if(b_IsAProjectile[entity1] && GetTeam(entity1) == TFTeam_Red)
+		else if(b_IsAProjectile[entity1] && (GetTeam(entity1) == TFTeam_Red || Arena_Mode()))
 		{
 #if defined ZR
 			if(b_ForceCollisionWithProjectile[entity2] && !b_EntityIgnoredByShield[entity1] && !IsEntitySpike(entity1))
@@ -1053,7 +1053,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 #endif	
 			}
 			//ally projectiles do not collide with players unless they only go for players
-			else if(entity2 <= MaxClients && entity2 > 0 && !b_ProjectileCollideWithPlayerOnly[entity1])
+			else if(entity2 <= MaxClients && entity2 > 0 && !b_ProjectileCollideWithPlayerOnly[entity1] && (Arena_Mode() && GetTeam(entity2) == GetTeam(entity1)))
 			{
 #if defined RPG
 				if(!RPGCore_PlayerCanPVP(entity1, entity2))
@@ -1063,7 +1063,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 #endif	
 			}
 			//ignores everything else if it only collides with players
-			else if(entity2 > MaxClients && b_ProjectileCollideWithPlayerOnly[entity1])
+			else if(entity2 > MaxClients && b_ProjectileCollideWithPlayerOnly[entity1] && (Arena_Mode() && GetTeam(entity2) == GetTeam(entity1)))
 			{
 #if defined RPG
 				if(!RPGCore_PlayerCanPVP(entity1, entity2))
@@ -1148,7 +1148,13 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			//lag comp stuff, shooting in specific
 			else if((entity2 <= MaxClients && entity2 > 0) && !Dont_Move_Allied_Npc && !b_DoNotIgnoreDuringLagCompAlly[entity1])
 			{
-				return false;
+				if(Arena_Mode())
+				{
+					if(GetTeam(entity2) == GetTeam(entity1))
+						return false;
+				}
+				else
+					return false;
 			}
 			
 		}
@@ -1314,7 +1320,7 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 	{
 		for(int client=1; client<=MaxClients; client++)
 		{
-			if(IsClientInGame(client) && client != Compensator)
+			if(IsClientInGame(client) && client != Compensator && GetTeam(client) == TeamBeforeChange)
 			{
 				
 #if defined ZR
@@ -1342,7 +1348,7 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 	{
 		int baseboss_index_allied = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again]);
-		if (IsValidEntity(baseboss_index_allied) && GetTeam(baseboss_index_allied) == TFTeam_Red)
+		if (IsValidEntity(baseboss_index_allied) && GetTeam(baseboss_index_allied) == TeamBeforeChange)
 		{
 			if(!Dont_Move_Allied_Npc || b_ThisEntityIgnored[baseboss_index_allied])
 			{
@@ -1361,7 +1367,7 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++)
 		{
 			int baseboss = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again_2]);
-			if (IsValidEntity(baseboss) && GetTeam(baseboss) != TFTeam_Red)
+			if (IsValidEntity(baseboss) && GetTeam(baseboss) != TeamBeforeChange)
 			{
 				b_ThisEntityIgnoredEntirelyFromAllCollisions[baseboss] = true;
 			}

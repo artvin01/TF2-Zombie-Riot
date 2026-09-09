@@ -885,6 +885,12 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 
 	if(IsInvuln(victim, true))
 		return Plugin_Continue;
+
+	if(!Arena_Mode())
+	{
+		if(victim > 0 && victim <= MaxClients)
+			return Plugin_Continue;
+	}
 	
 	
 //	if((damagetype & (DMG_BULLET)) || (damagetype & (DMG_BUCKSHOT))) // Needed, other crap for some reason can trigger headshots, so just make sure only bullets can do this.

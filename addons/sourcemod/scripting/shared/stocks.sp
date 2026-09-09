@@ -2998,7 +2998,7 @@ stock int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 		return -1;
 	}
 #if defined ZR
-	else if(GetTeam(other_entity) == TFTeam_Red)
+	else if(!Arena_Mode() && GetTeam(other_entity) == TFTeam_Red)
 	{
 		if(b_NpcIsTeamkiller[owner_projectile])
 			return other_entity;

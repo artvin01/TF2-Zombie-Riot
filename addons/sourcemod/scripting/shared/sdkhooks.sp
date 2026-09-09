@@ -196,6 +196,8 @@ public void SDKHook_ScoreThink(int entity)
 stock void SDKHook_HookClient(int client)
 {
 #if defined ZR || defined RPG
+	SDKUnhook(client, SDKHook_TraceAttack, NPC_TraceAttack);
+	SDKHook(client, SDKHook_TraceAttack, NPC_TraceAttack);
 	SDKUnhook(client, SDKHook_PreThinkPost, OnPreThinkPost);
 	SDKHook(client, SDKHook_PreThinkPost, OnPreThinkPost);
 	SDKUnhook(client, SDKHook_PostThink, OnPostThink);

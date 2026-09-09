@@ -704,7 +704,7 @@ float f_BegPlayerR_TeethSet[MAXPLAYERS];
 //ATTRIBUTE ARRAY SUBTITIUTE
 bool b_ForceCollisionWithProjectile[MAXENTITIES];
 bool b_ProjectileCollideIgnoreWorld[MAXENTITIES];
-bool b_IsAProjectile[MAXENTITIES];
+int b_IsAProjectile[MAXENTITIES];
 bool b_Is_Player_Projectile_Through_Npc[MAXENTITIES];
 bool b_CannotBeHeadshot[MAXENTITIES];
 bool b_CannotBeBackstabbed[MAXENTITIES];

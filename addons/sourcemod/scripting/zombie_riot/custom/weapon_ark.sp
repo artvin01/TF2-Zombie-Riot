@@ -414,9 +414,8 @@ void Ark_Lauch_projectile(int client, int weapon, bool multi, float speed, float
 		Wand_Projectile_Spawn(client, speed, time, damage, 15/*ark*/, weapon, Particle);
 	}
 }
-public Action Event_Ark_OnHatTouch(int entity, int other)// code responsible for doing damage to the enemy
+public Action Event_Ark_OnHatTouch(int entity, int target)// code responsible for doing damage to the enemy
 {
-	int target = Target_Hit_Wand_Detection(entity, other);
 	if (target > 0)	
 	{
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);
@@ -433,7 +432,7 @@ public Action Event_Ark_OnHatTouch(int entity, int other)// code responsible for
 		int weapon = EntRefToEntIndex(i_WandWeapon[entity]);
 
 		float Dmg_Force[3]; CalculateDamageForce(vecForward, 10000.0, Dmg_Force);
-		SDKHooks_TakeDamage(other, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
+		SDKHooks_TakeDamage(target, owner, owner, f_WandDamage[entity], DMG_PLASMA, weapon, Dmg_Force, Entity_Position);	// 2048 is DMG_NOGIB?
 		if(IsValidEntity(particle) && particle != 0)
 		{
 			RemoveEntity(particle);

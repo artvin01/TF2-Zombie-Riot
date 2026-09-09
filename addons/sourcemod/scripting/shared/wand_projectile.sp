@@ -301,7 +301,7 @@ public Action Timer_RemoveEntity_CustomProjectileWand(Handle timer, DataPack pac
 public void Wand_Base_StartTouch(int entity, int other)
 {
 	int target = other;
-	if(GetTeam(entity) == TFTeam_Red)
+	if(!Arena_Mode() && GetTeam(entity) == TFTeam_Red)
 		target = Target_Hit_Wand_Detection(entity, other);
 
 	static float AbsOrigin[3];
