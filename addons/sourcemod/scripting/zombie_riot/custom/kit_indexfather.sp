@@ -1436,6 +1436,8 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 		AddWeaponToFurioso(attacker, 1);
 		if(WasARaidboss[attacker])
 			AddWeaponToFurioso(attacker, 1);
+		if(Arena_Mode())
+			AddWeaponToFurioso(attacker, 4);
 	}
 	if(ResetFurioso)
 	{

@@ -2,6 +2,7 @@
 #pragma newdecls required
 
 #define GLOBAL_ELEMENTAL_NERF_PLAYER 0.5
+#define ARENA_ELEMENTAL_NERF_PLAYER 0.25
 enum				// Types
 {
 	Element_Nervous, 	// 0
@@ -332,6 +333,9 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 	}
 	if(victim <= MaxClients || Arena_Mode())
 		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);
+	if(victim <= MaxClients && Arena_Mode())
+		damage = RoundFloat(damage * ARENA_ELEMENTAL_NERF_PLAYER);
+
 	if(victim <= MaxClients && victim > 0)
 	{
 		// Warped overrides
@@ -477,6 +481,8 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 	}
 	if(victim <= MaxClients || Arena_Mode())
 		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);
+	if(victim <= MaxClients && Arena_Mode())
+		damage = RoundFloat(damage * ARENA_ELEMENTAL_NERF_PLAYER);
 	if(victim <= MaxClients)
 	{
 		// Warped overrides
@@ -621,6 +627,8 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 	}
 	if(victim <= MaxClients || Arena_Mode())
 		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);
+	if(victim <= MaxClients && Arena_Mode())
+		damage = RoundFloat(damage * ARENA_ELEMENTAL_NERF_PLAYER);
 
 	if(victim <= MaxClients)
 	{
@@ -847,6 +855,8 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 	}
 	if(victim <= MaxClients || Arena_Mode())
 		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);
+	if(victim <= MaxClients && Arena_Mode())
+		damage = RoundFloat(damage * ARENA_ELEMENTAL_NERF_PLAYER);
 
 	if(victim <= MaxClients)
 	{
@@ -1066,6 +1076,8 @@ void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, boo
 	}
 	if(victim <= MaxClients || Arena_Mode())
 		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);
+	if(victim <= MaxClients && Arena_Mode())
+		damage = RoundFloat(damage * ARENA_ELEMENTAL_NERF_PLAYER);
 	if(victim <= MaxClients)
 	{
 		/*
@@ -1264,6 +1276,8 @@ void Elemental_AddBurgerDamage(int victim, int attacker, int damagebase)
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
 	if(victim <= MaxClients || Arena_Mode())
 		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);
+	if(victim <= MaxClients && Arena_Mode())
+		damage = RoundFloat(damage * ARENA_ELEMENTAL_NERF_PLAYER);
 	if(!b_NpcHasDied[victim] && GetTeam(victim) != TFTeam_Red && !i_NpcIsABuilding[victim])	// NPCs
 	{
 		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Burger));
@@ -1316,6 +1330,8 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 	}
 	if(victim <= MaxClients || Arena_Mode())
 		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);
+	if(victim <= MaxClients && Arena_Mode())
+		damage = RoundFloat(damage * ARENA_ELEMENTAL_NERF_PLAYER);
 	if(victim <= MaxClients) // VS Players
 	{
 		// Warped overrides
@@ -1509,6 +1525,8 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 	
 	if(victim <= MaxClients || Arena_Mode())
 		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);
+	if(victim <= MaxClients && Arena_Mode())
+		damage = RoundFloat(damage * ARENA_ELEMENTAL_NERF_PLAYER);
 	if(victim <= MaxClients)
 	{
 		bool fresh = (Armor_DebuffType[victim] != Element_Warped || Armor_Charge[victim] >= 0);
@@ -1813,6 +1831,8 @@ void Elemental_AddStaggerDamage(int victim, int attacker, int damagebase)
 	}
 	if(victim <= MaxClients || Arena_Mode())
 		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);
+	if(victim <= MaxClients && Arena_Mode())
+		damage = RoundFloat(damage * ARENA_ELEMENTAL_NERF_PLAYER);
 	
 	if(victim <= MaxClients)
 	{

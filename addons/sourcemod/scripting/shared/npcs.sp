@@ -1832,6 +1832,13 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 			return true;
 	}
 
+	if(victim <= MaxClients)
+	{
+		static char buffer[64];
+		GetClientName(victim, buffer, sizeof(buffer));
+		Format(c_NpcName[victim], sizeof(c_NpcName[]), buffer);
+		b_NameNoTranslation[victim] = true;
+	}
 	if(!c_NpcName[victim][0])
 		return true;
 
@@ -2277,7 +2284,17 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 		offset = MaxHealth < 0 ? 1 : 0;
 		ThousandString(c_MaxHealth[offset], sizeof(c_MaxHealth) - offset);
 
-		if(npc.m_flArmorCount > 0.0)
+		if(npc.index <= MaxClients && Armor_Charge[npc.index] > 0)
+		{
+			int ArmorInt = Armor_Charge[npc.index];
+			static char c_Armor[64];
+			IntToString(ArmorInt,c_Armor, sizeof(c_Armor));
+			//has armor? Add extra.
+			int offsetarm = ArmorInt < 0 ? 1 : 0;
+			ThousandString(c_Armor[offsetarm], sizeof(c_Armor) - offsetarm);
+			Format(c_Health, sizeof(c_Health), "%s+[%s]", c_Health, c_Armor);
+		}
+		else if(npc.m_flArmorCount > 0.0)
 		{
 			int ArmorInt = RoundToNearest(npc.m_flArmorCount);
 			static char c_Armor[64];

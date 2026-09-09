@@ -11985,10 +11985,17 @@ stock void StatusEffects_FragileAddStuff(int applier, int victim, int value, flo
 
 void Func_FragileAddStuff(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
 {
-	if(!Apply_StatusEffect.TotalOwners[attacker])
+	if(attacker == -1)
+	{
 		Format(HudToDisplay, SizeOfChar, "⭙");
+	}
 	else
-		Format(HudToDisplay, SizeOfChar, "⭙(%i/%.1f)", RoundFloat(Apply_StatusEffect.DataForUse) , Apply_StatusEffect.TimeUntillOver - GetGameTime());
+	{
+		if(!Apply_StatusEffect.TotalOwners[attacker])
+			Format(HudToDisplay, SizeOfChar, "⭙");
+		else
+			Format(HudToDisplay, SizeOfChar, "⭙(%i/%.1f)", RoundFloat(Apply_StatusEffect.DataForUse) , Apply_StatusEffect.TimeUntillOver - GetGameTime());
+	}
 }
 
 void DoDodgeEffect(int victim)
