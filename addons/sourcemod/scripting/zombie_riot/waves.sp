@@ -3614,7 +3614,7 @@ void Zombie_Delay_Warning()
 			if(f_ZombieAntiDelaySpeedUp + 400.0 < GetGameTime())
 			{
 				if(Arena_Mode())
-					ForcePlayerLoss();
+					ForcePlayerLoss(false);
 				
 				i_ZombieAntiDelaySpeedUp = 7;
 				CPrintToChatAll("{crimson}You are probably abusing something, perish, go my uber swordsmen.");

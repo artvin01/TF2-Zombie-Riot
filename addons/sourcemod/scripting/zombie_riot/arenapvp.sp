@@ -12,6 +12,7 @@ static bool FreeForAll;
 static bool PostRound;
 static int GregHandicap;
 static bool AlwaysSpecial;
+static ArrayList MusicList;
 
 public bool Arena_Mode()
 {
@@ -51,10 +52,23 @@ void Arena_SetupVote(KeyValues kv)
 	ArenaMode = true;
 
 	delete TeamPoints;
-	TeamPoints = new StringMap();
-
 	delete SpecialRounds;
+
+	MusicEnum music;
+	if(MusicList)
+	{
+		int length = MusicList.Length;
+		for(int i; i < length; i++)
+		{
+			MusicList.GetArray(i, music);
+			music.Clear();
+		}
+		delete MusicList;
+	}
+
+	TeamPoints = new StringMap();
 	SpecialRounds = new ArrayList(ByteCountToCells(256));
+	MusicList = new ArrayList(sizeof(MusicEnum));
 
 	MVMHud_Disable();
 
@@ -75,6 +89,21 @@ void Arena_SetupVote(KeyValues kv)
 			while(kv.GotoNextKey(false));
 
 			kv.GoBack();
+		}
+
+		kv.GoBack();
+	}
+	
+	if(kv.JumpToKey("RandomMusic"))
+	{
+		if(kv.GotoFirstSubKey())
+		{
+			do
+			{
+				if(music.SetupKv(kv))
+					MusicList.PushArray(music);
+			}
+			while(kv.GotoNextKey());
 		}
 
 		kv.GoBack();
@@ -219,6 +248,8 @@ static Action ArenaGameTimer(Handle timer, int mode)
 	{
 		case 1:
 		{
+			DisableRandomMusic();
+			
 			RoundCount++;
 
 			int preRound = (RoundCount) * 10;
@@ -260,6 +291,7 @@ static Action ArenaGameTimer(Handle timer, int mode)
 		{
 			Waves_SetReadyStatus(0);
 			WaveStart_SubWaveStart(GetGameTime() - 300.0);
+			SetRandomMusic();
 			Ammo_Count_Ready += 10;
 
 			if(AlwaysSpecial || (GregHandicap && (GetURandomInt() % 2)))
@@ -703,6 +735,50 @@ bool Arena_GetCenterSpawnPoint(float pos[3], float ang[3], int team = 0)
 	GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
 	GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 	return true;
+}
+
+static void DisableRandomMusic()
+{
+	MusicEnum music;
+	int length = MusicList.Length;
+	if(length)
+	{
+		MusicList.GetArray(GetURandomInt() % length, music);
+		
+		int time = GetTime() + 2;
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(!b_IsPlayerABot[client] && IsClientInGame(client))
+			{
+				Music_Stop_All(client);
+				SetMusicTimer(client, time);
+			}
+		}
+
+		BGMusicSpecial1.Clear();
+	}
+}
+
+static void SetRandomMusic()
+{
+	int length = MusicList.Length;
+	if(length)
+	{
+		MusicEnum music;
+		MusicList.GetArray(GetURandomInt() % length, music);
+		
+		int time = GetTime();
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(!b_IsPlayerABot[client] && IsClientInGame(client))
+			{
+				Music_Stop_All(client);
+				SetMusicTimer(client, time);
+			}
+		}
+
+		music.CopyTo(BGMusicSpecial1);
+	}
 }
 
 public void Arena_AlwaysSpecial_Collect()
