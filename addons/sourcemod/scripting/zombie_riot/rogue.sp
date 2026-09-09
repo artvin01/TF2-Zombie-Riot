@@ -681,7 +681,7 @@ bool Rogue_CallVote(int client, bool force = false)	// Waves_CallVote
 					
 					for(int target = 1; target <= MaxClients; target++)
 					{
-						if(IsClientInGame(target) && GetClientTeam(target) == 2 && Items_HasNamedItem(target, vote.Config))
+						if(IsClientInGame(target) && GetClientTeam(target) > 1 && Items_HasNamedItem(target, vote.Config))
 						{
 							locked = false;
 							break;
@@ -761,7 +761,7 @@ static void DisplayHintVote()
 		int[] votes = new int[length + 1];
 		for(int client = 1; client <= MaxClients; client++)
 		{
-			if(IsClientInGame(client) && GetClientTeam(client) == 2)
+			if(IsClientInGame(client) && GetClientTeam(client) > 1)
 			{
 				total++;
 
@@ -982,7 +982,7 @@ public Action Rogue_EndVote(Handle timer, float time)
 			{
 				if(IsClientInGame(client))
 				{
-					if(VotedFor[client] > 0 && GetClientTeam(client) == 2)
+					if(VotedFor[client] > 0 && GetClientTeam(client) > 1)
 					{
 						votes[VotedFor[client]-1]++;
 					}
@@ -1980,7 +1980,7 @@ void Rogue_StartGenericVote(float time = 20.0)
 
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(IsClientInGame(client) && GetClientTeam(client) == 2 && GetClientMenu(client) == MenuSource_None)
+		if(IsClientInGame(client) && GetClientTeam(client) > 1 && GetClientMenu(client) == MenuSource_None)
 			Rogue_CallVote(client);
 	}
 }
@@ -2964,7 +2964,7 @@ void Rogue_GiveNamedArtifact(const char[] name, bool silent = false, bool noFail
 					for(int a; a < i_MaxcountNpcTotal; a++)
 					{
 						int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[a]);
-						if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == TFTeam_Red)
+						if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && (Arena_Mode() || GetTeam(entity) == TFTeam_Red))
 						{
 							Call_StartFunction(null, artifact.FuncAlly);
 							Call_PushCell(entity);
