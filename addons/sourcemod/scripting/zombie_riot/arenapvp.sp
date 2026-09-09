@@ -100,8 +100,7 @@ void Arena_SetupVote(KeyValues kv)
 		{
 			do
 			{
-				music.SetupEnum(kv);
-				if(music.Sound[0])
+				if(music.SetupKv("", kv))
 					MusicList.PushArray(music);
 			}
 			while(kv.GotoNextKey());
