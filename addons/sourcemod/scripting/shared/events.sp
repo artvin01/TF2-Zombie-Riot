@@ -78,6 +78,11 @@ float BonePosition[3], float BoneAngles[3], int ProjectileType, bool IsCrit)
 #endif	
 public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 {
+	static float FrameThing;
+	if(fabs(FrameTime - GetGameTime()) < 0.05)
+		return;
+	
+	FrameTime = GetGameTime();
 #if defined ZR
 
 	Barracks_InstaResearchEverything = false;
