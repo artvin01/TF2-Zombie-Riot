@@ -5138,7 +5138,7 @@ stock void Citizen_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 		}
 		else
 		{
-			if(Arena_Mode())
+			if(Arena_Mode() && !CheckInHud())
 				damage *= 0.35;
 			
 			if(npc.m_bRebelAgressive)
@@ -5148,25 +5148,25 @@ stock void Citizen_OnTakeDamage(int victim, int &attacker, int &inflictor, float
 			if(value > 40000)
 			{
 				damage *= 0.8;
-				if(!CheckInHud() && Arena_Mode())
+				if(Arena_Mode())
 					damage *= 0.1;
 			}
 			else if(value > 20000)
 			{
 				damage *= 0.85;
-				if(!CheckInHud() && Arena_Mode())
+				if(Arena_Mode())
 					damage *= 0.2;
 			}
 			else if(value > 10000)
 			{
 				damage *= 0.9;
-				if(!CheckInHud() && Arena_Mode())
+				if(Arena_Mode())
 					damage *= 0.45;
 			}
 			else if(value > 4500)
 			{
 				damage *= 0.95;
-				if(!CheckInHud() && Arena_Mode())
+				if(Arena_Mode())
 					damage *= 0.75;
 			}
 			

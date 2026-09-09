@@ -254,28 +254,28 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 		HudDamageIndicator(victim,damagetype, false);
 #if defined ZR
 
-	if(!CheckInHud())
+	if(Arena_Mode() || (attacker <= MaxClients && attacker > 0 && attacker != 0))
 	{
-		if(Arena_Mode() || (attacker <= MaxClients && attacker > 0 && attacker != 0))
-		{
-			//in PVP scenarios, we nerf damage by 10x
+		//in PVP scenarios, we nerf damage by 10x
+		if(!CheckInHud())
 			damage *= 0.35;
-			switch(Armor_Level[victim])
-			{
-				case 50:
-					damage *= 0.75;
+		
+		switch(Armor_Level[victim])
+		{
+			case 50:
+				damage *= 0.75;
 
-				case 100:
-					damage *= 0.45;
+			case 100:
+				damage *= 0.45;
 
-				case 150:
-					damage *= 0.2;
+			case 150:
+				damage *= 0.2;
 
-				case 200, 250, 300:
-					damage *= 0.1;
-			}
+			case 200, 250, 300:
+				damage *= 0.1;
 		}
 	}
+	
 	if(VIPBuilding_Active())
 		return true;
 	
