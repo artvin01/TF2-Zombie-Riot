@@ -390,7 +390,10 @@ static Action TeleportAlliedNPCs(Handle timer)
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(IsClientInGame(client) && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
+		{
 			HealEntityGlobal(client, client, 9999.9, 1.0, 30.0, HEAL_ABSOLUTE);
+			GiveArmorViaPercentage(client, 6.0, 1.0, _, true);
+		}
 	}
 
 	for(int i; i < i_MaxcountNpcTotal; i++)
