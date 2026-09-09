@@ -51,7 +51,6 @@ void Arena_SetupVote(KeyValues kv)
 
 	ArenaMode = true;
 
-	delete TeamPoints;
 	delete SpecialRounds;
 
 	MusicEnum music;
@@ -66,7 +65,6 @@ void Arena_SetupVote(KeyValues kv)
 		delete MusicList;
 	}
 
-	TeamPoints = new StringMap();
 	SpecialRounds = new ArrayList(ByteCountToCells(256));
 	MusicList = new ArrayList(sizeof(MusicEnum));
 
@@ -350,27 +348,30 @@ static Action ArenaGameTimer(Handle timer, int mode)
 		}
 		case 3:
 		{
-			StringMapSnapshot snap = TeamPoints.Snapshot();
-
-			int points;
-			int length = snap.Length;
-			for(int i; i < length; i++)
+			if(TeamPoints)
 			{
-				int size = snap.KeyBufferSize(i);
-				char[] key = new char[size];
-				snap.GetKey(i, key, size);
-				TeamPoints.GetValue(key, points);
-				if(FreeForAll)
-				{
-					CPrintToChatAll("{orange}%s - %d wins", key, points);
-				}
-				else
-				{
-					CPrintToChatAll("{orange}Team %d - %d wins", StringToInt(key) - 1, points);
-				}
-			}
+				StringMapSnapshot snap = TeamPoints.Snapshot();
 
-			delete snap;
+				int points;
+				int length = snap.Length;
+				for(int i; i < length; i++)
+				{
+					int size = snap.KeyBufferSize(i);
+					char[] key = new char[size];
+					snap.GetKey(i, key, size);
+					TeamPoints.GetValue(key, points);
+					if(FreeForAll)
+					{
+						CPrintToChatAll("{orange}%s - %d wins", key, points);
+					}
+					else
+					{
+						CPrintToChatAll("{orange}Team %d - %d wins", StringToInt(key) - 1, points);
+					}
+				}
+
+				delete snap;
+			}
 
 			ForcePlayerLoss(false);
 			return Plugin_Continue;
@@ -575,6 +576,9 @@ void Arena_CheckAlivePlayers(int killed)
 	}
 	else
 	{
+		if(!TeamPoints)
+			TeamPoints = new StringMap();
+	
 		char buffer[64];
 		if(FreeForAll)
 		{
