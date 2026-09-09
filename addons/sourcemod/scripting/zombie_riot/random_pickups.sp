@@ -85,6 +85,10 @@ public Action RandomPickup_DelayBetweenSpawns(Handle timer)
 	{
 		RandomPickupTime *= 0.5;
 	}
+	if(Arena_Mode())
+	{
+		RandomPickupTime *= 0.5;
+	}
 	DelayBetweenSpawns = GetGameTime() + RandomPickupTime;
 	return Plugin_Continue;
 }
