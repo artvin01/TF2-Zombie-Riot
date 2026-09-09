@@ -2026,6 +2026,8 @@ public bool Trace_DontHitAlivePlayer(int entity, int mask, any data)
 		}
 	}
 #endif
+	if(GetTeam(entity) != GetTeam(data))
+		return false;
 	
 	return entity!=data;
 }
