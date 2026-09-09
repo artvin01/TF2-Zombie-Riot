@@ -260,6 +260,7 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 		if(!CheckInHud())
 			damage *= 0.35;
 		
+		// Also referenced in Citizen_OnTakeDamage (for arena mode)
 		switch(Armor_Level[victim])
 		{
 			case 50:
