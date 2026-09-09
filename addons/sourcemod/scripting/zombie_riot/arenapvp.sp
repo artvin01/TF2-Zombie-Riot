@@ -504,7 +504,7 @@ static Action UpdateNavBlockers(Handle timer)
 // CheckAlivePlayers
 void Arena_CheckAlivePlayers(int killed)
 {
-	if(PostRound || Waves_InSetup())
+	if(!Started || PostRound || Waves_InSetup())
 		return;
 	
 	int colorRef;
