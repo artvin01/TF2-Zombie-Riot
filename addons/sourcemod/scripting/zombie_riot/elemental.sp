@@ -244,7 +244,7 @@ int Elemental_TriggerDamage(int entity, int type)
 	int amount = RoundToCeil(float(ReturnEntityMaxHealth(entity)) / divide);
 	
 	if(HasSpecificBuff(entity, "Warped Elemental End"))
-	{	
+	{
 		//impossible to elementalise.
 		amount = 999999999;
 	}	
@@ -266,7 +266,7 @@ bool Elemental_HurtHud(int entity, char Debuff_Adder[128])
 	}
 	
 	// Don't display anything after 5 seconds of nothing
-	if((LastTime[entity] + 5.0) < gameTime && GetTeam(entity) != TFTeam_Red)
+	if((LastTime[entity] + 5.0) < gameTime && !Arena_Mode() && GetTeam(entity) != TFTeam_Red)
 		return false;
 	
 	// Find the element that's closest to trigger
@@ -330,7 +330,7 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 	{
 		damage = RoundToNearest(float(damage) * 1.3);
 	}
-	if(victim <= MaxClients)
+	if(victim <= MaxClients || Arena_Mode())
 		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);
 	if(victim <= MaxClients && victim > 0)
 	{
@@ -407,7 +407,7 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 				ElementDamage[victim][Element_Nervous] = 0;
 				f_ArmorCurrosionImmunity[victim][Element_Nervous] = GetGameTime() + 5.0;
 
-				if(GetTeam(victim) == TFTeam_Red)
+				if(GetTeam(victim) == TFTeam_Red && !Arena_Mode())
 				{
 					ApplyStatusEffect(attacker, victim, "Paralysis", 3.0);
 					SDKHooks_TakeDamage(victim, attacker, attacker, 500.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_DAMAGE_NOAPPLYBUFFS_OR_DEBUFFS);
@@ -475,7 +475,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 	{
 		damage = RoundToNearest(float(damage) * 1.3);
 	}
-	if(victim <= MaxClients)
+	if(victim <= MaxClients || Arena_Mode())
 		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);
 	if(victim <= MaxClients)
 	{
@@ -588,7 +588,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 				IncreaseEntityDamageTakenBy(victim, 1.30, 10.0);
 				NPC_Ignite(victim, attacker, 10.0, -1);
 
-				float burn = GetTeam(victim) == TFTeam_Red ? 10.0 : 25.0;
+				float burn = (GetTeam(victim) == TFTeam_Red && !Arena_Mode()) ? 10.0 : 25.0;
 				if(BurnDamage[victim] < burn)
 					BurnDamage[victim] = burn;
 			}
@@ -619,7 +619,7 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 	{
 		damage = RoundToNearest(float(damage) * 1.3);
 	}
-	if(victim <= MaxClients)
+	if(victim <= MaxClients || Arena_Mode())
 		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);
 
 	if(victim <= MaxClients)
@@ -845,7 +845,7 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 	{
 		damage = RoundToNearest(float(damage) * 1.3);
 	}
-	if(victim <= MaxClients)
+	if(victim <= MaxClients || Arena_Mode())
 		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);
 
 	if(victim <= MaxClients)
@@ -1064,7 +1064,7 @@ void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, boo
 	{
 		damage = RoundToNearest(float(damage) * 1.3);
 	}
-	if(victim <= MaxClients)
+	if(victim <= MaxClients || Arena_Mode())
 		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);
 	if(victim <= MaxClients)
 	{
@@ -1262,7 +1262,7 @@ void Elemental_AddBurgerDamage(int victim, int attacker, int damagebase)
 		return;
 	
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
-	if(victim <= MaxClients)
+	if(victim <= MaxClients || Arena_Mode())
 		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);
 	if(!b_NpcHasDied[victim] && GetTeam(victim) != TFTeam_Red && !i_NpcIsABuilding[victim])	// NPCs
 	{
@@ -1314,7 +1314,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 	{
 		damage = RoundToNearest(float(damage) * 1.3);
 	}
-	if(victim <= MaxClients)
+	if(victim <= MaxClients || Arena_Mode())
 		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);
 	if(victim <= MaxClients) // VS Players
 	{
@@ -1507,7 +1507,7 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 	if(NpcStats_ElementalAmp(victim))
 		damage = RoundToNearest(float(damage) * 1.3);
 	
-	if(victim <= MaxClients)
+	if(victim <= MaxClients || Arena_Mode())
 		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);
 	if(victim <= MaxClients)
 	{
@@ -1610,7 +1610,7 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 		{
 			ElementDamage[victim][Element_Warped] = 0;
 
-			if(GetTeam(victim) == TFTeam_Red)
+			if((GetTeam(victim) == TFTeam_Red && !Arena_Mode()) || Citizen_IsIt(victim))
 			{
 				SDKHooks_TakeDamage(victim, attacker, attacker, float(ReturnEntityMaxHealth(victim)), DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
 				EmitSoundToAll("weapons/icicle_freeze_victim_01.wav", victim, SNDCHAN_STATIC, 80, _, 1.0, 40);
@@ -1811,7 +1811,7 @@ void Elemental_AddStaggerDamage(int victim, int attacker, int damagebase)
 			damage = RoundToNearest(float(damage) * 1.3);
 		}
 	}
-	if(victim <= MaxClients)
+	if(victim <= MaxClients || Arena_Mode())
 		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);
 	
 	if(victim <= MaxClients)
