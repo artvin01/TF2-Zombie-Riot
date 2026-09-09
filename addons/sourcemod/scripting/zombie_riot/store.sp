@@ -835,6 +835,10 @@ stock float CooldownReductionAmount(int client)
 	{
 		Cooldown *= 0.6;
 	}
+	if(Arena_Mode())
+	{
+		Cooldown *= 0.75;
+	}
 	if(i_CurrentEquippedPerk[client] & PERK_ENERGY_DRINK)
 		Cooldown *= 0.85;
 	if(i_CurrentEquippedPerk[client] & PERK_ENERGY_DRINK_X)

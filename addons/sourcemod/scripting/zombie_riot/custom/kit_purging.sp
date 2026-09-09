@@ -1053,10 +1053,10 @@ public Action Weapon_Purging_Crush_Think(Handle h, DataPack pack)
 		float damage = PURGE_RAM_BASE_DMG;
 		damage *= Attributes_Get(weapon, 2, 1.0);
 		damage *= 0.075;
-		for(int a; a < f; a++)
+		for(int a; a < MAXENTITIES; a++)
 		{
-			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[a]);
-			if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && entHit <= PURGE_RAM_MAX_HIT)
+			int entity = a;
+			if(IsEntityAlive(entity) && entHit <= PURGE_RAM_MAX_HIT)
 			{
 				if(GetTeam(entity) == team)
 					continue;
