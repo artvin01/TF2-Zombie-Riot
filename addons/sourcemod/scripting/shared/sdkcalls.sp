@@ -337,7 +337,7 @@ void SDKCall_BecomeRagdollOnClient(int entity, const float vec[3])
 }
 
 #if defined ZR || defined RPG
-void StartPlayerOnlyLagComp(int client, bool Compensate_allies)
+void StartPlayerOnlyLagComp(int client, bool Compensate_allies, bool CompPvp = false)
 {
 	if(g_GottenAddressesForLagComp)
 	{
@@ -346,6 +346,10 @@ void StartPlayerOnlyLagComp(int client, bool Compensate_allies)
 		if(Compensate_allies)
 		{
 			b_LagCompAlliedPlayers = true;
+		}
+		if(CompPvp)
+		{
+			b_LagCompPvP = true;
 		}
 		SDKCall(g_hSDKStartLagComp, g_hSDKStartLagCompAddress, client, (GetEntityAddress(client) + view_as<Address>(OffsetLagCompStart_UserInfoReturn())));
 //		StartLagCompensation_Base_Boss(client, true);

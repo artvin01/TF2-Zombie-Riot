@@ -1830,8 +1830,20 @@ public void Player_OnTakeDamageAlivePost(int victim, int attacker, int inflictor
 	ArmorDisplayClient(victim);
 	StatusEffect_OnTakeDamagePostVictim(victim, attacker, damage, damagetype);
 	StatusEffect_OnTakeDamagePostAttacker(victim, attacker, damage, damagetype);
-	
+	if(inflictor > 0 && inflictor <= MaxClients)
+	{
+		GiveRageOnDamage(inflictor, damage);
+#if defined ZR
+		GiveMorphineOnDamage(inflictor, victim, damage, damagetype);
 #endif
+	}
+	else if(attacker > 0 && attacker <= MaxClients)
+	{
+		GiveRageOnDamage(attacker, damage);
+#if defined ZR
+		GiveMorphineOnDamage(attacker, victim, damage, damagetype);
+#endif
+	}
 #if defined RPG
 	f_FlatDamagePiercing[attacker] = 1.0;
 #endif

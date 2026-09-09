@@ -224,6 +224,7 @@ ConVar mp_bonusroundtime;
 bool b_LagCompNPC_AwayEnemies;
 bool b_LagCompNPC_BlockInteral;
 bool b_LagCompAlliedPlayers; //Make sure this actually compensates allies.
+bool b_LagCompPvP; //Make sure this actually compensates allies.
 #endif
 
 Function func_WandOnTouch[MAXENTITIES];
