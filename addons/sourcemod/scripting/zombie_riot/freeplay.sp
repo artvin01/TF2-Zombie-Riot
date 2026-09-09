@@ -938,7 +938,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 
 			if(postWaves+1 < 89)
 			{
-				switch(GetRandomInt(1, 4))
+				switch(GetRandomInt(1, 6))
 				{
 					case 1:
 					{
@@ -951,6 +951,14 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 					case 3:
 					{
 						CPrintToChatAll("{gold}Erm... seems like something's going wrong...");		
+					}
+					case 4:
+					{
+						CPrintToChatAll("{lightcyan}Umm... The heck is that?!");		
+					}
+					case 5:
+					{
+						CPrintToChatAll("{lightcyan}Wait is that a Umbral in there??");		
 					}
 					default:
 					{
@@ -973,6 +981,14 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 					case 3:
 					{
 						CPrintToChatAll("{gold}Damnit... They just keep coming and coming!");		
+					}
+					case 4:
+					{
+						CPrintToChatAll("{lightcyan}More Umbrals are comming, get rid of them.");		
+					}
+					case 5:
+					{
+						CPrintToChatAll("{lightcyan}Watch out, more Umbrals are approaching.");		
 					}
 					default:
 					{
