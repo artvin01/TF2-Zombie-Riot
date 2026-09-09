@@ -288,6 +288,7 @@ static Action Timer_Red_Mist(Handle timer, DataPack pack)
 			if(Abno_Pages[client] & ABNORMPAGE_MOSB)//give bonus buffs if MOSB is picked
 			{
 				ApplyStatusEffect(client, client, "Red_Mist_Strength", 9999.0);
+				ApplyStatusEffect(client, client, "Influence of the bodies", 9999.0);
 				Strenght_Amount[client] += 10;
 				RM_Lastman_Timer[client] = CreateTimer(90.0, MOSB_Lastman_Execution, client);
 				EmitCustomToAll("zombiesurvival/medieval_raid/special_mutation/arkantos_scream_buff.mp3", client, SNDCHAN_STATIC, 120, _, 1.0, 75);
@@ -538,36 +539,36 @@ public void Vengeance_Logic(int client)
 	float MaxHealth = float(SDKCall_GetMaxHealth(client));
 	int Health = GetEntProp(client, Prop_Send, "m_iHealth");
 	
-	if(Health < MaxHealth / 2 && !strength_active_1[client])
+	if(Health < MaxHealth * 0.75 && !strength_active_1[client])
 	{
 		Strenght_Amount[client] += 1;
 		strength_active_1[client] = true;
 		ApplyStatusEffect(client, client, "Red_Mist_Strength", 9999.0);
 	}
-	if(Health < MaxHealth / 3 && !strength_active_2[client])
+	if(Health < MaxHealth * 0.55 && !strength_active_2[client])
 	{
 		Strenght_Amount[client] += 2;
 		strength_active_2[client] = true;
 		ApplyStatusEffect(client, client, "Red_Mist_Strength", 9999.0);
 	}
-	if(Health < MaxHealth / 4 && !strength_active_3[client])
+	if(Health < MaxHealth * 0.4 && !strength_active_3[client])
 	{
 		Strenght_Amount[client] += 4;
 		strength_active_3[client] = true;
 		ApplyStatusEffect(client, client, "Red_Mist_Strength", 9999.0);
 	}
 
-	if(Health > MaxHealth / 2 && strength_active_1[client])
+	if(Health > MaxHealth * 0.75 && strength_active_1[client])
 	{
 		Strenght_Amount[client] -= 1;
 		strength_active_1[client] = false;
 	}
-	if(Health > MaxHealth / 3 && strength_active_2[client])
+	if(Health > MaxHealth * 0.55 && strength_active_2[client])
 	{
 		Strenght_Amount[client] -= 2;
 		strength_active_2[client] = false;
 	}
-	if(Health > MaxHealth / 4 && strength_active_3[client])
+	if(Health > MaxHealth * 0.4 && strength_active_3[client])
 	{
 		Strenght_Amount[client] -= 4;
 		strength_active_3[client] = false;
@@ -606,7 +607,7 @@ public void Red_Mist_OnTakeDamage_Take_Post(int victim, int attacker, int inflic
 		}
 		if(!savagery_timer_exists[victim])
 		{
-			CreateTimer(2.0, Savagery_Reset_damage, victim);
+			CreateTimer(3.0, Savagery_Reset_damage, victim);
 			//PrintToChat(victim, "dmg timer started");
 			savagery_timer_exists[victim] = true;
 		}
@@ -736,6 +737,7 @@ public void Red_Mist_OnTakeDamage_Take(int victim, int &attacker, int &inflictor
 		}
 		
 	}
+	/*Is handled by unique buff now
 	if(LastMann)
 	{
 		if(Abno_Pages[victim] & ABNORMPAGE_MOSB)
@@ -743,6 +745,7 @@ public void Red_Mist_OnTakeDamage_Take(int victim, int &attacker, int &inflictor
 			damage *= 0.5;
 		}
 	}
+	*/
 
 }
 
