@@ -1137,6 +1137,11 @@ public void CuredFatherGrigori_ClotThink(int iNPC)
 				{
 					DamageDelt = 75.0;
 				}
+				if(Arena_Mode())
+				{
+					DamageDelt *= 6.0;
+				}
+
 				float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
 				FireBullet(npc.index, npc.m_iWearable1, WorldSpaceVec, vecDir, DamageDelt, 9000.0, DMG_BULLET, "bullet_tracer01_red", Owner , _ , "0");
 

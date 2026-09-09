@@ -496,7 +496,7 @@ void Arena_CheckAlivePlayers(int killed)
 	int a, entity;
 	while((entity = FindEntityByNPC(a)) != -1)
 	{
-		if(b_NpcHasDied[entity] || b_ThisEntityIgnored[entity])
+		if(b_NpcHasDied[entity] || b_ThisEntityIgnored[entity] || b_thisNpcIsAMiniboss[entity])
 			continue;
 		
 		if(Citizen_ThatIsDowned(entity))
@@ -649,6 +649,7 @@ void Arena_AntiStalled()
 			b_NoHealthbar[entity] = 1;
 			fl_Extra_Damage[entity] = 99999.9;
 			b_ThisNpcIsImmuneToNuke[entity] = true;
+			b_thisNpcIsAMiniboss[entity] = true;
 		}
 	}
 }
