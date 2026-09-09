@@ -124,9 +124,6 @@ void Arena_SetupVote(KeyValues kv)
 // Waves_RoundStart()
 void Arena_StartSetup()
 {
-	LogStackTrace("Arena_StartSetup");
-	PrintToChatAll("Arena_StartSetup");
-
 	Rogue_StartSetup();
 
 	s_MissionClient = "{gray}Onsian";
@@ -193,9 +190,6 @@ void Arena_RoundEnd()
 // Rogue_RoundStartTimer()
 void Arena_Start()
 {
-	LogStackTrace("Arena_Start");
-	PrintToChatAll("Arena_Start");
-	
 	// First setup is done, game starts
 	Started = true;
 	Ammo_Count_Ready = 20;
@@ -252,8 +246,6 @@ static Action ArenaGameTimer(Handle timer, int mode)
 	{
 		case 1:
 		{
-			PrintToChatAll("ArenaGameTimer(%d)", mode);
-
 			DisableRandomMusic();
 			
 			RoundCount++;
@@ -295,8 +287,6 @@ static Action ArenaGameTimer(Handle timer, int mode)
 		}
 		case 2:
 		{
-			PrintToChatAll("ArenaGameTimer(%d)", mode);
-
 			Waves_SetReadyStatus(0);
 			WaveStart_SubWaveStart(GetGameTime() - 300.0);
 			SetRandomMusic();
@@ -367,8 +357,6 @@ static Action ArenaGameTimer(Handle timer, int mode)
 		}
 		case 3:
 		{
-			PrintToChatAll("ArenaGameTimer(%d)", mode);
-		
 			if(TeamPoints)
 			{
 				StringMapSnapshot snap = TeamPoints.Snapshot();
@@ -403,7 +391,9 @@ static Action ArenaGameTimer(Handle timer, int mode)
 		}
 	}
 
-	GameTimer = CreateTimer(3.0, ArenaGameTimer, 0);
+	if(GameTimer == null)
+		GameTimer = CreateTimer(3.0, ArenaGameTimer, 0);
+
 	return Plugin_Continue;
 }
 
@@ -467,9 +457,6 @@ static void TeleportAlliedNPC(int npc)
 // Waves_SetReadyStatus
 void Arena_SetReadyStatus(int status)
 {
-	LogStackTrace("Arena_SetReadyStatus(%d)", status);
-	PrintToChatAll("Arena_SetReadyStatus(%d)", status);
-
 	bool open;
 	switch(status)
 	{
@@ -520,9 +507,6 @@ void Arena_CheckAlivePlayers(int killed)
 	if(PostRound || Waves_InSetup())
 		return;
 	
-	LogStackTrace("Arena_CheckAlivePlayers");
-	PrintToChatAll("Arena_CheckAlivePlayers");
-
 	int colorRef;
 	ArrayList aliveTeams = new ArrayList();
 

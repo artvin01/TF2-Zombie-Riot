@@ -631,7 +631,7 @@ void Rogue_SetupVote(KeyValues kv, const char[] artifactOnly = "")
 		
 		for(int client=1; client<=MaxClients; client++)
 		{
-			if(IsClientInGame(client) && GetClientTeam(client) > 1)
+			if(IsClientInGame(client) && !IsFakeClient(client) && GetClientTeam(client) > 1)
 			{
 				Waves_RoundStart();
 				break;
@@ -681,7 +681,7 @@ bool Rogue_CallVote(int client, bool force = false)	// Waves_CallVote
 					
 					for(int target = 1; target <= MaxClients; target++)
 					{
-						if(IsClientInGame(target) && GetClientTeam(target) > 1 && Items_HasNamedItem(target, vote.Config))
+						if(IsClientInGame(target) && !IsFakeClient(client) && GetClientTeam(target) > 1 && Items_HasNamedItem(target, vote.Config))
 						{
 							locked = false;
 							break;
@@ -761,7 +761,7 @@ static void DisplayHintVote()
 		int[] votes = new int[length + 1];
 		for(int client = 1; client <= MaxClients; client++)
 		{
-			if(IsClientInGame(client) && GetClientTeam(client) > 1)
+			if(IsClientInGame(client) && !IsFakeClient(client) && GetClientTeam(client) > 1)
 			{
 				total++;
 
@@ -980,7 +980,7 @@ public Action Rogue_EndVote(Handle timer, float time)
 			int[] votes = new int[length];
 			for(int client = 1; client <= MaxClients; client++)
 			{
-				if(IsClientInGame(client))
+				if(IsClientInGame(client) && !IsFakeClient(client))
 				{
 					if(VotedFor[client] > 0 && GetClientTeam(client) > 1)
 					{
@@ -1316,7 +1316,7 @@ void Rogue_NextProgress()
 			int highestLevel;
 			for(int client = 1; client <= MaxClients; client++)
 			{
-				if(IsClientInGame(client) && GetClientTeam(client) == 2)
+				if(IsClientInGame(client) && !IsFakeClient(client) && GetClientTeam(client) == 2)
 				{
 					int amount = SkillTree_GetByName(client, "Ingot Up 1");
 					if(amount > highestLevel)
@@ -1980,7 +1980,7 @@ void Rogue_StartGenericVote(float time = 20.0)
 
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(IsClientInGame(client) && GetClientTeam(client) > 1 && GetClientMenu(client) == MenuSource_None)
+		if(IsClientInGame(client) && !IsFakeClient(client) && GetClientTeam(client) > 1 && GetClientMenu(client) == MenuSource_None)
 			Rogue_CallVote(client);
 	}
 }
