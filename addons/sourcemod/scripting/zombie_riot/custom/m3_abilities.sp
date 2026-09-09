@@ -2186,7 +2186,7 @@ bool CanPlayerBeSummoned(int client, int summoner)
 	if(!b_AntiLateSpawn_Allow[client])
 		return false;
 
-	if(summoner==client || GetTeam(client) != TFTeam_Red)
+	if(summoner==client || GetTeam(client) != GetTeam(summoner))
 		return false;
 
 	if(!WasHereSinceStartOfWave(client))
