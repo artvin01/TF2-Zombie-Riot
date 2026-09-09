@@ -263,7 +263,7 @@ public void Weapon_Amphi_Judgement(int client, int weapon, bool crit, int slot)
 		i_AmphiHitsDone[client] = 0;
 		//Sucess! You have enough charges.
 		//Heavy logic incomming.
-		float UserLoc[3], VicLoc[3];
+		float UserLoc[3];
 		GetClientAbsOrigin(client, UserLoc);
 
 
@@ -274,11 +274,6 @@ public void Weapon_Amphi_Judgement(int client, int weapon, bool crit, int slot)
 
 		f_WeaponDamageCalculated[client] = damage;
 
-		bool raidboss_active = false;
-		if(RaidbossIgnoreBuildingsLogic(1))
-		{
-			raidboss_active = true;
-		}
 		//Reset all airborn targets.
 		for (int enemy = 1; enemy < AMPHI_MAX_HITUP; enemy++)
 		{
@@ -309,55 +304,7 @@ public void Weapon_Amphi_Judgement(int client, int weapon, bool crit, int slot)
 		//We want to lag compensate this.
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
-
-		for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
-		{
-			int target = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
-			if(IsValidEnemy(client, target, true, false))
-			{
-				WorldSpaceCenter(target, VicLoc);
-				
-				if (GetVectorDistance(UserLoc, VicLoc,true) <= AMPHI_JUDGEMENT_MAXRANGE_SQUARED)
-				{
-					bool Hitlimit = true;
-					for(int i=0; i < (MAX_TARGETS_HIT ); i++)
-					{
-						if(!i_AmphiTargetsAirborn[client][i])
-						{
-							i_AmphiTargetsAirborn[client][i] = target;
-							Hitlimit = false;
-							break;
-						}
-					}
-					if(Hitlimit)
-					{
-						break;
-					}
-					if(GetGameTime() > f_TargetAirtime[target]) //Do not shoot up again once already dome.
-					{
-						b_AmphiNpcWasShotUp[target] = true;
-					}
-
-					if (b_thisNpcIsABoss[target] || raidboss_active)
-					{
-						f_TankGrabbedStandStill[target] = GetGameTime() + AMPHI_BOSS_AIRTIME;
-						f_TargetAirtime[target] = GetGameTime() + AMPHI_BOSS_AIRTIME; //Kick up for way less time.
-						FreezeNpcInTime(target,AMPHI_BOSS_AIRTIME);
-					}
-					else
-					{
-						f_TankGrabbedStandStill[target] = GetGameTime() + AMPHI_AIRTIME;
-						f_TargetAirtime[target] = GetGameTime() + AMPHI_AIRTIME; //Kick up for the full skill duration.
-						FreezeNpcInTime(target,AMPHI_AIRTIME);
-					}
-					spawnRing_Vectors(VicLoc, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 6.0, 2.1, 1, AMPHI_JUDGEMENT_EXPLOSION_RANGE * 0.5);	
-					SDKUnhook(target, SDKHook_Think, Npc_Amphi_Launch);
-					if(!HasSpecificBuff(target, "Solid Stance"))
-						SDKHook(target, SDKHook_Think, Npc_Amphi_Launch);
-					//For now, there is no limit.
-				}
-			}
-		}
+		Explode_Logic_Custom(0.1, client, client, weapon, UserLoc,AMPHI_JUDGEMENT_MAXRANGE,_,_,false,_,_,_,_,AmphiM2Detection);
 		FinishLagCompensation_Base_boss();
 		EmitSoundToAll(AMPHI_KICKUP_1, client, _, 75, _, 0.60);
 
@@ -378,6 +325,66 @@ public void Weapon_Amphi_Judgement(int client, int weapon, bool crit, int slot)
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "%t", "Your Weapon is not charged enough", (i_AmphiHitsDone[client]), (AMPHI_JUDGEMENT_MAX_HITS_NEEDED));
 	}
+}
+float AmphiM2Detection(int entity, int victim, float damage, int weapon)
+{
+	bool Hitlimit = true;
+	for(int i=0; i < (MAX_TARGETS_HIT ); i++)
+	{
+		if(!i_AmphiTargetsAirborn[entity][i])
+		{
+			i_AmphiTargetsAirborn[entity][i] = victim;
+			Hitlimit = false;
+			break;
+		}
+	}
+	if(Hitlimit)
+	{
+		damage *= -1.0;
+		return damage;
+	}
+
+	if(GetGameTime() > f_TargetAirtime[victim]) //Do not shoot up again once already dome.
+	{
+		b_AmphiNpcWasShotUp[victim] = true;
+	}
+
+	if(b_ThisWasAnNpc[victim])
+	{
+		bool raidboss_active = false;
+		if(RaidbossIgnoreBuildingsLogic(1))
+		{
+			raidboss_active = true;
+		}
+		if (b_thisNpcIsABoss[victim] || raidboss_active)
+		{
+			f_TankGrabbedStandStill[victim] = GetGameTime() + AMPHI_BOSS_AIRTIME;
+			f_TargetAirtime[victim] = GetGameTime() + AMPHI_BOSS_AIRTIME; //Kick up for way less time.
+			FreezeNpcInTime(victim,AMPHI_BOSS_AIRTIME);
+		}
+		else
+		{
+			f_TankGrabbedStandStill[victim] = GetGameTime() + AMPHI_AIRTIME;
+			f_TargetAirtime[victim] = GetGameTime() + AMPHI_AIRTIME; //Kick up for the full skill duration.
+			FreezeNpcInTime(victim,AMPHI_AIRTIME);
+		}
+		SDKUnhook(victim, SDKHook_Think, Npc_Amphi_Launch);
+		if(!HasSpecificBuff(victim, "Solid Stance"))
+			SDKHook(victim, SDKHook_Think, Npc_Amphi_Launch);
+	}
+	else
+	{
+		float vecHit[3];
+		vecHit[0] = 0.0;
+		vecHit[1] = 0.0;
+		vecHit[2] = 500.0;
+		TeleportEntity(victim, _, _, vecHit, true);
+	}
+	float VicLoc[3];
+	WorldSpaceCenter(victim, VicLoc);
+	spawnRing_Vectors(VicLoc, 0.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 200, 1, 0.25, 6.0, 2.1, 1, AMPHI_JUDGEMENT_EXPLOSION_RANGE * 0.5);	
+	damage *= -1.0;
+	return damage;
 }
 public void Npc_Amphi_Launch_client(int client)
 {
@@ -413,7 +420,7 @@ public void Npc_Amphi_Launch_client(int client)
 		for(int i=0; i < (MAX_TARGETS_HIT ); i++)
 		{
 			// Check if it's a valid target
-			if(i_AmphiTargetsAirborn[client][i] && IsValidEntity(i_AmphiTargetsAirborn[client][i]) && !b_NpcHasDied[i_AmphiTargetsAirborn[client][i]])
+			if(i_AmphiTargetsAirborn[client][i] && IsValidEntity(i_AmphiTargetsAirborn[client][i]) && IsEntityAlive(i_AmphiTargetsAirborn[client][i], true))
 			{
 				// Add it to our list, increase count by 1
 				targets[count++] = i_AmphiTargetsAirborn[client][i];

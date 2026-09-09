@@ -226,7 +226,7 @@ public void Weapon_SeaRange_M2(int client, int weapon, bool crit, int slot)
 		
 	for(int i; i < SpawnMaxEnemies; i++)
 	{
-		int entity = NPC_CreateByName("npc_searunner", client, pos1, ang, TFTeam_Red);
+		int entity = NPC_CreateByName("npc_searunner", client, pos1, ang, GetTeam(client));
 		if(entity > MaxClients)
 		{
 			fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);

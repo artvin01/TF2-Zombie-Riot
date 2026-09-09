@@ -1695,7 +1695,7 @@ public void OnPostThink(int client)
 			Format(buffer2, sizeof(buffer2), "%s|---",buffer2);
 		}
 		
-		if(!SkillTree_InMenu(client) && !BetWar_Mode() && GetTeam(client) == TFTeam_Red && TeutonType[client] == TEUTON_NONE)
+		if(!SkillTree_InMenu(client) && !BetWar_Mode() && TeutonType[client] == TEUTON_NONE)
 		{
 			SetHudTextParams(0.175 + f_ArmorHudOffsetY[client], 0.9 + f_ArmorHudOffsetX[client], 0.81, red, green, blue, 255);
 			ShowSyncHudText(client, SyncHud_ArmorCounter, "%s\n%s", buffer, buffer2);
@@ -3092,8 +3092,6 @@ void SDKHooks_UpdateMarkForDeath(int client, bool force_Clear = false)
 		*/	
 		return;
 	}
-	if (GetTeam(client) != TFTeam_Red)
-		force_Clear = true;
 
 	if (dieingstate[client] != 0)
 		force_Clear = true;

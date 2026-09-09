@@ -406,7 +406,7 @@ public Action Vamp_BloodlustTick(Handle bloodlust, any pack)
 		return Plugin_Stop;
 	}	
 	
-	if (b_NpcHasDied[victim]) //Npc died, stop bleed and stop life leech
+	if (!IsEntityAlive(victim)) //Npc died, stop bleed and stop life leech
 	{
 		BleedAmountCountStack[victim] -= 1;
 		return Plugin_Stop;

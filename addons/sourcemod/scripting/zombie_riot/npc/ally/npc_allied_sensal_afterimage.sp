@@ -25,9 +25,9 @@ void AlliedSensalAbility_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3])
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return AlliedSensalAbility(client, vecPos, vecAng);
+	return AlliedSensalAbility(client, vecPos, vecAng, team);
 }
 methodmap AlliedSensalAbility < CClotBody
 {
@@ -41,9 +41,9 @@ methodmap AlliedSensalAbility < CClotBody
 	}
 
 	
-	public AlliedSensalAbility(int client, float vecPos[3], float vecAng[3])
+	public AlliedSensalAbility(int client, float vecPos[3], float vecAng[3], int team)
 	{
-		AlliedSensalAbility npc = view_as<AlliedSensalAbility>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "100", TFTeam_Red, true));
+		AlliedSensalAbility npc = view_as<AlliedSensalAbility>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "100", team, true));
 		
 		i_NpcWeight[npc.index] = 999;
 		SetEntPropEnt(npc.index,   Prop_Send, "m_hOwnerEntity", client);
