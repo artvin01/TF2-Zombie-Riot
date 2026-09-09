@@ -6047,12 +6047,12 @@
 	}
 	"Vengeance"
 	{
-		"en"	"Vengeance:\nIf max HP is at 50％/33％/25％ or lower, \ngain stacking 1/2/4 Strength\n[M2]"
+		"en"	"Vengeance:\nIf max HP is at 75％/55％/40％ or lower, \ngain stacking 1/2/4 Strength\n[M2]"
 		"ko"	"복수:\n체력이 50％/33％/25％ 이하라면,\n중첩되는 힘 1/2/4 획득\n[M2]"
 	}
 	"Claws of Savagery"
 	{
-		"en"	"Claws of Savagery:\nWhen taking over 50％ max hp in 2 seconds \ngain 75％ damage resistance for 4 seconds\n[M1]"
+		"en"	"Claws of Savagery:\nWhen taking over 50％ max hp in 3 seconds \ngain 75％ damage resistance for 4 seconds\n[M1]"
 		"ko"	"흉악한 발톱:\n2초 안에 최대 체력의 50％의 피해를 입을 시\n4초 동안 피해 저항력 75％ 증가\n[M1]"
 	}
 	"The Role of the Wolf"
