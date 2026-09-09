@@ -232,33 +232,11 @@ stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float &da
 		if(b_ThisWasAnNpc[attacker])
 			f_InBattleDelay[attacker] = GetGameTime() + 6.0;
 #endif
-
-	return false;
-}
-
-#if !defined RTS
-stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damagePosition[3])
-{
-#if defined RPG
-	if(attacker <= MaxClients && attacker > 0 && attacker != 0)
-	{
-		if(!(RPGCore_PlayerCanPVP(attacker,victim)))
-			return true;
-
-		if(!CheckInHud())
-			LastHitRef[victim] = EntIndexToEntRef(attacker);
-	}
-#endif
-
-	if(!CheckInHud())
-		HudDamageIndicator(victim,damagetype, false);
-#if defined ZR
-
 	if(Arena_Mode() || (attacker <= MaxClients && attacker > 0 && attacker != 0))
 	{
 		//in PVP scenarios, we nerf damage by 10x
 		if(!CheckInHud())
-			damage *= 0.35;
+			damage *= 0.25;
 		
 		if(Arena_Mode())
 		{
@@ -275,11 +253,11 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 				}
 				else if(rounds > 18)
 				{
-					damage *= 0.45;
+					damage *= 0.35;
 				}
 				else if(rounds > 8)
 				{
-					damage *= 0.75;
+					damage *= 0.5;
 				}
 			}
 		}
@@ -301,6 +279,27 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 			}
 		}
 	}
+	return false;
+}
+
+#if !defined RTS
+stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damagePosition[3])
+{
+#if defined RPG
+	if(attacker <= MaxClients && attacker > 0 && attacker != 0)
+	{
+		if(!(RPGCore_PlayerCanPVP(attacker,victim)))
+			return true;
+
+		if(!CheckInHud())
+			LastHitRef[victim] = EntIndexToEntRef(attacker);
+	}
+#endif
+
+	if(!CheckInHud())
+		HudDamageIndicator(victim,damagetype, false);
+#if defined ZR
+
 	
 	if(VIPBuilding_Active())
 		return true;
@@ -626,29 +625,6 @@ stock bool Damage_NPCVictim(int victim, int &attacker, int &inflictor, float &da
 		if(scale < 1)
 		{
 			damage *= 1.6667;
-		}
-	}
-	if(Arena_Mode() && !CheckInHud())
-	{
-		//in PVP scenarios, we nerf damage by 10x
-		damage *= 0.35;
-		
-		int rounds = Arena_GetRound();
-		if(rounds > 38)
-		{
-			damage *= 0.1;
-		}
-		else if(rounds > 28)
-		{
-			damage *= 0.2;
-		}
-		else if(rounds > 18)
-		{
-			damage *= 0.45;
-		}
-		else if(rounds > 8)
-		{
-			damage *= 0.75;
 		}
 	}
 #endif
