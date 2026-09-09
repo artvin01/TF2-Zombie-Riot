@@ -891,7 +891,7 @@ bool InZRMap()
 
 bool CanMapSpawnPickups()
 {
-	return CanSpawnPickups;
+	return CanSpawnPickups && !Arena_Mode();
 }
 void ZR_MapStart()
 {
@@ -1209,6 +1209,13 @@ public void OnMapInit()
 				{
 					entry.Update(pos, "OnTrigger");
 				}
+			}
+			else if(!StrContains(classname, "tf_logic_koth") ||
+					!StrContains(classname, "tf_logic_player_destruction"))
+			{
+				EntityLump.Erase(i);
+				i--;
+				length--;
 			}
 		}
 	}
@@ -1953,6 +1960,13 @@ public Action Timer_Dieing(Handle timer, int client)
 {
 	if(IsClientInGame(client) && IsPlayerAlive(client) && dieingstate[client] > 0)
 	{
+		if(Arena_Mode())
+		{
+			float time = GetGameTime() + 0.5;
+			if(GetEntPropFloat(client, Prop_Send, "m_flNextAttack") < time)
+				SetEntPropFloat(client, Prop_Send, "m_flNextAttack", time);
+		}
+
 		if(b_LeftForDead[client])
 		{
 			dieingstate[client] -= 3;
@@ -2021,7 +2035,15 @@ public Action Timer_Dieing(Handle timer, int client)
 		{
 			int color[4];
 			int HealthRemaining = GetEntProp(client, Prop_Send, "m_iHealth");
-			if(HealthRemaining < 210)
+			if(Arena_Mode())
+			{
+				int team = GetTeam(client) % 2;
+				color[0] = team ? 64 : 255;
+				color[1] = 64;
+				color[2] = team ? 255 : 64;
+				color[3] = iClamp(HealthRemaining * 3, 0, 128) + 127;
+			}
+			else if(HealthRemaining < 210)
 			{
 				color[0] = 255;
 				color[1] = 255;
@@ -3052,6 +3074,7 @@ void ReviveAll(bool raidspawned = false,
 		b_HasBeenHereSinceStartOfWave[client] = false;
 		if(IsClientInGame(client))
 		{
+			ExtinguishTargetDebuff(client);
 			if(dieingstate[client] > 0)
 			{
 				if(PapModeDo == PAP_MODE_BUILDING_ONLY)

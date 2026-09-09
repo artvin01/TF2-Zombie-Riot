@@ -652,6 +652,11 @@ bool Rogue_VoteActive()
 	return view_as<bool>(Voting);
 }
 
+float Rogue_VoteGameTime()
+{
+	return VoteEndTime;
+}
+
 bool Rogue_CallVote(int client, bool force = false)	// Waves_CallVote
 {
 	if(Voting && (force || !VotedFor[client]))

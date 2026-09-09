@@ -56,6 +56,9 @@ public void ArenaSpecials_RandomMiniboss(bool end)
 			Citizen_MiniBossSpawn();
 		}
 
+		if(boss.HealthMulti <= 0.0)
+			boss.HealthMulti = 1.0;
+
 		DataPack pack;
 		CreateDataTimer(boss.Delay, Timer_Delay_BossSpawn, pack, TIMER_FLAG_NO_MAPCHANGE);
 
@@ -68,7 +71,7 @@ public void ArenaSpecials_RandomMiniboss(bool end)
 		pack.WriteCell(true);
 		pack.WriteCell(boss.Index);
 		pack.WriteCell(0);
-		pack.WriteFloat(boss.HealthMulti);
+		pack.WriteFloat(boss.HealthMulti / 30.0);
 		pack.WriteString(boss.Data);
 	}
 }

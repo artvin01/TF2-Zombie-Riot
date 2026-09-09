@@ -627,7 +627,7 @@ public Action Timer_Delay_BossSpawn(Handle timer, DataPack pack)
 	char data[128];
 	pack.ReadString(data, sizeof(data));
 	
-	int entity = NPC_CreateById(index, -1, pos, ang, TFTeam_Blue, data, true);
+	int entity = NPC_CreateById(index, -1, pos, ang, Arena_Mode() ? TFTeam_Stalkers : TFTeam_Blue, data, true);
 	if(entity != -1)
 	{
 		NpcAddedToZombiesLeftCurrently(entity, true);

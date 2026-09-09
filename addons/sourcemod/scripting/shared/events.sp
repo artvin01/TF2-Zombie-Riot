@@ -23,6 +23,7 @@ void Events_PluginStart()
 	HookEvent("restart_timer_time", OnRestartTimer, EventHookMode_Pre);
 	HookEvent("arrow_impact", EventOverride_ArrowImpact, EventHookMode_Pre);
 	HookEvent("tournament_stateupdate", OnStateUpdate, EventHookMode_Post);
+	HookEvent("teamplay_round_restart_seconds", OnAllTeamReady, EventHookMode_Pre);
 #endif	
 	
 	HookUserMessage(GetUserMessageId("SayText2"), Hook_BlockUserMessageEx, true);
@@ -89,8 +90,25 @@ public void OnRoundStart(Event event, const char[] name, bool dontBroadcast)
 	if(!InZRMap())
 		DeleteAllBadEntities_NonZrMaps();
 	
-	if (!CanMapSpawnPickups())
+	if (Arena_Mode())
+	{
+		char classname[36];
+		for( int i = 1; i <= MAXENTITIES; i++ ) 
+		{
+			if(!IsValidEntity(i))
+				continue;
+			
+			GetEntityClassname(i, classname, sizeof(classname));
+			if(!StrContains(classname, "item_ammopack"))
+			{
+				RemoveEntity(i);
+			}
+		}
+	}
+	else if (!CanMapSpawnPickups())
+	{
 		DeleteAllPickups();
+	}
 	
 	DeleteShadowsOffZombieRiot();
 	EventRoundStartMusicFilter();
@@ -207,6 +225,16 @@ public void OnStateUpdate(Event event, const char[] name, bool dontBroadcast)
 {
 	int ready = event.GetInt("readystate");
 	Arena_StateUpdate(ready);
+}
+
+public Action OnAllTeamReady(Event event, const char[] name, bool dontBroadcast)
+{
+	int time = event.GetInt("seconds");
+	Action action = Arena_AllTeamsReady(time);
+	if(action == Plugin_Changed)
+		event.SetInt("seconds", time);
+	
+	return action;
 }
 #endif
 

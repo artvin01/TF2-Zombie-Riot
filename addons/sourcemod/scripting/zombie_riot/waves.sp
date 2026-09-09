@@ -4339,10 +4339,12 @@ void Waves_SetReadyStatus(int status, bool stopmusic = true)
 			if(objective != -1)
 				SetEntProp(objective, Prop_Send, "m_bMannVsMachineBetweenWaves", true);
 			
-			SDKCall_ResetPlayerAndTeamReadyState();
-
-			if(!ReadyUpTimer)
-				ReadyUpTimer = CreateTimer(0.2, ReadyUpHack, _, TIMER_REPEAT);
+			if(!Arena_Mode())
+			{
+				SDKCall_ResetPlayerAndTeamReadyState();
+				if(!ReadyUpTimer)
+					ReadyUpTimer = CreateTimer(0.2, ReadyUpHack, _, TIMER_REPEAT);
+			}
 
 			if(!AlreadySetWaiting && !Rogue_Mode())
 			{

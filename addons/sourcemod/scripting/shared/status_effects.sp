@@ -2873,6 +2873,7 @@ void Func_StunnedHud(int attacker, int victim, StatusEffect Apply_MasterStatusEf
 stock void ExtinguishTargetDebuff(int victim)
 {
 	IgniteFor[victim] = 0;
+	RemoveSpecificBuff(victim, "Black Flames");
 }
 stock void ApplyRapidSuturing(int victim)
 {

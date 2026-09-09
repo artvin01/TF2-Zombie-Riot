@@ -133,6 +133,8 @@ void Arena_StartSetup()
 	{
 		SDKHook_TeamSpawn_SpawnPostInternal(ent, _, _, _);
 	}
+	
+	Ammo_Count_Ready = 20;
 
 	if(!FreeForAll)
 	{
@@ -192,7 +194,6 @@ void Arena_Start()
 {
 	// First setup is done, game starts
 	Started = true;
-	Ammo_Count_Ready = 20;
 }
 
 // OnStateUpdate
@@ -201,8 +202,8 @@ void Arena_StateUpdate(int readystate)
 	// Team-based ready up
 	if(Arena_Mode() && !Rogue_VoteActive() && !Started && readystate)
 	{
-		bool ready1 = true;
-		bool ready2 = true;
+		bool hasteam1 = false;
+		bool hasteam2 = false;
 
 		for(int client = 1; client <= MaxClients; client++)
 		{
@@ -212,21 +213,15 @@ void Arena_StateUpdate(int readystate)
 				switch(team)
 				{
 					case TFTeam_Red:
-						ready1 = false;
+						hasteam1 = true;
 					
 					case TFTeam_Blue:
-						ready2 = false;
+						hasteam2 = true;
 				}
 			}
 		}
 
-		if(GameRules_GetProp("m_bTeamReady", 1, TFTeam_Red))
-			ready1 = true;
-
-		if(GameRules_GetProp("m_bTeamReady", 1, TFTeam_Blue))
-			ready2 = true;
-
-		if(ready1 && ready2 && GetWaveSetupCooldown() < GetGameTime())
+		if((!hasteam1 || !hasteam2) && GetWaveSetupCooldown() < GetGameTime())
 		{
 			delete GameTimer;
 			GameTimer = CreateTimer(10.0, ArenaGameTimer, 2);
@@ -237,6 +232,29 @@ void Arena_StateUpdate(int readystate)
 	}
 }
 
+// OnStateUpdate
+Action Arena_AllTeamsReady(int &time)
+{
+	if(!Arena_Mode())
+		return Plugin_Continue;
+
+	if(Rogue_VoteActive())
+	{
+		float ftime = Rogue_VoteGameTime() + 10.0;
+		GameRules_SetPropFloat("m_flRestartRoundTime", ftime);
+		time = RoundFloat(ftime - GetGameTime());
+	}
+	else
+	{
+		GameRules_SetPropFloat("m_flRestartRoundTime", GetGameTime() + 10.0);
+		time = 10;
+	}
+
+	delete GameTimer;
+	GameTimer = CreateTimer(0.1, ArenaGameTimer, 0);
+	return Plugin_Changed;
+}
+
 static Action ArenaGameTimer(Handle timer, int mode)
 {
 	GameTimer = null;
@@ -244,7 +262,7 @@ static Action ArenaGameTimer(Handle timer, int mode)
 	
 	switch(mode)
 	{
-		case 1:
+		case 1:	// Round Setup
 		{
 			DisableRandomMusic();
 			
@@ -280,17 +298,33 @@ static Action ArenaGameTimer(Handle timer, int mode)
 			}
 
 			ReviveAll();
+			WaveEndLogicExtra();
 
 			CreateTimer(0.2, TeleportAlliedNPCs, _, TIMER_FLAG_NO_MAPCHANGE);
 
 			return Plugin_Continue;
 		}
-		case 2:
+		case 2:	// Round Start
 		{
 			Waves_SetReadyStatus(0);
 			WaveStart_SubWaveStart(GetGameTime() - 300.0);
 			SetRandomMusic();
 			Ammo_Count_Ready += 10;
+
+			ExcuteRelay("zr_arenastart");
+
+			int entity = -1;
+			while((entity=FindEntityByClassname(entity, "func_door*")) != -1)
+			{
+				AcceptEntityInput(entity, "Open");
+			}
+
+			while((entity=FindEntityByClassname(entity, "prop_door*")) != -1)
+			{
+				AcceptEntityInput(entity, "Open");
+			}
+
+			CreateTimer(1.0, UpdateNavBlockers, _, TIMER_FLAG_NO_MAPCHANGE);
 
 			for(int client = 1; client <= MaxClients; client++)
 			{
@@ -355,7 +389,7 @@ static Action ArenaGameTimer(Handle timer, int mode)
 				}
 			}
 		}
-		case 3:
+		case 3:	// Game Over
 		{
 			if(TeamPoints)
 			{
@@ -387,12 +421,31 @@ static Action ArenaGameTimer(Handle timer, int mode)
 		}
 		default:
 		{
-			CheckAlivePlayers();
+			if(Started)
+			{
+				CheckAlivePlayers();
+			}
+			else
+			{
+				float startTime = GameRules_GetPropFloat("m_flRestartRoundTime");
+				if(startTime < 0.0)
+					return Plugin_Continue;
+				
+				if((startTime - 0.3) < GetGameTime())
+				{
+					GameRules_SetPropFloat("m_flRestartRoundTime", -1.0);
+
+					delete GameTimer;
+					GameTimer = CreateTimer(0.1, ArenaGameTimer, 2);
+					Waves_ForceSetup(0.1);
+					GameRules_SetProp("m_bInWaitingForPlayers", false);
+				}
+			}
 		}
 	}
 
 	if(GameTimer == null)
-		GameTimer = CreateTimer(3.0, ArenaGameTimer, 0);
+		GameTimer = CreateTimer(Started ? 3.0 : 0.1, ArenaGameTimer, 0);
 
 	return Plugin_Continue;
 }
@@ -457,12 +510,11 @@ static void TeleportAlliedNPC(int npc)
 // Waves_SetReadyStatus
 void Arena_SetReadyStatus(int status)
 {
-	bool open;
 	switch(status)
 	{
 		case 0:
 		{
-			open = true;
+			return;
 		}
 		case 1:	// Ready Up -> 60s Setup Time
 		{
@@ -477,22 +529,16 @@ void Arena_SetReadyStatus(int status)
 		}
 	}
 
-	if(open)
-		ExcuteRelay("zr_arenastart");
-
 	int entity = -1;
 	while((entity=FindEntityByClassname(entity, "func_door*")) != -1)
 	{
-		AcceptEntityInput(entity, open ? "Open" : "Close");
+		AcceptEntityInput(entity, "Close");
 	}
 
 	while((entity=FindEntityByClassname(entity, "prop_door*")) != -1)
 	{
-		AcceptEntityInput(entity, open ? "Open" : "Close");
+		AcceptEntityInput(entity, "Close");
 	}
-
-	if(open)
-		CreateTimer(1.0, UpdateNavBlockers, _, TIMER_FLAG_NO_MAPCHANGE);
 }
 
 static Action UpdateNavBlockers(Handle timer)
@@ -680,7 +726,7 @@ void Arena_AntiStalled()
 
 	for(int i; i < 4; i++)
 	{
-		int entity = NPC_CreateByName("npc_chaos_swordsman", 0, i > 1 ? bluPos : redPos, i > 1 ? bluAng : redAng, 4);
+		int entity = NPC_CreateByName("npc_chaos_swordsman", 0, i > 1 ? bluPos : redPos, i > 1 ? bluAng : redAng, TFTeam_Stalkers);
 		if(entity != -1)
 		{
 			SetEntProp(entity, Prop_Data, "m_iHealth", 9999999);

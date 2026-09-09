@@ -2368,7 +2368,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 10");
 			//there was no one left, they are the only one left, trigger last man.
 			//make sure they are in a wave.
-			if(!PlayersLeftAlive(victim) && !SpecterCheckIfAutoRevive(victim) && GameRules_GetRoundState() == RoundState_ZombieRiot)
+			if(!Arena_Mode() && !PlayersLeftAlive(victim) && !SpecterCheckIfAutoRevive(victim) && GameRules_GetRoundState() == RoundState_ZombieRiot)
 			{
 				// Trigger lastman
 				CheckAlivePlayers(_, victim);
@@ -2416,7 +2416,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 				if(Rogue_Rift_VialityThing())
 					SetEntityHealth(victim, 300);
 				else
-					SetEntityHealth(victim, 200);
+					SetEntityHealth(victim, Arena_Mode() ? 100 : 200);
 
 				if(!b_LeftForDead[victim])
 				{
@@ -2465,11 +2465,11 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 
 					entity = TF2_CreateGlow(victim);
 					i_DyingParticleIndication[victim][0] = EntIndexToEntRef(entity);
-					SetVariantColor(view_as<int>({0, 255, 0, 255}));
+					SetVariantColor(view_as<int>({0, 0, 255, 255}));
 					AcceptEntityInput(entity, "SetGlowColor");
 					if(!AtEdictLimit(EDICT_PLAYER))
 					{
-						entity = SpawnFormattedWorldText("DOWNED", {0.0,0.0,70.0}, 10, {0, 255, 0, 255}, victim);
+						entity = SpawnFormattedWorldText("DOWNED", {0.0,0.0,70.0}, 10, {0, 0, 255, 255}, victim);
 						i_DyingParticleIndication[victim][1] = EntIndexToEntRef(entity);
 						b_DyingTextOff[victim] = false;
 					}
