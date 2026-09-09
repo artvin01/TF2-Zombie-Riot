@@ -2342,7 +2342,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			f_OneShotProtectionTimer[victim] = GameTime + 60.0; // 60 second cooldown
 			if(!LastMann)
 			{
-				if(!PlayersLeftAlive(victim) && GameRules_GetRoundState() == RoundState_ZombieRiot)
+				if(!Arena_Mode() && !PlayersLeftAlive(victim) && GameRules_GetRoundState() == RoundState_ZombieRiot)
 				{
 					if(b_IsAloneOnServer)
 						i_AmountDowned[victim] = 999;

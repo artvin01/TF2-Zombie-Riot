@@ -2227,7 +2227,9 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 		
 		if(Arena_Mode())
 		{
+			CheckIfAloneOnServer(true);
 			Arena_CheckAlivePlayers(killed);
+			return;
 		}
 		
 		if(!TestLastman)
