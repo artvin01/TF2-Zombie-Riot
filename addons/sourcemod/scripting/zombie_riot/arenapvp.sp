@@ -467,8 +467,8 @@ static void TeleportAlliedNPC(int npc)
 // Waves_SetReadyStatus
 void Arena_SetReadyStatus(int status)
 {
-	LogStackTrace("Arena_SetReadyStatus(%d)", mode);
-	PrintToChatAll("Arena_SetReadyStatus(%d)", mode);
+	LogStackTrace("Arena_SetReadyStatus(%d)", status);
+	PrintToChatAll("Arena_SetReadyStatus(%d)", status);
 
 	bool open;
 	switch(status)
