@@ -1814,7 +1814,36 @@ void Elemental_AddStaggerDamage(int victim, int attacker, int damagebase)
 	if(victim <= MaxClients)
 		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);
 	
-	if(!b_NpcHasDied[victim])	// NPCs
+	if(victim <= MaxClients)
+	{
+		if(f_ArmorCurrosionImmunity[victim][Element_Stagger] < GetGameTime())
+		{
+			if(GetClientHealth(victim) < damage)
+			{
+				if(HasSpecificBuff(victim, "Stagger+") || HasSpecificBuff(victim, "Stagger++"))
+				{
+					ApplyStatusEffect(attacker, victim, "Stagger++", 5.0);
+				}
+				else if(HasSpecificBuff(victim, "Stagger"))
+				{
+					ApplyStatusEffect(attacker, victim, "Stagger+", 5.0);
+				}
+				else
+				{
+					ApplyStatusEffect(attacker, victim, "Stagger", 5.0);
+
+					FreezeNpcInTime(victim, 3.0);
+					EmitSoundToAll("physics/glass/glass_sheet_break3.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);					
+					float ProjectileLoc[3];
+					GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", ProjectileLoc);
+					DoStaggerEffects(ProjectileLoc);
+				}
+
+				f_ArmorCurrosionImmunity[victim][Element_Stagger] = GetGameTime() + 2.0;
+			}
+		}
+	}
+	else if(!b_NpcHasDied[victim])	// NPCs
 	{
 		damage -= RoundFloat(damage * GetEntPropFloat(victim, Prop_Data, "m_flElementRes", Element_Stagger));
 		if(damage < 1 && attacker != 0)
