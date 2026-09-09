@@ -192,7 +192,10 @@ stock void GiveMorphineOnDamage(int client, int victim, float damage, int damage
 		
 	if(!(damagetype & DMG_CLUB))
 		return; //needs to be melee damage!
-
+	if(Arena_Mode())
+	{
+		damage *= 10.0;
+	}
 	if(MorphineMaxed(client))
 	{
 		MorphineCharge[client] = 0.0;
@@ -808,6 +811,11 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 	if(!b_Reinforce[client])
 		return;
 
+	if(Arena_Mode())
+	{
+		healthvalue *= 5;
+		autoscale *= 5.0;
+	}
 	float Healing_Amount=Attributes_GetOnPlayer(client, 8, true, true)/2.0;
 	if(Healing_Amount<1.0)
 		Healing_Amount=1.0;
