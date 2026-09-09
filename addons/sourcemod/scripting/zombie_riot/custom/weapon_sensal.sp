@@ -369,6 +369,8 @@ void WeaponSensal_Scythe_OnTakeDamage(int attacker, int victim,int weapon, int z
 	{
 		f_SensalAbilityCharge_1[attacker] += SENSAL_MELEE_CHARGE_ON_HIT * 0.5;
 	}
+	if(Arena_Mode())
+		f_SensalAbilityCharge_1[attacker] += SENSAL_MELEE_CHARGE_ON_HIT * 2.0;
 
 	if(f_SensalAbilityCharge_1[attacker] > f_Sensal_MaxCharge_1[attacker])
 	{
@@ -384,6 +386,8 @@ void WeaponSensal_Scythe_OnTakeDamage(int attacker, int victim,int weapon, int z
 	{
 		f_SensalAbilityCharge_2[attacker] += SENSAL_MELEE_CHARGE_ON_HIT_2 * 0.5;
 	}
+	if(Arena_Mode())
+		f_SensalAbilityCharge_2[attacker] += SENSAL_MELEE_CHARGE_ON_HIT * 2.0;
 
 	if(f_SensalAbilityCharge_2[attacker] > 2.0)
 	{

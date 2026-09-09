@@ -922,6 +922,8 @@ static void OnFantasiaHit(int client, int target, int damagetype, float &damage)
 	SDKHooks_TakeDamage(target, client, client, dps, DMG_PLASMA);
 	
 	fl_current_crystal_amt[client] += ((b_thisNpcIsARaid[target] || b_thisNpcIsABoss[target]) ? FRACTAL_KIT_FANTASIA_GAIN * 4.0 : FRACTAL_KIT_FANTASIA_GAIN);
+	if(Arena_Mode())
+		fl_current_crystal_amt[client] += FRACTAL_KIT_FANTASIA_GAIN * 5.0;
 
 	i_fantasia_hitcount[client]++;
 
@@ -1287,6 +1289,8 @@ static Action Mana_Harvester_Tick(int client)
 			Current_Mana[client] += (raid ? RoundToFloor(mana_cost*2.0) : RoundToFloor(mana_cost*1.5));
 
 		fl_current_crystal_amt[client] += (raid ? FRACTAL_KIT_HARVESTER_CRYSTALGAIN * 2.0 : FRACTAL_KIT_HARVESTER_CRYSTALGAIN);
+		if(Arena_Mode())
+			fl_current_crystal_amt[client] += FRACTAL_KIT_HARVESTER_CRYSTALGAIN * 3.0;
 
 		SDKHooks_TakeDamage(struct_Harvester_Data[client].Enumerated_Ents[i], client, client, damage, DMG_PLASMA);
 

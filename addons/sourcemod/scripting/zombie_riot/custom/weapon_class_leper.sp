@@ -775,6 +775,8 @@ public float WeaponLeper_OnTakeDamagePlayer(int victim, float &damage, int attac
 	}
 	if (IsLeperInAnimation(victim))
 	{
+		if(Arena_Mode())
+			return damage * 0.25;
 		if(CurrentPapLeper[victim] >= 2)
 			return damage * 0.66;
 		else
@@ -795,6 +797,8 @@ void WeaponLeper_OnTakeDamage(int attacker, float &damage, int weapon, int zr_da
 	}
 
 	Leper_SolemnyCharge[attacker]++;
+	if(Arena_Mode())
+		Leper_SolemnyCharge[attacker] += 5;
 	if(Leper_SolemnyCharge[attacker] > MaxCurrentHitsNeededSolemnity(attacker))
 		Leper_SolemnyCharge[attacker] = MaxCurrentHitsNeededSolemnity(attacker);
 
