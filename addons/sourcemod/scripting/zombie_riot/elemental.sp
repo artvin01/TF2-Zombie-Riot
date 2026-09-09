@@ -1818,7 +1818,7 @@ void Elemental_AddStaggerDamage(int victim, int attacker, int damagebase)
 	{
 		if(f_ArmorCurrosionImmunity[victim][Element_Stagger] < GetGameTime())
 		{
-			if(GetClientHealth(victim) < damage)
+			if(GetClientHealth(victim) < (damage / 100))
 			{
 				if(HasSpecificBuff(victim, "Stagger+") || HasSpecificBuff(victim, "Stagger++"))
 				{
