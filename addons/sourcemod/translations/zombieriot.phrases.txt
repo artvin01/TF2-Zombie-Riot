@@ -1083,6 +1083,21 @@
 		"it"		"Non c'è abbastanza Mana! Ti serve {1} Mana!"
 		"ko" 		"마나 부족! {1} 만큼의 마나가 필요합니다!"
 	}
+	"Ability has cooldown"
+	{
+		"#format"	"{1:.1f}"
+		"en" 		"This ability still has a cooldown of {1} seconds!"
+		"de"		"Diese Fähigkeit hat noch eine Abkühlung von {1} Sekunden!"
+		"ru"		"Время восстановления этой способности ещё {1} сек.!"
+//		"pl"		"Otrzymaano {1} dzięki tej rundzie!"
+//		"es"		"Encontraste {1} en esta oleada!"
+		"fr" 		"Cette abilité se rechargera dans {1} secondes!"
+		"pt"		"Está habilidade ainda está em recarga de {1} segundos!"
+		"nl"		"Deze kracht heeft nog een afkoelingsperiode van {1} seconden!"
+		"chi"       "技能冷却还有 {1} 的时间!"
+		"it"		"Questa abilità ha ancora un cooldown di {1} secondi!"
+		"ko" 		"이 능력은 {1} 초 후에 사용할 수 있습니다!"
+	}
 	"Disabled In This Mode"
 	{
 		"en" 		"Disabled In This Mode"
