@@ -1101,6 +1101,7 @@
 	"Disabled In This Mode"
 	{
 		"en" 		"Disabled In This Mode"
+		"ko" 		"해당 모드에서는 비활성화됨"
 	}
 	"Backwards Setting"
 	{
@@ -6146,25 +6147,31 @@
 	"Standard Team PvP"
 	{
 		"en"	"Standard Team PvP"
+		"ko"	"기본 팀 PvP"
 	}
 	"Standard Team PvP Desc"
 	{
 		"en"	"Two teams fight it out, best of 3.\nSpending budget increases every round."
+		"ko"	"두 팀이 3라운드 동안 대결을 펼칩니다.\n라운드 회차가 지날 때마다 자금이 증가합니다."
 	}
 	"All Special Rounds"
 	{
 		"en"	"All Special Rounds"
+		"ko"	"모든 스페셜 라운드"
 	}
 	"All Special Rounds Desc"
 	{
 		"en"	"A round modifier always happens."
+		"ko"	"라운드 모디파이어가 반드시 발생합니다."
 	}
 	"Turbulance PvP"
 	{
 		"en"	"Turbulance PvP"
+		"ko"	"난기류 PvP"
 	}
 	"Turbulance PvP Desc"
 	{
 		"en"	"The Ultra Rapid Fire mode.\nEverybody gains the ''Dimensional Turbulance'' buff and massive budget."
+		"ko"	"초고속 연사 모드.\n전원이 ''차원 난기류'' 버프를 얻고 대량의 자금을 획득합니다."
 	}
 }
