@@ -232,7 +232,7 @@ stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float &da
 		if(b_ThisWasAnNpc[attacker])
 			f_InBattleDelay[attacker] = GetGameTime() + 6.0;
 #endif
-	if(Arena_Mode() || (attacker <= MaxClients && attacker > 0 && victim > 0 && victim <= MaxClients))
+	if(!b_IsATriggerHurt[attacker] && (Arena_Mode() || (attacker <= MaxClients && attacker > 0 && victim > 0 && victim <= MaxClients)))
 	{
 		//in PVP scenarios, we nerf damage by 10x
 		if(!CheckInHud())
