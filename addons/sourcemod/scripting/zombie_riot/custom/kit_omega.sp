@@ -384,7 +384,7 @@ public void KitOmega_AddCharge(int client, float amount)
 	if(!amount)
 		return;
 
-	if(Arena_Mode())
+	if(Arena_Mode() && amount > 0.0)
 		amount *= 6.0;
 		
 	OMEGA_ENERGY[client] += amount;
