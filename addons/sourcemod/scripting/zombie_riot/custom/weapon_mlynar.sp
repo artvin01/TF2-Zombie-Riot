@@ -426,7 +426,7 @@ public void Mlynar_Cooldown_Logic(int client, int weapon)
 			if(GatherPower > 0)
 			{
 				//we can gather power from upto 5 enemies at once, the more the faster.
-				if(GatherPower > 10)
+				if(GatherPower > 10 && !Arena_Mode())
 				{
 					GatherPower = 10;
 				}
