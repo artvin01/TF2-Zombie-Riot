@@ -641,7 +641,7 @@ void IndexFather_GeneratePrescript(int client, bool ForceNew, int PrescriptForce
 			return;
 		}
 	}
-	if(RaidbossIgnoreBuildingsLogic())
+	if(RaidbossIgnoreBuildingsLogic() || Arena_Mode())
 	{
 		PrescriptForce = 4;
 	}
