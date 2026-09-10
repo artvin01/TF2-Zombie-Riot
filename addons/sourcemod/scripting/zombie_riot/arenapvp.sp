@@ -203,7 +203,7 @@ static Action Timer_WaitingPeriod(Handle timer)
 			}
 
 			GetClientAbsOrigin(client, pos2);
-			if(GetVectorDistance(pos1, pos2, true) > 150000.0)
+			if(GetVectorDistance(pos1, pos2, true) > 300000.0)
 			{
 				Vehicle_Exit(client, false, false);
 				TeleportEntity(client, pos1, {0.0, 0.0, 0.0}, NULL_VECTOR);
