@@ -2014,6 +2014,8 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 					attack_speed *= f_BackstabCooldown[weapon]; //extra delay.
 
 					damage *= 5.25;
+					if(Arena_Mode())
+						damage *= 8.0;
 
 #if defined ZR
 					CClotBody npc = view_as<CClotBody>(victim);
