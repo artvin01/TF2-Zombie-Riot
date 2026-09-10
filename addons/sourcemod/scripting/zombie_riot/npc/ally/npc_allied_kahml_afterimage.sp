@@ -34,7 +34,7 @@ methodmap AlliedKahmlAbility < CClotBody
 	
 	public AlliedKahmlAbility(int client, float vecPos[3], float vecAng[3], int team)
 	{
-		AlliedKahmlAbility npc = view_as<AlliedKahmlAbility>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "100", TFTeam_Red, true));
+		AlliedKahmlAbility npc = view_as<AlliedKahmlAbility>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.0", "100", team, true));
 		
 		i_NpcWeight[npc.index] = 999;
 		SetEntPropEnt(npc.index,   Prop_Send, "m_hOwnerEntity", client);
