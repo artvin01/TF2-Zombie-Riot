@@ -381,7 +381,10 @@ public void Weapon_BurningThumb_R(int client, int weapon, bool crit, int slot)
 		return;
 	}
 
-	Store_ApplyCooldownIndex(client, WeaponStore, 3, RCooldown);
+	if(Arena_Mode())
+		Store_ApplyCooldownIndex(client, WeaponStore, 3, RCooldown * 0.35);
+	else
+		Store_ApplyCooldownIndex(client, WeaponStore, 3, RCooldown);
 	
 	Rogue_OnAbilityUse(client, weapon);
 	TF2_AddCondition(client, TFCond_CritOnKill, 29.9);
@@ -1089,6 +1092,8 @@ static void SetWeaponCooldown(int weapon, float &cooldown)
 {
 	cooldown *= Attributes_Get(weapon, 6, 1.0);
 	cooldown *= Attributes_Get(weapon, 396, 1.0);
+	if(Arena_Mode())
+		cooldown *= 0.75;
 
 	DataPack pack = new DataPack();
 	RequestFrame(ApplyWeaponCooldown, pack);
@@ -1233,6 +1238,10 @@ static int BurningThumbtion(int client, int which)
 		}
 	}
 
+	if(Arena_Mode())
+	{
+		ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", 3.5);
+	}
 	float vAngles[3];
 	float vOrigin[3];
 	

@@ -83,6 +83,7 @@ methodmap AlliedKahmlAbility < CClotBody
 			if(!ModelPath[0])
 				continue;
 
+			int SetSkin = GetTeam(client) - 2;
 			for(int Repeat=0; Repeat<7; Repeat++)
 			{
 				int WearableIndex = i_Wearable[npc.index][Repeat];
@@ -98,6 +99,7 @@ methodmap AlliedKahmlAbility < CClotBody
 						}
 						SetEntityRenderMode(WearablePostIndex, RENDER_TRANSCOLOR); //Make it half invis.
 						SetEntityRenderColor(WearablePostIndex, 21, 71, 171, 125);
+						SetEntProp(WearablePostIndex, Prop_Send, "m_nSkin", SetSkin);
 						i_Wearable[npc.index][Repeat] = EntIndexToEntRef(WearablePostIndex);
 					}
 					break;
