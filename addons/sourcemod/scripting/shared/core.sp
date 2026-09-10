@@ -3362,7 +3362,7 @@ void CheckIfAloneOnServer(bool CountOnly = false)
 #if defined ZR 
 	if(BetWar_Mode())
 		return;
-	if (players < 4 && players > 0)
+	if (players < 4 && players > 0 && !Arena_Mode())
 	{
 		if (Bob_Exists)
 			return;

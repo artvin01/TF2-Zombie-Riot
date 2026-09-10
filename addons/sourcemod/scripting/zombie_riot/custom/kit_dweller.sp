@@ -264,7 +264,7 @@ public void Weapon_SeaRangePap_M2(int client, int weapon, bool crit, int slot)
 		
 	for(int i; i < SpawnMaxEnemies; i++)
 	{
-		int entity = NPC_CreateByName("npc_searunner", client, pos1, ang, TFTeam_Red);
+		int entity = NPC_CreateByName("npc_searunner", client, pos1, ang, GetTeam(client));
 		if(entity > MaxClients)
 		{
 			fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);
@@ -308,7 +308,7 @@ public void Weapon_SeaRangePapFull_M2(int client, int weapon, bool crit, int slo
 		
 	for(int i; i < SpawnMaxEnemies; i++)
 	{
-		int entity = NPC_CreateByName("npc_searunner", client, pos1, ang, TFTeam_Red);
+		int entity = NPC_CreateByName("npc_searunner", client, pos1, ang, GetTeam(client));
 		if(entity > MaxClients)
 		{
 			int maxhealth = SDKCall_GetMaxHealth(client) / 2; //2x health cus no resistance.
