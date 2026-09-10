@@ -240,8 +240,8 @@ void Arena_StateUpdate(int readystate)
 	// Team-based ready up
 	if(Arena_Mode() && !Rogue_VoteActive() && !Started && readystate)
 	{
-		bool hasteam1 = false;
-		bool hasteam2 = false;
+		bool ready1 = true;
+		bool ready2 = true;
 
 		for(int client = 1; client <= MaxClients; client++)
 		{
@@ -251,27 +251,38 @@ void Arena_StateUpdate(int readystate)
 				switch(team)
 				{
 					case TFTeam_Red:
-						hasteam1 = true;
+						ready1 = false;
 					
 					case TFTeam_Blue:
-						hasteam2 = true;
+						ready2 = false;
 				}
 			}
 		}
 
-		if((!hasteam1 || !hasteam2) && GetWaveSetupCooldown() < GetGameTime())
+		if(GameRules_GetProp("m_bTeamReady", 1, TFTeam_Red))
+			ready1 = true;
+
+		if(GameRules_GetProp("m_bTeamReady", 1, TFTeam_Blue))
+			ready2 = true;
+
+		if(ready1 && ready2 && GameRules_GetPropFloat("m_flRestartRoundTime") < 0)
 		{
+			Event event = CreateEvent("teamplay_round_restart_seconds");
+			event.SetInt("seconds", 10.0);
+			event.Fire();
+			/*
 			delete GameTimer;
 			GameTimer = CreateTimer(10.0, ArenaGameTimer, 2);
 			SpawnTimer(10.0);
 			Waves_ForceSetup(10.0);
 			GameRules_SetProp("m_bInWaitingForPlayers", false);
+			*/
 		}
 	}
 }
 
-// OnStateUpdate
-Action Arena_AllTeamsReady(int &time)
+// OnAllTeamReady
+Action Arena_AllTeamsReady(int &time = 0)
 {
 	if(!Arena_Mode())
 		return Plugin_Continue;
