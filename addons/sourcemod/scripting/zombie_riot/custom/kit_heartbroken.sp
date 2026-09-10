@@ -973,7 +973,8 @@ public void Coffin_Projectile_Hit(int entity, int target)
 		SetEntityCollisionGroup(target, 1);
 	}
 	
-	EmitSoundToAll(g_CoffinReel[GetRandomInt(0, sizeof(g_CoffinReel) - 1)], owner, SNDCHAN_AUTO, 80, _, 0.9, 90);
+	if(!Arena_Mode())
+		EmitSoundToAll(g_CoffinReel[GetRandomInt(0, sizeof(g_CoffinReel) - 1)], owner, SNDCHAN_AUTO, 80, _, 0.9, 90);
 	float ang[3];
 	GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 	Initiate_HomingProjectile(entity, 

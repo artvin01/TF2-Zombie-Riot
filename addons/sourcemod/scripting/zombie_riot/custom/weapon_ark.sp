@@ -463,7 +463,7 @@ public float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, in
 			float damage_reflected = damage;
 			if(Ark_AlreadyParried[victim] == 0 && Ark_Level[victim] == 3)
 			{
-				if(damage_reflected >= 500.0)
+				if(damage_reflected >= 500.0 && !Arena_Mode())
 				{
 					damage_reflected = 500.0;
 					//ClientCommand(victim, "playgamesound weapons/tf2_back_scatter.wav");
@@ -474,7 +474,7 @@ public float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, in
 			}
 			else
 			{
-				if(damage_reflected >= 300.0)
+				if(damage_reflected >= 300.0 && !Arena_Mode())
 				{
 					damage_reflected = 300.0;
 				}
@@ -520,7 +520,8 @@ public float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, in
 				}
 				Ark_Hits[victim] += 1;	
 			}
-			
+			if(Arena_Mode())
+				damage_reflected *= 10.0;
 			if(f_AniSoundSpam[victim] < GetGameTime())
 			{
 				f_AniSoundSpam[victim] = GetGameTime() + 0.2;

@@ -682,6 +682,12 @@ void NPC_Ignite(int entity, int attacker, float duration, int weapon, float dama
 	IgniteFor[entity] += RoundToCeil(duration*2.0);
 	if(IgniteFor[entity] > 20)
 		IgniteFor[entity] = 20;
+
+	if(Arena_Mode())
+	{
+		if(IgniteFor[entity] > 5)
+			IgniteFor[entity] = 5;
+	}
 	
 	if(!IgniteTimer[entity])
 		IgniteTimer[entity] = CreateTimer(0.5, NPC_TimerIgnite, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);

@@ -965,6 +965,13 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			return false;
 		}
 #endif
+		if(Arena_Mode())
+		{
+			if(b_ThisWasAnNpc[ent1] && ent2 <= MaxClients && !DoingLagCompensation)
+			{
+				return false;
+			}
+		}
 		if(b_IsAProjectile[entity1] && (GetTeam(entity1) != TFTeam_Red && !Arena_Mode()))
 		{
 			if(b_IsATrigger[entity2])

@@ -9744,9 +9744,16 @@ public void KillNpc(int ref)
 
 stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = false)
 {
+	if(Arena_Mode())
+		IgnoreAllLogic = false;
 	if(HasSpecificBuff(npc, "Clear Head") && !IgnoreAllLogic)
 		return;
 
+	if(Arena_Mode())
+	{
+		if(Duration_Stun >= 2.0)
+			Duration_Stun = 2.0;
+	}
 	//Emergency incase it wasnt an npc.
 	if(!b_ThisWasAnNpc[npc])
 	{

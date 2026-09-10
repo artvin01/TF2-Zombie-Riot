@@ -713,6 +713,14 @@ void Arena_CheckAlivePlayers(int killed)
 		{
 			CPrintToChatAllEx(colorRef, "{teamcolor}Team %d {default}won this round! ({teamcolor}%d {default}win%s)", winningTeam - 1, points, points == 1 ? "" : "s");
 		}
+		for(int client = 1; client <= MaxClients; client++)
+		{
+			if(!b_IsPlayerABot[client] && IsClientInGame(client))
+			{
+				Music_Stop_All(client);
+				SetMusicTimer(client, GetTime() + 1);
+			}
+		}
 	}
 
 	for(int target = 1; target <= MaxClients; target++)

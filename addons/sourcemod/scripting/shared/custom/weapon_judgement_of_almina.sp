@@ -45,6 +45,8 @@ void Npc_OnTakeDamage_Almina(int attacker, int damagetype)
 	if(damagetype & DMG_CLUB) //We only count normal melee hits.
 	{
 		i_AmphiHitsDone[attacker] += 1;
+		if(Arena_Mode())
+			i_AmphiHitsDone[attacker] += 3;
 		if(i_AmphiHitsDone[attacker] > AMPHI_JUDGEMENT_MAX_HITS_NEEDED) //We do not go above this, no double charge.
 		{
 			i_AmphiHitsDone[attacker] = AMPHI_JUDGEMENT_MAX_HITS_NEEDED;
