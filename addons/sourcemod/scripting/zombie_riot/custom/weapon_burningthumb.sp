@@ -1240,7 +1240,7 @@ static int BurningThumbtion(int client, int which)
 
 	if(Arena_Mode())
 	{
-		ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", 3.5);
+		ApplyStatusEffect(client, client, "Very Defensive Backup", 3.5);
 	}
 	float vAngles[3];
 	float vOrigin[3];
