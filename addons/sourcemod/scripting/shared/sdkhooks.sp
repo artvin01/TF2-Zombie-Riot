@@ -2337,12 +2337,12 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			return Plugin_Handled;
 		}
 		*/
-		else if((LastMann_BeforeLastman || LastMann || b_IsAloneOnServer) && f_OneShotProtectionTimer[victim] < GameTime && !SpecterCheckIfAutoRevive(victim))
+		else if(!Arena_Mode() && (LastMann_BeforeLastman || LastMann || b_IsAloneOnServer) && f_OneShotProtectionTimer[victim] < GameTime && !SpecterCheckIfAutoRevive(victim))
 		{
 			f_OneShotProtectionTimer[victim] = GameTime + 60.0; // 60 second cooldown
 			if(!LastMann)
 			{
-				if(!Arena_Mode() && !PlayersLeftAlive(victim) && GameRules_GetRoundState() == RoundState_ZombieRiot)
+				if(!PlayersLeftAlive(victim) && GameRules_GetRoundState() == RoundState_ZombieRiot)
 				{
 					if(b_IsAloneOnServer)
 						i_AmountDowned[victim] = 999;
