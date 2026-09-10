@@ -268,7 +268,7 @@ void Arena_StateUpdate(int readystate)
 		if(ready1 && ready2 && GameRules_GetPropFloat("m_flRestartRoundTime") < 0)
 		{
 			Event event = CreateEvent("teamplay_round_restart_seconds");
-			event.SetInt("seconds", 10.0);
+			event.SetInt("seconds", 10);
 			event.Fire();
 			/*
 			delete GameTimer;
@@ -385,6 +385,7 @@ static Action ArenaGameTimer(Handle timer, int mode)
 				{
 					HealEntityGlobal(client, client, 9999.9, 1.0, 2.0, HEAL_ABSOLUTE);
 					GiveArmorViaPercentage(client, 6.0, 1.0);
+					ReviveAllyResetCD(client);
 				}
 			}
 
@@ -574,9 +575,9 @@ void Arena_SetReadyStatus(int status)
 			if(Started)
 			{
 				delete GameTimer;
-				GameTimer = CreateTimer(60.0, ArenaGameTimer, 2);
-				SpawnTimer(60.0);
-				Waves_ForceSetup(60.0);
+				GameTimer = CreateTimer(30.0, ArenaGameTimer, 2);
+				SpawnTimer(30.0);
+				Waves_ForceSetup(30.0);
 				GameRules_SetProp("m_bInWaitingForPlayers", false);
 			}
 		}

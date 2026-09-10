@@ -1336,4 +1336,6 @@ void ReviveAllyResetCD(int revived)
 	{
 		Saga_ChargeReduction(revived, other, 999.9);
 	}
+	f_VintulumBombRecentlyUsed[revived] = 0.0;
+	ResetAllBuildingCooldowns(revived);
 }
