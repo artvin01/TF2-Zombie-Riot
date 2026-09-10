@@ -383,6 +383,7 @@ static Action ArenaGameTimer(Handle timer, int mode)
 			{
 				if(IsClientInGame(client) && IsPlayerAlive(client) && TeutonType[client] == TEUTON_NONE)
 				{
+					TF2_RegeneratePlayer(client);
 					HealEntityGlobal(client, client, 9999.9, 1.0, 2.0, HEAL_ABSOLUTE);
 					GiveArmorViaPercentage(client, 6.0, 1.0);
 					ReviveAllyResetCD(client);
