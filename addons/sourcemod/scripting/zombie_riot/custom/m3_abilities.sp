@@ -813,8 +813,8 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 
 	if(Arena_Mode())
 	{
-		healthvalue *= 5;
-		autoscale *= 5.0;
+		healthvalue *= 2;
+		autoscale *= 2.5;
 	}
 	float Healing_Amount=Attributes_GetOnPlayer(client, 8, true, true)/2.0;
 	if(Healing_Amount<1.0)
@@ -1000,7 +1000,7 @@ public void Reinforce(int client, bool NoCD)
 		WritePackFloat(Reinforcement, position[0]);
 		WritePackFloat(Reinforcement, position[1]);
 		WritePackFloat(Reinforcement, position[2]);
-		WritePackFloat(Reinforcement, 50.0);
+		WritePackFloat(Reinforcement, Arena_Mode() ? 50.0 : 25.0);
 		WritePackCell(Reinforcement, false);
 		WritePackFloat(Reinforcement, 1200.0);
 		WritePackString(Reinforcement, "ZR_ReinforcePOD_");

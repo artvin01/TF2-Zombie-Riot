@@ -234,13 +234,16 @@ static stock bool IsValidHomingTarget(int projectile, int target, int owner)
 	
 	if(GermanSilence[owner])	// Ignores non-elite enemies while in ability
 	{
+		//pvp
+		if(target <= MaxClients)
+			return true;
+
 		if(!b_thisNpcIsABoss[target] &&
 		   !b_thisNpcIsARaid[target] &&
 		   !b_StaticNPC[target] &&
 		   !b_thisNpcHasAnOutline[target] &&
 		   !b_ThisNpcIsImmuneToNuke[target] &&
-		   !b_IsGiant[target] &&
-		   target > MaxClients)
+		   !b_IsGiant[target])
 			return false;
 	}
 

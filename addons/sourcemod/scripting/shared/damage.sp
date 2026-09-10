@@ -245,37 +245,40 @@ stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float &da
 				int rounds = Arena_GetRound();
 				if(rounds > 38)
 				{
-					damage *= 0.1;
+					damage *= 0.08;
 				}
 				else if(rounds > 28)
 				{
-					damage *= 0.2;
+					damage *= 0.15;
 				}
 				else if(rounds > 18)
 				{
-					damage *= 0.35;
+					damage *= 0.3;
 				}
 				else if(rounds > 8)
 				{
-					damage *= 0.5;
+					damage *= 0.4;
 				}
 			}
 		}
 		else
 		{
-			switch(Armor_Level[victim])
+			if(victim <= MaxClients)
 			{
-				case 50:
-					damage *= 0.75;
+				switch(Armor_Level[victim])
+				{
+					case 50:
+						damage *= 0.75;
 
-				case 100:
-					damage *= 0.45;
+					case 100:
+						damage *= 0.45;
 
-				case 150:
-					damage *= 0.2;
+					case 150:
+						damage *= 0.2;
 
-				case 200, 250, 300:
-					damage *= 0.1;
+					case 200, 250, 300:
+						damage *= 0.1;
+				}
 			}
 		}
 	}

@@ -824,7 +824,8 @@ public Action NPC_TimerIgnite(Handle timer, int ref)
 				
 			int DamageTypes = DMG_TRUEDAMAGE | DMG_PREVENT_PHYSICS_FORCE;
 
-			if(GetTeam(entity) != TFTeam_Red)
+			//in arena mode dont do true dmg
+			if(Arena_Mode() || GetTeam(entity) != TFTeam_Red)
 			{
 				DamageTypes &= ~DMG_TRUEDAMAGE;
 				DamageTypes |= DMG_BULLET;

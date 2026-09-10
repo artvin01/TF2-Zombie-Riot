@@ -972,6 +972,8 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 				Ability_Apply_Cooldown(attacker, 1, cooldown);
 				duration *= 0.85;
 			}
+			if(Arena_Mode())
+				duration *= 15.0;
 			FreezeNpcInTime(victim, duration * Yakuza_DurationDoEnemy(victim));
 		}
 	}
@@ -1036,7 +1038,7 @@ static int DoSpecialActionYakuza(int client, float DamageBase, const char[] anim
 	{
 
 	}
-	else
+	else if(!Arena_Mode())
 	{
 		//tigerdrop doesnt do ignoring
 		b_ThisEntityIgnored[client] = true;
