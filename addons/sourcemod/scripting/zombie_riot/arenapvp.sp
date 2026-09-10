@@ -871,7 +871,7 @@ static void SetRandomMusic()
 		MusicEnum music;
 		MusicList.GetArray(GetURandomInt() % length, music);
 		
-		int time = GetTime();
+		int time = GetTime() + 2;
 		for(int client = 1; client <= MaxClients; client++)
 		{
 			if(!b_IsPlayerABot[client] && IsClientInGame(client))

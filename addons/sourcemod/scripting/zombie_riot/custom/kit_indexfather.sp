@@ -1383,7 +1383,7 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 		}
 		ResetFurioso = true;
 		f_DodgeCooldown[attacker] = GetGameTime() + IndexFather_DashCooldown(attacker);
-		if(i_DodgesAvailable[attacker] <= (IndexFather_DodgeMaxReturn(attacker) / 2))
+		if(!Arena_Mode() && i_DodgesAvailable[attacker] <= (IndexFather_DodgeMaxReturn(attacker) / 2))
 			i_DodgesAvailable[attacker] = IndexFather_DodgeMaxReturn(attacker) / 2;
 			
 	}

@@ -697,7 +697,7 @@ public void Timer_Do_Melee_Attack_Internal(DataPack pack)
 				{
 					Weapon_ark_LapplandRangedAttack(client, weapon);
 					delete swingTrace;
-					FinishLagCompensation_Base_boss();
+					EndPlayerOnlyLagComp(client);
 					delete pack;
 					return;
 				}
@@ -705,7 +705,7 @@ public void Timer_Do_Melee_Attack_Internal(DataPack pack)
 				{
 					Weapon_ark_QuibaiRangedAttack(client, weapon);
 					delete swingTrace;
-					FinishLagCompensation_Base_boss();
+					EndPlayerOnlyLagComp(client);
 					delete pack;
 					return;
 				}
@@ -713,7 +713,7 @@ public void Timer_Do_Melee_Attack_Internal(DataPack pack)
 				{
 					Gladiia_RangedAttack(client, weapon);
 					delete swingTrace;
-					FinishLagCompensation_Base_boss();
+					EndPlayerOnlyLagComp(client);
 					delete pack;
 					return;
 				}	
