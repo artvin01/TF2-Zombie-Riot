@@ -85,6 +85,10 @@ public Action RandomPickup_DelayBetweenSpawns(Handle timer)
 	{
 		RandomPickupTime *= 0.5;
 	}
+	if(Arena_Mode())
+	{
+		RandomPickupTime *= 0.35;
+	}
 	DelayBetweenSpawns = GetGameTime() + RandomPickupTime;
 	return Plugin_Continue;
 }
@@ -123,6 +127,8 @@ bool RandomPickup_SpawnPickup(float VectorGoal[3], float lifetime = PICKUPS_TIME
 		SetEntityCollisionGroup(prop, 27);
 		SDKHook(prop, SDKHook_Touch, RandomPickup_TouchPickup);
 		i_WandIdNumber[prop] = 999;
+		if(Arena_Mode())
+			lifetime *= 0.65;
 		CreateTimer(lifetime, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
 	}	
 	return true;

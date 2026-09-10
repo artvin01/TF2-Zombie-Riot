@@ -196,11 +196,11 @@ public Action Timer_PurgeKit(Handle timer, DataPack pack)
 		EmitSoundToAll(PURGE_EXPLOSION_SOUND, 0, SNDCHAN_AUTO, 100, _, 1.0);
 		
 		Explode_Logic_Custom(100.0 * Attributes_Get(weapon, 2, 1.0), client, client, weapon, clientPos, PURGE_ENERGY_CLOSE_RANGE, _, _, _, 999);
-		for(int a; a < i_MaxcountNpcTotal; a++)
+		for(int a; a < MAXENTITIES; a++)
 		{
-			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[a]);
+			int entity = a;
 			
-			if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity))
+			if(IsEntityAlive(entity))
 			{
 				float vecTarget[3]; WorldSpaceCenter(entity, vecTarget);
 				float VecSelfNpc[3]; WorldSpaceCenter(client, VecSelfNpc);
@@ -1053,10 +1053,10 @@ public Action Weapon_Purging_Crush_Think(Handle h, DataPack pack)
 		float damage = PURGE_RAM_BASE_DMG;
 		damage *= Attributes_Get(weapon, 2, 1.0);
 		damage *= 0.075;
-		for(int a; a < i_MaxcountNpcTotal; a++)
+		for(int a; a < MAXENTITIES; a++)
 		{
-			int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[a]);
-			if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && entHit <= PURGE_RAM_MAX_HIT)
+			int entity = a;
+			if(IsEntityAlive(entity) && entHit <= PURGE_RAM_MAX_HIT)
 			{
 				if(GetTeam(entity) == team)
 					continue;

@@ -660,7 +660,7 @@ public void Timer_Do_Melee_Attack_Internal(DataPack pack)
 			b_LagCompNPC_ExtendBoundingBox = true;
 		*/
 		float vecSwingForward[3];
-		StartLagCompensation_Base_Boss(client);
+		StartPlayerOnlyLagComp(client, false, true);
 		DoSwingTrace_Custom(swingTrace, client, vecSwingForward,_,_,_,_,aoeSwing, weapon);
 		
 		aoeSwing = i_EntitiesHitAtOnceMax;
@@ -697,7 +697,7 @@ public void Timer_Do_Melee_Attack_Internal(DataPack pack)
 				{
 					Weapon_ark_LapplandRangedAttack(client, weapon);
 					delete swingTrace;
-					FinishLagCompensation_Base_boss();
+					EndPlayerOnlyLagComp(client);
 					delete pack;
 					return;
 				}
@@ -705,7 +705,7 @@ public void Timer_Do_Melee_Attack_Internal(DataPack pack)
 				{
 					Weapon_ark_QuibaiRangedAttack(client, weapon);
 					delete swingTrace;
-					FinishLagCompensation_Base_boss();
+					EndPlayerOnlyLagComp(client);
 					delete pack;
 					return;
 				}
@@ -713,7 +713,7 @@ public void Timer_Do_Melee_Attack_Internal(DataPack pack)
 				{
 					Gladiia_RangedAttack(client, weapon);
 					delete swingTrace;
-					FinishLagCompensation_Base_boss();
+					EndPlayerOnlyLagComp(client);
 					delete pack;
 					return;
 				}	
@@ -969,6 +969,7 @@ public void Timer_Do_Melee_Attack_Internal(DataPack pack)
 		}
 		delete swingTrace;
 		FinishLagCompensation_Base_boss();
+		EndPlayerOnlyLagComp(client);
 	}
 	delete pack;
 

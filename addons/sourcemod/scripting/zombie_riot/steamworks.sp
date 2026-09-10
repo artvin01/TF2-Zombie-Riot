@@ -40,7 +40,11 @@ void SteamWorks_UpdateGameTitle()
 	{
 		char buffer[64];
 		
-		if(Dungeon_Mode())
+		if(Arena_Mode())
+		{
+			strcopy(buffer, sizeof(buffer), "ZR: PvP");
+		}
+		else if(Dungeon_Mode())
 		{
 			strcopy(buffer, sizeof(buffer), "ZR: Dungeon");
 		}

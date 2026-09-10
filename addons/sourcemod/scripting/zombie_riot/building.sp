@@ -582,6 +582,17 @@ static void BuildingMenu(int client)
 	AnyMenuOpen[client] = 1;
 }
 
+void ResetAllBuildingCooldowns(int client)
+{
+	BuildingInfo info;
+	int length = BuildingList.Length;
+	for(int i; i < length; i++)
+	{
+		BuildingList.GetArray(i, info);
+		info.Cooldowns[client] = 0.0;
+		BuildingList.SetArray(i, info);
+	}
+}
 static int BuildingMenuH(Menu menu, MenuAction action, int client, int choice)
 {
 	switch(action)

@@ -2880,7 +2880,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 			npc.bCantCollidie = true;
 			npc.bCantCollidieAlly = true;
 			SDKHook(entity, SDKHook_SpawnPost, Set_Projectile_Collision);
-			SetTeam(entity, TFTeam_Red);
+		//	SetTeam(entity, TFTeam_Red);
 			b_IsAProjectile[entity] = true;
 		}
 		else if(!StrContains(classname, "tf_projectile_flare"))
@@ -3362,7 +3362,7 @@ void CheckIfAloneOnServer(bool CountOnly = false)
 #if defined ZR 
 	if(BetWar_Mode())
 		return;
-	if (players < 4 && players > 0)
+	if (players < 4 && players > 0 && !Arena_Mode())
 	{
 		if (Bob_Exists)
 			return;
@@ -3538,13 +3538,11 @@ stock bool InteractKey(int client, int weapon, bool Is_Reload_Button = false, in
 			static char buffer[64];
 			if(GetEntityClassname(entity, buffer, sizeof(buffer)))
 			{
-				if (GetTeam(entity) != TFTeam_Red)
-				{
-					if(Construction_Material_Interact(client, entity))
-						return false;
-
+				if(Construction_Material_Interact(client, entity))
 					return false;
-				}
+
+				if (GetTeam(entity) != TFTeam_Red && !Arena_Mode())
+					return false;
 				
 				if(Object_Interact(client, weapon, entity))
 					return true;
@@ -3758,6 +3756,12 @@ stock void TF2_SetPlayerClass_ZR(int client, TFClassType classType, bool weapons
 	}
 	
 	TF2_SetPlayerClass(client, classType, weapons, persistent);
+	
+	// This updates the player's hitboxes
+	char LastModel[512];
+	GetEntPropString(client, Prop_Send, "m_iszCustomModel", LastModel, sizeof(LastModel));
+	SetVariantString(LastModel);
+	AcceptEntityInput(client, "SetCustomModel");
 }
 
 #if defined ZR

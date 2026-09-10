@@ -583,19 +583,19 @@ public void Reiuji_Wand_Barrage_Attack(int client, int weapon, bool crit, int sl
 	int[] valid_targets = new int[loop_for];
 	int targets_aquired = 0;
 
-	for(int a; a < i_MaxcountNpcTotal; a++)
+	for(int a; a < MAXENTITIES; a++)
 	{
 		if(targets_aquired >= loop_for)
 			break;
 
-		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[a]);
+		int entity = a;
 
-		if(!IsValidEnemy(client, entity))
+		if(!IsValidEnemy(client, entity, true))
 			continue;
 
 		int target = IsLineOfSight(client, entity, tolerance_angle, range);
 
-		if(IsValidEnemy(client, target))
+		if(IsValidEnemy(client, target, true))
 		{
 			//CPrintToChatAll("2 valid target: %i", target);
 			valid_targets[targets_aquired] = target;

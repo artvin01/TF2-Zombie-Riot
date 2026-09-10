@@ -31,6 +31,13 @@ void CoinEntityCreated(int entity)
 
 public void Ability_Coin_Flip(int client, int weapon, bool crit, int slot)
 {
+	if(Arena_Mode())
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%T", "Disabled In This Mode", client);	
+		return;
+	}
 	if (Ability_Check_Cooldown(client, slot) < 0.0)
 	{
 		Ability_Apply_Cooldown(client, slot, 30.0);
@@ -52,6 +59,13 @@ public void Ability_Coin_Flip(int client, int weapon, bool crit, int slot)
 
 public void Ability_Coin_Flip2(int client, int weapon, bool crit, int slot)
 {
+	if(Arena_Mode())
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%T", "Disabled In This Mode", client);	
+		return;
+	}
 	if (Ability_Check_Cooldown(client, slot) < 0.0 && coins_flipped[client] <= 1)
 	{
 		coins_flipped[client] += 1;
@@ -78,6 +92,13 @@ public void Ability_Coin_Flip2(int client, int weapon, bool crit, int slot)
 
 public void Ability_Coin_Flip3(int client, int weapon, bool crit, int slot)
 {
+	if(Arena_Mode())
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%T", "Disabled In This Mode", client);	
+		return;
+	}
 	if (Ability_Check_Cooldown(client, slot) < 0.0 && coins_flipped[client] <= 2)
 	{
 		coins_flipped[client] += 1;
@@ -103,6 +124,13 @@ public void Ability_Coin_Flip3(int client, int weapon, bool crit, int slot)
 }
 public void Ability_Coin_Flip4(int client, int weapon, bool crit, int slot)
 {
+	if(Arena_Mode())
+	{
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		ShowSyncHudText(client,  SyncHud_Notifaction, "%T", "Disabled In This Mode", client);	
+		return;
+	}
 	if (Ability_Check_Cooldown(client, slot) < 0.0 && coins_flipped[client] <= 3)
 	{
 		coins_flipped[client] += 1;

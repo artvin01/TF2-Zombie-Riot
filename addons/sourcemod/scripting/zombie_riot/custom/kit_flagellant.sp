@@ -480,7 +480,7 @@ public void Weapon_FlagellantHealing_M1(int client, int weapon, bool crit, int s
 	}
 	else if(!b_NpcHasDied[target])
 	{
-		if(GetTeam(target) == 2 && !b_NpcIsInvulnerable[target] && !Citizen_ThatIsDowned(target))
+		if(GetTeam(target) == GetTeam(client) && !b_NpcIsInvulnerable[target] && !Citizen_ThatIsDowned(target))
 		{
 			validAlly = true;
 		}
@@ -598,13 +598,9 @@ public void Weapon_FlagellantDamage_M1(int client, int weapon, bool crit, int sl
 	{
 
 	}
-	else if(!b_NpcHasDied[target])
+	else if(IsValidEnemy(client, target, true))
 	{
-		if(GetTeam(target) != 2)
-		{
-			if(!b_NpcIsInvulnerable[target])
-				validEnemy = true;
-		}
+		validEnemy = true;
 	}
 
 	if(validEnemy)
@@ -684,12 +680,12 @@ public void Weapon_FlagellantHealing_M2(int client, int weapon, bool crit, int s
 	}
 	else if(target <= MaxClients)
 	{
-		if(TeutonType[target] == TEUTON_NONE)
+		if(dieingstate[target] < 1 && TeutonType[target] == TEUTON_NONE)
 			validAlly = true;
 	}
 	else if(!b_NpcHasDied[target])
 	{
-		if(GetTeam(target) == 2 && !b_NpcIsInvulnerable[target])
+		if(GetTeam(target) == GetTeam(client) && !b_NpcIsInvulnerable[target] && !Citizen_ThatIsDowned(target))
 		{
 			validAlly = true;
 		}
@@ -811,13 +807,9 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 	{
 
 	}
-	else if(!b_NpcHasDied[target])
+	else if(IsValidEnemy(client, target, true))
 	{
-		if(GetTeam(target) != 2)
-		{
-			if(!b_NpcIsInvulnerable[target])
-				validEnemy = true;
-		}
+		validEnemy = true;
 	}
 
 	if(validEnemy)

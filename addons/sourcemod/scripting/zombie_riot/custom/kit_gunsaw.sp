@@ -605,7 +605,11 @@ void Gunsaw_NPCTakeDamage(int victim, int client)
 			return;
 		}
 
-		if(!ValidSwapTarget(victim))
+		int health = victim <= MaxClients ? GetClientHealth(victim) : GetEntProp(victim, Prop_Data, "m_iHealth");
+		int maxhealth = ReturnEntityMaxHealth(victim);
+		bool injured = health < (maxhealth / 10);
+
+		if(!ValidSwapTarget(victim, injured))
 		{
 			if(dieingstate[client])
 			{
@@ -615,18 +619,25 @@ void Gunsaw_NPCTakeDamage(int victim, int client)
 
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
-			ShowSyncHudText(client, SyncHud_Notifaction, "Can not steal this body!");
+			ShowSyncHudText(client, SyncHud_Notifaction, injured ? "Can not steal this body!" : "Target too healthy!");
 			return;
 		}
 
 		i_AmountDowned[client]++;
 		StealBodyForm(client, victim);
 
-		view_as<CClotBody>(victim).m_iHealthBar = 0;
-		SetEntityHealth(victim, 1);
-		b_DissapearOnDeath[victim] = true;
-		RemoveSpecificBuff(victim, "Infinite Will");
-		SDKHooks_TakeDamage(victim, client, client, GetRandomFloat(99999.0,9999999.0), DMG_BLAST, -1, {0.1,0.1,0.1}, _, _, ZR_SLAY_DAMAGE);
+		if(victim <= MaxClients)
+		{
+			ForcePlayerSuicide(victim);
+		}
+		else
+		{
+			view_as<CClotBody>(victim).m_iHealthBar = 0;
+			SetEntityHealth(victim, 1);
+			b_DissapearOnDeath[victim] = true;
+			RemoveSpecificBuff(victim, "Infinite Will");
+			SDKHooks_TakeDamage(victim, client, client, GetRandomFloat(99999.0,9999999.0), DMG_BLAST, -1, {0.1,0.1,0.1}, _, _, ZR_SLAY_DAMAGE);
+		}
 
 		f_InBattleHudDisableDelay[client] = GetGameTime() + 1.0;
 	}
@@ -642,16 +653,23 @@ bool Gunsaw_TryBodySteal(int client, bool regen, float pos[3] = {0.0,0.0,0.0}, b
 	
 	if(WeaponTimer[client])
 	{
-		int target = GetClosestTarget(client, true, distance, true, .EntityLocation = pos, .fldistancelimitAllyNPC = 1000.0, .IgnorePlayers = true, .ExtraValidityFunction = StealBodyFunc);
+		int target = GetClosestTarget(client, true, distance, true, .EntityLocation = pos, .fldistancelimitAllyNPC = 1000.0, .ExtraValidityFunction = StealBodyFunc);
 		if(target != -1)
 		{
 			StealBodyForm(client, target);
 
-			view_as<CClotBody>(target).m_iHealthBar = 0;
-			SetEntityHealth(target, 1);
-			b_DissapearOnDeath[target] = true;
-			RemoveSpecificBuff(target, "Infinite Will");
-			SDKHooks_TakeDamage(target, client, client, GetRandomFloat(99999.0,9999999.0), DMG_BLAST, -1, {0.1,0.1,0.1}, _, _, ZR_SLAY_DAMAGE);
+			if(target <= MaxClients)
+			{
+				ForcePlayerSuicide(target);
+			}
+			else
+			{
+				view_as<CClotBody>(target).m_iHealthBar = 0;
+				SetEntityHealth(target, 1);
+				b_DissapearOnDeath[target] = true;
+				RemoveSpecificBuff(target, "Infinite Will");
+				SDKHooks_TakeDamage(target, client, client, GetRandomFloat(99999.0,9999999.0), DMG_BLAST, -1, {0.1,0.1,0.1}, _, _, ZR_SLAY_DAMAGE);
+			}
 
 			f_InBattleHudDisableDelay[client] = GetGameTime() + 1.0;
 		}
@@ -702,19 +720,24 @@ static bool StealBodyFunc(int client, int target)
 
 static void StealBodyForm(int client, int entity)
 {
-	ModelHealth[client] = GetEntProp(entity, Prop_Data, "m_iMaxHealth") / 10;
+	ModelHealth[client] = entity <= MaxClients ? ReturnEntityMaxHealth(entity) : (GetEntProp(entity, Prop_Data, "m_iMaxHealth") / 10);
 	if(ModelHealth[client] < 0)
 		ModelHealth[client] = 0;
 	
-	ModelMeleeRes[client] = clamp(fl_MeleeArmor[entity] * fl_Extra_MeleeArmor[entity], 0.5, 2.0);
-	ModelRangedRes[client] = clamp(fl_RangedArmor[entity] * fl_Extra_RangedArmor[entity], 0.5, 2.0);
-	ModelReloadTime[client] = clamp(f_AttackSpeedNpcIncrease[entity], 0.5, 2.0);
+	ModelMeleeRes[client] = entity <= MaxClients ? 1.0 : clamp(fl_MeleeArmor[entity] * fl_Extra_MeleeArmor[entity], 0.5, 2.0);
+	ModelRangedRes[client] = entity <= MaxClients ? 1.0 : clamp(fl_RangedArmor[entity] * fl_Extra_RangedArmor[entity], 0.5, 2.0);
+	ModelReloadTime[client] = entity <= MaxClients ? 1.0 : clamp(f_AttackSpeedNpcIncrease[entity], 0.5, 2.0);
 
 	char model[PLATFORM_MAX_PATH];
 
 	delete ModelNPCName[client];
 	ModelNPCName[client] = new DataPack();
-	if(b_NameNoTranslation[entity])
+	if(entity <= MaxClients)
+	{
+		GetClientName(entity, model, sizeof(model));
+		ModelNPCName[client].WriteString(model);
+	}
+	else if(b_NameNoTranslation[entity])
 	{
 		ModelNPCName[client].WriteString(c_NpcName[entity]);
 	}
@@ -731,60 +754,69 @@ static void StealBodyForm(int client, int entity)
 	TFClassType class;//, weapons;
 	int effect;
 
-	GetEntPropString(entity, Prop_Data, "m_ModelName", model, sizeof(model));
-	ReplaceString(model, sizeof(model), "\\", "/");
-
-	if(StrContains(model, "combine_", false) != -1 || StrContains(model, "police.mdl", false) != -1)
+	if(entity <= MaxClients)
 	{
-		class = TFClass_Pyro;
-		ModelRobot[client] = false;
-		effect = (GetEntProp(client, Prop_Send, "m_nBody") & 4) ? Body_Human : Body_Combine;
-	}
-	else if(ReplaceStringEx(model, sizeof(model), "models/player/", "", _, _, false) != -1)
-	{
-		int pos = FindCharInString(model, '.', true);
-		if(pos != -1)
-			model[pos] = '\0';
-
-		class = TF2_GetClass(model);
-		effect = view_as<int>(class);
-		//weapons = class;
-		ModelRobot[client] = false;
-	}
-	else if(ReplaceStringEx(model, sizeof(model), "models/bots/", "", _, _, false) != -1)
-	{
-		int pos = FindCharInString(model, '/', true);
-		if(pos != -1)
-			model[pos] = '\0';
-		ReplaceStringEx(model, sizeof(model), "_boss", "", _, _, false);
-		ReplaceStringEx(model, sizeof(model), "bot_", "", _, _, false);
-
-		class = TF2_GetClass(model);
-		effect = Body_Robot;
-		//weapons = class;
-		ModelRobot[client] = true;
-	}
-	else if(StrContains(model, "models/zombie/", false) != -1)
-	{
-		if(StrContains(model, "fast", false) != -1)
-		{
-			class = TFClass_Scout;
-		}
-		else if(StrContains(model, "poison", false) != -1)
-		{
-			class = TFClass_Heavy;
-		}
-		else
-		{
-			class = TFClass_Sniper;
-		}
-
-		effect = Body_Zombie;
-		ModelRobot[client] = false;
+		class = CurrentClass[entity];
+		ModelRobot[client] = b_IsRobot[entity];
+		effect = Body_Human;
 	}
 	else
 	{
-		ModelRobot[client] = false;
+		GetEntPropString(entity, Prop_Data, "m_ModelName", model, sizeof(model));
+		ReplaceString(model, sizeof(model), "\\", "/");
+
+		if(StrContains(model, "combine_", false) != -1 || StrContains(model, "police.mdl", false) != -1)
+		{
+			class = TFClass_Pyro;
+			ModelRobot[client] = false;
+			effect = (GetEntProp(entity, Prop_Send, "m_nBody") & 4) ? Body_Human : Body_Combine;
+		}
+		else if(ReplaceStringEx(model, sizeof(model), "models/player/", "", _, _, false) != -1)
+		{
+			int pos = FindCharInString(model, '.', true);
+			if(pos != -1)
+				model[pos] = '\0';
+
+			class = TF2_GetClass(model);
+			effect = view_as<int>(class);
+			//weapons = class;
+			ModelRobot[client] = false;
+		}
+		else if(ReplaceStringEx(model, sizeof(model), "models/bots/", "", _, _, false) != -1)
+		{
+			int pos = FindCharInString(model, '/', true);
+			if(pos != -1)
+				model[pos] = '\0';
+			ReplaceStringEx(model, sizeof(model), "_boss", "", _, _, false);
+			ReplaceStringEx(model, sizeof(model), "bot_", "", _, _, false);
+
+			class = TF2_GetClass(model);
+			effect = Body_Robot;
+			//weapons = class;
+			ModelRobot[client] = true;
+		}
+		else if(StrContains(model, "models/zombie/", false) != -1)
+		{
+			if(StrContains(model, "fast", false) != -1)
+			{
+				class = TFClass_Scout;
+			}
+			else if(StrContains(model, "poison", false) != -1)
+			{
+				class = TFClass_Heavy;
+			}
+			else
+			{
+				class = TFClass_Sniper;
+			}
+
+			effect = Body_Zombie;
+			ModelRobot[client] = false;
+		}
+		else
+		{
+			ModelRobot[client] = false;
+		}
 	}
 
 	if(class == TFClass_Unknown)
@@ -827,20 +859,42 @@ static void StealBodyForm(int client, int entity)
 		UpdatePerkName(client);
 	}
 	
-	for(int i; i < sizeof(i_Wearable[]); i++)
+	if(entity <= MaxClients)
 	{
-		int wearable = EntRefToEntIndex(i_Wearable[entity][i]);
-		if(wearable != -1 && HasEntProp(wearable, Prop_Send, "m_nModelIndex"))
+		int wearable, a;
+		while(TF2U_GetWearable(entity, wearable, a))
 		{
+			if(ViewChange_IsViewmodelRef(EntIndexToEntRef(wearable)))
+				continue;
+			
 			int index = GetEntProp(wearable, Prop_Send, "m_nModelIndex");
-			ModelIndexToString(index, model, sizeof(model));
-			if(model[0] && StrContains(model, "player/items", false) != -1)
+			if(index > 0)
 			{
-				ModelModels[client].Push(index);
-
-				if(StrContains(model, "hwn2022_pony_express", false) != -1)
+				ModelIndexToString(index, model, sizeof(model));
+				if(model[0] && StrContains(model, "player/items", false) != -1)
 				{
-					effect = Body_Horse;
+					ModelModels[client].Push(index);
+				}
+			}
+		}
+	}
+	else
+	{
+		for(int i; i < sizeof(i_Wearable[]); i++)
+		{
+			int wearable = EntRefToEntIndex(i_Wearable[entity][i]);
+			if(wearable != -1 && HasEntProp(wearable, Prop_Send, "m_nModelIndex"))
+			{
+				int index = GetEntProp(wearable, Prop_Send, "m_nModelIndex");
+				ModelIndexToString(index, model, sizeof(model));
+				if(model[0] && StrContains(model, "player/items", false) != -1)
+				{
+					ModelModels[client].Push(index);
+
+					if(StrContains(model, "hwn2022_pony_express", false) != -1)
+					{
+						effect = Body_Horse;
+					}
 				}
 			}
 		}
@@ -899,6 +953,12 @@ static void StealBodyFrame(DataPack pack)
 
 static bool ValidSwapTarget(int entity, bool ignoreSome = false)
 {
+	if(entity <= MaxClients)
+		return ignoreSome;
+	
+	if(Citizen_IsIt(entity))
+		return false;
+
 	if(ignoreSome)
 	{
 		if(b_thisNpcIsARaid[entity] ||

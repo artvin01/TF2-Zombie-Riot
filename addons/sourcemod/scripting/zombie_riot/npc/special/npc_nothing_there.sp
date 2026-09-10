@@ -217,7 +217,9 @@ methodmap Nothing_There < CClotBody
 		b_thisNpcIsABoss[npc.index] = true;
 		fl_TotalArmor[npc.index] = 0.2;
 	//	b_thisNpcIsARaid[npc.index] = true;
-		npc.m_flSpawnRabitProtocol = GetGameTime() + GetRandomFloat( 10.0 , 15.0);
+		if(!Arena_Mode())
+			npc.m_flSpawnRabitProtocol = GetGameTime() + GetRandomFloat( 10.0 , 15.0);
+		
 		if(!IsValidEntity(RaidBossActive))
 		{
 			RaidBossActive = EntIndexToEntRef(npc.index);

@@ -42,6 +42,8 @@ stock void HomingProjectile_Deactivate(int projectile)
 void Initiate_HomingProjectile(int projectile, int owner, float lockonAngleMax, float homingaSec, bool LockOnlyOnce, bool changeAngles, float AnglesInitiate[3], int initialTarget = -1)
 {
 	RMR_RocketOwner[projectile] = EntIndexToEntRef(owner);
+	if(Arena_Mode())
+		homingaSec *= 1.5;
 	RMR_HomingPerSecond[projectile] = homingaSec; 	//whats the homingpersec
 	RWI_LockOnAngle[projectile] = lockonAngleMax;	//at what point do i lose my Target if out of my angle
 	RWI_LockOnlyOnce[projectile] = LockOnlyOnce; 	//Incase we do not want to refind a Target to home onto
