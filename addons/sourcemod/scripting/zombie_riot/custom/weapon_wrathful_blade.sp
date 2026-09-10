@@ -353,7 +353,7 @@ public Action Wrath_MeleeAttack(Handle timelytimer, DataPack pack)
 		{
 			Wrath_Hit[victim] = false;
 
-			if (IsValidEnemy(client, victim))
+			if (IsValidEnemy(client, victim, true))
 			{
 				PushArrayCell(victims, victim);
 			}
@@ -380,7 +380,7 @@ public Action Wrath_MeleeAttack(Handle timelytimer, DataPack pack)
 		for (int i = 0; i < GetArraySize(ordered); i++)
 		{
 			int victim = GetArrayCell(ordered, i);
-			if (IsValidEnemy(client, victim))
+			if (IsValidEnemy(client, victim, true))
 			{
 				float damagePos[3], damageForce[3]; 
 				WorldSpaceCenter(victim, damagePos);

@@ -322,7 +322,11 @@ public void Blitzkrieg_Kit_Primary_Reload(int client, int weapon, bool crit, int
 /*
 	if(LastMann)
 		time /=4.0;
-*/
+*/	
+	if(Arena_Mode())
+	{
+		time *= 0.35;
+	}
 	fl_primary_reloading[client] = GameTime + time;
 
 	//8 is rockets ammo
@@ -595,6 +599,8 @@ public void Blitzkrieg_Kit_Rocket_StartTouch(int entity, int target)
 
 		if(IsValidClient(owner))
 		{
+			if(Arena_Mode())
+				fl_ion_gain_multi[owner] *= 5.0;
 			fl_ion_charge[owner]+=fl_ion_gain_multi[owner];
 
 			if(BLITZKRIEG_KIT_MAX_ION_CHARGES <= fl_ion_charge[owner])
@@ -898,7 +904,7 @@ void Blitzkrieg_Kit_OnHitEffect(int client, int target)
 		else
 		*/
 		{
-			if (b_thisNpcIsARaid[target])	//during raids make the CD reduction higher
+			if (b_thisNpcIsARaid[target] || Arena_Mode())	//during raids make the CD reduction higher
 			{
 				fl_ion_timer_recharge[client] -=BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION*4.0;
 				fl_primary_reloading[client] -= BLITZKRIEG_KIT_RELOAD_COOLDOWN_REDUCTION*4.0;	//Reduce the cooldowns by a bit if you hit something!

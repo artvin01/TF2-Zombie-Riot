@@ -124,7 +124,7 @@ public void DropPowerupChance(int entity)
 				SpawnMoney(entity, true); //Dont care.)
 		}
 	}
-	if(Rogue_Mode())
+	if(Rogue_Mode() || Arena_Mode())
 	{
 		return;
 	}

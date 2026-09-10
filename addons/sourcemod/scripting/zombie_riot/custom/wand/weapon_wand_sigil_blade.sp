@@ -522,7 +522,7 @@ public Action Sigil_Slash_Think(Handle h, DataPack pack)
 	bool charge = false;
 	int mana_cost = RoundFloat(fl_Sigil_Crystal_ManaCost_Percent * max_mana[client] / (fl_Slash_Time_Max * 10));
 	
-	if(!b_NpcHasDied[target] && fl_Slash_duration[client] > GetGameTime() && mana_cost <= Current_Mana[client])
+	if(IsValidEnemy(client, target, true) && fl_Slash_duration[client] > GetGameTime() && mana_cost <= Current_Mana[client])
 	{
 		charge = true;
 		for(int a; a < i_MaxcountNpcTotal; a++)

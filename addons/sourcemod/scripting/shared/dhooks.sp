@@ -965,7 +965,14 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			return false;
 		}
 #endif
-		if(b_IsAProjectile[entity1] && GetTeam(entity1) != TFTeam_Red)
+		if(Arena_Mode())
+		{
+			if(b_ThisWasAnNpc[ent1] && ent2 <= MaxClients && !DoingLagCompensation)
+			{
+				return false;
+			}
+		}
+		if(b_IsAProjectile[entity1] && (GetTeam(entity1) != TFTeam_Red && !Arena_Mode()))
 		{
 			if(b_IsATrigger[entity2])
 			{
@@ -988,7 +995,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 				return false;
 			}
 		}
-		else if(b_IsAProjectile[entity1] && GetTeam(entity1) == TFTeam_Red)
+		else if(b_IsAProjectile[entity1] && (GetTeam(entity1) == TFTeam_Red || Arena_Mode()))
 		{
 #if defined ZR
 			if(b_ForceCollisionWithProjectile[entity2] && !b_EntityIgnoredByShield[entity1] && !IsEntitySpike(entity1))
@@ -1053,7 +1060,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 #endif	
 			}
 			//ally projectiles do not collide with players unless they only go for players
-			else if(entity2 <= MaxClients && entity2 > 0 && !b_ProjectileCollideWithPlayerOnly[entity1])
+			else if(entity2 <= MaxClients && entity2 > 0 && !b_ProjectileCollideWithPlayerOnly[entity1] && (Arena_Mode() && GetTeam(entity2) == GetTeam(entity1)))
 			{
 #if defined RPG
 				if(!RPGCore_PlayerCanPVP(entity1, entity2))
@@ -1063,7 +1070,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 #endif	
 			}
 			//ignores everything else if it only collides with players
-			else if(entity2 > MaxClients && b_ProjectileCollideWithPlayerOnly[entity1])
+			else if(entity2 > MaxClients && b_ProjectileCollideWithPlayerOnly[entity1] && (Arena_Mode() && GetTeam(entity2) == GetTeam(entity1)))
 			{
 #if defined RPG
 				if(!RPGCore_PlayerCanPVP(entity1, entity2))
@@ -1148,7 +1155,13 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			//lag comp stuff, shooting in specific
 			else if((entity2 <= MaxClients && entity2 > 0) && !Dont_Move_Allied_Npc && !b_DoNotIgnoreDuringLagCompAlly[entity1])
 			{
-				return false;
+				if(Arena_Mode())
+				{
+					if(GetTeam(entity2) == GetTeam(entity1))
+						return false;
+				}
+				else
+					return false;
 			}
 			
 		}
@@ -1200,9 +1213,14 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 		b_LagCompNPC_No_Layers = false;
 		b_LagCompNPC_OnlyAllies = true;
 		StartLagCompensation_Base_Boss(Compensator); //Compensate, but mostly allies.
-		TeamBeforeChange = view_as<int>(GetEntProp(Compensator, Prop_Send, "m_iTeamNum")); //Hardcode to red as there will be no blue players.
-		SetEntProp(Compensator, Prop_Send, "m_iTeamNum",TFTeam_Blue);
+		TeamBeforeChange = GetEntProp(Compensator, Prop_Send, "m_iTeamNum"); //Hardcode to red as there will be no blue players.
+		SetEntProp(Compensator, Prop_Send, "m_iTeamNum",TFTeam_Spectator);
 		return MRES_Ignored;
+	}
+	if(b_LagCompPvP)
+	{
+		TeamBeforeChange = GetEntProp(Compensator, Prop_Send, "m_iTeamNum"); //Hardcode to red as there will be no blue players.
+		SetEntProp(Compensator, Prop_Send, "m_iTeamNum",TFTeam_Spectator);
 	}
 	
 	
@@ -1307,16 +1325,18 @@ public void LagCompMovePlayersExceptYou(int player)
 
 public void LagCompEntitiesThatAreIntheWay(int Compensator)
 {
+	//This is due to changfing the team dynamically and whatnot for internal lag comp reasons.
+	int TeamOfClient = TeamBeforeChange;
+	if(TeamOfClient == 0)
+		TeamOfClient = GetTeam(Compensator);
 #if defined RTS
 	if(!Dont_Move_Allied_Npc)
 #endif
-	
 	{
 		for(int client=1; client<=MaxClients; client++)
 		{
-			if(IsClientInGame(client) && client != Compensator)
+			if(IsClientInGame(client) && client != Compensator && GetTeam(client) == TeamOfClient)
 			{
-				
 #if defined ZR
 				if (TeutonType[client] != TEUTON_NONE || (!Dont_Move_Allied_Npc)) 
 #endif
@@ -1338,11 +1358,10 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 		}
 	}
 
-#if !defined RTS
 	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 	{
 		int baseboss_index_allied = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again]);
-		if (IsValidEntity(baseboss_index_allied) && GetTeam(baseboss_index_allied) == TFTeam_Red)
+		if (IsValidEntity(baseboss_index_allied) && GetTeam(baseboss_index_allied) == TeamOfClient)
 		{
 			if(!Dont_Move_Allied_Npc || b_ThisEntityIgnored[baseboss_index_allied])
 			{
@@ -1354,14 +1373,13 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 			}
 		}
 	}
-#endif
 
 	if(b_LagCompNPC_AwayEnemies)
 	{
 		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++)
 		{
 			int baseboss = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again_2]);
-			if (IsValidEntity(baseboss) && GetTeam(baseboss) != TFTeam_Red)
+			if (IsValidEntity(baseboss) && GetTeam(baseboss) != TeamOfClient)
 			{
 				b_ThisEntityIgnoredEntirelyFromAllCollisions[baseboss] = true;
 			}
@@ -1388,11 +1406,12 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 //	PrintToChatAll("FinishLagCompensation");
 	//Set this to false to be sure.
 	int Compensator = param.Get(1);
-	if(TeamBeforeChange)
+	if(TeamBeforeChange != 0)
 		SetEntProp(Compensator, Prop_Send, "m_iTeamNum",TeamBeforeChange);
 	TeamBeforeChange = 0;
 	FinishLagCompMoveBack();
 	b_LagCompAlliedPlayers = false;
+	b_LagCompPvP = false;
 	
 	if(b_LagCompNPC)
 		FinishLagCompensation_Base_boss();
@@ -1466,7 +1485,11 @@ public MRESReturn DHook_ForceRespawn(int client)
 		return MRES_Supercede;
 	}
 	
+#if defined ZR
+	if(!Arena_Mode() && GetClientTeam(client) != 2)
+#else
 	if(GetClientTeam(client) != 2)
+#endif
 	{
 		SetTeam(client, 2);
 		return MRES_Supercede;
@@ -1488,6 +1511,9 @@ public MRESReturn DHook_ForceRespawn(int client)
 		return MRES_Supercede;
 	}
 #if defined ZR
+
+	if(!IsRespawning && Arena_Mode() && !Waves_InSetup())
+		return MRES_Supercede;
 	
 	if(!IsRespawning && Dungeon_InRespawnTimer(client))
 		return MRES_Supercede;
@@ -1495,7 +1521,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 	DoTutorialStep(client, false);
 	SetTutorialUpdateTime(client, GetGameTime() + 1.0);
 	
-	if(Construction_InSetup() || BetWar_Mode() || Dungeon_CanRespawn())
+	if(Construction_InSetup() || BetWar_Mode() || Dungeon_CanRespawn() || Arena_Mode())
 	{
 		b_AntiLateSpawn_Allow[client] = true;
 		TeutonType[client] = TEUTON_NONE;
@@ -1545,7 +1571,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 		i_AmountDowned[client] = 0;
 	f_TimeAfterSpawn[client] = GetGameTime() + 1.0;
 
-	if(f_WasRecentlyRevivedViaNonWave[client] < GetGameTime() && Dungeon_Mode())
+	if(f_WasRecentlyRevivedViaNonWave[client] < GetGameTime() && (Dungeon_Mode() || Arena_Mode()))
 	{
 		//tele to base spawn yippie
 		CreateTimer(0.1, Dhook_TeleportToCenter, GetClientUserId(client), TIMER_FLAG_NO_MAPCHANGE);
@@ -2299,15 +2325,16 @@ static MRESReturn DHookCallback_RecalculateChargeEffects_Pre(Address pShared, DH
 
 
 #if defined ZR
-
+static bool wasMvMIn;
 MRESReturn FPlayerCanTakeDamagePre(Address pThis, Handle hReturn, Handle hParams)
 {
+	wasMvMIn = view_as<bool>(GameRules_GetProp("m_bPlayingMannVsMachine"));
 	GameRules_SetProp("m_bPlayingMannVsMachine", false);
 	return MRES_Ignored;
 }
 MRESReturn FPlayerCanTakeDamagePost(Address pThis, Handle hReturn, Handle hParams)
 {
-	GameRules_SetProp("m_bPlayingMannVsMachine", true);
+	GameRules_SetProp("m_bPlayingMannVsMachine", wasMvMIn);
 	return MRES_Ignored;
 }
 #endif

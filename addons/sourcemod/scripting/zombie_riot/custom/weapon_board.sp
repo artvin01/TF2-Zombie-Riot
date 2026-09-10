@@ -101,10 +101,10 @@ public void PurgKnockback(int victim, int weapon, int client)
 
 	Zero(EnemiesHit);
 
-	b_LagCompNPC_No_Layers = true;
-	StartLagCompensation_Base_Boss(client);
+//	b_LagCompNPC_No_Layers = true;
+//	StartLagCompensation_Base_Boss(client);
 	TR_TraceHullFilter(fPos, endPoint, hullMin, hullMax, 1073741824, Board_TraceTargets, victim);	// 1073741824 is CONTENTS_LADDER?
-	FinishLagCompensation_Base_boss();
+//	FinishLagCompensation_Base_boss();
 	
 	for(int ammount; ammount < 6; ammount++)
 	{

@@ -424,6 +424,7 @@ int PlayersInGame;
 bool ZombieMusicPlayed;
 int GlobalIntencity;
 bool b_HasBeenHereSinceStartOfWave[MAXPLAYERS];
+bool b_IsRobot[MAXPLAYERS];
 bool WasHereSinceStartOfWave(int client)
 {
 //	if(Dungeon_Mode())
@@ -609,6 +610,7 @@ char s_MissionClient[64]; // Who hired us for the current job
 #include "autoloadouts.sp"
 #include "sm_skyboxprops.sp"
 #include "random_pickups.sp"
+#include "arenapvp.sp"
 #include "shared/sound_manualdownload.sp"
 #include "custom/homing_projectile_logic.sp"
 #include "custom/weapon_slug_rifle.sp"
@@ -889,7 +891,7 @@ bool InZRMap()
 
 bool CanMapSpawnPickups()
 {
-	return CanSpawnPickups;
+	return CanSpawnPickups && !Arena_Mode();
 }
 void ZR_MapStart()
 {
@@ -937,6 +939,7 @@ void ZR_MapStart()
 	Construction_MapStart();
 	BetWar_MapStart();
 	Dungeon_MapStart();
+	Arena_MapStart();
 	Zero(TeutonType); //Reset teutons on mapchange
 	f_AllowInstabuildRegardless = 0.0;
 	Zero(i_NormalBarracks_HexBarracksUpgrades);
@@ -1159,10 +1162,9 @@ void ZR_MapStart()
 
 public void OnMapInit()
 {
-	if(!Cvar_VshMapFix.BoolValue)
-		return;
-		//skip
-	OnMapInit_ZR();
+	bool fixUp = Cvar_VshMapFix.BoolValue;
+	if(fixUp)
+		OnMapInit_ZR();
 
 	//nerf full health kits
 	char classname[64];
@@ -1177,11 +1179,39 @@ public void OnMapInit()
 			entry.Get(key, _, _, classname, sizeof(classname));
 			if(!StrContains(classname, "item_healthkit_full"))
 			{
-				entry.Update(key, NULL_STRING, "item_healthkit_medium");
+				if(fixUp)
+					entry.Update(key, NULL_STRING, "item_healthkit_medium");
 			}
-			else if(!StrContains(classname, "tf_logic_arena")
-			 || !StrContains(classname, "tf_logic_arena")
-			  || !StrContains(classname, "trigger_capture_area"))
+			else if(!StrContains(classname, "trigger_capture_area"))
+			{
+				if(fixUp)
+				{
+					EntityLump.Erase(i);
+					i--;
+					length--;
+				}
+			}
+			else if(!StrContains(classname, "tf_logic_arena"))
+			{
+				entry.Update(key, NULL_STRING, "logic_relay");
+				
+				int pos = entry.FindKey("targetname");
+				if(pos != -1)
+				{
+					entry.Update(pos, NULL_STRING, "logic_relay");
+				}
+				else
+				{
+					entry.Append("targetname", "zr_arenastart");
+				}
+
+				while((pos = entry.FindKey("OnArenaRoundStart")) != -1)
+				{
+					entry.Update(pos, "OnTrigger");
+				}
+			}
+			else if(!StrContains(classname, "tf_logic_koth") ||
+					!StrContains(classname, "tf_logic_player_destruction"))
 			{
 				EntityLump.Erase(i);
 				i--;
@@ -1930,6 +1960,13 @@ public Action Timer_Dieing(Handle timer, int client)
 {
 	if(IsClientInGame(client) && IsPlayerAlive(client) && dieingstate[client] > 0)
 	{
+		if(Arena_Mode())
+		{
+			float time = GetGameTime() + 0.5;
+			if(GetEntPropFloat(client, Prop_Send, "m_flNextAttack") < time)
+				SetEntPropFloat(client, Prop_Send, "m_flNextAttack", time);
+		}
+
 		if(b_LeftForDead[client])
 		{
 			dieingstate[client] -= 3;
@@ -1998,7 +2035,15 @@ public Action Timer_Dieing(Handle timer, int client)
 		{
 			int color[4];
 			int HealthRemaining = GetEntProp(client, Prop_Send, "m_iHealth");
-			if(HealthRemaining < 210)
+			if(Arena_Mode())
+			{
+				int team = GetTeam(client) % 2;
+				color[0] = team ? 64 : 255;
+				color[1] = 64;
+				color[2] = team ? 255 : 64;
+				color[3] = iClamp(HealthRemaining * 3, 0, 128) + 127;
+			}
+			else if(HealthRemaining < 210)
 			{
 				color[0] = 255;
 				color[1] = 255;
@@ -2097,21 +2142,24 @@ public void NPC_Despawn_bob(int entity)
 	Bob_Exists_Index = -1;
 }
 
-public void Spawn_Cured_Grigori()
+void Spawn_Cured_Grigori(int team = TFTeam_Red)
 {
 	int client = -1;
 	for(int client_summon=1; client_summon<=MaxClients; client_summon++)
 	{
-		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==2 && IsPlayerAlive(client_summon) && TeutonType[client_summon] == TEUTON_NONE)
+		if(IsClientInGame(client_summon) && GetClientTeam(client_summon)==team && IsPlayerAlive(client_summon) && TeutonType[client_summon] == TEUTON_NONE)
 		{
 			client = client_summon;
 		}
 	}
 	float flPos[3], flAng[3];
-	GetClientAbsOrigin(client, flPos);
-	GetClientAbsAngles(client, flAng);
+	if(client != -1)
+	{
+		GetClientAbsOrigin(client, flPos);
+		GetClientAbsAngles(client, flAng);
+	}
 	flAng[2] = 0.0;
-	int entity = NPC_CreateByName("npc_cured_last_survivor", client, flPos, flAng, TFTeam_Red);
+	int entity = NPC_CreateByName("npc_cured_last_survivor", client, flPos, flAng, team);
 	SalesmanAlive = EntIndexToEntRef(entity);
 	SetEntPropString(entity, Prop_Data, "m_iName", "zr_grigori");
 }
@@ -2181,7 +2229,7 @@ void CheckLastMannStanding(int killed)
 }
 void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = false, bool CheckDownedState = false)
 {
-	if(!Waves_Started() || Waves_InSetup() || GameRules_GetRoundState() != RoundState_ZombieRiot || Dungeon_CanRespawn())
+	if(!Waves_Started() || Waves_InSetup() || GameRules_GetRoundState() != RoundState_ZombieRiot || Dungeon_CanRespawn() || Arena_Mode())
 	{
 		//This is player check in setup rounds or in stuff that truly should never call lastman
 		Music_EndLastmann();
@@ -2198,6 +2246,14 @@ void CheckAlivePlayers(int killed=0, int Hurtviasdkhook = 0, bool TestLastman = 
 				CurrentPlayers++;
 			}
 		}
+		
+		if(Arena_Mode())
+		{
+			CheckIfAloneOnServer(true);
+			Arena_CheckAlivePlayers(killed);
+			return;
+		}
+		
 		if(!TestLastman)
 		{
 			CheckIfAloneOnServer(true);
@@ -3018,6 +3074,7 @@ void ReviveAll(bool raidspawned = false,
 		b_HasBeenHereSinceStartOfWave[client] = false;
 		if(IsClientInGame(client))
 		{
+			ExtinguishTargetDebuff(client);
 			if(dieingstate[client] > 0)
 			{
 				if(PapModeDo == PAP_MODE_BUILDING_ONLY)
@@ -3067,7 +3124,7 @@ void ReviveAll(bool raidspawned = false,
 					
 			if(!b_AntiLateSpawn_Allow[client])
 				continue;
-			if(GetClientTeam(client)==2)
+			if(GetClientTeam(client)==2 || (Arena_Mode() && GetClientTeam(client) > 1))
 			{
 				if(TeutonType[client] != TEUTON_WAITING)
 				{
@@ -3220,7 +3277,7 @@ void GiveXP(int client, int xp, bool freeplay = false, bool SetXpAndLevelSilentl
 
 void PlayerApplyDefaults(int client)
 {
-	if(IsPlayerAlive(client) && GetClientTeam(client)==3)
+	if(!Arena_Mode() && IsPlayerAlive(client) && GetClientTeam(client)==3)
 	{
 		if(IsFakeClient(client))
 		{
@@ -3572,12 +3629,12 @@ void ForcePlayerLoss(bool WasRaid = true)
 {
 	if(WasRaid)
 	{
-		if(Rogue_Mode())
+		if(Rogue_Mode() || Arena_Mode())
 		{
 			
 			for(int client=1; client<=MaxClients; client++)
 			{
-				if(IsClientInGame(client) && GetClientTeam(client)==2 && IsPlayerAlive(client))
+				if(IsClientInGame(client) && IsPlayerAlive(client))
 				{
 					ForcePlayerSuicide(client);
 				}
@@ -3923,7 +3980,7 @@ bool ZR_AllowLastman()
 {
 	if(Rogue_Mode() || Dungeon_Mode())
 		return true;
-	if(Classic_Mode() || Construction_Mode())
+	if(Classic_Mode() || Construction_Mode() || Arena_Mode())
 		return false;
 
 	//during raidbosses, allow lastman (that disallow buildings)

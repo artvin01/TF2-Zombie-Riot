@@ -1098,6 +1098,10 @@
 		"it"		"Questa abilità ha ancora un cooldown di {1} secondi!"
 		"ko" 		"이 능력은 {1} 초 후에 사용할 수 있습니다!"
 	}
+	"Disabled In This Mode"
+	{
+		"en" 		"Disabled In This Mode"
+	}
 	"Backwards Setting"
 	{
 		"en" 		"Reminder: Walking backwards reduces your speed by 30％!"
@@ -6138,5 +6142,29 @@
 	{
 		"en" 		"And the many shells cried out one word, ''Manager''"
 		"ko"		"그리고 많은 껍데기들은 '관리자님' 만을 부르짖었다."
+	}
+	"Standard Team PvP"
+	{
+		"en"	"Standard Team PvP"
+	}
+	"Standard Team PvP Desc"
+	{
+		"en"	"Two teams fight it out, best of 3.\nSpending budget increases every round."
+	}
+	"All Special Rounds"
+	{
+		"en"	"All Special Rounds"
+	}
+	"All Special Rounds Desc"
+	{
+		"en"	"A round modifier always happens."
+	}
+	"Turbulance PvP"
+	{
+		"en"	"Turbulance PvP"
+	}
+	"Turbulance PvP Desc"
+	{
+		"en"	"The Ultra Rapid Fire mode.\nEverybody gains the ''Dimensional Turbulance'' buff and massive budget."
 	}
 }

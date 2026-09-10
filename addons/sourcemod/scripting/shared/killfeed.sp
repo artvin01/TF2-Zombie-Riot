@@ -368,7 +368,7 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 		if(lasthit != -69)
 			strcopy(feed.weapon, sizeof(feed.weapon), KillIcon[inflictor]);
 	}
-	else if(weapon > MaxClients && i_CustomWeaponEquipLogic[weapon] != -1)
+	else if(weapon > MaxClients && i_CustomWeaponEquipLogic[weapon] != -1 && HasEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
 		// Weapon's Icon
 

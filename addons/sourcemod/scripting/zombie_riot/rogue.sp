@@ -631,7 +631,7 @@ void Rogue_SetupVote(KeyValues kv, const char[] artifactOnly = "")
 		
 		for(int client=1; client<=MaxClients; client++)
 		{
-			if(IsClientInGame(client) && GetClientTeam(client) > 1)
+			if(IsClientInGame(client) && !IsFakeClient(client) && GetClientTeam(client) > 1)
 			{
 				Waves_RoundStart();
 				break;
@@ -650,6 +650,11 @@ void Rogue_RevoteCmd(int client)	// Waves_RevoteCmd
 bool Rogue_VoteActive()
 {
 	return view_as<bool>(Voting);
+}
+
+float Rogue_VoteGameTime()
+{
+	return VoteEndTime;
 }
 
 bool Rogue_CallVote(int client, bool force = false)	// Waves_CallVote
@@ -681,7 +686,7 @@ bool Rogue_CallVote(int client, bool force = false)	// Waves_CallVote
 					
 					for(int target = 1; target <= MaxClients; target++)
 					{
-						if(IsClientInGame(target) && GetClientTeam(target) == 2 && Items_HasNamedItem(target, vote.Config))
+						if(IsClientInGame(target) && !IsFakeClient(client) && GetClientTeam(target) > 1 && Items_HasNamedItem(target, vote.Config))
 						{
 							locked = false;
 							break;
@@ -761,7 +766,7 @@ static void DisplayHintVote()
 		int[] votes = new int[length + 1];
 		for(int client = 1; client <= MaxClients; client++)
 		{
-			if(IsClientInGame(client) && GetClientTeam(client) == 2)
+			if(IsClientInGame(client) && !IsFakeClient(client) && GetClientTeam(client) > 1)
 			{
 				total++;
 
@@ -980,9 +985,9 @@ public Action Rogue_EndVote(Handle timer, float time)
 			int[] votes = new int[length];
 			for(int client = 1; client <= MaxClients; client++)
 			{
-				if(IsClientInGame(client))
+				if(IsClientInGame(client) && !IsFakeClient(client))
 				{
-					if(VotedFor[client] > 0 && GetClientTeam(client) == 2)
+					if(VotedFor[client] > 0 && GetClientTeam(client) > 1)
 					{
 						votes[VotedFor[client]-1]++;
 					}
@@ -1035,6 +1040,17 @@ public Action Rogue_RoundStartTimer(Handle timer)
 		if(CvarNoRoundStart.BoolValue)
 		{
 			PrintToChatAll("zr_noroundstart is enabled");
+		}
+		else if(Arena_Mode())
+		{
+			for(int client=1; client<=MaxClients; client++)
+			{
+				if(IsClientInGame(client) && !IsFakeClient(client))
+				{
+					Arena_Start();
+					return Plugin_Stop;
+				}
+			}
 		}
 		else if(Dungeon_Mode())
 		{
@@ -1305,7 +1321,7 @@ void Rogue_NextProgress()
 			int highestLevel;
 			for(int client = 1; client <= MaxClients; client++)
 			{
-				if(IsClientInGame(client) && GetClientTeam(client) == 2)
+				if(IsClientInGame(client) && !IsFakeClient(client) && GetClientTeam(client) == 2)
 				{
 					int amount = SkillTree_GetByName(client, "Ingot Up 1");
 					if(amount > highestLevel)
@@ -1969,7 +1985,7 @@ void Rogue_StartGenericVote(float time = 20.0)
 
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(IsClientInGame(client) && GetClientTeam(client) == 2 && GetClientMenu(client) == MenuSource_None)
+		if(IsClientInGame(client) && !IsFakeClient(client) && GetClientTeam(client) > 1 && GetClientMenu(client) == MenuSource_None)
 			Rogue_CallVote(client);
 	}
 }
@@ -2953,7 +2969,7 @@ void Rogue_GiveNamedArtifact(const char[] name, bool silent = false, bool noFail
 					for(int a; a < i_MaxcountNpcTotal; a++)
 					{
 						int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[a]);
-						if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && GetTeam(entity) == TFTeam_Red)
+						if(entity != INVALID_ENT_REFERENCE && IsEntityAlive(entity) && (Arena_Mode() || GetTeam(entity) == TFTeam_Red))
 						{
 							Call_StartFunction(null, artifact.FuncAlly);
 							Call_PushCell(entity);

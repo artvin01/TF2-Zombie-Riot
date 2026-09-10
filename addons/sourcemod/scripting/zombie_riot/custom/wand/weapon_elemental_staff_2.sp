@@ -283,15 +283,15 @@ public void Weapon_Passanger_Attack(int client, int weapon, bool crit, int slot)
 	}
 }
 
-stock int GetClosestTargetNotAffectedByLightning(float EntityLocation[3])
+stock int GetClosestTargetNotAffectedByLightning(int client, float EntityLocation[3])
 {
 	float TargetDistance = 0.0; 
 	int ClosestTarget = 0; 
 
-	for(int targ; targ<i_MaxcountNpcTotal; targ++)
+	for(int targ; targ<MAXENTITIES; targ++)
 	{
-		int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
-		if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && !b_EntityHitByLightning[baseboss_index] && GetTeam(baseboss_index) != TFTeam_Red)
+		int baseboss_index = targ;
+		if (IsValidEnemy(client, baseboss_index) && !b_EntityHitByLightning[baseboss_index] && GetTeam(baseboss_index) != GetTeam(client))
 		{
 			float TargetLocation[3]; 
 			GetEntPropVector( baseboss_index, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 
@@ -624,7 +624,7 @@ void Passanger_Lightning_Strike(int client, int target, int weapon, float damage
 	float original_damage = damage;
 	for (int loop = 6; loop > 2; loop--)
 	{
-		int enemy = GetClosestTargetNotAffectedByLightning(vecHit);
+		int enemy = GetClosestTargetNotAffectedByLightning(client, vecHit);
 		if(IsValidEntity(enemy))
 		{
 			damage = (original_damage * (0.15 * loop));

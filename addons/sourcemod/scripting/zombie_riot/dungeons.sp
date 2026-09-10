@@ -832,6 +832,12 @@ public Action Dhook_TeleportToCenter(Handle timer, int userid)
 	int client = GetClientOfUserId(userid);
 	if(IsValidClient(client))
 	{
+		if(Arena_Mode())
+		{
+			Arena_TeleportToCenter(client);
+			return Plugin_Stop;
+		}
+
 		if(!BasePosWasDone)
 		{
 		//	PrintToConsole(client, "Dhook_TeleportToCenter, Teleport Denied, %f, %f, %f", BasePosSave[0], BasePosSave[1], BasePosSave[2]);
