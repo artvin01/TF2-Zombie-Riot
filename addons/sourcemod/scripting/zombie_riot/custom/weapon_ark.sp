@@ -521,7 +521,7 @@ public float Player_OnTakeDamage_Ark(int victim, float &damage, int attacker, in
 				Ark_Hits[victim] += 1;	
 			}
 			if(Arena_Mode())
-				damage_reflected *= 10.0;
+				damage_reflected *= 0.5;
 			if(f_AniSoundSpam[victim] < GetGameTime())
 			{
 				f_AniSoundSpam[victim] = GetGameTime() + 0.2;
