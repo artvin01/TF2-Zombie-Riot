@@ -635,6 +635,9 @@ public float Npc_OnTakeDamage_Purging_Annahilator(int attacker, int victim, floa
 		return damage;
 		
 	damage *= 1.0 + fl_KitPurge_Annahilator_Bonus_Damage_Stack[attacker];
+	//nerf purge kit overall
+	if(Arena_Mode())
+		damage *= 0.75;
 	
 	if(!CheckInHud())
 	{

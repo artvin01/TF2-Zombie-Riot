@@ -101,6 +101,8 @@ methodmap ObjectVintulumBomb < ObjectGeneric
 			float AOE_range = 350.0 * sentry_range;
 				
 			damage *= 5.0;
+			if(Arena_Mode())
+				damage *= 0.5;
 			
 			//its like 5 mortars at once.
 			Explode_Logic_Custom(damage, Owner, Owner, -1, pos, AOE_range, 0.75, _, false);
