@@ -735,6 +735,8 @@ void Arena_CheckAlivePlayers(int killed)
 
 	delete aliveTeams;
 
+	DisableRandomMusic();
+
 	if(CurrentSpecial != INVALID_FUNCTION)
 	{
 		Call_StartFunction(null, CurrentSpecial);
@@ -848,24 +850,17 @@ bool Arena_GetCenterSpawnPoint(float pos[3], float ang[3], int team = 0)
 
 static void DisableRandomMusic()
 {
-	MusicEnum music;
-	int length = MusicList.Length;
-	if(length)
+	int time = GetTime() + 2;
+	for(int client = 1; client <= MaxClients; client++)
 	{
-		MusicList.GetArray(GetURandomInt() % length, music);
-		
-		int time = GetTime() + 2;
-		for(int client = 1; client <= MaxClients; client++)
+		if(!b_IsPlayerABot[client] && IsClientInGame(client))
 		{
-			if(!b_IsPlayerABot[client] && IsClientInGame(client))
-			{
-				Music_Stop_All(client);
-				SetMusicTimer(client, time);
-			}
+			Music_Stop_All(client);
+			SetMusicTimer(client, time);
 		}
-
-		BGMusicSpecial1.Clear();
 	}
+
+	BGMusicSpecial1.Clear();
 }
 
 static void SetRandomMusic()
