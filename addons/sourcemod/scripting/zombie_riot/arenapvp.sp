@@ -13,6 +13,7 @@ static bool PostRound;
 static int GregHandicap;
 static bool AlwaysSpecial;
 static ArrayList MusicList;
+static Handle WaitingTimer;
 
 public bool Arena_Mode()
 {
@@ -176,6 +177,41 @@ void Arena_StartSetup()
 		Citizen_SpawnAtPoint("b", .team = 2);
 		Citizen_SpawnAtPoint("a", .team = 3);
 	}
+
+	delete WaitingTimer;
+	WaitingTimer = CreateTimer(1.0, Timer_WaitingPeriod, _, TIMER_REPEAT);
+}
+
+static Action Timer_WaitingPeriod(Handle timer)
+{
+	if(CvarInfiniteCash.BoolValue)
+		return Plugin_Continue;
+	
+	float pos1[3], pos2[3];
+	for(int client = 1; client <= MaxClients; client++)
+	{
+		if(IsClientInGame(client) && IsPlayerAlive(client))
+		{
+			int team = GetTeam(client);
+			for(int i; i < ZR_MAX_SPAWNERS; i++)
+			{
+				if(IsValidEntity(i_ObjectsSpawners[i]) && GetEntProp(i_ObjectsSpawners[i], Prop_Data, "m_iTeamNum") == team && !GetEntProp(i_ObjectsSpawners[i], Prop_Data, "m_bDisabled"))
+				{
+					GetEntPropVector(i_ObjectsSpawners[i], Prop_Data, "m_vecOrigin", pos1);
+					break;
+				}
+			}
+
+			GetClientAbsOrigin(client, pos2);
+			if(GetVectorDistance(pos1, pos2, true) > 150000.0)
+			{
+				Vehicle_Exit(client, false, false);
+				TeleportEntity(client, pos1, {0.0, 0.0, 0.0}, NULL_VECTOR);
+			}
+		}
+	}
+	
+	return Plugin_Continue;
 }
 
 // OnRoundEnd
@@ -186,6 +222,7 @@ void Arena_RoundEnd()
 	RoundCount = 0;
 	GregHandicap = 0;
 	delete GameTimer;
+	delete WaitingTimer;
 	delete TeamPoints;
 }
 
@@ -194,6 +231,7 @@ void Arena_Start()
 {
 	// First setup is done, game starts
 	Started = true;
+	delete WaitingTimer;
 }
 
 // OnStateUpdate
