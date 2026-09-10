@@ -351,10 +351,14 @@ static Action ArenaGameTimer(Handle timer, int mode)
 
 			CreateTimer(0.2, TeleportAlliedNPCs, _, TIMER_FLAG_NO_MAPCHANGE);
 
+			delete WaitingTimer;
+			WaitingTimer = CreateTimer(1.0, Timer_WaitingPeriod, _, TIMER_REPEAT);
+
 			return Plugin_Continue;
 		}
 		case 2:	// Round Start
 		{
+			delete WaitingTimer;
 			Waves_SetReadyStatus(0);
 			WaveStart_SubWaveStart(GetGameTime() - 300.0);
 			SetRandomMusic();
