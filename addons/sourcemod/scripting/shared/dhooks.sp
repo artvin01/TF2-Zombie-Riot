@@ -1206,13 +1206,13 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 		b_LagCompNPC_No_Layers = false;
 		b_LagCompNPC_OnlyAllies = true;
 		StartLagCompensation_Base_Boss(Compensator); //Compensate, but mostly allies.
-		TeamBeforeChange = view_as<int>(GetEntProp(Compensator, Prop_Send, "m_iTeamNum")); //Hardcode to red as there will be no blue players.
+		TeamBeforeChange = GetEntProp(Compensator, Prop_Send, "m_iTeamNum"); //Hardcode to red as there will be no blue players.
 		SetEntProp(Compensator, Prop_Send, "m_iTeamNum",TFTeam_Spectator);
 		return MRES_Ignored;
 	}
 	if(b_LagCompPvP)
 	{
-		TeamBeforeChange = view_as<int>(GetEntProp(Compensator, Prop_Send, "m_iTeamNum")); //Hardcode to red as there will be no blue players.
+		TeamBeforeChange = GetEntProp(Compensator, Prop_Send, "m_iTeamNum"); //Hardcode to red as there will be no blue players.
 		SetEntProp(Compensator, Prop_Send, "m_iTeamNum",TFTeam_Spectator);
 	}
 	
@@ -1318,16 +1318,18 @@ public void LagCompMovePlayersExceptYou(int player)
 
 public void LagCompEntitiesThatAreIntheWay(int Compensator)
 {
+	//This is due to changfing the team dynamically and whatnot for internal lag comp reasons.
+	int TeamOfClient = TeamBeforeChange;
+	if(TeamOfClient == 0)
+		TeamOfClient = GetTeam(Compensator);
 #if defined RTS
 	if(!Dont_Move_Allied_Npc)
 #endif
-	
 	{
 		for(int client=1; client<=MaxClients; client++)
 		{
-			if(IsClientInGame(client) && client != Compensator && GetTeam(client) == TeamBeforeChange)
+			if(IsClientInGame(client) && client != Compensator && GetTeam(client) == TeamOfClient)
 			{
-				
 #if defined ZR
 				if (TeutonType[client] != TEUTON_NONE || (!Dont_Move_Allied_Npc)) 
 #endif
@@ -1349,11 +1351,10 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 		}
 	}
 
-#if !defined RTS
 	for(int entitycount_again; entitycount_again<i_MaxcountNpcTotal; entitycount_again++)
 	{
 		int baseboss_index_allied = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again]);
-		if (IsValidEntity(baseboss_index_allied) && GetTeam(baseboss_index_allied) == TeamBeforeChange)
+		if (IsValidEntity(baseboss_index_allied) && GetTeam(baseboss_index_allied) == TeamOfClient)
 		{
 			if(!Dont_Move_Allied_Npc || b_ThisEntityIgnored[baseboss_index_allied])
 			{
@@ -1365,14 +1366,13 @@ public void LagCompEntitiesThatAreIntheWay(int Compensator)
 			}
 		}
 	}
-#endif
 
 	if(b_LagCompNPC_AwayEnemies)
 	{
 		for(int entitycount_again_2; entitycount_again_2<i_MaxcountNpcTotal; entitycount_again_2++)
 		{
 			int baseboss = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount_again_2]);
-			if (IsValidEntity(baseboss) && GetTeam(baseboss) != TeamBeforeChange)
+			if (IsValidEntity(baseboss) && GetTeam(baseboss) != TeamOfClient)
 			{
 				b_ThisEntityIgnoredEntirelyFromAllCollisions[baseboss] = true;
 			}
@@ -1399,7 +1399,7 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 //	PrintToChatAll("FinishLagCompensation");
 	//Set this to false to be sure.
 	int Compensator = param.Get(1);
-	if(TeamBeforeChange)
+	if(TeamBeforeChange != 0)
 		SetEntProp(Compensator, Prop_Send, "m_iTeamNum",TeamBeforeChange);
 	TeamBeforeChange = 0;
 	FinishLagCompMoveBack();

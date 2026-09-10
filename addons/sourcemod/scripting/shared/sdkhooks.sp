@@ -2368,6 +2368,11 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 10");
 			//there was no one left, they are the only one left, trigger last man.
 			//make sure they are in a wave.
+			if(attacker > 0 && attacker <= MaxClients)
+			{
+				Attributes_OnKill(victim, attacker, weapon);
+				Npc_WeaponOnKillDo(victim, attacker, weapon);
+			}
 			if(!Arena_Mode() && !PlayersLeftAlive(victim) && !SpecterCheckIfAutoRevive(victim) && GameRules_GetRoundState() == RoundState_ZombieRiot)
 			{
 				// Trigger lastman
@@ -2467,7 +2472,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 					i_DyingParticleIndication[victim][0] = EntIndexToEntRef(entity);
 					SetVariantColor(view_as<int>({0, 0, 255, 255}));
 					AcceptEntityInput(entity, "SetGlowColor");
-					if(!AtEdictLimit(EDICT_PLAYER))
+					if(!AtEdictLimit(EDICT_PLAYER) && !Arena_Mode())
 					{
 						entity = SpawnFormattedWorldText("DOWNED", {0.0,0.0,70.0}, 10, {0, 0, 255, 255}, victim);
 						i_DyingParticleIndication[victim][1] = EntIndexToEntRef(entity);
@@ -3896,7 +3901,7 @@ void UpdatePerkName(int client)
 void SdkHooks_SetAndUpdateArmorClientText(int client)
 {
 	int ArmorText = EntRefToEntIndex(Armor_Wearable_HudText[client]);
-	if(!IsEntityAlive(client) || TeutonType[client] != TEUTON_NONE || dieingstate[client] != 0)
+	if(!IsEntityAlive(client) || TeutonType[client] != TEUTON_NONE || dieingstate[client] != 0 || Arena_Mode())
 	{
 		if(IsValidEntity(ArmorText))
 		{

@@ -3011,8 +3011,13 @@ stock int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 		else
 			return -1;
 	}
+	else if(Arena_Mode())
+	{
+		if(b_NpcIsTeamkiller[owner_projectile])
+			return other_entity;
+	}
 #endif
-	else if(other_entity <= MaxClients)
+	if(other_entity <= MaxClients)
 	{
 #if defined RPG
 		if(RPGCore_PlayerCanPVP(owner_projectile, other_entity))
@@ -3347,6 +3352,9 @@ int inflictor = 0)
 			}
 		} 
 	}
+	//incase
+	if(Arena_Mode())
+		spawnLoc[2] += 5.0;
 	
 	if(ZR_Get_Modifier() == NOSTALGICA)
 	{
@@ -3524,7 +3532,7 @@ int inflictor = 0)
 			static float vicpos[3];
 			vicpos = VicPos[ClosestTarget];
 			//if its a blue npc, then we want to do a trace to see if we even hit them.
-			if(FromBlueNpc)
+			if(FromBlueNpc || Arena_Mode())
 			{
 				Handle trace; 
 				trace = TR_TraceRayFilterEx(spawnLoc, vicpos, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, ClosestTarget);

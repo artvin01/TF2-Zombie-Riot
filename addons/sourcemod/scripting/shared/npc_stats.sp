@@ -9759,8 +9759,13 @@ stock void FreezeNpcInTime(int npc, float Duration_Stun, bool IgnoreAllLogic = f
 		
 		TF2_StunPlayer(npc, Duration_Stun, 1.0, TF_STUNFLAGS_NORMALBONK);
 		ApplyStatusEffect(npc, npc, "Stunned", Duration_Stun);	
+		if(Arena_Mode())
+			ApplyStatusEffect(npc, npc, "Clear Head", 20.0);	
+
 		return;
 	}
+	if(Arena_Mode())
+		ApplyStatusEffect(npc, npc, "Clear Head", 20.0);	
 
 	float GameTime = GetGameTime();
 	float TimeSinceLastStunSubtract;

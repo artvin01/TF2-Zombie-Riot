@@ -855,7 +855,7 @@ void StatusEffect_OnTakeDamage_TakenPositive(int victim, int attacker, float &da
 		}
 	}
 #if defined ZR
-	if(RaidbossIgnoreBuildingsLogic(1) && GetTeam(victim) == TFTeam_Red)
+	if(RaidbossIgnoreBuildingsLogic(1) && GetTeam(victim) == TFTeam_Red && !Arena_Mode())
 	{
 		//invert, then convert!
 		float NewRes = 1.0 + ((DamageRes - 1.0) * PlayerCountResBuffScaling);
@@ -923,7 +923,7 @@ void StatusEffect_OnTakeDamage_DealNegative(int victim, int attacker, float &dam
 		}
 	}
 #if defined ZR
-	if(RaidbossIgnoreBuildingsLogic(1) && GetTeam(victim) == TFTeam_Red)
+	if(RaidbossIgnoreBuildingsLogic(1) && GetTeam(victim) == TFTeam_Red && !Arena_Mode())
 	{
 		//invert, then convert!
 		float NewRes = 1.0 + ((DamageRes - 1.0) * PlayerCountResBuffScaling);
@@ -951,7 +951,7 @@ float StatusEffect_OnTakeDamage_TakenNegative(int victim, int attacker, float &b
 	if(attacker <= MaxClients || inflictor <= MaxClients)
 	{
 		//only scale if its a player, and if the attacking npc is red too
-		if(GetTeam(attacker) == TFTeam_Red || GetTeam(inflictor) == TFTeam_Red)
+		if((GetTeam(attacker) == TFTeam_Red || GetTeam(inflictor) == TFTeam_Red) && !Arena_Mode())
 			DamageBuffExtraScaling = PlayerCountBuffScaling;
 	}
 #endif
@@ -1031,7 +1031,7 @@ float StatusEffect_OnTakeDamage_DealPositive(int victim, int attacker, float &ba
 	if(attacker <= MaxClients || inflictor <= MaxClients)
 	{
 		//only scale if its a player, and if the attacking npc is red too
-		if(GetTeam(attacker) == TFTeam_Red || GetTeam(inflictor) == TFTeam_Red)
+		if((GetTeam(attacker) == TFTeam_Red || GetTeam(inflictor) == TFTeam_Red) && !Arena_Mode())
 			DamageBuffExtraScaling = PlayerCountBuffScaling;
 	}
 #endif
@@ -1344,6 +1344,8 @@ bool Status_Effects_AttackspeedBuffChange(int victim, StatusEffect Apply_MasterS
 				if(GetTeam(victim) == TFTeam_Red)
 					ScaleWithCount = true;
 			}
+			if(Arena_Mode())
+				ScaleWithCount = false;
 			if(ScaleWithCount)
 			{
 				BuffAmount = MaxNumBuffValue(Apply_MasterStatusEffect.AttackspeedBuff, 1.0, PlayerCountBuffAttackspeedScaling);
