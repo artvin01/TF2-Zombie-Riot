@@ -402,10 +402,12 @@ public void Mlynar_Cooldown_Logic(int client, int weapon)
 				{
 					int entityindex = HitEntitiesSphereMlynar[entity_traced];
 					//do not get power from the same enemy more then 5 times. unless its a boss or raid, then allow more.
-					if(b_thisNpcIsARaid[entityindex])
+					if(b_thisNpcIsARaid[entityindex] || entityindex <= MaxClients)
 					{
 						//There is no limit to how often you can gather power from a raid.
 						GatherPower += 10;
+						if(Arena_Mode())
+							GatherPower += 10;
 					}
 					else if (b_thisNpcIsABoss[entityindex] && i_MlynarMaxDamageGetFromSameEnemy[entityindex] < 400)
 					{
@@ -499,6 +501,9 @@ float Player_OnTakeDamage_Mlynar(int victim, float &damage, int attacker, int we
 	//dont reflect burn or bleed
 	if(damagezrcustom & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
 		return damage;
+
+	if(Arena_Mode())
+		damage *= 0.65;
 	f_MlynarHurtDuration[victim] = GetGameTime() + 1.0;
 	//insert reflect code.
 	if(f_MlynarReflectCooldown[victim][attacker] < GetGameTime())
