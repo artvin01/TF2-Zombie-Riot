@@ -868,10 +868,13 @@ static void StealBodyForm(int client, int entity)
 				continue;
 			
 			int index = GetEntProp(wearable, Prop_Send, "m_nModelIndex");
-			ModelIndexToString(index, model, sizeof(model));
-			if(model[0] && StrContains(model, "player/items", false) != -1)
+			if(index > 0)
 			{
-				ModelModels[client].Push(index);
+				ModelIndexToString(index, model, sizeof(model));
+				if(model[0] && StrContains(model, "player/items", false) != -1)
+				{
+					ModelModels[client].Push(index);
+				}
 			}
 		}
 	}
