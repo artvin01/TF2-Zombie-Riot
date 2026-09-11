@@ -230,7 +230,7 @@ public void Weapon_SeaRange_M2(int client, int weapon, bool crit, int slot)
 		if(entity > MaxClients)
 		{
 			fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);
-			CreateTimer(95.0, Dweller_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(Arena_Mode() ? 35.0 : 95.0, Dweller_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 			i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 			b_ShowNpcHealthbar[entity] = true;
 		}
@@ -268,7 +268,7 @@ public void Weapon_SeaRangePap_M2(int client, int weapon, bool crit, int slot)
 		if(entity > MaxClients)
 		{
 			fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);
-			CreateTimer(95.0, Dweller_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(Arena_Mode() ? 35.0 : 95.0, Dweller_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 			i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 			b_ShowNpcHealthbar[entity] = true;
 		}
@@ -315,7 +315,7 @@ public void Weapon_SeaRangePapFull_M2(int client, int weapon, bool crit, int slo
 			SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 			fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);
-			CreateTimer(95.0, Dweller_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(Arena_Mode() ? 35.0 : 95.0, Dweller_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 			i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 			b_ShowNpcHealthbar[entity] = true;
 		}

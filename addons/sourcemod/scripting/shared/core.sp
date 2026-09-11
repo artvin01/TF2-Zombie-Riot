@@ -3758,10 +3758,13 @@ stock void TF2_SetPlayerClass_ZR(int client, TFClassType classType, bool weapons
 	TF2_SetPlayerClass(client, classType, weapons, persistent);
 	
 	// This updates the player's hitboxes
-	char LastModel[512];
-	GetEntPropString(client, Prop_Send, "m_iszCustomModel", LastModel, sizeof(LastModel));
-	SetVariantString(LastModel);
-	AcceptEntityInput(client, "SetCustomModel");
+	if(Arena_Mode())
+	{
+		char LastModel[512];
+		GetEntPropString(client, Prop_Send, "m_iszCustomModel", LastModel, sizeof(LastModel));
+		SetVariantString(LastModel);
+		AcceptEntityInput(client, "SetCustomModel");
+	}
 }
 
 #if defined ZR

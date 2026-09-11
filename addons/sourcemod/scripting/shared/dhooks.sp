@@ -1212,7 +1212,7 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 		b_LagCompNPC_ExtendBoundingBox = false;
 		b_LagCompNPC_No_Layers = false;
 		b_LagCompNPC_OnlyAllies = true;
-		StartLagCompensation_Base_Boss(Compensator); //Compensate, but mostly allies.
+		StartLagCompensation_Base_Boss_Internal(Compensator); //Compensate, but mostly allies.
 		TeamBeforeChange = GetEntProp(Compensator, Prop_Send, "m_iTeamNum"); //Hardcode to red as there will be no blue players.
 		SetEntProp(Compensator, Prop_Send, "m_iTeamNum",TFTeam_Spectator);
 		return MRES_Ignored;
@@ -1267,7 +1267,7 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 		}
 	}
 	if(b_LagCompNPC)
-		StartLagCompensation_Base_Boss(Compensator);
+		StartLagCompensation_Base_Boss_Internal(Compensator);
 	
 	if(b_LagCompNPC_BlockInteral)
 	{
@@ -1414,7 +1414,7 @@ public MRESReturn FinishLagCompensation(Address manager, DHookParam param) //Thi
 	b_LagCompPvP = false;
 	
 	if(b_LagCompNPC)
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss_Internal();
 	
 //	FinishLagCompensationResetValues();
 	

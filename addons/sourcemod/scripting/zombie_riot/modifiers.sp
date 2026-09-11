@@ -196,7 +196,7 @@ public void ZRModifsPlayer_Nostalica(int entity, StringMap map)
 	}
 	else
 	{
-		if(b_ThisWasAnNpc[entity])
+		if(b_ThisWasAnNpc[entity] || i_NpcIsABuilding[entity] || i_IsABuilding[entity])
 			return;
 		// +15% damage bonus for melee's
 		

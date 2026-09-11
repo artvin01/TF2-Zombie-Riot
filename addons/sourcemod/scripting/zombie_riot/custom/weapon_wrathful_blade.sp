@@ -405,7 +405,7 @@ public Action Wrath_MeleeAttack(Handle timelytimer, DataPack pack)
 	}
 
 	delete victims;
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 
 	return Plugin_Continue;
 }

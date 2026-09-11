@@ -465,7 +465,7 @@ public void Fusion_Melee_Nearl_Radiant_Knight(int client, int weapon, bool crit,
 							}
 						}
 					}
-					FinishLagCompensation_Base_boss();
+					FinishLagCompensation_Base_boss(.client = client);
 
 					fPos[2] += 40.0;
 					ParticleEffectAt(fPos, "asplode_hoodoo_embers", 1.0);
@@ -1374,7 +1374,7 @@ void DrawBigSiccerinoSiccors(int weapon_active, float Angles[3], int client, flo
 					BEAM_BuildingHit[building] = false;
 			}
 		}
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 	}
 }
 

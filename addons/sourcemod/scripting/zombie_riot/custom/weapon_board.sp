@@ -104,7 +104,7 @@ public void PurgKnockback(int victim, int weapon, int client)
 //	b_LagCompNPC_No_Layers = true;
 //	StartLagCompensation_Base_Boss(client);
 	TR_TraceHullFilter(fPos, endPoint, hullMin, hullMax, 1073741824, Board_TraceTargets, victim);	// 1073741824 is CONTENTS_LADDER?
-//	FinishLagCompensation_Base_boss();
+//	FinishLagCompensation_Base_boss(.client = client);
 	
 	for(int ammount; ammount < 6; ammount++)
 	{
@@ -168,7 +168,7 @@ public void Punish(int victim, int weapon, int bool) //AOE parry damage that sca
 //	StartLagCompensation_Base_Boss(victim);		
 //This is only used when you press m2 and get hurt, using lag comp on this makes no sense.		
 	Explode_Logic_Custom(damage, victim, victim, weapon, _, Range, 1.0, _, false, 6,_,_);
-//	FinishLagCompensation_Base_boss();
+//	FinishLagCompensation_Base_boss(.client = client);
 
 	i_ExplosiveProjectileHexArray[victim] = value;
 

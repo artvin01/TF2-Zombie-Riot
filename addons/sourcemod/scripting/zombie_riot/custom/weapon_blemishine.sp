@@ -82,7 +82,7 @@ public void Weapon_BlemishineAttackM2Base(int client, int weapon, bool &result, 
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
 		Explode_Logic_Custom(0.0, client, client, weapon, _, BLEMISHINE_RANGE_ABILITY,_,_,_,_,_,_,BlemishineAbilityHit);
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 		i_BlemishineWhichAbility[client] = 1;
 		float value = Attributes_Get(weapon, 180, 0.0);
 		f_AbilityHealAmmount[client] = value * 2.0;
@@ -127,7 +127,7 @@ public void Weapon_BlemishineAttackM2Stronger(int client, int weapon, bool &resu
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
 		Explode_Logic_Custom(0.0, client, client, weapon, _, BLEMISHINE_RANGE_ABILITY,_,_,_,_,_,_,BlemishineAbilityHit2);
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 		i_BlemishineWhichAbility[client] = 2;
 		float value = Attributes_Get(weapon, 180, 0.0);
 		f_AbilityHealAmmount[client] = value * 2.0;
@@ -171,7 +171,7 @@ public void Weapon_BlemishineAttackM2Strongest(int client, int weapon, bool &res
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
 		Explode_Logic_Custom(0.0, client, client, weapon, _, BLEMISHINE_RANGE_ABILITY,_,_,_,_,_,_,BlemishineAbilityHit3);
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 		i_BlemishineWhichAbility[client] = 2;
 		float value = Attributes_Get(weapon, 180, 0.0);
 		f_AbilityHealAmmount[client] = value * 2.0;

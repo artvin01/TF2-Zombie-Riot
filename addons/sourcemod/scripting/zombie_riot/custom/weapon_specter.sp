@@ -205,7 +205,7 @@ public void Weapon_FireAxeBoomM2_Internal(int client, int weapon, bool &result, 
 	Explode_Logic_Custom(damage, client, weapon, weapon, flPos, FIREAXE_EXPLOSION, _, _, _, 5, true);
 	EmitSoundToAll(WAND_FIREBALL_SOUND, client, SNDCHAN_AUTO, 80, _, 0.7, 90);
 
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 	if(Pap == 3)
 	{
 		float vel = 1500.0;

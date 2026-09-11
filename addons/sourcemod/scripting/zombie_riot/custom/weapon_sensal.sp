@@ -214,7 +214,7 @@ public void Sensal_Ability_R_Laser(int client, int weapon, bool crit, int slot) 
 			{
 				foundTarget = -1;
 			}
-			FinishLagCompensation_Base_boss();
+			FinishLagCompensation_Base_boss(.client = client);
 
 			int spawn_index = NPC_CreateByName("npc_allied_sensal_afterimage", client, flPos, fAng, GetTeam(client));
 			if(spawn_index > 0)
@@ -434,7 +434,7 @@ void SummonScytheSensalProjectile(int client, int weapon)
 	{
 		target = -1;
 	}
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 	
 	float fAng[3];
 	GetClientEyeAngles(client, fAng);

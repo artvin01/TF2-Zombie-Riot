@@ -373,6 +373,8 @@ static int Boomerang_Get_Pap(int weapon)
 static void BoomerRangThrow(int client, int weapon, char[] modelstringname = WOODEN_BOOMERANG_MODEL,int hitsleft = 1, float Size = 1.0,float fAngOver[3] = {0.0,0.0,0.0}, int extraability = 0)
 {
 	float damage = 65.0;
+	if(Arena_Mode())
+		damage *= 1.3;
 	damage *= Attributes_Get(weapon, 2, 1.0);
 	delay_hud[client] = 0.0;
 

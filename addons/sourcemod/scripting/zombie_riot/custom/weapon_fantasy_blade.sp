@@ -408,7 +408,7 @@ static float Fantasy_Blade_Tele(int client, int weapon, float damage, float rang
 			fl_Shard_Ammount[client]-=FANTASY_BLADE_SHARDS_GAIN_PER_HIT;
 			
 		}
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 		abspos[2] += 40.0;
 		endPos[2] += 40.0;
 		TE_SetupBeamPoints(abspos, endPos, ShortTeleportLaserIndex, 0, 0, 0, Time, 10.0, 10.0, 0, 1.0, {255,255,255,200}, 3);
@@ -439,7 +439,7 @@ static bool Check_if_targets_exist(int client, float range)
 	StartLagCompensation_Base_Boss(client);
 	trace = TR_TraceHullFilterEx(startPoint, look_vec, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 	
 	if(b_I_hit_something[client])
 	{

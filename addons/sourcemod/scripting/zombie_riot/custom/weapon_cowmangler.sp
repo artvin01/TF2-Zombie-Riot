@@ -58,6 +58,12 @@ void DoPlayerLaserEffectsBigger(Player_Laser_Logic Laser, int color[4])
 }
 void PlayerLaserDoDamageCombined(Player_Laser_Logic Laser, float Close_Dps, float Long_Dps)
 {
+	if(Arena_Mode())
+	{
+		//cus lasers are AOE, and often enough, they dont do shit here
+		Close_Dps *= 1.3;
+		Long_Dps *= 1.3;
+	}
 	Laser.weapon = GetEntPropEnt(Laser.client, Prop_Send, "m_hActiveWeapon");
 	float TargetsHitFallOff = 1.0;
 	Laser.Enumerate_Simple();
@@ -178,7 +184,7 @@ public void BobsGunM2_PreThink(int client)
 		Explode_Logic_Custom(damage, client, client, weapon_active, pos);
 		EmitSoundToAll("weapons/shotgun/shotgun_fire7.wav", client, SNDCHAN_WEAPON, 80, _, 1.0);
 
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 	}
 	else
 	{

@@ -528,7 +528,7 @@ public void Weapon_Casino_M1(int client, int weapon)
 			//doesnt matter which tier, same cooldown
 
 			RequestFrame(MegaShot_RevertAttribs, EntIndexToEntRef(weapon));
-			FinishLagCompensation_Base_boss();
+			FinishLagCompensation_Base_boss(.client = client);
 		}
 		
 		i_MegaShot[client] -= 1;

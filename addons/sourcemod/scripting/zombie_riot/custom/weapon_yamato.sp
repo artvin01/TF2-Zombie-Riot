@@ -342,7 +342,7 @@ static void Spin_To_Win_attack(int client, float endVec[3], float endVec_2[3], i
 	Handle trace;
 	trace = TR_TraceHullFilterEx(endVec, endVec_2, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 	
 	float vecForward[3];
 	GetAngleVectors(vecAngles, vecForward, NULL_VECTOR, NULL_VECTOR);
@@ -395,7 +395,7 @@ static void Yamato_Rainsword_Skill_1_Loop(int client)
 		i_entity_hit = -1;
 	}
 	
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 
 	float distance = 120.0;
 	

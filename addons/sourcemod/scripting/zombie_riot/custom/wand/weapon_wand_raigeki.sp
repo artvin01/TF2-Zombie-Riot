@@ -1407,7 +1407,7 @@ void Blade_StartSwing(int client)
 	}
 	delete trace;
 
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 
 	if (ang[0] > 60.0)
 		ang[0] = 60.0;
@@ -1668,7 +1668,7 @@ stock void Utility_FireLaser(int client, float startPos[3], float ang[3], float 
 		TR_TraceRayFilter(startPos, endPos, 1073741824, RayType_EndPoint, Laser_Trace, client);
 	}
 
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 
 	if (GetArraySize(Laser_HitList) > 0)
 	{

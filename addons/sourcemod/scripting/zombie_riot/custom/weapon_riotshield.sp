@@ -78,7 +78,7 @@ static void Weapon_RiotShield_M2_Base(int client, int weapon, int slot, int pap)
 		StartLagCompensation_Base_Boss(client);
 		trace = TR_TraceHullFilterEx(fPos, endPoint, hullMin, hullMax, 1073741824, Shield_TraceTargets, client);	// 1073741824 is CONTENTS_LADDER?
 		CloseHandle(trace);
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 
 		bool RaidActive = false;
 

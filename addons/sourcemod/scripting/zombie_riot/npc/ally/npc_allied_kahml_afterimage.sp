@@ -170,7 +170,7 @@ static void Internal_Npc_ClotThink(int iNPC)
 	Handle swingTrace;
 	float vecSwingForward[3];
 	DoSwingTrace_Custom(swingTrace, owner, vecSwingForward, 9999.0, false, 45.0, true); 
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = owner);
 	int target = TR_GetEntityIndex(swingTrace);	
 	delete swingTrace;
 

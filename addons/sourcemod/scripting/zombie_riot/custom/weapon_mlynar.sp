@@ -220,7 +220,7 @@ public void Weapon_MlynarAttack_Internal(DataPack pack)
 				break;
 			}
 		}
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 	}
 	delete pack;
 }

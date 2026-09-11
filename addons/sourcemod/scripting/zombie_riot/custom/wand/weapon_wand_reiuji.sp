@@ -238,7 +238,7 @@ public void Reiuji_Wand_Barrage_Attack_ALT(int client, int weapon, bool crit, in
 	b_LagCompNPC_No_Layers = true;
 	StartLagCompensation_Base_Boss(client);
 	TR_EnumerateEntitiesSphere(Origin, range, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_Reiuji, client);
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 
 
 	//so for targeting we will use a very similar method that twirl/stella use for their lasers.
@@ -1215,10 +1215,7 @@ static void Projectile_Touch(int entity, int target)
 		i_ammo[owner]+=2;	//barrage gives a bit of ammo back
 
 		i_ExplosiveProjectileHexArray[owner] = EP_DEALS_PLASMA_DAMAGE;
-		b_LagCompNPC_No_Layers = true;
-		StartLagCompensation_Base_Boss(owner);
 		Explode_Logic_Custom(f_WandDamage[entity], owner, owner, -1, Entity_Position, fl_ruina_Projectile_radius[entity]);
-		FinishLagCompensation_Base_boss();
 	}
 	else
 	{

@@ -85,7 +85,7 @@ public float Ability_AirCutter(int client, int level, int weapon)
 	StartLagCompensation_Base_Boss(client);
 	Handle swingTrace;
 	DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 100.0); //about melee range.
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 				
 	int target = TR_GetEntityIndex(swingTrace);
 	float vecHit[3];
