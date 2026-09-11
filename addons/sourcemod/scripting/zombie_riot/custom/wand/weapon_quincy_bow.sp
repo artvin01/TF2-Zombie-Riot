@@ -234,7 +234,7 @@ public void Quincy_Bow_M2(int client, int weapon, bool crit, int slot)
 		{
 			TR_GetEndPosition(vecHit, trace);
 		}
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 		delete trace;
 
 		float Radius = 50.0;
@@ -461,7 +461,7 @@ static void Quincy_Hyper_Barrage(int client, float charge_percent, float GameTim
 	b_LagCompNPC_No_Layers = true;
 	StartLagCompensation_Base_Boss(client);
 	DoSwingTrace_Custom(swingTrace, client, Vec_offset, 9999.9, false, 10.0, false); //infinite range, and (doesn't)ignore walls!	
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 
 	int target = TR_GetEntityIndex(swingTrace);	
 	if(IsValidEnemy(client, target))
@@ -645,7 +645,7 @@ static void Quincy_Do_Homing(int client, int projectile, float charge_percent)
 	Handle hull_trace = TR_TraceHullFilterEx(Origin, vecHit, hullMin, hullMax, 1073741824, BEAM_HitDetected, client);	// 1073741824 is CONTENTS_LADDER?
 	delete hull_trace;
 
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 
 	float Homing_Power = 2.0*(charge_percent/100.0);
 

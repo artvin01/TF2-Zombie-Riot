@@ -292,7 +292,7 @@ static void Weapon_Saga_M2(int client, int weapon, bool mastery)
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);				
 		Explode_Logic_Custom(damage, client, client, weapon, _, Range, _, _, false, 6,_,_,SagaCutFirst);
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 		
 		i_ExplosiveProjectileHexArray[client] = value;
 		TF2_AddCondition(client, TFCond_DefenseBuffed, 1.0);
@@ -323,7 +323,7 @@ public Action Saga_DelayedExplode(Handle timer, int userid)
 			b_LagCompNPC_No_Layers = true;
 			StartLagCompensation_Base_Boss(client);						
 			Explode_Logic_Custom(damage, client, client, weapon, _, 400.0, _, _, false, 99,_,_,SagaCutLast);
-			FinishLagCompensation_Base_boss();			
+			FinishLagCompensation_Base_boss(.client = client);			
 			i_ExplosiveProjectileHexArray[client] = value;
 		}
 	}

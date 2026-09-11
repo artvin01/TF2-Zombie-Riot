@@ -43,9 +43,12 @@ methodmap ObjectHealingStation < ObjectGeneric
 		func_NPCInteract[npc.index] = ClotInteract;
 		i_PlayerToCustomBuilding[client] = EntIndexToEntRef(npc.index);
 
-		for (int i = 1; i <= MaxClients; i++)
+		if(!Rogue_Mode())
 		{
-			ApplyBuildingCollectCooldown(npc.index, i, 45.0);
+			for (int i = 1; i <= MaxClients; i++)
+			{
+				ApplyBuildingCollectCooldown(npc.index, i, 45.0);
+			}
 		}
 		return npc;
 	}

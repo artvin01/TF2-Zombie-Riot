@@ -84,7 +84,7 @@ public void Weapon_autoaim_Wand_Shotgun(int client, int weapon, bool crit, int s
 				Handle swingTrace;
 				float vecSwingForward[3];
 				DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 9999.9, false, 45.0, true); //infinite range, and ignore walls!
-				FinishLagCompensation_Base_boss();
+				FinishLagCompensation_Base_boss(.client = client);
 							
 				int target = TR_GetEntityIndex(swingTrace);	
 				delete swingTrace;
@@ -201,7 +201,7 @@ public void Weapon_autoaim_Wand(int client, int weapon, bool crit, int slot)
 		Handle swingTrace;
 		float vecSwingForward[3];
 		DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 9999.9, false, 45.0, true); //infinite range, and ignore walls!
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 					
 		int target = TR_GetEntityIndex(swingTrace);	
 		delete swingTrace;

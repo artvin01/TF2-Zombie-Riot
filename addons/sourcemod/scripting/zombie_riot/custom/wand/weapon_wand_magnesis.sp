@@ -468,7 +468,7 @@ void Magnesis_AttemptGrab(int client, int weapon, int tier)
 
 		TR_TraceHullFilter(pos, endPos, hullMin, hullMax, 1073741824, Magnesis_GrabTrace, client);
 		int victim = TR_GetEntityIndex();
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 		
 
 		if (!IsValidEntity(victim))

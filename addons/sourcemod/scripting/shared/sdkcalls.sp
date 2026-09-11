@@ -360,7 +360,7 @@ void EndPlayerOnlyLagComp(int client)
 {
 	if(g_GottenAddressesForLagComp)
 	{
-	//	FinishLagCompensation_Base_boss();
+	//	FinishLagCompensation_Base_boss(.client = client);
 		SDKCall(g_hSDKEndLagComp, g_hSDKEndLagCompAddress, client);
 	}
 }

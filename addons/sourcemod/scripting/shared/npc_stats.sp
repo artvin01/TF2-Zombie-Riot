@@ -4206,7 +4206,7 @@ public void CBaseCombatCharacter_EventKilledLocal(int pThis, int iAttacker, int 
 	if(!b_NpcHasDied[pThis])
 	{
 		//we push back the entity in time to when lag comp happend, so gibs actually make sense.
-		FinishLagCompensation_Base_boss(pThis);
+		FinishLagCompensation_Base_boss_Internal(pThis);
 		RemoveEntityToLagCompList(pThis);
 		int client;
 #if defined ZR

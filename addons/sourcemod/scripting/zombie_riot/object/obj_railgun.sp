@@ -314,7 +314,7 @@ static void Railgun_Boom(int client, int obj)
 			StartLagCompensation_Base_Boss(client);
 			trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 			delete trace;
-			FinishLagCompensation_Base_boss();
+			FinishLagCompensation_Base_boss(.client = client);
 		}
 		else
 		{

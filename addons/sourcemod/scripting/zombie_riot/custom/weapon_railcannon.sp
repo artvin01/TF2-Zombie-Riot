@@ -534,7 +534,7 @@ static void Railcannon_Tick(int client, int pap, bool supercharged)
 		StartLagCompensation_Base_Boss(client);
 		delete trace;
 		trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, BEAM_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 		
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);

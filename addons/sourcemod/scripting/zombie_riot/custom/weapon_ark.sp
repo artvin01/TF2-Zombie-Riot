@@ -678,7 +678,7 @@ public void Arkoftheelements_Explosion(int client, int weapon, bool crit, int sl
 
 			//Explode_Logic_Custom(damage, client, client, weapon, fPos, Explosion radious, _, _, _, 15);
 			Explode_Logic_Custom(damage, client, client, weapon, _, 500.0, _, _, false, 15);
-			FinishLagCompensation_Base_boss();
+			FinishLagCompensation_Base_boss(.client = client);
 
 			//float EnemyPos[3];
 			float UserLoc[3];

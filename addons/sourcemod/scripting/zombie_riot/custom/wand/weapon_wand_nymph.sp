@@ -49,7 +49,7 @@ public void Weapon_Nymph_M1(int client, int weapon, bool &result, int slot)
 		Handle swingTrace;
 		float  vecSwingForward[3];
 		DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 9999.9, false, 45.0, true);	// infinite range, and ignore walls!
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 
 		int target = TR_GetEntityIndex(swingTrace);
 		delete swingTrace;

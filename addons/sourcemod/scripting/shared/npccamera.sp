@@ -22,7 +22,7 @@ public Action NPCCamera_SpecNext(int client, const char[] command, int args)
 		
 		StartLagCompensation_Base_Boss(client);
 		int target = GetClientPointVisiblePlayersNPCs(client, 500.0, pos, true);
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 		
 		if (target > 0 && IsEntityAlive(target))
 		{

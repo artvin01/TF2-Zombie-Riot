@@ -177,7 +177,7 @@ public void Marksman_boom_rifle(int client, int weapon, bool crit, int slot)
 	EmitSoundToAll(HITSCAN_BOOM, -1, _, 80, _, _, _, _,spawnLoc);
 	Explode_Logic_Custom(damage, client, client, weapon, spawnLoc);
 		
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 	delete trace;
 }
 

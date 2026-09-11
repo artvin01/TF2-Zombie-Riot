@@ -1239,7 +1239,7 @@ void RTSCamera_PlayerRunCmdPre(int client, int buttons, int impulse, const float
 		}
 	}
 
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 	
 	if(holding[Key_RightClick])	// Holding/Press Right-Click
 	{

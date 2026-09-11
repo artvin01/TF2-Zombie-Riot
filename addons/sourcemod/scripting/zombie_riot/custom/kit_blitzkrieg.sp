@@ -472,7 +472,7 @@ static void Blitzkrieg_Kit_Rocket(int client, int weapon, float efficiency, int 
 			b_LagCompNPC_No_Layers = true;
 			StartLagCompensation_Base_Boss(client);
 			DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 9999.9, false, 45.0, false); //infinite range, and (doesn't)ignore walls!	
-			FinishLagCompensation_Base_boss();
+			FinishLagCompensation_Base_boss(.client = client);
 
 			int target = TR_GetEntityIndex(swingTrace);	
 			if(IsValidEnemy(client, target))
@@ -736,7 +736,7 @@ static void Blitzkrieg_Kit_ion_trace(int client, int patern, int weapon)
 		Blitzkrieg_Kit_IOC_Invoke(client, vEnd, damage);
 	}
 	delete trace;
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 }
 
 static int i_colour[MAXPLAYERS+1][4];

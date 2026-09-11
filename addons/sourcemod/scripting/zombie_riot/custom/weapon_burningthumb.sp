@@ -165,7 +165,7 @@ public void Weapon_BurningThumb_M2(int client, int weapon, bool crit, int slot)
 			}
 		}
 
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 
 		delete trace;
 	}

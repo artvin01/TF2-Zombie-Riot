@@ -85,7 +85,7 @@ public void Weapon_PHLOG_Attack(int client, int weapon, bool crit, int slot)
 	hullMax = {20.0,20.0,20.0};
 	trace = TR_TraceHullFilterEx(belowBossEyes, VectorTarget_2, hullMin, hullMax, 1073741824, Flamer_TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 	delete trace;
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 	BEAM_Targets_Hit[client] = 1.0;
 	float damage = 25.0;
 	damage *= Attributes_Get(weapon, 2, 1.0);

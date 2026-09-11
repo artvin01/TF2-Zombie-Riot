@@ -970,11 +970,15 @@ public void Red_Mist_OnTakeDamage_Deal(int victim, int &attacker, int &inflictor
 					}
 				}
 			}
+			if(Arena_Mode())
+				damage *= 0.65;
 		}
 	}
 	if(Special_Damage_Boost[attacker]) //Horrizontal Slash, multi target, m2 ability
 	{
 		damage *= 6.0;
+		if(Arena_Mode())
+			damage *= 0.75;
 		if(!Hori_Sound_Played[attacker])//only play once!!!!111!
 		{
 			for(int listener=1; listener<=MaxClients; listener++)//for special manual download sounds
@@ -1221,7 +1225,7 @@ public void Red_Mist_Onrush(int client, int weapon)
 	float vecSwingForward[3];
 	StartLagCompensation_Base_Boss(client);
 	DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 300.0, false, 35.0, true); //infinite range, and ignore walls!
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 
 	int target = TR_GetEntityIndex(swingTrace);
 	delete swingTrace;

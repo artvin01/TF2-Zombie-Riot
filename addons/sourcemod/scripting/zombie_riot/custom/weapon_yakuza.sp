@@ -581,7 +581,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 			{
 				//Hurray, no buiding was found, lets try stealing!
 				Store_GiveAll(client, GetClientHealth(client));
-				FinishLagCompensation_Base_boss();
+				FinishLagCompensation_Base_boss(.client = client);
 				return;
 			}
 			
@@ -589,7 +589,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "STYLE: Target must be a decorative building or your own!");
-			FinishLagCompensation_Base_boss();
+			FinishLagCompensation_Base_boss(.client = client);
 			return;
 		}
 		else if(WeaponStyle[client] == Style_Rush)
@@ -598,7 +598,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 1.5);
 			ApplyTempAttrib(weapon, 6, 0.85, 1.5);
 			Ability_Apply_Cooldown(client, 2, 8.0);
-			FinishLagCompensation_Base_boss();
+			FinishLagCompensation_Base_boss(.client = client);
 			return;
 		}
 
@@ -608,7 +608,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "HEAT: No target!");
-			FinishLagCompensation_Base_boss();
+			FinishLagCompensation_Base_boss(.client = client);
 			return;
 		}
 	}
@@ -628,7 +628,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 			{
 				if(GetClientButtons(client) & IN_ATTACK) //if its dragon, make it so they cant hold m1
 				{
-					FinishLagCompensation_Base_boss();
+					FinishLagCompensation_Base_boss(.client = client);
 					return;
 				}
 				RequiredHeat = 45;
@@ -642,7 +642,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 					SetDefaultHudPosition(client);
 					SetGlobalTransTarget(client);
 					ShowSyncHudText(client,  SyncHud_Notifaction, "HEAT: Enemy was recently in HEAT ability! Wait!");
-					FinishLagCompensation_Base_boss();
+					FinishLagCompensation_Base_boss(.client = client);
 					return;
 				}
 			}
@@ -716,7 +716,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 					flMaxhealth *= 2.0;
 					
 				HealEntityGlobal(client, client, flMaxhealth, 1.0, 0.0, HEAL_SELFHEAL);
-				FinishLagCompensation_Base_boss();
+				FinishLagCompensation_Base_boss(.client = client);
 				return;
 			}
 
@@ -724,7 +724,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "HEAT: Requires %d％ HEAT for this!", RequiredHeat);
-			FinishLagCompensation_Base_boss();
+			FinishLagCompensation_Base_boss(.client = client);
 			return;
 		}
 
@@ -732,18 +732,18 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "HEAT: Ability not unlocked!");
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 		return;
 	}
 
 	if(GetClientButtons(client) & IN_ATTACK)
 	{
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 		return;
 	}
 
 	DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 100.0, false, 45.0, true); //infinite range, and ignore walls!
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 	target = TR_GetEntityIndex(swingTrace);	
 	delete swingTrace;
 

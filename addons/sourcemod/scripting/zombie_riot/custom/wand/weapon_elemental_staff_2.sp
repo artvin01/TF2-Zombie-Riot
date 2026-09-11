@@ -271,7 +271,7 @@ public void Weapon_Passanger_Attack(int client, int weapon, bool crit, int slot)
 				GetBeamDrawStartPoint_Stock(client, belowBossEyes);
 				Passanger_Lightning_Effect(belowBossEyes, vecHit, 1);
 			}
-			FinishLagCompensation_Base_boss();
+			FinishLagCompensation_Base_boss(.client = client);
 		}
 		else
 		{
@@ -569,7 +569,7 @@ public void Weapon_Passanger_LightningArea(int client, int weapon, bool crit, in
 				
 
 			}
-			FinishLagCompensation_Base_boss();
+			FinishLagCompensation_Base_boss(.client = client);
 		}
 		else
 		{
@@ -681,6 +681,8 @@ void Passanger_Activate_Storm(int client, int weapon, float lightningpos[3])
 	damage *= Attributes_Get(weapon, 410, 1.0); //massive damage!
 	damage *= 0.5;
 	damage *= 0.7;
+	if(Arena_Mode())
+		damage *= 0.5;
 
 
 	FakeClientCommand(client, "voicemenu 0 2"); //Go go go! Cause them to point!
@@ -722,10 +724,10 @@ public Action TimerPassangerAbility(Handle timer, DataPack pack)
 	{
 		int count;
 		static int targets[i_MaxcountNpc];
-		for(int targ; targ<i_MaxcountNpcTotal; targ++)
+		for(int targ; targ<MAXENTITIES; targ++)
 		{
-			int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[targ]);
-			if (IsValidEntity(baseboss_index) && !b_NpcHasDied[baseboss_index] && GetTeam(baseboss_index) != TFTeam_Red)
+			int baseboss_index = targ;
+			if (IsValidEnemy(client, baseboss_index, true))
 			{
 				static float TargetLocation[3]; 
 				GetEntPropVector( baseboss_index, Prop_Data, "m_vecAbsOrigin", TargetLocation ); 

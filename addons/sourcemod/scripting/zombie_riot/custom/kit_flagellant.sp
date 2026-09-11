@@ -312,7 +312,7 @@ public Action Flagellant_DamagerTimer(Handle timer, DataPack pack)
 				b_LagCompNPC_OnlyAllies = false;
 				StartLagCompensation_Base_Boss(client);
 				int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos, true);
-				FinishLagCompensation_Base_boss();
+				FinishLagCompensation_Base_boss(.client = client);
 
 				bool validEnemy;
 
@@ -590,7 +590,7 @@ public void Weapon_FlagellantDamage_M1(int client, int weapon, bool crit, int sl
 	StartLagCompensation_Base_Boss(client);
 	float pos[3];
 	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos, true);
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 
 	bool validEnemy;
 
@@ -799,7 +799,7 @@ public void Weapon_FlagellantDamage_M2(int client, int weapon, bool crit, int sl
 	StartLagCompensation_Base_Boss(client);
 	float pos[3];
 	int target = GetClientPointVisiblePlayersNPCs(client, 800.0, pos, true);
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 
 	bool validEnemy;
 

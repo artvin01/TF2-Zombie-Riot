@@ -307,7 +307,7 @@ public void Weapon_Amphi_Judgement(int client, int weapon, bool crit, int slot)
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
 		Explode_Logic_Custom(0.1, client, client, weapon, UserLoc,AMPHI_JUDGEMENT_MAXRANGE,_,_,false,_,_,_,_,AmphiM2Detection);
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 		EmitSoundToAll(AMPHI_KICKUP_1, client, _, 75, _, 0.60);
 
 		spawnRing(client, AMPHI_JUDGEMENT_MAXRANGE * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 255, 255, 255, 255, 1, 0.25, 6.0, 6.1, 1);
@@ -458,7 +458,7 @@ public void Npc_Amphi_Launch_client(int client)
 					}
 				}
 			}
-			FinishLagCompensation_Base_boss();
+			FinishLagCompensation_Base_boss(.client = client);
 		}
 
 		if(count)

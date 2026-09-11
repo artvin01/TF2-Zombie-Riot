@@ -1016,7 +1016,7 @@ static void Cheese_Burst(int client, float dmgclose, float dmgfar, float maxdist
 		StartLagCompensation_Base_Boss(client);
 		trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 		delete trace;
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		Cheese_TargetsHit[client] = 1.0;

@@ -136,7 +136,7 @@ void Enforcer_AbilityM2(int client, int weapon, int slot, int pushLevel, float p
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
 		TR_TraceHullFilter(fPos, endPoint, hullMin, hullMax, 1073741824, Enforcer_TraceTargets, client);	// 1073741824 is CONTENTS_LADDER?
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 
 		for(int i; i < ammo; i++)
 		{

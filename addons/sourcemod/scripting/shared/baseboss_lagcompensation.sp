@@ -57,10 +57,17 @@ void OnPlayerRunCmd_Lag_Comp(int client, float angles[3], int &tickcount)
 /* game/server/player_lagcompensation.cpp#L328 */
 void StartLagCompensation_Base_Boss(int client)
 {
+	if(Arena_Mode())
+		StartPlayerOnlyLagComp(client, false, true);
+	else
+		StartLagCompensation_Base_Boss_Internal(client);
+}
+void StartLagCompensation_Base_Boss_Internal(int client)
+{
 	if(DoingLagCompensation)
 	{
 		PrintToChatAll("Was already in DoingLagCompensation But tried doing another?");
-		FinishLagCompensation_Base_boss(-1, false);
+		FinishLagCompensation_Base_boss_Internal(-1, false);
 	}
 	DoingLagCompensation = true;
 //	PrintToChatAll("StartLagCompensation_Base_Boss");
@@ -376,9 +383,16 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 	WasBackTracked[index] = true;
 }
 
-void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -2, bool DoReset = true)
+void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -2, bool DoReset = true, int client)
 {
-	
+	if(Arena_Mode())
+		EndPlayerOnlyLagComp(client);
+	else
+		FinishLagCompensation_Base_boss_Internal(ForceOptionalEntity, DoReset);
+
+}
+void FinishLagCompensation_Base_boss_Internal(int ForceOptionalEntity = -2, bool DoReset = true)
+{
 	if(ForceOptionalEntity == -2)
 		DoingLagCompensation = false;
 

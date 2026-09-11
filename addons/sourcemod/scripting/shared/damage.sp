@@ -1372,6 +1372,10 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		}
 		case WEAPON_BOOMSTICK:
 		{
+			if(Arena_Mode())
+			{
+				damage *= 0.65;
+			}
 			if(b_thisNpcIsARaid[victim])
 			{
 				damage *= 1.1; //due to how dangerous it is to get closer.

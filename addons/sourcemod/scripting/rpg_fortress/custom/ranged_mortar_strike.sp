@@ -110,7 +110,7 @@ public void BuildingMortarAction(int client)
 	
 	Handle trace = TR_TraceRayFilterEx(eyePos, eyeAng, MASK_SHOT, RayType_Infinite, TraceEntityFilterPlayer);
 	
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 	if (TR_DidHit(trace))
 	{
 		TR_GetEndPosition(spawnLoc, trace);
