@@ -1448,7 +1448,10 @@ public void Weapon_GunsawShotgun_M1(int client, int weapon, bool crit, int slot)
 		Rogue_OnAbilityUse(client, weapon);
 		TF2_RemoveCondition(client, TFCond_FocusBuff);
 
-		float ratio = BoomstickAdjustDamageAndAmmoCount(weapon, 1);
+		int BulletsMax = 1;
+		if(Arena_Mode()) //nerf for it
+			BulletsMax = 3;
+		float ratio = BoomstickAdjustDamageAndAmmoCount(weapon, BulletsMax);
 		Ability_Apply_Cooldown(client, 2, 2.0 * ratio);
 		
 		float vec[3], vel[3];
@@ -1700,6 +1703,8 @@ static void GunsawPropThink(int ref)
 		{
 			ZRRamMulti = Attributes_GetOnPlayer(client, 287, true) / Attributes_GetOnPlayer(client, 343, true, true);
 			damage = MetalSpendOnBuilding[building] * ZRRamMulti * PropDamage;
+			if(Arena_Mode())
+				damage *= 0.7;
 		
 			int type = i_ExplosiveProjectileHexArray[building];
 			i_ExplosiveProjectileHexArray[building] = EP_GENERIC;

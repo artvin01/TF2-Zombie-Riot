@@ -1225,7 +1225,8 @@ public MRESReturn StartLagCompensationPre(Address manager, DHookParam param)
 	
 	
 	int active_weapon = GetEntPropEnt(Compensator, Prop_Send, "m_hActiveWeapon");
-	if(IsValidEntity(active_weapon))
+	//b_LagCompPvP means its called customly, meaning these settings are manual.
+	if(IsValidEntity(active_weapon) && !b_LagCompPvP)
 	{
 		if(b_Dont_Move_Building[active_weapon])
 		{

@@ -1595,6 +1595,8 @@ stock void GiveRageOnDamage(int client, float damage)
 {
 	if(!GetEntProp(client, Prop_Send, "m_bRageDraining"))
 	{
+		if(Arena_Mode())
+			damage *= 2.0;
 		float rage = GetEntPropFloat(client, Prop_Send, "m_flRageMeter") + (damage * 0.05);
 		if(rage > 100.0)
 			rage = 100.0;

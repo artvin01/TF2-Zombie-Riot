@@ -150,7 +150,10 @@ int ReplaceAttribute_Internally(int attribute)
 	{
 		//replace dmg attrib with another, this is due to the MVM hud on pressing inspect fucking crashing you at high dmges
 		case 2:
-			return 1000;
+		{
+			if(!Arena_Mode())
+				return 1000;
+		}
 	}
 	return attribute;
 }

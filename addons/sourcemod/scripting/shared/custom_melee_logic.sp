@@ -968,7 +968,6 @@ public void Timer_Do_Melee_Attack_Internal(DataPack pack)
 			}
 		}
 		delete swingTrace;
-		FinishLagCompensation_Base_boss(.client = client);
 		EndPlayerOnlyLagComp(client);
 	}
 	delete pack;

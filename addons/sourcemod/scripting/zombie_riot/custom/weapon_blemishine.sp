@@ -300,6 +300,8 @@ public float NPC_OnTakeDamage_Blemishine(int attacker, int victim, float &damage
 			{
 				float value = Attributes_Get(weapon, 180, 0.0);
 				value *= 8.0;
+				if(Arena_Mode())
+					value *= 2.0;
 				DoHealingOcean(attacker, attacker, (150.0 * 150.0), value * 1.35, true);
 				damage *= 2.0;
 			}
@@ -328,7 +330,10 @@ public void Blemishine_Think(int client)
 			}
 			if(f_AbilityHealAmmount[client] > 0.0)
 			{
-				DoHealingOcean(client, client, (200.0 * 200.0), f_AbilityHealAmmount[client] * 1.0, true);
+				float Multiplier = 1.0;
+				if(Arena_Mode())
+					Multiplier *= 2.0;
+				DoHealingOcean(client, client, (200.0 * 200.0), f_AbilityHealAmmount[client] * Multiplier, true);
 				float flPos[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);		
 				spawnRing_Vectors(flPos, /*RANGE*/ 200.0 * 2.0, 0.0, 0.0, 15.0, EMPOWER_MATERIAL, 231, 231, 4, 125, 1, /*DURATION*/ 0.12, 3.0, 2.5, 5);

@@ -2247,7 +2247,8 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 		}
 #endif	
 	}
-	if(Arena_Mode() && damage > 0.01)
+	// in PVP minium damage is 1
+	if(!CheckInHud() && Arena_Mode() && damage > 0.001 && damage <= 1.0)
 		damage = 1.0;
 	return Plugin_Changed;
 }
