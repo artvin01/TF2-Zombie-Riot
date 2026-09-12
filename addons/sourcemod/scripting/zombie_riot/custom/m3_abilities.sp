@@ -208,9 +208,9 @@ stock void GiveMorphineOnDamage(int client, int victim, float damage, int damage
 	MinCashMaxGain -= 250;
 	if(Arena_Mode())
 	{
-		if(MinCashMaxGain >= 10000)
+		if(MinCashMaxGain >= 3000)
 		{
-			MinCashMaxGain = 10000;
+			MinCashMaxGain = 3000;
 		}
 
 	}

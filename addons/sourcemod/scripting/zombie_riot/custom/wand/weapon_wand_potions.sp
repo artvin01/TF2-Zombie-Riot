@@ -361,7 +361,7 @@ public void Weapon_Wand_PotionBuffTouch(int entity, int target)
 	{
 		for(int client = 1; client <= MaxClients; client++)
 		{
-			if(IsClientInGame(client) && IsPlayerAlive(client))
+			if(IsClientInGame(client) && IsPlayerAlive(client) && GetTeam(owner) == GetTeam(client))
 			{
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos2);
 				if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))
@@ -412,7 +412,7 @@ public void Weapon_Wand_PotionBuffAllTouch(int entity, int target)
 	
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(IsClientInGame(client) && IsPlayerAlive(client))
+		if(IsClientInGame(client) && IsPlayerAlive(client) && GetTeam(owner) == GetTeam(client))
 		{
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos2);
 			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))
@@ -460,7 +460,7 @@ public void Weapon_Wand_PotionBuffPermaTouch(int entity, int target)
 	
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(IsClientInGame(client) && IsPlayerAlive(client))
+		if(IsClientInGame(client) && IsPlayerAlive(client) && GetTeam(owner) == GetTeam(client))
 		{
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos2);
 			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))
