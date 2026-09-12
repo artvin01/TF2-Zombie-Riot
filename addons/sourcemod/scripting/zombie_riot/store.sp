@@ -2,6 +2,13 @@
 #pragma newdecls required
 
 #define SELL_AMOUNT 0.9
+
+float SellAmount()
+{
+	if(Arena_Mode())
+		return 1.0;
+	return SELL_AMOUNT;
+}
 bool PapPreviewMode[MAXPLAYERS];
 float f_ConfirmSellDo[MAXPLAYERS];
 
@@ -1647,7 +1654,7 @@ int Store_TryToPapWeapon(int client, Item item, int index, int level, int descTy
 			other.Sell[client] = 0;
 		}
 
-		other.Sell[client] += RoundToCeil(float(info.Cost) * SELL_AMOUNT);
+		other.Sell[client] += RoundToCeil(float(info.Cost) * SellAmount());
 		other.BuyWave[client] = -1;
 		other.Owned[client] = level + 1;
 
@@ -1675,7 +1682,7 @@ int Store_TryToPapWeapon(int client, Item item, int index, int level, int descTy
 		{
 			item.Sell[client] = 0;
 		}
-		item.Sell[client] += RoundToCeil(float(info.Cost) * SELL_AMOUNT);
+		item.Sell[client] += RoundToCeil(float(info.Cost) * SellAmount());
 		item.BuyWave[client] = -1;
 	}
 
@@ -3989,7 +3996,7 @@ static void MenuPage(int client, int section)
 					int npcwallet = item.NPCWeaponAlways ? 0 : NPCCash[client];
 					
 					item.GetItemInfo(0, info);
-					if((info.Cost < 1001 || info.Cost <= CurrentCash) && RoundToCeil(float(info.Cost) * SELL_AMOUNT) > npcwallet)
+					if((info.Cost < 1001 || info.Cost <= CurrentCash) && RoundToCeil(float(info.Cost) * SellAmount()) > npcwallet)
 					{
 						ItemCost(client, item, info.Cost);
 						TranslateItemName(client, item.Name, info.Custom_Name, info.Custom_Name, sizeof(info.Custom_Name));
@@ -7285,7 +7292,7 @@ void ItemCost(int client, Item item, int &cost)
 		
 	if(!item.StaleCost)
 	{
-		//int original_cost_With_Sell = RoundToCeil(float(cost) * SELL_AMOUNT);
+		//int original_cost_With_Sell = RoundToCeil(float(cost) * SellAmount());
 		
 		//make sure anything thats additive is on the top, so sales actually help!!
 		if(IsValidEntity(EntRefToEntIndex(SalesmanAlive)))
@@ -7329,9 +7336,9 @@ static int ItemSell(int base, int discount)
 {
 	float cost = float(base);
 	float ratio = (float(discount) / cost);
-	if(ratio > SELL_AMOUNT)
+	if(ratio > SellAmount())
 	{
-		ratio = SELL_AMOUNT;
+		ratio = SellAmount();
 	}
 	else if(ratio < 0.0)
 	{

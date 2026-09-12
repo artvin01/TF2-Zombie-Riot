@@ -268,6 +268,8 @@ public void HeartBroken_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 
 	//lazy damage nerf
 	damage *= 0.9;
+	if(Arena_Mode())
+		damage *= 0.75;
 	
 	//allow coffin gain at anypoint so they can gather it up beffore upgrading to this
 	if(WeaponLevel[attacker] >= 5)
@@ -331,6 +333,8 @@ public void HeartBroken_OnTakeDamage_Take(int victim, int &attacker, int &inflic
 		float CounterDamage = 65.0;
 		CounterDamage *= WeaponDamageAttributeMultipliers(equipped_weapon,_,victim);
 		CounterDamage *= 2.5;
+		if(Arena_Mode())
+			CounterDamage *= 0.85;
 		static float angles[3];
 		GetEntPropVector(victim, Prop_Send, "m_angRotation", angles);
 		float vecForward[3];
@@ -675,6 +679,8 @@ void Heartbroken_ShootHorseProjectile(int client, int target, float dmgmotif = 1
 	float speed = 700.0;
 	float time = 2.0;
 	speed *= speedmodif;
+	if(Arena_Mode())
+		damage *= 0.85;
 
 
 	float vAngles[3];

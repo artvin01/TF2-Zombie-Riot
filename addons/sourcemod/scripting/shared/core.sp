@@ -2602,6 +2602,7 @@ public void OnEntityCreated(int entity, const char[] classname)
 //	PrintToChatAll("entity: %i| Clkassname %s",entity, classname);
 	if (entity > 0 && entity <= MAXENTITIES && IsValidEntity(entity))
 	{
+		b_Do_Not_Compensate[entity] = true;
 	//	h_TransmitHookType[entity] = 0;
 		f_TimeTillMeleeAttackShould[entity] = 0.0;
 		StatusEffectReset(entity, true);

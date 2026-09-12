@@ -419,7 +419,7 @@ static void PullAbilityM2(int client, int weapon, int slot, int cost, int streng
 		delete swingTrace;
 		FinishLagCompensation_Base_boss(.client = client);
 
-		if(entity > MaxClients && !b_NpcHasDied[entity])
+		if(IsValidEnemy(client, entity, true))
 		{
 			int weight = i_NpcWeight[entity];
 			if(weight < 0)

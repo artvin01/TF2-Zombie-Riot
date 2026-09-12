@@ -295,6 +295,8 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 				{
 					float AttributeRate = Attributes_GetOnWeapon(owner, medigun, 8, true);
 					AttributeRate *= Attributes_Get(medigun, 7, 1.0); //Extra damage
+					if(Arena_Mode())
+						AttributeRate *= 0.75;
 					flDrainRate *= AttributeRate; // We have to make it more exponential, damage scales much harder.
 					target_sucked_long[healTarget] += 0.10;
 				
@@ -340,6 +342,8 @@ public MRESReturn OnMedigunPostFramePost(int medigun) {
 					MedigunChargeUber(owner, medigun, 1.0);
 					
 					float Healing_Value = Attributes_GetOnWeapon(owner, medigun, 8, true);
+					if(Arena_Mode())
+						Healing_Value *= 0.75;
 					
 					float healing_Amount = Healing_Value;
 					float healing_Amount_Self = Healing_Value;

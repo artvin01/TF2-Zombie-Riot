@@ -57,6 +57,11 @@ void OnPlayerRunCmd_Lag_Comp(int client, float angles[3], int &tickcount)
 /* game/server/player_lagcompensation.cpp#L328 */
 void StartLagCompensation_Base_Boss(int client)
 {
+	if(DoingLagCompensation)
+	{
+		LogStackTrace("DoingLagCompensation Already");
+		FinishLagCompensation_Base_boss(.client = client);
+	}
 	if(Arena_Mode())
 		StartPlayerOnlyLagComp(client, false, true);
 	else

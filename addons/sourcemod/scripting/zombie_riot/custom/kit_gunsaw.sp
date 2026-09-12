@@ -1700,6 +1700,8 @@ static void GunsawPropThink(int ref)
 		{
 			ZRRamMulti = Attributes_GetOnPlayer(client, 287, true) / Attributes_GetOnPlayer(client, 343, true, true);
 			damage = MetalSpendOnBuilding[building] * ZRRamMulti * PropDamage;
+			if(Arena_Mode())
+				damage *= 0.7;
 		
 			int type = i_ExplosiveProjectileHexArray[building];
 			i_ExplosiveProjectileHexArray[building] = EP_GENERIC;
