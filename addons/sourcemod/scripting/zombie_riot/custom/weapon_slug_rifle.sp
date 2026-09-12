@@ -38,7 +38,11 @@ void WeaponUranium_OnTakeDamage(int attacker,int victim, float &damage, float da
 {
 	if(Uranium_TimeTillBigHit[attacker][victim] < GetGameTime())
 	{
-		damage *= 2.2;
+		if(Arena_Mode())
+			damage *= 1.7;
+		else
+			damage *= 2.2;
+			
 		if(!CheckInHud())
 		{
 			Uranium_TimeTillBigHit[attacker][victim] = GetGameTime() + 40.0;

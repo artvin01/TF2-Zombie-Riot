@@ -2006,10 +2006,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			damagetype = DMG_TRUEDAMAGE;
 		}
 	}
-	if(damagetype & DMG_CRIT)
-	{
-		damagetype &= ~DMG_CRIT; //Remove Crit Damage at all times, it breaks calculations for no good reason.
-	}
 
 	if(!CheckInHud())
 	{
@@ -2250,6 +2246,10 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	// in PVP minium damage is 1
 	if(!CheckInHud() && Arena_Mode() && damage > 0.001 && damage <= 1.0)
 		damage = 1.0;
+	if(damagetype & DMG_CRIT)
+	{
+		damagetype &= ~DMG_CRIT; //Remove Crit Damage at all times, it breaks calculations for no good reason.
+	}
 	return Plugin_Changed;
 }
 

@@ -210,7 +210,29 @@ static Action Timer_WaitingPeriod(Handle timer)
 			}
 		}
 	}
-	
+	for(int i; i < i_MaxcountNpcTotal; i++)
+	{
+		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
+		if(entity == INVALID_ENT_REFERENCE || !IsEntityAlive(entity))
+			continue;
+
+		int team = GetTeam(entity);
+		for(int i2; i2 < ZR_MAX_SPAWNERS; i2++)
+		{
+			if(IsValidEntity(i_ObjectsSpawners[i2]) && GetEntProp(i_ObjectsSpawners[i2], Prop_Data, "m_iTeamNum") == team && !GetEntProp(i_ObjectsSpawners[i2], Prop_Data, "m_bDisabled"))
+			{
+				GetEntPropVector(i_ObjectsSpawners[i2], Prop_Data, "m_vecOrigin", pos1);
+				break;
+			}
+		}
+
+		GetAbsOrigin(entity, pos2);
+		if(GetVectorDistance(pos1, pos2, true) > 300000.0)
+		{
+			TeleportEntity(entity, pos1, {0.0, 0.0, 0.0}, NULL_VECTOR);
+		}
+	}
+
 	return Plugin_Continue;
 }
 

@@ -974,6 +974,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		}
 		if(b_IsAProjectile[entity1] && (GetTeam(entity1) != TFTeam_Red && !Arena_Mode()))
 		{
+			//this logic is only inside non arena mode as its hard coded to not red
 			if(b_IsATrigger[entity2])
 			{
 				return false;
@@ -997,6 +998,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		}
 		else if(b_IsAProjectile[entity1] && (GetTeam(entity1) == TFTeam_Red || Arena_Mode()))
 		{
+			//hardcoded to red due to base zr, but arena will also use this
 #if defined ZR
 			if(b_ForceCollisionWithProjectile[entity2] && !b_EntityIgnoredByShield[entity1] && !IsEntitySpike(entity1))
 #else
@@ -1083,12 +1085,12 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 		}
 		else if (b_Is_Player_Projectile_Through_Npc[entity1])
 		{
-			if(!b_NpcHasDied[entity2] && GetTeam(entity2) != TFTeam_Red)
+			if(!b_NpcHasDied[entity2] && GetTeam(entity2) != GetTeam(entity2))
 			{
 				return false;
 			}
 		}
-		if(!b_NpcHasDied[entity1] && GetTeam(entity1) != TFTeam_Red)
+		if(!b_NpcHasDied[entity1] && GetTeam(entity1) != GetTeam(entity2))
 		{
 			//ignore buildings, neccecary during some situations
 			if(i_IsABuilding[entity2])
@@ -1110,7 +1112,7 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 					return false;
 				}
 			}
-			else if(!b_NpcHasDied[entity2] && GetTeam(entity2) != TFTeam_Red)
+			else if(!b_NpcHasDied[entity2] && GetTeam(entity1) != GetTeam(entity2))
 			{
 				return false;
 			}
@@ -1139,15 +1141,15 @@ public bool PassfilterGlobal(int ent1, int ent2, bool result)
 			
 		}
 //allied NPC
-		else if(!b_NpcHasDied[entity1] && GetTeam(entity1) == TFTeam_Red)
+		else if(!b_NpcHasDied[entity1] && GetTeam(entity2) == GetTeam(entity1))
 		{
 			
 			//dont be solid to buildings
-			if(i_IsABuilding[entity2] && GetTeam(entity2) == TFTeam_Red)
+			if(i_IsABuilding[entity2] && GetTeam(entity2) == GetTeam(entity1))
 				return false;
 
 			///????? i dont know
-			if(!b_NpcHasDied[entity2] && GetTeam(entity2) == TFTeam_Red)
+			if(!b_NpcHasDied[entity2] && GetTeam(entity2) == GetTeam(entity1))
 			{	
 				if(!i_IsABuilding[entity2] && !i_IsABuilding[entity1])
 					return false;

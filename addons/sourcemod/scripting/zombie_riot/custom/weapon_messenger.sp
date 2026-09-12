@@ -184,14 +184,20 @@ public void Gun_MessengerTouch(int entity, int target)
 			}
 			else if(pap > 2)
 			{
+				if(Arena_Mode())
+					Elemental_AddCyroDamage(target, owner, RoundFloat(f_WandDamage[entity] * 0.25), 1);
 				ApplyStatusEffect(owner, target, "Near Zero", 1.0);
 			}
 			else if(pap > 1)
 			{
+				if(Arena_Mode())
+					Elemental_AddCyroDamage(target, owner, RoundFloat(f_WandDamage[entity] * 0.25), 1);
 				ApplyStatusEffect(owner, target, "Cryo", 0.6);
 			}
 			else
 			{
+				if(Arena_Mode())
+					Elemental_AddCyroDamage(target, owner, RoundFloat(f_WandDamage[entity] * 0.25), 1);
 				ApplyStatusEffect(owner, target, "Freeze", 0.6);
 			}
 			

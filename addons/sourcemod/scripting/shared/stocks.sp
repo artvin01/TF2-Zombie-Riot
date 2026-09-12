@@ -2982,11 +2982,7 @@ void TE_SendBeam(int client = -1, float m_vecMins[3], float m_vecMaxs[3], float 
 
 stock int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 {
-	if(owner_projectile < 1)
-	{
-		return -1; //I dont exist?
-	}
-	if(other_entity < 0)
+	if(owner_projectile < 1 || other_entity < 0)
 	{
 		return -1; //I dont exist?
 	}

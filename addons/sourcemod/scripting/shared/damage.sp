@@ -548,10 +548,8 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 					OsmosisElementalEffect_Detection(attacker, victim);
 #endif
 
-#if !defined RTS
 					OnTakeDamageOldExtraWeapons(victim, attacker, weapon);
 					OnTakeDamageBackstab(victim, attacker, inflictor, damage, damagetype, weapon, GameTime);
-#endif
 				}
 			}
 		}
@@ -2019,7 +2017,7 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 
 					damage *= 5.25;
 					if(Arena_Mode())
-						damage *= 8.0;
+						damage *= 7.0;
 
 #if defined ZR
 					CClotBody npc = view_as<CClotBody>(victim);
@@ -2135,12 +2133,9 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 	else if(b_IsABow[weapon])
 	{
 		//arrows ignore inflictor?
-#if defined ZR
-		//f_InBattleHudDisableDelay[attacker] = GetGameTime() + f_Data_InBattleHudDisableDelay[attacker] + 2.0;
-#endif
 		f_InBattleDelay[attacker] = GetGameTime() + 3.0;
 		if(damagetype & DMG_CRIT)
-		{		
+		{
 			damage *= f_HeadshotDamageMultiNpc[victim];
 			damage *= 1.35;
 			DisplayCritAboveNpc(victim, attacker, true); //Display crit above head
