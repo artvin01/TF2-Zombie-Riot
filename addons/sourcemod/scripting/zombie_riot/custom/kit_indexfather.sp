@@ -805,6 +805,10 @@ void IndexFather_SelectRandomGoal(int client, Prescript data, int PrescriptForce
 		{
 			//todo, add damage scaling
 			data.Goal = IndexFather_DamageDealTreshhold();
+			if(Arena_Mode())
+			{
+				data.Goal = 100.0;
+			}
 		}
 		case PT_TakeDamage:
 		{
@@ -1334,7 +1338,10 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 	damage *= (float(GraceOfPrescript[attacker]) * 0.01) + 1.0;
 	if(f_FuriosoInUse[attacker] > GetGameTime())
 	{
-		damage *= 2.0;
+		if(Arena_Mode())
+			damage *= 1.5;
+		else
+			damage *= 2.0;
 	}
 	if(CheckInHud())
 		return;
