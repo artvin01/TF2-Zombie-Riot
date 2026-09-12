@@ -112,7 +112,9 @@ void Building_GiveRewardsUse(int client, int trueOwner, int Cash, bool CashLimit
 	int owner = trueOwner;
 	if(!IsValidEntity(owner) || owner > MaxClients)
 		owner = client;
-	
+
+	if(Arena_Mode())
+		return;
 	//when using your own buildings, you get half as much.
 	if(client == owner)
 	{
@@ -941,7 +943,7 @@ stock void ApplyBuildingCollectCooldown(int building, int client, float Duration
 	{
 		Building_Collect_Cooldown[building][client] = 0.0;
 	}
-	else if(GameRules_GetRoundState() == RoundState_BetweenRounds && !IgnoreVotingExtraCD)
+	else if(!Arena_Mode() && GameRules_GetRoundState() == RoundState_BetweenRounds && !IgnoreVotingExtraCD)
 	{
 		Building_Collect_Cooldown[building][client] = FAR_FUTURE;
 	}

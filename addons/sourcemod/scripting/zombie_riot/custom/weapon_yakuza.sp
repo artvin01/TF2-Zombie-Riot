@@ -129,7 +129,7 @@ void Yakuza_AddCharge(int client, int amount)
 {
 	if(amount)
 	{
-		if(Arena_Mode())
+		if(Arena_Mode() && amount > 0)
 			amount *= 4;
 		if(!SuperDragon[client] && WeaponStyle[client] == Style_Dragon)
 		{

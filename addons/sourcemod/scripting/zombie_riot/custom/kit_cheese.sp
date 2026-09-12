@@ -340,6 +340,8 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 	{   
 		if(Cheese_PapLevel[attacker] > 0)
 			Cheese_Bubble_Hits[attacker] += 4;
+		if(Arena_Mode())
+			Cheese_Bubble_Hits[attacker] += 4;
 
 		float cheesedmg = damage;
 
@@ -390,6 +392,8 @@ void Cheese_OnTakeDamage_Primary(int attacker, int victim, float damage, int wea
 	Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(damage * 0.5), weapon);
 	if(Cheese_PapLevel[attacker] > 0)
 		Cheese_Bubble_Hits[attacker]++;
+	if(Arena_Mode())
+		Cheese_Bubble_Hits[attacker] += 2;
 }
 
 public void Weapon_Kit_Cheddinator_M2(int client, int weapon, bool &result, int slot)
