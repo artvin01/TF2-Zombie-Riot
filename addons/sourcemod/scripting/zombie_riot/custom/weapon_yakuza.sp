@@ -130,7 +130,7 @@ void Yakuza_AddCharge(int client, int amount)
 	if(amount)
 	{
 		if(Arena_Mode() && amount > 0)
-			amount *= 4;
+			amount *= 2;
 		if(!SuperDragon[client] && WeaponStyle[client] == Style_Dragon)
 		{
 			//Dragon style CANNOT gain heat at all
@@ -557,8 +557,10 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 	if(HeatActionCooldown[client] > GetGameTime())
 		return;
 
-	if(WeaponStyle[client] != Style_Dragon)
+	if(WeaponStyle[client] != Style_Dragon || Arena_Mode())
 		TraceStunOnly = true;
+
+		
 
 
 	Handle swingTrace;
@@ -614,7 +616,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 	}
 	
 	//We found a target!
-	if(target > 0 && (f_TimeFrozenStill[target] > GetGameTime(target) || WeaponStyle[client] == Style_Dragon))
+	if(target > 0 && (Arena_Mode() || f_TimeFrozenStill[target] > GetGameTime(target) || WeaponStyle[client] == Style_Dragon))
 	{
 		//the target is stunned! Do we allow a heat action?
 		if(WeaponLevel[client] > 1)
@@ -656,9 +658,18 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 				f_AntiStuckPhaseThroughFirstCheck[client] = GetGameTime() + (3.5 * Yakuza_DurationDoEnemy(target));
 				ApplyStatusEffect(client, client, "Intangible", 3.5 * Yakuza_DurationDoEnemy(target));
 				//Everything is greenlit! Yaay!
-				HeatActionCooldown[client] = GetGameTime() + 0.5;
-				if(WeaponStyle[client] != Style_Dragon)
-					HeatActionCooldownEnemy[target] = GetGameTime() + 5.0;
+				if(!Arena_Mode())
+				{
+					HeatActionCooldown[client] = GetGameTime() + 0.5;
+					if(WeaponStyle[client] != Style_Dragon)
+						HeatActionCooldownEnemy[target] = GetGameTime() + 5.0;
+				}
+				else
+				{
+					HeatActionCooldown[client] = GetGameTime() + 5.0;
+					if(WeaponStyle[client] != Style_Dragon)
+						HeatActionCooldownEnemy[target] = GetGameTime() + 15.0;
+				}
 				//cant spam heat action.
 				switch(WeaponStyle[client])
 				{
