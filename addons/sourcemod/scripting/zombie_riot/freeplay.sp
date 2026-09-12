@@ -968,7 +968,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			}	
 			else
 			{	
-				switch(GetRandomInt(1, 4))
+				switch(GetRandomInt(1, 6))
 				{
 					case 1:
 					{
