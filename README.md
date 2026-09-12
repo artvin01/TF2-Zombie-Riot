@@ -1,6 +1,7 @@
 # tf2_zr_wikigen
 *https://artvin01.github.io/TF2-Zombie-Riot/*  
 Automatic encyclopedia generator for https://github.com/artvin01/TF2-Zombie-Riot.  
+Only bug fixes will be done, as the project is getting rewritten in another language.  
 Icon source: https://github.com/feathericons/feather  
 
 # Running locally
@@ -55,10 +56,10 @@ Expected output:
 
 ## Generating the Wiki
 **Environment Variables**
-- `SCOPE=static,phrase,wavesets,npcs,items,music,skilltree`: Limit which parts of the wiki are generated. **Modules will load dependencies as needed.**  
+- `SCOPE=static,phrase,wavesets,npcs,items,music,skilltree,statusfx`: Limit which parts of the wiki are generated. **Modules will load dependencies as needed.**  
 - `DEBUG=npcs,wavesets,weaponpap,weaponicon`: Show more info for specified category.  
   Waveset-specific config:  
-- `FILESCOPE`: Limit waveset data generation to a specific config file, e.g. `FILESCOPE=maps/zr_matrix.cfg`.  
+- `FILESCOPE`: Limit waveset data generation to a specific config file, e.g. `FILESCOPE=maps/zr_matrix.cfg`. (excluded: maps/zr_holdout.cfg, maps/arena_.cfg)  
 - `TYPESCOPE=Setup,Custom,Rogue,Betting,Construction`: Limit waveset data generation to a specific type of config file.  
 
 To generate the wiki, simply run
@@ -71,10 +72,3 @@ To generate the wiki, simply run
 All generated files will be put in `gh-pages/`.  
 Static ones are located in `docs/` and are copied to `gh-pages` upon generation. The `tf_icons` directory is an exception to that.  
 Use the `clear_page.py` script to remove all automatically generated content in `gh-pages`.  
-
-# TODO
-- [ ] Improved NPC data parsing (low priority)
-- [x] Waveset data (low priority)
-  - [ ] Special wavesets
-    - [ ] ZR: Construction
-        - [ ] (Full support) Construction 2
