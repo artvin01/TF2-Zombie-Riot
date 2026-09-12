@@ -464,6 +464,8 @@ static void PullAbilityM2(int client, int weapon, int slot, int cost, int streng
 
 			float damage = 65.0 * damagemulti;
 			damage *= Attributes_Get(weapon, 2, 1.0);
+			if(Arena_Mode())
+				damage *= 0.75;
 			
 			SDKHooks_TakeDamage(entity, client, client, damage, DMG_CLUB, weapon);
 
