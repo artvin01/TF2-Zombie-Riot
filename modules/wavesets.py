@@ -145,7 +145,7 @@ def parse_wave(wave_idx: int, wave_data: dict[str, Any], auto_wave_cash: bool, r
             if wave_entry == "xp":
                 output.append({
                     "type": "info",
-                    "text": f"Wave XP: {int(wave_entry_data)*5}" #
+                    "text": f"Wave XP: {int(wave_entry_data)*5}"
                 })
 
             if wave_entry == "cash":
@@ -222,7 +222,7 @@ def parse_wave(wave_idx: int, wave_data: dict[str, Any], auto_wave_cash: bool, r
             npc_name = npc_data.name
         except AttributeError:
             npc_name = wave_entry_data["plugin"]
-        npc_name_raw = npc_name
+        #npc_name_raw = npc_name
 
         if "custom_name" in wave_entry_data:
             npc_name = wave_entry_data["custom_name"]
@@ -337,7 +337,7 @@ def parse_wave(wave_idx: int, wave_data: dict[str, Any], auto_wave_cash: bool, r
             image = modules.shared.get_npc_icon(npc_data.icon)
 
             if npc_data.category != "Type_Hidden":
-                desc = f"<div class=\"flex_break\"></div>\n{util.divfornewline(get_npc(wave_entry_data["plugin"])["description"])}"
+                desc = f"<div class=\"flex_break\"></div>\n{util.divfornewline(npc_data.description)}"
         else:
             # temporarily an actual missing image
             image = "missing.png" # npc not found at all. this only happens when parse_wave has force=true
@@ -449,7 +449,7 @@ def parse_waveset(file: str, data: dict[str, Any], abslink: str, name: str, desc
             if wave.startswith("music_"):
                 if (modal := util.music_modal(wave_data)):
                     MUSIC_BY_TITLE[modal["musictitle"]] = modal
-                    output["music"][wave]= modal
+                    output["music"][wave] = modal
             continue
 
         if len(wave_data)==0 or sum([int(util.is_float(entry)) for entry in wave_data]) == 0: # second condition checks for npc amount
@@ -494,7 +494,7 @@ def parse_waveset_list_cfg(filename: str, html_mapsets: str, html_otherset: dict
     WAVESETLIST_DATA: dict[str,Any] = vdf.loads(WAVESETLIST_RAW) # type:ignore[w]
     WAVESETLIST_TYPE = list(WAVESETLIST_DATA.keys())[0]
 
-    if (WAVESETLIST_TYPE not in util.WAVESETS_TYPESCOPE) or "maps/zr_holdout.cfg" == filename: # Unsupported waveset cfg (Bunker, etc.)
+    if (WAVESETLIST_TYPE not in util.WAVESETS_TYPESCOPE) or "maps/zr_holdout.cfg" == filename or "maps/arena_.cfg" == filename: # Unsupported waveset cfg (Bunker, etc.)
         util.log(f"Unsupported waveset cfg {filename}!","WARNING")
         return html_mapsets, html_otherset
 
@@ -534,6 +534,7 @@ def parse_waveset_list_cfg(filename: str, html_mapsets: str, html_otherset: dict
         if "maps" in filename:
             filename_md = f"gh-pages/{filename.split("/")[-1].replace(".cfg","")}.html"
         else:
+            raise NotImplemented("UNTESTED")
             filename_md = f"gh-pages/wavesets_{filename}.html".replace("/","_")
     name = filename_md.split("/")[-1].replace(".html","")
     if "maps" not in filename:

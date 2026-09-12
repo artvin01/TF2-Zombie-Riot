@@ -166,7 +166,7 @@ class Weapon:
         self.IS_HIDDEN:bool = weapon_data["hidden"]=="1" if "hidden" in weapon_data else False
 
         self.taglist:list[str] = [] if "tags" not in weapon_data else weapon_data["tags"].split(",") if "," in weapon_data["tags"] else weapon_data["tags"].split(";")
-        self.tags:str = " ".join(f"{tag}" for tag in self.taglist if tag != "" and len(tag)>2) if "tags" in weapon_data else ""
+        self.tags:str = " ".join(f"{tag}" for tag in self.taglist if len(tag)>2)
 
         self.author:str = f"By {weapon_data["author"]}" if "author" in weapon_data else ""
 
