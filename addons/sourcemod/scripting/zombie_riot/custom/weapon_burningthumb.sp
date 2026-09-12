@@ -539,7 +539,9 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 				bonus += ShinForm[attacker] ? 2 : 1;
 				if(WeaponLevel[attacker] > 2)
 					damage *= ShinForm[attacker] ? 1.3 : 1.1;
-				
+
+				if(Arena_Mode())
+					damage *= 0.75;
 				InflictBurnPotency(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 5 : 2);
 
 				resetCharge = true;
@@ -566,6 +568,8 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 				if(WeaponLevel[attacker] > 2)
 					damage *= ShinForm[attacker] ? 1.3 : 1.1;
 				
+				if(Arena_Mode())
+					damage *= 0.75;
 				InflictBurnCount(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 5 : 2);
 
 				resetCharge = true;
@@ -593,6 +597,8 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 				
 				damage *= WeaponLevel[attacker] > 2 ? 1.5 : 1.2;
 
+				if(Arena_Mode())
+					damage *= 0.65;
 				if(ChargeSpent[attacker] != 2)
 					SpendAmmo(attacker, weapon);
 			}
@@ -658,6 +664,8 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 				if(WeaponLevel[attacker] > 2)
 					damage *= ShinForm[attacker] ? 1.3 : 1.1;
 				
+				if(Arena_Mode())
+					damage *= 0.75;
 				InflictBurnPotency(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 5 : 2);
 
 				resetCharge = true;
@@ -682,6 +690,8 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 				if(WeaponLevel[attacker] > 2)
 					damage *= ShinForm[attacker] ? 1.3 : 1.1;
 				
+				if(Arena_Mode())
+					damage *= 0.75;
 				InflictBurnCount(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 5 : 2);
 
 				resetCharge = true;
@@ -707,6 +717,8 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 				if(WeaponLevel[attacker] > 2)
 					damage *= ShinForm[attacker] ? 1.3 : 1.1;
 				
+				if(Arena_Mode())
+					damage *= 0.75;
 				if(ChargeSpent[attacker] != 2)
 					SpendAmmo(attacker, weapon);
 			}
@@ -733,8 +745,17 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 			WorldSpaceCenter(victim, PosDo);
 
 			EmitSoundToClient(attacker, "mvm/mvm_tank_explode.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-			TE_Particle("hightower_explosion", PosDo, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0, .clientspec = attacker);
+			if(Arena_Mode())
+			{
+				EmitSoundToAll("mvm/mvm_tank_explode.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+				TE_Particle("hightower_explosion", PosDo, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0, .clientspec = attacker);
 
+			}
+			else
+			{
+				EmitSoundToClient(attacker, "mvm/mvm_tank_explode.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+				TE_Particle("hightower_explosion", PosDo, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+			}
 			TE_Particle("mvm_soldier_shockwave", PosDo, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 		//	if(RaidbossIgnoreBuildingsLogic(1))
 		//		damage *= 2.0;

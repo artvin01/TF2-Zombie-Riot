@@ -1527,6 +1527,7 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);
 	if(victim <= MaxClients && Arena_Mode())
 		damage = RoundFloat(damage * ARENA_ELEMENTAL_NERF_PLAYER);
+		
 	if(victim <= MaxClients)
 	{
 		bool fresh = (Armor_DebuffType[victim] != Element_Warped || Armor_Charge[victim] >= 0);
