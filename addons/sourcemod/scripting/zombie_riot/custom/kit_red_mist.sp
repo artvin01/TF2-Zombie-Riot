@@ -889,6 +889,8 @@ public void Red_Mist_OnTakeDamage_Deal(int victim, int &attacker, int &inflictor
 	if(Abno_Pages[attacker] & ABNORMPAGE_VAMPIRISM)
 	{
 		float HealByThis = (7.5 * WeaponLevel[attacker]);
+		if(Arena_Mode())
+			HealByThis *= 0.5;
 		HealEntityGlobal(attacker, attacker, HealByThis, 1.0, 2.0, HEAL_SELFHEAL);
 	}
 	if(Abno_Pages[attacker] & ABNORMPAGE_PREY)
@@ -1021,6 +1023,8 @@ public void Red_Mist_On_Kill(int victim, int killer, int weapon)
 		//PrintToChatAll("absorption works");
 		float MaxHealth = float(SDKCall_GetMaxHealth(killer));
 		float HealByThis = (MaxHealth * 0.05);
+		if(Arena_Mode())	
+			HealByThis *= 5.0;
 		HealEntityGlobal(killer, killer, HealByThis, 1.0, 2.0, HEAL_SELFHEAL);
 		absorption_counter[killer] += 1;
 		//PrintToChat(killer, "Absorption heal triggered");
@@ -1328,6 +1332,8 @@ public Action Onrush_Check_Distance(Handle timer, DataPack Onrush_pack)
 		Strenght_boost = 1.0 + (0.05 * Strenght_Amount[client]);
 		OnrushDamage *= Strenght_boost;
 		OnrushDamage *= 2.5; //yes
+		if(Arena_Mode())
+			OnrushDamage *= 0.5;
 		RedMistReduceCD(client, 1.5);
 		static float angles[3];
 		GetEntPropVector(client, Prop_Send, "m_angRotation", angles);
