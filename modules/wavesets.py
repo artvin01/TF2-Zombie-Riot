@@ -494,7 +494,7 @@ def parse_waveset_list_cfg(filename: str, html_mapsets: str, html_otherset: dict
     WAVESETLIST_DATA: dict[str,Any] = vdf.loads(WAVESETLIST_RAW) # type:ignore[w]
     WAVESETLIST_TYPE = list(WAVESETLIST_DATA.keys())[0]
 
-    if (WAVESETLIST_TYPE not in util.WAVESETS_TYPESCOPE) or "maps/zr_holdout.cfg" == filename or "maps/arena_.cfg" == filename: # Unsupported waveset cfg (Bunker, etc.)
+    if (WAVESETLIST_TYPE not in util.WAVESETS_TYPESCOPE) or "maps/zr_holdout.cfg" == filename or (filename.endswith("_.cfg") and filename != "maps/vsh_.cfg"): # Unsupported waveset cfg (Bunker, etc.)
         util.log(f"Unsupported waveset cfg {filename}!","WARNING")
         return html_mapsets, html_otherset
 
