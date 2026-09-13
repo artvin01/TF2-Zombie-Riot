@@ -1761,6 +1761,8 @@ public void ObjectGeneric_ClotTakeDamage_Post(int victim, int attacker, int infl
 
 bool IsPlayerSideBuilding(int owner)
 {
+	if(owner == -1)
+		return false;
 	if(IsValidClient(owner))
 		return true;
 	if(Citizen_IsIt(owner))
