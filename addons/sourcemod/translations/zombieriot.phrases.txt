@@ -6147,6 +6147,7 @@
 	"Arena Team PvP"
 	{
 		"en"	"Arena Team PvP"
+		"ko"	"아레나 팀 PvP"
 	}
 	"Arena Team PvP Desc"
 	{
@@ -6156,10 +6157,12 @@
 	"Control Points PvP"
 	{
 		"en"	"Control Points PvP"
+		"ko"	"점령 지점 PvP"
 	}
 	"Control Points PvP Desc"
 	{
 		"en"	"Capture all control points to win.\nSpending budget increases every kill."
+		"ko"	"모든 점령 지점을 점령하여 승리하세요.\n적 처치 시마다 자금이 증가합니다."
 	}
 	"All Special Rounds"
 	{
