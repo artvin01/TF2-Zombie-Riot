@@ -740,7 +740,7 @@
 	}
 	"Crossbow Man Desc"
 	{
-		"en" 		"-SHoots arrows which predict movement"
+		"en" 		"-Shoots arrows which predict movement"
 		"ko" 		"-대상의 움직임을 예측하며 화살을 발사합니다."
 	}
 	"Spearman Desc"
