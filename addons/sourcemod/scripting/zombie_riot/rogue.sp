@@ -1035,7 +1035,7 @@ public Action Rogue_RoundStartTimer(Handle timer)
 {
 	ProgressTimer = null;
 	
-	if(!Voting && GameRules_GetRoundState() == RoundState_ZombieRiot)
+	if(!Voting && GameRules_GetRoundState() != RoundState_BetweenRounds)
 	{
 		if(CvarNoRoundStart.BoolValue)
 		{

@@ -1037,6 +1037,11 @@ void Dungeon_PlayerDowned(int client)
 		LastKilledAt[client] = GetGameTime();
 }
 
+float Dungeon_LastKilledAt(int client)
+{
+	return LastKilledAt[client];
+}
+
 bool Dungeon_InRespawnTimer(int client)
 {
 	if(!Dungeon_Started())

@@ -1,7 +1,11 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define PVP_MAX_TIME		1200.0
+#define PVP_MAX_ROUND_CASH	50
+
 static bool ArenaMode;
+static bool SuddenDeath;
 static bool Started;
 static Handle GameTimer;
 static ArrayList SpecialRounds;
@@ -25,6 +29,25 @@ bool Arena_Started()
 	return Arena_Mode() && Started;
 }
 
+bool Arena_CanRespawn(int client = 0)
+{
+	if(SuddenDeath && !Waves_InSetup())
+		return false;
+	
+	if(client && !Waves_InSetup())
+	{
+		float time = (15.0 + Dungeon_LastKilledAt(client)) - GetGameTime();
+		if(time > 0.0)
+		{
+			f_DelayLookingAtHud[client] = GetGameTime() + time;
+			PrintCenterText(client, "Respawning in %ds...", RoundToCeil(time));
+			return false;
+		}
+	}
+
+	return true;
+}
+
 stock bool Arena_FreeForAll()
 {
 	return Arena_Mode() && FreeForAll;
@@ -32,7 +55,10 @@ stock bool Arena_FreeForAll()
 
 int Arena_GetRound()
 {
-	return (RoundCount + 1) * 10;
+	if(SuddenDeath)
+		return (RoundCount + 1) * 10;
+	
+	return RoundCount;
 }
 
 void Arena_MapStart()
@@ -44,12 +70,6 @@ void Arena_MapStart()
 // Waves_SetupVote
 void Arena_SetupVote(KeyValues kv)
 {
-	PrecacheMvMIconCustom("classic_defend", false);
-	PrecacheMvMIconCustom("robo_extremethreat");
-	PrecacheSound("ui/chime_rd_2base_pos.wav");
-	PrecacheSound("ui/chime_rd_2base_neg.wav");
-	PrecacheSound("ui/itemcrate_smash_rare.wav");
-
 	ArenaMode = true;
 
 	delete SpecialRounds;
@@ -74,6 +94,7 @@ void Arena_SetupVote(KeyValues kv)
 	Rogue_SetupVote(kv, "Arena");
 
 	char buffer[PLATFORM_MAX_PATH];
+	SuddenDeath = view_as<bool>(kv.GetNum("suddendeath", true));
 	FreeForAll = view_as<bool>(kv.GetNum("freeforall"));
 	
 	if(kv.JumpToKey("SpecialRounds"))
@@ -174,8 +195,11 @@ void Arena_StartSetup()
 				SmiteNpcToDeath(entity);
 		}
 		
-		Citizen_SpawnAtPoint("b", .team = 2);
-		Citizen_SpawnAtPoint("a", .team = 3);
+		if(SuddenDeath)
+		{
+			Citizen_SpawnAtPoint("b", .team = 2);
+			Citizen_SpawnAtPoint("a", .team = 3);
+		}
 	}
 
 	delete WaitingTimer;
@@ -381,25 +405,29 @@ static Action ArenaGameTimer(Handle timer, int mode)
 		case 2:	// Round Start
 		{
 			delete WaitingTimer;
+			Started = true;
 			Waves_SetReadyStatus(0);
 			WaveStart_SubWaveStart(GetGameTime() - 300.0);
 			SetRandomMusic();
 			Ammo_Count_Ready += 10;
 
-			ExcuteRelay("zr_arenastart");
-
-			int entity = -1;
-			while((entity=FindEntityByClassname(entity, "func_door*")) != -1)
+			if(SuddenDeath)
 			{
-				AcceptEntityInput(entity, "Open");
-			}
+				ExcuteRelay("zr_arenastart");
 
-			while((entity=FindEntityByClassname(entity, "prop_door*")) != -1)
-			{
-				AcceptEntityInput(entity, "Open");
-			}
+				int entity = -1;
+				while((entity=FindEntityByClassname(entity, "func_door*")) != -1)
+				{
+					AcceptEntityInput(entity, "Open");
+				}
 
-			CreateTimer(1.0, UpdateNavBlockers, _, TIMER_FLAG_NO_MAPCHANGE);
+				while((entity=FindEntityByClassname(entity, "prop_door*")) != -1)
+				{
+					AcceptEntityInput(entity, "Open");
+				}
+
+				CreateTimer(1.0, UpdateNavBlockers, _, TIMER_FLAG_NO_MAPCHANGE);
+			}
 
 			for(int client = 1; client <= MaxClients; client++)
 			{
@@ -432,7 +460,7 @@ static Action ArenaGameTimer(Handle timer, int mode)
 				}
 			}
 
-			if(!FreeForAll)
+			if(!FreeForAll && SuddenDeath)
 			{
 				int balance;
 
@@ -465,6 +493,12 @@ static Action ArenaGameTimer(Handle timer, int mode)
 					}
 				}
 			}
+
+			if(!SuddenDeath)
+			{
+				SpawnTimer(PVP_MAX_TIME);
+				delete GameTimer;
+			}
 		}
 		case 3:	// Game Over
 		{
@@ -493,16 +527,15 @@ static Action ArenaGameTimer(Handle timer, int mode)
 				delete snap;
 			}
 
+			if(!SuddenDeath)
+				ForcePlayerLoss(true);
+
 			ForcePlayerLoss(false);
 			return Plugin_Continue;
 		}
 		default:
 		{
-			if(Started)
-			{
-				CheckAlivePlayers();
-			}
-			else
+			if(!Started)
 			{
 				float startTime = GameRules_GetPropFloat("m_flRestartRoundTime");
 				if(startTime < 0.0)
@@ -518,11 +551,31 @@ static Action ArenaGameTimer(Handle timer, int mode)
 					GameRules_SetProp("m_bInWaitingForPlayers", false);
 				}
 			}
+			else if(SuddenDeath)
+			{
+				CheckAlivePlayers();
+			}
+			else
+			{
+				if(RoundCount < sizeof(DefaultWaveCash))
+				{
+					CurrentCash += DefaultWaveCash[RoundCount];
+					//CPrintToChatAll("{green}%t", "Cash Gained!", DefaultWaveCash[RoundCount]);
+				}
+
+				RoundCount++;
+
+				if(RoundCount >= PVP_MAX_ROUND_CASH)
+				{
+					ForcePlayerLoss(true);
+					ForcePlayerLoss(false);
+				}
+			}
 		}
 	}
 
 	if(GameTimer == null)
-		GameTimer = CreateTimer(Started ? 3.0 : 0.1, ArenaGameTimer, 0);
+		GameTimer = CreateTimer(Started ? (SuddenDeath ? 3.0 : (PVP_MAX_TIME / float(PVP_MAX_ROUND_CASH))) : 0.1, ArenaGameTimer, 0);
 
 	return Plugin_Continue;
 }
@@ -606,15 +659,18 @@ void Arena_SetReadyStatus(int status)
 		}
 	}
 
-	int entity = -1;
-	while((entity=FindEntityByClassname(entity, "func_door*")) != -1)
+	if(SuddenDeath)
 	{
-		AcceptEntityInput(entity, "Close");
-	}
+		int entity = -1;
+		while((entity=FindEntityByClassname(entity, "func_door*")) != -1)
+		{
+			AcceptEntityInput(entity, "Close");
+		}
 
-	while((entity=FindEntityByClassname(entity, "prop_door*")) != -1)
-	{
-		AcceptEntityInput(entity, "Close");
+		while((entity=FindEntityByClassname(entity, "prop_door*")) != -1)
+		{
+			AcceptEntityInput(entity, "Close");
+		}
 	}
 }
 
@@ -627,7 +683,7 @@ static Action UpdateNavBlockers(Handle timer)
 // CheckAlivePlayers
 void Arena_CheckAlivePlayers(int killed)
 {
-	if(!Started || PostRound || Waves_InSetup())
+	if(!Started || PostRound || !SuddenDeath || Waves_InSetup())
 		return;
 	
 	int colorRef;
@@ -930,6 +986,35 @@ public void Arena_Turbolences_Collect()
 {
 	CurrentCash += 50000;
 	Modifier_Collect_Turbolences();
+}
+
+public float InterMusic_ByIntencityPvP(int client)
+{
+	int team = GetTeam(client);
+	float f_intencity;
+	float targPos[3];
+	float chargerPos[3];
+	GetClientAbsOrigin(client, chargerPos);
+	for(int target = 1; target <= MaxClients; target++)
+	{
+		if(IsClientInGame(target) && IsPlayerAlive(target) && GetTeam(target) != team)
+		{
+			GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", targPos);
+			float distance = GetVectorDistance(chargerPos, targPos, true);
+			if (distance <= RANGE_FIRST_MUSIC)
+			{
+				f_intencity += 3.0;
+			}
+			if (distance <= RANGE_SECOND_MUSIC)
+			{
+				f_intencity += 4.0;
+			}
+		}
+	}
+
+	float volume = f_intencity / float(CountPlayersOnServer() + 1);
+	
+	return fClamp(volume, 0.0, 1.0);
 }
 
 #include "roguelike/arena_specials.sp"
