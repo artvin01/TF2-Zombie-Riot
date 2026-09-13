@@ -2795,7 +2795,7 @@
 	{
 		"en"		"||| The store is here! |||\n||| Check below/around this text! |||"
 		"ko"		"||| 상점은 여기입니다! |||\n||| 이 텍스트 아래/주변을 확인하세요! |||" 
-		"ru"		"||| Магазин здесь! |||\n||| Check снизу/вокруг этого текста! |||
+		"ru"		"||| Магазин здесь! |||\n||| Check снизу/вокруг этого текста! |||"
 		"pl"		"||| Sklep jest tutaj! |||\n||| Sprawdź pod/wokół tego tekstu! |||"
 	}
 	"tutorial_storeclosed_warning"
@@ -6144,15 +6144,22 @@
 		"en" 		"And the many shells cried out one word, ''Manager''"
 		"ko"		"그리고 많은 껍데기들은 '관리자님' 만을 부르짖었다."
 	}
-	"Standard Team PvP"
+	"Arena Team PvP"
 	{
-		"en"	"Standard Team PvP"
-		"ko"	"기본 팀 PvP"
+		"en"	"Arena Team PvP"
 	}
-	"Standard Team PvP Desc"
+	"Arena Team PvP Desc"
 	{
 		"en"	"Two teams fight it out, best of 3.\nSpending budget increases every round."
 		"ko"	"두 팀이 3라운드 동안 대결을 펼칩니다.\n라운드 회차가 지날 때마다 자금이 증가합니다."
+	}
+	"Control Points PvP"
+	{
+		"en"	"Control Points PvP"
+	}
+	"Control Points PvP Desc"
+	{
+		"en"	"Capture all control points to win.\nSpending budget increases every kill."
 	}
 	"All Special Rounds"
 	{

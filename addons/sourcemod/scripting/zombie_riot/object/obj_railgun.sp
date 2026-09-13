@@ -242,6 +242,8 @@ static void Railgun_Boom(int client, int obj)
 
 	Strength *= 20.0;
 
+	if(Arena_Mode())
+		Strength *= 0.75;
 	float attack_speed;
 
 	attack_speed = 1.0 / Attributes_GetOnPlayer(client, 343, true, true); //Sentry attack speed bonus
@@ -407,25 +409,15 @@ static bool BEAM_TraceWallsOnly(int entity, int contentsMask)
 
 static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
-	static char classname[64];
-	if (IsValidEntity(entity))
+	if(IsValidEnemy(client, entity, true))
 	{
-		if(0 < entity)
+		for(int i=0; i < (MAX_TARGETS_HIT ); i++)
 		{
-			GetEntityClassname(entity, classname, sizeof(classname));
-			
-			if (((b_ThisWasAnNpc[entity] && !b_NpcHasDied[entity]) || !StrContains(classname, "func_breakable", true)) && (GetTeam(entity) != GetTeam(client)))
+			if(!BEAM_BuildingHit[i])
 			{
-				for(int i=0; i < (MAX_TARGETS_HIT ); i++)
-				{
-					if(!BEAM_BuildingHit[i])
-					{
-						BEAM_BuildingHit[i] = entity;
-						break;
-					}
-				}
+				BEAM_BuildingHit[i] = entity;
+				break;
 			}
-			
 		}
 	}
 	return false;

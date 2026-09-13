@@ -220,7 +220,7 @@ public void Weapon_Wand_OblitirationShot(int client, int weapon, int level, floa
 
 static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
-	if(IsValidEnemy(client, entity))
+	if(IsValidEnemy(client, entity, true))
 	{
 		for(int i=0; i < (MAXENTITIES); i++)
 		{

@@ -1793,6 +1793,17 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 		buttons = 0;
 		return Plugin_Changed;
 	}
+
+
+	if(Arena_Mode() && dieingstate[client] != 0)
+	{
+		//not being able to use any abilities or attack in arena mode as its quite unfair
+		buttons &= ~IN_ATTACK;
+		buttons &= ~IN_ATTACK2;
+		buttons &= ~IN_ATTACK3;
+		buttons &= ~IN_RELOAD;
+		return Plugin_Changed;
+	}
 	/*
 	Instant community feedback that T is very bad.
 	using idk what other button to use.
@@ -3180,19 +3191,19 @@ void Set_Projectile_CollisionFrame(int ref)
 	if(!IsValidEntity(entity))
 		return;
 
-	if(GetTeam(entity) != view_as<int>(TFTeam_Blue))
-	{
-		SetEntityCollisionGroup(entity, 27);
-		
-#if defined RPG
-		int attacker = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-		if(RPGCore_PlayerCanPVP(attacker, attacker))
-		{
-			//set team to blue while in pvp, so all interactions work just fine, but only do this while in PVP.
-			SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
-		}
-#endif
-	}
+//	if(Arena_Mode() || GetTeam(entity) != view_as<int>(TFTeam_Blue))
+//	{
+//		SetEntityCollisionGroup(entity, 27);
+//		
+//#if defined RPG
+//		int attacker = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+//		if(RPGCore_PlayerCanPVP(attacker, attacker))
+//		{
+//			//set team to blue while in pvp, so all interactions work just fine, but only do this while in PVP.
+//			SetEntProp(entity, Prop_Data, "m_iTeamNum", TFTeam_Blue);
+//		}
+//#endif
+//	}
 }
 public void Delete_instantly(int entity)
 {
@@ -4066,6 +4077,8 @@ public void ArrowTouchNonCombatEntity(int entity, int other)
 		return;
 
 	if(!b_ThisWasAnNpc[other])
+		return;
+	if(other <= MaxClients)
 		return;
 
 		

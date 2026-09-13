@@ -1266,7 +1266,7 @@ static Action GunsawHudTimer(Handle timer, DataPack pack)
 					
 					SetEntityHealth(client, health);
 				}
-				else if(GameRules_GetRoundState() != RoundState_ZombieRiot)
+				else if(GameRules_GetRoundState() == RoundState_BetweenRounds)
 				{
 					DrugNerf[client] -= 20;
 					if(DrugNerf[client] < 0)

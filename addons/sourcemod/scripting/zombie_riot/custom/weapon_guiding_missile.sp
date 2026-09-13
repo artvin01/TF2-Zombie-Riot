@@ -57,7 +57,7 @@ public void Guiding_Missile_Created_Shoot_M2Internal(int client, int weapon, boo
 	float damage = 100.0;
 	damage *= Attributes_Get(weapon, 2, 1.0);
 	if(Arena_Mode())	
-		damage *= 0.5;
+		damage *= 0.2;
 
 	damage *= 1.25;
 	float Speed = 400.0;

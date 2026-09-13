@@ -496,3 +496,15 @@ public void Weapon_ShotgunGrenadeLauncher_PAP(int client, int weapon, bool crit,
 		}
 	}
 }
+public void StickyPVPBuff(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int zr_custom_damage)
+{
+	if(CheckInHud())
+		return;
+	if(!Arena_Mode())
+		return;
+	if((zr_custom_damage & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
+		return;
+
+	damage *= 1.35;
+
+}

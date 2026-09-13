@@ -407,7 +407,7 @@ public void Mlynar_Cooldown_Logic(int client, int weapon)
 						//There is no limit to how often you can gather power from a raid.
 						GatherPower += 10;
 						if(Arena_Mode())
-							GatherPower += 10;
+							GatherPower += 5;
 					}
 					else if (b_thisNpcIsABoss[entityindex] && i_MlynarMaxDamageGetFromSameEnemy[entityindex] < 400)
 					{
@@ -429,6 +429,10 @@ public void Mlynar_Cooldown_Logic(int client, int weapon)
 				if(GatherPower > 10 && !Arena_Mode())
 				{
 					GatherPower = 10;
+				}
+				if(GatherPower > 25 && Arena_Mode())
+				{
+					GatherPower = 25;
 				}
 				f_MlynarDmgMultiAgressiveClose[client] += (0.0015 * float(GatherPower));
 				if(i_CustomWeaponEquipLogic[weapon] == WEAPON_MLYNAR_PAP_2)
@@ -503,7 +507,7 @@ float Player_OnTakeDamage_Mlynar(int victim, float &damage, int attacker, int we
 		return damage;
 
 	if(Arena_Mode())
-		damage *= 0.65;
+		damage *= 0.8;
 	f_MlynarHurtDuration[victim] = GetGameTime() + 1.0;
 	//insert reflect code.
 	if(f_MlynarReflectCooldown[victim][attacker] < GetGameTime())

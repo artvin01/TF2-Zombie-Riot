@@ -1115,6 +1115,11 @@ public Action NPC_TraceAttack(int victim, int& attacker, int& inflictor, float& 
 		
 		if((damagetype & DMG_BULLET) || (damagetype & DMG_BUCKSHOT))
 		{
+			//always have some falloff in this gamemode
+			if(Arena_Mode())
+				if(i_WeaponDamageFalloff[weapon] >= 0.9)
+					i_WeaponDamageFalloff[weapon] = 0.9;
+					
 			if(i_WeaponDamageFalloff[weapon] != 1.0) //dont do calculations if its the default value, meaning no extra or less dmg from more or less range!
 			{
 				if(b_ProximityAmmo[attacker])

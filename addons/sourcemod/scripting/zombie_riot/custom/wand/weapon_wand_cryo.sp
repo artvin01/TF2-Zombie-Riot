@@ -206,7 +206,7 @@ void CryoWandHitM2(int entity, int victim, float damage, int weapon)
 	{
 		if (!Cryo_Slowed[victim])
 		{
-			Elemental_AddCyroDamage(victim, entity, RoundFloat(damage), Cryo_SlowType[entity]);
+			Elemental_AddCyroDamage(victim, entity, RoundFloat(damage * (Arena_Mode() ? 0.25 : 1.0)), Cryo_SlowType[entity]);
 		}
 	}
 }

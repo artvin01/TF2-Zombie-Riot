@@ -2006,10 +2006,6 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 			damagetype = DMG_TRUEDAMAGE;
 		}
 	}
-	if(damagetype & DMG_CRIT)
-	{
-		damagetype &= ~DMG_CRIT; //Remove Crit Damage at all times, it breaks calculations for no good reason.
-	}
 
 	if(!CheckInHud())
 	{
@@ -2250,6 +2246,10 @@ public Action Player_OnTakeDamage(int victim, int &attacker, int &inflictor, flo
 	// in PVP minium damage is 1
 	if(!CheckInHud() && Arena_Mode() && damage > 0.001 && damage <= 1.0)
 		damage = 1.0;
+	if(damagetype & DMG_CRIT)
+	{
+		damagetype &= ~DMG_CRIT; //Remove Crit Damage at all times, it breaks calculations for no good reason.
+	}
 	return Plugin_Changed;
 }
 
@@ -2340,7 +2340,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			return Plugin_Handled;
 		}
 		*/
-		else if((LastMann_BeforeLastman || LastMann || b_IsAloneOnServer) && f_OneShotProtectionTimer[victim] < GameTime && !SpecterCheckIfAutoRevive(victim))
+		else if(!Arena_Mode() &&(LastMann_BeforeLastman || LastMann || b_IsAloneOnServer) && f_OneShotProtectionTimer[victim] < GameTime && !SpecterCheckIfAutoRevive(victim))
 		{
 			f_OneShotProtectionTimer[victim] = GameTime + 60.0; // 60 second cooldown
 			if(!LastMann)
@@ -2387,7 +2387,7 @@ public Action Player_OnTakeDamageAlive_DeathCheck(int victim, int &attacker, int
 			//this updates it .
 			//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlive_DeathCheck 11");
 			
-			Rogue_PlayerDowned(victim);	
+			Rogue_PlayerDowned(victim);
 			
 			//there are players still left, down them.
 			int DownsLeft = TotalDowns();

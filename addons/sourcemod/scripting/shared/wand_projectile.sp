@@ -260,7 +260,7 @@ bool ProjectileTraceHitTargets(int entity, int contentsMask, DataPack packFilter
 	if(!IsValidEntity(Owner))
 		Owner = iExclude;
 	int target = entity;
-	if(GetTeam(iExclude) == TFTeam_Red)
+	if(Owner <= MaxClients)
 		target = Target_Hit_Wand_Detection(iExclude, entity);
 	else
 	{
@@ -301,9 +301,11 @@ public Action Timer_RemoveEntity_CustomProjectileWand(Handle timer, DataPack pac
 public void Wand_Base_StartTouch(int entity, int other)
 {
 	int target = other;
-	if(!Arena_Mode() && GetTeam(entity) == TFTeam_Red)
+	int Owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
+	if(Owner == -1)
+		Owner = entity;
+	if(Owner <= MaxClients)
 		target = Target_Hit_Wand_Detection(entity, other);
-
 	static float AbsOrigin[3];
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", AbsOrigin);
 	bool Collided = IsPointCollideable(AbsOrigin,entity,other);

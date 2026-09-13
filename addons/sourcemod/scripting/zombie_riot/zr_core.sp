@@ -1182,7 +1182,7 @@ public void OnMapInit()
 				if(fixUp)
 					entry.Update(key, NULL_STRING, "item_healthkit_medium");
 			}
-			else if(!StrContains(classname, "trigger_capture_area"))
+			/*else if(!StrContains(classname, "trigger_capture_area"))
 			{
 				if(fixUp)
 				{
@@ -1190,7 +1190,7 @@ public void OnMapInit()
 					i--;
 					length--;
 				}
-			}
+			}*/
 			else if(!StrContains(classname, "tf_logic_arena"))
 			{
 				entry.Update(key, NULL_STRING, "logic_relay");
@@ -2729,7 +2729,7 @@ public void SetHealthAfterReviveAgain(int ref)
 	int client = EntRefToEntIndex(ref);
 	if(IsValidClient(client))
 	{
-		if(PapModeDo == PAP_MODE_BUILDING_ONLY)
+		if(PapModeDo == PAP_MODE_BUILDING_ONLY || Arena_Mode())
 			SetEntityHealth(client, SDKCall_GetMaxHealth(client));
 		else
 			SetEntityHealth(client, 50);

@@ -185,7 +185,7 @@ void JoinClassInternal(int client, TFClassType ClassChangeTo)
 		FailedInstachange = true;
 
 	if(dieingstate[client] != 0)
-		FailedInstachange = true;
+		FailedInstachange = true;	
 	
 	if(!IsPlayerAlive(client))
 		FailedInstachange = true;
@@ -193,8 +193,12 @@ void JoinClassInternal(int client, TFClassType ClassChangeTo)
 	if(f_TimeUntillNormalHeal[client] > GetGameTime())
 		FailedInstachange = true;
 		
+	if(Arena_Mode() && f_TimeUntillNormalHeal[client] + 10.0 > GetGameTime())
+		FailedInstachange = true;
+		
 	if(f_InBattleHudDisableDelay[client] > GetGameTime())
 		FailedInstachange = true;
+
 
 	
 	if(ClassChangeTo <= TFClass_Unknown)
