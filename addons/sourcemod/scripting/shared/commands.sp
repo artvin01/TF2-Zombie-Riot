@@ -185,7 +185,7 @@ void JoinClassInternal(int client, TFClassType ClassChangeTo)
 		FailedInstachange = true;
 
 	if(dieingstate[client] != 0)
-		FailedInstachange = true;
+		FailedInstachange = true;	
 	
 	if(!IsPlayerAlive(client))
 		FailedInstachange = true;
