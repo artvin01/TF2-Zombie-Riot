@@ -2729,7 +2729,7 @@ public void SetHealthAfterReviveAgain(int ref)
 	int client = EntRefToEntIndex(ref);
 	if(IsValidClient(client))
 	{
-		if(PapModeDo == PAP_MODE_BUILDING_ONLY)
+		if(PapModeDo == PAP_MODE_BUILDING_ONLY || Arena_Mode())
 			SetEntityHealth(client, SDKCall_GetMaxHealth(client));
 		else
 			SetEntityHealth(client, 50);
