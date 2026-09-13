@@ -193,8 +193,12 @@ void JoinClassInternal(int client, TFClassType ClassChangeTo)
 	if(f_TimeUntillNormalHeal[client] > GetGameTime())
 		FailedInstachange = true;
 		
+	if(Arena_Mode() && f_TimeUntillNormalHeal[client] + 10.0 > GetGameTime())
+		FailedInstachange = true;
+		
 	if(f_InBattleHudDisableDelay[client] > GetGameTime())
 		FailedInstachange = true;
+
 
 	
 	if(ClassChangeTo <= TFClass_Unknown)
