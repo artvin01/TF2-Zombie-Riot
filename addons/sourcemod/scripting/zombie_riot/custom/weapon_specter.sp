@@ -429,7 +429,7 @@ public void SpecterAlter_Cooldown_Logic(int client, int weapon)
 					for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 					{
 						int baseboss_index = EntRefToEntIndexFast(i_ObjectsNpcsTotal[entitycount]);
-						if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != TFTeam_Red)
+						if (IsValidEntity(baseboss_index) && GetTeam(baseboss_index) != GetTeam(client))
 						{
 							WorldSpaceCenter(baseboss_index, vecTarget);
 							
