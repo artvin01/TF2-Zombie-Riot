@@ -1,6 +1,9 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+#define PVP_MAX_TIME		1200.0
+#define PVP_MAX_ROUND_CASH	50
+
 static bool ArenaMode;
 static bool SuddenDeath;
 static bool Started;
@@ -15,7 +18,6 @@ static int GregHandicap;
 static bool AlwaysSpecial;
 static ArrayList MusicList;
 static Handle WaitingTimer;
-static float WaveScaling;
 
 public bool Arena_Mode()
 {
@@ -29,7 +31,7 @@ bool Arena_Started()
 
 bool Arena_CanRespawn(int client = 0)
 {
-	if(!SuddenDeath && !Waves_InSetup())
+	if(SuddenDeath && !Waves_InSetup())
 		return false;
 	
 	if(client && !Waves_InSetup())
@@ -56,7 +58,7 @@ int Arena_GetRound()
 	if(SuddenDeath)
 		return (RoundCount + 1) * 10;
 	
-	return RoundToFloor(WaveScaling);
+	return RoundCount;
 }
 
 void Arena_MapStart()
@@ -202,22 +204,6 @@ void Arena_StartSetup()
 
 	delete WaitingTimer;
 	WaitingTimer = CreateTimer(1.0, Timer_WaitingPeriod, _, TIMER_REPEAT);
-}
-
-void Arena_PlayerKilled()
-{
-	int prescale = RoundToFloor(WaveScaling);
-	WaveScaling += 3.0 / float(CountPlayersOnServer() + 1);
-	int postscale = RoundToFloor(WaveScaling);
-	
-	for(int i = prescale; i < postscale; i++)
-	{
-		if(i >= sizeof(DefaultWaveCash))
-			break;
-		
-		CurrentCash += DefaultWaveCash[i];
-		CPrintToChatAll("{green}%t", "Cash Gained!", DefaultWaveCash[i]);
-	}
 }
 
 static Action Timer_WaitingPeriod(Handle timer)
@@ -419,6 +405,7 @@ static Action ArenaGameTimer(Handle timer, int mode)
 		case 2:	// Round Start
 		{
 			delete WaitingTimer;
+			Started = true;
 			Waves_SetReadyStatus(0);
 			WaveStart_SubWaveStart(GetGameTime() - 300.0);
 			SetRandomMusic();
@@ -473,7 +460,7 @@ static Action ArenaGameTimer(Handle timer, int mode)
 				}
 			}
 
-			if(!FreeForAll && !SuddenDeath)
+			if(!FreeForAll && SuddenDeath)
 			{
 				int balance;
 
@@ -506,6 +493,12 @@ static Action ArenaGameTimer(Handle timer, int mode)
 					}
 				}
 			}
+
+			if(!SuddenDeath)
+			{
+				SpawnTimer(PVP_MAX_TIME);
+				delete GameTimer;
+			}
 		}
 		case 3:	// Game Over
 		{
@@ -534,16 +527,15 @@ static Action ArenaGameTimer(Handle timer, int mode)
 				delete snap;
 			}
 
+			if(!SuddenDeath)
+				ForcePlayerLoss(true);
+
 			ForcePlayerLoss(false);
 			return Plugin_Continue;
 		}
 		default:
 		{
-			if(Started)
-			{
-				CheckAlivePlayers();
-			}
-			else
+			if(!Started)
 			{
 				float startTime = GameRules_GetPropFloat("m_flRestartRoundTime");
 				if(startTime < 0.0)
@@ -559,11 +551,31 @@ static Action ArenaGameTimer(Handle timer, int mode)
 					GameRules_SetProp("m_bInWaitingForPlayers", false);
 				}
 			}
+			else if(SuddenDeath)
+			{
+				CheckAlivePlayers();
+			}
+			else
+			{
+				if(RoundCount < sizeof(DefaultWaveCash))
+				{
+					CurrentCash += DefaultWaveCash[RoundCount];
+					//CPrintToChatAll("{green}%t", "Cash Gained!", DefaultWaveCash[RoundCount]);
+				}
+
+				RoundCount++;
+
+				if(RoundCount >= PVP_MAX_ROUND_CASH)
+				{
+					ForcePlayerLoss(true);
+					ForcePlayerLoss(false);
+				}
+			}
 		}
 	}
 
 	if(GameTimer == null)
-		GameTimer = CreateTimer(Started ? 3.0 : 0.1, ArenaGameTimer, 0);
+		GameTimer = CreateTimer(Started ? (SuddenDeath ? 3.0 : (PVP_MAX_TIME / float(PVP_MAX_ROUND_CASH))) : 0.1, ArenaGameTimer, 0);
 
 	return Plugin_Continue;
 }
@@ -974,6 +986,35 @@ public void Arena_Turbolences_Collect()
 {
 	CurrentCash += 50000;
 	Modifier_Collect_Turbolences();
+}
+
+public float InterMusic_ByIntencityPvP(int client)
+{
+	int team = GetTeam(client);
+	float f_intencity;
+	float targPos[3];
+	float chargerPos[3];
+	GetClientAbsOrigin(client, chargerPos);
+	for(int target = 1; target <= MaxClients; target++)
+	{
+		if(IsClientInGame(target) && IsPlayerAlive(target) && GetTeam(target) != team)
+		{
+			GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", targPos);
+			float distance = GetVectorDistance(chargerPos, targPos, true);
+			if (distance <= RANGE_FIRST_MUSIC)
+			{
+				f_intencity += 3.0;
+			}
+			if (distance <= RANGE_SECOND_MUSIC)
+			{
+				f_intencity += 4.0;
+			}
+		}
+	}
+
+	float volume = f_intencity / float(CountPlayersOnServer() + 1);
+	
+	return fClamp(volume, 0.0, 1.0);
 }
 
 #include "roguelike/arena_specials.sp"

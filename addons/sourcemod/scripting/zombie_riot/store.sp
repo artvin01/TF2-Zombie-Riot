@@ -5653,6 +5653,7 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("526", 1.0);//
 	map.SetValue("527", 1.0);// no tf2 afterburn
 	map.SetValue("4049", 1.0);// Elemental Res
+	map.SetValue("68", ClassForStats == TFClass_Scout ? -1.0 : 0.0);
 	
 	if(PapModeDo == PAP_MODE_BUILDING_ONLY)
 	{

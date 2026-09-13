@@ -4317,7 +4317,7 @@ void Waves_SetReadyStatus(int status, bool stopmusic = true)
 			InSetup = false;
 			GameRules_SetProp("m_bInWaitingForPlayers", false);
 			GameRules_SetProp("m_bInSetup", false);
-			GameRules_SetProp("m_iRoundState", RoundState_ZombieRiot);
+			GameRules_SetProp("m_iRoundState", Arena_Mode() ? RoundState_RoundRunning : RoundState_ZombieRiot);
 			//stop music once game starts.
 			for(int client=1; client<=MaxClients; client++)
 			{

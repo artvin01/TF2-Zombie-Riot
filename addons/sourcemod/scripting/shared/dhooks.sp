@@ -1570,7 +1570,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 		RequestFrame(SetHealthAfterRevive, EntIndexToEntRef(client));
 	}
 	
-	if(Dungeon_Mode())
+	if(Dungeon_Mode() || Arena_Mode())
 		i_AmountDowned[client] = 0;
 	f_TimeAfterSpawn[client] = GetGameTime() + 1.0;
 
@@ -1581,7 +1581,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 		return MRES_Ignored;
 	}
 	
-	if(Construction_Mode() || BetWar_Mode() || Dungeon_Mode())
+	if(Construction_Mode() || BetWar_Mode() || Dungeon_Mode() || Arena_Mode())
 		return MRES_Ignored;
 #endif
 	
