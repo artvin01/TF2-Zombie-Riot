@@ -1515,7 +1515,7 @@ public MRESReturn DHook_ForceRespawn(int client)
 	}
 #if defined ZR
 
-	if(!IsRespawning && Arena_Mode() && !Waves_InSetup())
+	if(!IsRespawning && !Arena_CanRespawn(client))
 		return MRES_Supercede;
 	
 	if(!IsRespawning && Dungeon_InRespawnTimer(client))

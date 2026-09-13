@@ -3550,6 +3550,9 @@ void Zombie_Delay_Warning()
 	if(!Waves_Started() || InSetup || Classic_Mode() || Construction_InSetup() || Dungeon_InSetup())
 		return;
 
+	if(Arena_Mode() && Arena_CanRespawn())
+		return;
+
 	switch(i_ZombieAntiDelaySpeedUp)
 	{
 		case 0:

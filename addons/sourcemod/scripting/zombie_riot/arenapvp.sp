@@ -2,6 +2,7 @@
 #pragma newdecls required
 
 static bool ArenaMode;
+static bool SuddenDeath;
 static bool Started;
 static Handle GameTimer;
 static ArrayList SpecialRounds;
@@ -14,6 +15,7 @@ static int GregHandicap;
 static bool AlwaysSpecial;
 static ArrayList MusicList;
 static Handle WaitingTimer;
+static float WaveScaling;
 
 public bool Arena_Mode()
 {
@@ -25,6 +27,25 @@ bool Arena_Started()
 	return Arena_Mode() && Started;
 }
 
+bool Arena_CanRespawn(int client = 0)
+{
+	if(!SuddenDeath && !Waves_InSetup())
+		return false;
+	
+	if(client && !Waves_InSetup())
+	{
+		float time = (15.0 + Dungeon_LastKilledAt(client)) - GetGameTime();
+		if(time > 0.0)
+		{
+			f_DelayLookingAtHud[client] = GetGameTime() + time;
+			PrintCenterText(client, "Respawning in %ds...", RoundToCeil(time));
+			return false;
+		}
+	}
+
+	return true;
+}
+
 stock bool Arena_FreeForAll()
 {
 	return Arena_Mode() && FreeForAll;
@@ -32,7 +53,10 @@ stock bool Arena_FreeForAll()
 
 int Arena_GetRound()
 {
-	return (RoundCount + 1) * 10;
+	if(SuddenDeath)
+		return (RoundCount + 1) * 10;
+	
+	return RoundToFloor(WaveScaling);
 }
 
 void Arena_MapStart()
@@ -44,12 +68,6 @@ void Arena_MapStart()
 // Waves_SetupVote
 void Arena_SetupVote(KeyValues kv)
 {
-	PrecacheMvMIconCustom("classic_defend", false);
-	PrecacheMvMIconCustom("robo_extremethreat");
-	PrecacheSound("ui/chime_rd_2base_pos.wav");
-	PrecacheSound("ui/chime_rd_2base_neg.wav");
-	PrecacheSound("ui/itemcrate_smash_rare.wav");
-
 	ArenaMode = true;
 
 	delete SpecialRounds;
@@ -74,6 +92,7 @@ void Arena_SetupVote(KeyValues kv)
 	Rogue_SetupVote(kv, "Arena");
 
 	char buffer[PLATFORM_MAX_PATH];
+	SuddenDeath = view_as<bool>(kv.GetNum("suddendeath", true));
 	FreeForAll = view_as<bool>(kv.GetNum("freeforall"));
 	
 	if(kv.JumpToKey("SpecialRounds"))
@@ -174,12 +193,31 @@ void Arena_StartSetup()
 				SmiteNpcToDeath(entity);
 		}
 		
-		Citizen_SpawnAtPoint("b", .team = 2);
-		Citizen_SpawnAtPoint("a", .team = 3);
+		if(SuddenDeath)
+		{
+			Citizen_SpawnAtPoint("b", .team = 2);
+			Citizen_SpawnAtPoint("a", .team = 3);
+		}
 	}
 
 	delete WaitingTimer;
 	WaitingTimer = CreateTimer(1.0, Timer_WaitingPeriod, _, TIMER_REPEAT);
+}
+
+void Arena_PlayerKilled()
+{
+	int prescale = RoundToFloor(WaveScaling);
+	WaveScaling += 3.0 / float(CountPlayersOnServer() + 1);
+	int postscale = RoundToFloor(WaveScaling);
+	
+	for(int i = prescale; i < postscale; i++)
+	{
+		if(i >= sizeof(DefaultWaveCash))
+			break;
+		
+		CurrentCash += DefaultWaveCash[i];
+		CPrintToChatAll("{green}%t", "Cash Gained!", DefaultWaveCash[i]);
+	}
 }
 
 static Action Timer_WaitingPeriod(Handle timer)
@@ -386,20 +424,23 @@ static Action ArenaGameTimer(Handle timer, int mode)
 			SetRandomMusic();
 			Ammo_Count_Ready += 10;
 
-			ExcuteRelay("zr_arenastart");
-
-			int entity = -1;
-			while((entity=FindEntityByClassname(entity, "func_door*")) != -1)
+			if(SuddenDeath)
 			{
-				AcceptEntityInput(entity, "Open");
-			}
+				ExcuteRelay("zr_arenastart");
 
-			while((entity=FindEntityByClassname(entity, "prop_door*")) != -1)
-			{
-				AcceptEntityInput(entity, "Open");
-			}
+				int entity = -1;
+				while((entity=FindEntityByClassname(entity, "func_door*")) != -1)
+				{
+					AcceptEntityInput(entity, "Open");
+				}
 
-			CreateTimer(1.0, UpdateNavBlockers, _, TIMER_FLAG_NO_MAPCHANGE);
+				while((entity=FindEntityByClassname(entity, "prop_door*")) != -1)
+				{
+					AcceptEntityInput(entity, "Open");
+				}
+
+				CreateTimer(1.0, UpdateNavBlockers, _, TIMER_FLAG_NO_MAPCHANGE);
+			}
 
 			for(int client = 1; client <= MaxClients; client++)
 			{
@@ -432,7 +473,7 @@ static Action ArenaGameTimer(Handle timer, int mode)
 				}
 			}
 
-			if(!FreeForAll)
+			if(!FreeForAll && !SuddenDeath)
 			{
 				int balance;
 
@@ -606,15 +647,18 @@ void Arena_SetReadyStatus(int status)
 		}
 	}
 
-	int entity = -1;
-	while((entity=FindEntityByClassname(entity, "func_door*")) != -1)
+	if(SuddenDeath)
 	{
-		AcceptEntityInput(entity, "Close");
-	}
+		int entity = -1;
+		while((entity=FindEntityByClassname(entity, "func_door*")) != -1)
+		{
+			AcceptEntityInput(entity, "Close");
+		}
 
-	while((entity=FindEntityByClassname(entity, "prop_door*")) != -1)
-	{
-		AcceptEntityInput(entity, "Close");
+		while((entity=FindEntityByClassname(entity, "prop_door*")) != -1)
+		{
+			AcceptEntityInput(entity, "Close");
+		}
 	}
 }
 
@@ -627,7 +671,7 @@ static Action UpdateNavBlockers(Handle timer)
 // CheckAlivePlayers
 void Arena_CheckAlivePlayers(int killed)
 {
-	if(!Started || PostRound || Waves_InSetup())
+	if(!Started || PostRound || !SuddenDeath || Waves_InSetup())
 		return;
 	
 	int colorRef;
