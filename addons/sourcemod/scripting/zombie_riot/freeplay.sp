@@ -311,6 +311,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Is_Immune_To_Nuke = true;
 		enemy.Is_Boss = 2;
 		enemy.ExtraDamage = 1.0;
+		enemy.CustomName = "";
 
 		switch(RaidFight)
 		{
