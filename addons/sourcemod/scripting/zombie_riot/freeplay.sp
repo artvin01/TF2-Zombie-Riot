@@ -1000,16 +1000,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		else
 		{
 			if(enemy.Health)
-			{
-				if(StrContains(enemy.CustomName, "First ") != -1)
-				{
-					enemy.Health = RoundToCeil((HealthBonus + (enemy.Health * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.009))) * 0.5);
-				}
-				else
-				{
-					enemy.Health = RoundToCeil((enemy.Health * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.009)) * 0.5);
-				}
-			}
+				enemy.Health = RoundToCeil((enemy.Health * MultiGlobalHealth * HealthMulti * (((postWaves * 3) + 99) * 0.009)) * 0.5);
 	
 			count = RoundToFloor((count * (((postWaves * 1.5) + 80) * 0.03)) * 0.112);
 		}
