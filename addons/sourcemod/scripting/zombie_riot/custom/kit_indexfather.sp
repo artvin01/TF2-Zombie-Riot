@@ -1341,7 +1341,7 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 		if(Arena_Mode())
 			damage *= 1.5;
 		else
-			damage *= 2.0;
+			damage *= 1.75;
 	}
 	if(CheckInHud())
 		return;

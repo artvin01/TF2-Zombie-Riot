@@ -1364,7 +1364,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 						SDKHooks_TakeDamage(victim, 0, 0, float(ReturnEntityMaxHealth(victim)) * 0.1, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
 						IncreaseEntityDamageTakenBy(victim, 1.25, 5.0);
 						TF2_StunPlayer(victim, 1.0, 0.75, TF_STUNFLAG_SLOWDOWN);
-						PlasmicElemental_HealNearby(-1, float(ReturnEntityMaxHealth(victim)), position, 200.0, 2.0, 0, 3);
+						PlasmicElemental_HealNearby(attacker, float(ReturnEntityMaxHealth(victim)), position, 200.0, 2.0, 0, 3);
 						float HudY = -1.0;
 						float HudX = -1.0;
 						SetHudTextParams(HudX, HudY, 2.5, 235, 75, 215, 255);
@@ -1381,7 +1381,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 							theteam = 3;
 						else if(theteam == 3)
 							theteam = 2;
-						PlasmicElemental_HealNearby(-1, float(ReturnEntityMaxHealth(victim)), position, 200.0, 2.0, 2, theteam);
+						PlasmicElemental_HealNearby(attacker, float(ReturnEntityMaxHealth(victim)), position, 200.0, 2.0, 2, theteam);
 					}
 					f_ArmorCurrosionImmunity[victim][Element_Plasma] = GetGameTime() + 2.5;
 

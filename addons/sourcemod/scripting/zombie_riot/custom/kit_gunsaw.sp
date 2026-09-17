@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const float MaxMulti = 3.0;	// Max health multi after cap (3.0 is x3 of HealthCap)
+static const float MaxMulti = 1.75;	// Max health multi after cap (3.0 is x3 of HealthCap)
 static const float SlowStack = 0.1;	// Decrease speed by this much every max health over cap (0.25 gives -25% speed at x2 HP)
 static const float PropDamage = 3.0;	// Prop damage (Metal Cost * Building Damage * PropDamage)
 
@@ -593,7 +593,7 @@ public void Gunsaw_NPCDeath(int entity)
 	*/
 }
 
-void Gunsaw_NPCTakeDamage(int victim, int client)
+void Gunsaw_NPCTakeDamage(int victim, int client, int weapon)
 {
 	if(!CheckInHud() && WeaponTimer[client] && (dieingstate[client] || (GetClientButtons(client) & IN_DUCK)))
 	{
@@ -602,6 +602,15 @@ void Gunsaw_NPCTakeDamage(int victim, int client)
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
 			ShowSyncHudText(client, SyncHud_Notifaction, "No downs left!");
+			return;
+		}
+		float cooldown = Store_GetCooldownIndex(client, StoreWeapon[weapon], 1);
+		if(cooldown > 0.0)
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			SetGlobalTransTarget(client);
+			ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", cooldown);
 			return;
 		}
 
@@ -625,6 +634,7 @@ void Gunsaw_NPCTakeDamage(int victim, int client)
 
 		i_AmountDowned[client]++;
 		StealBodyForm(client, victim);
+		Store_ApplyCooldownIndex(client, StoreWeapon[weapon], 1, 15.0);
 
 		if(victim <= MaxClients)
 		{
@@ -1452,6 +1462,8 @@ public void Weapon_GunsawShotgun_M1(int client, int weapon, bool crit, int slot)
 		if(Arena_Mode()) //nerf for it
 			BulletsMax = 3;
 		float ratio = BoomstickAdjustDamageAndAmmoCount(weapon, BulletsMax);
+		Attributes_SetMulti(weapon, 1, 0.75);
+
 		Ability_Apply_Cooldown(client, 2, 2.0 * ratio);
 		
 		float vec[3], vel[3];
@@ -1540,8 +1552,8 @@ public void Weapon_GunsawPistol_M2(int client, int weapon, bool crit, int slot)
 	}
 
 	int health = ReturnEntityMaxHealth(client);
-	HealEntityGlobal(client, client, float(health), 5.0, 1.5, HEAL_SELFHEAL);
-	DrugNerf[client] += 200;
+	HealEntityGlobal(client, client, float(health), 5.0, 2.5, HEAL_SELFHEAL);
+	DrugNerf[client] += 250;
 	Monologue_Drug(client);
 }
 

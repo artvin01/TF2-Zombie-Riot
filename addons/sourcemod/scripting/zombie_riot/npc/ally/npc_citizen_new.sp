@@ -4704,16 +4704,18 @@ public void Citizen_ClotThink(int iNPC)
 		{
 			npc.m_flidle_talk = 0.0;
 			npc.m_bAllowBackWalking = false;
-			
-			WorldSpaceCenter(target, vecTarget);
-			if(GetVectorDistance(vecMe, vecTarget, true) > 29000.0)
+			if(IsValidEntity(target))
 			{
-				npc.SetGoalEntity(target);
-			}
-			else
-			{
-				PredictSubjectPosition(npc, target, _, _, vecTarget);
-				npc.SetGoalVector(vecTarget);
+				WorldSpaceCenter(target, vecTarget);
+				if(GetVectorDistance(vecMe, vecTarget, true) > 29000.0)
+				{
+					npc.SetGoalEntity(target);
+				}
+				else
+				{
+					PredictSubjectPosition(npc, target, _, _, vecTarget);
+					npc.SetGoalVector(vecTarget);
+				}
 			}
 			
 			npc.StartPathing();

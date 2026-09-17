@@ -1390,6 +1390,8 @@ stock int HealEntityGlobal(int healer,
 	  int MaxHealPermitted = 99999999,
 	  float &HealPenalty = 1.0)
 {
+	if(receiver <= 0)
+		return 0;
 	/*
 		MaxHealPermitted is used for HealEntityViaFloat
 		Good for ammo based healing.

@@ -1598,7 +1598,7 @@ static stock float NPC_OnTakeDamage_Equipped_Weapon_Logic(int victim, int &attac
 		}
 		case WEAPON_GUNSAW:
 		{
-			Gunsaw_NPCTakeDamage(victim, attacker);
+			Gunsaw_NPCTakeDamage(victim, attacker, weapon);
 		}
 	}
 #endif

@@ -772,21 +772,10 @@ public void PlasmicElemental_HealNearby(int healer, float amount, float position
 						trueamount = float(ReturnEntityMaxHealth(npc)) * amount;
 					else
 						trueamount = amount;
-					if(healer != -1)
+					if(GetTeam(npc) == GetTeam(healer))
 					{
-						if(GetTeam(npc) == GetTeam(healer))
-						{
-							ApplyStatusEffect(npc, npc, "Plasma Heal Prevent", 1.0);
-							HealEntityGlobal(healer, npc, trueamount, 1.0, healtime, HEAL_NO_RULES);
-						}
-					}
-					else
-					{
-						if(GetTeam(npc) == correct_team)
-						{
-							ApplyStatusEffect(npc, npc, "Plasma Heal Prevent", 1.0);
-							HealEntityGlobal(npc, npc, trueamount, 1.0, healtime, HEAL_NO_RULES);
-						}
+						ApplyStatusEffect(npc, npc, "Plasma Heal Prevent", 1.0);
+						HealEntityGlobal(healer, npc, trueamount, 1.0, healtime, HEAL_NO_RULES);
 					}
 				}
 			}
