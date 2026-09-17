@@ -225,7 +225,7 @@ public void Weapon_EliteDefender(int client, int weapon, bool &result, int slot)
 
 public void Weapon_SupplyDrop(int client, int weapon, bool &result, int slot)
 {
-	if (!Waves_Started())
+	if (Waves_InSetup())
 	{
 		ClientCommand(client, "playgamesound items/medshotno1.wav");
 		SetDefaultHudPosition(client);
@@ -316,11 +316,8 @@ public void Weapon_SupplyDrop(int client, int weapon, bool &result, int slot)
 	char flareParticle[64];
 	if (powerupsSpawned)
 	{
-		if (ZR_Get_Modifier() == SECONDARY_MERCS)
-			flareParticle = SUPPLYDROP_FLARE_PARTICLE_BLU;
-		else
-			flareParticle = SUPPLYDROP_FLARE_PARTICLE_RED;
-		
+		bool blu = ZR_Get_Modifier() == SECONDARY_MERCS || GetTeam(client) == TFTeam_Blue;
+		flareParticle = blu ? SUPPLYDROP_FLARE_PARTICLE_BLU : SUPPLYDROP_FLARE_PARTICLE_RED;
 	}
 	else
 	{
@@ -376,14 +373,18 @@ static void Weapon_SupplyDrop_SpawnPickupHeadingToPos(int client, float initialP
 		DispatchKeyValue(crate, "skin", "1");
 		
 		pos[2] += 20.0;
-		TeleportEntity(crate, pos);
+		float ang[3];
+		ang[1] = GetRandomFloat(-180.0, 180.0);
+		TeleportEntity(crate, pos, ang);
+		
 		DispatchSpawn(crate);
 		SetEntProp(crate, Prop_Send, "m_usSolidFlags", 12); 
 		SetEntityCollisionGroup(crate, 27);
 		
 		SetEntPropFloat(crate, Prop_Send, "m_flModelScale", 0.6);
 		
-		if (ZR_Get_Modifier() == SECONDARY_MERCS)
+		bool blu = ZR_Get_Modifier() == SECONDARY_MERCS || GetTeam(client) == TFTeam_Blue;
+		if (blu)
 			SetEntityRenderColor(crate, 88, 133, 162);
 		else
 			SetEntityRenderColor(crate, 210, 100, 103);
@@ -433,7 +434,7 @@ static bool Weapon_SupplyDrop_CanSpawnPickupType(bool enhancedPickup)
 
 static void Weapon_SupplyDrop_Rocket_StartTouch(int entity, int target)
 {
-	if (0 < target < MAXENTITIES)
+	if (target != 0 && target < MAXENTITIES)
 		return;
 	
 	float pos[3];
@@ -447,7 +448,7 @@ static void Weapon_SupplyDrop_Rocket_StartTouch(int entity, int target)
 
 static void Weapon_SupplyDrop_Enhanced_Rocket_StartTouch(int entity, int target)
 {
-	if (0 < target < MAXENTITIES)
+	if (target != 0 && target < MAXENTITIES)
 		return;
 	
 	float pos[3];
