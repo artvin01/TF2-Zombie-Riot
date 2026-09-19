@@ -4131,9 +4131,11 @@
 	"Desired Host"
 	{
 		"en"	"Desired Host"
+		"ko"	"숙주 갈망"
 	}
 	"Desired Host Desc"
 	{
 		"en"	"Becomes a new host for The Mercenary on death."
+		"ko"	"사망 시 ''용병''의 새로운 숙주가 됩니다."
 	}
 }
