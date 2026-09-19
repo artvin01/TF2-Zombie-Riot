@@ -7511,8 +7511,9 @@ void Clip_GiveWeaponClipBack(int client, int weapon)
 	if(item.GetItemInfo(item.Owned[client]-1, info))
 	{
 		float PrimaryAttack = GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack");
-		if(PrimaryAttack < item.m_flNextPrimaryAttack[client])
+		if(PrimaryAttack < item.m_flNextPrimaryAttack[client] && item.m_flNextPrimaryAttack[client] < FAR_FUTURE)
 		{
+			//prevent no attack fix
 			SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", item.m_flNextPrimaryAttack[client]);
 		}
 		if(info.HasNoClip)

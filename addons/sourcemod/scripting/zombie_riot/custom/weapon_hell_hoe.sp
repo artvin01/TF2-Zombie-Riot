@@ -137,7 +137,7 @@ public Action Timer_Management_Hell_Hoe(Handle timer, DataPack pack)
 					Original_Atackspeed = Attributes_Get(weapon, 6, 1.0);
 					Attributes_Set(weapon, 6, Original_Atackspeed / 0.75);
 					
-					Ability_Apply_Cooldown(client, 2, 20.0,weapon);
+					Ability_Apply_Cooldown(client, 3, 20.0,weapon);
 					g_isPlayerInDeathMarch_HellHoe[client] = false;
 					SetDefaultHudPosition(client);
 					SetGlobalTransTarget(client);
