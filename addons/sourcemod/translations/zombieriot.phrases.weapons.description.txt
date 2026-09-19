@@ -873,11 +873,7 @@
 	
 	"Knife Desc"
 	{
-		"en"	"-Backstabs enemies under correct conditions\n-Bleeds enemies on hit\n-If enemy attacks you, and you backstab them, you deal 2x damage\n-Raids take 2x backstab damage."
-		"fr"	"Le poignardage cause un long saignement.\nDégats du poignardage doublé contre les Raids."
-		"chi"	"可背刺造成大量流血。\n对boss造成*2伤害。"
-		"it"	"Può eseguire il backstab e infliggere emorragie per un lungo periodo di tempo."
-		"ko"	"-백스탭이 가능\n-적중 시 출혈 부여\n-자신을 목표로 하는 적을 백스탭 시 피해량 2배\n레이드 보스에게 주는 피해량 2배"
+		"en"	"-Backstabs enemies under correct conditions\n-Bleeds enemies on hit\n-If enemy attacks you, and you backstab them, you deal 2x damage\n-Raids take 2x backstab damage.\nBackstabs give a speedbonus, raid for longer"
 	}
 	"Knife Pap 1"
 	{

@@ -5663,6 +5663,10 @@ void Store_ApplyAttribs(int client)
 
 	map.SetValue("442", 1.0);	// Move Speed
 	map.SetValue("49", 1);	// no doublejumps
+	if(i_CurrentEquippedPerk[client] & PERK_SYMBIOSOS_SHOT) //living armor
+	{
+		map.SetValue("4058", 1);	// regen armor
+	}
 
 	if(b_IsAloneOnServer)
 		map.SetValue("412", 0.75);	//if alone, gain 25% resistance
@@ -6721,7 +6725,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false, bo
 		{	
 			//dont give it if it doesnt have it.
 			if(Attributes_Has(entity, 103))
-				Attributes_SetMulti(entity, 103, 1.2);
+				Attributes_SetMulti(entity, 103, 1.4);
 				
 			if(Attributes_Has(entity, 106))
 				Attributes_SetMulti(entity, 106, 0.8);

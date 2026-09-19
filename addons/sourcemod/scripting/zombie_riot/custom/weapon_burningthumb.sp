@@ -341,7 +341,7 @@ public void Weapon_BurningThumb_R(int client, int weapon, bool crit, int slot)
 				SetEntityHealth(client, 50);
 				Rogue_TriggerFunction(Artifact::FuncRevive, client);
 
-				HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)), (i_CurrentEquippedPerk[client] & PERK_REGENE) ? 0.2 : 0.1, 1.0, HEAL_ABSOLUTE);
+				HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)), (i_CurrentEquippedPerk[client] & PERK_REGENE) ? 0.75 : 0.45, 1.0, HEAL_ABSOLUTE);
 
 				GiveCompleteInvul(client, 1.5);
 				CheckLastMannStanding(0);

@@ -367,7 +367,7 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 		
 			if((damage > float(flMaxHealth / 20) || flHealth < flMaxHealth / 5 || damage > 25.0) && f_WidowsWineDebuffPlayerCooldown[victim] < GameTime) //either too much dmg, or your health is too low.
 			{
-				f_WidowsWineDebuffPlayerCooldown[victim] = GameTime + 20.0;
+				f_WidowsWineDebuffPlayerCooldown[victim] = GameTime + 14.0;
 				
 				float vecVictim[3]; WorldSpaceCenter(victim, vecVictim);
 				
@@ -1848,7 +1848,7 @@ static stock void OnTakeDamageWidowsWine(int victim, int &attacker, int &inflict
 	{
 		if(f_WidowsWineDebuffPlayerCooldown[victim] < GameTime) //either too much dmg, or your health is too low.
 		{
-			f_WidowsWineDebuffPlayerCooldown[victim] = GameTime + 20.0;
+			f_WidowsWineDebuffPlayerCooldown[victim] = GameTime + 14.0;
 				
 			float vecVictim[3]; WorldSpaceCenter(victim,vecVictim);
 				
@@ -2018,7 +2018,11 @@ static stock bool OnTakeDamageBackstab(int victim, int &attacker, int &inflictor
 					damage *= 5.25;
 					if(Arena_Mode())
 						damage *= 7.0;
-
+					float DurationSpeed = 1.5;
+					if(b_thisNpcIsARaid[victim])
+						DurationSpeed = 2.3;
+					ApplyStatusEffect(attacker, attacker, "Backstab SpeedBonus", DurationSpeed);
+					
 #if defined ZR
 					CClotBody npc = view_as<CClotBody>(victim);
 

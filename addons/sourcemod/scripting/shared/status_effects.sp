@@ -2012,6 +2012,19 @@ void StatusEffects_TeslarStick()
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
+
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Backstab SpeedBonus");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	//Make sure it isnt ignored, set it to 0.0, on need for extra func checks either.
+	data.MovementspeedModif			= 1.2;
+	data.MovementspeedModifPlayer	= 1.2;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.Slot						= 0; //0 means ignored
+	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
+	StatusEffect_AddGlobal(data);
 }
 
 stock bool NpcStats_IsEnemyTeslar(int victim, bool High)
