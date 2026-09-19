@@ -2990,7 +2990,7 @@
 		"en"	"Glug Infested"
 		"ko"	"글러그에 감염된"
 	}
-	"Glug Infested Desc"
+	"Glug Infested Prefix Desc"
 	{
 		"en"	"When hurt, everyso often, spawns a glug on their side"
 		"ko"	"피격 시, 높은 확률로 자신의 위치에 글러그를 스폰시킵니다."
