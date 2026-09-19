@@ -3540,31 +3540,32 @@ bool PlayerIsInNpcBattle(int client, float ExtradelayTime = 0.0)
 
 void ForcePlayerWin(bool fakeout = false)
 {
-	bool PlayNormalMusic = false;
+	bool PlayNormalMusic = true;
 	for(int client = 1; client <= MaxClients; client++)
 	{
 		if(!b_IsPlayerABot[client] && IsClientInGame(client) && !IsFakeClient(client))
 		{
-			Music_Stop_All(client);
 			SetMusicTimer(client, GetTime() + 33);
-			SendConVarValue(client, sv_cheats, "1");
-			Convars_FixClientsideIssues(client);
+			Music_Stop_All(client);
+			
 			if(MusicWin.PlayMusic(client))
 				PlayNormalMusic = false;
+			
+			SendConVarValue(client, sv_cheats, "1");
+			Convars_FixClientsideIssues(client);
 		}
 	}
+	
 	if(!fakeout)
 		ResetReplications();
-
+	
 	cvarTimeScale.SetFloat(0.1);
 	CreateTimer(0.5, SetTimeBack);
 	if(PlayNormalMusic)
 		EmitCustomToAll("#zombiesurvival/music_win_1.mp3", _, SNDCHAN_STATIC, SNDLEVEL_NONE, _, 2.0);
-
-
+	
 	if(!fakeout)
 	{
-		
 		// Send info through a forward
 		ArrayList playerList = new ArrayList();
 		for (int client = 1; client <= MaxClients; client++)
@@ -3572,6 +3573,7 @@ void ForcePlayerWin(bool fakeout = false)
 			if (!b_IsPlayerABot[client] && IsClientInGame(client) && !IsFakeClient(client) && GetTeam(client) == 2)
 				playerList.Push(client);
 		}
+		
 		ArrayList RogueitemNames = new ArrayList(64);
 		if(ZR_GetSpecialMode() == Mode_Rogue1 || 
 		ZR_GetSpecialMode() == Mode_Rogue2 ||
@@ -3593,7 +3595,6 @@ void ForcePlayerWin(bool fakeout = false)
 					}
 				}
 			}
-
 		}
 		
 		char waveset[64], modifier[64];
@@ -3601,7 +3602,7 @@ void ForcePlayerWin(bool fakeout = false)
 		strcopy(modifier, sizeof(modifier), WhatModifierSetting);
 		int TimeTookToBeat = GetTime() - TimeWhenStartedWaveset;
 		Native_ZR_OnWinInfo(playerList, waveset, modifier, TimeTookToBeat, CurrentRound[0], RogueitemNames);
-
+		
 		delete playerList;
 		delete RogueitemNames;
 
