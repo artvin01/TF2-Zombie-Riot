@@ -1488,7 +1488,7 @@
 	{
 		"en"	"She was trapped after we defeated Whiteflower, a possessed pawn after we defeated Unspeakable, now we need to stop her.\n{yellow}NPC allies will use the same max health from players."
 		"it"	"Era intrappolata dopo aver sconfitto Whiteflower, una pedina posseduta dopo aver sconfitto Unspeakable, ora dobbiamo fermarla.\n{yellow}Gli alleati PNG useranno la stessa salute massima dei giocatori."
-		"ko"	"그녀는 배풍등을 격파한 순간 갇혀버렸고, 형용할 수 없는 자를 격파한 순간 그것의 꼭두각시가 되었다. 이제 그녀를 막아야한다.\n{yellow}모든 아군 NPC들의 최대 체력이 플레이어의 최대 체력과 동일해짐"
+		"ko"	"배풍등을 격파한 순간 갇혀버렸고, 형용할 수 없는 자를 격파한 순간 꼭두각시가 된 자. 이제 그녀를 막아야한다.\n{yellow}모든 아군 NPC들의 최대 체력이 플레이어의 최대 체력과 동일해짐"
 	}
 	"The Bladedance"
 	{
@@ -1574,7 +1574,7 @@
 	{
 		"en"	"{yellow}Reila will acompany you.{green}Receive an common artifact."
 		"it"	"{yellow}Reila ti accompagnerà. Ricevi un artefatto comune."
-		"ko"	"{yellow}레일라가 당신에게 합류합니다. {green}일반 등급 소장품을 얻습니다."
+		"ko"	"{yellow}레일라가 당신과 동행합니다. {green}일반 등급 소장품을 얻습니다."
 	}
 
 	"Gamemode History Lore"
@@ -1695,7 +1695,7 @@
 	{
 		"en"	"You hope you haven't threw away that Fractured voidstone too early. Are you strong enough?"
 		"it"	"Spera di non aver buttato via troppo presto la pietra vuota fratturata. Sei abbastanza forte?"
-		"ko"	"당신이 그 '혼란' 공허석을 너무 일찍 던져넣지 않았기를 바라고 있다. 과연 생존할 수 있을까?"
+		"ko"	"당신은 그 '혼란' 공허석을 너무 일찍 던져넣지 않았기를 바란다. 과연 살아남을 수 있을까?"
 	}
 	"We Are Fractured Option 2"
 	{
@@ -1707,7 +1707,7 @@
 	{
 		"en"	"You left right away, you feel as if the Fractured voidstone was behind this. Maybe we need to try it when we're ready to handle this."
 		"it"	"Se ne è andato subito, si ha l'impressione che dietro a tutto questo ci sia la Pietra Vuota Fratturata. Forse dovremo provarla quando saremo pronti a gestire la situazione."
-		"ko"	"당신은 바로 그 장소를 떠난다. 이건 꼭 마치 '혼란' 공허석 때문에 벌어진 일인것 같다. 나중에 이 사태에서 버텨낼 준비가 되었다면 시도해봐야할지도 모른다."
+		"ko"	"당신은 바로 그 장소를 떠난다. 이건 꼭 마치 '혼란' 공허석 때문에 벌어진 일인것 같다. 나중에 이걸 버텨낼 준비가 되었다면 시도해봐야할지도 모른다."
 	}
 
 	"Poison Water"
@@ -2563,12 +2563,6 @@
 		"it" "Avete trovato il corpo di... Guln."
 		"ko" "당신이 찾은 것은... 굴른의... 시체입니다."
 	}
-	"Crystalized Warped Subjects Guln"
-	{
-		"en" "You find the body of... Guln."
-		"it" "Avete trovato il corpo di... Guln."
-		"ko" "당신이 찾은 것은... 굴른의... 시체입니다."
-	}
 	"Book of Nature"
 	{
 		"en" "Book of Nature"
@@ -2585,7 +2579,7 @@
 	{
 		"en" "You pick up the book that's off to the side, near some other peaceful related subjects."
 		"it" "Prende il libro che si trova in disparte, vicino ad altri argomenti legati alla pace."
-		"ko" "당신은 다른 평화로운 주제들과 가까운 옆에 있는 책을 집어 듭니다."
+		"ko" "당신은 다른 평화로운 주제들과 가까운 옆에 있는 책을 집어든다."
 	}
 	"Book of Weakness"
 	{
@@ -2603,13 +2597,13 @@
 	{
 		"en" "You pick up the book thats marked as ''important for mercs''"
 		"it" "Prendi il libro contrassegnato come importante per i mercenari"
-		"ko" "당신은 ''용병들에게 꼭 필요함''이라고 표시된 책을 집어듭니다."
+		"ko" "당신은 ''용병들에게 꼭 필요함''이라고 표시된 책을 집어든다."
 	}
 	"Book of Liver Optimisation Conclusion"
 	{
 		"en" "A book thats covered in grime and slime, seemingly left to rot."
 		"it" "Un libro ricoperto di sporcizia e melma, apparentemente lasciato a marcire."
-		"ko" "먼지와 진액으로 뒤덮여 마치 썩어가는 것처럼 보이는 책을 집습니다."
+		"ko" "먼지와 진액으로 뒤덮여 마치 썩어가는 것처럼 보이는 책을 집는다."
 	}
 	"Book of Liver Optimisation"
 	{
