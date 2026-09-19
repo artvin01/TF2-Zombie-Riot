@@ -589,7 +589,7 @@ public Action KillFeed_NextTimer(Handle timer)
 
 static void KillFeed_GetServerTranslatedName(int entity, char[] buffer, int length)
 {
-	if(!c_NpcName[0])
+	if(!c_NpcName[0][entity])
 		return;
 #if defined ZR
 	if (b_NameNoTranslation[entity])
