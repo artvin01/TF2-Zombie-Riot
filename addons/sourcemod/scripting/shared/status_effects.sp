@@ -12046,10 +12046,18 @@ void StatusEffects_Gunsaw()
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "*");
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = false;
-	data.OnTakeDamage_PostVictim		= ShrapnelDamageTaken;
+	data.OnTakeDamage_PostVictim	= ShrapnelDamageTaken;
+	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Desired Host");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "X");
+	data.Positive 					= false;
+	data.ElementalLogic				= true;
+	data.OnTakeDamage_PostVictim	= INVALID_FUNCTION;
+	data.TimerRepeatCall_Func 		= HostMarkedTimer;
 	StatusEffect_AddGlobal(data);
 }
-
 static void ShrapnelDamageTaken(int attacker, int victim, float damage, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype)
 {
 	if(i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED)
@@ -12058,6 +12066,34 @@ static void ShrapnelDamageTaken(int attacker, int victim, float damage, StatusEf
 	if(Apply_StatusEffect.TotalOwners[attacker])
 		StartBleedingTimer(victim, attacker, damage * 0.15, 6, -1, damagetype);
 }
+static void HostMarkedTimer(int entity, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(Apply_StatusEffect.DataForUse > GetGameTime())
+		return;
+	
+	bool Found;
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		int victim = Gunsaw_MarkedVictim(client);
+		if(victim == -1 || victim != EntIndexToEntRef(entity))
+			continue;
+		
+		if(IsEntityAlive(client, _, true))
+		{
+			Found = true;
+			break;
+		}
+	}
+
+	int ArrayPosition = E_AL_StatusEffects[entity].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
+	if(!Found)
+	{
+		Apply_StatusEffect.TimeUntillOver = 0.0;
+	}
+	Apply_StatusEffect.DataForUse = GetGameTime() + 0.3;
+	E_AL_StatusEffects[entity].SetArray(ArrayPosition, Apply_StatusEffect);
+}
+
 static void FuriosoAbilityStart(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
 {
 	IgniteTargetEffect(victim, FIRSTPERSON, victim, 2);
