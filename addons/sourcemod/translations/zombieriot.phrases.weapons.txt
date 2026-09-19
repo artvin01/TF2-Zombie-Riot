@@ -2418,11 +2418,6 @@
 		"ru"		"Живая броня"
 		"ko"		"생체 장갑"
 	}
-	"Living Armor Desc"
-	{
-		"en"		"-Armor now regens 3 seconds after being hurt\n-Armor icon changes\n-Max Armor is 25％ less\n-Armor protects only 50％ instead of 75％\n-Cant get armor from buildings"
-		"ko"		"-3초 동안 피해를 입지 않으면 아머 재생\n-아머 아이콘 변경, 최대 아머 -25％\n-아머의 피해 방어가 75％에서 50％로 감소\n-구조물에서 아머 획득 불가"
-	}
 	"Living Armor Chat"
 	{
 		"en"		"When buying or selling this perk, you lose all armor, and cant regen armor if done outside of setup for some time."

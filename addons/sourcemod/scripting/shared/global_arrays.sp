@@ -52,6 +52,7 @@ float PreventRespawnsAll;
 #define PERK_HASTY_HOPS_X			(1 << 14)
 #define PERK_MARKSMAN_BEER_X		(1 << 15)
 #define PERK_ENERGY_DRINK_X			(1 << 16)
+#define PERK_SYMBIOSOS_SHOT			(1 << 17)
 
 #define HEAL_NO_RULES				0	 	 
 //Nothing special.

@@ -277,7 +277,7 @@ public void Weapon_Amphi_Judgement(int client, int weapon, bool crit, int slot)
 		f_WeaponDamageCalculated[client] = damage;
 
 		//Reset all airborn targets.
-		for (int enemy = 1; enemy < AMPHI_MAX_HITUP; enemy++)
+		for (int enemy = 0; enemy < AMPHI_MAX_HITUP; enemy++)
 		{
 			i_AmphiTargetsAirborn[client][enemy] = false;
 		}
@@ -335,7 +335,7 @@ float AmphiM2Detection(int entity, int victim, float damage, int weapon)
 	{
 		if(!i_AmphiTargetsAirborn[entity][i])
 		{
-			i_AmphiTargetsAirborn[entity][i] = victim;
+			i_AmphiTargetsAirborn[entity][i] = EntIndexToEntRef(victim);
 			Hitlimit = false;
 			break;
 		}
@@ -414,7 +414,7 @@ public void Npc_Amphi_Launch_client(int client)
 		}
 		i_ExplosiveProjectileHexArray[TemomaryGun] = EP_DEALS_CLUB_DAMAGE;
 
-		f_TargetAirtimeDelayHit[client] = GetGameTime() + 0.15;
+		f_TargetAirtimeDelayHit[client] = GetGameTime() + 0.075;
 
 		//Gather all allive airborn-ed entities.
 		int count;
@@ -422,10 +422,10 @@ public void Npc_Amphi_Launch_client(int client)
 		for(int i=0; i < (MAX_TARGETS_HIT ); i++)
 		{
 			// Check if it's a valid target
-			if(i_AmphiTargetsAirborn[client][i] && IsValidEntity(i_AmphiTargetsAirborn[client][i]) && IsEntityAlive(i_AmphiTargetsAirborn[client][i], true))
+			if(i_AmphiTargetsAirborn[client][i] && IsEntityAlive(EntRefToEntIndex(i_AmphiTargetsAirborn[client][i])))
 			{
 				// Add it to our list, increase count by 1
-				targets[count++] = i_AmphiTargetsAirborn[client][i];
+				targets[count++] = EntRefToEntIndex(i_AmphiTargetsAirborn[client][i]);
 			}
 		}
 		
@@ -434,9 +434,7 @@ public void Npc_Amphi_Launch_client(int client)
 		{
 			float UserLoc[3], VicLoc[3];
 			GetClientAbsOrigin(client, UserLoc);
-			//We want to lag compensate this.
-			b_LagCompNPC_No_Layers = true;
-			StartLagCompensation_Base_Boss(client);	
+			//dont lag comp this, as its on a timer.
 
 			for(int entitycount; entitycount<i_MaxcountNpcTotal; entitycount++)
 			{
@@ -458,7 +456,6 @@ public void Npc_Amphi_Launch_client(int client)
 					}
 				}
 			}
-			FinishLagCompensation_Base_boss(.client = client);
 		}
 
 		if(count)
@@ -479,6 +476,7 @@ public void Npc_Amphi_Launch_client(int client)
 			float damage = (f_WeaponDamageCalculated[client] * 3.0);
 
 			damage *= 1.1; //Abit extra.
+			damage *= 0.5;  //doubled attackrate
 			
 			CClotBody npc = view_as<CClotBody>(target);
 			if(!npc.IsOnGround())

@@ -79,6 +79,7 @@ static int DrugNerf[MAXPLAYERS];
 //static Function OgEntityFuncAttack[MAXENTITIES][2];
 static Handle WeaponTimer[MAXPLAYERS];
 //static bool RecentlySwapped[MAXPLAYERS];
+static int MarkedSwapRef[MAXPLAYERS] = {INVALID_ENT_REFERENCE, ...};
 static bool DoneLastmanSecret;
 
 static bool Precached = false;
@@ -551,31 +552,32 @@ bool Gunsaw_LastmanSecret()
 	return true;
 }
 
-public void Gunsaw_NPCDeath(int entity)
+int Gunsaw_MarkedVictim(int client)
 {
-	/*
+	return MarkedSwapRef[client];
+}
+
+void Gunsaw_NPCDeath(int entity)
+{
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(WeaponTimer[client] && dieingstate[client])
+		if(WeaponTimer[client] && TeutonType[client] == TEUTON_NONE && MarkedSwapRef[client] != -1 && MarkedSwapRef[client] == EntIndexToEntRef(entity))
 		{
-			float pos1[3], pos2[3];
-			GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos1);
-			GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos2);
-			if(GetVectorDistance(pos1, pos2, true) > 100000.0)
-				continue;
-			
-			if(!ValidSwapTarget(entity, true))
+			MarkedSwapRef[client] = -1;
+
+			if(dieingstate[client])
 			{
 				if(GetClientHealth(client) < 200)
-				{
 					SetEntityHealth(client, 200);
-					return;
-				}
-
-				break;
 			}
 
-			CNavArea endArea = TheNavMesh.GetNavArea(pos1);
+			if(!ValidSwapTarget(entity, true))
+				break;
+
+			float pos[3];
+			GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
+
+			CNavArea endArea = TheNavMesh.GetNavArea(pos);
 			if(endArea == NULL_AREA)
 				return;
 			
@@ -583,17 +585,19 @@ public void Gunsaw_NPCDeath(int entity)
 			if(startArea == NULL_AREA)
 				continue;
 			
-			if(TheNavMesh.BuildPath(startArea, endArea, pos1, .teamID = 2))
+			if(TheNavMesh.BuildPath(startArea, endArea, pos, .teamID = 2))
 			{
+				if(!dieingstate[client])
+					i_AmountDowned[client]++;
+
 				StealBodyForm(client, entity);
 				return;
 			}
 		}
 	}
-	*/
 }
 
-void Gunsaw_NPCTakeDamage(int victim, int client, int weapon)
+void Gunsaw_NPCTakeDamage(int victim, int client)
 {
 	if(!CheckInHud() && WeaponTimer[client] && (dieingstate[client] || (GetClientButtons(client) & IN_DUCK)))
 	{
@@ -604,52 +608,17 @@ void Gunsaw_NPCTakeDamage(int victim, int client, int weapon)
 			ShowSyncHudText(client, SyncHud_Notifaction, "No downs left!");
 			return;
 		}
-		float cooldown = Store_GetCooldownIndex(client, StoreWeapon[weapon], 1);
-		if(cooldown > 0.0)
+
+		if(!ValidSwapTarget(victim, true))
 		{
 			ClientCommand(client, "playgamesound items/medshotno1.wav");
 			SetDefaultHudPosition(client);
-			SetGlobalTransTarget(client);
-			ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", cooldown);
+			ShowSyncHudText(client, SyncHud_Notifaction, "Can not steal this body!");
 			return;
 		}
 
-		int health = victim <= MaxClients ? GetClientHealth(victim) : GetEntProp(victim, Prop_Data, "m_iHealth");
-		int maxhealth = ReturnEntityMaxHealth(victim);
-		bool injured = health < (maxhealth / 10);
-
-		if(!ValidSwapTarget(victim, injured))
-		{
-			if(dieingstate[client])
-			{
-				if(GetClientHealth(client) < 200)
-					SetEntityHealth(client, 200);
-			}
-
-			ClientCommand(client, "playgamesound items/medshotno1.wav");
-			SetDefaultHudPosition(client);
-			ShowSyncHudText(client, SyncHud_Notifaction, injured ? "Can not steal this body!" : "Target too healthy!");
-			return;
-		}
-
-		i_AmountDowned[client]++;
-		StealBodyForm(client, victim);
-		Store_ApplyCooldownIndex(client, StoreWeapon[weapon], 1, 15.0);
-
-		if(victim <= MaxClients)
-		{
-			ForcePlayerSuicide(victim);
-		}
-		else
-		{
-			view_as<CClotBody>(victim).m_iHealthBar = 0;
-			SetEntityHealth(victim, 1);
-			b_DissapearOnDeath[victim] = true;
-			RemoveSpecificBuff(victim, "Infinite Will");
-			SDKHooks_TakeDamage(victim, client, client, GetRandomFloat(99999.0,9999999.0), DMG_BLAST, -1, {0.1,0.1,0.1}, _, _, ZR_SLAY_DAMAGE);
-		}
-
-		f_InBattleHudDisableDelay[client] = GetGameTime() + 1.0;
+		MarkedSwapRef[client] = EntIndexToEntRef(victim);
+		ApplyStatusEffect(client, victim, "Desired Host", 999.0);
 	}
 }
 
@@ -1153,10 +1122,10 @@ static Action GunsawHudTimer(Handle timer, DataPack pack)
 				
 				PrintHintText(client, " \n \n \n \n \n \n \n \n \n \n \n \n%.1f\n \n \n \n \n \n \n \n \n \n \n \n ", mood);
 			}
-			else if(b_HoldingInspectWeapon[client])
+			/*else if(b_HoldingInspectWeapon[client])
 			{
 				PrintHintText(client, "%.1f", fClamp(MonologueMood(client), -100.0, 100.0));
-			}
+			}*/
 			else if(dieingstate[client])
 			{
 				PrintHintText(client, "Melee hit a nearby enemy to self-revive");
@@ -1177,7 +1146,7 @@ static Action GunsawHudTimer(Handle timer, DataPack pack)
 				
 				if(!ModelNPCName[client])
 				{
-					PrintHintText(client, "%s\n \nCrouched melee hit to steal an enemy body", name);
+					PrintHintText(client, "%s\n \nCrouched melee hit to mark a body to host", name);
 				}
 				else
 				//int active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");

@@ -499,11 +499,11 @@ public Action Timer_Detect_Player_Near_Armor_Grenade(Handle timer, DataPack pack
 						EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 0.7);
 						if(f_TimeUntillNormalHeal[target] > GetGameTime())
 						{
-							GiveArmorViaPercentage(target, 0.075 * 0.5, 1.0,_,_,client);
+							GiveArmorViaPercentage(target, 0.1 * 0.75, 1.0,_,_,client);
 						}
 						else
 						{
-							GiveArmorViaPercentage(target, 0.075, 1.0, _,_,client);
+							GiveArmorViaPercentage(target, 0.1, 1.0, _,_,client);
 						}
 						continue;
 					}
@@ -551,7 +551,7 @@ public void PlaceableTempomaryHealingGrenade(int client)
 	if (ability_cooldown[client] < GetGameTime())
 	{
 		EmitSoundToAll("weapons/slam/throw.wav", client, _, 80, _, 0.7);
-		ability_cooldown[client] = GetGameTime() + (140.0 * CooldownReductionAmount(client));
+		ability_cooldown[client] = GetGameTime() + (100.0 * CooldownReductionAmount(client));
 		
 		int entity;		
 		if(b_StickyExtraGrenades[client])
@@ -682,13 +682,13 @@ public Action Timer_Detect_Player_Near_Healing_Grenade(Handle timer, DataPack pa
 							EmitSoundToClient(target, SOUND_HEAL_BEAM, target, _, 90, _, 0.7);
 							if(i_CurrentEquippedPerk[client] & PERK_REGENE)
 							{
-								SetEntityHealth(target,  GetClientHealth(target) + 12);
-								dieingstate[target] -= 20;
+								SetEntityHealth(target,  GetClientHealth(target) + 20);
+								dieingstate[target] -= 30;
 							}
 							else
 							{
-								SetEntityHealth(target,  GetClientHealth(target) + 6);
-								dieingstate[target] -= 10;
+								SetEntityHealth(target,  GetClientHealth(target) + 10);
+								dieingstate[target] -= 15;
 							}
 							if(dieingstate[target] < 1)
 							{

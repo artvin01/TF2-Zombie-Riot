@@ -734,12 +734,11 @@ public void OnPostThink(int client)
 			//regen armor if out of battle
 			if((f_TimeUntillNormalHeal[client] - 1.0) < GetGameTime() && dieingstate[client] == 0)
 			{
-			//	if(Armor_Charge[client] >= 0)
-			//	{
-					float DefaultRegenArmor = 0.06666;
-					DefaultRegenArmor *= 1.5;
-					GiveArmorViaPercentage(client, DefaultRegenArmor, 1.0);
-			//	}
+				float DefaultRegenArmor = 0.06666;
+				DefaultRegenArmor *= 1.5;
+				if(Armor_Charge[client] < 0)
+					DefaultRegenArmor *= 0.5;
+				GiveArmorViaPercentage(client, DefaultRegenArmor, 1.0);
 			}
 		}
 
