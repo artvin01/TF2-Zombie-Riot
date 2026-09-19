@@ -1036,7 +1036,6 @@ public Action Weapon_Purging_Crush_Think(Handle h, DataPack pack)
 		paplvl = RoundToFloor(Attributes_Get(weapon, Attrib_PapNumber, 1.0));
 	if(Time < crushStartTime + fl_KitPurge_Ram_Max_Time[paplvl] && IsValidEntity(weapon) && dieingstate[client] == 0)
 	{
-		int team = GetTeam(client);
 		SetEntPropFloat(client, Prop_Send, "m_flNextAttack", Time+0.75);
 		
 		FakeClientCommand(client, "use tf_weapon_fists");
@@ -1045,7 +1044,6 @@ public Action Weapon_Purging_Crush_Think(Handle h, DataPack pack)
 		GetClientEyeAngles(client, clientAngle);
 		float velocity[3];
 		GetAngleVectors(clientAngle, velocity, NULL_VECTOR, NULL_VECTOR);
-		int entHit = 0;
 		float damage = PURGE_RAM_BASE_DMG;
 		damage *= Attributes_Get(weapon, 2, 1.0);
 		damage *= 0.075;
