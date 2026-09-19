@@ -561,7 +561,7 @@ void Gunsaw_NPCDeath(int entity)
 {
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(WeaponTimer[client] && MarkedSwapRef[client] != -1 && MarkedSwapRef[client] == EntIndexToEntRef(entity))
+		if(WeaponTimer[client] && TeutonType[client] == TEUTON_NONE && MarkedSwapRef[client] != -1 && MarkedSwapRef[client] == EntIndexToEntRef(entity))
 		{
 			MarkedSwapRef[client] = -1;
 
