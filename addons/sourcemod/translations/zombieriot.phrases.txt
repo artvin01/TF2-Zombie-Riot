@@ -1588,10 +1588,12 @@
 	"Symbiosis Shot"
 	{
 		"en" 		"Symbiosis Shot"
+		"ko" 		"공생 샷"
 	}
 	"Symbiosis Shot Received"
 	{
 		"en" 		"Symbiosis Shot!\nArmor now regens 3 seconds after being hurt\nMax Armor is 25％ less\nArmor protects only 50％ instead of 75％"
+		"ko" 		"공생 샷! 3초 동안 피해를 입지 않으면 아머 재생.\n최대 아머 -25％.\n아머의 피해 방어가 75％에서 50％로 감소."
 	}
 	"Energy Drink X Received"
 	{
