@@ -854,7 +854,7 @@
 	{
 		"en"	"You stole from the poor Ruinian... The evil within you seems to empowers{crimson} Someone.{default}\n{crimson}Enemies gain +25％ max health and +15％ damage."
 		"it"	"Hai rubato ai poveri ruiniani... Il male che è in te sembra dare potere a qualcuno.{crimson}I nemici guadagnano +25％ salute massima e +15％ danni."
-		"en"	"당신은 불쌍한 루이나인이 가진 것을 전부 강탈했다. 당신 안의 악의 존재가 {crimson}누군가에게 힘을 실어준다...{default}\n{crimson}모든 적의 최대 체력 + 25％ 및 공격 피해량 +15％."
+		"ko"	"당신은 불쌍한 루이나인이 가진 것을 전부 강탈했다. 당신 안의 악의 존재가 {crimson}누군가에게 힘을 실어준다...{default}\n{crimson}모든 적의 최대 체력 + 25％ 및 공격 피해량 +15％."
 	}
 	"Great Within from Ruina's Great Crystal"
 	{
