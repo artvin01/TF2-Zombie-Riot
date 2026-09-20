@@ -5780,8 +5780,8 @@
 	}
 	"Gunsaw Mercenary Desc"
 	{
-		"en"	"-Shotgun and pistol, build cheap buildings, but no repairing\n-Able to body swap you to an enemy's body\n  -Takes the stats and weapons of the enemy\n  -Swap by melee hitting a nearby enemy while downed or crouched"
-		"ko"	"-산탄총과 권총 보유, 저렴한 구조물을 건설할 수 있으나 수리 불가\n-적의 몸으로 육체를 치환 할 수 있음:\n   적의 능력치와 무기를 탈취\n   다운 상태, 혹은 웅크리고 있을 때 적을 근접 무기로 적중하여 치환"
+		"en"	"-Shotgun and pistol, build cheap buildings, but no repairing\n-Able to body swap you to an enemy's body\n  -Takes the stats and weapons of the enemy\n  -Mark enemy by melee hitting a nearby enemy while downed or crouched\n  -Swaps to this enemy's body when they're killed"
+		"ko"	"-산탄총과 권총 보유, 저렴한 구조물을 건설할 수 있으나 수리 불가\n-적의 몸으로 육체를 치환 할 수 있음:\n   적의 능력치와 무기를 탈취\n   다운 상태, 혹은 웅크리고 있을 때 적을 근접 무기로 적중하여 표식 부여\n  -해당 적이 처치될 시 이 적의 육체로 치환"
 	}
 	"Gunsaw Mercenary Pap 1"
 	{
