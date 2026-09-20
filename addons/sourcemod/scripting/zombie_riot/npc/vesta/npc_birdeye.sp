@@ -1036,9 +1036,9 @@ static int VestaBirdeyeAssaultMode(VestaBirdeye npc, float gameTime, int target,
 					npc.m_flCharge_delay = gameTime + 0.8;
 					if(IsValidEnemy(npc.index, target))
 					{
-						float damageDealt = 39.0;
+						float damageDealt = 60.0;
 						if(ShouldNpcDealBonusDamage(target))
-							damageDealt *= 3.0;
+							damageDealt *= 4.0;
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
 						// Killed target
 						if(!IsValidEnemy(npc.index, target))
