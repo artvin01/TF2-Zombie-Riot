@@ -142,7 +142,7 @@ methodmap VestanTanker < CClotBody
 		npc.m_iWearable6 = npc.EquipItemSeperate("models/buildables/sentry_shield.mdl",_,1,1.1);
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", 1);
 		SetEntityRenderMode(npc.m_iWearable6, RENDER_TRANSCOLOR);
-		SetEntityRenderColor(npc.m_iWearable6, 255, 255, 255, 150);
+		SetEntityRenderColor(npc.m_iWearable6, 255, 255, 255, 100);
 
 		return npc;
 	}
