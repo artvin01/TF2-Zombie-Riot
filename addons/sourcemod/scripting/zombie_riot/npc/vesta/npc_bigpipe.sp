@@ -184,6 +184,9 @@ methodmap VestaBigpipe < CClotBody
 	
 	public VestaBigpipe(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
+		if(StrContains(data, "icononly") != -1)
+			return view_as<VestaBigpipe>(-1);
+		
 		VestaBigpipe npc = view_as<VestaBigpipe>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1250", ally,false));
 		
 		i_NpcWeight[npc.index] = 1;
@@ -201,6 +204,7 @@ methodmap VestaBigpipe < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
 		b_TheGoons=false;
+		/*
 		if(StrContains(data, "icononly") != -1)
 		{
 			func_NPCDeath[npc.index] = INVALID_FUNCTION;
@@ -214,6 +218,7 @@ methodmap VestaBigpipe < CClotBody
 			SmiteNpcToDeath(npc.index);
 			return npc;
 		}
+		*/
 
 		if(StrContains(data, "the_goons") != -1)
 			b_TheGoons=true;

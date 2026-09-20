@@ -130,6 +130,9 @@ methodmap VestaHarbringer < CClotBody
 
 	public VestaHarbringer(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
+		if(StrContains(data, "icononly") != -1)
+			return view_as<VestaHarbringer>(-1);
+		
 		VestaHarbringer npc = view_as<VestaHarbringer>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.1", "1000", ally));
 		
 		i_NpcWeight[npc.index] = 1;
@@ -148,6 +151,7 @@ methodmap VestaHarbringer < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		b_TheGoons=false;
+		/*
 		if(StrContains(data, "icononly") != -1)
 		{
 			func_NPCDeath[npc.index] = INVALID_FUNCTION;
@@ -161,7 +165,7 @@ methodmap VestaHarbringer < CClotBody
 			SmiteNpcToDeath(npc.index);
 			return npc;
 		}
-		
+		*/
 		if(StrContains(data, "the_goons") != -1)
 			b_TheGoons=true;
 		else if(StrContains(data, "birdeye"))

@@ -82,7 +82,7 @@ methodmap VestaRadiomast < CClotBody
 		npc.m_iWearable1 = npc.EquipItemSeperate(VestaRadiomast_MODEL_1,_,1);
 		SetVariantString("0.5");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-		npc.m_iWearable2 = npc.EquipItemSeperate(VestaRadiomast_MODEL_2,_,_,_,70.0);
+		npc.m_iWearable2 = npc.EquipItemSeperate(VestaRadiomast_MODEL_2,_,1,_,70.0);
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		npc.m_iWearable3 = npc.EquipItemSeperate(VestaRadiomast_MODEL_3,_,1);
@@ -119,7 +119,7 @@ methodmap VestaRadiomast < CClotBody
 		npc.m_bFUCKYOU = (StrContains(data, "death_func") != -1);
 		npc.m_flSpawnDelay = 0.0;
 		
-		npc.m_flMeleeArmor = 2.5;
+		npc.m_flMeleeArmor = 1.25;
 		npc.m_flRangedArmor = 0.9;
 		
 		int Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 1000.0, .NeedLOSPlayer = true);
