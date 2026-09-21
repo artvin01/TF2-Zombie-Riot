@@ -276,6 +276,95 @@ void Ruina_Ai_Core_Mapstart()
 	g_Ruina_Glow_Blue 			= PrecacheModel("sprites/blueglow2.vmt", true);
 	g_Ruina_Glow_Red 			= PrecacheModel("sprites/redglow2.vmt", true);
 }
+methodmap RuinaBaseNpc < CClotBody
+{
+	public RuinaBaseNpc(int entity)
+	{
+		return view_as<RuinaBaseNpc>(entity);
+	}
+
+	//functions
+
+	public void SetAllWearableSkin(int skin)
+	{
+		for(int i=0 ; i < sizeof(i_Wearable[]) ; i++)
+		{
+			if(i_Wearable[this.index][i] == INVALID_ENT_REFERENCE)
+				continue;
+			
+			int wearable = EntRefToEntIndexFast(i_Wearable[this.index][i]);
+			if(wearable == -1)
+				continue;
+			
+			RuinaBaseNpc(wearable).m_nSkin = skin;
+		}
+	}	
+	public int GetSkin(int team = -1)
+	{
+		if(team < 2)
+		{
+			team = GetTeam(this.index);
+			if(team > 5)
+				return 1;
+		}
+		else
+		{
+			if(team > 3)
+				return 1;
+		}
+		
+		return  team - 2;
+	}
+	public char[] sGetBeamString(int team = -1)
+	{
+		char beamString[100];
+		if(team == -1)
+			team = GetTeam(this.index);
+
+		switch(team)
+		{
+			case 2: beamString = BEAM_COMBINE_RED;
+			case 3: beamString = BEAM_COMBINE_BLUE;
+			default:beamString = BEAM_COMBINE_BLACK;
+		}
+		return beamString;
+	}
+	//properties
+	property int m_nSkin
+	{
+		public get()			{ return GetEntProp(this.index, Prop_Send, "m_nSkin"); }
+		public set(int value) 	{ SetEntProp(this.index, Prop_Send, "m_nSkin", value); }
+	}
+	property int m_iBeamIndex
+	{
+		public get()			{ return iGetTeamBeamIndex(GetTeam(this.index)); }
+		//public set(int value) 	{ SetEntProp(npc.index, Prop_Send, "m_nSkin", value); }
+	}
+	property int m_iWingSlot
+	{
+		public get()		 
+		{ 
+			int returnint = EntRefToEntIndex(i_wingslot[this.index]);
+			if(returnint == -1)
+			{
+				return 0;
+			}
+
+			return returnint;
+		}
+		public set(int iInt) 
+		{
+			if(iInt == 0 || iInt == -1 || iInt == INVALID_ENT_REFERENCE)
+			{
+				i_wingslot[this.index] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_wingslot[this.index] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
+}
 static void OffsetGive_BatteryChargeStatus(int ref)
 {
 	int npc = EntRefToEntIndex(ref);
@@ -2885,7 +2974,7 @@ stock float fAdjustRuinaRingSize(const float size, const float base_size = 100.0
 {
 	return SquareRoot(size / base_size);
 }
-stock int iCreateRuinaRing(const float Loc[3], const char[] model, const int group, const float size = 1.0)
+stock int iCreateRuinaRing(const float Loc[3], const char[] model, const int group, const float size = 1.0, const int skin = 0)
 {
 	int entity =  CreateEntityByName("prop_dynamic_override");
 
@@ -2896,6 +2985,8 @@ stock int iCreateRuinaRing(const float Loc[3], const char[] model, const int gro
 	DispatchKeyValue(entity, "model", model);
 	DispatchKeyValue(entity, "solid", "0");
 	DispatchSpawn(entity);
+
+	SetEntProp(entity, Prop_Send, "m_nSkin", skin);
 
 	SetEntPropFloat(entity, Prop_Send, "m_flModelScale", size);
 	MakeObjectIntangeable(entity);

@@ -162,7 +162,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 	return Stella(vecPos, vecAng, team, data);
 }
 
-methodmap Stella < CClotBody
+methodmap Stella < RuinaBaseNpc
 {
 	property bool m_bInKame
 	{
@@ -426,30 +426,6 @@ methodmap Stella < CClotBody
 			else
 			{
 				i_particle_effects[this.index][2] = EntIndexToEntRef(iInt);
-			}
-		}
-	}
-	property int m_iWingSlot
-	{
-		public get()		 
-		{ 
-			int returnint = EntRefToEntIndex(i_wingslot[this.index]);
-			if(returnint == -1)
-			{
-				return 0;
-			}
-
-			return returnint;
-		}
-		public set(int iInt) 
-		{
-			if(iInt == 0 || iInt == -1 || iInt == INVALID_ENT_REFERENCE)
-			{
-				i_wingslot[this.index] = INVALID_ENT_REFERENCE;
-			}
-			else
-			{
-				i_wingslot[this.index] = EntIndexToEntRef(iInt);
 			}
 		}
 	}
@@ -852,9 +828,9 @@ methodmap Stella < CClotBody
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/medic/Hw2013_Moon_Boots/Hw2013_Moon_Boots.mdl", _, skin);
 		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/medic/dec23_puffed_practitioner/dec23_puffed_practitioner.mdl", _, skin);
 		npc.m_iWearable7 = npc.EquipItem("head", "models/workshop/player/items/medic/sum20_flatliner/sum20_flatliner.mdl", _, skin);
-		npc.m_iWearable8 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_4);
+		npc.m_iWearable8 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_4, _, skin);
 		//9 is used by a special item.
-		npc.m_iWingSlot =  npc.EquipItem("head", WINGS_MODELS_1);
+		npc.m_iWingSlot =  npc.EquipItem("head", WINGS_MODELS_1, _, skin);
 		NpcColourCosmetic_ViaPaint(npc.m_iWearable2, 16777215);
 
 		SetVariantInt(RUINA_STELLA_CREST);

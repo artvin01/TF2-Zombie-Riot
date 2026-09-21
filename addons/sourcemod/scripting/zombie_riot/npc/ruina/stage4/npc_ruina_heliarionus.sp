@@ -206,9 +206,9 @@ methodmap Heliarionus < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
-		npc.m_iWearable5 = npc.EquipItem("head", Items[4]);
+		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
 		npc.m_iWearable6 = npc.EquipItemSeperate(Items[5],_,_,1.5,85.0);
-		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
+		npc.m_iWearable7 = npc.EquipItem("head", Items[6], _, skin);
 
 		SetVariantInt(WINGS_HELIA);
 		AcceptEntityInput(npc.m_iWearable5, "SetBodyGroup");

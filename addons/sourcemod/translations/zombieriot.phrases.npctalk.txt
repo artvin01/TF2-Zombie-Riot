@@ -1032,6 +1032,11 @@
 	{
 		"en"	"Huh interesting, who might you be? no matter, you look strong, {crimson}ima fight you"
 	}
+	//alt
+	"Twirl Intro1 Alternative 0"
+	{
+		"en"	"Alt Intro1 0"
+	}
 	//w20
 	"Twirl Intro2 0"
 	{
@@ -1052,6 +1057,15 @@
 	"Twirl Intro2 4"
 	{
 		"en"	"Ehe, now who will die {crimson}last{snow}?"
+	}
+	//alt
+	"Twirl Intro2 Alternative 0"
+	{
+		"en"	"Alt Intro2 0"
+	}
+	"Twirl Intro2 Alternative 1"
+	{
+		"en"	"Alt Intro2 1"
 	}
 	//w30:
 	"Twirl Intro3 0"
@@ -1813,5 +1827,10 @@
 	{
 		"#format"	"{1:N}"
 		"en"	"Seriously {gold}{1}{snow}? Why Blitzkrieg?"
+	}
+
+	"Twirl Translation Failed"
+	{
+		"en"	"Oops..."
 	}
 }

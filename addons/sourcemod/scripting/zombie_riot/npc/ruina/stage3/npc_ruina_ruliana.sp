@@ -93,7 +93,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 
 static float fl_npc_basespeed;
 
-methodmap Ruliana < CClotBody
+methodmap Ruliana < RuinaBaseNpc
 {
 	
 	public void PlayIdleSound() {
@@ -101,60 +101,36 @@ methodmap Ruliana < CClotBody
 			return;
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
-		
-
 	}
-	
 	public void PlayTeleportSound() {
 		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-		
-
 	}
-	
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
-		
 	}
-	
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
 			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
 		EmitSoundToAll(g_DefaultMedic_HurtSounds[GetRandomInt(0, sizeof(g_DefaultMedic_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
-		
 	}
-	
 	public void PlayDeathSound() {
-	
 		EmitSoundToAll(g_DefaultMedic_DeathSounds[GetRandomInt(0, sizeof(g_DefaultMedic_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
 	}
-	
 	public void PlayPrimaryFireSound() {
 		EmitSoundToAll(g_PrimaryFireSounds[GetRandomInt(0, sizeof(g_PrimaryFireSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-
 	}
-
 	public void PlayMeleeMissSound() {
-		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
+		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);	
 	}
-
 	public void PlayAngerSound() {
 	
 		EmitSoundToAll(g_AngerSounds[GetRandomInt(0, sizeof(g_AngerSounds) - 1)], this.index, _, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
@@ -169,7 +145,6 @@ methodmap Ruliana < CClotBody
 		EmitSoundToAll("hl1/fvox/morphine_shot.wav", _, _, SNDLEVEL_ROCKET);	//EXTREME MORPHINE ADMINISTERED
 		
 	}
-
 	public void Ion_On_Loc(float Predicted_Pos[3], float Radius, float dmg, float Time)
 	{
 		int color[4]; 
@@ -261,19 +236,18 @@ methodmap Ruliana < CClotBody
 			"models/player/items/medic/berliners_bucket_helm.mdl"
 		};
 
-		int skin = 1;	//1=blue, 0=red
-		SetVariantInt(1);	
+		int skin = npc.GetSkin(ally);	//1=blue, 0=red	
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
 		npc.m_iWearable1 = npc.EquipItem("head", Items[0], _, skin);
 		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
-		npc.m_iWearable3 = npc.EquipItem("head", Items[2]);
+		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, npc.GetSkin());
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
-		npc.m_iWearable5 = npc.EquipItem("head", Items[4]);
+		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, npc.GetSkin());
 		npc.m_iWearable6 = npc.EquipItem("head", Items[5], _, skin);
 
 		SetVariantInt(RUINA_REI_LAUNCHER);
 		AcceptEntityInput(npc.m_iWearable5, "SetBodyGroup");
-		SetVariantInt(WINGS_RULIANA);
+		SetVariantInt(WINGS_RULIANA|RUINA_GAMER_HEADSET);
 		AcceptEntityInput(npc.m_iWearable3, "SetBodyGroup");
 
 		b_angered_once[npc.index] = false;
@@ -838,7 +812,7 @@ static void Ruliana_Barrage_Invoke(Ruliana npc, float Cost)
 		int color[4];
 		Ruina_Color(color);
 		int laser;
-		laser = ConnectWithBeam(npc.index, Target, color[0], color[1], color[2], 2.5, 2.5, 0.25, BEAM_COMBINE_BLUE);
+		laser = ConnectWithBeam(npc.index, Target, color[0], color[1], color[2], 2.5, 2.5, 0.25, npc.sGetBeamString());
 		CreateTimer(0.1, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 
 		float vecTarget[3];
@@ -1021,7 +995,7 @@ static void FindAllies_Logic(int entity, int victim, float damage, int weapon)
 		int color[4];
 		Ruina_Color(color);
 		int laser;
-		laser = ConnectWithBeam(entity, victim, color[0], color[1], color[2], 2.5, 2.5, 1.5, BEAM_COMBINE_BLUE);
+		laser = ConnectWithBeam(entity, victim, color[0], color[1], color[2], 2.5, 2.5, 1.5, RuinaBaseNpc(entity).sGetBeamString());
 		CreateTimer(0.25, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 	}
 
@@ -1045,15 +1019,17 @@ static void NPC_Death(int entity)
 		RaidBossActive=INVALID_ENT_REFERENCE;
 
 	Ruina_NPCDeath_Override(npc.index);
-		
-	if(IsValidEntity(npc.m_iWearable2))
-		RemoveEntity(npc.m_iWearable2);
+	
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
+	if(IsValidEntity(npc.m_iWearable2))
+		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWearable6))
+		RemoveEntity(npc.m_iWearable6);
 }

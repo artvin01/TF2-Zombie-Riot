@@ -29,7 +29,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3])
 {
 	return Fracatal_Kit_Animation(client, vecPos, vecAng);
 }
-methodmap Fracatal_Kit_Animation < CClotBody
+methodmap Fracatal_Kit_Animation < RuinaBaseNpc
 {
 	public void PlayLaserLoopSound() {
 		if(fl_RuinaLaserSoundTimer[this.index] > GetGameTime())
@@ -44,30 +44,6 @@ methodmap Fracatal_Kit_Animation < CClotBody
 		
 	}
 	
-	property int m_iWingSlot
-	{
-		public get()		 
-		{ 
-			int returnint = EntRefToEntIndex(i_wingslot[this.index]);
-			if(returnint == -1)
-			{
-				return 0;
-			}
-
-			return returnint;
-		}
-		public set(int iInt) 
-		{
-			if(iInt == 0 || iInt == -1 || iInt == INVALID_ENT_REFERENCE)
-			{
-				i_wingslot[this.index] = INVALID_ENT_REFERENCE;
-			}
-			else
-			{
-				i_wingslot[this.index] = EntIndexToEntRef(iInt);
-			}
-		}
-	}
 	property int m_iHaloSlot
 	{
 		public get()		 
@@ -172,7 +148,7 @@ methodmap Fracatal_Kit_Animation < CClotBody
 
 			if(SettingDo != 0)
 			{
-				npc.m_iWingSlot = npc.EquipItem("head", WINGS_MODELS_1);
+				npc.m_iWingSlot = npc.EquipItem("head", WINGS_MODELS_1, _, GetTeam(client) == 2 ? 0 : 1);
 				SetVariantInt(SettingDo);
 				AcceptEntityInput(npc.m_iWingSlot, "SetBodyGroup");
 			}

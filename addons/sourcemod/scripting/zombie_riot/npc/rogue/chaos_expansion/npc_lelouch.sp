@@ -334,7 +334,7 @@ static bool b_lastman[MAXENTITIES];
 static bool b_wonviatimer[MAXENTITIES];
 static bool b_wonviakill[MAXENTITIES];
 static float fl_npc_basespeed;
-methodmap Lelouch < CClotBody
+methodmap Lelouch < RuinaBaseNpc
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -466,30 +466,7 @@ methodmap Lelouch < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][7] = TempValueForProperty; }
 	}
 
-	property int m_iWingSlot
-	{
-		public get()		 
-		{ 
-			int returnint = EntRefToEntIndex(i_wingslot[this.index]);
-			if(returnint == -1)
-			{
-				return 0;
-			}
-
-			return returnint;
-		}
-		public set(int iInt) 
-		{
-			if(iInt == 0 || iInt == -1 || iInt == INVALID_ENT_REFERENCE)
-			{
-				i_wingslot[this.index] = INVALID_ENT_REFERENCE;
-			}
-			else
-			{
-				i_wingslot[this.index] = EntIndexToEntRef(iInt);
-			}
-		}
-	}
+	
 	property int m_iSpecialEntSlot
 	{
 		public get()		 
@@ -565,7 +542,7 @@ methodmap Lelouch < CClotBody
 		if(!activate)
 			return;
 
-		this.m_iWearable1 = this.EquipItem("effect_hand_r", RUINA_CUSTOM_MODELS_4);
+		this.m_iWearable1 = this.EquipItem("effect_hand_r", RUINA_CUSTOM_MODELS_4, _, GetTeam(this.index) == 3 ? 1 : 0);
 		SetVariantInt(RUINA_FANTASY_BLADE);
 		AcceptEntityInput(this.m_iWearable1, "SetBodyGroup");
 	}
@@ -671,7 +648,7 @@ methodmap Lelouch < CClotBody
 		//npc.m_iWearable1 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_4);
 		npc.SetWeaponState(true);
 
-		npc.m_iWingSlot =  npc.EquipItem("head", WINGS_MODELS_1);
+		npc.m_iWingSlot =  npc.EquipItem("head", WINGS_MODELS_1, _, skin);
 		SetVariantInt(WINGS_LANCELOT);
 		AcceptEntityInput(npc.m_iWingSlot, "SetBodyGroup");
 
@@ -1064,7 +1041,7 @@ static void OnMeleeLaserTraceHit(int client, int target, int damagetype, float d
 	float Thick_Start = GetRandomFloat(8.0, 16.0);
 	float Thick_End =  GetRandomFloat(Thick_Start*0.5, Thick_Start);
 	int color[4]; color = Lelouch_Colors();
-	int laser = ConnectWithBeam(npc.index, target, color[0], color[1], color[2], Thick_Start, Thick_End, 2.35, BEAM_COMBINE_BLUE);
+	int laser = ConnectWithBeam(npc.index, target, color[0], color[1], color[2], Thick_Start, Thick_End, 2.35, npc.sGetBeamString());
 	if(IsValidEntity(laser))
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 }

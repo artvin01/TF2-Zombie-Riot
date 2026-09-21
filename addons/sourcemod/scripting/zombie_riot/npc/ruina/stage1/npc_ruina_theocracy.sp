@@ -93,7 +93,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 	return Theocracy(vecPos, vecAng, team);
 }
 
-methodmap Theocracy < CClotBody
+methodmap Theocracy < RuinaBaseNpc
 {
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -532,7 +532,7 @@ static void Theocracy_Melee_Hit(int client, int target, float vecHit[3])
 
 	float Thick_Start = GetRandomFloat(8.0, 16.0);
 	float Thick_End =  GetRandomFloat(Thick_Start*0.5, Thick_Start);
-	int laser = ConnectWithBeam(npc.m_iWearable1, target, color[0], color[1], color[2], Thick_Start, Thick_End, 2.35, BEAM_COMBINE_BLUE);
+	int laser = ConnectWithBeam(npc.m_iWearable1, target, color[0], color[1], color[2], Thick_Start, Thick_End, 2.35, npc.sGetBeamString());
 	if(IsValidEntity(laser))
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 
@@ -564,7 +564,7 @@ static void Theocracy_Melee_Hit(int client, int target, float vecHit[3])
 
 		Thick_Start = GetRandomFloat(8.0, 16.0);
 		Thick_End =  GetRandomFloat(Thick_Start*0.5, Thick_Start);
-		laser = ConnectWithBeam(Laser_Origin, i_detected_ends[i], color[0], color[1], color[2], Thick_Start, Thick_End, 2.35, BEAM_COMBINE_BLUE);
+		laser = ConnectWithBeam(Laser_Origin, i_detected_ends[i], color[0], color[1], color[2], Thick_Start, Thick_End, 2.35, npc.sGetBeamString());
 		if(IsValidEntity(laser))
 			CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(laser), TIMER_FLAG_NO_MAPCHANGE);
 	}
