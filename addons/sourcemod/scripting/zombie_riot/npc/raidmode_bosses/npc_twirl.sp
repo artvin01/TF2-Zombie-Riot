@@ -68,8 +68,13 @@ static float fl_next_textline;
 static float fl_raidmode_freeze;
 static float fl_npc_basespeed;
 
+enum TwirlState {
+	TwirlState_Default = 0,
+	TwirlState_Angry,
+	TwirlState_AltTimeline
+}
+static TwirlState TwirlPersonalityState;
 static bool b_tripple_raid;
-static bool b_force_transformation;
 static bool b_lastman;
 static bool b_wonviatimer;
 static bool b_wonviakill;
@@ -95,7 +100,6 @@ static char gGlow1;	//blue
 
 
 #define TWIRL_MAGIA_OVERFLOW_DURATION 8.0
-static bool bAltTwirl;
 static bool PrecacheTwirl;
 void Twirl_OnMapStart_NPC()
 {
@@ -491,7 +495,7 @@ methodmap Twirl < CClotBody
 			{
 				return RUINA_TWIRL_CREST_3;
 			}
-			else if(wave <= 40 || !bAltTwirl)	
+			else if(wave <= 40 || TwirlPersonalityState != TwirlState_AltTimeline)	
 			{
 				return RUINA_TWIRL_CREST_4;
 			}
@@ -514,7 +518,7 @@ methodmap Twirl < CClotBody
 			{
 				return RUINA_TWIRL_MELEE_3;
 			}
-			else if(wave <= 40 || !bAltTwirl)	
+			else if(wave <= 40 || TwirlPersonalityState != TwirlState_AltTimeline)	
 			{
 				return RUINA_TWIRL_MELEE_4;
 			}
@@ -803,8 +807,11 @@ methodmap Twirl < CClotBody
 		if(this.m_flIonicFractureEndTimer > GameTime)
 			armour *= 0.3;
 
-		if(b_force_transformation)
-			armour *= 0.5;
+		switch(TwirlPersonalityState)
+		{
+			case TwirlState_Angry: armour *= 0.5;
+		}
+			
 
 		this.m_flRangedArmor = armour;
 	}
@@ -826,8 +833,10 @@ methodmap Twirl < CClotBody
 		if(this.m_flIonicFractureEndTimer > GameTime)
 			armour *= 0.625;
 
-		if(b_force_transformation)
-			armour *= 0.75;
+		switch(TwirlPersonalityState)
+		{
+			case TwirlState_Angry: armour *= 0.75;
+		}
 
 		this.m_flMeleeArmor = armour;
 	}
@@ -849,10 +858,14 @@ methodmap Twirl < CClotBody
 		Zero(b_said_player_weaponline);
 		fl_said_player_weaponline_time[npc.index] = GetGameTime() + GetRandomFloat(0.0, 5.0);
 
-		b_force_transformation = false;
+		TwirlPersonalityState = TwirlState_Default;
 
 		b_test_mode = StrContains(data, "test") != -1;
-		b_force_transformation = StrContains(data, "verkia") != -1;
+
+		if(StrContains(data, "verkia") != -1)
+			TwirlPersonalityState = TwirlState_Angry;
+		else if((StrContains(data, "alternative") != -1))
+			TwirlPersonalityState = TwirlState_AltTimeline;
 
 		int wave = Waves_GetRoundScale()+1;
 
@@ -865,9 +878,7 @@ methodmap Twirl < CClotBody
 		if(StrContains(data, "force40") != -1)
 			wave = 40;
 
-		bAltTwirl = (StrContains(data, "alternative") != -1);
-
-		if(bAltTwirl)
+		if(TwirlPersonalityState == TwirlState_AltTimeline)
 		{
 			wave +=10;
 		}
@@ -906,7 +917,6 @@ methodmap Twirl < CClotBody
 			default_theme = false;
 		}
 		RemoveAllDamageAddition();
-			
 
 		if(default_theme)
 		{
@@ -934,10 +944,10 @@ methodmap Twirl < CClotBody
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 
-		func_NPCFuncWin[npc.index] = view_as<Function>(Twirl_WinLine);
-		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
-		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
-		func_NPCThink[npc.index] = view_as<Function>(ClotThink);
+		func_NPCFuncWin[npc.index] 		= Twirl_WinLine;
+		func_NPCDeath[npc.index] 		= NPC_Death;
+		func_NPCOnTakeDamage[npc.index] = OnTakeDamage;
+		func_NPCThink[npc.index] 		= ClotThink;
 
 		fl_npc_basespeed = 290.0;
 		npc.m_flSpeed = fl_npc_basespeed;
@@ -1043,33 +1053,52 @@ methodmap Twirl < CClotBody
 		else if(wave <=10)
 		{
 			npc.m_iRangedAmmo = 5;
-			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Intro1"));
+			switch(TwirlPersonalityState)
+			{
+				case TwirlState_AltTimeline: SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Intro1 Alternative"));
+				default: SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Intro1"));
+			}
 		}
 		else if(wave <=20)
 		{
 			npc.m_iRangedAmmo = 7;
-			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Intro2"));
+			switch(TwirlPersonalityState)
+			{
+				case TwirlState_AltTimeline: SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Intro2 Alternative"));
+				default: SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Intro2"));
+			}
 		}
 		else if(wave <=30)
 		{
 			npc.m_iRangedAmmo = 9;
-			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Intro3"));
+			switch(TwirlPersonalityState)
+			{
+				case TwirlState_AltTimeline: SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Intro3 Alternative"));
+				default: SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Intro3"));
+			}
 		}
 		else if(wave <=40)
 		{	
 			npc.m_iRangedAmmo = 12;
-			switch(GetRandomInt(0, 5))
+			switch(TwirlPersonalityState)
 			{
-				case 4:
+				case TwirlState_AltTimeline: SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Intro4 Alternative"));
+				default:
 				{
-					Twirl_Lines(npc, "Twirl Intro4_rare1", true);
-					Twirl_Lines(npc, "Twirl Intro4_rare2", true);
-					Twirl_Lines(npc, "Twirl Intro4_rare3", true);
-					Twirl_Lines(npc, "Twirl Intro4_rare4", true);
-					Twirl_Lines(npc, "Twirl Intro4_rare5", true);
-					Twirl_Lines(npc, "Twirl Intro4_rare6", true);
+					switch(GetRandomInt(0, 5))
+					{
+						case 4:
+						{
+							Twirl_Lines(npc, "Twirl Intro4_rare1", true);
+							Twirl_Lines(npc, "Twirl Intro4_rare2", true);
+							Twirl_Lines(npc, "Twirl Intro4_rare3", true);
+							Twirl_Lines(npc, "Twirl Intro4_rare4", true);
+							Twirl_Lines(npc, "Twirl Intro4_rare5", true);
+							Twirl_Lines(npc, "Twirl Intro4_rare6", true);
+						}
+						default: SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Intro4"));
+					}
 				}
-				default: SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Intro4"));
 			}
 			if(!b_tripple_raid)
 				RaidModeScaling *=0.9;
@@ -1225,12 +1254,13 @@ static void Twirl_WinLine(int entity)
 	if(b_wonviatimer)
 		return;
 
-	if(b_force_transformation)
+
+	switch(TwirlPersonalityState)
 	{
-		SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Win Kill Angry"));
-		return;
+		case TwirlState_Angry:			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Win Kill Angry"));
+		case TwirlState_AltTimeline:	SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Win Kill Alternative"));
+		default:						SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Win Kill"));
 	}
-	SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Win Kill"));
 }
 
 static void ClotThink(int iNPC)
@@ -1304,9 +1334,11 @@ static void ClotThink(int iNPC)
 	if(LastMann && !b_lastman)
 	{
 		b_lastman = true;
-		if(!b_force_transformation)
+		switch(TwirlPersonalityState)
 		{
-			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl LastMann"));
+			case TwirlState_Angry:			{}
+			case TwirlState_AltTimeline:	SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl LastMann Alternative"));
+			default:						SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl LastMann"));
 		}
 	}
 
@@ -1319,13 +1351,11 @@ static void ClotThink(int iNPC)
 		b_NpcIsInvulnerable[npc.index] = false; //Special huds for invul targets
 		f_NpcTurnPenalty[npc.index] = 1.0;
 
-		if(b_force_transformation)
+		switch(TwirlPersonalityState)
 		{
-			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Transform_angry"));
-		}
-		else
-		{
-			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Transform"));
+			case TwirlState_Angry:			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Transform Angry"));
+			case TwirlState_AltTimeline:	SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Transform Alternative"));
+			default:						SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Transform"));
 		}
 		
 		npc.m_flMagiaOverflowRecharge -= 15.0;
@@ -1653,13 +1683,11 @@ static void Final_Invocation(Twirl npc)
 	}
 	if(!b_wonviatimer)
 	{
-		if(b_force_transformation)
+		switch(TwirlPersonalityState)
 		{
-			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Final Invocation Angry"));
-		}
-		else
-		{
-			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Final Invocation"));
+			case TwirlState_Angry:			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Final Invocation Angry"));
+			case TwirlState_AltTimeline:	SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Final Invocation Alternative"));
+			default:						SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Final Invocation"));
 		}
 		RaidModeTime += 60.0;
 	}
@@ -1737,9 +1765,11 @@ static void lunar_Radiance(Twirl npc)
 		i_lunar_entities[npc.index][i] = INVALID_ENT_REFERENCE;
 	}
 
-	if(!b_force_transformation)
+	switch(TwirlPersonalityState)
 	{
-		SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Lunar Radiance"));
+		case TwirlState_Angry:			{}
+		case TwirlState_AltTimeline:	SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Lunar Radiance Alternative"));
+		default:						SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Lunar Radiance"));
 	}
 
 	if(!AtEdictLimit(EDICT_NPC))
@@ -2699,16 +2729,16 @@ static void Cosmic_Gaze_Boom_OnHit(int entity, int victim, float damage, int wea
 static int i_Fractal_Gram_Amt(Twirl npc)
 {
 	int amt = (npc.Anger ? 20 : 10);
-	if(b_force_transformation)
-		amt = 40;
+	if(TwirlPersonalityState != TwirlState_Default)
+		amt = amt * 2;
 
 	return amt;
 }
 static float fl_Fractal_Gram_SpamTimer(Twirl npc)
 {
 	float timer = (npc.Anger ? 0.2 : 0.4);
-	if(b_force_transformation)
-		timer = 0.1;
+	if(TwirlPersonalityState != TwirlState_Default)
+		timer *= 0.5;
 	return timer;
 }
 static void Fractal_Gram(Twirl npc, int Target)
@@ -3098,10 +3128,12 @@ static bool Retreat(Twirl npc, bool block_ions = false)
 		npc.m_flForceRanged = GameTime + 8.0;	
 	}
 
-	if(b_force_transformation)
-		return true;
-
-	SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Teleport Taunt"));
+	switch(TwirlPersonalityState)
+	{
+		case TwirlState_Angry:			{}
+		case TwirlState_AltTimeline:	SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Teleport Taunt Alternative"));
+		default:						SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Teleport Taunt"));
+	}
 
 	return true;
 }
@@ -3708,8 +3740,12 @@ static Action IonicFracture_ProjectileThink(int entity)
 
 	// do visuals
 
-	float sky[3]; sky = ProjectileLoc; sky[2]+=1500.0; 
-	float ground[3]; ground = ProjectileLoc; ground[2]-=1500.0;
+	Ruina_Laser_Logic Laser;
+	Laser.client = owner;
+	Laser.Start_Point = ProjectileLoc;
+	float sky[3]; FindSky(Laser); sky = Laser.End_Point;
+	float ground[3]; FindGround(Laser); ground = Laser.End_Point;
+	Laser.Start_Point = ground;
 
 	int color[4]; Ruina_Color(color, i_current_wave[npc.index]);
 
@@ -3726,19 +3762,51 @@ static Action IonicFracture_ProjectileThink(int entity)
 
 	//do dmg
 
-	Ruina_Laser_Logic Laser;
-	Laser.client = owner;
-	Laser.Start_Point = ground;
-	Laser.End_Point = sky;
 	Laser.Radius = diameter;
 	Laser.damagetype = DMG_PLASMA;
 	Laser.Damage = Modify_Damage(-1, 10.0);
 	Laser.Bonus_Damage = Modify_Damage(-1, 14.0);
-	Laser.Deal_Damage(On_LaserHit);
+	Laser.Detect_Entities(On_LaserHit_IonicFracture, true);
 
 	return Plugin_Continue;
 }
+static void FindSky(Ruina_Laser_Logic Laser)
+{
+	Laser.Angles = {-90.0, 0.0, 0.0};
+	Laser.DoForwardTrace_Custom(Laser.Angles, Laser.Start_Point);
+}
+static void FindGround(Ruina_Laser_Logic Laser)
+{
+	Laser.Angles = {90.0, 0.0, 0.0};
+	Laser.DoForwardTrace_Custom(Laser.Angles, Laser.Start_Point);
+}
+static void On_LaserHit_IonicFracture(Ruina_Laser_Logic Laser, int target, float &damage)
+{
+	int client = Laser.client;
+	if(IsIn_HitDetectionCooldown(client, target, ShadowingSlicer))
+		return;
 
+	float VicLoc[3]; GetAbsOrigin(target, VicLoc);
+	if(Get2DVectorDistances(Laser.Start_Point, VicLoc, true) > (Laser.Radius * Laser.Radius))
+		return;
+
+	Set_HitDetectionCooldown(client, target, GetGameTime() + 0.1, ShadowingSlicer);	
+
+	Twirl npc = view_as<Twirl>(client);
+	Ruina_Add_Mana_Sickness(npc.index, target, 0.66, (npc.Anger ? npc.iGetSicknessFlatPerWaveMulti(165) : npc.iGetSicknessFlatPerWaveMulti(297)), true);
+
+	SDKHooks_TakeDamage(target, client, client, damage, Laser.damagetype, -1); 
+}
+static float Get2DVectorDistances(float Vec1[3], float Vec2[3], bool not_squared = false)
+{
+	float x = Vec2[0] - Vec1[0];
+	float y = Vec2[1] - Vec1[1];
+
+	x = x * x;
+	y = y * y;
+
+	return not_squared ? x+y : SquareRoot(x+y);
+}
 
 static bool Magia_Overflow(Twirl npc)
 {
@@ -4095,7 +4163,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	{
 		b_allow_final_invocation = true;
 	}
-	if(!npc.Anger && (((MaxHealth/2) >= Health) || b_force_transformation ) && i_current_wave[npc.index] >=20) //Anger after half hp
+	if(!npc.Anger && (((MaxHealth/2) >= Health) || TwirlPersonalityState == TwirlState_Angry ) && i_current_wave[npc.index] >=20) //Anger after half hp
 	{
 		Kill_Abilities(npc);	//force kill abilities when entering a transformation.
 		npc.Anger = true; //	>:(
@@ -4150,7 +4218,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 }
 static void Twirl_Ruina_Weapon_Lines(Twirl npc, int client)
 {
-	if(b_force_transformation)
+	if(TwirlPersonalityState != TwirlState_Default)
 		return;
 
 	if(client > MaxClients)
@@ -4286,14 +4354,23 @@ static void Twirl_Ruina_Weapon_Lines(Twirl npc, int client)
 }
 static char[] sGetRandomTranslationString(const char[] text)
 {
+	bool Fail = true;
 	int MaxEntries = 0;
 	MaxEntries++;
 	char TipText[255];
 	Format(TipText, sizeof(TipText), "%s %i", text, MaxEntries);
 	while(TranslationPhraseExists(TipText))
 	{
+		Fail = false;
 		MaxEntries++;
 		Format(TipText, sizeof(TipText), "%s %i", text, MaxEntries);
+	}
+	if(Fail)
+	{
+		char RageText[255];
+		LogStackTrace("FAILED TO FIND RANDOM TRANSLATION STRING FOR \"%s\" | \"%s\"", text, TipText);
+		Format(RageText, sizeof(RageText), "failed translation \"%s\" | \"%s\"", text, TipText);
+		return RageText;
 	}
 	char RageText[255];
 	Format(RageText, sizeof(RageText), "%s %i", text, GetRandomInt(0,MaxEntries- 1));
@@ -4367,21 +4444,34 @@ static void NPC_Death(int entity)
 	if(!b_wonviakill && !b_wonviatimer && !b_allow_final)
 	{	
 		int wave = i_current_wave[npc.index];
-		if(b_force_transformation)
+		
+		if(TwirlPersonalityState == TwirlState_Angry)
 		{
 			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl End4 Angry"));
 		}
 		else if(wave <=10)
 		{
-			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl End1"));
+			switch(TwirlPersonalityState)
+			{
+				case TwirlState_AltTimeline:	SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl End1 Alternative"));
+				default:						SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl End1"));
+			}
 		}
 		else if(wave <=20)
 		{
-			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl End2"));
+			switch(TwirlPersonalityState)
+			{
+				case TwirlState_AltTimeline:	SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl End2 Alternative"));
+				default:						SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl End2"));
+			}
 		}
 		else if(wave <=30)
 		{
-			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl End3"));
+			switch(TwirlPersonalityState)
+			{
+				case TwirlState_AltTimeline:	SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl End2 Alternative"));
+				default:						SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl End3"));
+			}
 		}
 		else
 		{
@@ -4391,7 +4481,11 @@ static void NPC_Death(int entity)
 			}
 			else
 			{
-				SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl End4"));
+				switch(TwirlPersonalityState)
+				{
+					case TwirlState_AltTimeline:	SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl End4 Alternative"));
+					default:						SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl End4"));
+				}
 			}
 		}
 	}
@@ -4560,18 +4654,28 @@ static void HandleRaidTimer(Twirl npc)
 
 		Kill_Abilities(npc);
 
-		if(b_force_transformation)
+		
+
+		if(TwirlPersonalityState == TwirlState_Angry)
 		{
 			i_RaidGrantExtra[npc.index] = 2;
 			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Timer End Angry"));
 		}
 		else if(wave <=40)
 		{
-			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Timer End"));
+			switch(TwirlPersonalityState)
+			{
+				case TwirlState_AltTimeline:	SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Timer End Alternative"));
+				default:						SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Timer End"));
+			}
 		}
 		else	//freeplay
 		{
-			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Timer End Freeplay"));
+			switch(TwirlPersonalityState)
+			{
+				case TwirlState_AltTimeline:	SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Timer End Freeplay Alternative"));
+				default:						SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Timer End Freeplay"));
+			}
 		}
 	}
 }
@@ -4622,8 +4726,7 @@ void Twirl_OnStellaKarlasDeath()
 			}
 			default: SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Tripple Alone"));
 		}
-		
-		b_force_transformation = true;
+		TwirlPersonalityState = TwirlState_Angry;
 		b_tripple_raid = false;
 		if(fl_Extra_Damage[npc.index] < 1.0)
 			fl_Extra_Damage[npc.index] = 1.0;

@@ -1231,19 +1231,19 @@
 		"en"	"Ahahahah, the joy of battle, don't act like you’re not enjoying this"
 	}
 	//angry transform:
-	"Twirl Transform_angry 0"
+	"Twirl Transform Angry 0"
 	{
 		"en"	"Its time to ramp the heater up to {crimson}max"
 	}
-	"Twirl Transform_angry 1"
+	"Twirl Transform Angry 1"
 	{
 		"en"	"You ain't getting a normal phase shift"
 	}
-	"Twirl Transform_angry 2"
+	"Twirl Transform Angry 2"
 	{
 		"en"	"This time, I ain't waiting"
 	}
-	"Twirl Transform_angry 3"
+	"Twirl Transform Angry 3"
 	{
 		"en"	"I'm going to prove my own version of justice is more just then yours."
 	}

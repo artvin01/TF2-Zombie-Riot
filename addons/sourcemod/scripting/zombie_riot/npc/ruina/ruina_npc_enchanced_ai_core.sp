@@ -2474,7 +2474,7 @@ enum struct Ruina_Laser_Logic
 	}
 	bool Any_entities;
 	//in this case, no default func since this things entire point is to find entities
-	void Detect_Entities(Function Attack_Function)
+	void Detect_Entities(Function Attack_Function, bool alt_func = false)
 	{
 		Zero(i_Ruina_Laser_BEAM_HitDetected);
 
@@ -2501,6 +2501,15 @@ enum struct Ruina_Laser_Logic
 					Dmg = this.Bonus_Damage;
 
 				Call_StartFunction(null, Attack_Function);
+				if(alt_func)
+				{
+					Call_PushArrayEx(this, sizeof(this), SM_PARAM_COPYBACK);
+					Call_PushCell(victim);
+					Call_PushFloatRef(Dmg);
+					Call_Finish();
+					//static void On_LaserHit(Ruina_Laser_Logic Laser, int victim, float &damage)
+					continue;
+				}
 				Call_PushCell(this.client);
 				Call_PushCell(victim);
 				Call_PushCell(this.damagetype);
