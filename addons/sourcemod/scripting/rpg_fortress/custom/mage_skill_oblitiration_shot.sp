@@ -210,7 +210,7 @@ public void Weapon_Wand_OblitirationShot(int client, int weapon, int level, floa
 	Explode_Logic_Custom(damage * 0.75, client, client, -1, vecEndGoal, 150.0, 1.45, _, false);
 
 	MagicFocusUse(client);
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 
 	
 	delete trace;
@@ -220,7 +220,7 @@ public void Weapon_Wand_OblitirationShot(int client, int weapon, int level, floa
 
 static bool BEAM_TraceUsers(int entity, int contentsMask, int client)
 {
-	if(IsValidEnemy(client, entity))
+	if(IsValidEnemy(client, entity, true))
 	{
 		for(int i=0; i < (MAXENTITIES); i++)
 		{

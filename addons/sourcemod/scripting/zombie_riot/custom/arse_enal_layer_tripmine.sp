@@ -693,7 +693,7 @@ void Cause_Terroriser_Explosion(int client, int npc, bool allowLagcomp = false, 
 
 		Explode_Logic_Custom(damage, client, client, -1, EntLoc2, Terroriser_Implant_Radius,_,_,false, .FunctionToCallBeforeHit = FunctionToCallBeforeHit);
 
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 	}
 	else
 	{

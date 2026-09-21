@@ -361,7 +361,7 @@ public void Weapon_Wand_PotionBuffTouch(int entity, int target)
 	{
 		for(int client = 1; client <= MaxClients; client++)
 		{
-			if(IsClientInGame(client) && IsPlayerAlive(client))
+			if(IsClientInGame(client) && IsPlayerAlive(client) && GetTeam(owner) == GetTeam(client))
 			{
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos2);
 				if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))
@@ -412,7 +412,7 @@ public void Weapon_Wand_PotionBuffAllTouch(int entity, int target)
 	
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(IsClientInGame(client) && IsPlayerAlive(client))
+		if(IsClientInGame(client) && IsPlayerAlive(client) && GetTeam(owner) == GetTeam(client))
 		{
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos2);
 			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))
@@ -460,7 +460,7 @@ public void Weapon_Wand_PotionBuffPermaTouch(int entity, int target)
 	
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(IsClientInGame(client) && IsPlayerAlive(client))
+		if(IsClientInGame(client) && IsPlayerAlive(client) && GetTeam(owner) == GetTeam(client))
 		{
 			GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", pos2);
 			if(GetVectorDistance(pos1, pos2, true) < (EXPLOSION_RADIUS * EXPLOSION_RADIUS))
@@ -650,7 +650,7 @@ public void Weapon_Wand_PotionTransBuffM2(int client, int weapon, bool &crit, in
 	int count;
 	for(int target = 1; target <= MaxClients; target++)
 	{
-		if(client != target && IsClientInGame(target) && IsPlayerAlive(target))
+		if(client != target && IsClientInGame(target) && IsPlayerAlive(target) && GetTeam(target) == GetTeam(client))
 		{
 			GetEntPropVector(target, Prop_Data, "m_vecAbsOrigin", pos2);
 			if(GetVectorDistance(pos1, pos2, true) < 40000 && TonicBuff[target] < GetGameTime()) // 200 HU
@@ -813,10 +813,7 @@ public void Weapon_Wand_PotionShrinkTouch(int entity, int target)
 {
 	if(target)
 	{
-		if(target <= MaxClients)
-			return;
-		
-		if(GetTeam(target) == 2)
+		if(GetTeam(target) == GetTeam(entity))
 			return;
 	}
 	
@@ -861,12 +858,10 @@ public void WandPotion_PotionShrinkDo(int entity, int enemy, float damage_Dontus
 
 	if(enemy)
 	{
-		if(enemy <= MaxClients)
-			return;
-		
-		if(GetTeam(enemy) == TFTeam_Red)
+		if(GetTeam(entity) == GetTeam(enemy))
 			return;
 	}
+	
 	if(HasSpecificBuff(enemy, "Hardened Aura"))
 	{
 		return;
@@ -888,6 +883,9 @@ public void WandPotion_PotionShrinkDo(int entity, int enemy, float damage_Dontus
 	}
 	else
 	{
-		ApplyStatusEffect(owner, enemy, "Weakening Compound", 999999.0);	
+		if(enemy <= MaxClients)
+			ApplyStatusEffect(owner, enemy, "Weakening Compound", 20.0);	
+		else
+			ApplyStatusEffect(owner, enemy, "Weakening Compound", 999999.0);	
 	}
 }

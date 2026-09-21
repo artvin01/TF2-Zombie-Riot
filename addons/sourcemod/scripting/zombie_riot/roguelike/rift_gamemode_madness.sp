@@ -227,7 +227,7 @@ public void Rogue_GamemodeMadnessSlender_Enemy(int entity)
 	b_ThisEntityIgnoredByOtherNpcsAggro[entity] = true;
 }
 
-public void StartZombieRiotFrame()
+void StartZombieRiotFrame(bool NothingThere = false)
 {
 	if (!TemporaryRebelList)
 		TemporaryRebelList = new ArrayList();
@@ -258,11 +258,23 @@ public void StartZombieRiotFrame()
 	};
 	
 	// Spawn in 20 renamed rebels
-	for (int i = 0; i < 20; i++)
+	int RebelCount = 20;
+	if(NothingThere)
+		RebelCount = (CountPlayersOnRed(1) * 2);
+	for (int i = 0; i < RebelCount; i++)
 	{
 		int spawnNpc = Citizen_SpawnAtPoint("", client);
 		Citizen npc = view_as<Citizen>(spawnNpc);
-		Rogue_GamemodeMadness_EnemyRename(spawnNpc);
+		if(NothingThere)
+		{
+			TeleportDiversioToRandLocation(spawnNpc, false, 1500.0, 0.0, true, false);
+			Format(c_NpcName[spawnNpc], sizeof(c_NpcName[]), "Rabbit Nr.%i", GetRandomInt(8,710));
+			b_NameNoTranslation[spawnNpc] = true;
+		}
+		else
+		{
+			Rogue_GamemodeMadness_EnemyRename(spawnNpc);
+		}
 		
 		// We select rebel types/roles ourselves because we want no builders and less medics than Citizen_SetRandomRole offers
 		int role, type;
@@ -290,19 +302,49 @@ public void StartZombieRiotFrame()
 				type = DPSRangedWeapons[GetURandomInt() % sizeof(DPSRangedWeapons)];
 			}
 		}
+		if(NothingThere)
+		{
+			role = Cit_Fighter;
+			type = DPSRangedWeapons[GetURandomInt() % sizeof(DPSRangedWeapons)];
+		}
 		
 		Citizen_UpdateStats(spawnNpc, type, role);
 		
 		RogueHelp_BodyHealth(spawnNpc, null, 3.0);
-		fl_Extra_Damage[spawnNpc] *= 2.0;
 		npc.m_bInteractable = false;
 		npc.m_bDissapearOnDeath = true;
+		if(NothingThere) //insta death
+		{
+			npc.SetDowned(0);
+			b_Anger[spawnNpc] = true;
+			b_NpcUnableToDie[spawnNpc] = false;
+			SetEntPropFloat(spawnNpc, Prop_Send, "m_fadeMinDist", 0.0);
+			SetEntPropFloat(spawnNpc, Prop_Send, "m_fadeMaxDist", 0.00001);
+			npc.m_iWearable7 = npc.EquipItem("", COMBINE_CUSTOM_MODEL);
+			SetEntityRenderColor(spawnNpc, 255, 125, 0, 255);
+			SetEntityRenderColor(npc.m_iWearable7, 255, 125, 0, 255);
+			SetVariantInt(1);
+			AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");
+			CClotBody cosmetic = view_as<CClotBody>(npc.m_iWearable7);
+			npc.m_iWearable8 = cosmetic.EquipItem("", "models/player/items/medic/medic_ttg_max.mdl");
+			NpcColourCosmetic_ViaPaint(npc.m_iWearable8, 13595446);
+			HealEntityGlobal(spawnNpc, spawnNpc, (float(ReturnEntityMaxHealth(spawnNpc)) * 1.0), 1.0, 0.0, HEAL_SELFHEAL);
+			fl_Extra_Speed[spawnNpc] *= 0.85;
+			fl_Extra_RangedArmor[spawnNpc] *= 1.5;
+			fl_Extra_MeleeArmor[spawnNpc] *= 1.5;
+			fl_Extra_Damage[spawnNpc] *= 0.8;
+		}
+		else
+		{
+			fl_Extra_Damage[spawnNpc] *= 2.0;
+		}
 		
 		TemporaryRebelList.Push(EntIndexToEntRef(spawnNpc));
 	}
 	//update scalig now
 	DoGlobalMultiScaling();
-	Rogue_Dome_WaveEnd();
+	if(Rogue_Mode())
+		Rogue_Dome_WaveEnd();
 }
 
 public void Rogue_GamemodeMadnessZombieRiot_EndStage()

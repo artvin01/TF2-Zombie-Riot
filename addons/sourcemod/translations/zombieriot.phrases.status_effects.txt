@@ -2990,7 +2990,7 @@
 		"en"	"Glug Infested"
 		"ko"	"글러그에 감염된"
 	}
-	"Glug Infested Desc"
+	"Glug Infested Prefix Desc"
 	{
 		"en"	"When hurt, everyso often, spawns a glug on their side"
 		"ko"	"피격 시, 높은 확률로 자신의 위치에 글러그를 스폰시킵니다."
@@ -3905,8 +3905,8 @@
 	}
 	"Ego Manifestation Desc"
 	{
-		"en"	"Deal 30％ more damage and take 10％ less damage and 10％ movement speed (except during lastman, lastman nerfs this buff)\nWhile active unlock a new special ability"
-		"ko"	"공격 피해량 30％ 증가, 받는 피해량 10％ 감소, 이동 속도가 10％ 증가합니다.(최후의 1인 상태일 시 효과 감소)\n활성화된 동안 특별 책장이 해금됩니다."
+		"en"	"Deal 30％ more damage and take 10％ less damage and 25％ movement speed (except during lastman, lastman nerfs this buff)\nWhile active unlock a new special ability"
+		"ko"	"공격 피해량 30％ 증가, 받는 피해량 10％ 감소, 이동 속도가 25％ 증가합니다.(최후의 1인 상태일 시 효과 감소)\n활성화된 동안 특별 책장이 해금됩니다."
 	}
 	"Red Mist Counter"
 	{
@@ -4055,8 +4055,8 @@
 	}
 	"Grace Of Prescript Desc"
 	{
-		"en"	"Increases damage by 1.0％ multiplicatively, at 7 and above, reduces furioso count needed by 10"
-		"ko"	"수치가 7 이상일 때 공격 피해량이 곱연산으로 1.0％ 증가하며, Furioso 활성화에 필요한 카운터가 10 감소합니다. 최대 9까지 누적 가능."
+		"en"	"Increases damage by 1.0％ multiplicatively, at 7 and above, reduces furioso count needed by 5"
+		"ko"	"수치가 7 이상일 때 공격 피해량이 곱연산으로 1.0％ 증가하며, Furioso 활성화에 필요한 카운터가 5 감소합니다. 최대 9까지 누적 가능."
 	}
 	"Sizzling Wound"
 	{
@@ -4075,8 +4075,8 @@
 	}
 	"Indulgence in Prescripts Desc"
 	{
-		"en"	"Increases damage by 10.0％ multiplicatively, Removed upon losing a prescript\nGained when doing a prescript while already at max grace.\nReduces Furioso count by 20"
-		"ko"	"공격 피해량이 곱연산으로 10.0％ 증가합니다.(지령 수행 실패 시 효과 제거)\n가호가 최대일 때 지령 수행 시 획득할 수 있습니다.\nFurioso 카운터가 20 감소합니다."
+		"en"	"Increases damage by 10.0％ multiplicatively, Removed upon losing a prescript\nGained when doing a prescript while already at max grace.\nReduces Furioso count by 10"
+		"ko"	"공격 피해량이 곱연산으로 10.0％ 증가합니다.(지령 수행 실패 시 효과 제거)\n가호가 최대일 때 지령 수행 시 획득할 수 있습니다.\nFurioso 카운터가 10 감소합니다."
 	}
 	"Karmic Consequence"
 	{
@@ -4127,5 +4127,15 @@
 	{
 		"en"	"Received or given pats by the Index Nursefather after losing someone else...\nIncreases damage by 5.0％, reduces damage taken by 5.0％"
 		"ko"	"어느 누군가를 잃은 후, 검지 아비에게(로써) 쓰다듬을 받았습니다(해주었습니다)...\n공격 피해량이 5％ 증가합니다. 받는 피해량이 5％ 감소합니다."
+	}
+	"Desired Host"
+	{
+		"en"	"Desired Host"
+		"ko"	"숙주 갈망"
+	}
+	"Desired Host Desc"
+	{
+		"en"	"Becomes a new host for The Mercenary on death."
+		"ko"	"사망 시 ''용병''의 새로운 숙주가 됩니다."
 	}
 }

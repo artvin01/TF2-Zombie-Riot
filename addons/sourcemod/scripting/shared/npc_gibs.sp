@@ -143,6 +143,8 @@ static char m_cGibModelMetal[][] =
 void Npc_DoGibLogic(int pThis, float GibAmount = 1.0, bool forcesilentMode = false, int attacker = -1)
 {
 	CClotBody npc = view_as<CClotBody>(pThis);
+	if(pThis <= MaxClients)
+		npc.m_iBleedType = 1;
 	if(npc.m_iBleedType == 0)
 		return;
 		

@@ -28,6 +28,7 @@ void Commands_PluginStart()
 #if defined ZR
 	AddCommandListener(OnKillBind, "kill");
 	AddCommandListener(OnKillBind, "explode");
+	AddCommandListener(OnTeamName, "tournament_teamname");
 #endif
 
 } 
@@ -184,7 +185,7 @@ void JoinClassInternal(int client, TFClassType ClassChangeTo)
 		FailedInstachange = true;
 
 	if(dieingstate[client] != 0)
-		FailedInstachange = true;
+		FailedInstachange = true;	
 	
 	if(!IsPlayerAlive(client))
 		FailedInstachange = true;
@@ -192,8 +193,12 @@ void JoinClassInternal(int client, TFClassType ClassChangeTo)
 	if(f_TimeUntillNormalHeal[client] > GetGameTime())
 		FailedInstachange = true;
 		
+	if(Arena_Mode() && f_TimeUntillNormalHeal[client] + 10.0 > GetGameTime())
+		FailedInstachange = true;
+		
 	if(f_InBattleHudDisableDelay[client] > GetGameTime())
 		FailedInstachange = true;
+
 
 	
 	if(ClassChangeTo <= TFClass_Unknown)
@@ -417,5 +422,10 @@ bool DoInteractKeyLogic(float angles[3], int client)
 static Action OnKillBind(int client, const char[] command, int args)
 {
 	return Gunsaw_KillBind(client) ? Plugin_Handled : Plugin_Continue;
+}
+
+static Action OnTeamName(int client, const char[] command, int args)
+{
+	return Native_CanRenameNpc(client) ? Plugin_Continue : Plugin_Handled;
 }
 #endif

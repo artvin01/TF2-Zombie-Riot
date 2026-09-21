@@ -37,7 +37,7 @@ public void Weapon_ThrowBrick(int client, int weapon, bool crit, int slot)
 	{
 		target = -2;
 	}
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 
 	float speed = 2000.0;
 	int projectile = Wand_Projectile_Spawn(client, speed, 0.0, damage, 0, weapon, "bullet_distortion_trail_tracer");

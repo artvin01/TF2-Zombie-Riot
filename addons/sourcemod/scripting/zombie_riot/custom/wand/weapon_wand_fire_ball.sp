@@ -371,7 +371,10 @@ public void FireballDealDamageFinalPap(int victim, int &attacker, int &inflictor
 		return;
 
 	int HadBuff = HasSpecificBuff(victim, "Black Flames");
-	ApplyStatusEffect(attacker, victim, "Black Flames", 999.0);
+	if(Arena_Mode())
+		ApplyStatusEffect(attacker, victim, "Black Flames", 5.0);
+	else
+		ApplyStatusEffect(attacker, victim, "Black Flames", 999.0);
 	if(!HadBuff)
 	{
 		ExtinguishTarget(victim);

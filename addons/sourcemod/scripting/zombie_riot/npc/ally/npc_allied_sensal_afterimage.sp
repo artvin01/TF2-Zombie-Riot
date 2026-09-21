@@ -25,9 +25,9 @@ void AlliedSensalAbility_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3])
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return AlliedSensalAbility(client, vecPos, vecAng);
+	return AlliedSensalAbility(client, vecPos, vecAng, team);
 }
 methodmap AlliedSensalAbility < CClotBody
 {
@@ -41,9 +41,9 @@ methodmap AlliedSensalAbility < CClotBody
 	}
 
 	
-	public AlliedSensalAbility(int client, float vecPos[3], float vecAng[3])
+	public AlliedSensalAbility(int client, float vecPos[3], float vecAng[3], int team)
 	{
-		AlliedSensalAbility npc = view_as<AlliedSensalAbility>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "100", TFTeam_Red, true));
+		AlliedSensalAbility npc = view_as<AlliedSensalAbility>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.0", "100", team, true));
 		
 		i_NpcWeight[npc.index] = 999;
 		SetEntPropEnt(npc.index,   Prop_Send, "m_hOwnerEntity", client);
@@ -88,6 +88,7 @@ methodmap AlliedSensalAbility < CClotBody
 			if(!ModelPath[0])
 				continue;
 
+			int SetSkin = GetTeam(client) - 2;
 			for(int Repeat=0; Repeat<7; Repeat++)
 			{
 				int WearableIndex = i_Wearable[npc.index][Repeat];
@@ -101,6 +102,7 @@ methodmap AlliedSensalAbility < CClotBody
 							SetVariantInt(GetEntProp(client, Prop_Send, "m_nBody"));
 							AcceptEntityInput(WearablePostIndex, "SetBodyGroup");
 						}
+						SetEntProp(WearablePostIndex, Prop_Send, "m_nSkin", SetSkin);
 						SetEntityRenderMode(WearablePostIndex, RENDER_TRANSCOLOR); //Make it half invis.
 						SetEntityRenderColor(WearablePostIndex, 255, 255, 255, 125);
 						i_Wearable[npc.index][Repeat] = EntIndexToEntRef(WearablePostIndex);

@@ -314,6 +314,8 @@ void Angelic_Shotgun_Meleetrace_Hit_Before(int client, float &damage, int enemy)
 					i_AbilityChargeAngelic[client] += 1;
 					if(b_thisNpcIsARaid[enemy])
 						i_AbilityChargeAngelic[client] += 1;
+					if(Arena_Mode())
+						i_AbilityChargeAngelic[client] += 4;
 					if(i_AbilityChargeAngelic[client] >= ANGELIC_ABILITY_CHARGE_2)
 					{
 						i_AbilityChargeAngelic[client] = ANGELIC_ABILITY_CHARGE_2;
@@ -325,6 +327,8 @@ void Angelic_Shotgun_Meleetrace_Hit_Before(int client, float &damage, int enemy)
 					if(b_thisNpcIsARaid[enemy])
 						i_AbilityChargeAngelic[client] += 1;
 
+					if(Arena_Mode())
+						i_AbilityChargeAngelic[client] += 4;
 					if(i_AbilityChargeAngelic[client] >= ANGELIC_ABILITY_CHARGE_1)
 					{
 						i_AbilityChargeAngelic[client] = ANGELIC_ABILITY_CHARGE_1;
@@ -336,6 +340,8 @@ void Angelic_Shotgun_Meleetrace_Hit_Before(int client, float &damage, int enemy)
 					if(b_thisNpcIsARaid[enemy])
 						i_AbilityChargeAngelic[client] += 1;
 
+					if(Arena_Mode())
+						i_AbilityChargeAngelic[client] += 4;
 					if(i_AbilityChargeAngelic[client] >= ANGELIC_ABILITY_CHARGE_0)
 					{
 						i_AbilityChargeAngelic[client] = ANGELIC_ABILITY_CHARGE_0;

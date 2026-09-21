@@ -761,14 +761,14 @@ public void Godfather_AnimEvent(int entity, int event)
 				TR_GetEndPosition(vecHit, swingTrace);
 				if(target > 0) 
 				{
-					SDKHooks_TakeDamage(target, npc.index, npc.index, target < MaxClients ? Dirty_DMG : Dirty_EntityDMG, DMG_CLUB, -1, _, vecHit);
+					SDKHooks_TakeDamage(target, npc.index, npc.index, target <= MaxClients ? Dirty_DMG : Dirty_EntityDMG, DMG_CLUB, -1, _, vecHit);
 					EmitSoundToAll(SOUND_DIRTYKICK_HIT, target);
 						
 					if (!i_IsABuilding[target])
 					{
 						EmitSoundToAll(g_HHHLaughs[GetRandomInt(0, sizeof(g_HHHLaughs) - 1)], npc.index, _, _, _, _, 80);
 
-						if (target < MaxClients)
+						if (target <= MaxClients)
 						{
 							TF2_StunPlayer(target, Dirty_Stun, _, TF_STUNFLAG_BONKSTUCK);
 
@@ -880,7 +880,7 @@ public void Godfather_AnimEvent(int entity, int event)
 				if(target > 0) 
 				{
 					EmitSoundToAll(g_HHHLaughs[GetRandomInt(0, sizeof(g_HHHLaughs) - 1)], npc.index, _, _, _, _, 80);
-					SDKHooks_TakeDamage(target, npc.index, npc.index, target < MaxClients ? Kick_DMG : Kick_EntityDMG, DMG_CLUB, -1, _, vecHit);
+					SDKHooks_TakeDamage(target, npc.index, npc.index, target <= MaxClients ? Kick_DMG : Kick_EntityDMG, DMG_CLUB, -1, _, vecHit);
 
 					EmitSoundToAll(SOUND_DIRTYKICK_HIT, target);
 					EmitSoundToAll(SOUND_NORMALKICK_HIT, target);

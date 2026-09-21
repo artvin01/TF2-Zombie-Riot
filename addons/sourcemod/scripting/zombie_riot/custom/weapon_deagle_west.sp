@@ -176,7 +176,7 @@ public void Revolver_Highnoon(int client, int weapon, bool crit, int slot, int v
 			float vecSwingForward[3];
 			StartLagCompensation_Base_Boss(client);
 			DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 9900.0, false, 9900.0, true); //infinite range, and does not ignore walls!
-			FinishLagCompensation_Base_boss();
+			FinishLagCompensation_Base_boss(.client = client);
 
 				
 			int target = TR_GetEntityIndex(swingTrace);	
@@ -322,7 +322,7 @@ public void DepthPerception_RevolverM2(int client, int weapon, bool crit, int sl
 	GetClientEyePosition(client, flPos);
 	Explode_Logic_Custom(0.0, client, client, weapon, flPos, 2000.9,_,_,true,5,_,_,SherrifRevolverHit);
 	//add LOS check.
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 	if(!FoundTargetRevolver)
 	{
 		Ability_Apply_Cooldown(client, slot, 1.0);
@@ -365,7 +365,7 @@ public void DepthPerception_RevolverM2_PAP(int client, int weapon, bool crit, in
 	GetClientEyePosition(client, flPos);
 	Explode_Logic_Custom(0.0, client, client, weapon, flPos, 2000.9,_,_,true,5,_,_,SherrifRevolverHit);
 	//add LOS check.
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 	if(!FoundTargetRevolver)
 	{
 		Ability_Apply_Cooldown(client, slot, 1.0);

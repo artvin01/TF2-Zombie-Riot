@@ -740,7 +740,7 @@
 	}
 	"Crossbow Man Desc"
 	{
-		"en" 		"-SHoots arrows which predict movement"
+		"en" 		"-Shoots arrows which predict movement"
 		"ko" 		"-대상의 움직임을 예측하며 화살을 발사합니다."
 	}
 	"Spearman Desc"
@@ -2165,7 +2165,7 @@
 	}
 	"Skin Hunter Desc" 
 	{
-		"en"	"-A hunter that gains the interest of skinning his enemies. \n-Heals all allies around himself\n-Heals all allies around himself\n-Deals only ranged damage\n-Throws knives at enemies."
+		"en"	"-A hunter that gains the interest of skinning his enemies. \n-Heals all allies around himself.\n-Deals only ranged damage.\n-Throws knives at enemies."
 		"ko"	"적들의 가죽을 벗겨내어 모아두고 싶어하는 스나이퍼입니다.\n-주변의 모든 아군을 회복시킴.\n-칼을 투척하여 원거리 피해를 줌."
 	}
 	"Irritated Person Desc" 

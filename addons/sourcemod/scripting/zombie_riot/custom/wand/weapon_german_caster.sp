@@ -172,7 +172,7 @@ public Action Weapon_German_Timer(Handle timer, int client)
 				DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 2000.0, false, 45.0, false);
 				int target = TR_GetEntityIndex(swingTrace);	
 				delete swingTrace;
-				FinishLagCompensation_Base_boss();
+				FinishLagCompensation_Base_boss(.client = client);
 
 				if(target == 0)
 					target = -1;
@@ -234,6 +234,10 @@ static stock bool IsValidHomingTarget(int projectile, int target, int owner)
 	
 	if(GermanSilence[owner])	// Ignores non-elite enemies while in ability
 	{
+		//pvp
+		if(target <= MaxClients)
+			return true;
+
 		if(!b_thisNpcIsABoss[target] &&
 		   !b_thisNpcIsARaid[target] &&
 		   !b_StaticNPC[target] &&

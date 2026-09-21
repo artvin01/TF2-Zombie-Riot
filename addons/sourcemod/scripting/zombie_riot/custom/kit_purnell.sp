@@ -432,7 +432,7 @@ public void Purnell_Delayed_MeleeAttack(DataPack pack)
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
 		TR_TraceHullFilter(fPos, endPoint, hullMin, hullMax, 1073741824, Purnell_DoSwingTrace, client);	// 1073741824 is CONTENTS_LADDER?
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 
 		
 		int MaxTargetsHit = PURNELL_MAX_TARGETS;

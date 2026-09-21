@@ -82,7 +82,7 @@ public void Weapon_BlemishineAttackM2Base(int client, int weapon, bool &result, 
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
 		Explode_Logic_Custom(0.0, client, client, weapon, _, BLEMISHINE_RANGE_ABILITY,_,_,_,_,_,_,BlemishineAbilityHit);
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 		i_BlemishineWhichAbility[client] = 1;
 		float value = Attributes_Get(weapon, 180, 0.0);
 		f_AbilityHealAmmount[client] = value * 2.0;
@@ -127,7 +127,7 @@ public void Weapon_BlemishineAttackM2Stronger(int client, int weapon, bool &resu
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
 		Explode_Logic_Custom(0.0, client, client, weapon, _, BLEMISHINE_RANGE_ABILITY,_,_,_,_,_,_,BlemishineAbilityHit2);
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 		i_BlemishineWhichAbility[client] = 2;
 		float value = Attributes_Get(weapon, 180, 0.0);
 		f_AbilityHealAmmount[client] = value * 2.0;
@@ -171,7 +171,7 @@ public void Weapon_BlemishineAttackM2Strongest(int client, int weapon, bool &res
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
 		Explode_Logic_Custom(0.0, client, client, weapon, _, BLEMISHINE_RANGE_ABILITY,_,_,_,_,_,_,BlemishineAbilityHit3);
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 		i_BlemishineWhichAbility[client] = 2;
 		float value = Attributes_Get(weapon, 180, 0.0);
 		f_AbilityHealAmmount[client] = value * 2.0;
@@ -300,6 +300,8 @@ public float NPC_OnTakeDamage_Blemishine(int attacker, int victim, float &damage
 			{
 				float value = Attributes_Get(weapon, 180, 0.0);
 				value *= 8.0;
+				if(Arena_Mode())
+					value *= 2.0;
 				DoHealingOcean(attacker, attacker, (150.0 * 150.0), value * 1.35, true);
 				damage *= 2.0;
 			}
@@ -328,7 +330,10 @@ public void Blemishine_Think(int client)
 			}
 			if(f_AbilityHealAmmount[client] > 0.0)
 			{
-				DoHealingOcean(client, client, (200.0 * 200.0), f_AbilityHealAmmount[client] * 1.0, true);
+				float Multiplier = 1.0;
+				if(Arena_Mode())
+					Multiplier *= 2.0;
+				DoHealingOcean(client, client, (200.0 * 200.0), f_AbilityHealAmmount[client] * Multiplier, true);
 				float flPos[3];
 				GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", flPos);		
 				spawnRing_Vectors(flPos, /*RANGE*/ 200.0 * 2.0, 0.0, 0.0, 15.0, EMPOWER_MATERIAL, 231, 231, 4, 125, 1, /*DURATION*/ 0.12, 3.0, 2.5, 5);

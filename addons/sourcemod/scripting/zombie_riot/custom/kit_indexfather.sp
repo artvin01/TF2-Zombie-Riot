@@ -473,6 +473,10 @@ static Action Timer_Base(Handle timer, DataPack pack)
 		if(WeaponLevel[client] >= 4)
 			UnlockedShin[client] = true;
 	}
+	if(Arena_Mode())
+	{
+		GraceOfPrescript[client] = MaxPrescriptGrace(client);
+	}
 	if(UnlockedShin[client])
 		ApplyStatusEffect(client, client, "Shin - Rien", 1.0);
 	if(GraceOfPrescript[client])
@@ -637,7 +641,7 @@ void IndexFather_GeneratePrescript(int client, bool ForceNew, int PrescriptForce
 			return;
 		}
 	}
-	if(RaidbossIgnoreBuildingsLogic())
+	if(RaidbossIgnoreBuildingsLogic() || Arena_Mode())
 	{
 		PrescriptForce = 4;
 	}
@@ -801,6 +805,10 @@ void IndexFather_SelectRandomGoal(int client, Prescript data, int PrescriptForce
 		{
 			//todo, add damage scaling
 			data.Goal = IndexFather_DamageDealTreshhold();
+			if(Arena_Mode())
+			{
+				data.Goal = 100.0;
+			}
 		}
 		case PT_TakeDamage:
 		{
@@ -1330,7 +1338,10 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 	damage *= (float(GraceOfPrescript[attacker]) * 0.01) + 1.0;
 	if(f_FuriosoInUse[attacker] > GetGameTime())
 	{
-		damage *= 2.0;
+		if(Arena_Mode())
+			damage *= 1.5;
+		else
+			damage *= 1.75;
 	}
 	if(CheckInHud())
 		return;
@@ -1345,7 +1356,7 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 	{
 		i_FuriosoHits[attacker]++;
 		f_SwitchWeaponsRandomly[attacker] = GetGameTime() + 0.25;
-		f_FuriosoInUse[attacker] = GetGameTime() + 5.0;
+		f_FuriosoInUse[attacker] = GetGameTime() + 10.0;
 		IndexFather_ScytheEffect(victim);
 		if(i_FuriosoHits[attacker] >= 9)
 		{
@@ -1379,7 +1390,7 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 		}
 		ResetFurioso = true;
 		f_DodgeCooldown[attacker] = GetGameTime() + IndexFather_DashCooldown(attacker);
-		if(i_DodgesAvailable[attacker] <= (IndexFather_DodgeMaxReturn(attacker) / 2))
+		if(!Arena_Mode() && i_DodgesAvailable[attacker] <= (IndexFather_DodgeMaxReturn(attacker) / 2))
 			i_DodgesAvailable[attacker] = IndexFather_DodgeMaxReturn(attacker) / 2;
 			
 	}
@@ -1395,11 +1406,12 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 			}
 			case PrescriptWeapon_Hammer:
 			{
+				StatusEffects_PoiseAddStuff(attacker, 1, 1.5);
 
 			}
 			case PrescriptWeapon_Whip:
 			{
-				
+				StatusEffects_PoiseAddStuff(attacker, 1, 1.5);
 			}
 			case PrescriptWeapon_Stiletto:
 			{
@@ -1420,7 +1432,7 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 			}
 			case PrescriptWeapon_Greatsword:
 			{
-
+				StatusEffects_PoiseAddStuff(attacker, 1, 1.5);
 			}
 			case PrescriptWeapon_Sycthe:
 			{
@@ -1429,6 +1441,10 @@ public void IndexFather_TakeDamageDeal(int victim, int &attacker, int &inflictor
 			}
 		}
 		AddWeaponToFurioso(attacker, 1);
+		if(WasARaidboss[attacker])
+			AddWeaponToFurioso(attacker, 1);
+		if(Arena_Mode())
+			AddWeaponToFurioso(attacker, 4);
 	}
 	if(ResetFurioso)
 	{
@@ -1716,6 +1732,7 @@ void IndexFather_GrantRandomWeapon(int client, int originalweapon, int ForceWeap
 	Attributes_SetMulti(weapon_index, 205, Attributes_Get(originalweapon, 205, 1.0));
 	Attributes_SetMulti(weapon_index, 206, Attributes_Get(originalweapon, 206, 1.0));
 	Attributes_SetAdd(weapon_index, 180, Attributes_Get(originalweapon, 180, 1.0));
+	Attributes_SetMulti(weapon_index, 6, 0.9);
 	EmitSoundToAll(g_AquireNewWeapon[GetRandomInt(0, sizeof(g_AquireNewWeapon) - 1)], client, SNDCHAN_STATIC, 70, _, 0.5, 100);
 	i_PreviousWeapon[client] = EntIndexToEntRef(weapon_index);
 	Store_SwapToItem(client, weapon_index, true);
@@ -2170,7 +2187,7 @@ int IndexFather_MaxStacksForFurioso(int client)
 
 	//each grace reduces by 10
 	ReduceBy *= 10;
-	return 100 - ReduceBy;
+	return ((100 - ReduceBy) / 2);
 }
 
 void IndexFather_AllyDodgedAttack(int client)

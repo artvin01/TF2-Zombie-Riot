@@ -245,7 +245,7 @@ public void Reiuji_Wand_Barrage_Attack_ALT(int client, int weapon, bool crit, in
 	b_LagCompNPC_No_Layers = true;
 	StartLagCompensation_Base_Boss(client);
 	TR_EnumerateEntitiesSphere(Origin, range, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_Reiuji, client);
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 
 
 	//so for targeting we will use a very similar method that twirl/stella use for their lasers.
@@ -590,19 +590,19 @@ public void Reiuji_Wand_Barrage_Attack(int client, int weapon, bool crit, int sl
 	int[] valid_targets = new int[loop_for];
 	int targets_aquired = 0;
 
-	for(int a; a < i_MaxcountNpcTotal; a++)
+	for(int a; a < MAXENTITIES; a++)
 	{
 		if(targets_aquired >= loop_for)
 			break;
 
-		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[a]);
+		int entity = a;
 
-		if(!IsValidEnemy(client, entity))
+		if(!IsValidEnemy(client, entity, true))
 			continue;
 
 		int target = IsLineOfSight(client, entity, tolerance_angle, range);
 
-		if(IsValidEnemy(client, target))
+		if(IsValidEnemy(client, target, true))
 		{
 			//CPrintToChatAll("2 valid target: %i", target);
 			valid_targets[targets_aquired] = target;
@@ -1222,10 +1222,7 @@ static void Projectile_Touch(int entity, int target)
 		i_ammo[owner]+=2;	//barrage gives a bit of ammo back
 
 		i_ExplosiveProjectileHexArray[owner] = EP_DEALS_PLASMA_DAMAGE;
-		b_LagCompNPC_No_Layers = true;
-		StartLagCompensation_Base_Boss(owner);
 		Explode_Logic_Custom(f_WandDamage[entity], owner, owner, -1, Entity_Position, fl_ruina_Projectile_radius[entity]);
-		FinishLagCompensation_Base_boss();
 	}
 	else
 	{

@@ -129,6 +129,8 @@ void Yakuza_AddCharge(int client, int amount)
 {
 	if(amount)
 	{
+		if(Arena_Mode() && amount > 0)
+			amount *= 2;
 		if(!SuperDragon[client] && WeaponStyle[client] == Style_Dragon)
 		{
 			//Dragon style CANNOT gain heat at all
@@ -555,8 +557,10 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 	if(HeatActionCooldown[client] > GetGameTime())
 		return;
 
-	if(WeaponStyle[client] != Style_Dragon)
+	if(WeaponStyle[client] != Style_Dragon || Arena_Mode())
 		TraceStunOnly = true;
+
+		
 
 
 	Handle swingTrace;
@@ -579,7 +583,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 			{
 				//Hurray, no buiding was found, lets try stealing!
 				Store_GiveAll(client, GetClientHealth(client));
-				FinishLagCompensation_Base_boss();
+				FinishLagCompensation_Base_boss(.client = client);
 				return;
 			}
 			
@@ -587,7 +591,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "STYLE: Target must be a decorative building or your own!");
-			FinishLagCompensation_Base_boss();
+			FinishLagCompensation_Base_boss(.client = client);
 			return;
 		}
 		else if(WeaponStyle[client] == Style_Rush)
@@ -596,7 +600,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 			TF2_AddCondition(client, TFCond_SpeedBuffAlly, 1.5);
 			ApplyTempAttrib(weapon, 6, 0.85, 1.5);
 			Ability_Apply_Cooldown(client, 2, 8.0);
-			FinishLagCompensation_Base_boss();
+			FinishLagCompensation_Base_boss(.client = client);
 			return;
 		}
 
@@ -606,13 +610,13 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "HEAT: No target!");
-			FinishLagCompensation_Base_boss();
+			FinishLagCompensation_Base_boss(.client = client);
 			return;
 		}
 	}
 	
 	//We found a target!
-	if(target > 0 && (f_TimeFrozenStill[target] > GetGameTime(target) || WeaponStyle[client] == Style_Dragon))
+	if(target > 0 && (Arena_Mode() || f_TimeFrozenStill[target] > GetGameTime(target) || WeaponStyle[client] == Style_Dragon))
 	{
 		//the target is stunned! Do we allow a heat action?
 		if(WeaponLevel[client] > 1)
@@ -626,7 +630,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 			{
 				if(GetClientButtons(client) & IN_ATTACK) //if its dragon, make it so they cant hold m1
 				{
-					FinishLagCompensation_Base_boss();
+					FinishLagCompensation_Base_boss(.client = client);
 					return;
 				}
 				RequiredHeat = 45;
@@ -640,7 +644,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 					SetDefaultHudPosition(client);
 					SetGlobalTransTarget(client);
 					ShowSyncHudText(client,  SyncHud_Notifaction, "HEAT: Enemy was recently in HEAT ability! Wait!");
-					FinishLagCompensation_Base_boss();
+					FinishLagCompensation_Base_boss(.client = client);
 					return;
 				}
 			}
@@ -654,9 +658,18 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 				f_AntiStuckPhaseThroughFirstCheck[client] = GetGameTime() + (3.5 * Yakuza_DurationDoEnemy(target));
 				ApplyStatusEffect(client, client, "Intangible", 3.5 * Yakuza_DurationDoEnemy(target));
 				//Everything is greenlit! Yaay!
-				HeatActionCooldown[client] = GetGameTime() + 0.5;
-				if(WeaponStyle[client] != Style_Dragon)
-					HeatActionCooldownEnemy[target] = GetGameTime() + 5.0;
+				if(!Arena_Mode())
+				{
+					HeatActionCooldown[client] = GetGameTime() + 0.5;
+					if(WeaponStyle[client] != Style_Dragon)
+						HeatActionCooldownEnemy[target] = GetGameTime() + 5.0;
+				}
+				else
+				{
+					HeatActionCooldown[client] = GetGameTime() + 5.0;
+					if(WeaponStyle[client] != Style_Dragon)
+						HeatActionCooldownEnemy[target] = GetGameTime() + 15.0;
+				}
 				//cant spam heat action.
 				switch(WeaponStyle[client])
 				{
@@ -714,7 +727,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 					flMaxhealth *= 2.0;
 					
 				HealEntityGlobal(client, client, flMaxhealth, 1.0, 0.0, HEAL_SELFHEAL);
-				FinishLagCompensation_Base_boss();
+				FinishLagCompensation_Base_boss(.client = client);
 				return;
 			}
 
@@ -722,7 +735,7 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 			SetDefaultHudPosition(client);
 			SetGlobalTransTarget(client);
 			ShowSyncHudText(client,  SyncHud_Notifaction, "HEAT: Requires %d％ HEAT for this!", RequiredHeat);
-			FinishLagCompensation_Base_boss();
+			FinishLagCompensation_Base_boss(.client = client);
 			return;
 		}
 
@@ -730,18 +743,18 @@ public void Yakuza_M2Special(int client, int weapon, int slot)
 		SetDefaultHudPosition(client);
 		SetGlobalTransTarget(client);
 		ShowSyncHudText(client,  SyncHud_Notifaction, "HEAT: Ability not unlocked!");
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 		return;
 	}
 
 	if(GetClientButtons(client) & IN_ATTACK)
 	{
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 		return;
 	}
 
 	DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 100.0, false, 45.0, true); //infinite range, and ignore walls!
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 	target = TR_GetEntityIndex(swingTrace);	
 	delete swingTrace;
 
@@ -970,6 +983,8 @@ void Yakuza_NPCTakeDamage(int victim, int attacker, float &damage, int weapon)
 				Ability_Apply_Cooldown(attacker, 1, cooldown);
 				duration *= 0.85;
 			}
+			if(Arena_Mode())
+				duration *= 15.0;
 			FreezeNpcInTime(victim, duration * Yakuza_DurationDoEnemy(victim));
 		}
 	}
@@ -1034,7 +1049,7 @@ static int DoSpecialActionYakuza(int client, float DamageBase, const char[] anim
 	{
 
 	}
-	else
+	else if(!Arena_Mode())
 	{
 		//tigerdrop doesnt do ignoring
 		b_ThisEntityIgnored[client] = true;

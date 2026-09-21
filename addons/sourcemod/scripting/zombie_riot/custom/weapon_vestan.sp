@@ -494,7 +494,7 @@ public void Weapon_Vesta_Main(int client, int weapon, bool crit)
 				swingTrace = TR_TraceRayFilterEx(vec, {90.0, 0.0, 0.0}, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
 				TR_GetEndPosition(vec, swingTrace);
 			}
-			FinishLagCompensation_Base_boss();
+			FinishLagCompensation_Base_boss(.client = client);
 			delete swingTrace;
 			Vesta_TmepSpeed[client]=RocketSpeed;
 			ArcToLocationViaSpeedProjectile(entity, vec, SpeedReturn, 1.0, 1.0);

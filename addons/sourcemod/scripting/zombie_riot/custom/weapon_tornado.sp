@@ -203,9 +203,8 @@ void BlitzRocket(int client, float speed, float damage, int weapon)
 	ApplyCustomModelToWandProjectile(projectile, "models/weapons/w_bullet.mdl", ModelSizeAdd, "");
 
 }
-static void Tornado_Blitz_StartTouch(int entity, int other)
+static void Tornado_Blitz_StartTouch(int entity, int target)
 {
-	int target = Target_Hit_Wand_Detection(entity, other);
 	if (target > 0)	
 	{
 		//Code to do damage position and ragdolls

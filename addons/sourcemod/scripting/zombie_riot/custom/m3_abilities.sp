@@ -192,7 +192,10 @@ stock void GiveMorphineOnDamage(int client, int victim, float damage, int damage
 		
 	if(!(damagetype & DMG_CLUB))
 		return; //needs to be melee damage!
-
+	if(Arena_Mode())
+	{
+		damage *= 10.0;
+	}
 	if(MorphineMaxed(client))
 	{
 		MorphineCharge[client] = 0.0;
@@ -203,7 +206,14 @@ stock void GiveMorphineOnDamage(int client, int victim, float damage, int damage
 		MinCashMaxGain = 1000;
 
 	MinCashMaxGain -= 250;
+	if(Arena_Mode())
+	{
+		if(MinCashMaxGain >= 3000)
+		{
+			MinCashMaxGain = 3000;
+		}
 
+	}
 	if(MinCashMaxGain >= 100000)
 	{
 		MinCashMaxGain = 100000;
@@ -489,11 +499,11 @@ public Action Timer_Detect_Player_Near_Armor_Grenade(Handle timer, DataPack pack
 						EmitSoundToClient(target, SOUND_ARMOR_BEAM, target, _, 90, _, 0.7);
 						if(f_TimeUntillNormalHeal[target] > GetGameTime())
 						{
-							GiveArmorViaPercentage(target, 0.075 * 0.5, 1.0,_,_,client);
+							GiveArmorViaPercentage(target, 0.1 * 0.75, 1.0,_,_,client);
 						}
 						else
 						{
-							GiveArmorViaPercentage(target, 0.075, 1.0, _,_,client);
+							GiveArmorViaPercentage(target, 0.1, 1.0, _,_,client);
 						}
 						continue;
 					}
@@ -541,7 +551,7 @@ public void PlaceableTempomaryHealingGrenade(int client)
 	if (ability_cooldown[client] < GetGameTime())
 	{
 		EmitSoundToAll("weapons/slam/throw.wav", client, _, 80, _, 0.7);
-		ability_cooldown[client] = GetGameTime() + (140.0 * CooldownReductionAmount(client));
+		ability_cooldown[client] = GetGameTime() + (100.0 * CooldownReductionAmount(client));
 		
 		int entity;		
 		if(b_StickyExtraGrenades[client])
@@ -672,13 +682,13 @@ public Action Timer_Detect_Player_Near_Healing_Grenade(Handle timer, DataPack pa
 							EmitSoundToClient(target, SOUND_HEAL_BEAM, target, _, 90, _, 0.7);
 							if(i_CurrentEquippedPerk[client] & PERK_REGENE)
 							{
-								SetEntityHealth(target,  GetClientHealth(target) + 12);
-								dieingstate[target] -= 20;
+								SetEntityHealth(target,  GetClientHealth(target) + 20);
+								dieingstate[target] -= 30;
 							}
 							else
 							{
-								SetEntityHealth(target,  GetClientHealth(target) + 6);
-								dieingstate[target] -= 10;
+								SetEntityHealth(target,  GetClientHealth(target) + 10);
+								dieingstate[target] -= 15;
 							}
 							if(dieingstate[target] < 1)
 							{
@@ -808,6 +818,11 @@ void HealPointToReinforce(int client, int healthvalue, float autoscale = 0.0)
 	if(!b_Reinforce[client])
 		return;
 
+	if(Arena_Mode())
+	{
+		healthvalue *= 2;
+		autoscale *= 2.5;
+	}
 	float Healing_Amount=Attributes_GetOnPlayer(client, 8, true, true)/2.0;
 	if(Healing_Amount<1.0)
 		Healing_Amount=1.0;
@@ -992,7 +1007,7 @@ public void Reinforce(int client, bool NoCD)
 		WritePackFloat(Reinforcement, position[0]);
 		WritePackFloat(Reinforcement, position[1]);
 		WritePackFloat(Reinforcement, position[2]);
-		WritePackFloat(Reinforcement, 50.0);
+		WritePackFloat(Reinforcement, Arena_Mode() ? 50.0 : 25.0);
 		WritePackCell(Reinforcement, false);
 		WritePackFloat(Reinforcement, 1200.0);
 		WritePackString(Reinforcement, "ZR_ReinforcePOD_");
@@ -2082,6 +2097,7 @@ public Action OnBombDrop(const char [] output, int caller, int activator, float 
 				DHook_RespawnPlayer(RandomHELLDIVER);
 				ForcePlayerCrouch(RandomHELLDIVER, false);
 				DataPack pack;
+				ReviveAllyResetCD(RandomHELLDIVER);
 				CreateDataTimer(0.5, Timer_DelayTele, pack, TIMER_FLAG_NO_MAPCHANGE);
 				Music_EndLastmann(true);
 				LastMann = false;
@@ -2185,7 +2201,7 @@ bool CanPlayerBeSummoned(int client, int summoner)
 	if(!b_AntiLateSpawn_Allow[client])
 		return false;
 
-	if(summoner==client || GetTeam(client) != TFTeam_Red)
+	if(summoner==client || GetTeam(client) != GetTeam(summoner))
 		return false;
 
 	if(!WasHereSinceStartOfWave(client))

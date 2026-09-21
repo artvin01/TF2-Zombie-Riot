@@ -165,7 +165,7 @@ public void Weapon_BurningThumb_M2(int client, int weapon, bool crit, int slot)
 			}
 		}
 
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 
 		delete trace;
 	}
@@ -341,7 +341,7 @@ public void Weapon_BurningThumb_R(int client, int weapon, bool crit, int slot)
 				SetEntityHealth(client, 50);
 				Rogue_TriggerFunction(Artifact::FuncRevive, client);
 
-				HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)), (i_CurrentEquippedPerk[client] & PERK_REGENE) ? 0.2 : 0.1, 1.0, HEAL_ABSOLUTE);
+				HealEntityGlobal(client, client, float(SDKCall_GetMaxHealth(client)), (i_CurrentEquippedPerk[client] & PERK_REGENE) ? 0.75 : 0.45, 1.0, HEAL_ABSOLUTE);
 
 				GiveCompleteInvul(client, 1.5);
 				CheckLastMannStanding(0);
@@ -381,7 +381,10 @@ public void Weapon_BurningThumb_R(int client, int weapon, bool crit, int slot)
 		return;
 	}
 
-	Store_ApplyCooldownIndex(client, WeaponStore, 3, RCooldown);
+	if(Arena_Mode())
+		Store_ApplyCooldownIndex(client, WeaponStore, 3, RCooldown * 0.35);
+	else
+		Store_ApplyCooldownIndex(client, WeaponStore, 3, RCooldown);
 	
 	Rogue_OnAbilityUse(client, weapon);
 	TF2_AddCondition(client, TFCond_CritOnKill, 29.9);
@@ -536,7 +539,9 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 				bonus += ShinForm[attacker] ? 2 : 1;
 				if(WeaponLevel[attacker] > 2)
 					damage *= ShinForm[attacker] ? 1.3 : 1.1;
-				
+
+				if(Arena_Mode())
+					damage *= 0.75;
 				InflictBurnPotency(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 5 : 2);
 
 				resetCharge = true;
@@ -563,6 +568,8 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 				if(WeaponLevel[attacker] > 2)
 					damage *= ShinForm[attacker] ? 1.3 : 1.1;
 				
+				if(Arena_Mode())
+					damage *= 0.75;
 				InflictBurnCount(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 5 : 2);
 
 				resetCharge = true;
@@ -590,6 +597,8 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 				
 				damage *= WeaponLevel[attacker] > 2 ? 1.5 : 1.2;
 
+				if(Arena_Mode())
+					damage *= 0.65;
 				if(ChargeSpent[attacker] != 2)
 					SpendAmmo(attacker, weapon);
 			}
@@ -655,6 +664,8 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 				if(WeaponLevel[attacker] > 2)
 					damage *= ShinForm[attacker] ? 1.3 : 1.1;
 				
+				if(Arena_Mode())
+					damage *= 0.75;
 				InflictBurnPotency(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 5 : 2);
 
 				resetCharge = true;
@@ -679,6 +690,8 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 				if(WeaponLevel[attacker] > 2)
 					damage *= ShinForm[attacker] ? 1.3 : 1.1;
 				
+				if(Arena_Mode())
+					damage *= 0.75;
 				InflictBurnCount(victim, attacker, weapon, WeaponLevel[attacker] > 2 ? 5 : 2);
 
 				resetCharge = true;
@@ -704,6 +717,8 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 				if(WeaponLevel[attacker] > 2)
 					damage *= ShinForm[attacker] ? 1.3 : 1.1;
 				
+				if(Arena_Mode())
+					damage *= 0.75;
 				if(ChargeSpent[attacker] != 2)
 					SpendAmmo(attacker, weapon);
 			}
@@ -730,8 +745,17 @@ void BurningThumb_NPCTakeDamage(int victim, int attacker, float &damage, int wea
 			WorldSpaceCenter(victim, PosDo);
 
 			EmitSoundToClient(attacker, "mvm/mvm_tank_explode.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
-			TE_Particle("hightower_explosion", PosDo, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0, .clientspec = attacker);
+			if(Arena_Mode())
+			{
+				EmitSoundToAll("mvm/mvm_tank_explode.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+				TE_Particle("hightower_explosion", PosDo, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0, .clientspec = attacker);
 
+			}
+			else
+			{
+				EmitSoundToClient(attacker, "mvm/mvm_tank_explode.wav", victim, SNDCHAN_STATIC, RAIDBOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
+				TE_Particle("hightower_explosion", PosDo, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
+			}
 			TE_Particle("mvm_soldier_shockwave", PosDo, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 		//	if(RaidbossIgnoreBuildingsLogic(1))
 		//		damage *= 2.0;
@@ -1089,6 +1113,8 @@ static void SetWeaponCooldown(int weapon, float &cooldown)
 {
 	cooldown *= Attributes_Get(weapon, 6, 1.0);
 	cooldown *= Attributes_Get(weapon, 396, 1.0);
+	if(Arena_Mode())
+		cooldown *= 0.75;
 
 	DataPack pack = new DataPack();
 	RequestFrame(ApplyWeaponCooldown, pack);
@@ -1233,6 +1259,10 @@ static int BurningThumbtion(int client, int which)
 		}
 	}
 
+	if(Arena_Mode())
+	{
+		ApplyStatusEffect(client, client, "Very Defensive Backup", 3.5);
+	}
 	float vAngles[3];
 	float vOrigin[3];
 	

@@ -52,6 +52,7 @@ float PreventRespawnsAll;
 #define PERK_HASTY_HOPS_X			(1 << 14)
 #define PERK_MARKSMAN_BEER_X		(1 << 15)
 #define PERK_ENERGY_DRINK_X			(1 << 16)
+#define PERK_SYMBIOSOS_SHOT			(1 << 17)
 
 #define HEAL_NO_RULES				0	 	 
 //Nothing special.
@@ -224,6 +225,7 @@ ConVar mp_bonusroundtime;
 bool b_LagCompNPC_AwayEnemies;
 bool b_LagCompNPC_BlockInteral;
 bool b_LagCompAlliedPlayers; //Make sure this actually compensates allies.
+bool b_LagCompPvP; //Make sure this actually compensates allies.
 #endif
 
 Function func_WandOnTouch[MAXENTITIES];
@@ -705,7 +707,7 @@ float f_BegPlayerR_TeethSet[MAXPLAYERS];
 //ATTRIBUTE ARRAY SUBTITIUTE
 bool b_ForceCollisionWithProjectile[MAXENTITIES];
 bool b_ProjectileCollideIgnoreWorld[MAXENTITIES];
-bool b_IsAProjectile[MAXENTITIES];
+int b_IsAProjectile[MAXENTITIES];
 bool b_Is_Player_Projectile_Through_Npc[MAXENTITIES];
 bool b_CannotBeHeadshot[MAXENTITIES];
 bool b_CannotBeBackstabbed[MAXENTITIES];

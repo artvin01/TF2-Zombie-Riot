@@ -217,7 +217,7 @@ public void Weapon_Sigil_Blade_M1(int client, int weapon, bool crit, int slot)
 		}
 		delete trace;
 		
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 		
 		if(IsValidEnemy(client, target, true))
 		{
@@ -409,7 +409,7 @@ public void Weapon_Sigil_Blade_R(int client, int weapon, bool crit, int slot)
 			float vecSwingForward[3];
 			StartLagCompensation_Base_Boss(client);
 			DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 1500.0, false, 45.0, true);
-			FinishLagCompensation_Base_boss();
+			FinishLagCompensation_Base_boss(.client = client);
 		
 			int target = TR_GetEntityIndex(swingTrace);	
 			delete swingTrace;
@@ -522,7 +522,7 @@ public Action Sigil_Slash_Think(Handle h, DataPack pack)
 	bool charge = false;
 	int mana_cost = RoundFloat(fl_Sigil_Crystal_ManaCost_Percent * max_mana[client] / (fl_Slash_Time_Max * 10));
 	
-	if(!b_NpcHasDied[target] && fl_Slash_duration[client] > GetGameTime() && mana_cost <= Current_Mana[client])
+	if(IsValidEnemy(client, target, true) && fl_Slash_duration[client] > GetGameTime() && mana_cost <= Current_Mana[client])
 	{
 		charge = true;
 		for(int a; a < i_MaxcountNpcTotal; a++)

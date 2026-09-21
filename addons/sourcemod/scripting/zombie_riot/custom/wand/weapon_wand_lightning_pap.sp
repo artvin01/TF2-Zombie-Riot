@@ -67,6 +67,8 @@ public void Weapon_Wand_LightningPap(int client, int weapon, bool &result, int s
 				float damage = Smite_BaseDMG;
 				
 				damage *= Smite_DMGMult;
+				if(Arena_Mode())
+					damage *= 0.5;
 				
 				damage *= Attributes_Get(weapon, 410, 1.0);
 			
@@ -90,7 +92,7 @@ public void Weapon_Wand_LightningPap(int client, int weapon, bool &result, int s
 				b_LagCompNPC_ExtendBoundingBox = true;
 				StartLagCompensation_Base_Boss(client);
 				Handle trace = TR_TraceRayFilterEx(vOrigin, vAngles, MASK_SHOT, RayType_Infinite, BulletAndMeleeTrace, client);
-				FinishLagCompensation_Base_boss();
+				FinishLagCompensation_Base_boss(.client = client);
 				
 				if(TR_DidHit(trace))
 				{   	 

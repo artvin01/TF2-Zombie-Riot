@@ -101,7 +101,7 @@ public void Weapon_ExplosiveBullets(int client, int weapon, bool crit, int slot)
 		Made_sound = false;
 				 
 	}
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 }
 
 stock void ExplosiveBullets_SpawnExplosion(float DetLoc[3])

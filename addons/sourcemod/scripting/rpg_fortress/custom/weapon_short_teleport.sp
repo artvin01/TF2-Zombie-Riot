@@ -191,7 +191,7 @@ float Weapon_Wand_ShortTeleport(int client, int weapon, int level, float damage)
 				FreezeNpcInTime(ST_HitEntitiesTeleportTrace[entity_traced], 1.0);
 			}
 		}
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 		if(MagicFocus)
 		{
 			Teleport_CD *= 0.5;

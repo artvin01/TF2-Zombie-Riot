@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static const float MaxMulti = 3.0;	// Max health multi after cap (3.0 is x3 of HealthCap)
+static const float MaxMulti = 1.75;	// Max health multi after cap (3.0 is x3 of HealthCap)
 static const float SlowStack = 0.1;	// Decrease speed by this much every max health over cap (0.25 gives -25% speed at x2 HP)
 static const float PropDamage = 3.0;	// Prop damage (Metal Cost * Building Damage * PropDamage)
 
@@ -57,6 +57,7 @@ enum
 }
 
 //static ArrayList GunListing[2][5];
+static bool InSelfRevive;
 static int ModelHealth[MAXPLAYERS];
 static float ModelMeleeRes[MAXPLAYERS];
 static float ModelRangedRes[MAXPLAYERS];
@@ -78,6 +79,7 @@ static int DrugNerf[MAXPLAYERS];
 //static Function OgEntityFuncAttack[MAXENTITIES][2];
 static Handle WeaponTimer[MAXPLAYERS];
 //static bool RecentlySwapped[MAXPLAYERS];
+static int MarkedSwapRef[MAXPLAYERS] = {INVALID_ENT_REFERENCE, ...};
 static bool DoneLastmanSecret;
 
 static bool Precached = false;
@@ -550,30 +552,32 @@ bool Gunsaw_LastmanSecret()
 	return true;
 }
 
+int Gunsaw_MarkedVictim(int client)
+{
+	return MarkedSwapRef[client];
+}
+
 void Gunsaw_NPCDeath(int entity)
 {
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(WeaponTimer[client] && dieingstate[client])
+		if(WeaponTimer[client] && TeutonType[client] == TEUTON_NONE && MarkedSwapRef[client] != -1 && MarkedSwapRef[client] == EntIndexToEntRef(entity))
 		{
-			float pos1[3], pos2[3];
-			GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos1);
-			GetEntPropVector(client, Prop_Data, "m_vecOrigin", pos2);
-			if(GetVectorDistance(pos1, pos2, true) > 100000.0)
-				continue;
-			
-			if(!ValidSwapTarget(entity, true))
+			MarkedSwapRef[client] = -1;
+
+			if(dieingstate[client])
 			{
 				if(GetClientHealth(client) < 200)
-				{
 					SetEntityHealth(client, 200);
-					return;
-				}
-
-				break;
 			}
 
-			CNavArea endArea = TheNavMesh.GetNavArea(pos1);
+			if(!ValidSwapTarget(entity, true))
+				break;
+
+			float pos[3];
+			GetEntPropVector(entity, Prop_Data, "m_vecOrigin", pos);
+
+			CNavArea endArea = TheNavMesh.GetNavArea(pos);
 			if(endArea == NULL_AREA)
 				return;
 			
@@ -581,8 +585,11 @@ void Gunsaw_NPCDeath(int entity)
 			if(startArea == NULL_AREA)
 				continue;
 			
-			if(TheNavMesh.BuildPath(startArea, endArea, pos1, .teamID = 2))
+			if(TheNavMesh.BuildPath(startArea, endArea, pos, .teamID = 2))
 			{
+				if(!dieingstate[client])
+					i_AmountDowned[client]++;
+
 				StealBodyForm(client, entity);
 				return;
 			}
@@ -590,23 +597,60 @@ void Gunsaw_NPCDeath(int entity)
 	}
 }
 
-
-void Gunsaw_TryBodySteal(int client, bool regen, float pos[3] = {0.0,0.0,0.0})
+void Gunsaw_NPCTakeDamage(int victim, int client)
 {
+	if(!CheckInHud() && WeaponTimer[client] && (dieingstate[client] || (GetClientButtons(client) & IN_DUCK)))
+	{
+		if(!dieingstate[client] && i_AmountDowned[client] >= TotalDowns())
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			ShowSyncHudText(client, SyncHud_Notifaction, "No downs left!");
+			return;
+		}
+
+		if(!ValidSwapTarget(victim, true))
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			SetDefaultHudPosition(client);
+			ShowSyncHudText(client, SyncHud_Notifaction, "Can not steal this body!");
+			return;
+		}
+
+		MarkedSwapRef[client] = EntIndexToEntRef(victim);
+		ApplyStatusEffect(client, victim, "Desired Host", 999.0);
+	}
+}
+
+bool Gunsaw_TryBodySteal(int client, bool regen, float pos[3] = {0.0,0.0,0.0}, bool onlyIfFree = false, float distance = 1000.0)
+{
+	if(InSelfRevive)
+		return true;
+	
+	if(ModelModels[client] && onlyIfFree)
+		return false;
+	
 	if(WeaponTimer[client])
 	{
-		int target = GetClosestTarget(client, true, 1000.0, true, .EntityLocation = pos, .fldistancelimitAllyNPC = 1000.0, .IgnorePlayers = true, .ExtraValidityFunction = StealBodyFunc);
+		int target = GetClosestTarget(client, true, distance, true, .EntityLocation = pos, .fldistancelimitAllyNPC = 1000.0, .ExtraValidityFunction = StealBodyFunc);
 		if(target != -1)
 		{
 			StealBodyForm(client, target);
 
-			view_as<CClotBody>(target).m_iHealthBar = 0;
-			SetEntityHealth(target, 1);
-			b_DissapearOnDeath[target] = true;
-			RemoveSpecificBuff(target, "Infinite Will");
-			SDKHooks_TakeDamage(target, client, client, GetRandomFloat(99999.0,9999999.0), DMG_BLAST, -1, {0.1,0.1,0.1}, _, _, ZR_SLAY_DAMAGE);
+			if(target <= MaxClients)
+			{
+				ForcePlayerSuicide(target);
+			}
+			else
+			{
+				view_as<CClotBody>(target).m_iHealthBar = 0;
+				SetEntityHealth(target, 1);
+				b_DissapearOnDeath[target] = true;
+				RemoveSpecificBuff(target, "Infinite Will");
+				SDKHooks_TakeDamage(target, client, client, GetRandomFloat(99999.0,9999999.0), DMG_BLAST, -1, {0.1,0.1,0.1}, _, _, ZR_SLAY_DAMAGE);
+			}
 
-			f_InBattleHudDisableDelay[client] = GetGameTime() + 1.0; 
+			f_InBattleHudDisableDelay[client] = GetGameTime() + 1.0;
 		}
 		else
 		{
@@ -628,7 +672,11 @@ void Gunsaw_TryBodySteal(int client, bool regen, float pos[3] = {0.0,0.0,0.0})
 		
 		if(regen)
 			RequestFrame(SetHealthAfterReviveRaid, EntIndexToEntRef(client));
+		
+		return target != -1;
 	}
+
+	return false;
 }
 
 static bool StealBodyFunc(int client, int target)
@@ -651,19 +699,24 @@ static bool StealBodyFunc(int client, int target)
 
 static void StealBodyForm(int client, int entity)
 {
-	ModelHealth[client] = GetEntProp(entity, Prop_Data, "m_iMaxHealth") / 10;
+	ModelHealth[client] = entity <= MaxClients ? ReturnEntityMaxHealth(entity) : (GetEntProp(entity, Prop_Data, "m_iMaxHealth") / 10);
 	if(ModelHealth[client] < 0)
 		ModelHealth[client] = 0;
 	
-	ModelMeleeRes[client] = clamp(fl_MeleeArmor[entity] * fl_Extra_MeleeArmor[entity], 0.5, 2.0);
-	ModelRangedRes[client] = clamp(fl_RangedArmor[entity] * fl_Extra_RangedArmor[entity], 0.5, 2.0);
-	ModelReloadTime[client] = clamp(f_AttackSpeedNpcIncrease[entity], 0.5, 2.0);
+	ModelMeleeRes[client] = entity <= MaxClients ? 1.0 : clamp(fl_MeleeArmor[entity] * fl_Extra_MeleeArmor[entity], 0.5, 2.0);
+	ModelRangedRes[client] = entity <= MaxClients ? 1.0 : clamp(fl_RangedArmor[entity] * fl_Extra_RangedArmor[entity], 0.5, 2.0);
+	ModelReloadTime[client] = entity <= MaxClients ? 1.0 : clamp(f_AttackSpeedNpcIncrease[entity], 0.5, 2.0);
 
 	char model[PLATFORM_MAX_PATH];
 
 	delete ModelNPCName[client];
 	ModelNPCName[client] = new DataPack();
-	if(b_NameNoTranslation[entity])
+	if(entity <= MaxClients)
+	{
+		GetClientName(entity, model, sizeof(model));
+		ModelNPCName[client].WriteString(model);
+	}
+	else if(b_NameNoTranslation[entity])
 	{
 		ModelNPCName[client].WriteString(c_NpcName[entity]);
 	}
@@ -680,60 +733,69 @@ static void StealBodyForm(int client, int entity)
 	TFClassType class;//, weapons;
 	int effect;
 
-	GetEntPropString(entity, Prop_Data, "m_ModelName", model, sizeof(model));
-	ReplaceString(model, sizeof(model), "\\", "/");
-
-	if(StrContains(model, "combine_", false) != -1 || StrContains(model, "police.mdl", false) != -1)
+	if(entity <= MaxClients)
 	{
-		class = TFClass_Pyro;
-		ModelRobot[client] = false;
-		effect = (GetEntProp(client, Prop_Send, "m_nBody") & 4) ? Body_Human : Body_Combine;
-	}
-	else if(ReplaceStringEx(model, sizeof(model), "models/player/", "", _, _, false) != -1)
-	{
-		int pos = FindCharInString(model, '.', true);
-		if(pos != -1)
-			model[pos] = '\0';
-
-		class = TF2_GetClass(model);
-		effect = view_as<int>(class);
-		//weapons = class;
-		ModelRobot[client] = false;
-	}
-	else if(ReplaceStringEx(model, sizeof(model), "models/bots/", "", _, _, false) != -1)
-	{
-		int pos = FindCharInString(model, '/', true);
-		if(pos != -1)
-			model[pos] = '\0';
-		ReplaceStringEx(model, sizeof(model), "_boss", "", _, _, false);
-		ReplaceStringEx(model, sizeof(model), "bot_", "", _, _, false);
-
-		class = TF2_GetClass(model);
-		effect = Body_Robot;
-		//weapons = class;
-		ModelRobot[client] = true;
-	}
-	else if(StrContains(model, "models/zombie/", false) != -1)
-	{
-		if(StrContains(model, "fast", false) != -1)
-		{
-			class = TFClass_Scout;
-		}
-		else if(StrContains(model, "poison", false) != -1)
-		{
-			class = TFClass_Heavy;
-		}
-		else
-		{
-			class = TFClass_Sniper;
-		}
-
-		effect = Body_Zombie;
-		ModelRobot[client] = false;
+		class = CurrentClass[entity];
+		ModelRobot[client] = b_IsRobot[entity];
+		effect = Body_Human;
 	}
 	else
 	{
-		ModelRobot[client] = false;
+		GetEntPropString(entity, Prop_Data, "m_ModelName", model, sizeof(model));
+		ReplaceString(model, sizeof(model), "\\", "/");
+
+		if(StrContains(model, "combine_", false) != -1 || StrContains(model, "police.mdl", false) != -1)
+		{
+			class = TFClass_Pyro;
+			ModelRobot[client] = false;
+			effect = (GetEntProp(entity, Prop_Send, "m_nBody") & 4) ? Body_Human : Body_Combine;
+		}
+		else if(ReplaceStringEx(model, sizeof(model), "models/player/", "", _, _, false) != -1)
+		{
+			int pos = FindCharInString(model, '.', true);
+			if(pos != -1)
+				model[pos] = '\0';
+
+			class = TF2_GetClass(model);
+			effect = view_as<int>(class);
+			//weapons = class;
+			ModelRobot[client] = false;
+		}
+		else if(ReplaceStringEx(model, sizeof(model), "models/bots/", "", _, _, false) != -1)
+		{
+			int pos = FindCharInString(model, '/', true);
+			if(pos != -1)
+				model[pos] = '\0';
+			ReplaceStringEx(model, sizeof(model), "_boss", "", _, _, false);
+			ReplaceStringEx(model, sizeof(model), "bot_", "", _, _, false);
+
+			class = TF2_GetClass(model);
+			effect = Body_Robot;
+			//weapons = class;
+			ModelRobot[client] = true;
+		}
+		else if(StrContains(model, "models/zombie/", false) != -1)
+		{
+			if(StrContains(model, "fast", false) != -1)
+			{
+				class = TFClass_Scout;
+			}
+			else if(StrContains(model, "poison", false) != -1)
+			{
+				class = TFClass_Heavy;
+			}
+			else
+			{
+				class = TFClass_Sniper;
+			}
+
+			effect = Body_Zombie;
+			ModelRobot[client] = false;
+		}
+		else
+		{
+			ModelRobot[client] = false;
+		}
 	}
 
 	if(class == TFClass_Unknown)
@@ -776,20 +838,42 @@ static void StealBodyForm(int client, int entity)
 		UpdatePerkName(client);
 	}
 	
-	for(int i; i < sizeof(i_Wearable[]); i++)
+	if(entity <= MaxClients)
 	{
-		int wearable = EntRefToEntIndex(i_Wearable[entity][i]);
-		if(wearable != -1 && HasEntProp(wearable, Prop_Send, "m_nModelIndex"))
+		int wearable, a;
+		while(TF2U_GetWearable(entity, wearable, a))
 		{
+			if(ViewChange_IsViewmodelRef(EntIndexToEntRef(wearable)))
+				continue;
+			
 			int index = GetEntProp(wearable, Prop_Send, "m_nModelIndex");
-			ModelIndexToString(index, model, sizeof(model));
-			if(model[0] && StrContains(model, "player/items", false) != -1)
+			if(index > 0)
 			{
-				ModelModels[client].Push(index);
-
-				if(StrContains(model, "hwn2022_pony_express", false) != -1)
+				ModelIndexToString(index, model, sizeof(model));
+				if(model[0] && StrContains(model, "player/items", false) != -1)
 				{
-					effect = Body_Horse;
+					ModelModels[client].Push(index);
+				}
+			}
+		}
+	}
+	else
+	{
+		for(int i; i < sizeof(i_Wearable[]); i++)
+		{
+			int wearable = EntRefToEntIndex(i_Wearable[entity][i]);
+			if(wearable != -1 && HasEntProp(wearable, Prop_Send, "m_nModelIndex"))
+			{
+				int index = GetEntProp(wearable, Prop_Send, "m_nModelIndex");
+				ModelIndexToString(index, model, sizeof(model));
+				if(model[0] && StrContains(model, "player/items", false) != -1)
+				{
+					ModelModels[client].Push(index);
+
+					if(StrContains(model, "hwn2022_pony_express", false) != -1)
+					{
+						effect = Body_Horse;
+					}
 				}
 			}
 		}
@@ -827,7 +911,9 @@ static void StealBodyFrame(DataPack pack)
 	int client = GetClientOfUserId(pack.ReadCell());
 	if(client)
 	{
+		InSelfRevive = true;
 		FullyReviveClient(client, client);
+		InSelfRevive = false;
 		
 		float pos[3], ang[3];
 		pack.ReadFloatArray(pos, sizeof(pos));
@@ -846,6 +932,12 @@ static void StealBodyFrame(DataPack pack)
 
 static bool ValidSwapTarget(int entity, bool ignoreSome = false)
 {
+	if(entity <= MaxClients)
+		return ignoreSome;
+	
+	if(Citizen_IsIt(entity))
+		return false;
+
 	if(ignoreSome)
 	{
 		if(b_thisNpcIsARaid[entity] ||
@@ -1022,9 +1114,21 @@ static Action GunsawHudTimer(Handle timer, DataPack pack)
 		int weapon = EntRefToEntIndex(pack.ReadCell());
 		if(weapon != -1)
 		{
-			if(dieingstate[client])
+			if(ZombieMusicPlayed && MonologueMoodLevel(client) < -3)
 			{
-				PrintHintText(client, "Kill a nearby enemy to self-revive");
+				float mood = MonologueMood(client);
+				if(mood < -100.0)
+					mood = -100.0;
+				
+				PrintHintText(client, " \n \n \n \n \n \n \n \n \n \n \n \n%.1f\n \n \n \n \n \n \n \n \n \n \n \n ", mood);
+			}
+			/*else if(b_HoldingInspectWeapon[client])
+			{
+				PrintHintText(client, "%.1f", fClamp(MonologueMood(client), -100.0, 100.0));
+			}*/
+			else if(dieingstate[client])
+			{
+				PrintHintText(client, "Melee hit a nearby enemy to self-revive");
 			}
 			else
 			{
@@ -1039,7 +1143,12 @@ static Action GunsawHudTimer(Handle timer, DataPack pack)
 				{
 					strcopy(name, sizeof(name), ModelNPCName[client] ? "Abomination" : "Experiment");
 				}
-
+				
+				if(!ModelNPCName[client])
+				{
+					PrintHintText(client, "%s\n \nCrouched melee hit to mark a body to host", name);
+				}
+				else
 				//int active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 				//if(weapon == active)
 				{
@@ -1136,7 +1245,7 @@ static Action GunsawHudTimer(Handle timer, DataPack pack)
 					
 					SetEntityHealth(client, health);
 				}
-				else if(GameRules_GetRoundState() != RoundState_ZombieRiot)
+				else if(GameRules_GetRoundState() == RoundState_BetweenRounds)
 				{
 					DrugNerf[client] -= 20;
 					if(DrugNerf[client] < 0)
@@ -1149,27 +1258,27 @@ static Action GunsawHudTimer(Handle timer, DataPack pack)
 			
 			if(MonologueMoodBonus[client] > 0.0)
 			{
-				MonologueMoodBonus[client] -= 0.01;
+				MonologueMoodBonus[client] -= 0.1;
 			}
 			else if(MonologueMoodBonus[client] < 0.0)
 			{
-				MonologueMoodBonus[client] += 0.01;
+				MonologueMoodBonus[client] += 0.1;
 			}
 
 			if(dieingstate[client])
 			{
-				if(MonologueMoodBonus[client] > -50.0)
-					MonologueMoodBonus[client] -= 0.1;
+				if(MonologueMoodBonus[client] > -100.0)
+					MonologueMoodBonus[client] -= 1.0;
 			}
 			else if(GetClientHealth(client) >= ReturnEntityMaxHealth(client))
 			{
 				if(MonologueMoodBonus[client] < 50.0)
-					MonologueMoodBonus[client] += 0.05;
+					MonologueMoodBonus[client] += 0.5;
 			}
 			else if(GetClientHealth(client) < (ReturnEntityMaxHealth(client) / 2))
 			{
-				if(MonologueMoodBonus[client] > -50.0)
-					MonologueMoodBonus[client] -= 0.05;
+				if(MonologueMoodBonus[client] > -70.0)
+					MonologueMoodBonus[client] -= 0.5;
 			}
 
 			Monologue_Idle(client);
@@ -1318,9 +1427,13 @@ public void Weapon_GunsawShotgun_M1(int client, int weapon, bool crit, int slot)
 		Rogue_OnAbilityUse(client, weapon);
 		TF2_RemoveCondition(client, TFCond_FocusBuff);
 
-		float ratio = BoomstickAdjustDamageAndAmmoCount(weapon, 1);
-		float cooldown = 1.0 + (ratio * 0.5);
-		Ability_Apply_Cooldown(client, 2, 1.25 * cooldown * cooldown);
+		int BulletsMax = 1;
+		if(Arena_Mode()) //nerf for it
+			BulletsMax = 3;
+		float ratio = BoomstickAdjustDamageAndAmmoCount(weapon, BulletsMax);
+		Attributes_SetMulti(weapon, 1, 0.75);
+
+		Ability_Apply_Cooldown(client, 2, 2.0 * ratio);
 		
 		float vec[3], vel[3];
 		GetClientEyePosition(client, vec);
@@ -1408,8 +1521,8 @@ public void Weapon_GunsawPistol_M2(int client, int weapon, bool crit, int slot)
 	}
 
 	int health = ReturnEntityMaxHealth(client);
-	HealEntityGlobal(client, client, float(health), 5.0, 1.5, HEAL_SELFHEAL);
-	DrugNerf[client] += 200;
+	HealEntityGlobal(client, client, float(health), 5.0, 2.5, HEAL_SELFHEAL);
+	DrugNerf[client] += 250;
 	Monologue_Drug(client);
 }
 
@@ -1571,6 +1684,8 @@ static void GunsawPropThink(int ref)
 		{
 			ZRRamMulti = Attributes_GetOnPlayer(client, 287, true) / Attributes_GetOnPlayer(client, 343, true, true);
 			damage = MetalSpendOnBuilding[building] * ZRRamMulti * PropDamage;
+			if(Arena_Mode())
+				damage *= 0.7;
 		
 			int type = i_ExplosiveProjectileHexArray[building];
 			i_ExplosiveProjectileHexArray[building] = EP_GENERIC;
@@ -1766,14 +1881,14 @@ static void PlayMonologue(int client, const char[] text, bool fast = false, bool
 	}
 }
 
-static int MonologueMood(int client)
+static float MonologueMood(int client)
 {
-	int mood;
+	float mood;
 	
 	if(LastMann)
 	{
 		if(!IsValidEntity(EntRefToEntIndex(RaidBossActive)))
-			mood = -100;
+			mood = -100.0;
 	}
 	else
 	{
@@ -1791,18 +1906,18 @@ static int MonologueMood(int client)
 			}
 		}
 		
-		mood = (alive * 50 / total) - 30;
+		mood = (float(alive) * 70.0 / float(total)) - 50.0;
 	}
 	
 	if(dieingstate[client])
-		mood -= 30;
+		mood -= 30.0;
 
-	return iClamp(RoundFloat(MonologueMoodBonus[client] + mood), -100, 100);
+	return fClamp(MonologueMoodBonus[client] + mood, -100.0, 100.0);
 }
 
 static int MonologueMoodLevel(int client)
 {
-	int mood = MonologueMood(client);
+	float mood = MonologueMood(client);
 
 	if(mood > -10.0)
 		return 0;
@@ -2009,7 +2124,7 @@ void Gunsaw_Monologue_UseFridge(int client)
 			"Mmmmm..."
 		};
 		
-		Gunsaw_Monologue_AddMood(client, 1.0);
+		Gunsaw_Monologue_AddMood(client, 5.0);
 		PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
 	}
 }
@@ -2249,6 +2364,8 @@ void Gunsaw_Monologue_PlayerDeath(const float pos[3])
 			
 			PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
 		}
+		
+		Gunsaw_Monologue_AddMood(client, -5.0);
 	}
 }
 
@@ -2310,6 +2427,8 @@ static void Monologue_Drug(int client)
 
 		PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
 	}
+	
+	Gunsaw_Monologue_AddMood(client, 20.0);
 }
 
 static void Monologue_Idle(int client)
@@ -2720,7 +2839,6 @@ static void Monologue_Idle(int client)
 			"Time for a bath!",
 			"How'd I get so dirty?",
 			"Gosh, I am COVERED in gunk!",
-			"My fur is so yucky!",
 			"Guh! I'm completely covered in filth.",
 			"I feel filthy. I really need a bath, or something...",
 			"Could do with a shower!",
@@ -2832,7 +2950,7 @@ void Gunsaw_Monologue_Pet(int client)
 	};
 
 	PlayMonologue(client, dialogue[GetURandomInt() % sizeof(dialogue)]);
-	Gunsaw_Monologue_AddMood(client, 10.0);
+	Gunsaw_Monologue_AddMood(client, 30.0);
 }
 
 void Gunsaw_Monologue_LiveExpieReaction(int client, int entity)

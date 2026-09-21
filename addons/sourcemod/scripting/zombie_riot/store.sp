@@ -2,6 +2,13 @@
 #pragma newdecls required
 
 #define SELL_AMOUNT 0.9
+
+float SellAmount()
+{
+	if(Arena_Mode())
+		return 1.0;
+	return SELL_AMOUNT;
+}
 bool PapPreviewMode[MAXPLAYERS];
 float f_ConfirmSellDo[MAXPLAYERS];
 
@@ -606,6 +613,7 @@ enum struct Item
 	float Cooldown2[MAXPLAYERS];
 	float Cooldown3[MAXPLAYERS];
 	int CurrentClipSaved[MAXPLAYERS];
+	float m_flNextPrimaryAttack[MAXPLAYERS];
 	bool BoughtBefore[MAXPLAYERS];
 	int RogueBoughtRecently[MAXPLAYERS];
 	bool AutoBought[MAXPLAYERS];
@@ -852,6 +860,10 @@ stock float CooldownReductionAmount(int client)
 	if(HasSpecificBuff(client, "Ultra Rapid Fire"))
 	{
 		Cooldown *= 0.6;
+	}
+	if(Arena_Mode())
+	{
+		Cooldown *= 0.75;
 	}
 	if(i_CurrentEquippedPerk[client] & PERK_ENERGY_DRINK)
 		Cooldown *= 0.85;
@@ -1661,7 +1673,7 @@ int Store_TryToPapWeapon(int client, Item item, int index, int level, int descTy
 			other.Sell[client] = 0;
 		}
 
-		other.Sell[client] += RoundToCeil(float(info.Cost) * SELL_AMOUNT);
+		other.Sell[client] += RoundToCeil(float(info.Cost) * SellAmount());
 		other.BuyWave[client] = -1;
 		other.Owned[client] = level + 1;
 
@@ -1689,7 +1701,7 @@ int Store_TryToPapWeapon(int client, Item item, int index, int level, int descTy
 		{
 			item.Sell[client] = 0;
 		}
-		item.Sell[client] += RoundToCeil(float(info.Cost) * SELL_AMOUNT);
+		item.Sell[client] += RoundToCeil(float(info.Cost) * SellAmount());
 		item.BuyWave[client] = -1;
 	}
 
@@ -1813,6 +1825,7 @@ void Store_Reset()
 			item.BoughtBefore[c] = false;
 			item.RogueBoughtRecently[c] = 0;
 			item.CurrentClipSaved[c] = 0;
+			item.m_flNextPrimaryAttack[c] = 0.0;
 		}
 		StoreItems.SetArray(i, item);
 	}
@@ -4002,7 +4015,7 @@ static void MenuPage(int client, int section)
 					int npcwallet = item.NPCWeaponAlways ? 0 : NPCCash[client];
 					
 					item.GetItemInfo(0, info);
-					if((info.Cost < 1001 || info.Cost <= CurrentCash) && RoundToCeil(float(info.Cost) * SELL_AMOUNT) > npcwallet)
+					if((info.Cost < 1001 || info.Cost <= CurrentCash) && RoundToCeil(float(info.Cost) * SellAmount()) > npcwallet)
 					{
 						ItemCost(client, item, info.Cost);
 						TranslateItemName(client, item.Name, info.Custom_Name, info.Custom_Name, sizeof(info.Custom_Name));
@@ -5657,7 +5670,9 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("201", f_DelayAttackspeedPreivous[client]);
 	map.SetValue("343", 1.0); //sentry attackspeed fix
 	map.SetValue("526", 1.0);//
+	map.SetValue("527", 1.0);// no tf2 afterburn
 	map.SetValue("4049", 1.0);// Elemental Res
+	map.SetValue("68", ClassForStats == TFClass_Scout ? -1.0 : 0.0);
 	
 	if(PapModeDo == PAP_MODE_BUILDING_ONLY)
 	{
@@ -5667,6 +5682,10 @@ void Store_ApplyAttribs(int client)
 
 	map.SetValue("442", 1.0);	// Move Speed
 	map.SetValue("49", 1);	// no doublejumps
+	if(i_CurrentEquippedPerk[client] & PERK_SYMBIOSOS_SHOT) //living armor
+	{
+		map.SetValue("4058", 1.0);	// regen armor
+	}
 
 	if(b_IsAloneOnServer)
 		map.SetValue("412", 0.75);	//if alone, gain 25% resistance
@@ -6725,7 +6744,7 @@ int Store_GiveItem(int client, int index, bool &use=false, bool &found=false, bo
 		{	
 			//dont give it if it doesnt have it.
 			if(Attributes_Has(entity, 103))
-				Attributes_SetMulti(entity, 103, 1.2);
+				Attributes_SetMulti(entity, 103, 1.4);
 				
 			if(Attributes_Has(entity, 106))
 				Attributes_SetMulti(entity, 106, 0.8);
@@ -7296,7 +7315,7 @@ void ItemCost(int client, Item item, int &cost)
 		
 	if(!item.StaleCost)
 	{
-		//int original_cost_With_Sell = RoundToCeil(float(cost) * SELL_AMOUNT);
+		//int original_cost_With_Sell = RoundToCeil(float(cost) * SellAmount());
 		
 		//make sure anything thats additive is on the top, so sales actually help!!
 		if(IsValidEntity(EntRefToEntIndex(SalesmanAlive)))
@@ -7340,9 +7359,9 @@ static int ItemSell(int base, int discount)
 {
 	float cost = float(base);
 	float ratio = (float(discount) / cost);
-	if(ratio > SELL_AMOUNT)
+	if(ratio > SellAmount())
 	{
-		ratio = SELL_AMOUNT;
+		ratio = SellAmount();
 	}
 	else if(ratio < 0.0)
 	{
@@ -7467,6 +7486,7 @@ void ClipSaveSingle(int client, int weapon)
 	}
 
 	StoreItems.GetArray(StoreWeapon[weapon], item);
+	item.m_flNextPrimaryAttack[client] = GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack");
 	if(item.CurrentClipSaved[client] == -5)
 	{
 		item.CurrentClipSaved[client] = 0;
@@ -7504,9 +7524,16 @@ void Clip_GiveWeaponClipBack(int client, int weapon)
 	if(!item.Owned[client])
 		return;
 
+
 	ItemInfo info;
 	if(item.GetItemInfo(item.Owned[client]-1, info))
 	{
+		float PrimaryAttack = GetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack");
+		if(PrimaryAttack < item.m_flNextPrimaryAttack[client] && item.m_flNextPrimaryAttack[client] < FAR_FUTURE)
+		{
+			//prevent no attack fix
+			SetEntPropFloat(weapon, Prop_Send, "m_flNextPrimaryAttack", item.m_flNextPrimaryAttack[client]);
+		}
 		if(info.HasNoClip)
 		{
 			return;

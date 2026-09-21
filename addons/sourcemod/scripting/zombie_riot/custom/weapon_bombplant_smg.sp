@@ -173,7 +173,7 @@ static void BombAR_Laser_PreThink(int client)
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
 		LaserPoint(client, vAngles, vOrigin, vOrigin);
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 		TeleportEntity(Prop, vOrigin, NULL_VECTOR, NULL_VECTOR);
 	}
 	else
@@ -1026,7 +1026,7 @@ static void VentTouch(int entity, int target)
 		ArrayList targetList = new ArrayList();
 		targetList.Push(owner);
 		TR_EnumerateEntitiesSphere(EntLoc, fl_Dead_Ringer_Invis[entity], PARTITION_NON_STATIC_EDICTS, CloseGetNPC, targetList);
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = owner);
 		int length = targetList.Length;
 		targetList.SwapAt(0, length - 1);
 		targetList.Erase(--length);

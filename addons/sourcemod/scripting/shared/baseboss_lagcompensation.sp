@@ -59,8 +59,20 @@ void StartLagCompensation_Base_Boss(int client)
 {
 	if(DoingLagCompensation)
 	{
+		LogStackTrace("DoingLagCompensation Already");
+		FinishLagCompensation_Base_boss(.client = client);
+	}
+	if(Arena_Mode())
+		StartPlayerOnlyLagComp(client, false, true);
+	else
+		StartLagCompensation_Base_Boss_Internal(client);
+}
+void StartLagCompensation_Base_Boss_Internal(int client)
+{
+	if(DoingLagCompensation)
+	{
 		PrintToChatAll("Was already in DoingLagCompensation But tried doing another?");
-		FinishLagCompensation_Base_boss(-1, false);
+		FinishLagCompensation_Base_boss_Internal(-1, false);
 	}
 	DoingLagCompensation = true;
 //	PrintToChatAll("StartLagCompensation_Base_Boss");
@@ -227,7 +239,7 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 #if defined RTS
 	if(!b_LagCompNPC_No_Layers)
 #else
-	if(!b_LagCompNPC_No_Layers && GetTeam(entity) != TFTeam_Red)
+	if(!b_LagCompNPC_No_Layers)
 #endif
 	{	
 		EntityRestore[index].m_masterSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
@@ -238,7 +250,7 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 	{
 
 #if defined ZR
-		if(GetTeam(entity) != TFTeam_Red && b_BoundingBoxVariant[entity] != BBV_DontAlter)
+		if(b_BoundingBoxVariant[entity] != BBV_DontAlter)
 #endif
 		{
 			SetEntPropVector(entity, Prop_Data, "m_vecMaxsPreScaled", { 100.0, 100.0, 200.0 });
@@ -257,11 +269,7 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 	EntityRestoreSave[index].m_vecAngles = ang;
 //	EntityRestoreSave[index].m_flSimulationTime = GetEntPropFloat(entity, Prop_Data, "m_flSimulationTime");
 	
-#if defined RTS
 	if(!b_LagCompNPC_No_Layers)
-#else
-	if(!b_LagCompNPC_No_Layers && GetTeam(entity) != TFTeam_Red)
-#endif
 	{
 		bool interpolationAllowed = (multi && frac > 0.0 && record.m_masterSequence == prevRecord.m_masterSequence);
 		if(interpolationAllowed)
@@ -301,66 +309,61 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 
 		////////////////////////
 		// Now do all the layers
-#if defined RTS
-		if(GetTeam(entity) != TFTeam_Red)
-#endif
+		CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
+		if(overlay.IsValid())
 		{
-			CBaseAnimatingOverlay overlay = CBaseAnimatingOverlay(entity);
-			if(overlay.IsValid())
+			EntityRestore[index].m_layerRecords = overlay.GetNumAnimOverlays();
+			if(EntityRestore[index].m_layerRecords >= sizeof(EntityRestore[].m_sequence))
+				EntityRestore[index].m_layerRecords = sizeof(EntityRestore[].m_sequence) - 1;
+			
+			for(int i; i < EntityRestore[index].m_layerRecords; i++)
 			{
-				EntityRestore[index].m_layerRecords = overlay.GetNumAnimOverlays();
-				if(EntityRestore[index].m_layerRecords >= sizeof(EntityRestore[].m_sequence))
-					EntityRestore[index].m_layerRecords = sizeof(EntityRestore[].m_sequence) - 1;
-				
-				for(int i; i < EntityRestore[index].m_layerRecords; i++)
+				CAnimationLayer overlayLayer = overlay.GetAnimOverlay(i);
+
+				EntityRestore[index].m_cycle[i] = overlay.GetLayerCycle(i);
+				EntityRestore[index].m_order[i] = overlayLayer.m_nOrder;
+				EntityRestore[index].m_sequence[i] = overlay.GetLayerSequence(i);
+				EntityRestore[index].m_weight[i] = overlay.GetLayerWeight(i);
+
+				bool interpolated = false;
+				if(interpolationAllowed &&
+					i < record.m_layerRecords && i < prevRecord.m_layerRecords)
 				{
-					CAnimationLayer overlayLayer = overlay.GetAnimOverlay(i);
-
-					EntityRestore[index].m_cycle[i] = overlay.GetLayerCycle(i);
-					EntityRestore[index].m_order[i] = overlayLayer.m_nOrder;
-					EntityRestore[index].m_sequence[i] = overlay.GetLayerSequence(i);
-					EntityRestore[index].m_weight[i] = overlay.GetLayerWeight(i);
-
-					bool interpolated = false;
-					if(interpolationAllowed &&
-						i < record.m_layerRecords && i < prevRecord.m_layerRecords)
+					if(record.m_order[i] == prevRecord.m_order[i] && record.m_sequence[i] == prevRecord.m_sequence[i])
 					{
-						if(record.m_order[i] == prevRecord.m_order[i] && record.m_sequence[i] == prevRecord.m_sequence[i])
+						// We can't interpolate across a sequence or order change
+						interpolated = true;
+						if(record.m_cycle[i] > prevRecord.m_cycle[i])
 						{
-							// We can't interpolate across a sequence or order change
-							interpolated = true;
-							if(record.m_cycle[i] > prevRecord.m_cycle[i])
-							{
-								// the older record is higher in frame than the newer, it must have wrapped around from 1 back to 0
-								// add one to the Lerpfloat so it is lerping from .9 to 1.1 instead of .9 to .1, for example.
-								float newCycle = Lerpfloat(frac, record.m_cycle[i], prevRecord.m_cycle[i] + 1.0);
-								overlay.SetLayerCycle(i, newCycle < 1.0 ? newCycle : newCycle - 1.0);
-							}
-							else
-							{
-								overlay.SetLayerCycle(i, Lerpfloat(frac, record.m_cycle[i], prevRecord.m_cycle[i]));
-							}
-							
-							overlayLayer.m_nOrder = record.m_order[i];
-							overlayLayer.m_nSequence = record.m_sequence[i];
-							overlay.SetLayerWeight(i, Lerpfloat(frac, record.m_weight[i], prevRecord.m_weight[i]));
+							// the older record is higher in frame than the newer, it must have wrapped around from 1 back to 0
+							// add one to the Lerpfloat so it is lerping from .9 to 1.1 instead of .9 to .1, for example.
+							float newCycle = Lerpfloat(frac, record.m_cycle[i], prevRecord.m_cycle[i] + 1.0);
+							overlay.SetLayerCycle(i, newCycle < 1.0 ? newCycle : newCycle - 1.0);
 						}
-					}
+						else
+						{
+							overlay.SetLayerCycle(i, Lerpfloat(frac, record.m_cycle[i], prevRecord.m_cycle[i]));
+						}
 						
-					if(!interpolated)
-					{
-						//Either no interp, or interp failed.  Just use record.
-						overlay.SetLayerCycle(i, record.m_cycle[i]);
 						overlayLayer.m_nOrder = record.m_order[i];
 						overlayLayer.m_nSequence = record.m_sequence[i];
-						overlay.SetLayerWeight(i, record.m_weight[i]);
+						overlay.SetLayerWeight(i, Lerpfloat(frac, record.m_weight[i], prevRecord.m_weight[i]));
 					}
-
-					EntityRestoreSave[index].m_cycle[i] = overlay.GetLayerCycle(i);
-					EntityRestoreSave[index].m_order[i] = overlayLayer.m_nOrder;
-					EntityRestoreSave[index].m_sequence[i] = overlay.GetLayerSequence(i);
-					EntityRestoreSave[index].m_weight[i] = overlay.GetLayerWeight(i);
 				}
+					
+				if(!interpolated)
+				{
+					//Either no interp, or interp failed.  Just use record.
+					overlay.SetLayerCycle(i, record.m_cycle[i]);
+					overlayLayer.m_nOrder = record.m_order[i];
+					overlayLayer.m_nSequence = record.m_sequence[i];
+					overlay.SetLayerWeight(i, record.m_weight[i]);
+				}
+
+				EntityRestoreSave[index].m_cycle[i] = overlay.GetLayerCycle(i);
+				EntityRestoreSave[index].m_order[i] = overlayLayer.m_nOrder;
+				EntityRestoreSave[index].m_sequence[i] = overlay.GetLayerSequence(i);
+				EntityRestoreSave[index].m_weight[i] = overlay.GetLayerWeight(i);
 			}
 		}
 		EntityRestoreSave[index].m_masterSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
@@ -376,9 +379,16 @@ static void BacktrackEntity(int entity, int index, float currentTime) //Make sur
 	WasBackTracked[index] = true;
 }
 
-void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -2, bool DoReset = true)
+void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -2, bool DoReset = true, int client)
 {
-	
+	if(Arena_Mode())
+		EndPlayerOnlyLagComp(client);
+	else
+		FinishLagCompensation_Base_boss_Internal(ForceOptionalEntity, DoReset);
+
+}
+void FinishLagCompensation_Base_boss_Internal(int ForceOptionalEntity = -2, bool DoReset = true)
+{
 	if(ForceOptionalEntity == -2)
 		DoingLagCompensation = false;
 
@@ -409,9 +419,7 @@ void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -2, bool DoReset 
 			continue;
 		}
 
-#if defined ZR
-		if(GetTeam(entity) != TFTeam_Red && b_BoundingBoxVariant[entity] != BBV_DontAlter)
-#endif
+		if(b_BoundingBoxVariant[entity] != BBV_DontAlter)
 		{
 			if(b_LagCompNPC_ExtendBoundingBox)
 			{
@@ -475,7 +483,7 @@ void FinishLagCompensation_Base_boss(int ForceOptionalEntity = -2, bool DoReset 
 		
 		SetEntPropFloat(entity, Prop_Data, "m_flSimulationTime", EntityRestore[index].m_flSimulationTime);
 			
-		if(!b_LagCompNPC_No_Layers && GetTeam(entity) != TFTeam_Red)
+		if(!b_LagCompNPC_No_Layers)
 		{
 			int CurrentSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
 			if(CurrentSequence == EntityRestoreSave[index].m_masterSequence) //They didnt update sequence?
@@ -580,33 +588,22 @@ void LagCompensationThink_Forward()
 				record.m_flSimulationTime	= GetEntPropFloat(entity, Prop_Data, "m_flSimulationTime");
 				GetEntPropVector(entity, Prop_Data, "m_angRotation", record.m_vecAngles);
 				GetEntPropVector(entity, Prop_Data, "m_vecOrigin", record.m_vecOrigin);
-#if defined ZR
-				if(GetTeam(entity) != TFTeam_Red) //If its an allied entity, dont get layers, dont alter them a its never used.
-#endif
+				record.m_layerRecords = overlay.GetNumAnimOverlays();
+				if(record.m_layerRecords >= sizeof(record.m_sequence))
+					record.m_layerRecords = sizeof(record.m_sequence) - 1;
+				
+				for(int i = 0; i < record.m_layerRecords; i++)
 				{
-					record.m_layerRecords = overlay.GetNumAnimOverlays();
-					if(record.m_layerRecords >= sizeof(record.m_sequence))
-						record.m_layerRecords = sizeof(record.m_sequence) - 1;
+					CAnimationLayer overlayLayer = overlay.GetAnimOverlay(i);
 					
-					for(int i = 0; i < record.m_layerRecords; i++)
-					{
-						CAnimationLayer overlayLayer = overlay.GetAnimOverlay(i);
-						
-						record.m_cycle[i] = overlay.GetLayerCycle(i);
-						record.m_order[i] = overlayLayer.IsAlive() ? overlayLayer.m_nOrder : 0;
-						record.m_sequence[i] = overlay.GetLayerSequence(i);
-						record.m_weight[i] = overlay.GetLayerWeight(i);
-					}
+					record.m_cycle[i] = overlay.GetLayerCycle(i);
+					record.m_order[i] = overlayLayer.IsAlive() ? overlayLayer.m_nOrder : 0;
+					record.m_sequence[i] = overlay.GetLayerSequence(i);
+					record.m_weight[i] = overlay.GetLayerWeight(i);
+				}
 
-					record.m_masterSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
-					record.m_masterCycle = GetEntPropFloat(entity, Prop_Data, "m_flCycle");
-				}
-#if defined ZR
-				else
-				{
-					record.m_layerRecords = 0;
-				}
-#endif
+				record.m_masterSequence = GetEntProp(entity, Prop_Data, "m_nSequence");
+				record.m_masterCycle = GetEntPropFloat(entity, Prop_Data, "m_flCycle");
 
 				EntityTrack[index][EntityTrackCount[index]] = record;
 				EntityTrackCount[index]++;

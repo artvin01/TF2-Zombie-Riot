@@ -189,14 +189,17 @@ void KillFeed_SetBotTeam(int client, int team)
 #if defined ZR
 static bool BuildingFullName(int entity, char[] buffer, int length)
 {
+	char name[64];
+	KillFeed_GetServerTranslatedName(entity, name, sizeof(name));
+	
 	int owner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
 	if(owner < 1 || owner > MaxClients || !IsClientInGame(owner))
 	{
-		strcopy(buffer, length, c_NpcName[entity]);
+		strcopy(buffer, length, name);
 		return true;
 	}
 
-	Format(buffer, length, "%s (%N)", c_NpcName[entity], owner);
+	Format(buffer, length, "%s (%N)", name, owner);
 	return true;
 }
 #endif
@@ -242,7 +245,7 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 		
 		feed.userid = GetClientUserId(Bots[botNum]);
 		feed.victim_team = GetTeam(victim);
-		strcopy(feed.victim_name, sizeof(feed.victim_name), c_NpcName[victim]);
+		KillFeed_GetServerTranslatedName(victim, feed.victim_name, sizeof(feed.victim_name));
 		
 		botNum++;
 
@@ -291,7 +294,7 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 			{
 				feed.attacker = GetClientUserId(Bots[botNum]);
 				feed.attacker_team = GetTeam(attacker);
-				strcopy(feed.attacker_name, sizeof(feed.attacker_name), c_NpcName[attacker]);
+				KillFeed_GetServerTranslatedName(attacker, feed.attacker_name, sizeof(feed.attacker_name));
 				
 				botNum++;
 			}
@@ -368,7 +371,7 @@ void KillFeed_Show(int victim, int inflictor, int attacker, int lasthit, int wea
 		if(lasthit != -69)
 			strcopy(feed.weapon, sizeof(feed.weapon), KillIcon[inflictor]);
 	}
-	else if(weapon > MaxClients && i_CustomWeaponEquipLogic[weapon] != -1)
+	else if(weapon > MaxClients && i_CustomWeaponEquipLogic[weapon] != -1 && HasEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex"))
 	{
 		// Weapon's Icon
 
@@ -582,4 +585,18 @@ public Action KillFeed_NextTimer(Handle timer)
 	FeedTimer = null;
 	ShowNextFeed();
 	return Plugin_Continue;
+}
+
+static void KillFeed_GetServerTranslatedName(int entity, char[] buffer, int length)
+{
+	if(!c_NpcName[entity][0])
+		return;
+#if defined ZR
+	if (b_NameNoTranslation[entity])
+		strcopy(buffer, length, c_NpcName[entity]);
+	else
+		FormatEx(buffer, length, "%T", c_NpcName[entity], LANG_SERVER);
+#else
+	strcopy(buffer, length, c_NpcName[entity]);
+#endif
 }

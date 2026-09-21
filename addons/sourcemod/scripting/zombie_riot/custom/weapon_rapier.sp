@@ -210,7 +210,7 @@ public void Weapon_Rapier_M2(int client, int weapon, bool crit, int slot)
 		float vecSwingForward[3];
 		StartLagCompensation_Base_Boss(client);
 		DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 100.0, false, 45.0, false); //infinite range, and ignore walls! < ??? no??? whar??
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 
 		int target = TR_GetEntityIndex(swingTrace);	
 		delete swingTrace;

@@ -12,6 +12,9 @@ void NPCCamera_PluginStart()
 public Action NPCCamera_SpecNext(int client, const char[] command, int args)
 {
 #if defined ZR
+	if(Arena_Mode())
+		return Plugin_Continue;
+	
 	if (GetEntProp(client, Prop_Send, "m_iObserverMode") == OBS_MODE_ROAMING)
 	{
 		// While in freeroam mode, clicking on a targetable entity lets you spectate it
@@ -19,7 +22,7 @@ public Action NPCCamera_SpecNext(int client, const char[] command, int args)
 		
 		StartLagCompensation_Base_Boss(client);
 		int target = GetClientPointVisiblePlayersNPCs(client, 500.0, pos, true);
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 		
 		if (target > 0 && IsEntityAlive(target))
 		{
@@ -82,6 +85,11 @@ public Action NPCCamera_SpecNext(int client, const char[] command, int args)
 
 public Action NPCCamera_SpecPrev(int client, const char[] command, int args)
 {
+#if defined ZR
+	if(Arena_Mode())
+		return Plugin_Continue;
+#endif
+
 	int maxEntity = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
 	int bestEntity = 0;
 	int worseEntity = 0;

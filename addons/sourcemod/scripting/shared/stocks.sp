@@ -1390,6 +1390,8 @@ stock int HealEntityGlobal(int healer,
 	  int MaxHealPermitted = 99999999,
 	  float &HealPenalty = 1.0)
 {
+	if(receiver <= 0)
+		return 0;
 	/*
 		MaxHealPermitted is used for HealEntityViaFloat
 		Good for ammo based healing.
@@ -1407,6 +1409,10 @@ stock int HealEntityGlobal(int healer,
 			if(!(flag_extrarules & (HEAL_FLAG_AM)))
 				HealTotal *= 0.5;
 
+	}
+	if(Arena_Mode())
+	{
+		HealTotal *= 1.25;
 	}
 	if(HealTotal < 0)
 	{
@@ -2022,6 +2028,8 @@ public bool Trace_DontHitAlivePlayer(int entity, int mask, any data)
 		}
 	}
 #endif
+	if(GetTeam(entity) != GetTeam(data))
+		return false;
 	
 	return entity!=data;
 }
@@ -2976,11 +2984,7 @@ void TE_SendBeam(int client = -1, float m_vecMins[3], float m_vecMaxs[3], float 
 
 stock int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 {
-	if(owner_projectile < 1)
-	{
-		return -1; //I dont exist?
-	}
-	if(other_entity < 0)
+	if(owner_projectile < 1 || other_entity < 0)
 	{
 		return -1; //I dont exist?
 	}
@@ -2998,7 +3002,7 @@ stock int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 		return -1;
 	}
 #if defined ZR
-	else if(GetTeam(other_entity) == TFTeam_Red)
+	else if(GetTeam(other_entity) == GetTeam(owner_projectile))
 	{
 		if(b_NpcIsTeamkiller[owner_projectile])
 			return other_entity;
@@ -3006,7 +3010,7 @@ stock int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 			return -1;
 	}
 #endif
-	else if(other_entity <= MaxClients)
+	if(other_entity <= MaxClients)
 	{
 #if defined RPG
 		if(RPGCore_PlayerCanPVP(owner_projectile, other_entity))
@@ -3033,6 +3037,8 @@ stock int Target_Hit_Wand_Detection(int owner_projectile, int other_entity)
 		else
 			return -1;
 	}
+	if(IsValidEnemy(owner_projectile, other_entity, true, true))
+		return other_entity;
 	return 0;
 }
 
@@ -3341,6 +3347,9 @@ int inflictor = 0)
 			}
 		} 
 	}
+	//incase
+	if(Arena_Mode())
+		spawnLoc[2] += 5.0;
 	
 	if(ZR_Get_Modifier() == NOSTALGICA)
 	{
@@ -3518,7 +3527,7 @@ int inflictor = 0)
 			static float vicpos[3];
 			vicpos = VicPos[ClosestTarget];
 			//if its a blue npc, then we want to do a trace to see if we even hit them.
-			if(FromBlueNpc)
+			if(FromBlueNpc || Arena_Mode())
 			{
 				Handle trace; 
 				trace = TR_TraceRayFilterEx(spawnLoc, vicpos, ( MASK_SOLID | CONTENTS_SOLID ), RayType_EndPoint, HitOnlyTargetOrWorld, ClosestTarget);

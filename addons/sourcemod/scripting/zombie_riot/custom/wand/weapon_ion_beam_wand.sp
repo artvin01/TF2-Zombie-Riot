@@ -671,7 +671,7 @@ static Action Hexagon_Witchery_Tick(int client)
 		b_LagCompNPC_No_Layers = true;
 		StartLagCompensation_Base_Boss(client);
 		DoSwingTrace_Custom(swingTrace, client, Vec_offset, 9999.9, false, 10.0, false); //infinite range, and (doesn't)ignore walls!	
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 	
 		int target = TR_GetEntityIndex(swingTrace);	
 		if(IsValidEnemy(client, target))

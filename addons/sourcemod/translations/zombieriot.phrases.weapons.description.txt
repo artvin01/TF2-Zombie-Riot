@@ -598,19 +598,13 @@
 	}
 	"Elite Sniper Pap 1"
 	{
-		"en"		"-Increased damage\n-applies apply debuff on hit\n-half charge within scope at minimum to apply debuff."
-		"fr"		"Dégats améliorés, et ralentis les cibles, les rendant plus vulnérables aux dégats.\nCet affaiblissement a besoin d'au moins une demie de charge."
-		"it"		"Per applicare il debuff, è necessario applicare almeno metà carica nel raggio d'azione."
-		"ko"		"-피해량 증가\n-조준 상태에서 50％ 이상 충전하여 적중시 대상에게 디버프 부여\n-디버프는 대상이 받는 피해를 증가시키고 이동 속도를 둔화시킴"
+		"en"		"-Increased damage\n-Consumes less ammo\n-Applies the Maimed debuff on hits with at least 70％ charge\n-Maimed enemies move slower"
+		"ko"		"-피해량 증가\n-탄약 소모량 감소\n-조준 상태에서 70％ 이상 충전하여 적중시 '신체 장애' 디버프 부여\n-신체 장애는 대상의 이동 속도를 둔화시킴"
 	}
 	"Elite Sniper Pap 2"
 	{
-		"en"		"-Increased damage\n-Calls in supply drops that gives extra ammo to\nall players and weapon consumes much less ammo."
-		"fr"		"Arme utilise moins de munitions.\nAbilité appèle pour des approvisionnements qui donne des munitions à tous les joueurs."
-		///"ru"		"Вызывает сброс припасов с воздуха, которые дают доп. патроны\nвсем игрокам, а оружие потребляет гораздо меньше патронов."
-		"chi"       "升级补给，给所有玩家额外的弹药和武器消耗更少的弹药。"
-		"it"		"Richiama i drop di rifornimento che danno munizioni extra a tutti i giocatori e l'arma consuma molte meno munizioni."
-		"ko"		"-피해량 증가\n-탄약을 보급할 수 있는 보급 상자를 호출할 수 있게 됩니다.\n-무기의 탄약 소모량이 감소."
+		"en"		"-Increased damage\n-Consumes less ammo\n-Can move at full speed while scoped\n-Calls in supply drops that deploy ammo pickups over teammates"
+		"ko"		"-피해량 증가\n-탄약 소모량 감소\n-조준 상태에서도 원래 이동 속도로 움직일 수 있음\n-아군의 위로 탄약 상자를 전달하는 보급품 투하를 호출할 수 있습니다"
 	}
 	"Elite Sniper Pap 3"
 	{
@@ -623,21 +617,13 @@
 	}
 	"Elite Sniper Pap 4"
 	{
-		"en"		"-Increased damage\n-Cripples targets heavily, making them slower and take more damage."
-		"fr"		"Infirme les ennemis, les ralentissant et les font prendre plus de dégats."
-		///"ru"		"Сильно калечит цели, делая их медленнее и нанося на больше урона."
-		"chi"       "严重致残目标，使他们变慢并受到的伤害。"
-		"it"		"Storpia pesantemente i bersagli, rendendoli più lenti e subendo più danni."
-		"ko"		"-피해량 증가\n-적중시 대상의 이동 속도를 둔화시키고 받는 피해를 40％ 증가시킴."
+		"en"		"-Increased damage\n-Consumes less ammo\n-Also applies the Crippled debuff on hits with at least 70％ charge\n-Crippled enemies take more damage"
+		"ko"		"-피해량 증가\n-탄약 소모량 감소\n-조준 상태에서 70％ 이상 충전하여 적중시 '신경 쇠약' 디버프 부여\n-신경 쇠약은 대상이 받는 피해량을 증가시킴"
 	}
 	"Elite Sniper Pap 5"
 	{
-		"en"		"-Increased damage\n-Decreased cooldown on supply drops, increased attack speed, and bouncing\n-bullets for all players is now smart and will target high health targets."
-		"fr"		"Cadence de tir amélioré, temps de rechargement de l'abilité réduite.\nBalles rebondissantes priorisent les cibles plus durables."
-		///"ru"		"Уменьшено время восст. сброса припасов, увеличена скорость атаки, а отскакивающие\nпули для всех игроков теперь умные и нацелены на цели с высоким уровнем здоровья."
-		"chi"       "加大补给掉落的频率，增加攻击速度\n所有玩家弹子弹现在是智能的，将瞄准高血量的目标"
-		"it"		"Il cooldown dei rifornimenti è diminuito, la velocità d'attacco è aumentata e i\nproiettili rimbalzanti per tutti i giocatori sono ora intelligenti e mirano a bersagli con salute elevata."
-		"ko"		"-피해량, 공격 속도, 탄환 튕김 증가\n-보급 상자 호출의 쿨타임 감소\n이제 튕기는 탄환은 현재 체력이 많은 적을 최우선으로 추적."
+		"en"		"-Increased damage and attack speed\n-Consumes less ammo\n-Adds one extra supply drop that gives a global powerup\n-All Elite Snipers' bouncing bullets now prioritize high health targets"
+		"ko"		"-피해량, 공격 속도 증가\n-탄약 소모량 감소\n-글로벌 파워업을 제공하는 보급품 추가\n-모든 튕겨진 탄환이 현재 체력이 많은 적을 최우선으로 추적"
 	}
 	"Elite Sniper Pap 6"
 	{
@@ -887,11 +873,8 @@
 	
 	"Knife Desc"
 	{
-		"en"	"-Backstabs enemies under correct conditions\n-Bleeds enemies on hit\n-If enemy attacks you, and you backstab them, you deal 2x damage\n-Raids take 2x backstab damage."
-		"fr"	"Le poignardage cause un long saignement.\nDégats du poignardage doublé contre les Raids."
-		"chi"	"可背刺造成大量流血。\n对boss造成*2伤害。"
-		"it"	"Può eseguire il backstab e infliggere emorragie per un lungo periodo di tempo."
-		"ko"	"-백스탭이 가능\n-적중 시 출혈 부여\n-자신을 목표로 하는 적을 백스탭 시 피해량 2배\n레이드 보스에게 주는 피해량 2배"
+		"en"	"-Backstabs enemies under correct conditions\n-Bleeds enemies on hit\n-If enemy attacks you, and you backstab them, you deal 2x damage\n-Raids take 2x backstab damage.\nBackstabs give a speedbonus, raid for longer"
+		"ko"	"-백스탭이 가능\n-적중 시 출혈 부여\n-자신을 목표로 하는 적을 백스탭 시 피해량 2배\n-레이드 보스에게 주는 피해량 2배\-n백스탭 시 잠시 동안 속도 증가, 레이드 보스라면 버프 시간 증가"
 	}
 	"Knife Pap 1"
 	{
@@ -1788,12 +1771,8 @@
 	
 	"Accurate Marksman Desc"
 	{
-		"en"	"-Gain 10％ more accuracy\n-Gain 20％ faster projectile speed"
-		"fr"	"10％ moins de déviation, +20％ vitesse des projectiles"
-		///"ru"	"На 10％ выше точность и на 20％ выше скорость снаряда."
-		"chi"   "射击精度提高10％、射速提高20％"
-		"it"	"10％ più precisione e 20％ più velocità del proiettile"
-		"ko"	"-집탄율 +10％\n-투사체 비행 속도 +20％"
+		"en"	"-Gain 10％ more accuracy\n-Gain 20％ faster projectile speed\n-Gain 25％ faster Sniper Rifle charge rate"
+		"ko"	"-집탄율 +10％\n-투사체 비행 속도 +20％\n-저격소총 충전 속도 +25%"
 	}
 	
 	"Ammo Coat Desc"
@@ -1865,9 +1844,14 @@
 	
 	"Hastening Potion Desc"
 	{
-		"en"	"-Gain 15％ Faster Mage Fire Speed\n-Gain 50％ Mana Regen and Max Mana\n-Gain 7％ more mage damage.\n-Gain 50+ HP\n-Gain 5％ melee resistance while magic weapon is active"
-		"it"	"15％ Velocità del fuoco del mago più veloce e 50％ Rigenerazione del mana e mana massimo, 50+ HP e 5％ resistenza in mischia, 7％ danni da mago in più."
-		"ko"	"-마법 공격 속도 +15％\n-최대 마나와 마나 재생량 +50％\n-마법 무기 피해량 +7％\n-최대 체력 +50\n-마법 무기 장착 시 근접 피해 저항력 +5％."
+		"en"	"-Gain 15％ Faster Mage Fire Speed\n-Gain 30％ Mana Regen and Max Mana\n-Gain 7％ more mage damage.\n-Gain 50+ HP\n-Gain 5％ melee resistance while magic weapon is active"
+		"it"	"15％ Velocità del fuoco del mago più veloce e 30％ Rigenerazione del mana e mana massimo, 50+ HP e 5％ resistenza in mischia, 7％ danni da mago in più."
+		"ko"	"-마법 공격 속도 +15％\n-최대 마나와 마나 재생량 +30％\n-마법 무기 피해량 +7％\n-최대 체력 +50\n-마법 무기 장착 시 근접 피해 저항력 +5％."
+	}
+	"Precision Potion Desc"
+	{
+		"en"	"-Gain 40％ Faster Mage Projectile Speed\n-Gain 20％ Mana Regen and Max Mana"
+		"ko"	"-마법 투사체 비행 속도 +40％\n-최대 마나와 마나 재생량 +30％"
 	}
 	
 	"The Bombinomicon Desc"
@@ -1933,17 +1917,31 @@
 	
 	"Grigori's Blessing Desc"
 	{
-		"en"	"-Gain +300 Health\n-Life regen 1％ of your max hp per second up to half your HP\n-During bleedout, you also will survive for longer.\n-Out of battle, heals extra with more melee upgrades."
-		"it"	"+300 Salute e rigenerazione della vita pari a 1％ dei tuoi hp massimi al secondo fino a metà dei tuoi HP, durante l'emorragia sopravviverai più a lungo.\nFuori dalla battaglia, guarisce ulteriormente con più potenziamenti in mischia."
-		"ko"	"-최대 체력 +300\n-초당 최대 체력의 1％만큼 체력을 회복하며 최대 체력의 절반까지 회복\n-다운시 더 오래 생존\n-비전투 상태라면 보유한 근접 개선에 따라 추가 회복"
+		"en"	"-Gain +300 Health\n-Life regen 1％ of your max hp per second up to 75％ max hp\n-During bleedout, you also will survive for longer.\n-Out of battle, heals extra with more melee upgrades."
+		"ko"	"-최대 체력 +300\n-초당 최대 체력의 1％만큼 체력을 회복하며 최대 체력의 75％까지 회복\n-다운시 더 오래 생존\n-비전투 상태라면 보유한 근접 개선에 따라 추가 회복"
 	}
 	
 	"Full Riot Gear Desc"
 	{
-		"en"	"-Increased Max Armor.\n-Gain +150HP\n-Extra Passive resistances if no armor is active."
-		"fr"	"Armure reçu et armure maximalle améliorées. +150 santé.\nDonne une résistance passive qui s'améliore avec vos améliorations pour armure, si votre armure est brisée."
-		"it"	"Aumento della quantità di armatura per uso e tetto massimo. +150 HP\nFornisce una resistenza passiva in caso di rottura dell'armatura e aumenta con i potenziamenti dell'armatura."
-		"ko"	"-최대 아머 증가\n-최대 체력 +150\n-아머가 없으면 추가 저항력 증가(생존 개선에 따라 증가함)"
+		"en"	"-Increased Max Armor.\n-Gain +200HP\n-Extra Passive resistances if no armor is active."
+		"fr"	"Armure reçu et armure maximalle améliorées. +200 santé.\nDonne une résistance passive qui s'améliore avec vos améliorations pour armure, si votre armure est brisée."
+		"it"	"Aumento della quantità di armatura per uso e tetto massimo. +200 HP\nFornisce una resistenza passiva in caso di rottura dell'armatura e aumenta con i potenziamenti dell'armatura."
+		"ko"	"-최대 아머 증가\n-최대 체력 +200\n-아머가 없으면 추가 저항력 증가(생존 개선에 따라 증가함)"
+	}
+	"E.G.O. Mimicry Shell"
+	{
+		"en"	"E.G.O. Mimicry Shell"
+		"ko"	"E.G.O. 미미크리 껍데기"
+	}
+	"E.G.O. Mimicry Shell Desc"
+	{
+		"en"	"-Increased Max Armor.\n-Gain +250HP\n-Extra Passive resistances if no armor is active.\nIncreases healing from all sources by 1.15x"
+		"ko"	"-최대 아머 증가\n-최대 체력 +250\n-아머가 없으면 추가 저항력 증가(생존 개선에 따라 증가함)\n-받는 모든 치유 효과가 1.15배로 증가"
+	}
+	"Explain NT Buff"
+	{
+		"en"	"While fighting nothing there you gain 2x ego duration and take 12 flat less damage\nYou also obtain this while having ''E.G.O. Mimicry Shell''"
+		"ko"	"'아무 것도 없는'과 전투 중 E.G.O. 발현 지속 시간이 2배로 증가, 피해를 고정적으로 12만큼 덜 받습니다.\n''E.G.O. 미미크리 껍데기''를 장착하는 동안에도 이 효과를 받습니다."
 	}
 	"Grigoris Special Antidote Desc"
 	{
@@ -5575,8 +5573,8 @@
 	}
 	"The Red Mist Desc 5"
 	{
-		"en"	"-Gain an upgrade point\nUnlocks new special card\n-Overall Stat Increases"
-		"ko"	"-개선 포인트 획득\n-새로운 특별 책장 해금\n-전반적인 능력치 증가"
+		"en"	"-Gain an upgrade point\nUnlocks new special card\n-Overall Stat Increases\n-Special card CD reduced on hit with any ability or melee."
+		"ko"	"-개선 포인트 획득\n-새로운 특별 책장 해금\n-전반적인 능력치 증가\n-능력 혹은 근접 적중 시 특별 책장의 쿨타임 감소"
 	}
 	"The Red Mist Desc 6"
 	{
@@ -5785,8 +5783,8 @@
 	}
 	"Gunsaw Mercenary Desc"
 	{
-		"en"	"-Shotgun and pistol, build cheap buildings, but no repairing\n-Able to body swap you to an enemy's body\n  -Takes the stats and weapons of the enemy\n  -Swap by killing a nearby enemy while downed"
-		"ko"	"-산탄총과 권총 보유, 저렴한 구조물을 건설할 수 있으나 수리 불가\n-적의 몸으로 육체를 치환 할 수 있음:\n   적의 능력치와 무기를 탈취\n   다운 상태일 때 적을 처치하여 치환"
+		"en"	"-Shotgun and pistol, build cheap buildings, but no repairing\n-Able to body swap you to an enemy's body\n  -Takes the stats and weapons of the enemy\n  -Swap by melee hitting a nearby enemy while downed or crouched"
+		"ko"	"-산탄총과 권총 보유, 저렴한 구조물을 건설할 수 있으나 수리 불가\n-적의 몸으로 육체를 치환 할 수 있음:\n   적의 능력치와 무기를 탈취\n   다운 상태, 혹은 웅크리고 있을 때 적을 근접 무기로 적중하여 치환"
 	}
 	"Gunsaw Mercenary Pap 1"
 	{

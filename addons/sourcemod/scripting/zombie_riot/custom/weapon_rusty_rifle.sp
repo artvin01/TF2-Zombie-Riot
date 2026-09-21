@@ -295,7 +295,7 @@ public void Weapon_Rusty_Rifle_Fire(int client, int weapon, bool crit)
 	Ability_Apply_Cooldown(client, 2, BigShot_Cooldown[1]);
 
 	RequestFrame(BigShot_RevertAttribs, EntIndexToEntRef(weapon));
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 }
 
 public void BigShot_SpawnTracer(int client, int weapon, float endPos[3])

@@ -268,6 +268,8 @@ public void HeartBroken_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 
 	//lazy damage nerf
 	damage *= 0.9;
+	if(Arena_Mode())
+		damage *= 0.75;
 	
 	//allow coffin gain at anypoint so they can gather it up beffore upgrading to this
 	if(WeaponLevel[attacker] >= 5)
@@ -331,6 +333,8 @@ public void HeartBroken_OnTakeDamage_Take(int victim, int &attacker, int &inflic
 		float CounterDamage = 65.0;
 		CounterDamage *= WeaponDamageAttributeMultipliers(equipped_weapon,_,victim);
 		CounterDamage *= 2.5;
+		if(Arena_Mode())
+			CounterDamage *= 0.85;
 		static float angles[3];
 		GetEntPropVector(victim, Prop_Send, "m_angRotation", angles);
 		float vecForward[3];
@@ -383,7 +387,7 @@ public void Heartbroken_Decapitate(int client, int weapon, bool crit, int slot)
 	float vecSwingForward[3];
 	StartLagCompensation_Base_Boss(client);
 	DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 250.0, false, 35.0, true); //infinite range, and ignore walls!
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 
 	int target = TR_GetEntityIndex(swingTrace);	
 	delete swingTrace;
@@ -675,6 +679,8 @@ void Heartbroken_ShootHorseProjectile(int client, int target, float dmgmotif = 1
 	float speed = 700.0;
 	float time = 2.0;
 	speed *= speedmodif;
+	if(Arena_Mode())
+		damage *= 0.85;
 
 
 	float vAngles[3];
@@ -810,7 +816,7 @@ public void Heartbroken_Reqieum(int client, int weapon, bool crit, int slot)
 	float vecSwingForward[3];
 	StartLagCompensation_Base_Boss(client);
 	DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 350.0, false, 35.0, true); //infinite range, and ignore walls!
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 
 	int target = TR_GetEntityIndex(swingTrace);	
 	delete swingTrace;
@@ -916,7 +922,8 @@ public void Coffin_Projectile_Hit(int entity, int target)
 	   b_StaticNPC[target] ||
 	   i_IsABuilding[target] ||
 	   i_NpcIsABuilding[target] ||
-	    GetTeam(target) == TFTeam_Stalkers)
+	    GetTeam(target) == TFTeam_Stalkers ||
+	    target <= MaxClients)
 	{
 		//Code to do damage position and ragdolls
 		static float angles[3];
@@ -960,7 +967,7 @@ public void Coffin_Projectile_Hit(int entity, int target)
 			WritePackFloat(pack, VecSave[2]);
 			WritePackFloat(pack, Wand_Dmg * 0.25);
 			int DisplayToClient = 0;
-			if(!LastMann)
+			if(!LastMann && !Arena_Mode())
 				DisplayToClient = owner;
 			spawnRing_Vectors(VecSave, Smite_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 0, 255, 200, 1, Smite_ChargeTime, 3.0, 0.1, 1, 1.0, DisplayToClient);
 		}
@@ -972,7 +979,8 @@ public void Coffin_Projectile_Hit(int entity, int target)
 		SetEntityCollisionGroup(target, 1);
 	}
 	
-	EmitSoundToAll(g_CoffinReel[GetRandomInt(0, sizeof(g_CoffinReel) - 1)], owner, SNDCHAN_AUTO, 80, _, 0.9, 90);
+	if(!Arena_Mode())
+		EmitSoundToAll(g_CoffinReel[GetRandomInt(0, sizeof(g_CoffinReel) - 1)], owner, SNDCHAN_AUTO, 80, _, 0.9, 90);
 	float ang[3];
 	GetEntPropVector(entity, Prop_Data, "m_angRotation", ang);
 	Initiate_HomingProjectile(entity, 
@@ -1103,7 +1111,7 @@ public Action HeartBroken_Smite_Timer(Handle Smite_Logic, DataPack pack)
 		spawnBeam(0.8, 125, 0, 255, 255, "materials/sprites/laserbeam.vmt", 8.0, 8.2, _, 5.0, secondLoc, spawnLoc, DisplayToClient);	
 		spawnBeam(0.8, 125, 0, 255, 200, "materials/sprites/lgtning.vmt", 5.0, 5.2, _, 5.0, secondLoc, spawnLoc, DisplayToClient);	
 		
-		if(LastMann)
+		if(LastMann || Arena_Mode())
 		{
 			EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_SMITE, 0, SNDCHAN_AUTO, 75, SND_NOFLAGS, 0.5, SNDPITCH_NORMAL, -1, spawnLoc);
 		}
@@ -1128,7 +1136,7 @@ public Action HeartBroken_Smite_Timer(Handle Smite_Logic, DataPack pack)
 	{
 		spawnRing_Vectors(spawnLoc, Smite_Radius * 2.0, 0.0, 0.0, 0.0, "materials/sprites/laserbeam.vmt", 125, 0, 255, 120, 1, 0.33, 3.0, 0.1, 1, 1.0, DisplayToClient);
 		
-		if(LastMann)
+		if(LastMann || Arena_Mode())
 		{
 			EmitSoundToAll(SOUND_WAND_LIGHTNING_ABILITY_PAP_CHARGE, 0, SNDCHAN_AUTO, 60, SND_NOFLAGS, 0.7, GetRandomInt(80, 110), -1, spawnLoc);
 		}
@@ -1194,6 +1202,10 @@ stock void GiveCoffinOnDamage(int client, int victim, float damage, float Percen
 		DamageForMaxCharge = (Percentage / float(MAX_COFFINS));
 		if(StatusEffects_SinkingDebuffMaxStacks(victim))
 			DamageForMaxCharge *= 2.0;
+		if(Arena_Mode())
+		{
+			DamageForMaxCharge *= 5.0;
+		}
 		CoffinCharge[client] += DamageForMaxCharge;
 	}
 	else
@@ -1202,6 +1214,10 @@ stock void GiveCoffinOnDamage(int client, int victim, float damage, float Percen
 		if(StatusEffects_SinkingDebuffMaxStacks(victim))
 			DamageForMaxCharge *= 0.5;
 
+		if(Arena_Mode())
+		{
+			DamageForMaxCharge *= 0.25;
+		}
 		CoffinCharge[client] += (damage / DamageForMaxCharge);
 	}
 	if(WeaponLevel[client] >= 6)
@@ -1312,8 +1328,21 @@ void Heartbroken_WildHunt(int client, bool ForceRevive = false)
 	if(!ForceRevive)
 		ApplyStatusEffect(client, RandomWildHunted, "Coffin's Return", Duration);
 
+	ReviveAllyResetCD(RandomWildHunted);
 	ApplyStatusEffect(client, RandomWildHunted,	"Call of the Heartbroken Internal", Duration + 1.0);
 	ApplyStatusEffect(client, RandomWildHunted, "Shielding", 10.0);
 	Shielding_Add(RandomWildHunted, ReturnEntityMaxHealth(RandomWildHunted) / 2);
 	CheckAlivePlayers();
+}
+
+void ReviveAllyResetCD(int revived)
+{
+	RedMistReduceCD(revived, 500.0);
+	int i, other;
+	while(TF2_GetItem(revived, other, i))
+	{
+		Saga_ChargeReduction(revived, other, 999.9);
+	}
+	f_VintulumBombRecentlyUsed[revived] = 0.0;
+	ResetAllBuildingCooldowns(revived);
 }

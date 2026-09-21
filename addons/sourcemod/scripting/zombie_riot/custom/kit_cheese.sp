@@ -336,9 +336,14 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 	if((i_HexCustomDamageTypes[victim] & ZR_DAMAGE_DO_NOT_APPLY_BURN_OR_BLEED))
 		return damage;
 
+	if((damagetype & DMG_TRUEDAMAGE))
+		return damage;
+
 	if((damagetype & DMG_CLUB))
 	{   
 		if(Cheese_PapLevel[attacker] > 0)
+			Cheese_Bubble_Hits[attacker] += 4;
+		if(Arena_Mode())
 			Cheese_Bubble_Hits[attacker] += 4;
 
 		float cheesedmg = damage;
@@ -385,11 +390,15 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 	return damage;
 }
 
-void Cheese_OnTakeDamage_Primary(int attacker, int victim, float damage, int weapon)
+void Cheese_OnTakeDamage_Primary(int attacker, int victim, float damage, int weapon, int damagetype)
 {
+	if((damagetype & DMG_TRUEDAMAGE))
+		return;
 	Elemental_AddPlasmicDamage(victim, attacker, RoundToNearest(damage * 0.5), weapon);
 	if(Cheese_PapLevel[attacker] > 0)
 		Cheese_Bubble_Hits[attacker]++;
+	if(Arena_Mode())
+		Cheese_Bubble_Hits[attacker] += 2;
 }
 
 public void Weapon_Kit_Cheddinator_M2(int client, int weapon, bool &result, int slot)
@@ -498,9 +507,6 @@ public void Cheese_BubbleTouch(int entity, int target)
 
 	if(target)
 	{
-		if(target <= MaxClients)
-			return;
-		
 		if(GetTeam(target) == GetTeam(owner))
 			return;
 	}
@@ -671,30 +677,27 @@ public void PlasmicBubble_HealElementalAllies(int healer, float percent, float m
 {
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(IsValidClient(client) && IsPlayerAlive(client))
+		if(IsValidClient(client) && IsPlayerAlive(client) && GetTeam(client) == GetTeam(healer))
 		{
 			float clientpos[3];
 			GetClientAbsOrigin(client, clientpos);
 			if(GetVectorDistance(clientpos, position, false) <= distance)
 			{
-				if(GetTeam(client) == GetTeam(healer))
+				if(Armor_Charge[client] < 0)
 				{
-					if(Armor_Charge[client] < 0)
-					{
-						if(f_TimeUntillNormalHeal[client] > GetGameTime())
-							percent *= 0.5;
+					if(f_TimeUntillNormalHeal[client] > GetGameTime())
+						percent *= 0.5;
 
-						GiveArmorViaPercentage(client, percent, 1.0, _, true, healer);
-					}
+					GiveArmorViaPercentage(client, percent, 1.0, _, true, healer);
+				}
 
-					if(Cheese_PapLevel[healer] > 2 && Cheese_PapLevel[healer] <= 4)
-					{
-						ApplyStatusEffect(healer, client, "Plasmic Layering I", 1.0);
-					}
-					else if(Cheese_PapLevel[healer] >= 5)
-					{
-						ApplyStatusEffect(healer, client, "Plasmic Layering II", 1.0);
-					}
+				if(Cheese_PapLevel[healer] > 2 && Cheese_PapLevel[healer] <= 4)
+				{
+					ApplyStatusEffect(healer, client, "Plasmic Layering I", 1.0);
+				}
+				else if(Cheese_PapLevel[healer] >= 5)
+				{
+					ApplyStatusEffect(healer, client, "Plasmic Layering II", 1.0);
 				}
 			}
 		}
@@ -703,27 +706,24 @@ public void PlasmicBubble_HealElementalAllies(int healer, float percent, float m
 	for(int i; i < i_MaxcountNpcTotal; i++)
 	{
 		int npc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-		if(npc != INVALID_ENT_REFERENCE && IsEntityAlive(npc))
+		if(npc != INVALID_ENT_REFERENCE && IsEntityAlive(npc) && GetTeam(npc) == GetTeam(healer))
 		{
 			float npcpos[3];
 			GetEntPropVector(npc, Prop_Data, "m_vecAbsOrigin", npcpos);
 			if(GetVectorDistance(npcpos, position, false) <= distance)
 			{
-				if(GetTeam(npc) == GetTeam(healer))
+				for(int e; e < 9; e++)
 				{
-					for(int e; e < 9; e++)
-					{
-						Elemental_RemoveDamage(npc, e, RoundToNearest(float(Elemental_TriggerDamage(npc, e)) * percent));
-					}
+					Elemental_RemoveDamage(npc, e, RoundToNearest(float(Elemental_TriggerDamage(npc, e)) * percent));
+				}
 
-					if(Cheese_PapLevel[healer] > 2 && Cheese_PapLevel[healer] <= 4)
-					{
-						ApplyStatusEffect(healer, npc, "Plasmic Layering I", 1.0);
-					}
-					else if(Cheese_PapLevel[healer] >= 5)
-					{
-						ApplyStatusEffect(healer, npc, "Plasmic Layering II", 1.0);
-					}
+				if(Cheese_PapLevel[healer] > 2 && Cheese_PapLevel[healer] <= 4)
+				{
+					ApplyStatusEffect(healer, npc, "Plasmic Layering I", 1.0);
+				}
+				else if(Cheese_PapLevel[healer] >= 5)
+				{
+					ApplyStatusEffect(healer, npc, "Plasmic Layering II", 1.0);
 				}
 			}
 		}
@@ -760,7 +760,7 @@ public void PlasmicElemental_HealNearby(int healer, float amount, float position
 		for(int i; i < i_MaxcountNpcTotal; i++)
 		{
 			int npc = EntRefToEntIndexFast(i_ObjectsNpcsTotal[i]);
-			if(npc != INVALID_ENT_REFERENCE && IsEntityAlive(npc))
+			if(npc != INVALID_ENT_REFERENCE && IsEntityAlive(npc) && GetTeam(npc) == GetTeam(healer))
 			{
 				float npcpos[3];
 				GetEntPropVector(npc, Prop_Data, "m_vecAbsOrigin", npcpos);
@@ -772,21 +772,10 @@ public void PlasmicElemental_HealNearby(int healer, float amount, float position
 						trueamount = float(ReturnEntityMaxHealth(npc)) * amount;
 					else
 						trueamount = amount;
-					if(healer != -1)
+					if(GetTeam(npc) == GetTeam(healer))
 					{
-						if(GetTeam(npc) == GetTeam(healer))
-						{
-							ApplyStatusEffect(npc, npc, "Plasma Heal Prevent", 1.0);
-							HealEntityGlobal(healer, npc, trueamount, 1.0, healtime, HEAL_NO_RULES);
-						}
-					}
-					else
-					{
-						if(GetTeam(npc) == correct_team)
-						{
-							ApplyStatusEffect(npc, npc, "Plasma Heal Prevent", 1.0);
-							HealEntityGlobal(npc, npc, trueamount, 1.0, healtime, HEAL_NO_RULES);
-						}
+						ApplyStatusEffect(npc, npc, "Plasma Heal Prevent", 1.0);
+						HealEntityGlobal(healer, npc, trueamount, 1.0, healtime, HEAL_NO_RULES);
 					}
 				}
 			}
@@ -797,7 +786,7 @@ public void PlasmicElemental_HealNearby(int healer, float amount, float position
 	{
 		for(int client = 1; client <= MaxClients; client++)
 		{
-			if(IsValidClient(client) && IsPlayerAlive(client))
+			if(IsValidClient(client) && IsPlayerAlive(client) && GetTeam(client) == GetTeam(healer))
 			{
 				float clientpos[3];
 				GetClientAbsOrigin(client, clientpos);
@@ -1016,11 +1005,10 @@ static void Cheese_Burst(int client, float dmgclose, float dmgfar, float maxdist
 		StartLagCompensation_Base_Boss(client);
 		trace = TR_TraceHullFilterEx(startPoint, endPoint, hullMin, hullMax, 1073741824, TraceUsers, client);	// 1073741824 is CONTENTS_LADDER?
 		delete trace;
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 		float vecForward[3];
 		GetAngleVectors(angles, vecForward, NULL_VECTOR, NULL_VECTOR);
 		Cheese_TargetsHit[client] = 1.0;
-		int weapon_active = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
 		for (int building = 0; building < MAX_TARGETS_HIT; building++)
 		{
 			if (Cheese_BuildingHit[building])
@@ -1033,9 +1021,13 @@ static void Cheese_Burst(int client, float dmgclose, float dmgfar, float maxdist
 					if (damage < 0)
 						damage *= -1.0;
 
-					if(IsValidEntity(weapon))
-						Elemental_AddPlasmicDamage(Cheese_BuildingHit[building], client, RoundToNearest(damage * Cheese_Burst_ElementalDmg[Cheese_PapLevel[client]]), weapon);
-					
+					DataPack pack1 = new DataPack();
+					pack1.WriteCell(EntIndexToEntRef(Cheese_BuildingHit[building]));
+					pack1.WriteCell(EntIndexToEntRef(client));
+					pack1.WriteCell(RoundToNearest(damage * Cheese_Burst_ElementalDmg[Cheese_PapLevel[client]]));
+					pack1.WriteCell(EntIndexToEntRef(weapon));
+					RequestFrame(Elemental_AddPlasmicDamage_Delay, pack1);
+
 					float damage_force[3]; CalculateDamageForce(vecForward, 10000.0, damage_force);
 					DataPack pack = new DataPack();
 					pack.WriteCell(EntIndexToEntRef(Cheese_BuildingHit[building]));
@@ -1043,7 +1035,7 @@ static void Cheese_Burst(int client, float dmgclose, float dmgfar, float maxdist
 					pack.WriteCell(EntIndexToEntRef(client));
 					pack.WriteFloat(damage*Cheese_TargetsHit[client]);
 					pack.WriteCell(DMG_BULLET);
-					pack.WriteCell(EntIndexToEntRef(weapon_active));
+					pack.WriteCell(EntIndexToEntRef(weapon));
 					pack.WriteFloat(damage_force[0]);
 					pack.WriteFloat(damage_force[1]);
 					pack.WriteFloat(damage_force[2]);
@@ -1087,6 +1079,20 @@ static void Cheese_Burst(int client, float dmgclose, float dmgfar, float maxdist
 	}
 }
 
+void Elemental_AddPlasmicDamage_Delay(DataPack pack)
+{
+	pack.Reset();
+	int Victim = EntRefToEntIndex(pack.ReadCell());
+	int client = EntRefToEntIndex(pack.ReadCell());
+	int Elementaldamage = pack.ReadCell();
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(IsValidEntity(Victim) && IsValidEntity(client))
+	{
+		Elemental_AddPlasmicDamage(Victim, client, Elementaldamage, weapon);
+	}
+	delete pack;
+				
+}
 static void GetBeamDrawStartPoint(int client, float startPoint[3], float offset[3])
 {
 	GetClientEyePosition(client, startPoint);

@@ -16,10 +16,14 @@ void AddHealthToUbersaw(int client, int healthvalue, float autoscale = 0.0)
 
 	if(autoscale != 0.0)
 	{
+		if(Arena_Mode())
+			autoscale *= 5.0;
 		f_PercentageHealTillUbersaw[client] += autoscale;
 	}
 	else
 	{
+		if(Arena_Mode())
+			healthvalue *= 5;
 		int weapon = EntRefToEntIndex(UbersawSaveDo[client]);
 		if(IsValidEntity(weapon))
 		{

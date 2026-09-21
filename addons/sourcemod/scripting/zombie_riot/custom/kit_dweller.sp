@@ -226,11 +226,11 @@ public void Weapon_SeaRange_M2(int client, int weapon, bool crit, int slot)
 		
 	for(int i; i < SpawnMaxEnemies; i++)
 	{
-		int entity = NPC_CreateByName("npc_searunner", client, pos1, ang, TFTeam_Red);
+		int entity = NPC_CreateByName("npc_searunner", client, pos1, ang, GetTeam(client));
 		if(entity > MaxClients)
 		{
 			fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);
-			CreateTimer(95.0, Dweller_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(Arena_Mode() ? 35.0 : 95.0, Dweller_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 			i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 			b_ShowNpcHealthbar[entity] = true;
 		}
@@ -264,11 +264,11 @@ public void Weapon_SeaRangePap_M2(int client, int weapon, bool crit, int slot)
 		
 	for(int i; i < SpawnMaxEnemies; i++)
 	{
-		int entity = NPC_CreateByName("npc_searunner", client, pos1, ang, TFTeam_Red);
+		int entity = NPC_CreateByName("npc_searunner", client, pos1, ang, GetTeam(client));
 		if(entity > MaxClients)
 		{
 			fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);
-			CreateTimer(95.0, Dweller_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(Arena_Mode() ? 35.0 : 95.0, Dweller_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 			i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 			b_ShowNpcHealthbar[entity] = true;
 		}
@@ -308,14 +308,14 @@ public void Weapon_SeaRangePapFull_M2(int client, int weapon, bool crit, int slo
 		
 	for(int i; i < SpawnMaxEnemies; i++)
 	{
-		int entity = NPC_CreateByName("npc_searunner", client, pos1, ang, TFTeam_Red);
+		int entity = NPC_CreateByName("npc_searunner", client, pos1, ang, GetTeam(client));
 		if(entity > MaxClients)
 		{
 			int maxhealth = SDKCall_GetMaxHealth(client) / 2; //2x health cus no resistance.
 			SetEntProp(entity, Prop_Data, "m_iHealth", maxhealth);
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", maxhealth);
 			fl_Extra_Damage[entity] = Attributes_Get(weapon, 2, 1.0);
-			CreateTimer(95.0, Dweller_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(Arena_Mode() ? 35.0 : 95.0, Dweller_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 			i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 			b_ShowNpcHealthbar[entity] = true;
 		}

@@ -54,9 +54,9 @@ static void ClotPrecache()
 	PrecacheModel("models/player/spy.mdl");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return CaptinoBaguettus(vecPos, vecAng, team);
+	return CaptinoBaguettus(vecPos, vecAng, team, data);
 }
 
 methodmap CaptinoBaguettus < CClotBody
@@ -231,7 +231,7 @@ methodmap CaptinoBaguettus < CClotBody
 		public set(int TempValueForProperty) 	{ i_OverlordComboAttack[this.index] = TempValueForProperty; }
 	}
 	
-	public CaptinoBaguettus(float vecPos[3], float vecAng[3], int ally)
+	public CaptinoBaguettus(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		CaptinoBaguettus npc = view_as<CaptinoBaguettus>(CClotBody(vecPos, vecAng, "models/player/spy.mdl", "1.0", "750", ally, true, true));
 		
@@ -265,6 +265,10 @@ methodmap CaptinoBaguettus < CClotBody
 		npc.m_bDissapearOnDeath = true;
 		b_NpcIsInvulnerable[npc.index] = true;
 		b_NoKillFeed[npc.index] = true;
+		if(StrContains(data, "no_scaleswithwaves") != -1)
+			npc.m_bScalesWithWaves = false;
+		else
+			npc.m_bScalesWithWaves = true;
 		
 		b_ThisNpcIsImmuneToNuke[npc.index] = true;
 		b_NoKnockbackFromSources[npc.index] = true;

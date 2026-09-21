@@ -36,7 +36,7 @@ void Demolitionist_OnMapStart_NPC()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_demolitionist");
 	strcopy(data.Icon, sizeof(data.Icon), "obuch");
 	data.IconCustom = true;
-	data.Flags = 0;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Vesta;
 	data.Precache = ClotPrecache;
 	data.Func = ClotSummon;

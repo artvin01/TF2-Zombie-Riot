@@ -72,6 +72,7 @@ methodmap AlliedWarpedCrystal_Visualiser < CClotBody
 			if(!ModelPath[0])
 				continue;
 
+			int SetSkin = GetTeam(client) - 2;
 			for(int Repeat=1; Repeat<7; Repeat++)
 			{
 				int WearableIndex = i_Wearable[npc.index][Repeat];
@@ -85,6 +86,7 @@ methodmap AlliedWarpedCrystal_Visualiser < CClotBody
 							SetVariantInt(GetEntProp(client, Prop_Send, "m_nBody"));
 							AcceptEntityInput(WearablePostIndex, "SetBodyGroup");
 						}
+						SetEntProp(WearablePostIndex, Prop_Send, "m_nSkin", SetSkin);
 						SetEntityRenderColor(WearablePostIndex, 255, 255, 255, 255);
 						i_Wearable[npc.index][Repeat] = EntIndexToEntRef(WearablePostIndex);
 					}

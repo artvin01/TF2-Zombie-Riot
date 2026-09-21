@@ -49,6 +49,8 @@ public void Weapon_Wand_LightningSpell_Internal(int client, int weapon, bool &re
 				damage *= 7.5;
 				
 				damage *= Attributes_Get(weapon, 410, 1.0);
+				if(Arena_Mode())
+					damage *= 0.5;
 			
 				Fireball_Damage[client] = damage;
 					
@@ -132,7 +134,7 @@ public void Weapon_Wand_LightningSpell_Internal(int client, int weapon, bool &re
 
 				}
 				delete trace;
-				FinishLagCompensation_Base_boss();
+				FinishLagCompensation_Base_boss(.client = client);
 				
 			}
 			else

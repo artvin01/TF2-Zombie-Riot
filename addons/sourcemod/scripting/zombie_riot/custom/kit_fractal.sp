@@ -958,6 +958,8 @@ static void OnFantasiaHit(int client, int target, int damagetype, float &damage)
 	SDKHooks_TakeDamage(target, client, client, dps, DMG_PLASMA);
 	
 	fl_current_crystal_amt[client] += ((b_thisNpcIsARaid[target] || b_thisNpcIsABoss[target]) ? FRACTAL_KIT_FANTASIA_GAIN * 4.0 : FRACTAL_KIT_FANTASIA_GAIN);
+	if(Arena_Mode())
+		fl_current_crystal_amt[client] += FRACTAL_KIT_FANTASIA_GAIN * 5.0;
 
 	i_fantasia_hitcount[client]++;
 
@@ -1299,7 +1301,7 @@ static Action Mana_Harvester_Tick(int client)
 	b_LagCompNPC_No_Layers = true;
 	StartLagCompensation_Base_Boss(client);
 	TR_EnumerateEntitiesSphere(Origin, range, PARTITION_NON_STATIC_EDICTS, TraceEntityEnumerator_Fractal_Harvester, client);
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
 	//we now have every valid target within range / within line of sight, comence the harvesting!
 	int color[4]; color = Kit_Color();
 
@@ -1323,6 +1325,8 @@ static Action Mana_Harvester_Tick(int client)
 			Current_Mana[client] += (raid ? RoundToFloor(mana_cost*2.0) : RoundToFloor(mana_cost*1.5));
 
 		fl_current_crystal_amt[client] += (raid ? FRACTAL_KIT_HARVESTER_CRYSTALGAIN * 2.0 : FRACTAL_KIT_HARVESTER_CRYSTALGAIN);
+		if(Arena_Mode())
+			fl_current_crystal_amt[client] += FRACTAL_KIT_HARVESTER_CRYSTALGAIN * 3.0;
 
 		SDKHooks_TakeDamage(struct_Harvester_Data[client].Enumerated_Ents[i], client, client, damage, DMG_PLASMA);
 
@@ -1801,7 +1805,7 @@ void Kit_Fractal_ResetRound()
 
 void Send_Te_Client_ZR(int client)
 {
-	if(LastMann)
+	if(LastMann || Arena_Mode())
 		TE_SendToAll();
 	else
 		TE_SendToClient(client);
@@ -1868,7 +1872,7 @@ enum struct Player_Laser_Logic
 		{
 			delete trace;
 		}
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = this.client);
 	}
 	void DoForwardTrace_Custom(float Angles[3], float startPoint[3], float Dist=-1.0, TraceEntityFilter Func_Trace = INVALID_FUNCTION)
 	{
@@ -1901,7 +1905,7 @@ enum struct Player_Laser_Logic
 		{
 			delete trace;
 		}
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = this.client);
 	}
 
 	void Detect_Targets(Function Attack_Function)
@@ -1920,7 +1924,7 @@ enum struct Player_Laser_Logic
 		StartLagCompensation_Base_Boss(this.client);
 		Handle trace = TR_TraceHullFilterEx(this.Start_Point, this.End_Point, hullMin, hullMax, 1073741824, Player_Laser_BEAM_TraceUsers, this.client);	// 1073741824 is CONTENTS_LADDER?
 		delete trace;
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = this.client);
 
 		float Dmg = this.Damage;
 				
@@ -1964,7 +1968,7 @@ enum struct Player_Laser_Logic
 		StartLagCompensation_Base_Boss(this.client);
 		Handle trace = TR_TraceHullFilterEx(this.Start_Point, this.End_Point, hullMin, hullMax, 1073741824, Player_Laser_BEAM_TraceUsers, this.client);	// 1073741824 is CONTENTS_LADDER?
 		delete trace;
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = this.client);
 
 		//the idea for this one is to then use
 		//for (int loop = 0; loop < sizeof(i_Ruina_Laser_BEAM_HitDetected); loop++)
@@ -1992,7 +1996,7 @@ enum struct Player_Laser_Logic
 		StartLagCompensation_Base_Boss(this.client);
 		Handle trace = TR_TraceHullFilterEx(this.Start_Point, this.End_Point, hullMin, hullMax, 1073741824, Player_Laser_BEAM_TraceUsers, this.client);	// 1073741824 is CONTENTS_LADDER?
 		delete trace;
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = this.client);
 
 		float Dmg = this.Damage;
 		

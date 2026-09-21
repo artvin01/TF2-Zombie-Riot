@@ -417,9 +417,9 @@ static void PullAbilityM2(int client, int weapon, int slot, int cost, int streng
 		DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 900.0, false, 45.0, false); //better detection due to HULL trace addition.
 		int entity = TR_GetEntityIndex(swingTrace);	
 		delete swingTrace;
-		FinishLagCompensation_Base_boss();
+		FinishLagCompensation_Base_boss(.client = client);
 
-		if(entity > MaxClients && !b_NpcHasDied[entity])
+		if(IsValidEnemy(client, entity, true))
 		{
 			int weight = i_NpcWeight[entity];
 			if(weight < 0)
@@ -464,6 +464,8 @@ static void PullAbilityM2(int client, int weapon, int slot, int cost, int streng
 
 			float damage = 65.0 * damagemulti;
 			damage *= Attributes_Get(weapon, 2, 1.0);
+			if(Arena_Mode())
+				damage *= 0.75;
 			
 			SDKHooks_TakeDamage(entity, client, client, damage, DMG_CLUB, weapon);
 

@@ -110,6 +110,11 @@ static bool ClotInteract(int client, int weapon, ObjectPerkMachine npc)
 		IntToString(i, data, sizeof(data));
 		menu2.AddItem(data, buffer);
 	}
+
+	//PERK_SYMBIOSOS_SHOT
+	FormatEx(buffer, sizeof(buffer), "%t", PerkNames[18]);
+	IntToString(18, data, sizeof(data));
+	menu2.AddItem(data, buffer);
 						
 	menu2.Pagination = 0;
 	menu2.ExitButton = true;

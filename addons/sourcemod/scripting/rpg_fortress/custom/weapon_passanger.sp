@@ -54,7 +54,8 @@ public void Weapon_Passanger_Attack(int client, int weapon, bool crit, int slot)
 		GetBeamDrawStartPoint_Stock(client, belowBossEyes);
 		Passanger_Lightning_Effect(belowBossEyes, vecHit, 1);
 	}
-	FinishLagCompensation_Base_boss();
+	FinishLagCompensation_Base_boss(.client = client);
+	
 }
 
 stock int GetClosestTargetNotAffectedByLightning(float EntityLocation[3])
