@@ -76,6 +76,7 @@ static bool b_wonviakill;
 static bool b_allow_final;
 static bool b_allow_final_invocation;
 static bool b_test_mode;
+static bool b_disregard_quiet;
 
 static int i_current_Text;
 
@@ -1028,6 +1029,8 @@ methodmap Twirl < CClotBody
 
 		c_NpcName[npc.index] = "Twirl";
 
+		b_disregard_quiet = true;
+		RequestFrame(RF_TwirlCheckPrefixes, EntIndexToEntRef(npc.index));
 		if(b_tripple_raid)
 		{
 			WaveStart_SubWaveStart(GetGameTime() + 700.0);	//due to lots and lots of time
@@ -1076,6 +1079,8 @@ methodmap Twirl < CClotBody
 			npc.m_iRangedAmmo = 16;
 			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Intro5"));
 		}
+
+		b_disregard_quiet = false;
 
 		i_current_Text = 0;
 
@@ -1222,7 +1227,7 @@ static void Twirl_WinLine(int entity)
 
 	if(b_force_transformation)
 	{
-		Twirl_Lines(npc, "{crimson}Perish");
+		SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Win Kill Angry"));
 		return;
 	}
 	SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Win Kill"));
@@ -1252,21 +1257,22 @@ static void ClotThink(int iNPC)
 		if(fl_next_textline < GameTime)
 		{	
 			fl_next_textline = GameTime + 3.0;
+			b_disregard_quiet = true;
 			switch(i_current_Text)
 			{
-				case 0: Twirl_Lines(npc, "So then, you managed to beat me");
-				case 1: Twirl_Lines(npc, "Thats great, why you may ask?");
-				case 2: Twirl_Lines(npc, "Its quite simple, it shows that you've all gone far");
-				case 3: Twirl_Lines(npc, "You beat several world ending infections, alongside that gained many allies");
-				case 4: Twirl_Lines(npc, "But the future holds many more hardships and dangers");
-				case 5: Twirl_Lines(npc, "And so, it was decided that we the Ruanian's would test your skills");
-				case 6: Twirl_Lines(npc, "To see if you’re all ready for what the future holds");
-				case 7: Twirl_Lines(npc, "And well, you do, you are certainly ready for the future");
-				case 8: Twirl_Lines(npc, "But do keep this in mind, the ''Ruina'' that you fought here, was just a mere...");
-				case 9: Twirl_Lines(npc, "Heh.. Yeah, a mere fraction of what we are capable off");
+				case 0: SpecialLines(npc, "%t", "Twirl Player Win 0");
+				case 1: SpecialLines(npc, "%t", "Twirl Player Win 1");
+				case 2: SpecialLines(npc, "%t", "Twirl Player Win 2");
+				case 3: SpecialLines(npc, "%t", "Twirl Player Win 3");
+				case 4: SpecialLines(npc, "%t", "Twirl Player Win 4");
+				case 5: SpecialLines(npc, "%t", "Twirl Player Win 5");
+				case 6: SpecialLines(npc, "%t", "Twirl Player Win 6");
+				case 7: SpecialLines(npc, "%t", "Twirl Player Win 7");
+				case 8: SpecialLines(npc, "%t", "Twirl Player Win 8");
+				case 9: SpecialLines(npc, "%t", "Twirl Player Win 9");
 				case 10:
 				{
-					Twirl_Lines(npc, "Regardless take this, it's something that might help in your future adventures");
+					SpecialLines(npc, "%t", "Twirl Player Win 10");
 
 					npc.m_bDissapearOnDeath = true;
 
@@ -1281,13 +1287,15 @@ static void ClotThink(int iNPC)
 						if(IsValidClient(client) && GetClientTeam(client) == 2 && TeutonType[client] != TEUTON_WAITING && PlayerPoints[client] > 500)
 						{
 							Items_GiveNamedItem(client, "Twirl's Hairpins");
-							CPrintToChat(client,"{snow}You have been given {purple}%s{snow}'s hairpins...", c_NpcName[npc.index]);
+							SetGlobalTransTarget(client);
+							CPrintToChat(client,"%t", "Twirl Player Got Item", npc.GetName());
 						}
 					}
-					Twirl_Lines(npc, "Make sure to take good care of them... or else.");
+					SpecialLines(npc, "%t", "Twirl Player Win 11");
 					return;
 				}
 			}
+			b_disregard_quiet = false;
 			i_current_Text++;
 		}
 		return;
@@ -1647,27 +1655,11 @@ static void Final_Invocation(Twirl npc)
 	{
 		if(b_force_transformation)
 		{
-			switch(GetRandomInt(0, 3))
-			{
-				case 0: Twirl_Lines(npc, "I refuse to let you go beyond this point");
-				case 1: Twirl_Lines(npc, "{crimson}Perish.");
-				case 2: Twirl_Lines(npc, "{crimson}I Got a Glock in my rari.");
-				case 3: Twirl_Lines(npc, "{crimson}I'm going to mount your heads on a staff as a warning for others not to fuck with me");
-			}
+			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Final Invocation Angry"));
 		}
 		else
 		{
-			switch(GetRandomInt(0, 7))
-			{
-				case 0: Twirl_Lines(npc, "If you think I’m all you have to deal with, {crimson}well then...");
-				case 1: Twirl_Lines(npc, "Ahahah, I am a ruler Afterall, {purple}and a ruler usually has an army");
-				case 2: Twirl_Lines(npc, "How's your aoe situation?");
-				case 3: Twirl_Lines(npc, "Don't worry, the {aqua}Stellar Weaver{snow} won't be showing up from them");
-				case 4: Twirl_Lines(npc, "Hmm, how about a bit of support, {crimson}for myself");
-				case 5: Twirl_Lines(npc, "Aye, this’ll do, now go forth my minion’s {crimson}and crush them{snow}!");
-				case 6: Twirl_Lines(npc, "The Final Invocation!");
-				case 7: Twirl_Lines(npc, "{lightblue}Alaxios{default} Oh HIM, yeah I maaay have borrowed this from him, heh, just don't tell him or his ''god''lines might get hurt.");
-			}
+			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Final Invocation"));
 		}
 		RaidModeTime += 60.0;
 	}
@@ -1747,18 +1739,7 @@ static void lunar_Radiance(Twirl npc)
 
 	if(!b_force_transformation)
 	{
-		switch(GetRandomInt(0, 17))
-		{
-			case 0: Twirl_Lines(npc, "These are just my own personal {crimson}ION{snow}'s. Ruina's ones are far scarier~");
-			case 2: Twirl_Lines(npc, "Watch your {crimson}Step{snow}!");
-			case 5: Twirl_Lines(npc, "Lookout {crimson}Above{snow}!");
-			case 7: Twirl_Lines(npc, "I hope you're all split up, {crimson}Or else {snow}this won't end well");
-			case 9: Twirl_Lines(npc, "Music is a core part of our {aqua}Magic{snow} too!");
-			case 11: Twirl_Lines(npc, "Dance little merc, dance...");
-			case 13: Twirl_Lines(npc, "{crimson}Ehe{snow}.");
-			case 15: Twirl_Lines(npc, "Annihilation in {crimson}F# {snow}Minor");
-			case 17: Twirl_Lines(npc, "Oh, {crimson}poor{snow} you...");
-		}
+		SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Lunar Radiance"));
 	}
 
 	if(!AtEdictLimit(EDICT_NPC))
@@ -3120,23 +3101,8 @@ static bool Retreat(Twirl npc, bool block_ions = false)
 	if(b_force_transformation)
 		return true;
 
-	switch(GetRandomInt(0, 13))
-	{
-		case 0: Twirl_Lines(npc, "{crimson}Twirly Wirly{snow}~");
-		case 1: Twirl_Lines(npc, "You really think you can {purple}catch {snow}me?");
-		case 2: Twirl_Lines(npc, "Ahaaa, {crimson}bad");
-		case 3: Twirl_Lines(npc, "So close, yet far");
-		case 4: Twirl_Lines(npc, "{crimson}Kururing{snow}~");
-		case 5: Twirl_Lines(npc, "HEY, {purple}personal{snow} space buddy");
-		case 6: Twirl_Lines(npc, "You think I'd let myself get {purple}surrounded{snow} like that?");
-		case 7: Twirl_Lines(npc, "Don't surround me like that.");
-		case 8: Twirl_Lines(npc, "When will you learn this,{crimson} DON'T COME NEAR ME");
-		case 9: Twirl_Lines(npc, "My innocence, you won't get close to it that easily");
-		case 10: Twirl_Lines(npc, "Aiya, how rude of you to come close.");
-		case 11: Twirl_Lines(npc, "{crimson}Kuru Kuru{snow}~");
-		case 12: Twirl_Lines(npc, "Oh my, ganging up on someone as {purple}innocent{snow} as me?");
-		case 13: Twirl_Lines(npc, "Aaa, hai hai~");
-	}
+	SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Teleport Taunt"));
+
 	return true;
 }
 //taunt_the_scaredycat_medic
@@ -4217,46 +4183,10 @@ static void Twirl_Ruina_Weapon_Lines(Twirl npc, int client)
 		{
 			switch(MagiaWingsType(client))
 			{
+				//todo: redo with n_body
 				case WINGS_LANCELOT: 	Format(Text_Lines, sizeof(Text_Lines), "Pointy stick man. mr {gold}%N{snow} stole their wings.", client);
 				case WINGS_RULIANA: 	Format(Text_Lines, sizeof(Text_Lines), "Why. {gold}%N{snow}. Why do you have her wings?", client);
-				case WINGS_TWIRL: 
-				{
-					static char buffer[96];
-					GetClientName(client, buffer, sizeof(buffer));
-
-					//i use names instead of id's so people can change their names and see these results.
-					//but frankly, to achive this message you need to 
-					//1: not be using a weapon thats inside the base text lines.
-					//2: have it be a weapon that attacks fast. (since low chance %)
-					//3: have the correct wings.
-					//4: have 1 of 3 names
-					//the 3rd requirement makes it a 99.9% chance of like never happening.
-					//unless the wings become a reward item in some far future.
-					if(StrEqual(buffer, "jDavid", false))
-					{
-						//so at first I wanted to try making glitchy text like barney.
-						//then I wanted to try and use stargates ancient language to "encrypt" a funny message.
-						//but that failed since the symbols used for that are non standard.
-						//and finally I just decided to go for the most "the fuck do you mean" messages I could think of.
-						//very vague, incredibly vauge.
-						//AND THEN I DECIDED TO MAKE A SWITCH CASE.
-						switch(GetRandomInt(0, 1))
-						{
-							case 0: Format(Text_Lines, sizeof(Text_Lines), "J. Why.");
-							case 1: Format(Text_Lines, sizeof(Text_Lines), "J. Please, a one-way ticket to heaven");	//Mili - In Hell We Live, Lament (at roughly 1:56) ((I was listening to that song at the time of writing))
-						}
-					}
-					else if(StrEqual(buffer, "artvin", false))
-					{
-						Format(Text_Lines, sizeof(Text_Lines), "Mr. Art. those are the wrong wings.");
-					}
-					else if(StrEqual(buffer, "Unknown(fish)", false))
-					{
-						Format(Text_Lines, sizeof(Text_Lines), "Fish. (of the unkown variety). Tell me, what do you see, do you see gold, rocks, jewls, crystals, diamonds, or maybe.. a friend?");
-					}
-					else
-						Format(Text_Lines, sizeof(Text_Lines), "Bruh {gold}%N{snow}. THOSE ARE MY WINGS", client);
-				}
+				case WINGS_TWIRL: 		Format(Text_Lines, sizeof(Text_Lines), "Bruh {gold}%N{snow}. THOSE ARE MY WINGS", client);
 				//case WINGS_HELIA: 		Format(Text_Lines, sizeof(Text_Lines), "Why, how, where, {gold}%N{snow} did you get Helia's Wings?", client);
 				case WINGS_STELLA: 		Format(Text_Lines, sizeof(Text_Lines), "Stella? what, no, you're {gold}%N{snow}, what", client);
 				case WINGS_KARLAS: 		Format(Text_Lines, sizeof(Text_Lines), "Wait when did {crimson}Karlas{snow} start speak-. WAIT YOURE {gold}%N{snow}, A MERC, NOT HIM", client);
@@ -4277,27 +4207,32 @@ static void Twirl_Ruina_Weapon_Lines(Twirl npc, int client)
 		case WEAPON_QUINCY_CROSSBOW: 	{translate = true; SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Quincy Balista Yap"), client);}
 		case WEAPON_MAGNESIS:			{translate = true; SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Magnesis Yap"), client);}
 		case WEAPON_YAKUZA:				{translate = true; SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Yakuza Yap"), client);}
+		case WEAPON_RAIGEKI: 			{translate = true; SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Raigeki Yap"), client);}
+		case WEAPON_GRAVATON_WAND: 		{translate = true; SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Gravaton Yap"), client);}
+		case  9:/*9 is passenger*/ 		{translate = true; SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Passenger Yap"), client);}
+		case WEAPON_IMPACT_LANCE: 		{translate = true; SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Impact Lance Yap"), client);}
+		case WEAPON_QUINCY_BOW: 		{translate = true; SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Generic Quincy Bow Yap"), client);}
+		case WEAPON_KIT_BLITZKRIEG_CORE:{translate = true; SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Blitz Kit Yap"), client);}
 		
-		case WEAPON_KIT_BLITZKRIEG_CORE: switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh my, {gold}%N{snow}, you're trying to copy the Machine?", client); 									case 1: Format(Text_Lines, sizeof(Text_Lines), "Ah, how foolish {gold}%N{snow} Blitzkrieg was a poor mistake to copy...", client);}	//IT ACTUALLY WORKS, LMFAO
 		case WEAPON_COSMIC_TERROR: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Ah, the Cosmic Terror, haven't seen that relic in a long while"); 										case 1: Format(Text_Lines, sizeof(Text_Lines), "The moon is a deadly laser, am I right {gold}%N{snow}?",client);}
 		case WEAPON_LANTEAN: switch(GetRandomInt(0,1)) 				{case 0: Format(Text_Lines, sizeof(Text_Lines), "Ah, {gold}%N{snow}, Those drones, {crimson}how cute...", client); 										case 1: Format(Text_Lines, sizeof(Text_Lines), "I applaud your efforts {gold}%N{snow} for trying to use the Lantean staff here...", client);}
 		case WEAPON_YAMATO: switch(GetRandomInt(0,1)) 				{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh, {gold}%N{snow}'s a little {aqua}Motivated", client); 												case 1: Format(Text_Lines, sizeof(Text_Lines), "Go fourth {gold}%N{snow}, AND BECOME {aqua}THE STORM THAT IS APROACHING{crimson}!", client);}
 		case WEAPON_BEAM_PAP: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "Ah, dual energy Pylons, nice choice {gold}%N", client); 												case 1: Format(Text_Lines, sizeof(Text_Lines), "So, are you Team {aqua}Particle Cannon{snow} or Team{orange} Particle Beam{gold} %N{snow}?", client);}	
 		case WEAPON_FANTASY_BLADE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh how {crimson}cute{gold} %N{snow}, you're using {crimson}Karlas's{snow} Old blade", client); 		case 1: Format(Text_Lines, sizeof(Text_Lines), "The Fantasy blade is quite the weapon, {gold}%N{snow} but you're not using it correctly.", client);}	
-		case WEAPON_QUINCY_BOW: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh, {gold}%N{snow}'s being a {aqua}Quincy{snow}, quick call the {crimson}Shinigami{snow}!", client);	case 1: Format(Text_Lines, sizeof(Text_Lines), "Ah, what a shame {gold}%N{snow} Here I thought you were a true {aqua}Quincy", client);}	
+			
 		case WEAPON_ION_BEAM: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "That laser is still quite young {gold}%N{snow} It needs more upgrades",client); 						case 1: Format(Text_Lines, sizeof(Text_Lines), "Your Prismatic Laser has potential {gold}%N{snow}!", client);}	
 		case WEAPON_ION_BEAM_PULSE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "I see, {gold}%N{snow}, You decided to go down the pulse path!", client); 								case 1: Format(Text_Lines, sizeof(Text_Lines), "I do quite enjoy a faster pulsating laser, just like you {gold}%N{snow} by the looks of it", client);}	
 		case WEAPON_ION_BEAM_NIGHT: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh my, are you {gold}%N{snow}, trying to cosplay as {aqua}Stella{snow}?", client); 					case 1: Format(Text_Lines, sizeof(Text_Lines), "That Laser Tickles {gold}%N{crimson} Get a bigger laser{aqua} NOW!", client);}
 		case WEAPON_ION_BEAM_FEED: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "A cascading feedback loop laser, ballsy {gold}%N", client); 											case 1: Format(Text_Lines, sizeof(Text_Lines), "Prismatic Feedback loop is a very powerful weapon, but its also quite hard to master... {gold}%N", client);}				
-		case WEAPON_IMPACT_LANCE: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "You’re seriously trying to poke me with that thing {gold}%N{snow}?", client); 							case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow}, You don't have the needed skills to properly use the lance.", client);}	
-		case WEAPON_GRAVATON_WAND: switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "How does it feel to control a fraction of gravity{gold} %N{snow}?", client); 							case 1: Format(Text_Lines, sizeof(Text_Lines), "The Gravaton wand was only a partial success, and yet {gold}%N{snow}, you’re using it...", client);}
+		
+		
 		case WEAPON_BOBS_GUN:  Format(Text_Lines, sizeof(Text_Lines), "BOBS GUN?! {crimson}GET AWAY FROM ME!!!!!!!!!! {gold}%N", client); 	
 		case WEAPON_REIUJI_WAND: switch(GetRandomInt(0,1)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "So {gold}%N{snow}, you got ahold of Rulianas's Launcher huh?", client); 								case 1: Format(Text_Lines, sizeof(Text_Lines), "Too bad that the weapon your using {gold}%N{snow}, is primarily meant for horde control", client);}
-		case 9:/*9 is passenger*/ switch(GetRandomInt(0,1)) 		{case 0: Format(Text_Lines, sizeof(Text_Lines), "I'll be frank {gold}%N{snow}, even though that wand looks like one of ours, it ain't", client); 		case 1: Format(Text_Lines, sizeof(Text_Lines), "I'm somewhat ashamed to admit that the wand you're using {gold}%N{snow}, wasn't made by us, which is frankly a shock considering it has all the characteristics of our wands", client);}
+		
 		case WEAPON_RUINA_DRONE_KNIFE: switch(GetRandomInt(0,2)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "NICE KNIFE {gold}%N{snow}.", client); 																	case 1: Format(Text_Lines, sizeof(Text_Lines), "It's british shanking time {gold}%N{snow}!", client); case 2: Format(Text_Lines, sizeof(Text_Lines), "OI, {gold}%N{snow} YOU GOT A LOISCENCE FOR THAT KNOIFE?", client);}
 		case WEAPON_SIGIL_BLADE: switch(GetRandomInt(0,2)) 			{case 0: Format(Text_Lines, sizeof(Text_Lines), "Huh, how did you {gold}%N{snow} manage to turn that worthless thing into a somwhat competent weapon?", client); case 1: Format(Text_Lines, sizeof(Text_Lines), "Wait, isn't that Shard from my Airships's fog-lamps? How, where did you {gold}%N{snow} find that?", client); case 2: Format(Text_Lines, sizeof(Text_Lines), "I applaude you {gold}%N{snow} for turning that \"thing\" into a weapon", client);}
 		case WEAPON_AMPHI: switch(GetRandomInt(0,1)) 				{case 0: Format(Text_Lines, sizeof(Text_Lines), "Oh, so you know Amphi {gold}%N{snow}? Do you perchance have a picture of her...?", client); 			case 1: Format(Text_Lines, sizeof(Text_Lines), "Such an interesting weapon, say {gold}%N{snow} Where did you get that from?", client);}
-		case WEAPON_RAIGEKI: switch(GetRandomInt(0,1)) 				{case 0: Format(Text_Lines, sizeof(Text_Lines), "ITS TIME TO, DU-DU-DU-DU-DUEL {gold}%N{snow}!", client); 												case 1: Format(Text_Lines, sizeof(Text_Lines), "I use pot of greed {gold}%N{snow}.", client);}
+		
 		case WEAPON_CHEMICAL_THROWER: switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "I'm not quite fond of {gold}%N{snow} using chemical warfare, quite barbaric if I'm being honest", client); case 1: Format(Text_Lines, sizeof(Text_Lines), "Spread the chemicals {gold}%N{snow}, spread the that which will burn the world to nothing but pools of acid!", client);}
 		case WEAPON_KIT_PROTOTYPE, WEAPON_KIT_PROTOTYPE_MELEE: switch(GetRandomInt(0,1)) 	{case 0: Format(Text_Lines, sizeof(Text_Lines), "uhhh, shouldn't you {gold}%N{snow}, be on my side? or did {gold}Expidonsa{snow} finally have enough of my \"Twirly Antics\"?", client); case 1: Format(Text_Lines, sizeof(Text_Lines), "{gold}%N{snow} has just gotta be a broken unit, hope {gold}Expidonsa{snow} won't mind too bad if I bust it up before they get a chance to recover it...", client);}
 		
@@ -4518,10 +4453,15 @@ static void SpecialLines(Twirl npc, const char[] TextLines, any...)	//have fun m
 		LogStackTrace("Empty String");
 		return;
 	}	
+	if (HasSpecificBuff(npc.index, "Quiet Prefix") && !b_disregard_quiet)
+		return;
+
+	bool loud = HasSpecificBuff(npc.index, "Loud Prefix") != 0;
+	
 	CCheckTrie();
 	for(int i=1 ; i <= MaxClients ; i++)
 	{
-		if(!IsValidClient(i))
+		if (!IsClientInGame(i) || IsFakeClient(i))
 			continue;
 
 		char buffer[MAX_BUFFER_LENGTH], buffer2[MAX_BUFFER_LENGTH];
@@ -4530,8 +4470,33 @@ static void SpecialLines(Twirl npc, const char[] TextLines, any...)	//have fun m
 		VFormat(buffer2, sizeof(buffer2), buffer, 3);
 		Format(buffer2, sizeof(buffer2), "%s %s", npc.GetName(), buffer2);
 		CReplaceColorCodes(buffer2);
+		if(loud)
+			StringToUpper(buffer2);
 		CSendMessage(i, buffer2);
 	}
+}
+static void RF_TwirlCheckPrefixes(int ref)
+{
+	int iNPC = EntRefToEntIndex(ref);
+	if(!IsValidEntity(iNPC))
+		return;
+
+	Twirl npc = view_as<Twirl>(iNPC);
+	//the switchboard
+	if(HasSpecificBuff(npc.index, "Quiet Prefix"))
+	{
+		b_disregard_quiet = true;
+		SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Prefix Quiet"));
+		b_disregard_quiet = false;
+		return;
+	}
+	if(HasSpecificBuff(npc.index, "Void Afflicted"))
+	{
+		SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Prefix Void Afflicted"));
+		//"{purple}VOID{default}, GRANT ME STRENGTH!");
+	}
+	
+
 }
 static float[] GetNPCAngles(CClotBody npc)
 {
@@ -4598,31 +4563,15 @@ static void HandleRaidTimer(Twirl npc)
 		if(b_force_transformation)
 		{
 			i_RaidGrantExtra[npc.index] = 2;
-			Twirl_Lines(npc, "Begone. Times Up.");
+			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Timer End Angry"));
 		}
 		else if(wave <=40)
 		{
-			switch(GetRandomInt(0, 8))
-			{
-				case 0: Twirl_Lines(npc, "Ahhh, that was a nice walk, {crimson}time to end it");
-				case 1: Twirl_Lines(npc, "Heh, I suppose that was somewhat fun, now for the cleanup...");
-				case 2: Twirl_Lines(npc, "I must say {aqua}Stella{snow} may have overhyped this.. Alass, time to kill you all");
-				case 3: Twirl_Lines(npc, "Amazingly you were all too slow to die. And I've got a meeting I need to catch");
-				case 4: Twirl_Lines(npc, "Times up, I’ve got better things to do, so here, {crimson}have this parting gift{snow}!");
-				case 5: Twirl_Lines(npc, "Clearly you all lack proper fighting spirit to take this long, that’s it, {crimson}I’m ending this");
-				case 6: Twirl_Lines(npc, "My oh my, even after having such a large amount of time, you still couldn't do it, shame");
-				case 7: Twirl_Lines(npc, "There is a difference being slow and being cautious or methodical, clearly you all are the former");
-				case 8: Twirl_Lines(npc, "Tell me why you're this slow?");
-			}
+			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Timer End"));
 		}
 		else	//freeplay
 		{
-			switch(GetRandomInt(0, 2))
-			{
-				case 0: Twirl_Lines(npc, "Well considering you all were just some randoms this was to be expected");
-				case 1: Twirl_Lines(npc, "Guess my sense of magic's been off lately, this was exceedingly boring.");
-				case 2: Twirl_Lines(npc, "{crimson}How Cute{snow}.");
-			}
+			SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Timer End Freeplay"));
 		}
 	}
 }
@@ -4644,7 +4593,7 @@ void Twirl_OnStellaKarlasDeath()
 	//stella died first.
 	if(!Stella_index && Karlas_index)
 	{
-		Twirl_Lines(npc, "{crimson}Karlas{snow}! Switch to me, I'm now your priority");
+		SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Tripple Stella First"));
 
 		Set_Karlas_Ally(npc.index, Karlas_index, i_current_wave[npc.index], false, true);
 		Stella stella = view_as<Stella>(npc.index);
@@ -4656,24 +4605,25 @@ void Twirl_OnStellaKarlasDeath()
 	//Karlas died first
 	else if(Stella_index && !Karlas_index)
 	{
-		switch(GetRandomInt(0, 2))
-		{
-			case 0: Twirl_Lines(npc, "Hey, just because hes the only man here doesn't mean he should have died first.");
-			case 1: Twirl_Lines(npc, "Oh, neat, now {aqua}Stella{snow}'s all mine.");
-			case 2: Twirl_Lines(npc, "Huh, there goes my rival.");
-		}
-		
+		SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Tripple Karlas First"));
 	}
 	//both are dead.
 	else if(!Stella_index && !Karlas_index)
 	{
-		b_force_transformation = true;
-		switch(GetRandomInt(0, 2))
+		switch(GetRandomInt(0, 3))
 		{
-			case 0:Twirl_Lines(npc, "Ohoh, You think this is gonna end easily, you are {crimson}SORELY MISTAKEN");
-			case 1:Twirl_Lines(npc, "{crimson}I won't let you win");
-			case 2:Twirl_Lines(npc, "{crimson}This is where your story ends");
+			case 2:
+			{
+				Twirl_Lines(npc, "Twirl Tripple Alone Special1", true);
+				Twirl_Lines(npc, "Twirl Tripple Alone Special2", true);
+				Twirl_Lines(npc, "Twirl Tripple Alone Special3", true);
+				Twirl_Lines(npc, "Twirl Tripple Alone Special4", true);
+				Twirl_Lines(npc, "Twirl Tripple Alone Special5", true);
+			}
+			default: SpecialLines(npc, "%t", sGetRandomTranslationString("Twirl Tripple Alone"));
 		}
+		
+		b_force_transformation = true;
 		b_tripple_raid = false;
 		if(fl_Extra_Damage[npc.index] < 1.0)
 			fl_Extra_Damage[npc.index] = 1.0;

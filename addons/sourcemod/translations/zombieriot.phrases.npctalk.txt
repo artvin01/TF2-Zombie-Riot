@@ -1197,6 +1197,10 @@
 	{
 		"en"	"{crimson}How Cute{snow}."
 	}
+	"Twirl Win Kill Angry 0"
+	{
+		"en"	"{crimson}Perish"
+	}
 	//Transform:
 	"Twirl Transform 0"
 	{
@@ -1238,6 +1242,10 @@
 	"Twirl Transform_angry 2"
 	{
 		"en"	"This time, I ain't waiting"
+	}
+	"Twirl Transform_angry 3"
+	{
+		"en"	"I'm going to prove my own version of justice is more just then yours."
 	}
 	//lastmann:
 	"Twirl LastMann 0"
@@ -1374,6 +1382,336 @@
 	{
 		"en"	"{crimson}I'm Leaving."
 	}
+	//Final Invocation (pillar phase)
+	"Twirl Final Invocation 0"
+	{
+		"en"	"If you think I’m all you have to deal with, {crimson}well then..."
+	}
+	"Twirl Final Invocation 1"
+	{
+		"en"	"Ahahah, I am a ruler Afterall, {purple}and a ruler usually has an army"
+	}
+	"Twirl Final Invocation 2"
+	{
+		"en"	"How's your aoe situation?"
+	}
+	"Twirl Final Invocation 3"
+	{
+		"en"	"Don't worry, the {aqua}Stellar Weaver{snow} won't be showing up from them"
+	}
+	"Twirl Final Invocation 4"
+	{
+		"en"	"Hmm, how about a bit of support, {crimson}for myself"
+	}
+	"Twirl Final Invocation 5"
+	{
+		"en"	"Aye, this’ll do, now go forth my minion’s {crimson}and crush them{snow}!"
+	}
+	"Twirl Final Invocation 6"
+	{
+		"en"	"The Final Invocation!"
+	}
+	"Twirl Final Invocation 7"
+	{
+		"en"	"{lightblue}Alaxios{default} Oh HIM, yeah I maaay have borrowed this from him, heh, just don't tell him or his ''god''lines might get hurt."
+	}
+	"Twirl Final Invocation Angry 0"
+	{
+		"en"	"I refuse to let you go beyond this point"
+	}
+	"Twirl Final Invocation Angry 1"
+	{
+		"en"	"{crimson}Perish."
+	}
+	"Twirl Final Invocation Angry 2"
+	{
+		"en"	"{crimson}The 3rd Trumpet."
+	}
+	"Twirl Final Invocation Angry 3"
+	{
+		"en"	"{crimson}I'm going to mount your heads on a staff as a warning for others not to fuck with me"
+	}
+	//Lunar Radiance (ion rain)
+	"Twirl Lunar Radiance 0"
+	{
+		"en"	"These are just my own personal {crimson}ION{snow}'s. Ruina's ones are far scarier~"
+	}
+	"Twirl Lunar Radiance 1"
+	{
+		"en"	"Watch your {crimson}Step{snow}!"
+	}
+	"Twirl Lunar Radiance 2"
+	{
+		"en"	"Lookout {crimson}Above{snow}!"
+	}
+	"Twirl Lunar Radiance 3"
+	{
+		"en"	"I hope you're all split up, {crimson}Or else {snow}this won't end well"
+	}
+	"Twirl Lunar Radiance 4"
+	{
+		"en"	"Music is a core part of our {aqua}Magic{snow} too!"
+	}
+	"Twirl Lunar Radiance 5"
+	{
+		"en"	"Dance little merc, dance..."
+	}
+	"Twirl Lunar Radiance 6"
+	{
+		"en"	"{crimson}Ehe{snow}."
+	}
+	"Twirl Lunar Radiance 7"
+	{
+		"en"	"Annihilation in {crimson}F# {snow}Minor"
+	}
+	"Twirl Lunar Radiance 8"
+	{
+		"en"	"Oh, {crimson}poor{snow} you..."
+	}
+	//Teleport taunt.
+	"Twirl Teleport Taunt 0"
+	{
+		"en"	"{crimson}Twirly Wirly{snow}~"
+	}
+	"Twirl Teleport Taunt 1"
+	{
+		"en"	"You really think you can {purple}catch {snow}me?"
+	}
+	"Twirl Teleport Taunt 2"
+	{
+		"en"	"Ahaaa, {crimson}bad"
+	}
+	"Twirl Teleport Taunt 3"
+	{
+		"en"	"So close, yet far"
+	}
+	"Twirl Teleport Taunt 4"
+	{
+		"en"	"{crimson}Kururing{snow}~"
+	}
+	"Twirl Teleport Taunt 5"
+	{
+		"en"	"HEY, {purple}personal{snow} space buddy"
+	}
+	"Twirl Teleport Taunt 6"
+	{
+		"en"	"You think I'd let myself get {purple}surrounded{snow} like that?"
+	}
+	"Twirl Teleport Taunt 7"
+	{
+		"en"	"Don't surround me like that."
+	}
+	"Twirl Teleport Taunt 8"
+	{
+		"en"	"When will you learn this,{crimson} DON'T COME NEAR ME"
+	}
+	"Twirl Teleport Taunt 9"
+	{
+		"en"	"My innocence, you won't get close to it that easily"
+	}
+	"Twirl Teleport Taunt 10"
+	{
+		"en"	"Aiya, how rude of you to come close."
+	}
+	"Twirl Teleport Taunt 11"
+	{
+		"en"	"{crimson}Kuru Kuru{snow}~"
+	}
+	"Twirl Teleport Taunt 12"
+	{
+		"en"	"Oh my, ganging up on someone as {purple}innocent{snow} as me?"
+	}
+	"Twirl Teleport Taunt 13"
+	{
+		"en"	"Aaa, hai hai~"
+	}
+	//timer
+	"Twirl Timer End 0"
+	{
+		"en"	"Ahhh, that was a nice walk, {crimson}time to end it"
+	}
+	"Twirl Timer End 1"
+	{
+		"en"	"Heh, I suppose that was somewhat fun, now for the cleanup..."
+	}
+	"Twirl Timer End 2"
+	{
+		"en"	"I must say {aqua}Stella{snow} may have overhyped this.. Alass, time to kill you all"
+	}
+	"Twirl Timer End 3"
+	{
+		"en"	"Amazingly you were all too slow to die. And I've got a meeting I need to catch"
+	}
+	"Twirl Timer End 4"
+	{
+		"en"	"Times up, I’ve got better things to do, so here, {crimson}have this parting gift{snow}!"
+	}
+	"Twirl Timer End 5"
+	{
+		"en"	"Clearly you all lack proper fighting spirit to take this long, that’s it, {crimson}I’m ending this"
+	}
+	"Twirl Timer End 6"
+	{
+		"en"	"My oh my, even after having such a large amount of time, you still couldn't do it, shame"
+	}
+	"Twirl Timer End 7"
+	{
+		"en"	"There is a difference being slow and being cautious or methodical, clearly you all are the former"
+	}
+	"Twirl Timer End 8"
+	{
+		"en"	"Tell me why you're this slow?"
+	}
+
+	"Twirl Timer End Angry 0"
+	{
+		"en"	"Begone. Times Up."
+	}
+
+	"Twirl Timer End Freeplay 0"
+	{
+		"en"	"Well considering you all were just some randoms this was to be expected"
+	}
+	"Twirl Timer End Freeplay 1"
+	{
+		"en"	"Guess my sense of magic's been off lately, this was exceedingly boring."
+	}
+	"Twirl Timer End Freeplay 2"
+	{
+		"en"	"{crimson}How Cute{snow}."
+	}
+
+	//tripple enemies
+	"Twirl Tripple Karlas First 0"
+	{
+		"en"	"Hey, just because hes the only man here doesn't mean he should have died first."
+	}
+	"Twirl Tripple Karlas First 1"
+	{
+		"en"	"Oh, neat, now {aqua}Stella{snow}'s all mine."
+	}
+	"Twirl Tripple Karlas First 2"
+	{
+		"en"	"Huh, there goes my rival."
+	}
+	"Twirl Tripple Karlas First 3"
+	{
+		"en"	"How much you must have suffered through my anger"
+	}
+	"Twirl Tripple Karlas First 4"
+	{
+		"en"	"How much you must have overlooked your wonder"
+	}
+	"Twirl Tripple Stella First 0"
+	{
+		"en"	"{crimson}Karlas{snow}! Switch to me, I'm now your priority"
+	}
+
+	"Twirl Tripple Alone 0"
+	{
+		"en"	"Ohoh, You think this is gonna end easily, you are {crimson}SORELY MISTAKEN"
+	}
+	"Twirl Tripple Alone 1"
+	{
+		"en"	"{crimson}I won't let you win"
+	}
+	"Twirl Tripple Alone 2"
+	{
+		"en"	"{crimson}This is where your story ends"
+	}
+	"Twirl Tripple Alone Special1"
+	{
+		"en"	"{purple}How much I wish for another"
+	}
+	"Twirl Tripple Alone Special2"
+	{
+		"en"	"{purple}Better happier brighter future"
+	}
+	"Twirl Tripple Alone Special3"
+	{
+		"en"	"{purple}Here I am at the gate I stand"
+	}
+	"Twirl Tripple Alone Special4"
+	{
+		"en"	"{purple}Dear old times"
+	}
+	"Twirl Tripple Alone Special5"
+	{
+		"en"	"{purple}I've made up my mind.."
+	}
+
+
+
+
+	//Prefix.
+	"Twirl Prefix Quiet 0"
+	{
+		"en"	"You can't just silen- *mumbled yapping*"
+	}
+	"Twirl Prefix Quiet 1"
+	{
+		"en"	"MY VOICE WILL SURPA- *mumbled yapping*"
+	}
+	"Twirl Prefix Void Afflicted 0"
+	{
+		"en"	"{purple}VOID{snow}, GRANT ME STRENGTH!"
+	}
+
+	//Player Win.
+	"Twirl Player Win 0"
+	{
+		"en"	"So then, you managed to beat me"
+	}
+	"Twirl Player Win 1"
+	{
+		"en"	"Thats great, why you may ask?"
+	}
+	"Twirl Player Win 2"
+	{
+		"en"	"Its quite simple, it shows that you've all gone far"
+	}
+	"Twirl Player Win 3"
+	{
+		"en"	"You beat several world ending infections, alongside that gained many allies"
+	}
+	"Twirl Player Win 4"
+	{
+		"en"	"But the future holds many more hardships and dangers"
+	}
+	"Twirl Player Win 5"
+	{
+		"en"	"And so, it was decided that we the Ruanian's would test your skills"
+	}
+	"Twirl Player Win 6"
+	{
+		"en"	"To see if you’re all ready for what the future holds"
+	}
+	"Twirl Player Win 7"
+	{
+		"en"	"And well, you do, you are certainly ready for the future"
+	}
+	"Twirl Player Win 8"
+	{
+		"en"	"But do keep this in mind, the ''Ruina'' that you fought here, was just a mere..."
+	}
+	"Twirl Player Win 9"
+	{
+		"en"	"Heh.. Yeah, a mere fraction of what we are capable off"
+	}
+	"Twirl Player Win 10"
+	{
+		"en"	"Regardless take this, it's something that might help in your future adventures"
+	}
+	"Twirl Player Win 11"
+	{
+		"en"	"Make sure to take good care of them... or else."
+	}
+	"Twirl Player Got Item"
+	{
+		"#format"	"{1:s}"
+		"en"	"{snow}You have been given {purple}{1}{snow}'s hairpins..."
+	}
+	
 
 	//weapons: starts at 0. goes to inf.
 	"Twirl Quincy Balista Yap 0"
@@ -1411,6 +1749,69 @@
 		"#format"	"{1:N}"
 		"en"	"I would prefer if your arms did not touch me mr {gold}{1}{snow}."
 	}
-
-
+	"Twirl Raigeki Yap 0"
+	{
+		"#format"	"{1:N}"
+		"en"	"ITS TIME TO, DU-DU-DU-DU-DUEL {gold}{1}{snow}!"
+	}
+	"Twirl Raigeki Yap 1"
+	{
+		"#format"	"{1:N}"
+		"en"	"I use pot of greed {gold}{1}{snow}."
+	}
+	"Twirl Gravaton Yap 0"
+	{
+		"#format"	"{1:N}"
+		"en"	"How does it feel to control a fraction of gravity{gold} {1}{snow}?"
+	}
+	"Twirl Gravaton Yap 1"
+	{
+		"#format"	"{1:N}"
+		"en"	"The Gravaton wand was only a partial success, and yet {gold}{1}{snow}, you’re using it..."
+	}
+	"Twirl Passenger Yap 0"
+	{
+		"#format"	"{1:N}"
+		"en"	"I'll be frank {gold}{1}{snow}, even though that wand looks like one of ours, it ain't"
+	}
+	"Twirl Passenger Yap 1"
+	{
+		"#format"	"{1:N}"
+		"en"	"I'm somewhat ashamed to admit that the wand you're using {gold}{1}{snow}, wasn't made by us, which is frankly a shock considering it has all the characteristics of our wands"
+	}
+	"Twirl Impact Lance Yap 0"
+	{
+		"#format"	"{1:N}"
+		"en"	"You’re seriously trying to poke me with that thing {gold}{1}{snow}?"
+	}
+	"Twirl Impact Lance Yap 1"
+	{
+		"#format"	"{1:N}"
+		"en"	"{gold}{1}{snow}, You don't have the needed skills to properly use the lance."
+	}
+	"Twirl Generic Quincy Bow Yap 0"
+	{
+		"#format"	"{1:N}"
+		"en"	"Oh, {gold}{1}{snow}'s being a {aqua}Quincy{snow}, quick call the {crimson}Shinigami{snow}!"
+	}
+	"Twirl Generic Quincy Bow Yap 1"
+	{
+		"#format"	"{1:N}"
+		"en"	"Ah, what a shame {gold}{1}{snow} Here I thought you were a true {aqua}Quincy"
+	}
+	"Twirl Generic Quincy Bow Yap 2"
+	{
+		"#format"	"{1:N}"
+		"en"	"Who would win {gold}{1}{snow}, Me, or the Allmighty? Clearly me!"
+	}
+	"Twirl Blitz Kit Yap 0"
+	{
+		"#format"	"{1:N}"
+		"en"	"Ah, how foolish {gold}{1}{snow} Blitzkrieg was a poor mistake to copy..."
+	}
+	"Twirl Blitz Kit Yap 1"
+	{
+		"#format"	"{1:N}"
+		"en"	"Seriously {gold}{1}{snow}? Why Blitzkrieg?"
+	}
 }
