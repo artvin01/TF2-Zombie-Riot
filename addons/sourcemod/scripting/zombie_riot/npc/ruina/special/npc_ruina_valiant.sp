@@ -221,7 +221,6 @@ methodmap Valiant < RuinaBaseNpc
 		
 		
 		int skin = npc.GetSkin(ally);	//1=blue, 0=red
-		SetVariantInt(1);	
 		npc.m_nSkin = skin;
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);

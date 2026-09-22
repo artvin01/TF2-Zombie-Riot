@@ -111,7 +111,7 @@ methodmap Europa < RuinaBaseNpc
 			hypno-eyes
 		
 		*/
-		npc.m_nBody = (1 | 2 | 4 | 8);
+		npc.m_nBody = (1 | 2 | 4 | 8);	//GroupIssue
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;

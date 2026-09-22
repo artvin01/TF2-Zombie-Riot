@@ -296,7 +296,7 @@ methodmap RuinaBaseNpc < CClotBody
 				continue;
 			
 			int wearable = EntRefToEntIndexFast(i_Wearable[this.index][i]);
-			if(wearable == -1)
+			if(wearable == -1 || wearable == 0)
 				continue;
 			
 			RuinaBaseNpc(wearable).m_nSkin = skin;
@@ -2885,8 +2885,8 @@ static void BeamEffects(float startPoint[3], float endPoint[3], int color[4], fl
 	TE_SetupBeamPoints(startPoint, endPoint, g_Ruina_BEAM_Glow, 0, 0, 0, 0.11, ClampBeamWidth(diameter * 1.28), ClampBeamWidth(diameter * 1.28), 0, 5.0, glowColor, 0);
 	TE_SendToAll(0.0);
 }
-/*
-static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Target[3], float Pos[3])
+
+static void Get_Fake_Forward_Vec(const float Range, const float vecAngles[3], float Vec_Target[3], const float Pos[3])
 {
 	float Direction[3];
 	
@@ -2894,7 +2894,7 @@ static void Get_Fake_Forward_Vec(float Range, float vecAngles[3], float Vec_Targ
 	ScaleVector(Direction, Range);
 	AddVectors(Pos, Direction, Vec_Target);
 }
-*/
+
 	/// Custom Hand Particles or body or wings or halo or whatnot ///
 
 #define RUINA_MAX_PARTICLE_ENTS 15
@@ -3060,6 +3060,19 @@ stock int iGetTeamBeamIndex(int team)
 		default: return g_Ruina_BEAM_Combine_Black;
 	}
 }
+//#define TRAVEL_ACROSS_LENGTH(%1[3],%2[3],%3,%4,%5,%6[3]) for (int %5 = 0; GoAcrossLength(%1, %2, %3, %5, %4, %6); ++%5)
+//this version of SM doesn't like macros. NOOOOOOOOOOOOOOOOOOOOOOOOOO
+
+bool GoAcrossLength(const float vec1[3], const float angles[3], const float distance, const int current, const int max, float result[3])
+{
+	Get_Fake_Forward_Vec(distance * (float(current) / float(max)), angles, result, vec1);
+	return current < max;
+}
+/*
+TRAVEL_ACROSS_LENGTH(Laser.Start_Point, Laser.Angles, Laser.Dist, sections_total, i, ExitVec) {
+
+}
+*/
 /*
 	
 */

@@ -2373,30 +2373,22 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 
 	float VecTarget[3]; WorldSpaceCenter(Target, VecTarget);
 	npc.FaceTowards(VecTarget, 10000.0);
-
 	npc.StopPathing();
-	
 
 	npc.m_flSpeed = 0.0;
 
 	float Angles[3], Start[3];
 	WorldSpaceCenter(npc.index, Start);
-	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
-	int iPitch = npc.LookupPoseParameter("body_pitch");
-		
-	float flPitch = npc.GetPoseParameter(iPitch);
-
-	flPitch *= -1.0;
-	if(flPitch>15.0)
-		flPitch=15.0;
-	if(flPitch <-15.0)
-		flPitch = -15.0;
-	Angles[0] = flPitch;
+	Angles = npc.GetAngles();
 	Ruina_Laser_Logic Laser;
 	Laser.client = npc.index;
 	Laser.DoForwardTrace_Custom(Angles, Start, fl_cosmic_gaze_range);
 	float EndLoc[3];
 	EndLoc = Laser.End_Point;
+	fl_AbilityVectorData[npc.index] = Angles;
+
+	ApplyStatusEffect(npc.index, npc.index, "Clear Head", Duration + Windup);	
+	ApplyStatusEffect(npc.index, npc.index, "Solid Stance", Duration + Windup);
 
 	npc.m_flCosmicGazeDistance = GetVectorDistance(EndLoc, Start);
 	float Thickness = 15.0;
@@ -2455,24 +2447,58 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 			EmitSoundToAll(TWIRL_COSMIC_GAZE_LOOP_SOUND1, npc.index, SNDCHAN_STATIC, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL);
 			
 			npc.m_bAnimationSet = true;
+			
+			float 	flPos[3], // original
+					flAng[3]; // original
+			
+			GetAttachment(npc.index, "effect_hand_r", flPos, flAng);
 
-			npc.m_flCosmicGazeDurationOffset = GameTime + 0.72;
+			int sections = RoundToCeil(10.0 * npc.m_flCosmicGazeDistance / 750.0);
+			float ResultVec[3];
+			float time_till_boom = 0.72;
+			float s_min, s_max;
+			float e_min, e_max;
+			s_min = 30.0;
+			s_max = 15.5;
+			e_min = 125.0;
+			e_max = 75.0;
+			int skin = npc.GetSkin();
+			float NpcAngles[3]; NpcAngles = fl_AbilityVectorData[npc.index];
+			for (int i = 0; GoAcrossLength(flPos, NpcAngles, npc.m_flCosmicGazeDistance, i, sections, ResultVec); ++i)
+			{
+				float size_start 	= fAdjustRuinaRingSize((s_min + (s_max - s_min) * (float(i) / float(sections))));
+				float size_end 		= fAdjustRuinaRingSize((e_min + (e_max - e_min) * (float(i) / float(sections))));
+			
+				int ring = iCreateRuinaRing(ResultVec, RUINA_CUSTOM_MODELS_4, RUINA_BASE_RING, _, skin);
+
+				if(!IsValidEntity(ring))
+					continue;
+
+				float RingAngle[3];
+				GetEntPropVector(ring, Prop_Data, "m_angRotation", RingAngle);
+				RingAngle = NpcAngles;
+				RingAngle[0]-=90.0;
+				TeleportEntity(ring, NULL_VECTOR, RingAngle);
+				StartModelSizeChange(npc.index, ring, size_start, size_end, time_till_boom, false);
+
+				DataPack pack = new DataPack();
+				pack.WriteCell(EntIndexToEntRef(ring));
+				pack.WriteFloat(size_end);
+				pack.WriteFloat(0.0);
+				pack.WriteFloat(time_till_boom * 0.3);
+				RequestFrames(RF_RingInverse, RoundToCeil(66 * (time_till_boom + (i*0.01))), pack);
+
+				if(AtEdictLimit(EDICT_NPC))
+					break;
+
+			}
+			npc.m_flCosmicGazeDurationOffset = GameTime + time_till_boom;
 		}
 		if(npc.m_flCosmicGazeDurationOffset > GameTime && npc.m_flCosmicGazeDurationOffset !=FAR_FUTURE)
 		{
 			float Angles[3], Start[3];
 			WorldSpaceCenter(npc.index, Start);
-			GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
-			int iPitch = npc.LookupPoseParameter("body_pitch");
-				
-			float flPitch = npc.GetPoseParameter(iPitch);
-
-			flPitch *= -1.0;
-			if(flPitch>15.0)
-				flPitch=15.0;
-			if(flPitch <-15.0)
-				flPitch = -15.0;
-			Angles[0] = flPitch;
+			Angles = fl_AbilityVectorData[npc.index];
 
 			float	EndLoc[3],
 					Radius = 30.0,
@@ -2561,17 +2587,8 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 			Ruina_Laser_Logic Laser;
 			Laser.client = npc.index;
 			float Angles[3], Start[3];
+			Angles = fl_AbilityVectorData[npc.index];
 			WorldSpaceCenter(npc.index, Start);
-			GetEntPropVector(npc.index, Prop_Data, "m_angRotation", Angles);
-			int iPitch = npc.LookupPoseParameter("body_pitch");
-				
-			float flPitch = npc.GetPoseParameter(iPitch);
-			if(flPitch>15.0)
-				flPitch=15.0;
-			if(flPitch <-15.0)
-				flPitch = -15.0;
-			flPitch *= -1.0;
-			Angles[0] = flPitch;
 			Laser.DoForwardTrace_Custom(Angles, Start, fl_cosmic_gaze_range);
 			float EndLoc[3];
 			EndLoc = Laser.End_Point;
@@ -2580,6 +2597,22 @@ static Action Cosmic_Gaze_Tick(int iNPC)
 		}
 	}
 	return Plugin_Continue;
+}
+static void RF_RingInverse(DataPack pack)
+{
+	pack.Reset();
+	int entity = EntRefToEntIndex(pack.ReadCell());
+	if(!IsValidEntity(entity))
+	{
+		delete pack;
+		return;
+	}
+	float ring_size_was = pack.ReadFloat();
+	float ring_size_revert = pack.ReadFloat();
+	float how_long = pack.ReadFloat();
+	delete pack;
+
+	StartModelSizeChange(0, entity, ring_size_was, ring_size_revert, how_long);
 }
 static void Do_Cosmic_Gaze_Explosion(int client, float Loc[3])
 {
@@ -4440,8 +4473,15 @@ static void NPC_Death(int entity)
 		}
 	}
 
+	int exp_core = EntRefToEntIndexFast(i_haloslot[npc.index]);
+	if(IsValidEntity(exp_core))
+		RemoveEntity(exp_core);
 	if(IsValidEntity(npc.m_iWeapon))
 		RemoveEntity(npc.m_iWeapon);
+	if(IsValidEntity(npc.m_iWingSlot))
+		RemoveEntity(npc.m_iWingSlot);
+	if(IsValidEntity(npc.m_iWearable1))
+		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable3))
@@ -4492,6 +4532,9 @@ static void Twirl_Lines(Twirl npc, const char[] text, bool translate = false)
 }
 static void SpecialLines(Twirl npc, const char[] TextLines, any...)	//have fun making this support prefixes. because I have ZERO clue how to do that while keeping the logic I want.
 {
+	if(b_test_mode)
+		return;
+		
 	if(!TextLines[0])
 	{
 		LogStackTrace("Empty String");
