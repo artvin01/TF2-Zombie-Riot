@@ -165,22 +165,16 @@ methodmap Theocracy < RuinaBaseNpc
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
-		
-		
-		int skin = 1;
+		int skin = npc.GetSkin(ally);
 		npc.m_nSkin = skin;
-		
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
-		
+		npc.m_nBody = 1;
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/demo/sf14_demo_cyborg/sf14_demo_cyborg.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
-
 		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_claymore/c_claymore_xmas.mdl");
+		npc.m_iWeapon = npc.EquipItem("head", "models/weapons/c_models/c_claymore/c_claymore_xmas.mdl");
 		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+		AcceptEntityInput(npc.m_iWeapon, "SetModelScale");
 		
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop_partner/player/items/all_class/brutal_hair/brutal_hair_medic.mdl");
 		SetVariantString("1.0");
@@ -194,10 +188,8 @@ methodmap Theocracy < RuinaBaseNpc
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 		
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", 1);
-		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
-		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
-		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
+		npc.SetAllWearableSkin(skin);
+		SetEntProp(npc.m_iWeapon, Prop_Send, "m_nSkin", skin);
 		
 		float flPos[3]; // original
 		float flAng[3]; // original
@@ -314,32 +306,32 @@ static void ClotThink(int iNPC)
 			npc.StopPathing();
 			
 			npc.m_flSpeed = 0.0;
-			
+			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
+
 			i_NpcWeight[npc.index] = 999;
 
 			npc.SetPlaybackRate(1.0);	
 			npc.SetCycle(0.0);
-					
+
+			float ratio = ReturnEntityAttackspeed(npc.index);
+
 			npc.m_bisWalking = false;
 			npc.AddActivityViaSequence("taunt_yetipunch");
 			npc.m_flRangedArmor = 0.5;
 			npc.m_flMeleeArmor = 0.5;
-			npc.m_flDoingAnimation = GetGameTime() + 6.25;
+			npc.m_flDoingAnimation = GameTime + 6.25;
 
-			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", FAR_FUTURE);	
-
-			CreateTimer(3.6, Theocracy_Barrage_Anim, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
 			
-			CreateTimer(6.25, Theocracy_Barrage_Anim2, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
+			CreateTimer(3.6 * ratio, Theocracy_Barrage_Anim, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
 			
-			if(IsValidEntity(npc.m_iWearable3))
-				RemoveEntity(npc.m_iWearable3);
-		
+			CreateTimer(6.25 * ratio, Theocracy_Barrage_Anim2, EntIndexToEntRef(npc.index), TIMER_FLAG_NO_MAPCHANGE);
+			
+			npc.SetWeapon(false);
 			
 			npc.m_flNextRangedBarrage_Spam = GameTime + 30.0;
 
 		}
-				
+
 		if(flDistanceToTarget < NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 		{
 			//Look at target so we hit.
@@ -410,11 +402,7 @@ static Action Theocracy_Barrage_Anim2(Handle timer, int ref)
 	{
 		Theocracy npc = view_as<Theocracy>(client);
 		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_claymore/c_claymore_xmas.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-		
-		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
+		npc.SetWeapon(true);
 		
 		npc.m_flRangedArmor = 1.0;
 		npc.m_flMeleeArmor = 1.0;
@@ -733,8 +721,8 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-	if(IsValidEntity(npc.m_iWearable3))
-		RemoveEntity(npc.m_iWearable3);
+	if(IsValidEntity(npc.m_iWeapon))
+		RemoveEntity(npc.m_iWeapon);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable5))
