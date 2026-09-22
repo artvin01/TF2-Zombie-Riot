@@ -38,7 +38,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 	return Storm_Weaver_Mid(vecPos, vecAng, team, StringToFloat(data));
 }
 
-methodmap Storm_Weaver_Mid < CClotBody
+methodmap Storm_Weaver_Mid < RuinaBaseNpc
 {
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
@@ -50,7 +50,7 @@ methodmap Storm_Weaver_Mid < CClotBody
 	}
 
 	
-	public void PlayMeleeHitSound() {
+		public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 	}
 	

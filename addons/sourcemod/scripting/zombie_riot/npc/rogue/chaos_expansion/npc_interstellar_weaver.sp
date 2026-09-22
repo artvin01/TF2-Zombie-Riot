@@ -70,7 +70,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 	return Interstellar_Weaver(vecPos, vecAng, team, data);
 }
 
-methodmap Interstellar_Weaver < CClotBody
+methodmap Interstellar_Weaver < RuinaBaseNpc
 {
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))

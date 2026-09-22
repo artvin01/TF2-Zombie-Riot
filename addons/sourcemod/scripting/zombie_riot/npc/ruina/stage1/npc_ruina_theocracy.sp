@@ -168,7 +168,7 @@ methodmap Theocracy < RuinaBaseNpc
 		
 		
 		int skin = 1;
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		npc.m_nSkin = skin;
 		
 		SetVariantInt(1);
 		AcceptEntityInput(npc.index, "SetBodyGroup");

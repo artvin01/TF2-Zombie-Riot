@@ -404,15 +404,7 @@ methodmap Twirl < RuinaBaseNpc
 				if(this.m_fbGunout)
 				{
 					this.m_fbGunout = false;
-					/*if(this.m_flNextMeleeAttack > GetGameTime(this.index) + 0.5)
-					{
-						//CPrintToChatAll("Reset CD MELEE");
-						this.m_flNextMeleeAttack = GetGameTime(this.index) + 0.5;
-					}*/
-						
-					SetVariantInt(this.i_weapon_type());
-					AcceptEntityInput(this.m_iWearable1, "SetBodyGroup");
-					//CPrintToChatAll("Melee enemy");
+					RuinaBaseNpc(this.m_iWeapon).m_nBody = this.i_weapon_type();
 				}
 				
 			}
@@ -421,18 +413,8 @@ methodmap Twirl < RuinaBaseNpc
 				if(!this.m_fbGunout)
 				{
 					this.m_iState = 0;
-
-					/*if(this.m_flReloadIn > GetGameTime(this.index) + 0.5)
-					{
-						this.m_flReloadIn = GetGameTime(this.index) + 0.5;
-						//CPrintToChatAll("Reset CD RANGED");
-					}*/
-						
-
 					this.m_fbGunout = true;
-					//CPrintToChatAll("Ranged enemy");
-					SetVariantInt(this.i_weapon_type());
-					AcceptEntityInput(this.m_iWearable1, "SetBodyGroup");
+					RuinaBaseNpc(this.m_iWeapon).m_nBody = this.i_weapon_type();
 				}
 				
 			}
@@ -956,55 +938,14 @@ methodmap Twirl < RuinaBaseNpc
 		
 		RaidModeTime = GetGameTime(npc.index) + 250.0;
 		
-		char buffers[3][64];
-		ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
-		//the very first and 2nd char are SC for scaling
-		if(buffers[0][0] == 's' && buffers[0][1] == 'c')
-		{
-			//remove SC
-			ReplaceString(buffers[0], 64, "sc", "");
-			float value = StringToFloat(buffers[0]);
-			RaidModeScaling = value;
-		}
-		else
-		{	
-			RaidModeScaling = float(Waves_GetRoundScale()+1);
-		}
+		Do_RaidModeScaling(data);
 		
-		if(RaidModeScaling < 35)
-		{
-			RaidModeScaling *= 0.25; //abit low, inreacing
-		}
-		else
-		{
-			RaidModeScaling *= 0.5;
-		}
-		
-		float amount_of_people = ZRStocks_PlayerScalingDynamic();
-		
-		if(amount_of_people > 12.0)
-		{
-			amount_of_people = 12.0;
-		}
-		
-		amount_of_people *= 0.12;
-		
-		if(amount_of_people < 1.0)
-			amount_of_people = 1.0;
-			
-		RaidModeScaling *= amount_of_people;
-
-		RaidModeScaling *= 1.1;
-				
 		npc.m_iTeamGlow = TF2_CreateGlow(npc.index);
 		npc.m_bTeamGlowDefault = false;
-			
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
 
 		SetVariantColor(view_as<int>({125, 0, 125, 255}));
 		AcceptEntityInput(npc.m_iTeamGlow, "SetGlowColor");
-				
+
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
@@ -1012,7 +953,7 @@ methodmap Twirl < RuinaBaseNpc
 		int skin 		 = npc.GetSkin(ally);
 		int special_skin = npc.GetSkin();
 		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		npc.m_iWearable1 = npc.EquipItem("head", RUINA_CUSTOM_MODELS_3, _, special_skin);
+		npc.m_iWeapon = npc.EquipItem("head", RUINA_CUSTOM_MODELS_3, _, special_skin);
 		npc.m_iWearable2 = npc.EquipItem("head", WINGS_MODELS_1, _, special_skin);
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/medic/dec23_puffed_practitioner/dec23_puffed_practitioner.mdl", _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/all_class/witchhat/witchhat_medic.mdl", _, skin);
@@ -1024,12 +965,10 @@ methodmap Twirl < RuinaBaseNpc
 		npc.m_iWearable8 = ParticleEffectAt_Parent(flPos, "unusual_invasion_boogaloop_2", npc.index, "head", {0.0,0.0,0.0});
 		
 		NpcColourCosmetic_ViaPaint(npc.m_iWearable4, 16777215);
-		
-		SetVariantInt(npc.i_weapon_type());
-		AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
-		SetVariantInt(WINGS_TWIRL|RUINA_GAMER_HEADSET);
-		AcceptEntityInput(npc.m_iWearable2, "SetBodyGroup");
-
+	
+		RuinaBaseNpc(npc.m_iWeapon).m_nBody = npc.i_weapon_type();
+		RuinaBaseNpc(npc.m_iWearable2).m_nBody = WINGS_TWIRL|RUINA_GAMER_HEADSET;
+		npc.m_nBody = 1;
 		npc.Anger = false;
 
 		c_NpcName[npc.index] = "Twirl";
@@ -1174,6 +1113,48 @@ methodmap Twirl < RuinaBaseNpc
 		return npc;
 	}
 }
+static void Do_RaidModeScaling(const char[] data)
+{
+	char buffers[3][64];
+	ExplodeString(data, ";", buffers, sizeof(buffers), sizeof(buffers[]));
+	//the very first and 2nd char are SC for scaling
+	if(buffers[0][0] == 's' && buffers[0][1] == 'c')
+	{
+		//remove SC
+		ReplaceString(buffers[0], 64, "sc", "");
+		float value = StringToFloat(buffers[0]);
+		RaidModeScaling = value;
+	}
+	else
+	{	
+		RaidModeScaling = float(Waves_GetRoundScale()+1);
+	}
+	
+	if(RaidModeScaling < 35)
+	{
+		RaidModeScaling *= 0.25; //abit low, inreacing
+	}
+	else
+	{
+		RaidModeScaling *= 0.5;
+	}
+	
+	float amount_of_people = ZRStocks_PlayerScalingDynamic();
+	
+	if(amount_of_people > 12.0)
+	{
+		amount_of_people = 12.0;
+	}
+	
+	amount_of_people *= 0.12;
+	
+	if(amount_of_people < 1.0)
+		amount_of_people = 1.0;
+		
+	RaidModeScaling *= amount_of_people;
+
+	RaidModeScaling *= 1.1;
+}
 
 static float fl_ion_passthrough_dmg;
 static float fl_ion_passthrough_vec[3];
@@ -1294,8 +1275,7 @@ static void ClotThink(int iNPC)
 		RaidModeTime = fl_raidmode_freeze + GameTime;	//"freeze" the raid timer
 		if(npc.m_iChanged_WalkCycle != 99)
 		{
-			if(IsValidEntity(npc.m_iWearable1))
-				RemoveEntity(npc.m_iWearable1);
+			npc.SetWeapon(false);
 
 			npc.m_iChanged_WalkCycle = 99;
 			npc.m_bisWalking = false;
@@ -1384,7 +1364,7 @@ static void ClotThink(int iNPC)
 		RemoveSpecificBuff(npc.index, "Solid Stance");
 		RemoveSpecificBuff(npc.index, "Fluid Movement");
 		
-		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
+		npc.SetWeapon(true);
 		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		Explode_Logic_Custom(500.0*RaidModeScaling, npc.index, npc.index, -1, VecSelfNpc, 350.0, _, _, true, _, false, _, LifelossExplosion);
 		if(npc.m_bThisNpcIsABoss)
@@ -1823,9 +1803,7 @@ static void lunar_Radiance(Twirl npc)
 	fl_ruina_battery_timeout[npc.index] = GameTime + 2.5;
 	npc.m_flDoingAnimation = GameTime + 2.7;
 
-	SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
-	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
-
+	npc.SetWeapon(false);
 	npc.m_flLunarTimer = 0.0;
 	npc.m_bisWalking = false;
 	npc.AddActivityViaSequence("taunt_surgeons_squeezebox");
@@ -1853,12 +1831,7 @@ static Action Lunar_Radiance_RestoreAnim(Handle Timer, int ref)
 	npc.m_flNextMeleeAttack = GameTime + 0.5;
 	npc.m_flReloadIn = GameTime + 0.5;
 	npc.m_fbGunout = true;
-	SetVariantInt(npc.i_weapon_type());
-	AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
-
-	SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
-	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
-
+	npc.SetWeapon(true);
 	npc.m_flSpeed = fl_npc_basespeed;
 	npc.StartPathing();
 
@@ -2372,11 +2345,7 @@ static void Cosmic_Gaze(Twirl npc, int Target)
 	npc.m_flNextMeleeAttack = GameTime + 0.5;
 	npc.m_flReloadIn = GameTime + 0.5;
 	npc.m_fbGunout = true;
-	SetVariantInt(npc.i_weapon_type());
-	AcceptEntityInput(npc.m_iWearable1, "SetBodyGroup");
-
-	SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
-	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
+	npc.SetWeapon(true);
 
 	float Windup = 2.0;	//2.0
 	float Duration;
@@ -2778,51 +2747,31 @@ static void Fractal_Gram(Twirl npc, int Target)
 
 	if(npc.m_iBarrageAmmo > amt)
 	{
-		if(IsValidEntity(npc.m_iWearable1))
-		{
-			SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
-			SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
-		}
+		npc.SetWeapon(true);
 		npc.m_iBarrageAmmo = 0;
 		npc.m_flNextRangedBarrage_Spam = GameTime + (npc.Anger ? 25.0 : 30.0);
 		if(b_tripple_raid)
 			npc.m_flNextRangedBarrage_Spam = GameTime + (npc.Anger ? 45.0 : 60.0);
 		return;
 	}
-
-	int Enemy_I_See;
-			
-	Enemy_I_See = Can_I_See_Enemy(npc.index, Target);
+	int Enemy_I_See = Can_I_See_Enemy(npc.index, Target);
 	//Target close enough to hit
 	if(!IsValidEnemy(npc.index, Enemy_I_See)) //Check if i can even see.
 	{
-		if(IsValidEntity(npc.m_iWearable1))
-		{
-			SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
-			SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
-		}
+		npc.SetWeapon(true);
 		return;
 	}
-		
 
 	npc.PlayFractalSound();
-
 	npc.m_flNextMeleeAttack = GameTime + 1.0;
 	npc.m_flReloadIn = GameTime + 1.0;
 
 	Target = Enemy_I_See;
 
 	npc.m_iBarrageAmmo++;
-
 	npc.m_flNextRangedBarrage_Singular = GameTime + fl_Fractal_Gram_SpamTimer(npc);
-
 	npc.AddGesture("ACT_MP_GESTURE_VC_FINGERPOINT_PRIMARY");
-
-	if(IsValidEntity(npc.m_iWearable1))
-	{
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
-		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
-	}
+	npc.SetWeapon(false);
 	
 
 	float vecTarget[3];
@@ -2867,7 +2816,7 @@ static void Fractal_Attack(int iNPC, float VecTarget[3], float dmg, float speed,
 		pack.WriteCell(EntIndexToEntRef(iNPC));
 		if(!AtEdictLimit(EDICT_NPC))
 		{
-			int beam = ConnectWithBeamClient(npc.m_iWearable1, Proj, color[0], color[1], color[2], f_start, f_end, amp, LASERBEAM);
+			int beam = ConnectWithBeamClient(npc.m_iWeapon, Proj, color[0], color[1], color[2], f_start, f_end, amp, LASERBEAM);
 			i_WandParticle[Proj] = EntIndexToEntRef(beam);
 			pack.WriteCell(EntIndexToEntRef(beam));
 		}
@@ -3163,9 +3112,7 @@ static void Retreat_Laser(Twirl npc, float Last_Pos[3])
 	
 	npc.SetPlaybackRate(1.0);	
 	npc.SetCycle(0.01);
-
-	SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
-	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
+	npc.SetWeapon(false);
 
 	EmitCustomToAll(TWIRL_LASER_SOUND, npc.index, SNDCHAN_AUTO, 120, _, 1.0, SNDPITCH_NORMAL);
 
@@ -3205,8 +3152,7 @@ static Action Retreat_Laser_Tick(int iNPC)
 		f_NpcTurnPenalty[npc.index] = 1.0;
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.StartPathing();
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
-		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
+		npc.SetWeapon(true);
 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		npc.m_iChanged_WalkCycle = 1;
@@ -3446,9 +3392,7 @@ static bool IonicFracture(Twirl npc)
 	npc.m_bisWalking = false;
 
 	NPCStats_RemoveAllDebuffs(npc.index);
-
-	SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
-	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
+	npc.SetWeapon(false);
 
 	npc.m_flIonicFractureCD = GameTime + (npc.Anger ? 90.0 : 120.0);
 	fl_BEAM_DurationTime[npc.index] = 0.0;
@@ -3768,13 +3712,10 @@ static Action IonicFracture_ProjectileThink(int entity)
 	int color[4]; Ruina_Color(color, i_current_wave[npc.index]);
 
 	float diameter = 80.0;
-
 	float Diameter_Rng = GetRandomFloat(diameter*0.5, diameter);
-
 	float TE_Duration = TWIRL_TE_DURATION;
 
 	IonPillarRadiusIndicator(ground, diameter, color);
-
 	TE_SetupBeamPoints(ground, sky, npc.m_iBeamIndex, g_Ruina_BEAM_Combine_Black, 0, 66, TE_Duration, Diameter_Rng, Diameter_Rng, 0, 0.1, color, 3);
 	TE_SendToAll(0.0);
 
@@ -3854,9 +3795,7 @@ static bool Magia_Overflow(Twirl npc)
 	npc.AddActivityViaSequence("taunt_the_scaredycat_medic");
 	npc.SetPlaybackRate(1.0);	
 	npc.SetCycle(0.01);
-
-	SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
-	SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
+	npc.SetWeapon(false);
 
 	//EmitCustomToAll(TWIRL_LASER_SOUND, npc.index, SNDCHAN_AUTO, 120, _, 1.0, SNDPITCH_NORMAL);
 
@@ -3872,11 +3811,8 @@ static bool Magia_Overflow(Twirl npc)
 	npc.m_bAnimationSet = false;
 
 	npc.StopPathing();
-	
 	npc.m_flSpeed = 0.0;
-
 	npc.m_flMagiaAngle = GetRandomFloat(0.0, 360.0);
-
 	npc.m_bInKame = true;
 	NPCStats_RemoveAllDebuffs(npc.index);
 
@@ -3903,10 +3839,8 @@ static Action Magia_Overflow_Tick(int iNPC)
 		npc.m_flSpeed = fl_npc_basespeed;
 		npc.StartPathing();
 		npc.m_flDoingAnimation = 1.0;
-		
 		npc.m_bInKame = false;
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_NORMAL);
-		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 255);
+		npc.SetWeapon(true);
 
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 		npc.m_iChanged_WalkCycle = 1;
@@ -4188,9 +4122,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 		npc.PlayAngerSound();
 
 		npc.m_bisWalking = false;
-		SetEntityRenderMode(npc.m_iWearable1, RENDER_NONE);
-		SetEntityRenderColor(npc.m_iWearable1, 255, 255, 255, 1);
-
+		npc.SetWeapon(false);
 		npc.m_flSpeed = 0.0;
 		f_NpcTurnPenalty[npc.index] = 0.0;
 		RaidModeScaling *= 1.35;
@@ -4508,8 +4440,8 @@ static void NPC_Death(int entity)
 		}
 	}
 
-	if(IsValidEntity(npc.m_iWearable1))
-		RemoveEntity(npc.m_iWearable1);
+	if(IsValidEntity(npc.m_iWeapon))
+		RemoveEntity(npc.m_iWeapon);
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable3))

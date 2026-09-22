@@ -198,27 +198,20 @@ methodmap Iana < RuinaBaseNpc
 			"models/player/items/medic/hwn_medic_misc1.mdl",
 			"models/workshop/player/items/soldier/hw2013_rocket_ranger/hw2013_rocket_ranger.mdl",
 			"models/workshop/player/items/all_class/jogon/jogon_scout.mdl",
-			RUINA_CUSTOM_MODELS_1,
 			RUINA_CUSTOM_MODELS_1
 		};
 
 		int skin = npc.GetSkin(ally);	//1=blue, 0=red
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		npc.m_nSkin = skin;
 		npc.m_iWearable1 = npc.EquipItem("head", Items[0], _, skin);
 		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
 		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
-		npc.m_iWearable6 = npc.EquipItemSeperate(Items[5],_,_,1.25,85.0);
-		npc.m_iWearable7 = npc.EquipItem("head", Items[6], _, npc.GetSkin());
+		npc.m_iWearable7 = npc.EquipItem("head", Items[5], _, npc.GetSkin());
 
 		SetVariantInt(RUINA_IANA_BLADE);
 		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");
-
-		SetVariantInt(RUINA_HALO_1);
-		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
-
-		RuinaBaseNpc(npc.m_iWearable6).m_nSkin = npc.GetSkin();
 		
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
 		fl_ruina_battery_max[npc.index] = 3000.0;

@@ -68,71 +68,41 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 }
 
 
-methodmap Helia < CClotBody
+methodmap Helia < RuinaBaseNpc
 {
-	
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
-		
-
 	}
-	
 	public void PlayTeleportSound() {
 		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
-
 	}
-	
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
-		
 	}
-	
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
-			return;
-			
+			return;	
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
 		EmitSoundToAll(g_DefaultMedic_HurtSounds[GetRandomInt(0, sizeof(g_DefaultMedic_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
-		
 	}
-	
 	public void PlayDeathSound() {
-	
 		EmitSoundToAll(g_DefaultMedic_DeathSounds[GetRandomInt(0, sizeof(g_DefaultMedic_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
 	}
-	
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-
 	}
-
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
 	}
-	
-	
 	public Helia(float vecPos[3], float vecAng[3], int ally)
 	{
 		Helia npc = view_as<Helia>(CClotBody(vecPos, vecAng, "models/player/medic.mdl", "1.0", "1250", ally));
@@ -181,16 +151,13 @@ methodmap Helia < CClotBody
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 		
 		
-		int skin = 1;	//1=blue, 0=red
-		SetVariantInt(1);	
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		int skin = npc.GetSkin(ally);	//1=blue, 0=red
+		npc.m_nSkin = skin;
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-				
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
+		npc.m_nBody = 1;
 		
 		fl_ruina_battery_max[npc.index] = 750.0;
 		fl_ruina_battery[npc.index] = 0.0;
@@ -198,9 +165,7 @@ methodmap Helia < CClotBody
 		fl_ruina_battery_timer[npc.index] = 0.0;
 		
 		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a ranged npc
-
 		Ruina_Set_Healer(npc.index);
-		
 		Helia_Create_Crest(npc.index);
 		
 		return npc;

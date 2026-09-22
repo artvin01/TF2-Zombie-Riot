@@ -21,8 +21,6 @@ static const char g_FantasiaSound[][] = {
 	"ambient/machines/thumper_hit.wav",
 };
 
-static int i_damage_taken[MAXENTITIES];
-
 void Ruianus_OnMapStart_NPC()
 {
 	NPCData data;
@@ -45,14 +43,13 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_DefaultMeleeMissSounds);
 	PrecacheSoundArray(g_FantasiaSound);
-	Zero(i_damage_taken);
 	PrecacheModel("models/player/medic.mdl");
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
 	return Ruianus(vecPos, vecAng, team);
 }
-methodmap Ruianus < CClotBody
+methodmap Ruianus < RuinaBaseNpc
 {
 	
 	public void PlayIdleAlertSound() {
@@ -67,32 +64,18 @@ methodmap Ruianus < CClotBody
 	
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
-			return;
-			
+			return;	
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
 		EmitSoundToAll(g_DefaultMedic_HurtSounds[GetRandomInt(0, sizeof(g_DefaultMedic_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
-		
 	}
-	
 	public void PlayDeathSound() {
-	
 		EmitSoundToAll(g_DefaultMedic_DeathSounds[GetRandomInt(0, sizeof(g_DefaultMedic_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
 	}
-	
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
 	}
 
 	public void PlayMeleeMissSound() {
@@ -172,9 +155,8 @@ methodmap Ruianus < CClotBody
 			RUINA_CUSTOM_MODELS_1
 		};	
 		
-		int skin = 1;	//1=blue, 0=red
-		SetVariantInt(1);	
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		int skin = npc.GetSkin(ally);	//1=blue, 0=red
+		npc.m_nSkin = skin;
 		npc.m_iWearable1 = npc.EquipItem("head", Items[0], _, skin);
 		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
@@ -323,7 +305,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	{
 		int Max_Health = ReturnEntityMaxHealth(npc.index);
 		fl_ruina_battery_timer[npc.index]=GameTime+5.0;
-		int healing = RoundToFloor(i_damage_taken[npc.index]*0.35);
+		int healing = RoundToFloor(npc.m_iDamageStored*0.35);
 
 		if(healing > RoundToFloor(Max_Health*0.2))
 			healing = RoundToFloor(Max_Health*0.2);
@@ -332,11 +314,11 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			
 		Helia_Healing_Logic(npc.index, healing, 500.0, GameTime, 0.5);
 
-		i_damage_taken[npc.index]=0;
+		npc.m_iDamageStored=0;
 	}
 	else
 	{
-		i_damage_taken[npc.index]+=damage;
+		npc.m_iDamageStored+=damage;
 	}
 
 	if (npc.m_flHeadshotCooldown < GameTime)

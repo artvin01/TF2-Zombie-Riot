@@ -63,47 +63,30 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 
 static float fl_npc_basespeed;
 
-methodmap Europis < CClotBody
+methodmap Europis < RuinaBaseNpc
 {
-	
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
-		
-
 	}
-	
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
-		
 	}
-	
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
-		
 	}
-	
 	public void PlayDeathSound() {
-	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
 	}
-	public void PlayRangedSound() {
+public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
 
@@ -180,22 +163,16 @@ methodmap Europis < CClotBody
 			RUINA_CUSTOM_MODELS_1
 		};
 
-		int skin = 1;	//1=blue, 0=red
-		SetVariantInt(1);	
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		int skin = npc.GetSkin(ally);
+		npc.m_nSkin = skin;
 		npc.m_iWearable1 = npc.EquipItem("head", Items[0], _, skin);
 		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
-		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _);
-		//npc.m_iWearable6 = npc.EquipItem("head", Items[5], _, skin);
-		//npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
+		npc.m_iWeapon 	 = npc.EquipItem("head", Items[4], _, npc.GetSkin());
+		RuinaBaseNpc(npc.m_iWeapon).m_nBody = RUINA_EUR_STAFF_1;
+		npc.m_nBody = (1 | 2 | 4 | 8);
 
-		SetVariantInt(RUINA_EUR_STAFF_1);
-		AcceptEntityInput(npc.m_iWearable5, "SetBodyGroup");
-
-		SetVariantInt(1 + 2 + 4 + 8);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
 		fl_ruina_battery_max[npc.index] = 4000.0;
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
@@ -371,8 +348,8 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
-	if(IsValidEntity(npc.m_iWearable5))
-		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWeapon))
+		RemoveEntity(npc.m_iWeapon);
 }
 static void Europis_Spawn_Minnions(Europis npc)
 {
@@ -462,7 +439,7 @@ static void Europis_SelfDefense(Europis npc, float gameTime, int Anchor_Id)	//ty
 		if(IsValidEntity(Anchor_Id))
 		{
 
-			CClotBody npc2 = view_as<CClotBody>(Anchor_Id);
+			RuinaBaseNpc npc2 = view_as<RuinaBaseNpc>(Anchor_Id);
 			int	target = npc2.m_iTarget;
 
 			if(IsValidEnemy(npc.index,target))

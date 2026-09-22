@@ -79,59 +79,38 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 }
 
 
-methodmap Adiantum < CClotBody
+methodmap Adiantum < RuinaBaseNpc
 {
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
-		
-
 	}
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(4.0, 7.0);
-		
-		
 	}
-	
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-
 	}
-
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
 	}
 	public void PlayDeathSound() {
-		
 		int sound = GetRandomInt(0, sizeof(g_DeathSounds) - 1);
-		
 		EmitSoundToAll(g_DeathSounds[sound], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 	}
-	
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
-			return;
-			
+			return;	
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
-		
 	}
 	public Adiantum(float vecPos[3], float vecAng[3], int ally)
 	{
@@ -142,13 +121,11 @@ methodmap Adiantum < CClotBody
 
 		i_NpcWeight[npc.index] = 2;
 		
-		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;		
 		
 		npc.m_flNextMeleeAttack = 0.0;
-		
 		
 		func_NPCDeath[npc.index] = view_as<Function>(NPC_Death);
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(OnTakeDamage);
@@ -166,10 +143,6 @@ methodmap Adiantum < CClotBody
 			herzensbrecher
 			quadwrangler			Qc_Glove
 		*/
-		
-		
-
-		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop/player/items/medic/sf14_medic_herzensbrecher/sf14_medic_herzensbrecher.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
@@ -178,9 +151,9 @@ methodmap Adiantum < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
 		
-		npc.m_iWearable3 = npc.EquipItem("head", "models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");	//claidemor
+		npc.m_iWeapon = npc.EquipItem("head", "models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");	//claidemor
 		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+		AcceptEntityInput(npc.m_iWeapon, "SetModelScale");
 
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/robo_medic_blighted_beak/robo_medic_blighted_beak.mdl");
 		SetVariantString("1.0");
@@ -194,11 +167,10 @@ methodmap Adiantum < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable6, "SetModelScale");
 		
-		int skin = 1;	//1=blue, 0=red
-		SetVariantInt(1);	
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		int skin = npc.GetSkin(ally);	//1=blue, 0=red
+		npc.m_nSkin = skin;
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWeapon, 	 Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
@@ -211,17 +183,13 @@ methodmap Adiantum < CClotBody
 		Ruina_Master_Rally(npc.index, true);	//this npc is always rallying ranged npc's
 		
 		npc.m_flSpeed = 225.0;
-		
 		npc.m_flCharge_Duration = 0.0;
 		npc.m_flCharge_delay = GetGameTime(npc.index) + 2.0;
 		npc.StartPathing();
-		
 
 		npc.m_flNextRangedBarrage_Spam = GetGameTime(npc.index) + 15.0;
 		return npc;
 	}
-	
-	
 }
 
 
@@ -521,8 +489,8 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable1))
 		RemoveEntity(npc.m_iWearable1);
-	if(IsValidEntity(npc.m_iWearable3))
-		RemoveEntity(npc.m_iWearable3);
+	if(IsValidEntity(npc.m_iWeapon))
+		RemoveEntity(npc.m_iWeapon);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable5))

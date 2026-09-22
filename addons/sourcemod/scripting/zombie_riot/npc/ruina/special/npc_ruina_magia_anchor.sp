@@ -128,7 +128,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 {
 	return Magia_Anchor(vecPos, vecAng, team, data);
 }
-methodmap Magia_Anchor < CClotBody
+methodmap Magia_Anchor < RuinaBaseNpc
 {
 	public void PlayIdleSound() 
 	{
@@ -836,7 +836,7 @@ static void Weaver_Logic(Magia_Anchor npc)
 		}
 	}
 }
-int i_GetMagiaAnchor(CClotBody npc)
+int i_GetMagiaAnchor(RuinaBaseNpc npc)
 {
 	for(int targ; targ<i_MaxcountNpcTotal; targ++)
 	{

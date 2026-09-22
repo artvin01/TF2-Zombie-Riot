@@ -80,7 +80,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 }
 
 static float fl_npc_basespeed;
-methodmap Aetherium < CClotBody
+methodmap Aetherium < RuinaBaseNpc
 {
 	
 	public void PlayHyperArrowSound() {
@@ -213,9 +213,8 @@ methodmap Aetherium < CClotBody
 			RUINA_CUSTOM_MODELS_2
 		};
 
-		int skin = 1;	//1=blue, 0=red
-		SetVariantInt(1);	
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		int skin = npc.GetSkin(ally);	//1=blue, 0=red
+		npc.m_nSkin = skin;
 		npc.m_iWearable1 = npc.EquipItem("head", Items[0], _, skin);
 		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
@@ -522,7 +521,7 @@ static void Aetherium_SelfDefense(Aetherium npc, float gameTime, int Anchor_Id)	
 	{
 		if(IsValidEntity(Anchor_Id))
 		{
-			CClotBody npc2 = view_as<CClotBody>(Anchor_Id);
+			RuinaBaseNpc npc2 = view_as<RuinaBaseNpc>(Anchor_Id);
 			int	target = npc2.m_iTarget;
 
 			if(IsValidEnemy(npc.index,target))

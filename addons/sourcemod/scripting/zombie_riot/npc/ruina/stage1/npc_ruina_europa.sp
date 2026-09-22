@@ -62,58 +62,35 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 	return Europa(vecPos, vecAng, team);
 }
 
-methodmap Europa < CClotBody
+methodmap Europa < RuinaBaseNpc
 {
-	
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
-		
-
 	}
-	
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
-		
 	}
-	
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
-		
 	}
-	
 	public void PlayDeathSound() {
-	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
 	}
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-
 	}
-	
-	
 	public Europa(float vecPos[3], float vecAng[3], int ally)
 	{
 		Europa npc = view_as<Europa>(CClotBody(vecPos, vecAng, "models/player/pyro.mdl", "1.0", "1250", ally));
@@ -134,9 +111,7 @@ methodmap Europa < CClotBody
 			hypno-eyes
 		
 		*/
-		
-		SetVariantInt(1 + 2 + 4 + 8);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
+		npc.m_nBody = (1 | 2 | 4 | 8);
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -151,10 +126,10 @@ methodmap Europa < CClotBody
 		npc.m_flSpeed = 200.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
-    	
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl");
+
+		npc.m_iWeapon = npc.EquipItem("head", "models/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl");
 		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		AcceptEntityInput(npc.m_iWeapon, "SetModelScale");
 		
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/pyro/hwn_pyro_spookyhood.mdl");
 		SetVariantString("1.0");
@@ -169,10 +144,9 @@ methodmap Europa < CClotBody
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
 		
 		
-		int skin = 1;	//1=blue, 0=red
-		SetVariantInt(1);	
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
+		int skin = npc.GetSkin(ally);	//1=blue, 0=red
+		npc.m_nSkin = skin;
+		SetEntProp(npc.m_iWeapon, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
@@ -186,8 +160,6 @@ methodmap Europa < CClotBody
 
 		return npc;
 	}
-	
-	
 }
 
 
@@ -352,8 +324,8 @@ static void NPC_Death(int entity)
 
 	Ruina_NPCDeath_Override(entity);
 		
-	if(IsValidEntity(npc.m_iWearable1))
-		RemoveEntity(npc.m_iWearable1);
+	if(IsValidEntity(npc.m_iWeapon))
+		RemoveEntity(npc.m_iWeapon);
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
 	if(IsValidEntity(npc.m_iWearable3))
@@ -446,7 +418,7 @@ static void Europa_SelfDefense(Europa npc, float gameTime, int Anchor_Id)	//ty a
 		if(IsValidEntity(Anchor_Id))
 		{
 
-			CClotBody npc2 = view_as<CClotBody>(Anchor_Id);
+			RuinaBaseNpc npc2 = view_as<RuinaBaseNpc>(Anchor_Id);
 			int	target = npc2.m_iTarget;
 
 			if(IsValidEnemy(npc.index,target))

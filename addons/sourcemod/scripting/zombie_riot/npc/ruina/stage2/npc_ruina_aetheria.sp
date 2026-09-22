@@ -80,63 +80,38 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 }
 
 static float fl_npc_basespeed;
-methodmap Aetheria < CClotBody
+methodmap Aetheria < RuinaBaseNpc
 {
-	
 	public void PlayHyperArrowSound() {
 		EmitSoundToAll(g_HyperArrowSound[GetRandomInt(0, sizeof(g_HyperArrowSound) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
 	}
-
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
-		
-
 	}
-	
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
-		
+		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);	
 	}
-	
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
-			return;
-			
-		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
+			return;	
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;	
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
-		
 	}
-	
 	public void PlayDeathSound() {
-	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
 	}
-	
 	public void PlayRangedSound() {
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, 0.5, RUINA_NPC_PITCH);
-		
-
 	}
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
 	}
-
 	public void Set_WalkCycle()
 	{
 		bool Aimed = false;
@@ -164,9 +139,7 @@ methodmap Aetheria < CClotBody
 				this.m_fbGunout = false;
 			}
 		}
-	}
-	
-	
+	}	
 	public Aetheria(float vecPos[3], float vecAng[3], int ally)
 	{
 		Aetheria npc = view_as<Aetheria>(CClotBody(vecPos, vecAng, "models/player/sniper.mdl", "1.0", "1250", ally));
@@ -189,9 +162,7 @@ methodmap Aetheria < CClotBody
 		
 		*/
 
-		SetVariantInt(2);	
-		AcceptEntityInput(npc.index, "SetBodyGroup");
-		
+		npc.m_nBody = 2;
 		npc.m_flNextMeleeAttack = 0.0;
 		
 		npc.m_iBleedType = BLEEDTYPE_NORMAL;
@@ -217,20 +188,18 @@ methodmap Aetheria < CClotBody
 			RUINA_CUSTOM_MODELS_1
 		};
 
-		int skin = 1;	//1=blue, 0=red
-		SetVariantInt(1);	
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		int skin = npc.GetSkin(ally);
+		npc.m_nSkin = skin;
 		npc.m_iWearable1 = npc.EquipItem("head", Items[0], _, skin);
 		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
 		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
 		npc.m_iWearable6 = npc.EquipItem("head", Items[5], _, skin);
-		npc.m_iWearable7 = npc.EquipItem("head", Items[6]);
+		npc.m_iWeapon 	 = npc.EquipItem("head", Items[6], _, npc.GetSkin());
 
-		SetVariantInt(RUINA_QUINCY_BOW_1);
-		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");	
-			
+		RuinaBaseNpc(npc.m_iWeapon).m_nBody = RUINA_QUINCY_BOW_1;
+
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
@@ -239,8 +208,6 @@ methodmap Aetheria < CClotBody
 
 		return npc;
 	}
-	
-	
 }
 
 
@@ -400,8 +367,6 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
-	if(IsValidEntity(npc.m_iWearable7))
-		RemoveEntity(npc.m_iWearable7);
 }
 static void Aetheria_SelfDefense(Aetheria npc, float gameTime, int Anchor_Id)	//ty artvin
 {
@@ -439,7 +404,7 @@ static void Aetheria_SelfDefense(Aetheria npc, float gameTime, int Anchor_Id)	//
 	{
 		if(IsValidEntity(Anchor_Id))
 		{
-			CClotBody npc2 = view_as<CClotBody>(Anchor_Id);
+			RuinaBaseNpc npc2 = view_as<RuinaBaseNpc>(Anchor_Id);
 			int	target = npc2.m_iTarget;
 
 			if(IsValidEnemy(npc.index,target))

@@ -56,7 +56,7 @@ public void Adiantum_OnMapStart_NPC()
 }
 
 
-methodmap Adiantum < CClotBody
+methodmap Adiantum < RuinaBaseNpc
 {
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -125,7 +125,7 @@ methodmap Adiantum < CClotBody
 		
 		
 		int skin = 5;
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		npc.m_nSkin = skin;
 		
 		npc.m_iWearable1 = npc.EquipItem("head", "models/player/items/medic/medic_zombie.mdl");
 		SetVariantString("1.0");

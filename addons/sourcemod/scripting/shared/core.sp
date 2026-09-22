@@ -211,19 +211,18 @@ enum
 enum	//it appears if I try to make it go above 14 it starts glitching out
 {		
 	RUINA_ICBM 				= (1 << 0),	
-	RUINA_HALO_1 			= (1 << 1),	
-	RUINA_QUINCY_BOW_1 		= (1 << 2),	
-	RUINA_BLADE_1			= (1 << 3),	
-	RUINA_MAGI_GUN_1		= (1 << 4),	
-	RUINA_STAFF_1			= (1 << 5),	
-	RUINA_HAND_CREST_1		= (1 << 6),	
-	RUINA_LAN_SWORD_1		= (1 << 7),	
-	RUINA_EUR_STAFF_1		= (1 << 8),	
-	RUINA_DAGGER_1			= (1 << 9),	
-	RUINA_RADAR_GUN_1		= (1 << 10),
-	RUINA_HEALING_STAFF_1	= (1 << 11),
-	RUINA_W30_HAND_CREST	= (1 << 12),
-	RUINA_IANA_BLADE		= (1 << 13)
+	RUINA_QUINCY_BOW_1 		= (1 << 1),	
+	RUINA_BLADE_1			= (1 << 2),	
+	RUINA_MAGI_GUN_1		= (1 << 3),	
+	RUINA_STAFF_1			= (1 << 4),	
+	RUINA_HAND_CREST_1		= (1 << 5),	
+	RUINA_LAN_SWORD_1		= (1 << 6),	
+	RUINA_EUR_STAFF_1		= (1 << 7),	
+	RUINA_DAGGER_1			= (1 << 8),	
+	RUINA_RADAR_GUN_1		= (1 << 9),
+	RUINA_HEALING_STAFF_1	= (1 << 10),
+	RUINA_W30_HAND_CREST	= (1 << 11),
+	RUINA_IANA_BLADE		= (1 << 12)
 }
 #define RUINA_CUSTOM_MODELS_2	"models/zombie_riot/weapons/ruina_models_2_6_test3.mdl"
 enum

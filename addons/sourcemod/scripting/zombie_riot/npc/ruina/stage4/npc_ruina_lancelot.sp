@@ -201,7 +201,7 @@ methodmap Lancelot < RuinaBaseNpc
 		};
 
 		int skin = npc.GetSkin(ally);	//1=blue, 0=red	
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		npc.m_nSkin = skin;
 		npc.m_iWearable1 = npc.EquipItem("head", Items[0], _, skin);
 		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);

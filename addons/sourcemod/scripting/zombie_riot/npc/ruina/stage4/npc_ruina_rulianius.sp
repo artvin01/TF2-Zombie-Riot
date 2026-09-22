@@ -40,8 +40,6 @@ static const char g_FantasiaSound[][] = {
 	"ambient/machines/thumper_hit.wav",
 };
 
-static int i_damage_taken[MAXENTITIES];
-
 void Rulianius_OnMapStart_NPC()
 {
 	NPCData data;
@@ -64,7 +62,6 @@ static void ClotPrecache()
 	PrecacheSoundArray(g_MeleeAttackSounds);
 	PrecacheSoundArray(g_DefaultMeleeMissSounds);
 	PrecacheSoundArray(g_FantasiaSound);
-	Zero(i_damage_taken);
 	PrecacheModel("models/player/soldier.mdl");
 }
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
@@ -72,38 +69,24 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 	return Rulianius(vecPos, vecAng, team, data);
 }
 static float fl_npc_basespeed;
-methodmap Rulianius < CClotBody
+methodmap Rulianius < RuinaBaseNpc
 {
 	
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
-		
 	}
-	
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
-		
 	}
-	
 	public void PlayDeathSound() {
-	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
 	}
-	
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		
@@ -189,9 +172,8 @@ methodmap Rulianius < CClotBody
 			RUINA_CUSTOM_MODELS_2
 		};	
 		
-		int skin = 1;	//1=blue, 0=red
-		SetVariantInt(1);	
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		int skin = npc.GetSkin(ally);	//1=blue, 0=red
+		npc.m_nSkin = skin;
 		npc.m_iWearable1 = npc.EquipItem("head", Items[0], _, skin);
 		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
@@ -458,7 +440,7 @@ static void ClotThink(int iNPC)
 #define RUINA_RULIANIUS_LOOP_AMT 5
 static int i_projectile_ref[MAXENTITIES][RUINA_RULIANIUS_LOOP_AMT];
 static float fl_ability_timer[MAXENTITIES];
-static void Rulianius_Special(CClotBody npc, int PrimaryThreatIndex)
+static void Rulianius_Special(RuinaBaseNpc npc, int PrimaryThreatIndex)
 {
 	float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 	float Npc_Vec[3]; WorldSpaceCenter(npc.index, Npc_Vec);
@@ -525,7 +507,7 @@ static void Rulianius_Special(CClotBody npc, int PrimaryThreatIndex)
 }
 static Action Rulianius_Ability_Think(int iNPC)
 {
-	CClotBody npc = view_as<CClotBody>(iNPC);
+	RuinaBaseNpc npc = view_as<RuinaBaseNpc>(iNPC);
 	float GameTime = GetGameTime(npc.index);
 
 	if(fl_ability_timer[npc.index] < GameTime)
@@ -582,7 +564,7 @@ static Action Rulianius_Ability_Think(int iNPC)
 }
 static void On_LaserHit(int client, int Target, int damagetype, float damage)
 {
-	i_damage_taken[client] += RoundToFloor(damage*0.5);
+	RuinaBaseNpc(client).m_iDamageStored += RoundToFloor(damage*0.5);
 	Ruina_Add_Mana_Sickness(client, Target, 0.0, 50);
 }
 static void Kill_Ability(int iNPC)
@@ -617,7 +599,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 	{
 		int Max_Health = ReturnEntityMaxHealth(npc.index);
 		fl_ruina_battery_timer[npc.index]=GameTime+5.0;
-		int healing = RoundToFloor(i_damage_taken[npc.index]*0.15);
+		int healing = RoundToFloor(npc.m_iDamageStored*0.15);
 
 		if(healing > RoundToFloor(Max_Health*0.35))
 			healing = RoundToFloor(Max_Health*0.35);
@@ -626,11 +608,11 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			
 		Helia_Healing_Logic(npc.index, healing, 500.0, GameTime, 0.5);
 
-		i_damage_taken[npc.index]=0;
+		npc.m_iDamageStored=0;
 	}
 	else
 	{
-		i_damage_taken[npc.index]+=damage;
+		npc.m_iDamageStored+=damage;
 	}
 
 	if (npc.m_flHeadshotCooldown < GameTime)

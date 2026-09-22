@@ -237,18 +237,15 @@ methodmap Ruliana < RuinaBaseNpc
 		};
 
 		int skin = npc.GetSkin(ally);	//1=blue, 0=red	
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		npc.m_nSkin = skin;
 		npc.m_iWearable1 = npc.EquipItem("head", Items[0], _, skin);
 		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
-		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, npc.GetSkin());
+		npc.m_iWingSlot = npc.EquipItem("head", Items[2], _, npc.GetSkin());
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
-		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, npc.GetSkin());
+		npc.m_iWeapon = npc.EquipItem("head", Items[4], _, npc.GetSkin());
 		npc.m_iWearable6 = npc.EquipItem("head", Items[5], _, skin);
-
-		SetVariantInt(RUINA_REI_LAUNCHER);
-		AcceptEntityInput(npc.m_iWearable5, "SetBodyGroup");
-		SetVariantInt(WINGS_RULIANA|RUINA_GAMER_HEADSET);
-		AcceptEntityInput(npc.m_iWearable3, "SetBodyGroup");
+		RuinaBaseNpc(npc.m_iWeapon).m_nBody = RUINA_REI_LAUNCHER;
+		RuinaBaseNpc(npc.m_iWingSlot).m_nBody = WINGS_RULIANA|RUINA_GAMER_HEADSET;
 
 		b_angered_once[npc.index] = false;
 		
@@ -1024,12 +1021,12 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable1);
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
-	if(IsValidEntity(npc.m_iWearable3))
-		RemoveEntity(npc.m_iWearable3);
+	if(IsValidEntity(npc.m_iWingSlot))
+		RemoveEntity(npc.m_iWingSlot);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
-	if(IsValidEntity(npc.m_iWearable5))
-		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWeapon))
+		RemoveEntity(npc.m_iWeapon);
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
 }

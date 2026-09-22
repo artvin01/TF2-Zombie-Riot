@@ -166,7 +166,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 	return Storm_Weaver(vecPos, vecAng, team, data);
 }
 
-methodmap Storm_Weaver < CClotBody
+methodmap Storm_Weaver < RuinaBaseNpc
 {
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
@@ -356,7 +356,7 @@ static int Storm_Weaver_Create_Tail(Storm_Weaver npc, int follow_ID, int Section
 		//b_ForceCollisionWithProjectile[spawn_index]=true;
 		if(GetTeam(npc.index) != TFTeam_Red)
 			NpcAddedToZombiesLeftCurrently(spawn_index, true);
-		CClotBody tail = view_as<CClotBody>(spawn_index);
+		RuinaBaseNpc tail = view_as<RuinaBaseNpc>(spawn_index);
 		tail.m_flNextRangedAttack = GetGameTime(tail.index)+1.0+(Section/10.0);
 		SetEntProp(spawn_index, Prop_Data, "m_iHealth", Health);
 		SetEntProp(spawn_index, Prop_Data, "m_iMaxHealth", Health);
@@ -406,7 +406,7 @@ void Storm_Weaver_Middle_Movement(Storm_Weaver_Mid npc, float loc[3])
 
 	npc.SetVelocity(vecVel);
 }
-int Storm_Weaver_Return_Health(CClotBody npc)
+int Storm_Weaver_Return_Health(RuinaBaseNpc npc)
 {
 	int section = EntRefToEntIndex(npc.m_iState);
 	if(IsValidEntity(section))
@@ -558,7 +558,7 @@ static int Storm_Weaver_Health(Storm_Weaver npc)
 
 void Storm_Weaver_Share_With_Anchor_Damage(int iNPC, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
 {
-	CClotBody npc = view_as<CClotBody>(iNPC);
+	RuinaBaseNpc npc = view_as<RuinaBaseNpc>(iNPC);
 
 	//CPrintToChatAll("three");
 
@@ -979,7 +979,7 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 }
 void Stellar_Weaver_Share_Damage_With_All(int iNPC, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3])
 {
-	CClotBody npc = view_as<CClotBody>(iNPC);
+	RuinaBaseNpc npc = view_as<RuinaBaseNpc>(iNPC);
 
 	if(i_HexCustomDamageTypes[npc.index] & ZR_DAMAGE_NPC_REFLECT)	//do not.
 		return;

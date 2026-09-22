@@ -74,64 +74,38 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 	return Ruina_Drone(vecPos, vecAng, team);
 }
 
-methodmap Ruina_Drone < CClotBody
+methodmap Ruina_Drone < RuinaBaseNpc
 {
-	
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
-		
-
 	}
-	
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
-		
 	}
-	
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
-		
 	}
-	
 	public void PlayDeathSound() {
-	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
 	}
-	
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-
 	}
 	public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-
 	}
-
 	public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
 	}
-	
 	
 	public Ruina_Drone(float vecPos[3], float vecAng[3], int ally)
 	{
@@ -169,9 +143,9 @@ methodmap Ruina_Drone < CClotBody
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.StartPathing();
 		
-		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");	//claidemor
+		npc.m_iWeapon = npc.EquipItem("head", "models/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");	//claidemor
 		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+		AcceptEntityInput(npc.m_iWeapon, "SetModelScale");
 		
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/dec15_diplomat/dec15_diplomat.mdl");
 		SetVariantString("1.0");
@@ -189,10 +163,9 @@ methodmap Ruina_Drone < CClotBody
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable5, "SetModelScale");
 		
-		int skin = 1;	//1=blue, 0=red
-		SetVariantInt(1);	
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
+		int skin = npc.GetSkin(ally);	//1=blue, 0=red
+		npc.m_nSkin = skin;
+		SetEntProp(npc.m_iWeapon, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
@@ -202,11 +175,7 @@ methodmap Ruina_Drone < CClotBody
 		
 		return npc;
 	}
-	
-	
 }
-
-
 static void ClotThink(int iNPC)
 {
 	Ruina_Drone npc = view_as<Ruina_Drone>(iNPC);
@@ -318,8 +287,8 @@ static void NPC_Death(int entity)
 		
 	if(IsValidEntity(npc.m_iWearable2))
 		RemoveEntity(npc.m_iWearable2);
-	if(IsValidEntity(npc.m_iWearable1))
-		RemoveEntity(npc.m_iWearable1);
+	if(IsValidEntity(npc.m_iWeapon))
+		RemoveEntity(npc.m_iWeapon);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable4))

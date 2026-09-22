@@ -8,11 +8,6 @@ $bodygroup "ruina_projectile"	///Converted
 	blank
 	studio "v1/ruina_projectile.smd"
 }
-$bodygroup "halo_1"				//Converted
-{
-	blank
-	studio "v1/halo_1"
-}
 $bodygroup "quincy_bow"			//Converted
 {
 	blank

@@ -88,7 +88,7 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 static float fl_npc_basespeed;
 
 
-static int Fire_Beacon(CClotBody npc, float vecTarget[3], float Origin[3], float projectile_speed)
+static int Fire_Beacon(RuinaBaseNpc npc, float vecTarget[3], float Origin[3], float projectile_speed)
 {
 	Ruina_Projectiles Projectile;
 
@@ -349,21 +349,16 @@ methodmap Lex < RuinaBaseNpc
 		};
 
 		int skin = npc.GetSkin(ally);	//1=blue, 0=red
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		npc.m_nSkin = skin;
 		npc.m_iWearable1 = npc.EquipItem("head", Items[0], _, skin);
 		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
 		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
-		npc.m_iWearable6 = npc.EquipItemSeperate(Items[5],_,_,1.25,85.0);
 		npc.m_iWearable7 = npc.EquipItem("head", Items[6], _, npc.GetSkin());
 
 		SetVariantInt(RUINA_W30_HAND_CREST);
 		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");
-
-		SetVariantInt(RUINA_HALO_1);
-		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
-		RuinaBaseNpc(npc.m_iWearable6).m_nSkin = npc.GetSkin();
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		

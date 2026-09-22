@@ -35,7 +35,8 @@ float fl_ruina_battery_timeout[MAXENTITIES];
 float fl_ruina_helia_healing_timer[MAXENTITIES];
 
 
-
+static int i_damage_taken[MAXENTITIES];
+static int iWeaponRef[MAXENTITIES];
 static float fl_mana_sickness_timeout[MAXPLAYERS];
 
 float fl_ruina_in_combat_timer[MAXENTITIES];
@@ -195,6 +196,7 @@ void Ruina_Ai_Core_Mapstart()
 	PrecacheSoundArray(g_EnergyChargeSounds);
 
 	Zero(b_ruina_npc);
+	Zero(i_damage_taken);
 
 	Zero(b_ruina_nerf_healing);
 	Zero(fl_master_change_timer);
@@ -216,6 +218,7 @@ void Ruina_Ai_Core_Mapstart()
 	Zero(fl_ruina_battery_timer);
 	Zero(fl_ruina_battery_max);
 	
+	Zero(iWeaponRef);
 	Zero(fl_ruina_shield_timer);
 	Zero(i_shield_effect);
 	Zero(fl_ruina_shield_break_timeout);
@@ -329,16 +332,51 @@ methodmap RuinaBaseNpc < CClotBody
 		}
 		return beamString;
 	}
+	public void SetWeapon(bool state)
+	{
+		if(this.m_iWeapon == INVALID_ENT_REFERENCE)
+			return;
+
+		if(state) 	SetEntityRenderMode(this.m_iWeapon, RENDER_NORMAL);
+		else		SetEntityRenderMode(this.m_iWeapon, RENDER_NONE);
+		
+	}
+	public float[] GetAngles()
+	{
+		float Angles[3];
+		GetEntPropVector(this.index, Prop_Data, "m_angRotation", Angles);	
+		float flPitch = 0.0;
+		int iPitch = this.LookupPoseParameter("body_pitch");
+		if(iPitch >= 0)
+		{
+			flPitch = this.GetPoseParameter(iPitch);
+		}
+
+		flPitch *= -1.0;
+		Angles[0] = flPitch;
+		return Angles;
+	}
+
 	//properties
 	property int m_nSkin
 	{
 		public get()			{ return GetEntProp(this.index, Prop_Send, "m_nSkin"); }
 		public set(int value) 	{ SetEntProp(this.index, Prop_Send, "m_nSkin", value); }
 	}
+	property int m_nBody
+	{
+		public get()			{ return GetEntProp(this.index, Prop_Data, "m_nBody"); }
+		public set(int value) 	{ SetVariantInt(value); AcceptEntityInput(this.index, "SetBodyGroup"); }
+	}
 	property int m_iBeamIndex
 	{
 		public get()			{ return iGetTeamBeamIndex(GetTeam(this.index)); }
 		//public set(int value) 	{ SetEntProp(npc.index, Prop_Send, "m_nSkin", value); }
+	}
+	property int m_iDamageStored
+	{
+		public get()			{ return i_damage_taken[this.index]; }
+		public set(int value) 	{ i_damage_taken[this.index] = value; }
 	}
 	property int m_iWingSlot
 	{
@@ -361,6 +399,54 @@ methodmap RuinaBaseNpc < CClotBody
 			else
 			{
 				i_wingslot[this.index] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
+	property int m_iWeapon
+	{
+		public get()		 
+		{ 
+			int returnint = EntRefToEntIndex(iWeaponRef[this.index]);
+			if(returnint == -1)
+			{
+				return 0;
+			}
+
+			return returnint;
+		}
+		public set(int iInt) 
+		{
+			if(iInt == 0 || iInt == -1 || iInt == INVALID_ENT_REFERENCE)
+			{
+				iWeaponRef[this.index] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				iWeaponRef[this.index] = EntIndexToEntRef(iInt);
+			}
+		}
+	}
+	property int m_iShield
+	{
+		public get()		 
+		{ 
+			int returnint = EntRefToEntIndex(i_shield_effect[this.index]);
+			if(returnint == -1)
+			{
+				return 0;
+			}
+
+			return returnint;
+		}
+		public set(int iInt) 
+		{
+			if(iInt == 0 || iInt == -1 || iInt == INVALID_ENT_REFERENCE)
+			{
+				i_shield_effect[this.index] = INVALID_ENT_REFERENCE;
+			}
+			else
+			{
+				i_shield_effect[this.index] = EntIndexToEntRef(iInt);
 			}
 		}
 	}
@@ -393,7 +479,8 @@ void Ruina_Set_Heirarchy(int client, int type)
 	b_is_battery_buffed[client]=false;
 	b_ruina_allow_teleport[client] = false;
 
-	CClotBody npc = view_as<CClotBody>(client);
+	RuinaBaseNpc npc = view_as<RuinaBaseNpc>(client);
+	npc.m_iDamageStored = 0;
 	npc.m_iTarget=-1;	//set its target as invalid on spawn
 	npc.m_flNextRangedAttack = GetRandomFloat(0.5, 2.5) + GetGameTime();
 	npc.m_flNextMeleeAttack = GetRandomFloat(0.5, 2.5) + GetGameTime();
@@ -503,7 +590,7 @@ void Ruina_Npc_Give_Shield(int client, float strenght, bool ScaleWithPlayersAliv
 static void Ruina_Npc_Shield_Logic(int victim, float &damage, float damageForce[3], float GameTime)
 {
 	//does this npc have shield power?
-	CClotBody npc = view_as<CClotBody>(victim);
+	RuinaBaseNpc npc = view_as<RuinaBaseNpc>(victim);
 	if(npc.m_flArmorCount>0.0)	
 	{
 		Ruina_Update_Shield(victim);
@@ -536,7 +623,7 @@ static void Ruina_Remove_Shield(int client)
 }
 static void Ruina_Update_Shield(int client)
 {
-	CClotBody npc = view_as<CClotBody>(client);
+	RuinaBaseNpc npc = view_as<RuinaBaseNpc>(client);
 
 	int i_shield_entity = EntRefToEntIndex(i_shield_effect[client]);
 
@@ -562,7 +649,7 @@ static void Ruina_Update_Shield(int client)
 }
 static void Ruina_Give_Shield(int client, int alpha)	//just stole this one from artvins vaus shield...
 {
-	CClotBody npc = view_as<CClotBody>(client);
+	RuinaBaseNpc npc = view_as<RuinaBaseNpc>(client);
 	int Shield = npc.EquipItem("", "models/effects/resist_shield/resist_shield.mdl");
 	if(b_IsGiant[client])
 		SetVariantString("1.35");
@@ -583,6 +670,12 @@ static void Ruina_Give_Shield(int client, int alpha)	//just stole this one from 
 
 void Ruina_NPCDeath_Override(int entity)
 {
+	RuinaBaseNpc npc = RuinaBaseNpc(entity);
+	if(IsValidEntity(npc.m_iWeapon))
+		RemoveEntity(npc.m_iWeapon);
+	if(IsValidEntity(npc.m_iWingSlot))
+		RemoveEntity(npc.m_iWingSlot);
+
 	fl_ruina_battery_max[entity] = 0.0;
 
 	b_ruina_npc[entity] = false;
@@ -601,7 +694,7 @@ void Ruina_NPCDeath_Override(int entity)
 }
 int Ruina_Get_Target(int iNPC, float GameTime)
 {
-	CClotBody npc = view_as<CClotBody>(iNPC);
+	RuinaBaseNpc npc = view_as<RuinaBaseNpc>(iNPC);
 	if(npc.m_flGetClosestTargetTime < GameTime)
 	{
 		npc.m_iTarget = GetClosestTarget(npc.index);
@@ -673,7 +766,7 @@ static int GetClosestAnchor(int client)
 }
 static void Ruina_OnTakeDamage_Extra_Logic(int iNPC, float GameTime, float &damage)
 {
-	CClotBody npc = view_as<CClotBody>(iNPC);
+	RuinaBaseNpc npc = view_as<RuinaBaseNpc>(iNPC);
 
 	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 	float Max_Health = float(ReturnEntityMaxHealth(npc.index));
@@ -783,7 +876,7 @@ public void Ruina_Master_Rally(int client, bool rally)
 
 void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 {
-	CClotBody npc = view_as<CClotBody>(iNPC);
+	RuinaBaseNpc npc = view_as<RuinaBaseNpc>(iNPC);
 
 	if(fl_npc_healing_duration[npc.index] > GameTime )	//heal until 50% hp
 	{
@@ -864,7 +957,7 @@ void Ruina_Ai_Override_Core(int iNPC, int &PrimaryThreatIndex, float GameTime)
 		bool b_return = false;
 		if(IsValidEntity(Master_Id_Main))	//get master's target
 		{
-			CClotBody npc2 = view_as<CClotBody>(Master_Id_Main);
+			RuinaBaseNpc npc2 = view_as<RuinaBaseNpc>(Master_Id_Main);
 
 			//we only change targets every so often as to make it so if a player touches the npc the npc will actually attack them and not just ignore them causing infinite body blocking.
 			if(npc.m_flGetClosestTargetTime < GameTime || !IsValidEnemy(npc.index, PrimaryThreatIndex))
@@ -1069,7 +1162,7 @@ void Ruina_Basic_Npc_Logic(int iNPC, int &PrimaryThreatIndex, float GameTime)	//
 		Ruina_Ai_Override_Core(iNPC, PrimaryThreatIndex, GameTime);
 		return;
 	}
-	CClotBody npc = view_as<CClotBody>(iNPC);
+	RuinaBaseNpc npc = view_as<RuinaBaseNpc>(iNPC);
 
 	float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
 				
@@ -1089,7 +1182,7 @@ void Ruina_Basic_Npc_Logic(int iNPC, int &PrimaryThreatIndex, float GameTime)	//
 }
 public void Ruina_Independant_Long_Range_Npc_Logic(int iNPC, int PrimaryThreatIndex, float GameTime, int &Anchor_Id)
 {
-	CClotBody npc = view_as<CClotBody>(iNPC);
+	RuinaBaseNpc npc = view_as<RuinaBaseNpc>(iNPC);
 
 	
 	Anchor_Id = EntRefToEntIndex(i_last_sniper_anchor_id_Ref[npc.index]);
@@ -1369,7 +1462,7 @@ enum struct Ruina_Self_Defense
 
 	void Swing_Melee(Function OnAttack = INVALID_FUNCTION, Function OnSwing = INVALID_FUNCTION)
 	{
-		CClotBody npc = view_as<CClotBody>(this.iNPC);
+		RuinaBaseNpc npc = view_as<RuinaBaseNpc>(this.iNPC);
 
 		if(npc.m_flAttackHappens)
 		{
@@ -1672,7 +1765,7 @@ Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 
 	for(int client = 1; client <= MaxClients; client++)
 	{
-		if(view_as<CClotBody>(client).m_bThisEntityIgnored)
+		if(view_as<RuinaBaseNpc>(client).m_bThisEntityIgnored)
 			continue;
 		
 		if(!IsClientInGame(client))
@@ -1698,7 +1791,7 @@ Action Ruina_Mana_Sickness_Ion(Handle Timer, DataPack data)
 	for(int a; a < i_MaxcountNpcTotal; a++)
 	{
 		int entity = EntRefToEntIndexFast(i_ObjectsNpcsTotal[a]);
-		if(entity != INVALID_ENT_REFERENCE && !view_as<CClotBody>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity))
+		if(entity != INVALID_ENT_REFERENCE && !view_as<RuinaBaseNpc>(entity).m_bThisEntityIgnored && !b_NpcIsInvulnerable[entity] && !b_ThisEntityIgnoredByOtherNpcsAggro[entity] && IsEntityAlive(entity))
 		{
 			if(GetTeam(entity) == Team)
 				continue;
@@ -1809,7 +1902,7 @@ static void Generic_ion_OnHit(int entity, int victim, float damage, int weapon)
 }
 public void Ruina_Add_Battery(int iNPC, float Amt)
 {
-	CClotBody npc = view_as<CClotBody>(iNPC);
+	RuinaBaseNpc npc = view_as<RuinaBaseNpc>(iNPC);
 
 	if(NpcStats_IsEnemySilenced(npc.index))
 		Amt*=0.9;
@@ -1818,7 +1911,7 @@ public void Ruina_Add_Battery(int iNPC, float Amt)
 }
 void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 {
-	CClotBody npc = view_as<CClotBody>(iNPC);
+	RuinaBaseNpc npc = view_as<RuinaBaseNpc>(iNPC);
 	if(fl_npc_healing_duration[npc.index] > GetGameTime(npc.index))
 		return;
 
@@ -1873,7 +1966,7 @@ void Ruina_Runaway_Logic(int iNPC, int PrimaryThreatIndex)
 }
 void Helia_Healing_Logic(int iNPC, int Healing, float Range, float GameTime, float cylce_speed)
 {
-	CClotBody npc = view_as<CClotBody>(iNPC);
+	RuinaBaseNpc npc = view_as<RuinaBaseNpc>(iNPC);
 
 	if(fl_ruina_helia_healing_timer[npc.index]<=GameTime)
 	{	
@@ -1891,7 +1984,7 @@ void Helia_Healing_Logic(int iNPC, int Healing, float Range, float GameTime, flo
 }
 bool Ruina_NerfHealingOnBossesOrHealers(int healer, int healed_target, float &healingammount)
 {
-	CClotBody npc = view_as<CClotBody>(healed_target);
+	RuinaBaseNpc npc = view_as<RuinaBaseNpc>(healed_target);
 
 	float Health = float(GetEntProp(npc.index, Prop_Data, "m_iHealth"));
 	float Max_Health = float(ReturnEntityMaxHealth(npc.index));
@@ -1929,7 +2022,7 @@ bool Ruina_NerfHealingOnBossesOrHealers(int healer, int healed_target, float &he
 }
 bool Lanius_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float Dist_Min, float Dist_Max, float recharge, float dmg = 0.0, float radius = 0.0, Function OnTeleportLaseHit = INVALID_FUNCTION)
 {
-	CClotBody npc = view_as<CClotBody>(iNPC);
+	RuinaBaseNpc npc = view_as<RuinaBaseNpc>(iNPC);
 
 	float flVel[3];
 	GetEntPropVector(PrimaryThreatIndex, Prop_Data, "m_vecAbsVelocity", flVel);
@@ -2053,7 +2146,7 @@ bool Lanius_Teleport_Logic(int iNPC, int PrimaryThreatIndex, float Dist_Min, flo
 }
 void Astria_Teleport_Allies(int iNPC, float Range, int colour[4])
 {
-	CClotBody npc = view_as<CClotBody>(iNPC);
+	RuinaBaseNpc npc = view_as<RuinaBaseNpc>(iNPC);
 
 	float npc_Loc[3]; GetAbsOrigin(npc.index, npc_Loc); npc_Loc[2]+=2.5;	
 	float Thickness = 6.0;
@@ -2063,7 +2156,7 @@ void Astria_Teleport_Allies(int iNPC, float Range, int colour[4])
 }
 static void Astria_Teleportation(int iNPC, int PrimaryThreatIndex)
 {
-	CClotBody npc = view_as<CClotBody>(iNPC);
+	RuinaBaseNpc npc = view_as<RuinaBaseNpc>(iNPC);
 
 	float GameTime = GetGameTime(npc.index);
 
@@ -2187,7 +2280,7 @@ void Ruina_Special_Logic(int iNPC, int Target)
 }
 static void Apply_Master_Buff(int iNPC, int buff_type, float range, float time, float amt, bool Override=false)
 {
-	CClotBody npc = view_as<CClotBody>(iNPC);
+	RuinaBaseNpc npc = view_as<RuinaBaseNpc>(iNPC);
 	
 	if(NpcStats_IsEnemySilenced(npc.index))
 		time*0.75;
@@ -2501,7 +2594,7 @@ enum struct Ruina_Laser_Logic
 		float Angles[3], startPoint[3], Loc[3];
 		WorldSpaceCenter(this.client, startPoint);
 		GetEntPropVector(this.client, Prop_Data, "m_angRotation", Angles);
-		CClotBody npc = view_as<CClotBody>(this.client);
+		RuinaBaseNpc npc = view_as<RuinaBaseNpc>(this.client);
 		int iPitch = npc.LookupPoseParameter("body_pitch");
 				
 		float flPitch = npc.GetPoseParameter(iPitch);

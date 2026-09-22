@@ -62,50 +62,29 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 	return Laz(vecPos, vecAng, team);
 }
 
-methodmap Laz < CClotBody
+methodmap Laz < RuinaBaseNpc
 {	
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
-		
 	}
-	
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
-		
 	}
-	
 	public void PlayDeathSound() {
-	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
 	}
-	
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
 	}
-
 	public void PlayRangedReloadSound() {
 		EmitSoundToAll(g_RangedReloadSound[GetRandomInt(0, sizeof(g_RangedReloadSound) - 1)], this.index, _, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-
 	}
-	
-	
 	public Laz(float vecPos[3], float vecAng[3], int ally)
 	{
 		Laz npc = view_as<Laz>(CClotBody(vecPos, vecAng, "models/player/demo.mdl", "1.0", "1250", ally));
@@ -145,22 +124,21 @@ methodmap Laz < CClotBody
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/pyro/pyro_halloween_gasmask/pyro_halloween_gasmask.mdl");
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/pyro/dec23_masked_loyalty/dec23_masked_loyalty.mdl");	
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/medic/dec18_mighty_mitre/dec18_mighty_mitre.mdl");	
-		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_ai_flamethrower/c_ai_flamethrower.mdl");
+		npc.m_iWeapon = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_ai_flamethrower/c_ai_flamethrower.mdl");
 		npc.m_iWearable6 = npc.EquipItem("head", "models/workshop/player/items/medic/sf14_purity_wings/sf14_purity_wings.mdl");
 
 		
-		int skin = 1;	//1=blue, 0=red
-		SetVariantInt(1 + 8);	
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		int skin = npc.GetSkin(ally);	//1=blue, 0=red
+		npc.m_nSkin = skin;
 		SetEntProp(npc.m_iWearable1, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
-		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
+		SetEntProp(npc.m_iWeapon, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable6, Prop_Send, "m_nSkin", skin);
+		npc.m_nBody = 9;
 				
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
-				
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
 		fl_ruina_battery_timer[npc.index] = 0.0;
@@ -356,7 +334,7 @@ static void ClotThink(int iNPC)
 							g = 200,
 							b = 200;
 
-						int beam = ConnectWithBeamClient(npc.m_iWearable5, Proj, r, g, b, f_start, f_end, amp, LASERBEAM);
+						int beam = ConnectWithBeamClient(npc.m_iWeapon, Proj, r, g, b, f_start, f_end, amp, LASERBEAM);
 						CreateTimer(Laser_Time, Timer_RemoveEntity, EntIndexToEntRef(beam), TIMER_FLAG_NO_MAPCHANGE);
 						i_WandParticle[Proj] = EntIndexToEntRef(beam);
 					}
@@ -506,8 +484,8 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable4))
 		RemoveEntity(npc.m_iWearable4);
-	if(IsValidEntity(npc.m_iWearable5))
-		RemoveEntity(npc.m_iWearable5);
+	if(IsValidEntity(npc.m_iWeapon))
+		RemoveEntity(npc.m_iWeapon);
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
 }

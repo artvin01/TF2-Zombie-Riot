@@ -88,75 +88,46 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 
 static float fl_npc_basespeed;
 
-methodmap Astriana < CClotBody
+methodmap Astriana < RuinaBaseNpc
 {
-	
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
-		
-
 	}
-	
 	public void PlayTeleportSound() {
 		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
-
 	}
-	
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
-		
 	}
-	
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
-			return;
-			
-		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
+			return;		
+		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;	
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
-		
 	}
-	
 	public void PlayDeathSound() {
-	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
 	}
 	
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-
 	}
-	public void PlayMeleeHitSound() {
+		public void PlayMeleeHitSound() {
 		EmitSoundToAll(g_MeleeHitSounds[GetRandomInt(0, sizeof(g_MeleeHitSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-
 	}
-
-	public void PlayMeleeMissSound() {
+		public void PlayMeleeMissSound() {
 		EmitSoundToAll(g_MeleeMissSounds[GetRandomInt(0, sizeof(g_MeleeMissSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
 	}
-
 	public void PlayRangedSound()
 	{
 		EmitSoundToAll(g_RangedAttackSounds[GetRandomInt(0, sizeof(g_RangedAttackSounds) - 1)], this.index, SNDCHAN_AUTO, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
 	}
-
 	public void AdjustWalkCycle()
 	{
 		if(this.IsOnGround())
@@ -176,8 +147,6 @@ methodmap Astriana < CClotBody
 			}
 		}
 	}
-	
-	
 	public Astriana(float vecPos[3], float vecAng[3], int ally)
 	{
 		Astriana npc = view_as<Astriana>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.35", "1250", ally, _,true));
@@ -190,10 +159,7 @@ methodmap Astriana < CClotBody
 		if(iActivity > 0) npc.StartActivity(iActivity);
 
 		npc.m_iChanged_WalkCycle = 1;
-
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
-		
+		npc.m_nBody = 1;
 		
 		/*
 			Arctic mole					"models/workshop/player/items/engineer/dec22_arctic_mole_style1/dec22_arctic_mole_style1.mdl"
@@ -228,21 +194,18 @@ methodmap Astriana < CClotBody
 			RUINA_CUSTOM_MODELS_1
 		};
 
-		int skin = 1;	//1=blue, 0=red
-		SetVariantInt(1);	
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
+		int skin = npc.GetSkin(ally);
+		npc.m_nSkin = skin;
 
 		npc.m_iWearable1 = npc.EquipItem("head", Items[0], _, skin);
 		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
 		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
-		npc.m_iWearable6 = npc.EquipItem("head", Items[5]);
-		//npc.m_iWearable7 = npc.EquipItem("head", Items[6]);	
+		npc.m_iWeapon 	 = npc.EquipItem("head", Items[5], _, npc.GetSkin());
 
-		SetVariantInt(RUINA_RADAR_GUN_1);
-		AcceptEntityInput(npc.m_iWearable6, "SetBodyGroup");
-		
+		RuinaBaseNpc(npc.m_iWeapon).m_nBody = RUINA_RADAR_GUN_1;
+
 		npc.m_flNextTeleport = GetGameTime(npc.index) + 1.0;
 		
 		fl_ruina_battery_max[npc.index] = 1500.0;
@@ -381,8 +344,8 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable5))
 		RemoveEntity(npc.m_iWearable5);
-	if(IsValidEntity(npc.m_iWearable6))
-		RemoveEntity(npc.m_iWearable6);
+	if(IsValidEntity(npc.m_iWeapon))
+		RemoveEntity(npc.m_iWeapon);
 	
 }
 

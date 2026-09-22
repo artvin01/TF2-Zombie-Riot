@@ -74,59 +74,36 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 
 static float fl_npc_basespeed;
 
-methodmap Draedon < CClotBody
+methodmap Draedon < RuinaBaseNpc
 {
-	
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
 		EmitSoundToAll(g_IdleSounds[GetRandomInt(0, sizeof(g_IdleSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(24.0, 48.0);
-		
-
 	}
-	
 	public void PlayTeleportSound() {
 		EmitSoundToAll(g_TeleportSounds[GetRandomInt(0, sizeof(g_TeleportSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME);
-		
-
 	}
-	
 	public void PlayIdleAlertSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
-		
 		EmitSoundToAll(g_IdleAlertedSounds[GetRandomInt(0, sizeof(g_IdleAlertedSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
 		this.m_flNextIdleSound = GetGameTime(this.index) + GetRandomFloat(12.0, 24.0);
-		
-		
 	}
 	
 	public void PlayHurtSound() {
 		if(this.m_flNextHurtSound > GetGameTime(this.index))
 			return;
-			
 		this.m_flNextHurtSound = GetGameTime(this.index) + 0.4;
-		
 		EmitSoundToAll(g_HurtSounds[GetRandomInt(0, sizeof(g_HurtSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
-		
 	}
-	
 	public void PlayDeathSound() {
-	
 		EmitSoundToAll(g_DeathSounds[GetRandomInt(0, sizeof(g_DeathSounds) - 1)], this.index, SNDCHAN_VOICE, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
 	}
-	
 	public void PlayMeleeSound() {
 		EmitSoundToAll(g_MeleeAttackSounds[GetRandomInt(0, sizeof(g_MeleeAttackSounds) - 1)], this.index, SNDCHAN_STATIC, NORMAL_ZOMBIE_SOUNDLEVEL, _, NORMAL_ZOMBIE_VOLUME, RUINA_NPC_PITCH);
-		
-		
 	}
-
 	public void AdjustWalkCycle()
 	{
 		if(this.IsOnGround())
@@ -146,7 +123,6 @@ methodmap Draedon < CClotBody
 			}
 		}
 	}
-	
 	public Draedon(float vecPos[3], float vecAng[3], int ally)
 	{
 		Draedon npc = view_as<Draedon>(CClotBody(vecPos, vecAng, "models/player/scout.mdl", "1.0", "1250", ally));
@@ -170,8 +146,6 @@ methodmap Draedon < CClotBody
 			Isotopic Insulator					"models/workshop/player/items/scout/dec23_isotopic_insulator/dec23_isotopic_insulator.mdl"
 			
 		*/
-
-		
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
@@ -199,22 +173,18 @@ methodmap Draedon < CClotBody
 			"models/weapons/c_models/c_battalion_buffpack/c_batt_buffpack.mdl"
 		};
 
-		int skin = 1;	//1=blue, 0=red
-		SetVariantInt(1);	
-		SetEntProp(npc.index, Prop_Send, "m_nSkin", skin);
-
+		int skin = npc.GetSkin(ally);
+		npc.m_nSkin = skin;
 		npc.m_iWearable1 = npc.EquipItem("head", Items[0], _, skin);
 		npc.m_iWearable2 = npc.EquipItem("head", Items[1], _, skin);
 		npc.m_iWearable3 = npc.EquipItem("head", Items[2], _, skin);
 		npc.m_iWearable4 = npc.EquipItem("head", Items[3], _, skin);
 		npc.m_iWearable5 = npc.EquipItem("head", Items[4], _, skin);
 		npc.m_iWearable6 = npc.EquipItem("head", Items[5], _, skin);
-		npc.m_iWearable7 = npc.EquipItem("head", Items[6], _, skin);	
+		npc.m_iWeapon 	 = npc.EquipItem("head", Items[6], _, npc.GetSkin());	
 		npc.m_iWearable8 = npc.EquipItem("head", Items[7], _, skin);	
 
-		SetVariantInt(RUINA_MAGI_GUN_1);
-		AcceptEntityInput(npc.m_iWearable7, "SetBodyGroup");	
-				
+		RuinaBaseNpc(npc.m_iWeapon).m_nBody = RUINA_MAGI_GUN_1;
 		fl_ruina_battery_max[npc.index] = 250.0;
 		fl_ruina_battery[npc.index] = 0.0;
 		b_ruina_battery_ability_active[npc.index] = false;
@@ -222,8 +192,7 @@ methodmap Draedon < CClotBody
 		
 		Ruina_Set_Heirarchy(npc.index, RUINA_RANGED_NPC);	//is a RANGED npc
 
-		SetVariantInt(1 + 2 + 4 + 8);
-		AcceptEntityInput(npc.index, "SetBodyGroup");
+		npc.m_nBody = (1 | 2 | 4 | 8);
 		
 		return npc;
 	}
@@ -418,8 +387,8 @@ static void NPC_Death(int entity)
 		RemoveEntity(npc.m_iWearable5);
 	if(IsValidEntity(npc.m_iWearable6))
 		RemoveEntity(npc.m_iWearable6);
-	if(IsValidEntity(npc.m_iWearable7))
-		RemoveEntity(npc.m_iWearable7);
+	if(IsValidEntity(npc.m_iWeapon))
+		RemoveEntity(npc.m_iWeapon);
 	if(IsValidEntity(npc.m_iWearable8))
 		RemoveEntity(npc.m_iWearable8);
 	
