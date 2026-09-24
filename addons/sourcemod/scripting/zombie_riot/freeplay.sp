@@ -2303,7 +2303,7 @@ void Freeplay_OnEndWave(int &cash)
 	{
 		CPrintToChatAll("{lime}All enemies are now not Void Afflicted, besides the already void afflicted enemies.");
 		VoidAfflictedBuff = false;
-		VoidAfflictedwave = false;
+		VoidAfflictedWave = false;
 	}
 	
 	cash += CashBonus;
