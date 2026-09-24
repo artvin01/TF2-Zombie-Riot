@@ -2376,7 +2376,7 @@ void Freeplay_SetupStart(bool extra = false)
 
 	int rand = 6;
 	if((++RerollTry) < 12)
-		rand = GetURandomInt() % 73;
+		rand = GetURandomInt() % 72;
 	
 	if(guaranteedraid)
 	{
@@ -3175,19 +3175,6 @@ void Freeplay_SetupStart(bool extra = false)
 				{
 					strcopy(message, sizeof(message), "{red}All enemies now gain the Corrupted Godly Power buff!");
 					SeaLabBuff = true;
-				}
-			}
-			case 72:
-			{
-				if(VoidAfflictedBuff)
-				{
-					strcopy(message, sizeof(message), "{green}All enemies are now not Void Afflicted, besides the already void afflicted enemies.");
-					VoidAfflictedBuff = false;
-				}
-				else
-				{
-					Freeplay_SetupStart();
-					return;
 				}
 			}
 			//case 72:
