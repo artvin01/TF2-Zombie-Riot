@@ -200,7 +200,7 @@ void Freeplay_ResetAll()
 	SpecialistDebuff = 0;
 	squeezerplus = false;
 	FM_Health = 0.4;
-	FM_Damage = 0.65;
+	FM_Damage = 0.6;
 }
 
 int Freeplay_EnemyCount()
