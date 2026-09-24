@@ -199,7 +199,7 @@ void Freeplay_ResetAll()
 	SeaLabBuff = false;
 	SpecialistDebuff = 0;
 	squeezerplus = false;
-	FM_Health = 0.4;
+	FM_Health = 0.35;
 	FM_Damage = 0.6;
 }
 
