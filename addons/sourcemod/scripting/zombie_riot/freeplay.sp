@@ -262,12 +262,12 @@ int Freeplay_GetDangerLevelCurrent(int postWaves)
 	}
 	int DangerLevel = 1;
 
-	float DefaultChance = 0.01 * float(EnemyChance);
-	DefaultChance += 0.004 * float(postWaves - 41);
+	float DefaultChance = 0.015 * float(EnemyChance);
+	DefaultChance += 0.005 * float(postWaves - 41);
 	
-	if(DefaultChance > 0.45)
+	if(DefaultChance > 0.475)
 	{
-		DefaultChance = 0.45;
+		DefaultChance = 0.475;
 	}
 
 	for(int LoopMax = 1; LoopMax < 6 ; LoopMax++)
