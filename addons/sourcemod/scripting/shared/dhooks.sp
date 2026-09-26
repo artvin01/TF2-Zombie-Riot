@@ -1515,10 +1515,10 @@ public MRESReturn DHook_ForceRespawn(int client)
 	}
 #if defined ZR
 
-	if(!IsRespawning && !Arena_CanRespawn(client))
+	if(Arena_Mode() && !IsRespawning && !Arena_CanRespawn(client))
 		return MRES_Supercede;
 	
-	if(!IsRespawning && Dungeon_InRespawnTimer(client))
+	if(Dungeon_Mode() && !IsRespawning && Dungeon_InRespawnTimer(client))
 		return MRES_Supercede;
 
 	DoTutorialStep(client, false);

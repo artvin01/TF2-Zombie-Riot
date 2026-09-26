@@ -1750,6 +1750,7 @@ static void GunsawPropDamagePost(int prop, int victim, float damage, int weapon)
 	{
 		// Victim died, lose prop health
 		int prophp = GetEntProp(prop, Prop_Data, "m_iHealth");
+		int prophp_before = prophp;
 		float propmax = float(ReturnEntityMaxHealth(prop));
 		float totalDamage = MetalSpendOnBuilding[prop] * PropDamage;
 
@@ -1757,11 +1758,16 @@ static void GunsawPropDamagePost(int prop, int victim, float damage, int weapon)
 		
 		// Example: Decrease health by 20% damage dealt
 		prophp -= RoundFloat(propmax * dealt / totalDamage);
+		if(prophp > prophp_before)
+		{
+			prophp = prophp_before;
+		}
 		if(prophp < 1)
 		{
 			ZRRamMulti = -1.0;
 			prophp = 0;
 		}
+		
 		
 		SetEntProp(prop, Prop_Data, "m_iHealth", prophp);
 	}

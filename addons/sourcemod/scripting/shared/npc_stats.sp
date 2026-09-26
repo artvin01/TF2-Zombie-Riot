@@ -10361,7 +10361,7 @@ stock void ResolvePlayerCollisions_Npc(int iNPC, float damage, bool CauseKnockba
 		hullcheckmins = view_as<float>( { -24.0, -24.0, 0.0 } );			
 	}
 	
-	static float flPosEnd[3];
+	float flPosEnd[3];
 	flPosEnd = flMyPos;
 	ScaleVector(vel, 0.1);
 	AddVectors(flMyPos, vel, flPosEnd);
@@ -10420,6 +10420,12 @@ stock void ResolvePlayerCollisions_Npc_Internal(const float startpos[3],const fl
 
 public bool ResolvePlayerCollisionsTrace(int entity,int filterentity)
 {
+	Handle trace = TR_ClipCurrentRayToEntityEx(MASK_ALL, entity);
+	bool didHit = TR_DidHit(trace);
+	delete trace;
+	if (!didHit)
+		return true;
+
 	if(IsValidEnemy(filterentity, entity, true, true)) //Must detect camo.
 	{
 		//This will automatically take care of all the checks, very handy. force it to also target invul enemies.
@@ -10772,6 +10778,12 @@ public bool TraceEntityEnumerator_EnumerateTriggers_StairTrigger(int entity, int
 	if(!GetEntityClassname(entity, classname, sizeof(classname)))
 		return true;
 
+	Handle trace = TR_ClipCurrentRayToEntityEx(MASK_ALL, entity);
+	bool didHit = TR_DidHit(trace);
+	delete trace;
+	if (!didHit)
+		return true;
+		
 	if((!StrContains(classname, "trigger_multiple")))
 	{
 		char name[32];

@@ -1939,6 +1939,12 @@ stock bool Construction_IsBuildingInWay(const float pos1[3],const float mins[3],
 }
 public bool BuildingDetected_Enumerate(int entity, int client)
 {
+	Handle trace = TR_ClipCurrentRayToEntityEx(MASK_ALL, entity);
+	bool didHit = TR_DidHit(trace);
+	delete trace;
+	if (!didHit)
+		return true;
+		
 	if(IsValidEntity(entity) && (i_IsABuilding[entity] || b_ThisWasAnNpc[entity] || IsValidClient(entity)))
 	{
 		BuildingDetected = true;
