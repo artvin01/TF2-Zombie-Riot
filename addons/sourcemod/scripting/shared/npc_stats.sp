@@ -10777,12 +10777,6 @@ public bool TraceEntityEnumerator_EnumerateTriggers_StairTrigger(int entity, int
 	char classname[32];
 	if(!GetEntityClassname(entity, classname, sizeof(classname)))
 		return true;
-
-	Handle trace = TR_ClipCurrentRayToEntityEx(MASK_ALL, entity);
-	bool didHit = TR_DidHit(trace);
-	delete trace;
-	if (!didHit)
-		return true;
 		
 	if((!StrContains(classname, "trigger_multiple")))
 	{
