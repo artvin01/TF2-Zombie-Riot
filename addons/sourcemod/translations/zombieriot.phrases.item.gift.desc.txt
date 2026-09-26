@@ -3466,39 +3466,39 @@
 	}
 	"Zapmarker Desc"
 	{
-		"en"	"An elite melee unit of vesta \n-Throws Zapper's axe to apply teslar debuff to its victim\n-Then rush in with melee that applies heavy bleed"
+		"en"	"An elite melee unit of vesta \n-Throws Zapper's axe to apply teslar debuff to its victim\n-Then rush in with melee that applies heavy bleed \n-(When signalled) axe's debuff is longer and they now apply armor corrosion on melee."
 	}
 	"Resource Collector Desc"
 	{
-		"en"	"A robotic unit designed to collect nearby minerals \n-Fast and applied more damage to buildings"
+		"en"	"A robotic unit designed to collect nearby minerals \n-Fast and applied more damage to buildings \n-(When signalled) moves much faster."
 	}
 	"Vesta Gasleader Desc"
 	{
-		"en"	"Vestan Chemical Platoon leader. \n-applies armor corrosion elemental damage near while his armor is up \n-Pulls out a sword that applies more armor corrosion damage on 3rd hit when its target gets close \n-Becomes stronger as near allies die"
+		"en"	"Vestan Chemical Platoon leader. \n-applies armor corrosion elemental damage near while his armor is up \n-Pulls out a sword that applies more armor corrosion damage on 3rd hit when its target gets close \n-Becomes stronger as near allies die \n-(When signalled) deals double armor corrosion on his attacks, and now appies cripe debuff with his pistol.
 	}
 	"Demolitionist Desc"
 	{
-		"en"	"Heavy melee unit of Vestan Chemical Platoon \n-Swings a massive hammer to create and explosion that deals MASSIVE damage to buildings"
+		"en"	"Heavy melee unit of Vestan Chemical Platoon \n-Swings a massive hammer to create and explosion that deals MASSIVE damage to buildings \n-(When signalled) the explosion deals much more damage.
 	}
 	"Vestan Protector Desc"
 	{
-		"en"	"Carrier unit holding a portable shield \n-spawns with an armor and when it gets closer to its target, deployys an energy shield \n-It's shield carrier will be destroyed if its armor runs out"
+		"en"	"Carrier unit holding a portable shield \n-spawns with an armor and when it gets closer to its target, deployys an energy shield \n-It's shield carrier will be destroyed if its armor runs out \n-(When signalled) energy shield last twice as long.
 	}
 	"Airraider Desc"
 	{
-		"en"	"A surprise assault unit of Vestan Chemical Platoon. \n-Parachutes in when it spawns and fire its rocket while falling down. \n-continues with shotgun when on the ground"
+		"en"	"A surprise assault unit of Vestan Chemical Platoon. \n-Parachutes in when it spawns and fire its rocket while falling down. \n-continues with shotgun when on the ground \n-(When signalled) 
 	}
 	"Vestan Headhunter Desc"
 	{
-		"en"	"An elite sniper of Vestan Chemical Platoon. \n-Appears quietly and deals armor corrsion damage \n-Deals more damage and elemental damage to enemies with support weapon out"
+		"en"	"An elite sniper of Vestan Chemical Platoon. \n-Appears quietly and deals armor corrsion damage \n-Deals more damage and elemental damage to enemies with support weapon out \n-(When signalled) has perfect aim.
 	}
 	"Chemical Specialist Desc"
 	{
-		"en"	"A Chemical expert of Vestan Chemical Platoon \n-Always head all of its elemental damage taken \n-fire bullets coated with armor corrosion liquid"
+		"en"	"A Chemical expert of Vestan Chemical Platoon \n-Always head all of its elemental damage taken \n-fire bullets coated with armor corrosion liquid \n-(When signalled) applies more elemental damage.
 	}
 	"Giant Armored Medibot Desc"
 	{
-		"en"	"A Giant support unit of Vestan Chemical Platoon designed only for defense \n-its patient receives massive buff and never dies unless oneshot \n-It moves very slowly"
+		"en"	"A Giant support unit of Vestan Chemical Platoon designed only for defense \n-its patient receives massive buff and never dies unless oneshot \n-It moves very slowly \n-(When signalled) gives taurine buff to their heal target.
 	}
 	
 	// Trophies goes here.
