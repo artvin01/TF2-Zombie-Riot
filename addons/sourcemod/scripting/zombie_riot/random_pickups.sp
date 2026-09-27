@@ -3,8 +3,8 @@
 #define SUPPLIES_MODEL_RANDOM "models/items/ammopack_large.mdl"
 #define PICKUP_SOUND "playgamesound items/gunpickup2.wav"
 #define DELAY_BETWEEN_PICKUPS 200.0
-#define MAX_PICKUPS_ALLOWED 7
-#define PICKUPS_TIME_LAST 450.0
+#define MAX_PICKUPS_ALLOWED 3
+#define PICKUPS_TIME_LAST 350.0
 
 
 static float DelayBetweenSpawns;
@@ -56,10 +56,6 @@ public Action RandomPickup_DelayBetweenSpawns(Handle timer)
 		return Plugin_Continue;
 
 	float FailCdRegive = 1.0;
-	int MaxCratesGive = CountPlayersOnRed(0);
-	MaxCratesGive *= 2;
-	if(MaxCratesGive >= MAX_PICKUPS_ALLOWED)
-		MaxCratesGive = MAX_PICKUPS_ALLOWED;
 	for(int i; i<MAX_PICKUPS_ALLOWED; i++)
 	{
 		float VectorSave[3];
@@ -130,8 +126,20 @@ bool RandomPickup_SpawnPickup(float VectorGoal[3], float lifetime = PICKUPS_TIME
 		if(Arena_Mode())
 			lifetime *= 0.65;
 		CreateTimer(lifetime, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
+		for(int clients = 1; clients <= MaxClients; clients++)
+			CanUseBuilding[prop][clients] = true;
+		SDKHook(prop, SDKHook_SetTransmit, SetTransmit_RandomPickup);
+
 	}	
 	return true;
+}
+
+public Action SetTransmit_RandomPickup(int entity, int client)
+{
+	if(!CanUseBuilding[entity][client])
+		return Plugin_Handled;
+
+	return Plugin_Continue;
 }
 
 public void RandomPickup_TouchPickup(int entity, int other)
@@ -142,6 +150,10 @@ public void RandomPickup_TouchPickup(int entity, int other)
 	{
 		return;
 	}
+	if(!CanUseBuilding[entity][other])
+		return;
+
+	CanUseBuilding[entity][other] = false;
 	
 	TF2_AddCondition(other, TFCond_SpeedBuffAlly, 1.0);
 	GiveArmorViaPercentage(other, 0.25, 1.0, false);
@@ -204,7 +216,6 @@ public void RandomPickup_TouchPickup(int entity, int other)
 	{
 		CurrentAmmo[other][i] = GetAmmo(other, i);
 	}
-	RemoveEntity(entity);	
 }
 
 static int RandomPickup_GetRandomPlayer()
