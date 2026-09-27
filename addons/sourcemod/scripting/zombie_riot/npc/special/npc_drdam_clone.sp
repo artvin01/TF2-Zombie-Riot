@@ -134,7 +134,7 @@ methodmap DrDamClone < CClotBody
 		
 		
 		npc.StartPathing();
-		npc.m_flSpeed = 330.0;
+		npc.m_flSpeed = 300.0;
 		
 		
 		int skin = 1;
@@ -166,6 +166,8 @@ methodmap DrDamClone < CClotBody
 		return npc;
 	}
 }
+
+static bool ChaosBuffIsAlonedo;
 
 public void DrDamClone_ClotThink(int iNPC)
 {
@@ -218,9 +220,11 @@ public void DrDamClone_ClotThink(int iNPC)
 			SmiteNpcToDeath(npc.index);
 			TE_Particle("ExplosionCore_MidAir", npc_vec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0); //particle that spawns after his death
 			npc.m_flDetonateTime = 0.0;
+			b_ThisEntityIgnored[npc.index] = true;
 		}
 		return;
 	}
+
 	if(npc.m_blPlayHurtAnimation)
 	{
 		npc.AddGesture("ACT_MP_GESTURE_FLINCH_CHEST", false);
@@ -233,6 +237,22 @@ public void DrDamClone_ClotThink(int iNPC)
 		return;
 	}
 	npc.m_flNextThinkTime = GetGameTime(npc.index) + 0.1;
+
+	ChaosBuffIsAlonedo = true;
+	ExpidonsaGroupHeal(npc.index,
+	 120.0,
+	  99,
+	   0.0,
+	   1.0,
+	    false,
+		 DrDam_ApplyAloneBuff ,
+  		  _,
+   		  true);
+
+	if(ChaosBuffIsAlonedo)
+	{
+		ApplyStatusEffect(npc.index, npc.index, "Dimensional Turbulence", 1.0);
+	}
 
 	if(npc.m_flGetClosestTargetTime < GetGameTime(npc.index))
 	{
@@ -249,7 +269,7 @@ public void DrDamClone_ClotThink(int iNPC)
 		float flDistanceToTarget2 = GetVectorDistance(vecTarget, VecSelfNpc);
 		
 		flDistanceToTarget2 /= 300.0;
-		npc.m_flSpeed = (320.0 * flDistanceToTarget2);
+		npc.m_flSpeed = (300.0 * flDistanceToTarget2);
 		if(npc.m_flSpeed > 800.0)
 		{
 			npc.m_flSpeed = 800.0;
@@ -268,8 +288,8 @@ public void DrDamClone_ClotThink(int iNPC)
 			if(IsValidEntity(npc.m_iWearable6))
 				RemoveEntity(npc.m_iWearable6);
 		}
-		if(npc.m_flSpeed < 320.0)
-			npc.m_flSpeed = 320.0;
+		if(npc.m_flSpeed < 300.0)
+			npc.m_flSpeed = 300.0;
 		if(flDistanceToTarget < npc.GetLeadRadius()) 
 		{
 			float vPredictedPos[3];
@@ -321,6 +341,7 @@ public Action DrDamClone_OnTakeDamage(int victim, int &attacker, int &inflictor,
 		npc.m_bisWalking = false;
 		npc.SetActivity("ACT_DIEVIOLENT");
 		npc.m_flSpeed = 0.0;
+		RemoveSpecificBuff(npc.index, "Dimensional Turbulence");
 	}
 	return Plugin_Changed;
 }
@@ -416,5 +437,16 @@ void DrDamCloneSelfDefense(DrDamClone npc, float gameTime, int target, float dis
 				npc.m_flNextMeleeAttack = gameTime + 0.25;
 			}
 		}
+	}
+}
+
+void DrDam_ApplyAloneBuff(int entity, int victim, float &healingammount)
+{
+	if(i_NpcIsABuilding[victim])
+		return;
+
+	if(GetTeam(entity) == GetTeam(victim))
+	{
+		ChaosBuffIsAlonedo = false;
 	}
 }

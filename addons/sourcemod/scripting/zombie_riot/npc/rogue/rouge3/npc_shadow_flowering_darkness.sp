@@ -51,7 +51,7 @@ static const char g_HealSound[][] = {
 };
 
 
-#define SHADOW_BUFF_RANGE 200.0
+#define SHADOW_BUFF_RANGE 300.0
 static int NPCId;
 
 public void Shadow_FloweringDarkness_OnMapStart_NPC()
@@ -228,7 +228,7 @@ methodmap Shadow_FloweringDarkness < CClotBody
 			b_NoKnockbackFromSources[npc.index] = true;
 			b_ThisEntityIgnored[npc.index] = true;
 			b_NoKillFeed[npc.index] = true;
-			npc.m_flCloneSuicide = GetGameTime() + 10.0;
+			npc.m_flCloneSuicide = GetGameTime() + 20.0;
 			npc.m_flDoAnimClone = GetGameTime() + 0.1;
 			npc.m_flAuraBuffAllies = 1.0;
 			npc.m_flCloneSpawnDo = FAR_FUTURE;
@@ -360,7 +360,7 @@ public void Shadow_FloweringDarkness_ClotThink(int iNPC)
 			npc.m_flAirPushHappening = gameTime + 0.5;
 			npc.m_flDoingAnimation = gameTime + 0.5;
 			if(npc.m_flCloneSuicide)
-				npc.m_flNextAirPush = gameTime + 1.5;
+				npc.m_flNextAirPush = gameTime + 5.0;
 				
 		}
 		return;
@@ -440,7 +440,7 @@ public void Shadow_FloweringDarkness_ClotThink(int iNPC)
 				float ProjectileDamage = 400.0;
 				int Projectile = npc.FireParticleRocket(vecTarget, ProjectileDamage , SpeedProjectile , 100.0 , "raygun_projectile_red");
 
-				ProjectileDamage *= 0.35;
+				ProjectileDamage *= 0.25;
 				SpeedProjectile *= 0.65;
 				float vecForward[3];
 
@@ -614,9 +614,9 @@ public void Shadow_FloweringDarkness_ClotThink(int iNPC)
 					
 					npc.m_flAirPushHappening = gameTime + 0.5;
 					npc.m_flDoingAnimation = gameTime + 0.5;
-					npc.m_flNextAirPush = gameTime + 3.0;
+					npc.m_flNextAirPush = gameTime + 5.0;
 					if(npc.m_flCloneSuicide)
-						npc.m_flNextAirPush = gameTime + 1.5;
+						npc.m_flNextAirPush = gameTime + 5.0;
 				}
 			}
 		}

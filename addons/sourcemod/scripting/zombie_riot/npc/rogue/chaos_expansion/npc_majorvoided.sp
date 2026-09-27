@@ -30,6 +30,11 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 
 methodmap MajorVoided < CClotBody
 {
+	property float m_flDetonateTime
+	{
+		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
+		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][0] = TempValueForProperty; }
+	}
 	public void PlayHurtSound()
 	{
 		EmitSoundToAll("mvm/sentrybuster/mvm_sentrybuster_spin.wav", this.index, SNDCHAN_AUTO, BOSS_ZOMBIE_SOUNDLEVEL, _, BOSS_ZOMBIE_VOLUME);
@@ -99,33 +104,24 @@ static void ClotThink(int iNPC)
 	float gameTime = GetGameTime(npc.index);
 	if(npc.Anger)
 	{
-		gameTime = GetGameTime();
+		if(npc.m_flDetonateTime > GetGameTime())
+		{
+			return;
+		}
+		RemoveSpecificBuff(npc.index, "Unstoppable Force");
+		SDKHooks_TakeDamage(npc.index, 0, 0, 1000000.0, DMG_BLAST);
+		SmiteNpcToDeath(npc.index);
+		return;
 	}
+
 	if(npc.m_flNextDelayTime > gameTime)
 		return;
 	
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
 
-	if(!npc.Anger)
-	{
-		if(npc.m_flNextThinkTime > gameTime)
-			return;
-	}
-	else
-	{
-
-		if(npc.m_flNextThinkTime > GetGameTime())
-			return;
-	}
-	
-	if(npc.Anger)
-	{
-		RemoveSpecificBuff(npc.index, "Unstoppable Force");
-		SDKHooks_TakeDamage(npc.index, 0, 0, 1000000.0, DMG_BLAST);
-		SmiteNpcToDeath(npc.index);
+	if(npc.m_flNextThinkTime > gameTime)
 		return;
-	}
 
 	npc.m_flNextThinkTime = gameTime + 0.1;
 
@@ -252,7 +248,7 @@ static Action ClotTakeDamage(int victim, int &attacker, int &inflictor, float &d
 		npc.Anger = true;
 		npc.PlayHurtSound();
 		npc.StopPathing();
-		npc.m_flNextThinkTime = GetGameTime() + 2.0;
+		npc.m_flDetonateTime = GetGameTime() + 2.0;
 
 		func_NPCThink[npc.index] = MajorVoided_DownedThink;
 		

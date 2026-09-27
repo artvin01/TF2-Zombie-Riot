@@ -5644,6 +5644,14 @@
 		"it"	"Costruisci una stazione di cura presso di me"
 		"ko"	"내 위치에 회복 시설을 건설해줘"
 	}
+	"Remove My Basepoint"
+	{
+		"en"	"Remove My Basepoint"
+	}
+	"Removed Basepoint"
+	{
+		"en"	"This builder forgot the base position."
+	}
 	"Set My Basepoint"
 	{
 		"en"	"Set My Basepoint"
