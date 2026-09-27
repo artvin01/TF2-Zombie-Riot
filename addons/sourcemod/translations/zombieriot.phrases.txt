@@ -5647,10 +5647,12 @@
 	"Remove My Basepoint"
 	{
 		"en"	"Remove My Basepoint"
+		"ko"	"거점 포인트 제거"
 	}
 	"Removed Basepoint"
 	{
 		"en"	"This builder forgot the base position."
+		"ko"	"건축가 반시민군이 거점 지점을 잊었습니다."
 	}
 	"Set My Basepoint"
 	{
