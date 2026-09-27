@@ -129,7 +129,7 @@ bool RandomPickup_SpawnPickup(float VectorGoal[3], float lifetime = PICKUPS_TIME
 		for(int clients = 1; clients <= MaxClients; clients++)
 			CanUseBuilding[prop][clients] = true;
 		SDKHook(prop, SDKHook_SetTransmit, SetTransmit_RandomPickup);
-
+		
 	}	
 	return true;
 }
