@@ -3474,31 +3474,38 @@
 	}
 	"Vesta Gasleader Desc"
 	{
-		"en"	"Vestan Chemical Platoon leader. \n-applies armor corrosion elemental damage near while his armor is up \n-Pulls out a sword that applies more armor corrosion damage on 3rd hit when its target gets close \n-Becomes stronger as near allies die \n-(When signalled) deals double armor corrosion on his attacks, and now appies cripe debuff with his pistol.
+		"en"	"Vestan Chemical Platoon leader. \n-applies armor corrosion elemental damage near while his armor is up \n-Pulls out a sword that applies more armor corrosion damage on 3rd hit when its target gets close \n-Becomes stronger as near allies die \n-(When signalled) deals double armor corrosion on his attacks, and now appies cripe debuff with his pistol."
+		"ko"	"베스타 화학대대의 리더.\n-아머를 충전하는 동안, 주변에 신경 손상 원소 피해를 부여합니다.\n-3번째로 검을 맞은 대상에게 더 많은 원소 피해를 부여합니다.\n-주변의 아군이 사망 시, 더 강력해집니다\n-(전령병 버프가 있는 경우) 권총에 피격 시, 신경 쇠약 상태 이상을 받습니다."
 	}
 	"Demolitionist Desc"
 	{
-		"en"	"Heavy melee unit of Vestan Chemical Platoon \n-Swings a massive hammer to create and explosion that deals MASSIVE damage to buildings \n-(When signalled) the explosion deals much more damage.
+		"en"	"Heavy melee unit of Vestan Chemical Platoon \n-Swings a massive hammer to create and explosion that deals MASSIVE damage to buildings \n-(When signalled) the explosion deals much more damage."
+		"ko"	"베스타 화학대대에서 중장비를 운용하는 병력입니다.\n-거대한 망치를 휘둘러 구조물에 막대한 피해를 주는 폭발을 일으킵니다.\n-(전령병 버프가 있는 경우) 폭발 피해가 증가합니다."
 	}
 	"Vestan Protector Desc"
 	{
-		"en"	"Carrier unit holding a portable shield \n-spawns with an armor and when it gets closer to its target, deployys an energy shield \n-It's shield carrier will be destroyed if its armor runs out \n-(When signalled) energy shield last twice as long.
+		"en"	"Carrier unit holding a portable shield \n-spawns with an armor and when it gets closer to its target, deployys an energy shield \n-It's shield carrier will be destroyed if its armor runs out \n-(When signalled) energy shield last twice as long."
+		"ko"	"운반 가능한 보호막을 들고 다니는 병력입니다.\n-아머를 일정량 보유한 채로 등장하며, 적과 근접 시 에너지 보호막을 전개합니다.\n아머가 다 소진되면 보호막이 파괴됩니다.\n-(전령병 버프가 있을 경우) 보호막의 지속 시간이 2배가 됩니다."
 	}
 	"Airraider Desc"
 	{
-		"en"	"A surprise assault unit of Vestan Chemical Platoon. \n-Parachutes in when it spawns and fire its rocket while falling down. \n-continues with shotgun when on the ground \n-(When signalled) 
+		"en"	"A surprise assault unit of Vestan Chemical Platoon. \n-Parachutes in when it spawns and fire its rocket while falling down. \n-continues with shotgun when on the ground \n-(When signalled)."
+		"ko"	"베스타 화학대대의 공습 병력입니다.\n-낙하산을 타고 등장하며, 내려오는 동안 로켓을 발사합니다.\n착지 후에는 산탄총을 사용합니다.\n-(전령병 버프가 있을 경우) 효과 없음."
 	}
 	"Vestan Headhunter Desc"
 	{
-		"en"	"An elite sniper of Vestan Chemical Platoon. \n-Appears quietly and deals armor corrsion damage \n-Deals more damage and elemental damage to enemies with support weapon out \n-(When signalled) has perfect aim.
+		"en"	"An elite sniper of Vestan Chemical Platoon. \n-Appears quietly and deals armor corrsion damage \n-Deals more damage and elemental damage to enemies with support weapon out \n-(When signalled) has perfect aim."
+		"ko"	"베스타 화학대대의 엘리트 저격수입니다.\n-조용히 등장하며, 신경 손상 피해를 가합니다.\n지원 무기를 든 적에게 더 많은 피해와 원소 피해를 가합니다.\n-(전령병 버프가 있을 경우) 공격이 빗나가지 않습니다."
 	}
 	"Chemical Specialist Desc"
 	{
-		"en"	"A Chemical expert of Vestan Chemical Platoon \n-Always head all of its elemental damage taken \n-fire bullets coated with armor corrosion liquid \n-(When signalled) applies more elemental damage.
+		"en"	"A Chemical expert of Vestan Chemical Platoon \n-Always head all of its elemental damage taken \n-fire bullets coated with armor corrosion liquid \n-(When signalled) applies more elemental damage."
+		"ko"	"베스타 화학대대의 화생방 전문가입니다.\n-모든 원소 피해를 무시합니다.\n신경 손상을 부여하는 특별한 탄환을 발사합니다.\n-(전령병 버프가 있을 경우) 가하는 원소 피해가 증가합니다."
 	}
 	"Giant Armored Medibot Desc"
 	{
-		"en"	"A Giant support unit of Vestan Chemical Platoon designed only for defense \n-its patient receives massive buff and never dies unless oneshot \n-It moves very slowly \n-(When signalled) gives taurine buff to their heal target.
+		"en"	"A Giant support unit of Vestan Chemical Platoon designed only for defense \n-its patient receives massive buff and never dies unless oneshot \n-It moves very slowly \n-(When signalled) gives taurine buff to their heal target."
+		"ko"	"베스타 화학대대의 수비를 위해 제작된 거대한 지원 병력입니다.\n-치료 대상은 막대한 버프를 얻고, 매우 높은 피해를 받지 않는 한 죽지 않습니다.\n-이동 속도가 매우 느립니다.\n=(전령병 버프가 있을 경우) 치료 대상에게 타우린 버프를 부여합니다."
 	}
 	
 	// Trophies goes here.
