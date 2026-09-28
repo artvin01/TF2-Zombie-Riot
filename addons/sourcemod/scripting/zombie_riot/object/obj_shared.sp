@@ -1250,6 +1250,7 @@ void DestroyBuildingDo(int entity, bool DontCheckAgain = false)
 		Call_Finish();
 	}
 	//no more hp.
+	VestanAssaultVehicle_ResetObject(entity);
 	SetEntProp(objstats.index, Prop_Data, "m_iHealth", 0);
 	objstats.PlayDeathSound();
 	float VecOrigin[3];

@@ -230,7 +230,7 @@ static void VestanCharger_ClotThink(int iNPC)
 		npc.Anger = false;
 	}
 	fl_ruina_battery[npc.index] = TimeMultiplier;
-	npc.m_flSpeed = (50.0 * TimeMultiplier);
+	npc.m_flSpeed = ((NpcStats_VestanCallToArms(npc.index) ? 70.0 : 50.0) * TimeMultiplier);
 
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
@@ -337,7 +337,7 @@ static void VestanChargerSelfDefense(VestanCharger npc, float gameTime, int targ
 				npc.m_iTarget = Enemy_I_See;
 				npc.PlayMeleeSound();
 				npc.AddGesture("ACT_MP_ATTACK_STAND_SECONDARY");
-						
+				
 				npc.m_flAttackHappens = gameTime + 0.1;
 				npc.m_flDoingAnimation = gameTime + 0.1;
 				npc.m_flNextMeleeAttack = gameTime + 2.4;
