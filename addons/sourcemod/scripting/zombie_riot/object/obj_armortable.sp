@@ -61,10 +61,10 @@ static void ArmorTableTouch(int entity, int target)
 	//pseudo starttouch
 	if(IsIn_HitDetectionCooldown(entity,target))
 	{
-		Set_HitDetectionCooldown(entity, target, GetGameTime() + (GetTickInterval() * 2));
+		Set_HitDetectionCooldown(entity, target, GetGameTime() + (0.1));
 		return;
 	}
-	Set_HitDetectionCooldown(entity, target, GetGameTime() + (GetTickInterval() * 2));
+	Set_HitDetectionCooldown(entity, target, GetGameTime() + (0.1));
 
 	ObjectArmorTable npc = view_as<ObjectArmorTable>(entity);
 	ClotInteract(target, -1, npc);
@@ -102,7 +102,8 @@ static bool ClotInteract(int client, int weapon, ObjectArmorTable npc)
 {
 	if(!ClotCanUse(npc, client))
 	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		if(weapon != -1)
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
 		return true;
 	}
 
@@ -135,7 +136,8 @@ static bool ClotInteract(int client, int weapon, ObjectArmorTable npc)
 
 	if(!GiveArmor)
 	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		if(weapon != -1)
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
 		return true;
 	}
 	int owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
