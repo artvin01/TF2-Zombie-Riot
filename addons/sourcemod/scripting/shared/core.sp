@@ -3252,6 +3252,7 @@ public void OnEntityDestroyed(int entity)
 	{
 		EntityKilled_HitDetectionCooldown(entity);
 		WeaponWeaponAdditionOnRemoved(entity);
+		func_WandOnTouch[entity] = INVALID_FUNCTION;
 		CurrentEntities--;
 
 		if(entity > MaxClients)
