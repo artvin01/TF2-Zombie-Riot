@@ -371,8 +371,7 @@ static Action Blocker_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 			ICANSEEU=true;
 		if(ICANSEEU)
 		{
-			float Cooltime = 7.5;
-			npc.m_flNextRangedAttack = GetGameTime(npc.index) + Cooltime;
+			npc.m_flNextRangedAttack = GetGameTime(npc.index) + (7.5 * (NpcStats_VestanCallToArms(npc.index) ? 0.4 : 1.0));
 			damage = 0.0;
 			npc.PlayDeflectSound();
 			npc.AddGesture("ACT_PUSH_PLAYER");

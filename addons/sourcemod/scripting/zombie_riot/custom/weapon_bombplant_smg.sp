@@ -17,6 +17,7 @@ static int ExploAR_BurstNum[MAXPLAYERS];
 static int ExploAR_OverHit[MAXPLAYERS];
 static int ExploAR_Charging[MAXPLAYERS];
 static int ExploAR_Battery[MAXPLAYERS];
+static int ExploAR_ArmorLevel[MAXPLAYERS];
 
 static float ExploAR_OverHeatDelay[MAXPLAYERS];
 static float ExploAR_HUDDelay[MAXPLAYERS];
@@ -27,6 +28,7 @@ static bool IsExtraDesc_1[MAXPLAYERS] = {false, ...};
 static bool IsExtraDesc_2[MAXPLAYERS] = {false, ...};
 static bool IsExtraDesc_3[MAXPLAYERS] = {false, ...};
 static bool PlayOnlyOneSound[MAXPLAYERS] = {false, ...};
+static bool ExploAR_ArmorPerk[MAXPLAYERS] = {false, ...};
 
 static int g_LaserIndex;
 
@@ -40,6 +42,7 @@ public void ResetMapStartExploARWeapon()
 	PrecacheModel("models/props_farm/vent001.mdl");
 	PrecacheModel("models/weapons/w_models/w_drg_ball.mdl");
 	g_LaserIndex = PrecacheModel(LASERBEAM);
+	Zero(ExploAR_ArmorPerk);
 	Zero(PlayOnlyOneSound);
 	Zero(Can_I_Fire);
 	Zero(ExploAR_OverHit);
@@ -49,6 +52,7 @@ public void ResetMapStartExploARWeapon()
 	Zero(ExploAR_Battery);
 	Zero(ExploAR_AirStrikeActivated);
 	Zero(ExploAR_AirStrikeActivatedMAX);
+	Zero(ExploAR_ArmorLevel);
 }
 
 public void BombAR_M1_Attack(int client, int weapon, bool crit, int slot)
@@ -790,47 +794,62 @@ static void ExploARWork(int client, int weapon, float GameTime)
 		PrintHintText(client,"%s", C_point_hints);
 		ExploAR_HUDDelay[client] = GameTime + 0.5;
 	}
-	if(ExploAR_WeaponPap[client]>2 && ExploAR_OverHit[client]>=100)
+	if(ExploAR_WeaponPap[client]>2)
 	{
-		int MaxArmor = MaxArmorCalculation(Armor_Level[client], client, 0.2);
-		int Armor=Armor_Charge[client];
-		if(Armor < 1)
+		if(i_CurrentEquippedPerk[client] & PERK_STOCKPILE_STOUT)
+			ExploAR_ArmorPerk[client]=true;
+		else if(ExploAR_ArmorPerk[client])
 		{
-			if(dieingstate[client] > 0)
-				ForcePlayerSuicide(client);
+			if(ExploAR_ArmorLevel[client]>0)
+				ExploAR_ArmorLevel[client]--;
+			ExploAR_ArmorPerk[client]=false;
+		}
+		if(ExploAR_ArmorLevel[client] < 0 || ExploAR_ArmorLevel[client] < Armor_Level[client])
+			ExploAR_ArmorLevel[client]=Armor_Level[client];
+		
+		if(ExploAR_OverHit[client]>=100)
+		{
+			int MaxArmor = MaxArmorCalculation(ExploAR_ArmorLevel[client], client, 0.2);
+			int Armor=Armor_Charge[client];
+			if(Armor < 1)
+			{
+				ExploAR_ArmorLevel[client]=0;
+				if(dieingstate[client] > 0)
+					ForcePlayerSuicide(client);
+				else
+				{
+					float Health = float(GetClientHealth(client));
+					SDKHooks_TakeDamage(client, 0, 0, (Health>125.0 ? Health/2.0: Health*3.0), DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
+				}
+			}
 			else
 			{
-				float Health = float(GetClientHealth(client));
-				SDKHooks_TakeDamage(client, 0, 0, (Health>125.0 ? Health/2.0: Health*3.0), DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE);
+				Armor-=MaxArmor;
+				if(Armor<0)
+					Armor=0;
+				Armor_Charge[client]=Armor;
+				if((Attributes_Get(client, Attrib_Armor_AliveMode, 0.0) != 0.0))
+					f_LivingArmorPenalty[client] = GameTime + 8.0;
+				f_Armor_BreakSoundDelay[client] = GameTime + 5.0;	
+				EmitSoundToClient(client, "npc/assassin/ball_zap1.wav", client, SNDCHAN_STATIC, 60, _, 1.0, GetRandomInt(95,105));
 			}
+			float position[3];
+			WorldSpaceCenter(client, position);
+			Explode_Logic_Custom(((float(SDKCall_GetMaxHealth(client))+125.0)*Attributes_Get(weapon, 2, 1.0)), client, client, weapon, position, _, Attributes_Get(weapon, 117, 1.0));
+			DataPack pack_boom = new DataPack();
+			pack_boom.WriteFloat(position[0]);
+			pack_boom.WriteFloat(position[1]);
+			pack_boom.WriteFloat(position[2]);
+			pack_boom.WriteCell(1);
+			RequestFrame(MakeExplosionFrameLater, pack_boom);
+			float fVelocity[3];
+			GetEntPropVector(client, Prop_Data, "m_vecVelocity", fVelocity);
+			fVelocity[2] = 500.0;
+			TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, fVelocity);
+			ResetClipOfWeaponStore(weapon, client, 0);
+			SetEntData(weapon, FindSendPropInfo("CBaseCombatWeapon", "m_iClip1"), 0);
+			ExploAR_OverHit[client]=0;
 		}
-		else
-		{
-			Armor-=MaxArmor;
-			if(Armor<0)
-				Armor=0;
-			Armor_Charge[client]=Armor;
-			if((Attributes_Get(client, Attrib_Armor_AliveMode, 0.0) != 0.0))
-				f_LivingArmorPenalty[client] = GameTime + 8.0;
-			f_Armor_BreakSoundDelay[client] = GameTime + 5.0;	
-			EmitSoundToClient(client, "npc/assassin/ball_zap1.wav", client, SNDCHAN_STATIC, 60, _, 1.0, GetRandomInt(95,105));
-		}
-		float position[3];
-		WorldSpaceCenter(client, position);
-		Explode_Logic_Custom(((float(SDKCall_GetMaxHealth(client))+125.0)*Attributes_Get(weapon, 2, 1.0)), client, client, weapon, position, _, Attributes_Get(weapon, 117, 1.0));
-		DataPack pack_boom = new DataPack();
-		pack_boom.WriteFloat(position[0]);
-		pack_boom.WriteFloat(position[1]);
-		pack_boom.WriteFloat(position[2]);
-		pack_boom.WriteCell(1);
-		RequestFrame(MakeExplosionFrameLater, pack_boom);
-		float fVelocity[3];
-		GetEntPropVector(client, Prop_Data, "m_vecVelocity", fVelocity);
-		fVelocity[2] = 500.0;
-		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, fVelocity);
-		ResetClipOfWeaponStore(weapon, client, 0);
-		SetEntData(weapon, FindSendPropInfo("CBaseCombatWeapon", "m_iClip1"), 0);
-		ExploAR_OverHit[client]=0;
 	}
 }
 

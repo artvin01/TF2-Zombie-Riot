@@ -2747,7 +2747,7 @@ void DeleteAndRefundBuilding(int client, int entity)
 		SetAmmo(client, Ammo_Metal, GetAmmo(client, Ammo_Metal) + MetalReturn);
 		CurrentAmmo[client][3] = GetAmmo(client, 3);
 	}
-
+	VestanAssaultVehicle_ResetObject(entity);
 	RemoveEntity(entity);
 }
 

@@ -14,6 +14,8 @@ static const char g_HornSounds[][] = {
 	"ambient_mp3/mvm_warehouse/car_horn05.mp3"
 };
 
+static int ExcludeObject[MAXENTITIES];
+
 void VestanAssaultVehicle_OnMapStart()
 {
 	NPCData data;
@@ -66,6 +68,11 @@ methodmap VestanAssaultVehicle < CClotBody
 		}
 	}
 
+	property float m_fllongTargetTime
+	{
+		public get()							{ return fl_RangedSpecialDelay[this.index]; }
+		public set(float TempValueForProperty) 	{ fl_RangedSpecialDelay[this.index] = TempValueForProperty; }
+	}
 	property float m_flSpawnTime
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
@@ -327,12 +334,18 @@ public void VestanAssaultVehicle_ClotThink(int iNPC)
 		}
 		else
 		{
-			npc.m_iTarget = GetClosestTarget(npc.index,_,_,_,_,_,_,_,999999.9, true);
+			int GetObject = GetClosestTarget(npc.index,_,_,_,_,_,_,_,999999.9, true, .ExtraValidityFunction=VestanAssaultVehicle_ExcludeObject);
+			npc.m_iTarget = GetObject;
 			b_DoNotChangeTargetTouchNpc[npc.index] = 1;
 			if(npc.m_iTarget < 1)
 			{
 				b_DoNotChangeTargetTouchNpc[npc.index] = 0;
 				npc.m_iTarget = GetClosestTarget(npc.index);
+			}
+			else if(npc.m_iTargetWalkTo != GetObject)
+			{
+				npc.m_iTargetWalkTo = GetObject;
+				npc.m_fllongTargetTime = gameTime + 30.0;
 			}
 			npc.m_flGetClosestTargetTime = gameTime + GetRandomRetargetTime();
 		}
@@ -351,6 +364,8 @@ public void VestanAssaultVehicle_ClotThink(int iNPC)
 		{
 			SetVariantString("spinfast");
 			AcceptEntityInput(npc.m_iWearable1, "SetAnimation");
+			view_as<CClotBody>(npc.m_iWearable1).SetActivity("spinfast");
+			view_as<CClotBody>(npc.m_iWearable1).SetPlaybackRate(6.0);
 			npc.m_iChanged_WalkCycle=2;
 		}
 	}
@@ -358,7 +373,7 @@ public void VestanAssaultVehicle_ClotThink(int iNPC)
 	{
 		if(npc.m_iChanged_WalkCycle!=1)
 		{
-			SetVariantString("idle");
+			SetVariantString("spinfast");
 			AcceptEntityInput(npc.m_iWearable1, "SetAnimation");
 			npc.m_iChanged_WalkCycle=1;
 		}
@@ -368,18 +383,39 @@ public void VestanAssaultVehicle_ClotThink(int iNPC)
 		TimeMultiplier = 1.0;
 		if(npc.m_iChanged_WalkCycle!=0)
 		{
-			SetVariantString("spinslow");
+			SetVariantString("spinfast");
 			AcceptEntityInput(npc.m_iWearable1, "SetAnimation");
+			view_as<CClotBody>(npc.m_iWearable1).SetActivity("spinfast");
+			view_as<CClotBody>(npc.m_iWearable1).SetPlaybackRate(2.0);
 			npc.m_iChanged_WalkCycle=0;
 		}
 	}
 	fl_ruina_battery[npc.index] = TimeMultiplier;
 	npc.m_flSpeed = (npc.m_flStartSpeed * TimeMultiplier * npc.m_flSpeedModify);
 	
+	float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
+	/*Instant Anger Mode*/
+	if(IsValidEnemy(npc.index, npc.m_iTargetWalkTo) && ShouldNpcDealBonusDamage(npc.m_iTargetWalkTo)
+	&& npc.m_fllongTargetTime < gameTime && npc.m_iState != 1)
+	{
+		ExcludeObject[npc.m_iTargetWalkTo]=true;
+		npc.m_iState = 1;
+		npc.m_flGetClosestTargetTime = 0.0;
+		
+		npc.m_flStartSpeed = npc.m_flStartSpeed_ForData;
+		npc.m_flSpeedModify = npc.m_flSpeedModify_ForData;
+		npc.m_flRangedArmor = 0.5;
+		npc.PlayAngerSound();
+		npc.PlayAngerSound();
+		npc.PlayAngerSound();
+		npc.Anger = true;
+		Player_Teleport_Safe(npc.index, VecSelfNpc);
+		Player_Teleport_Safe(npc.index, VecSelfNpc);
+	}
+	
 	if(IsValidEnemy(npc.index, npc.m_iTarget))
 	{
 		float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
-		float VecSelfNpc[3]; WorldSpaceCenter(npc.index, VecSelfNpc);
 		float distance = GetVectorDistance(vecTarget, VecSelfNpc, true);	
 		VestanAssaultVehicle_Work(npc, gameTime, distance);
 		if(distance < npc.GetLeadRadius())
@@ -546,4 +582,16 @@ static void VestanAssaultVehicle_NPCDeath(int entity)
 			}
 		}
 	}
+}
+
+static bool VestanAssaultVehicle_ExcludeObject(int entity, int target)
+{
+	if(ShouldNpcDealBonusDamage(target))
+		return !ExcludeObject[target];
+	return true;
+}
+
+stock void VestanAssaultVehicle_ResetObject(int entity)
+{
+	ExcludeObject[entity]=false;
 }
