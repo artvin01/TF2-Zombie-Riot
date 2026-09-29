@@ -7494,6 +7494,42 @@
 		"it"	"Randomizzatore Base Ospitalità del Sud"
 		"ko"	"랜더마이저 : 남부의 환영 방식 종류"
 	}
+	"Randomizer Lvl 1"
+	{
+		"en"	"Randomizer"
+		"it"	"Randomizzatore"
+		"ko"	"랜더마이저"
+	}
+	"Randomizer Lvl 2"
+	{
+		"en"	"Randomizer"
+		"it"	"Randomizzatore"
+		"ko"	"랜더마이저"
+	}
+	"Randomizer Lvl 3"
+	{
+		"en"	"Randomizer"
+		"it"	"Randomizzatore"
+		"ko"	"랜더마이저"
+	}
+	"Randomizer Lvl 4"
+	{
+		"en"	"Randomizer"
+		"it"	"Randomizzatore"
+		"ko"	"랜더마이저"
+	}
+	"Randomizer Lvl 5"
+	{
+		"en"	"Randomizer"
+		"it"	"Randomizzatore"
+		"ko"	"랜더마이저"
+	}
+	"Randomizer Lvl 6"
+	{
+		"en"	"Randomizer"
+		"it"	"Randomizzatore"
+		"ko"	"랜더마이저"
+	}
 	"???"
 	{
 		"en" "???"
