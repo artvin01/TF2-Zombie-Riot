@@ -389,7 +389,7 @@ static int VestaArtilleristSelfDefense(VestaArtillerist npc, float gameTime, flo
 		npc.FaceTowards(vecTarget, 20000.0);
 		if(!npc.m_flAttackHappenswillhappen)
 		{
-			npc.m_flAttackHappens = gameTime+(npc.m_iState ? npc.m_flInAttackDelay : 0.2);
+			npc.m_flAttackHappens = gameTime+((npc.m_iState ? npc.m_flInAttackDelay : 0.2)*(NpcStats_VestanCallToArms(npc.index) ? 0.5 : 1.0));
 			npc.m_flAttackHappenswillhappen = true;
 		}
 		if(npc.m_flAttackHappenswillhappen && gameTime > npc.m_flAttackHappens)

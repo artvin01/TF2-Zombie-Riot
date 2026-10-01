@@ -1773,6 +1773,14 @@
 		"it"		"Tiratore accurato"
 		"ko"		"정확한 명사수"
 	}
+	"Skull Piercing Rounds"
+	{
+		"en"		"Skull Piercing Rounds"
+	}
+	"Skull Piercing Rounds Desc"
+	{
+		"en"		"-Headshots deal 25％ more damage\n-Snipers no longer flinch when scoping"
+	}
 	"Ammo Coat"
 	{
 		"en"		"Ammo Coat"

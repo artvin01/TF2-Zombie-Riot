@@ -38,9 +38,36 @@ methodmap ObjectArmorTable < ObjectGeneric
 		npc.FuncCanUse = ClotCanUse;
 		npc.FuncShowInteractHud = ClotShowInteractHud;
 		func_NPCInteract[npc.index] = ClotInteract;
+	//	SDKHook(npc.index, SDKHook_StartTouch, ArmorTableTouch);
+		WandProjectile_ApplyFunctionToEntity(npc.index, ArmorTableTouch);
+		//re-use as SDKHook_StartTouch doesnt detect it
 
 		return npc;
 	}
+}
+
+static void ArmorTableTouch(int entity, int target)
+{
+	if(target > MaxClients)
+	{
+		//hits something it shouldnt, ignore entirely.
+		return;
+	}
+	if(b_ThisEntityIgnored[entity] || b_ThisEntityIgnoredBeingCarried[entity])
+		return;
+	if(TeutonType[target] != TEUTON_NONE)
+		return;
+
+	//pseudo starttouch
+	if(IsIn_HitDetectionCooldown(entity,target))
+	{
+		Set_HitDetectionCooldown(entity, target, GetGameTime() + (0.1));
+		return;
+	}
+	Set_HitDetectionCooldown(entity, target, GetGameTime() + (0.1));
+
+	ObjectArmorTable npc = view_as<ObjectArmorTable>(entity);
+	ClotInteract(target, -1, npc);
 }
 
 static bool ClotCanUse(ObjectArmorTable npc, int client)
@@ -75,7 +102,8 @@ static bool ClotInteract(int client, int weapon, ObjectArmorTable npc)
 {
 	if(!ClotCanUse(npc, client))
 	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		if(weapon != -1)
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
 		return true;
 	}
 
@@ -108,12 +136,13 @@ static bool ClotInteract(int client, int weapon, ObjectArmorTable npc)
 
 	if(!GiveArmor)
 	{
-		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		if(weapon != -1)
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
 		return true;
 	}
 	int owner = GetEntPropEnt(npc.index, Prop_Send, "m_hOwnerEntity");
 	Building_GiveRewardsUse(client, owner, 30, true, 0.75, true);
-	GiveArmorViaPercentage(client, 0.2, 1.0);
+	GiveArmorViaPercentage(client, 0.25, 1.0);
 	if(ZR_Get_Modifier() == KITERS_DREAM)
 		ApplyBuildingCollectCooldown(npc.index, client, 65.0);
 	else

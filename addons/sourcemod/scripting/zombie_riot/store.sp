@@ -3970,7 +3970,7 @@ static void MenuPage(int client, int section)
 				continue;
 			}
 
-			if(NPCOnly[client] != 1 && item.GregOnlySell)
+			if(NPCOnly[client] != 1 && item.GregOnlySell && !item.Owned[client])
 			{
 				// Block showing items if only sell
 				continue;
@@ -5135,6 +5135,9 @@ int Store_TryToBuyItem(int client, int index, bool autoLoadout)
 	
 	if (item.Owned[client])
 		return BUY_RESULT_ALREADY_HAS_ITEM;
+
+	if(item.GregOnlySell && !item.NPCSeller) //cannot autobuy hidden items.
+		return BUY_RESULT_FAILURE;
 	
 	int cash = Store_GetPlayerCash(client, false);
 	
