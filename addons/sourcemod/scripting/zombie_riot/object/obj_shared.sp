@@ -726,13 +726,13 @@ static bool ObjectGeneric_ClotThink(ObjectGeneric objstats)
 
 	int owner = GetEntPropEnt(objstats.index, Prop_Send, "m_hOwnerEntity");
 	//force think much slower during peace times
-	if(Dungeon_Mode() && Dungeon_InSetup() && objstats.m_bConstructBuilding && IsPlayerSideBuilding(owner))
+	if(Dungeon_Mode() && Dungeon_InSetup() && objstats.m_bConstructBuilding && IsPlayerSideBuilding(objstats.index, owner))
 	{
 		if(IsDungeonCenterId() != i_NpcInternalId[objstats.index])
 			objstats.m_flNextDelayTime = gameTime + 5.0;
 	}
 
-	if(!IsPlayerSideBuilding(owner))
+	if(!IsPlayerSideBuilding(objstats.index, owner))
 		return false;
 
 	BuildingUpdateTextHud(objstats.index);
@@ -1021,7 +1021,7 @@ int Object_NamedBuildings(int owner = 0, const char[] name)
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
 		int BuildingOwner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-		if(!IsPlayerSideBuilding(BuildingOwner))
+		if(!IsPlayerSideBuilding(entity, BuildingOwner))
 			continue;
 		
 		if(owner == 0 || BuildingOwner == owner)
@@ -1044,7 +1044,7 @@ int Object_SupportBuildings(int owner, int &all = 0)
 	while((entity=FindEntityByClassname(entity, "obj_building")) != -1)
 	{
 		int BuildingOwner = GetEntPropEnt(entity, Prop_Send, "m_hOwnerEntity");
-		if(!IsPlayerSideBuilding(BuildingOwner))
+		if(!IsPlayerSideBuilding(entity, BuildingOwner))
 			continue;
 		
 		static char plugin[64];
@@ -1158,7 +1158,7 @@ Action ObjectGeneric_ClotTakeDamage(int victim, int &attacker, int &inflictor, f
 	}
 	
 	int BuildingOwner = GetEntPropEnt(victim, Prop_Send, "m_hOwnerEntity");
-	if(IsPlayerSideBuilding(BuildingOwner))
+	if(IsPlayerSideBuilding(victim, BuildingOwner))
 	{
 
 		if(Rogue_Mode()) //buildings are refunded alot, so they shouldnt last long.
@@ -1404,7 +1404,7 @@ public void ObjBaseThink(int building)
 	ObjectGeneric objstats = view_as<ObjectGeneric>(building);
 	//Fixes some issues when mounted
 	int BuildingOwner = GetEntPropEnt(building, Prop_Send, "m_hOwnerEntity");
-	if(IsPlayerSideBuilding(BuildingOwner))
+	if(IsPlayerSideBuilding(building, BuildingOwner))
 	{
 		if(IsValidEntity(Building_Mounted[building]))
 		{
@@ -1453,7 +1453,7 @@ void BuildingUpdateTextHud(int building)
 		return;
 	}
 	int BuildingOwner = GetEntPropEnt(building, Prop_Send, "m_hOwnerEntity");
-	if(!IsPlayerSideBuilding(BuildingOwner) || objstats.m_bConstructBuilding)
+	if(!IsPlayerSideBuilding(building, BuildingOwner) || objstats.m_bConstructBuilding)
 	{
 		if(IsValidEntity(objstats.m_iWearable2))
 			RemoveEntity(objstats.m_iWearable2);
@@ -1636,7 +1636,7 @@ public void ObjectGeneric_ClotTakeDamage_Post(int victim, int attacker, int infl
 	if((damagetype & DMG_CRUSH))
 		return;
 	int BuildingOwner = GetEntPropEnt(victim, Prop_Send, "m_hOwnerEntity");
-	if(IsPlayerSideBuilding(BuildingOwner))
+	if(IsPlayerSideBuilding(victim, BuildingOwner))
 	{
 		ObjectGeneric objstats = view_as<ObjectGeneric>(victim);
 		int health = GetEntProp(victim, Prop_Data, "m_iHealth");
@@ -1662,7 +1662,7 @@ public void ObjectGeneric_ClotTakeDamage_Post(int victim, int attacker, int infl
 	}
 	float Damageafter = damage;
 	//only red buildings get 90% dmg res, this is done so its more easy to read the numbers on the buildings.
-	if(IsPlayerSideBuilding(BuildingOwner))
+	if(IsPlayerSideBuilding(victim, BuildingOwner))
 		Damageafter *= 0.1;
 	int dmg = FloatToInt_DamageValue_ObjBuilding(victim, Damageafter);
 	int health = GetEntProp(victim, Prop_Data, "m_iHealth");
@@ -1759,8 +1759,17 @@ public void ObjectGeneric_ClotTakeDamage_Post(int victim, int attacker, int infl
 }
 
 
-bool IsPlayerSideBuilding(int owner)
+bool IsPlayerSideBuilding(int building, int owner)
 {
+	if(!Arena_Mode())
+	{
+		//fix
+		if(GetTeam(building) == TFTeam_Red)
+			return true;
+	}
+	ObjectGeneric objstats = view_as<ObjectGeneric>(building);
+	if(objstats.m_bConstructBuilding)
+		return true;
 	if(owner == -1)
 		return false;
 	if(IsValidClient(owner))
