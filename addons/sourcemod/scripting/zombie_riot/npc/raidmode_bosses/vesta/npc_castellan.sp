@@ -1177,6 +1177,8 @@ static Action Castellan_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 	bool hot;
 	bool magic;
 	bool pierce;
+
+	Castellan_Weapon_Lines(npc, attacker);
 	
 	if((damagetype & DMG_TRUEDAMAGE))
 	{
@@ -1888,10 +1890,10 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 						vAnglesProj[1] += 30.0;
 						
 					case 3:
-						vAnglesProj[3] -= 30.0;
+						vAnglesProj[0] -= 30.0;
 
 					case 4:
-						vAnglesProj[3] += 30.0;
+						vAnglesProj[0] += 30.0;
 				}
 				
 				TeleportEntity(ProjectileWeak, NULL_VECTOR, vAnglesProj, vecForward); 
@@ -1972,10 +1974,11 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 									if(IsInvuln(targetTrace) && !HasSpecificBuff(targetTrace, "Solid Stance"))
 									{
 										Knocked = true;
-										Custom_Knockback(npc.index, targetTrace, 1000.0, true);
+										Custom_Knockback(npc.index, targetTrace, 1200.0, true);
 									}
 									if(!HasSpecificBuff(targetTrace, "Fluid Movement"))
 									{
+										Custom_Knockback(npc.index, targetTrace, 100.0, true);
 										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
 										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
 									}
@@ -2747,4 +2750,55 @@ stock int Vesta_GetPayback(int entity, bool inversion, bool ICantSEE)
 		}
 	}
 	return ClosestTarget;
+}
+
+static void Castellan_Weapon_Lines(Castellan npc, int client)
+{
+	//if(client > MaxClients)
+	if(!IsValidClient(client))
+		return;
+
+	if(b_said_player_weaponline[client])	//only 1 line per player.
+		return;
+
+	//int weapon = GetSteamAccountID(client);
+	int clientid = GetSteamAccountID(client);
+
+	float GameTime = GetGameTime();	//no need to throttle this.
+
+	if(fl_said_player_weaponline_time[npc.index] > GameTime)	//no spamming in chat please!
+		return;
+
+	bool valid = true;
+	char Text_Lines[255];
+
+	Text_Lines = "";
+
+	switch(clientid)
+	{
+		case 120634972: //Bolaven
+		{
+			VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Fuck_You_In_Specific_Talk-1", "%N" ,client); 
+		}
+		case 210432659: //Light
+		{
+			VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Fuck_You_In_Specific_Talk-2", "%N" ,client); 
+		}
+		case 870441113: //Beep_G for the sake of test
+		{
+			VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Fuck_You_In_Specific_Talk-3", "%N" ,client); 
+		}
+
+
+		default:
+		{
+			valid = false;
+		}
+	}
+
+	if(valid)
+	{
+		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
+		b_said_player_weaponline[client] = true;
+	}
 }

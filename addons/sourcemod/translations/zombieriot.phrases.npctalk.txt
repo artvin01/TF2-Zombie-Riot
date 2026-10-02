@@ -1004,4 +1004,19 @@
 	{
 		"en"	"Hello, mercs. I'm back to help out, and this time it's with a void outbreak."
 	}
+	"Castellan_Fuck_You_In_Specific_Talk-1"
+	{
+		"en"	"{crimson}You.{default} I recognize you. You are that bloody merc who ruthlessly trampled our Soldiers! I will glisten my hand with your {crimson}BLOOD{default}"
+		"ko"	"{crimson}너.{default} 난 너가 누군지 안다. 우리 병사들을 무참하게 짓밟고 유린한 그 빌어처먹을 용병 아니냐! 내 손을 너의 {crimson}피{default} 로 적셔주마"
+	}
+	"Castellan_Fuck_You_In_Specific_Talk-2"
+	{
+		"en"	"Wait... I remember who you are. You are the bravest one amongst all to stop our army alone. I salute your Courage... It's a real shame that I can't have you as my man."
+		"ko"	"잠시만... 난 너가 누군지 알꺼 같다. 너는 우리의 군대를 홀로 막아선 용감한 자였지. 난 너의 용기를 경의를 표한다. 내 휘하에 너를 둘수 없다는게 정말 안타까울 따름이지."
+	}
+	"Castellan_Fuck_You_In_Specific_Talk-2"
+	{
+		"en"	"If you declare yourself as {gold}Vestan{default}, help me out instead of fighting me"
+		"ko"	"너가 너 자신을 {gold}베스타인{default} 이라고 칭한다면 나와 싸우지 말고 날 도와라"
+	}
 }
