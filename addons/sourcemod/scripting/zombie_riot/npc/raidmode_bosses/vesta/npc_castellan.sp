@@ -814,6 +814,7 @@ static void Castellan_ClotThink(int iNPC)
 			npc.m_flDoingAnimation = 0.0;
 			npc.m_bFUCKYOU_move_anim=true;
 			func_NPCThink[npc.index] = Castellan_FORVESTA;
+			ApplyStatusEffect(npc.index, npc.index, "Clear Head", 999.0);
 			return;
 		}
 		for(int i; i < i_MaxcountNpcTotal; i++)
@@ -1176,6 +1177,8 @@ static Action Castellan_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 	bool hot;
 	bool magic;
 	bool pierce;
+
+	Castellan_Weapon_Lines(npc, attacker);
 	
 	if((damagetype & DMG_TRUEDAMAGE))
 	{
@@ -1843,17 +1846,40 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 			float ProjectileDamage = 30.0;
 			int Projectile = npc.FireRocket(vecTarget, ProjectileDamage * RaidModeScaling, SpeedProjectile ,"models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl");
 
-			ProjectileDamage *= 0.35;
+			ProjectileDamage *= 0.4;
 			SpeedProjectile *= 0.65;
+
+			float vecForwardHard[3];
+
+			float vAnglesHard[3];
+
+			GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAnglesHard);
+			
+			float vAnglesProjHard[3];
+			GetEntPropVector(Projectile, Prop_Data, "m_angRotation", vAnglesProjHard);
+			vAnglesProjHard[1] = vAnglesHard[1];
+
+			TeleportEntity(Projectile, NULL_VECTOR, vAnglesProjHard, vecForwardHard); 
+
+			Initiate_HomingProjectile(Projectile,
+			npc.index,
+			100.0,			// float lockonAngleMax,
+			8.0,			// float homingaSec,
+			true,			// bool LockOnlyOnce,
+			true,			// bool changeAngles,
+			vAnglesProjHard,
+			npc.m_iTarget);	
+
 			float vecForward[3];
 
 			float vAngles[3];
 			GetEntPropVector(npc.index, Prop_Data, "m_angRotation", vAngles);
 			for(int LoopDo = 1 ; LoopDo <= 4; LoopDo++)
 			{
-				Projectile = npc.FireRocket(vecTarget, ProjectileDamage * RaidModeScaling, SpeedProjectile ,"models/weapons/w_models/w_rocket.mdl");
+				SpeedProjectile *= 0.85;
+				int ProjectileWeak = npc.FireRocket(vecTarget, ProjectileDamage * RaidModeScaling, SpeedProjectile ,"models/weapons/w_models/w_rocket.mdl");
 				float vAnglesProj[3];
-				GetEntPropVector(Projectile, Prop_Data, "m_angRotation", vAnglesProj);
+				GetEntPropVector(ProjectileWeak, Prop_Data, "m_angRotation", vAnglesProj);
 				vAnglesProj[1] = vAngles[1];
 				switch(LoopDo)
 				{
@@ -1864,15 +1890,15 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 						vAnglesProj[1] += 30.0;
 						
 					case 3:
-						vAnglesProj[2] -= 30.0;
+						vAnglesProj[0] -= 30.0;
 
 					case 4:
-						vAnglesProj[2] += 30.0;
+						vAnglesProj[0] += 30.0;
 				}
 				
-				TeleportEntity(Projectile, NULL_VECTOR, vAnglesProj, vecForward); 
+				TeleportEntity(ProjectileWeak, NULL_VECTOR, vAnglesProj, vecForward); 
 
-				Initiate_HomingProjectile(Projectile,
+				Initiate_HomingProjectile(ProjectileWeak,
 				npc.index,
 				70.0,			// float lockonAngleMax,
 				5.0,			// float homingaSec,
@@ -1932,37 +1958,38 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 								float vecHit[3];
 								
 								WorldSpaceCenter(targetTrace, vecHit);
-								float damage = 30.0;
+								float damage = 45.0;
 								if(ShouldNpcDealBonusDamage(targetTrace))
 									damage *= 7.0;
 								damage *= RaidModeScaling;
 								KillFeed_SetKillIcon(npc.index, "fireaxe");
 								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 								bool Knocked = false;
-								float bleeding = damage/187.5;
+								float bleeding = damage/90.0;
 								if(bleeding<4.0)bleeding=4.0;
-								else if(bleeding>10.0)bleeding=10.0;
-								StartBleedingTimer(targetTrace, npc.index, bleeding, 4, -1, DMG_TRUEDAMAGE, 0);
+								else if(bleeding>20.0)bleeding=20.0;
+								StartBleedingTimer(targetTrace, npc.index, bleeding, 8, -1, DMG_TRUEDAMAGE, 0);
 								if(IsValidClient(targetTrace))
 								{
 									if(IsInvuln(targetTrace) && !HasSpecificBuff(targetTrace, "Solid Stance"))
 									{
 										Knocked = true;
-										Custom_Knockback(npc.index, targetTrace, 750.0, true);
+										Custom_Knockback(npc.index, targetTrace, 1200.0, true);
 									}
 									if(!HasSpecificBuff(targetTrace, "Fluid Movement"))
 									{
+										Custom_Knockback(npc.index, targetTrace, 100.0, true);
 										TF2_AddCondition(targetTrace, TFCond_LostFooting, 0.5);
 										TF2_AddCondition(targetTrace, TFCond_AirCurrent, 0.5);
 									}
 								}
 								
 								if(!Knocked && !HasSpecificBuff(targetTrace, "Solid Stance"))
-									Custom_Knockback(npc.index, targetTrace, 375.0, true);
+									Custom_Knockback(npc.index, targetTrace, 500.0, true);
 								if(fl_ruina_battery[npc.index] >= fl_ruina_battery_max[npc.index])
 								{
 									float BombPos[3];
-									float BombDamage = 100.0 * (RaidModeScaling/5.0);
+									float BombDamage = 150.0 * (RaidModeScaling/5.0);
 									if(BombDamage<100.0)BombDamage=100.0;
 									for(int AirRaid; AirRaid < 2; AirRaid++)
 									{
@@ -1981,13 +2008,13 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 						npc.PlayMeleeHitSound();
 				}
 				npc.m_flAttackHappens = 0.0;
-				npc.m_flNextMeleeAttack = gameTime + ((NpcStats_VestanCallToArms(npc.index) ? 0.9 : 1.0)*AttackSpeed);
+				npc.m_flNextMeleeAttack = gameTime + ((NpcStats_VestanCallToArms(npc.index) ? 0.67 : 1.0)*AttackSpeed);
 				npc.m_flAttackHappenswillhappen = false;
 			}
 			else if(npc.m_flAttackHappens_bullshit < gameTime && npc.m_flAttackHappenswillhappen)
 			{
 				npc.m_flAttackHappenswillhappen = false;
-				npc.m_flNextMeleeAttack = gameTime + ((NpcStats_VestanCallToArms(npc.index) ? 0.9 : 1.0)*AttackSpeed);
+				npc.m_flNextMeleeAttack = gameTime + ((NpcStats_VestanCallToArms(npc.index) ? 0.67 : 1.0)*AttackSpeed);
 			}
 		}
 	}
@@ -2115,7 +2142,7 @@ static Action Timer_Rocket_Shot(Handle timer, DataPack pack)
 		vecSelf[2] += 80.0;
 		vecSelf[0] += GetRandomFloat(-20.0, 20.0);
 		vecSelf[1] += GetRandomFloat(-20.0, 20.0);
-		float RocketDamage = 40.0;
+		float RocketDamage = 80.0;
 		int RocketGet = npc.FireRocket(vecSelf, RocketDamage * RaidModeScaling, 50.0 ,"models/buildables/sentry3_rockets.mdl");
 		npc.PlayHomingBadRocketSound();
 		if(IsValidEntity(RocketGet))
@@ -2723,4 +2750,52 @@ stock int Vesta_GetPayback(int entity, bool inversion, bool ICantSEE)
 		}
 	}
 	return ClosestTarget;
+}
+
+static void Castellan_Weapon_Lines(Castellan npc, int client)
+{
+	//if(client > MaxClients)
+	if(!IsValidClient(client))
+		return;
+
+	if(b_said_player_weaponline[client])	//only 1 line per player.
+		return;
+
+	//int weapon = GetSteamAccountID(client);
+	int clientid = GetSteamAccountID(client);
+
+	float GameTime = GetGameTime();	//no need to throttle this.
+
+	if(fl_said_player_weaponline_time[npc.index] > GameTime)	//no spamming in chat please!
+		return;
+
+	bool valid = true;
+
+	switch(clientid)
+	{
+		case 120634972: //Bolaven
+		{
+			VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Fuck_You_In_Specific_Talk-1"); 
+		}
+		case 210432659: //Light
+		{
+			VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Fuck_You_In_Specific_Talk-2"); 
+		}
+		case 870441113: //Beep_G for the sake of test
+		{
+			VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Fuck_You_In_Specific_Talk-3"); 
+		}
+
+
+		default:
+		{
+			valid = false;
+		}
+	}
+
+	if(valid)
+	{
+		fl_said_player_weaponline_time[npc.index] = GameTime + GetRandomFloat(17.0, 26.0);
+		b_said_player_weaponline[client] = true;
+	}
 }
