@@ -2770,23 +2770,20 @@ static void Castellan_Weapon_Lines(Castellan npc, int client)
 		return;
 
 	bool valid = true;
-	char Text_Lines[255];
-
-	Text_Lines = "";
 
 	switch(clientid)
 	{
 		case 120634972: //Bolaven
 		{
-			VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Fuck_You_In_Specific_Talk-1", "%N" ,client); 
+			VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Fuck_You_In_Specific_Talk-1"); 
 		}
 		case 210432659: //Light
 		{
-			VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Fuck_You_In_Specific_Talk-2", "%N" ,client); 
+			VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Fuck_You_In_Specific_Talk-2"); 
 		}
 		case 870441113: //Beep_G for the sake of test
 		{
-			VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Fuck_You_In_Specific_Talk-3", "%N" ,client); 
+			VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Fuck_You_In_Specific_Talk-3"); 
 		}
 
 
