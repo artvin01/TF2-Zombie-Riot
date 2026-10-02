@@ -290,8 +290,8 @@
 	}
 	"Atomizer_Talk_Support-1"
 	{
-		"en"	"Did you really think we would let you sabotage our Radiotower?"
-		"ko"	"우리의 방송탑을 파괴하게 놔둘것 같으냐?"
+		"en"	"Would you kindly remove your existance yourself?"
+		"ko"	"너 존재를 좀 지워줄수 있겠니??"
 	}
 	"Atomizer_Talk_Support-2"
 	{
@@ -1012,7 +1012,7 @@
 	"Castellan_Fuck_You_In_Specific_Talk-2"
 	{
 		"en"	"Wait... I remember who you are. You are the bravest one amongst all to stop our army alone. I salute your Courage... It's a real shame that I can't have you as my man, Light"
-		"ko"	"잠시만... 난 너가 누군지 알꺼 같다. 너는 우리의 군대를 홀로 막아선 용감한 자였지. 난 너의 용기를 경의를 표한다. 내 휘하에 너를 둘수 없다는게 정말 안타까울 따름이지, Light"
+		"ko"	"잠시만... 난 너가 누군지 알 것 같다. 너는 우리의 군대를 홀로 막아선 용감한 자였지. 난 너의 용기에 경의를 표한다. 내 휘하에 너를 둘 수 없다는 게 정말 안타까울 따름이군 Light"
 	}
 	"Castellan_Fuck_You_In_Specific_Talk-3"
 	{
