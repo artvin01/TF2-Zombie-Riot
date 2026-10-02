@@ -1844,7 +1844,7 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 			float ProjectileDamage = 30.0;
 			int Projectile = npc.FireRocket(vecTarget, ProjectileDamage * RaidModeScaling, SpeedProjectile ,"models/weapons/w_models/w_rocket_airstrike/w_rocket_airstrike.mdl");
 
-			ProjectileDamage *= 0.35;
+			ProjectileDamage *= 0.4;
 			SpeedProjectile *= 0.65;
 
 			float vecForwardHard[3];
@@ -1861,7 +1861,7 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 
 			Initiate_HomingProjectile(Projectile,
 			npc.index,
-			90.0,			// float lockonAngleMax,
+			100.0,			// float lockonAngleMax,
 			8.0,			// float homingaSec,
 			true,			// bool LockOnlyOnce,
 			true,			// bool changeAngles,
@@ -1888,10 +1888,10 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 						vAnglesProj[1] += 30.0;
 						
 					case 3:
-						vAnglesProj[2] -= 30.0;
+						vAnglesProj[3] -= 30.0;
 
 					case 4:
-						vAnglesProj[2] += 30.0;
+						vAnglesProj[3] += 30.0;
 				}
 				
 				TeleportEntity(ProjectileWeak, NULL_VECTOR, vAnglesProj, vecForward); 
