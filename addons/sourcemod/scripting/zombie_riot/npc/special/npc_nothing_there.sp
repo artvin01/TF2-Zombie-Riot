@@ -69,6 +69,15 @@ bool GetNTBuff(int client)
 
 	return false;
 }
+bool NTReduceDowns()
+{
+	if(IsValidEntity(RaidBossActive))
+	{
+		if(i_NpcInternalId[EntRefToEntIndex(RaidBossActive)] == NPCID)
+			return true;
+	}
+	return false;
+}
 
 static void ClotPrecache()
 {
@@ -368,6 +377,9 @@ public void Nothing_There_NPCDeath(int entity)
 		SPrintToChatAll("%t: {crimson}%t","Unlocked", "E.G.O. Mimicry Shell");
 	}
 	RaidTimerAlert = true;
+
+	//revive force
+	ReviveAll(.IsSetupRevive = true);
 }
 
 void Nothing_ThereSelfDefense(Nothing_There npc, float gameTime, float distance)
