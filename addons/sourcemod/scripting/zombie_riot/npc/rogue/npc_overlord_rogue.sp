@@ -255,7 +255,7 @@ methodmap OverlordRogue < CClotBody
 		{
 			b_thisNpcIsARaid[npc.index] = true;
 			npc.m_flNextDelayTime = GetGameTime(npc.index) + 2.0;
-			RaidModeTime = GetGameTime() + 500.0;
+			RaidModeTime = GetGameTime() + 300.0;
 		}
 
 		GiveNpcOutLineLastOrBoss(npc.index, true);
