@@ -663,6 +663,7 @@ public void Red_Mist_OnTakeDamage_Take(int victim, int &attacker, int &inflictor
 					float CounterDamage = 65.0;
 					CounterDamage *= WeaponDamageAttributeMultipliers(equipped_weapon,_,victim);
 					CounterDamage *= 0.5; //1-1 swing damage is too strong
+					CounterDamage *= 0.5; //1-1 swing damage is too strong
 					if(b_WeaponAttackSpeedModified[equipped_weapon] == REDMIST_STRONG_SWING)
 					{
 						//inside final swing logic
@@ -690,7 +691,7 @@ public void Red_Mist_OnTakeDamage_Take(int victim, int &attacker, int &inflictor
 					pack.WriteFloat(Entity_Position[2]);
 					pack.WriteCell(ZR_DAMAGE_REFLECT_LOGIC);
 					RequestFrame(CauseDamageLaterSDKHooks_Takedamage, pack);
-					damage *= 0.5;
+					damage *= 0.6;
 					
 					int Colour[3];
 					int r = 255; //reeedd.
@@ -714,7 +715,7 @@ public void Red_Mist_OnTakeDamage_Take(int victim, int &attacker, int &inflictor
 					EmitCustomToAll(COUNTER_SOUND_HIT, victim, _, 70, _, 0.6, 100);
 
 					counter_dice_amount[victim] -= 1;
-					AddEgoEnergy(victim, 3);
+					AddEgoEnergy(victim, 2);
 				}
 				if(counter_dice_amount[victim] != 0)
 					CounterRefresh[victim] = GetGameTime() + 15.0;
