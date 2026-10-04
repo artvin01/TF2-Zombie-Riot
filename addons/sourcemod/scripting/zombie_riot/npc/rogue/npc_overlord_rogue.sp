@@ -104,6 +104,12 @@ methodmap OverlordRogue < CClotBody
 		public get()							{ return b_FlamerToggled[this.index]; }
 		public set(bool TempValueForProperty) 	{ b_FlamerToggled[this.index] = TempValueForProperty; }
 	}
+
+	property bool m_bUmbralIncursion
+	{
+		public get()							{ return b_FlamerToggled[this.index]; }
+		public set(bool TempValueForProperty) 	{ b_FlamerToggled[this.index] = TempValueForProperty; }
+	}
 	
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -210,6 +216,7 @@ methodmap OverlordRogue < CClotBody
 		bool final = StrContains(data, "final_item") != -1;
 		bool final2 = StrContains(data, "music_do") != -1;
 		npc.m_bBossRushDuo = StrContains(data, "bossrush_duo") != -1;
+		npc.m_bUmbralIncursion = StrContains(data, "umbral") != -1;
 		
 		if(Rogue_HasNamedArtifact("Ascension Stack"))
 			final = false;
@@ -426,7 +433,7 @@ public void OverlordRogue_ClotThink(int iNPC)
 				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 				
 				// Nerf the burn on boss rush
-				if (npc.m_bBossRushDuo)
+				if (npc.m_bBossRushDuo || npc.m_bUmbralIncursion)
 				{
 					if (Can_I_See_Enemy(npc.index, PrimaryThreatIndex))
 						NPC_Ignite(PrimaryThreatIndex, npc.index,8.0, -1, 20.5);
