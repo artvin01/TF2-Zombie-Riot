@@ -426,7 +426,7 @@ public void Shadow_FloweringDarkness_ClotThink(int iNPC)
 		{
 			npc.m_flAirPushHappening = 0.0;
 			if(npc.m_flCloneSuicide)
-				npc.m_flDoAnimClone = GetGameTime() + 1.0;
+				npc.m_flDoAnimClone = GetGameTime() + 3.0;
 			
 			if(IsValidEnemy(npc.index, npc.m_iTarget))
 			{
@@ -471,7 +471,7 @@ public void Shadow_FloweringDarkness_ClotThink(int iNPC)
 					Initiate_HomingProjectile(Projectile,
 					npc.index,
 					9999.0,			// float lockonAngleMax,
-					13.0,			// float homingaSec,
+					11.0,			// float homingaSec,
 					false,			// bool LockOnlyOnce,
 					true,			// bool changeAngles,
 					vAnglesProj,
