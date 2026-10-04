@@ -429,7 +429,7 @@ public void OverlordRogue_ClotThink(int iNPC)
 				if (npc.m_bBossRushDuo)
 				{
 					if (Can_I_See_Enemy(npc.index, PrimaryThreatIndex))
-						NPC_Ignite(PrimaryThreatIndex, npc.index,8.0, -1, 20.5 * 0.75);
+						NPC_Ignite(PrimaryThreatIndex, npc.index,8.0, -1, 20.5);
 				}
 				else
 				{
