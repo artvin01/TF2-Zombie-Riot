@@ -8190,4 +8190,49 @@
 		"en"	"Warm-up Vivithorn"
 		"ko"	"몸풀기 중인 비비쏜"
 	}
+	"Randomizer Lvl 1"
+	{
+		"en"	"Randomizer"
+		"it"	"Randomizzatore"
+		"ko"	"랜더마이저"
+	}
+	"Randomizer Lvl 2"
+	{
+		"en"	"Randomizer"
+		"it"	"Randomizzatore"
+		"ko"	"랜더마이저"
+	}
+	"Randomizer Lvl 3"
+	{
+		"en"	"Randomizer"
+		"it"	"Randomizzatore"
+		"ko"	"랜더마이저"
+	}
+	"Randomizer Lvl 4"
+	{
+		"en"	"Randomizer"
+		"it"	"Randomizzatore"
+		"ko"	"랜더마이저"
+	}
+	"Randomizer Lvl 5"
+	{
+		"en"	"Randomizer"
+		"it"	"Randomizzatore"
+		"ko"	"랜더마이저"
+	}
+	"Randomizer Lvl 6"
+	{
+		"en"	"Randomizer"
+		"it"	"Randomizzatore"
+		"ko"	"랜더마이저"
+	}
+	"Cruel Grigori Reanimation"
+	{
+		"en" 		"Father Grigori"
+		"ru" 		"Отец Григорий"
+		"pt"		"Senhor Grigori"
+		"nl"		"Vader Grigori"
+		"it"		"Padre Grigori"
+		"ko" 		"그리고리 신부"
+	}
 }
