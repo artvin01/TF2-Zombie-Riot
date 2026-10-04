@@ -138,7 +138,7 @@ methodmap XenoLabSecurity < CClotBody
 	
 	public XenoLabSecurity(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		XenoLabSecurity npc = view_as<XenoLabSecurity>(CClotBody(vecPos, vecAng, SECURITY_MODEL, "1.75", "125000", ally, false, true));
+		XenoLabSecurity npc = view_as<XenoLabSecurity>(CClotBody(vecPos, vecAng, SECURITY_MODEL, "1.70", "125000", ally, false, true));
 		// 125000 HP - Super boss tier
 		
 		i_NpcWeight[npc.index] = 6; 
