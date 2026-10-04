@@ -455,7 +455,7 @@ void Security_InfectionHit(int entity, int victim, float damage, int weapon)
 		
 		// stronger infection in enraged mode aka lab version only
 		int tickCount = (npc.m_bIsLabVersion && npc.Anger) ? 15 : 10;
-		float tickDamage = (npc.m_bIsLabVersion && npc.Anger) ? 120.0 : 80.0;
+		float tickDamage = (npc.m_bIsLabVersion && npc.Anger) ? 120.0 : 100.0;
 		
 		StartBleedingTimer(victim, entity, tickDamage, tickCount, -1, DMG_SLASH, 0, 1);
 		
