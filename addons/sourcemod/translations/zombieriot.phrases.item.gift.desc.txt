@@ -3942,7 +3942,7 @@
 	}
 	"Dropped Secret Letter Desc"
 	{
-		"en"		"Dropped on the floor after beating Blitz’s army. \nWritten on it is someone pleading for help from this machine? \nAnd it’s signed by someone named Karlas?"
+		"en"		"Dropped on the floor after fending off Blitz’s army. \nWritten on it is someone pleading for help from this machine? \nAnd it’s signed by someone named Karlas?"
 		"ko"		"블리츠크리그의 군단을 막아낸 후 바닥에서 발견했습니다.\n이 기계에게서 구해달라고 쓰여져있는데...\n''카를라스''란 인물의 서명이 있군요?"
 	}
 	"Xeno Virus Sample"
@@ -3952,7 +3952,7 @@
 	}
 	"Xeno Virus Sample Desc"
 	{
-		"en"		"A sample of the Xeno virus after we beat them in Xeno Survival. \nMaybe this will help us find the source of the infection."
+		"en"		"A while after the Xeno army left victorius, We find the aftermass of their battle. "
 		"ko"		"제노 위협을 몰아낸 후 얻은 제노 바이러스의 샘플입니다.\n감염의 근원을 찾아내는데 도움이 될 수 있을 것 같습니다."
 	}
 	"Son of Osiris's Gift"
