@@ -1194,7 +1194,7 @@ int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float 
 								Proj_Damage *= 0.1;
 								NPC_Ignite(targetTrace, npc.index,2.5, -1, Proj_Damage);
 							}			
-							//else if(i_RaidGrantExtra[npc.index] = 5)
+							//else if(i_RaidGrantExtra[npc.index] == 5)
 							//{
 								//int ChaosDamage = 150;
 								//if(NpcStats_IsEnemySilenced(npc.index))
@@ -1305,7 +1305,7 @@ public void TheMessenger_Rocket_Particle_StartTouch(int entity, int target)
 			else
 				NPC_Ignite(target, owner,2.5, -1, DamageDeal * 0.2);
 		}
-		//if(i_RaidGrantExtra[owner] = 5)
+		//if(i_RaidGrantExtra[owner] == 5)
 		//{
 			//if(i_NpcInternalId[owner] == NPCId)
 				//NPC_Ignite(target, owner,2.5, -1, DamageDeal * 0.1);
