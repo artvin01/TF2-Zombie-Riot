@@ -3357,12 +3357,6 @@
 		"ko"		"지베리아 게릴라의 지원이 도착했습니다."
 		"it"		"I Guerriglieri Ziberiani sono qui per aiutare."
 	}
-	"Vesta_Survival_Bob_Message"
-	{
-		"en"		"Bob the First and his army found us and decided to help us fight the Outpost. Bob needs our help after we're finished here. He hopes that the Vestans started this....."
-		"ko"		"밥 1세와 그의 군대가 우리를 발견했으며, 전초기지와의 전투를 돕기로 결정합니다.\n이곳의 일이 끝나면 밥이 우리의 도움을 필요로 할 것입니다.\n그가 베스타인들이 먼저 이 상황을 시작했길 바라는군요..."
-		"it"		"I Guerriglieri Ziberiani sono qui per aiutare."
-	}
 	"RadioTower_here_Message"
 	{
 		"en"		"Radiotower is here, Prepare."
@@ -3384,11 +3378,6 @@
 	{
 		"en"		"Sensal has finally reached us to defeat this void outbreak."
 		"ko"		"센살이 공허 재앙을 막기 위해 드디어 당신에게 합류합니다."
-	}
-	"Umbral_Outbreak_Help_Message"
-	{
-		"en"		"There is no help in sight. Are we really going to die from this outbreak?"
-		"ko"		"아무런 도움의 손길도 보이지 않습니다. 정말로 이 재앙 속에서 죽게 될 운명일까요?"
 	}
 	"Silvester Shares His Power"
 	{
@@ -4864,7 +4853,7 @@
 	}
 	"Alternative Desc"
 	{
-		"en"	"Blitzkrieg sends his army to attack you. Blitz itself does not see you worthy enough to fight it."
+		"en"	"While the main mercs fight Infected Silvester. Blitzkrieg sends his army to attack all mercenary groups, includin the secondary mercs. Blitz itself is killing another group of mercs."
 		"ru"	"Блицкриг посылает свою армию, чтобы напасть на вас. Сам Блиц не считает вас достойным, чтобы сразиться с ним."
 		"fr"	"Une tournure sur le mode classique aves des nouveaux ennemis mystérieux!"
 		"chi"	"经典模式，但出现了掌握魔法的心敌人…"
@@ -4886,7 +4875,7 @@
 	}
 	"Xeno Desc"
 	{
-		"en"	"After defeating Blitzkrieg, we start seeing an infection we last saw in Rogue 1, the Xeno infection. It seems to be mutating their victims with new abilities! We need to take this out before it gets bad."
+		"en"	"In the first hour of Xeno's release. Unluckily this group of mercs was one of the first to encounter it."
 		"fr"	"Les ennemis sont infectés avec l'infection Xéno, et reçoivent de nouvelles abilités!"
 		"chi"	"外界感染到来，僵尸们的变异也更加严重了。"
 		"it"	"L'infezione Xeno è arrivata, mutando i nemici con nuove abilità!"
