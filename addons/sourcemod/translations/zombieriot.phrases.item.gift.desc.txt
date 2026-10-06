@@ -3952,7 +3952,7 @@
 	}
 	"Xeno Virus Sample Desc"
 	{
-		"en"		"A while after the Xeno army left victorius, We find the aftermass of their battle. \nCorpses of xeno infecteds and other mercs lay across a ruined camp."
+		"en"		"A while after the Xeno army left victorious, we find the aftermath of their battle. \nCorpses of Xeno infecteds and other mercs lay across a ruined camp. \nBob the Second takes a piece of the infected's flesh. \nHe then tells us we need to get rid of this infection fast!"
 		"ko"		"제노 위협을 몰아낸 후 얻은 제노 바이러스의 샘플입니다.\n감염의 근원을 찾아내는데 도움이 될 수 있을 것 같습니다."
 	}
 	"Son of Osiris's Gift"
@@ -3962,7 +3962,7 @@
 	}
 	"Son of Osiris's Gift Desc"
 	{
-		"en"		"Osiris gives us this for helping him and the rest of Alaxios’s army train. \nIt’s a book on how to become a Brawler…"
+		"en"		"Osiris gives us this for helping him and the rest of Alaxios’s army train. \nIt’s a book on how to become a Brawler…… \nThanks, Osiris…"
 		"ko"		"오시리스가 남은 알락시오스의 군단과 그의 훈련을 도운 보답으로 이것을 주었습니다.\n어떻게 난투꾼이 되는지에 대해 쓰여져있는 책이군요..."
 	}
 	"Broken Expidonsan Tech"
@@ -3972,7 +3972,7 @@
 	}
 	"Broken Expidonsan Tech Desc"
 	{
-		"en"		"As we're heading to sensal's base one of us accidentally steps on this, breaking it. \nWe think its sensals tech so we bring it with us. \nWe are aware of the mercs who got killed by a group of Expidonsans."
+		"en"		"As we're heading to the Expidonsan small base, one of us accidentally steps on this, breaking it. \nWe think it's Sensal's tech, so we bring it with us. \nWe are unaware of the mercs who got killed by a rogue Expidonsan group."
 		"ko"		"정예 이탈자 엑스피돈사인들 중 하나에게서 떨어져 나온 것입니다.\n보아하니 센살의 기술력보다 더욱 강력한 것 같군요. 최소한 보이는 것으로는요."
 	}
 	"Almina's Last Hope..."
@@ -3992,7 +3992,7 @@
 	}
 	"Alminan Badge of Honor Desc"
 	{
-		"en"		"Amphi gives you this for all you have done for Almina, \ndating back to before you were employed by Bob the Second."
+		"en"		"Amphi gives us these for all we've done for Almina. Dating back to before you were employed by Bob the Second. \nShe tells us to make sure to give the main mercs their badge."
 		"ko"		"암피가 당신이 알미나를 위해 행한 모든 것에 대한 감사로 이것을 주었습니다.\n당신이 밥 2세에게 고용되기 전의 날짜까지 거슬러 올라가네요."
 	}
 	"Collector's Backpack"
@@ -4022,7 +4022,7 @@
 	}
 	"Major Voided’s Hat Desc"
 	{
-		"en"		"Zeina gives us this after on of our Umbral Incursion runs. She says she got it from encountering a Voided Major Steam while saving a group of mercs from a void outbreak."
+		"en"		"Zeina gives us this after one of our Umbral Incursion runs. \nShe says she got it from encountering Voided Major Steams while saving a group of mercs from a void outbreak."
 		"ko"		"어떻게인지 몰라도 폭발 이후에도 멀쩡하게 남아있습니다.\n좀 크긴 하지만 쓸 수는 있네요."
 	}
 	"Avangard's Processing Core-B"
@@ -4032,7 +4032,7 @@
 	}
 	"Avangard's Processing Core-B Desc"
 	{
-		"en"		"As we head to meet up with Bob the First do deal with chaos problems, We hear a large explosion at a Vestan outpost. from the sky this lands infront of us, and we take it with us."
+		"en"		"As we head to meet up with Bob the First to deal with chaos problems, we hear a large explosion at a Vestan outpost. From the sky, this drops down in front of us, and we take it with us. Maybe I'll have some use for it"
 		"ko"		"베스타 전초기지의 방송탑을 파괴한 후, 땅에 널부러진 병사들 사이에서 발견했습니다.\n쓰러뜨린 아방가르드 중 하나에게서 떨어져 나온 것 같습니다."
 	}
 	"Ancient Demon Horn"
@@ -4042,17 +4042,17 @@
 	}
 	"Ancient Demon Horn Desc"
 	{
-		"en"		"Broken off an Ancient Demon we killed. \nWe have no idea what to use it for…"
+		"en"		"Broken off an Ancient Demon we killed. \nWe bring it back with us to understand these demons."
 		"ko"		"처치한 고대 악마에게서 부러져 나온 뿔입니다.\n어디에 써야할지 도통 모르겠군요..."
-	}
-	"Warped Crystal"
+	} 
+	"Crystallized Hand"
 	{
 		"en"		"Warped Crystal"
 		"ko"		"왜곡된 수정"
 	}
-	"Warped Crystal Desc"
+	"Crystallized Hand Desc"
 	{
-		"en"		"Made from the combination of Chaos and Void. \nLet's hope none of us crystallizes so we don’t get encased in one of these."
+		"en"		"On our way to meet up with Bob and Twirl, we see a rift closing. This comes flying out of it. \nIt looks like it was blown off the person after they got crystallized. \nThe crystals partially encase a pistol the person was using."
 		"ko"		"혼돈과 공허가 융화되어 만들어진 수정입니다.\n우리 중 누군가 결정화 되어 이런 수정에 갇히지 않길 바라야겠죠."
 	}
 	"Tiny Flower"
