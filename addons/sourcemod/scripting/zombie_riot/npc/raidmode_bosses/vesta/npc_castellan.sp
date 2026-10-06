@@ -2205,7 +2205,7 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 		{
 			if(!npc.m_iHealthBar)
 			{
-				npc.m_bAirStrikeYappers = GetRandomInt(1,2);
+				npc.m_bAirStrikeYappers = GetRandomInt(1,3);
 				VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_Ability2-3");
 				npc.m_flAttackHappens_2 = gameTime + 1.35;
 				npc.m_bAirStrikeTalk = 6;
@@ -2219,7 +2219,7 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 			}
 			else
 			{
-				npc.m_bAirStrikeYappers = GetRandomInt(1,3);
+				npc.m_bAirStrikeYappers = GetRandomInt(1,2);
 				VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_Ability2-1");
 				npc.m_flAttackHappens_2 = gameTime + 1.65;
 				npc.m_bAirStrikeTalk = 2;
