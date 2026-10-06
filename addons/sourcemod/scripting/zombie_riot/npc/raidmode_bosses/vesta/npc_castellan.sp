@@ -2395,7 +2395,7 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 						else
 							NPCPritToChat_Override("Vesta Huscarls", "{lightblue}", "Huscarls_Talk_Support-13", false);
 					}
-					case 2:
+					case 3:
 					{
 						int support = Vesta_GetSupport(VESTA_HUSCARLS);
 						if (support)
