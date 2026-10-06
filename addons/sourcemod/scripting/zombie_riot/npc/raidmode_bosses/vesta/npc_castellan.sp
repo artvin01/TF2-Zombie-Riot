@@ -97,6 +97,7 @@ static int NextSupport;
 static float flPayback[MAXPLAYERS];
 
 static int AirStrikeTalk[MAXENTITIES];
+static int WhatToYap[MAXENTITIES];
 
 static bool ParticleSpawned[MAXENTITIES];
 
@@ -229,6 +230,11 @@ methodmap Castellan < CClotBody
 		public get()							{ return AirStrikeTalk[this.index]; }
 		public set(int TempValueForProperty) 	{ AirStrikeTalk[this.index] = TempValueForProperty; }
 	}
+	property int m_bAirStrikeYappers
+	{
+		public get()							{ return WhatToYap[this.index]; }
+		public set(int TempValueForProperty) 	{ WhatToYap[this.index] = TempValueForProperty; }
+	}
 	property float m_flTimeUntillSupportSpawn
 	{
 		public get()							{ return fl_AbilityOrAttack[this.index][0]; }
@@ -354,6 +360,7 @@ methodmap Castellan < CClotBody
 		AlreadySaidWin=false;
 		
 		npc.m_bAirStrikeTalk = 0;
+		npc.m_bAirStrikeYappers = 0;
 		NitroFuelStack[npc.index] = 0;
 		ParticleSpawned[npc.index] = false;
 		npc.m_flToggleStealthStats = false;
@@ -574,10 +581,11 @@ static void Castellan_FORVESTA(int iNPC)
 		if(!npc.m_fbGunout)
 		{
 			npc.m_fbGunout = true;
-			switch(GetRandomInt(0,1))
+			switch(GetRandomInt(0,2))
 			{
 				case 0:VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_Lastman-1");
 				case 1:VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_Lastman-2");
+				case 2:VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_Lastman-3");
 			}
 		}
 	}
@@ -1958,7 +1966,7 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 								float vecHit[3];
 								
 								WorldSpaceCenter(targetTrace, vecHit);
-								float damage = 45.0;
+								float damage = 30.0;
 								if(ShouldNpcDealBonusDamage(targetTrace))
 									damage *= 7.0;
 								damage *= RaidModeScaling;
@@ -2197,18 +2205,21 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 		{
 			if(!npc.m_iHealthBar)
 			{
+				npc.m_bAirStrikeYappers = GetRandomInt(1,2);
 				VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_Ability2-3");
 				npc.m_flAttackHappens_2 = gameTime + 1.35;
 				npc.m_bAirStrikeTalk = 6;
 			}
 			else if(npc.m_bHalfRage)
 			{
+				npc.m_bAirStrikeYappers = GetRandomInt(1,2);
 				VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_Ability2-2");
 				npc.m_flAttackHappens_2 = gameTime + 1.35;
 				npc.m_bAirStrikeTalk = 3;
 			}
 			else
 			{
+				npc.m_bAirStrikeYappers = GetRandomInt(1,3);
 				VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_Ability2-1");
 				npc.m_flAttackHappens_2 = gameTime + 1.65;
 				npc.m_bAirStrikeTalk = 2;
@@ -2218,12 +2229,25 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 		{
 			if(npc.m_flAttackHappens_2 < gameTime)
 			{
-				int support = Vesta_GetSupport(VESTA_HARRISON);
-				if (support)
-					VestaHarrison_NPCTalkMessage(support, "Harrison_Talk_Support-7");
-				else
-					NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-7", false);
-				
+				switch(npc.m_bAirStrikeYappers)
+				{
+					case 1:
+					{
+						int support = Vesta_GetSupport(VESTA_HARRISON);
+						if (support)
+							VestaHarrison_NPCTalkMessage(support, "Harrison_Talk_Support-7");
+						else
+							NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-7", false);
+					}
+					case 2:
+					{
+						int support = Vesta_GetSupport(VESTA_HARRISON);
+						if (support)
+							VestaHarrison_NPCTalkMessage(support, "Harrison_Talk_Support-7-1");
+						else
+							NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-7", false);
+					}
+				}
 				npc.m_bAirStrikeTalk=0;
 				npc.m_flAttackHappens_2=0.0;
 			}
@@ -2232,11 +2256,25 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 		{
 			if(npc.m_flAttackHappens_2 < gameTime)
 			{
-				int support = Vesta_GetSupport(VESTA_HARRISON);
-				if (support)
-					VestaHarrison_NPCTalkMessage(support, "Harrison_Talk_Support-8");
-				else
-					NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-8", false);
+				switch(npc.m_bAirStrikeYappers)
+				{
+					case 1:
+					{
+						int support = Vesta_GetSupport(VESTA_HARRISON);
+						if (support)
+							VestaHarrison_NPCTalkMessage(support, "Harrison_Talk_Support-8");
+						else
+							NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-8", false);
+					}
+					case 2:
+					{
+						int support = Vesta_GetSupport(VESTA_HARRISON);
+						if (support)
+							VestaHarrison_NPCTalkMessage(support, "Harrison_Talk_Support-8-1");
+						else
+							NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-8-1", false);
+					}
+				}
 				
 				npc.m_flAttackHappens_2 = gameTime + 0.8;
 				npc.m_bAirStrikeTalk=4;
@@ -2246,11 +2284,26 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 		{
 			if(npc.m_flAttackHappens_2 < gameTime)
 			{
-				int support = Vesta_GetSupport(VESTA_ATOMIZER);
-				if (support)
-					VestaAtomizer_NPCTalkMessage(support, "Atomizer_Talk_Support-3");
-				else
-					NPCPritToChat_Override("Vesta Atomizer", "{blue}", "Atomizer_Talk_Support-3", false);
+				switch(npc.m_bAirStrikeYappers)
+				{
+					case 1:
+					{
+						int support = Vesta_GetSupport(VESTA_ATOMIZER);
+						if (support)
+							VestaAtomizer_NPCTalkMessage(support, "Atomizer_Talk_Support-3");
+						else
+							NPCPritToChat_Override("Vesta Atomizer", "{blue}", "Atomizer_Talk_Support-3", false);
+					}
+					case 2:
+					{
+						int support = Vesta_GetSupport(VESTA_ATOMIZER);
+						if (support)
+							VestaAtomizer_NPCTalkMessage(support, "Atomizer_Talk_Support-3-1");
+						else
+							NPCPritToChat_Override("Vesta Atomizer", "{blue}", "Atomizer_Talk_Support-3-1", false);
+					}
+				}
+				
 				
 				npc.m_flAttackHappens_2 = gameTime + 0.6;
 				npc.m_bAirStrikeTalk=5;
@@ -2260,11 +2313,25 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 		{
 			if(npc.m_flAttackHappens_2 < gameTime)
 			{
-				int support = Vesta_GetSupport(VESTA_HARRISON);
-				if (support)
-					VestaHarrison_NPCTalkMessage(support, "Harrison_Talk_Support-9");
-				else
-					NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-9", false);
+				switch(npc.m_bAirStrikeYappers)
+				{
+					case 1:
+					{
+						int support = Vesta_GetSupport(VESTA_HARRISON);
+						if (support)
+							VestaHarrison_NPCTalkMessage(support, "Harrison_Talk_Support-9");
+						else
+							NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-9", false);
+					}
+					case 2:
+					{
+						int support = Vesta_GetSupport(VESTA_HARRISON);
+						if (support)
+							VestaHarrison_NPCTalkMessage(support, "Harrison_Talk_Support-9-1");
+						else
+							NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-9-1", false);
+					}
+				}
 				
 				npc.m_bAirStrikeTalk=0;
 				npc.m_flAttackHappens_2=0.0;
@@ -2274,11 +2341,33 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 		{
 			if(npc.m_flAttackHappens_2 < gameTime)
 			{
-				int support = Vesta_GetSupport(VESTA_ATOMIZER);
-				if (support)
-					VestaAtomizer_NPCTalkMessage(support, "Atomizer_Talk_Support-4");
-				else
-					NPCPritToChat_Override("Vesta Atomizer", "{blue}", "Atomizer_Talk_Support-4", false);
+				switch(npc.m_bAirStrikeYappers)
+				{
+					case 1:
+					{
+						int support = Vesta_GetSupport(VESTA_ATOMIZER);
+						if (support)
+							VestaAtomizer_NPCTalkMessage(support, "Atomizer_Talk_Support-4");
+						else
+							NPCPritToChat_Override("Vesta Atomizer", "{blue}", "Atomizer_Talk_Support-4", false);
+					}
+					case 2:
+					{
+						int support = Vesta_GetSupport(VESTA_HARRISON);
+						if (support)
+							VestaAtomizer_NPCTalkMessage(support, "Harrison_Talk_Support-13");
+						else
+							NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-13", false);
+					}
+					case 3:
+					{
+						int support = Vesta_GetSupport(VESTA_HARRISON);
+						if (support)
+							VestaAtomizer_NPCTalkMessage(support, "Harrison_Talk_Support-12");
+						else
+							NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-12", false);
+					}
+				}
 				
 				npc.m_flAttackHappens_2 = gameTime + 0.8;
 				npc.m_bAirStrikeTalk=7;
@@ -2288,11 +2377,33 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 		{
 			if(npc.m_flAttackHappens_2 < gameTime)
 			{
-				int support = Vesta_GetSupport(VESTA_HUSCARLS);
-				if (support)
-					VestaHuscarls_NPCTalkMessage(support, "Huscarls_Talk_Support-10");
-				else
-					NPCPritToChat_Override("Vesta Huscarls", "{lightblue}", "Huscarls_Talk_Support-10", false);
+				switch(npc.m_bAirStrikeYappers)
+				{
+					case 1:
+					{
+						int support = Vesta_GetSupport(VESTA_HUSCARLS);
+						if (support)
+							VestaAtomizer_NPCTalkMessage(support, "Huscarls_Talk_Support-10");
+						else
+							NPCPritToChat_Override("Vesta Huscarls", "{lightblue}", "Huscarls_Talk_Support-10", false);
+					}
+					case 2:
+					{
+						int support = Vesta_GetSupport(VESTA_HUSCARLS);
+						if (support)
+							VestaAtomizer_NPCTalkMessage(support, "Huscarls_Talk_Support-13");
+						else
+							NPCPritToChat_Override("Vesta Huscarls", "{lightblue}", "Huscarls_Talk_Support-13", false);
+					}
+					case 2:
+					{
+						int support = Vesta_GetSupport(VESTA_HUSCARLS);
+						if (support)
+							VestaAtomizer_NPCTalkMessage(support, "Huscarls_Talk_Support-12");
+						else
+							NPCPritToChat_Override("Vesta Huscarls", "{lightblue}", "Huscarls_Talk_Support-12", false);
+					}
+				}
 				
 				npc.m_flAttackHappens_2 = gameTime + 0.8;
 				npc.m_bAirStrikeTalk=8;
@@ -2302,12 +2413,76 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 		{
 			if(npc.m_flAttackHappens_2 < gameTime)
 			{
-				int support = Vesta_GetSupport(VESTA_HARRISON);
-				if (support)
-					VestaHarrison_NPCTalkMessage(support, "Harrison_Talk_Support-10");
-				else
-					NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-10", false);
+				switch(npc.m_bAirStrikeYappers)
+				{
+					case 1:
+					{
+						int support = Vesta_GetSupport(VESTA_HARRISON);
+						if (support)
+							VestaAtomizer_NPCTalkMessage(support, "Harrison_Talk_Support-10");
+						else
+							NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-10", false);
+						npc.m_bAirStrikeTalk=0;
+						npc.m_flAttackHappens_2=0.0;
+					}
+					case 2:
+					{
+						int support = Vesta_GetSupport(VESTA_HARRISON);
+						if (support)
+							VestaAtomizer_NPCTalkMessage(support, "Harrison_Talk_Support-15");
+						else
+							NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-15", false);
+
+						npc.m_bAirStrikeTalk=9;
+						npc.m_flAttackHappens_2=0.8;
+					}
+					case 3:
+					{
+						int support = Vesta_GetSupport(VESTA_ATOMIZER);
+						if (support)
+							VestaAtomizer_NPCTalkMessage(support, "Atomizer_Talk_Support-5");
+						else
+							NPCPritToChat_Override("Vesta Atomizer", "{blue}", "Atomizer_Talk_Support-5", false);
+
+						npc.m_bAirStrikeTalk=9;
+						npc.m_flAttackHappens_2=0.8;
+					}
+				}
+			}
+		}
+		case 9:
+		{
+			if(npc.m_flAttackHappens_2 < gameTime)
+			{
+				switch(npc.m_bAirStrikeYappers)
+				{
+					case 2:
+					{
+						int support = Vesta_GetSupport(VESTA_ATOMIZER);
+						if (support)
+							VestaAtomizer_NPCTalkMessage(support, "Atomizer_Talk_Support-6");
+						else
+							NPCPritToChat_Override("Vesta Atomizer", "{blue}", "Atomizer_Talk_Support-6", false);
+					}
+					case 3:
+					{
+						int support = Vesta_GetSupport(VESTA_HARRISON);
+						if (support)
+							VestaAtomizer_NPCTalkMessage(support, "Harrison_Talk_Support-14");
+						else
+							NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-14", false);
+					}
+				}
 				
+				npc.m_bAirStrikeTalk=10;
+				npc.m_flAttackHappens_2=0.8;
+			}
+		}
+		case 10:
+		{
+			if(npc.m_flAttackHappens_2 < gameTime)
+			{
+				VestaCastellan_NPCTalkMessage(npc.index, "Castellan_Talk_Ability2-5");			
 				npc.m_bAirStrikeTalk=0;
 				npc.m_flAttackHappens_2=0.0;
 			}
