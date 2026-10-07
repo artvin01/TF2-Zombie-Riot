@@ -864,7 +864,7 @@
 	"Castellan_Talk_Ability2-5"
 	{
 		"en"	"Knock it off you three and FIRE!"
-		"ko"	"너희 셋다 그만하고 빨리 발포하라고!"
+		"ko"	"너희 셋다 그만하고 빨리 발포하라!"
 	}
 	"Castellan_Talk_Ability3-1"
 	{

@@ -1976,7 +1976,7 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 								float bleeding = damage/90.0;
 								if(bleeding<4.0)bleeding=4.0;
 								else if(bleeding>20.0)bleeding=20.0;
-								StartBleedingTimer(targetTrace, npc.index, bleeding, 8, -1, DMG_TRUEDAMAGE, 0);
+								StartBleedingTimer(targetTrace, npc.index, bleeding, 6, -1, DMG_TRUEDAMAGE, 0);
 								if(IsValidClient(targetTrace))
 								{
 									if(IsInvuln(targetTrace) && !HasSpecificBuff(targetTrace, "Solid Stance"))
@@ -2245,7 +2245,7 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 						if (support)
 							VestaHarrison_NPCTalkMessage(support, "Harrison_Talk_Support-7-1");
 						else
-							NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-7", false);
+							NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-7-1", false);
 					}
 				}
 				npc.m_bAirStrikeTalk=0;
