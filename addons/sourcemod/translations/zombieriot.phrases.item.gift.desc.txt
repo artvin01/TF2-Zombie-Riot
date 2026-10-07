@@ -3980,9 +3980,9 @@
 		"en"		"Almina's Last Hope..."
 		"ko"		"알미나의 마지막 희망..."
 	}
-	"Almina's Last Hope Trophy Desc"
+	"Almina's Last Hope Trophy Desc"  
 	{
-		"en"		"You saved Almina from Whiteflower rule.\nBut can you save what’s left of Almina from the Dweller."
+		"en"		"You previously saved Almina from Whiteflower's rule. Now you save it from the Dweller's attempt to advance further into it. \nBut can you save what’s left of Almina from the full Dweller army?"
 		"ko"		"당신은 알미나를 배풍등의 지배에서 자유롭게 했습니다.\n하지만 드웰러에게서 알미나의 남은 도시를 구해낼 수 있을까요?"
 	}
 	"Alminan Badge of Honor"
