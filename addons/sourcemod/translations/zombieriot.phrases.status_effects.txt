@@ -4018,6 +4018,30 @@
 		"en"	"Cannot be healed by a Healing Nova"
 		"ko"	"치유 노바를 통해 치유되지 않습니다."
 	}
+	"Vulnerability Hex"
+	{
+		"en"	"Vulnerability Hex"
+	}
+	"Vulnerability Hex Desc"
+	{
+		"en"	"Take 15%% more damage\n15%% slower movement speed"
+	}
+	"Weakening Hex"
+	{
+		"en"	"Weakening Hex"
+	}
+	"Weakening Hex Desc"
+	{
+		"en"	"Deal 15%% less damage\nAttack 15%% slower"
+	}
+	"Small Hex"
+	{
+		"en"	"Small Hex"
+	}
+	"Small Hex Desc"
+	{
+		"en"	"Take 5%% more damage\nDeal 5%% less damage\nMove 5%% slower\nAttack 5%% slower"
+	}
 	"Poise"
 	{
 		"en"	"Poise"

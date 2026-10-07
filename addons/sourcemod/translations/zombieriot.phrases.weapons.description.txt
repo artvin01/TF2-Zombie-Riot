@@ -2541,12 +2541,8 @@
     }
 	"Monk Desc"
 	{
-		"en"	"Provides AOE damage around it but lacks self defense"
-		"fr"	"Peu de défense mais peut attaquer plusiers ennemis à la fois."
-		///"ru"	"Наносит урон вокруг себя, но не имеет самозащиты"
-		"chi"   "在周围提供AOE伤害，但缺乏自我防御"
-		"it"	"Fornisce danni AOE intorno a sé, ma manca di autodifesa"
-		"ko"	"주변 범위 내의 모든 적에게 광역 피해를 주지만, 자가 방어 수단이 부족한 유닛입니다."
+		"en"	"Provides AOE debuffs against enemies and heals for low health players, he's a support unit"
+		"it"	"Fornisce debuff AOE contro i nemici e cura i giocatori vicini, è un'unità di supporto"
 	}
 	"Hussar Desc"
 	{
