@@ -11520,7 +11520,7 @@ void StatusEffects_Barracks()
 	data.MovementspeedModif			= 1.5;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = true;
-	data.AttackspeedBuff			= 0.75;
+	data.AttackspeedBuff			= 0.85;
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
