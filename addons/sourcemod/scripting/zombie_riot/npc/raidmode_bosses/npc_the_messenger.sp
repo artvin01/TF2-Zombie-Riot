@@ -1193,6 +1193,19 @@ int TheMessengerSelfDefense(TheMessenger npc, float gameTime, int target, float 
 								float Proj_Damage = 22.0 * RaidModeScaling;
 								Proj_Damage *= 0.1;
 								NPC_Ignite(targetTrace, npc.index,2.5, -1, Proj_Damage);
+							}			
+							else if(i_RaidGrantExtra[npc.index] == 5)
+							{
+								int ChaosDamage = 150;
+								if(NpcStats_IsEnemySilenced(npc.index))
+									ChaosDamage = 140;
+
+								ApplyStatusEffect(npc.index, targetTrace, "Near Zero", 3.5);
+								Elemental_AddChaosDamage(targetTrace, npc.index, ChaosDamage, true, true);
+
+								float Proj_Damage = 22.0 * RaidModeScaling;
+								Proj_Damage *= 0.1;
+								NPC_Ignite(targetTrace, npc.index,2.5, -1, Proj_Damage);
 							}
 							else
 							{
@@ -1291,6 +1304,24 @@ public void TheMessenger_Rocket_Particle_StartTouch(int entity, int target)
 				NPC_Ignite(target, owner,2.5, -1, DamageDeal * 0.1);
 			else
 				NPC_Ignite(target, owner,2.5, -1, DamageDeal * 0.2);
+		}
+		else if(i_RaidGrantExtra[owner] == 5)
+		{
+			if(i_NpcInternalId[owner] == NPCId)
+				NPC_Ignite(target, owner,2.5, -1, DamageDeal * 0.1);
+			else
+				NPC_Ignite(target, owner,2.5, -1, DamageDeal * 0.2);
+
+
+			int ChaosDamage = 100;
+			if(i_NpcInternalId[owner] == NPCId)
+			{
+				//ChaosDamage = 60;
+					
+				//ApplyStatusEffect(owner, target, "Near Zero", 3.5);
+			}
+
+			Elemental_AddChaosDamage(target, owner, ChaosDamage, true, true);
 		}
 		else
 		{
