@@ -702,6 +702,7 @@ void SetDownedState_Thorns(int iNpc, bool StateDo)
 		ThornsRevive[iNpc] = GetGameTime() + 60.0;
 		b_ThisEntityIgnored[iNpc] = true;
 		b_NpcIsInvulnerable[iNpc] = true;
+		npc.CmdOverride = Command_RetreatPlayer;
 	}
 	else // Get him back up
 	{
@@ -716,6 +717,7 @@ void SetDownedState_Thorns(int iNpc, bool StateDo)
 		b_NpcIsInvulnerable[iNpc] = false;
 		SetEntProp(iNpc, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(iNpc));	// Heal him back to full
 		DesertYadeamDoHealEffect(iNpc, 200.0);
+		npc.CmdOverride = Command_Default;	// And now get back to default, no need for retreat anymore
 		NpcSpeechBubble(npc.index, "I'm back i'm back... no need to make a fuss.", 7, {50,205,50,255}, {0.0,0.0,120.0}, "");
 	}
 }
