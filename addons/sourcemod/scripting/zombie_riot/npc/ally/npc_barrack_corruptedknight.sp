@@ -691,7 +691,7 @@ public void BarrackCorruptedKnight_ClotThink(int iNPC)
 		{
 			case CorruptedKnight_Command_KO:
 			{
-				BarrackBody_ThinkMove(npc.index, 0.0, "", "", _, false, false);
+				BarrackBody_ThinkMove(npc.index, 0.0, "ACT_LAST_KNIGHT_DOWNED", "ACT_LAST_KNIGHT_DOWNED", _, false, false);
 			}
 			case CorruptedKnight_Command_Rampage:
 			{
