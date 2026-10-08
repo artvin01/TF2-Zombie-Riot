@@ -4,6 +4,7 @@
 static int CorruptedKnightSpecialCommand[MAXENTITIES];
 static int Revive[MAXENTITIES];
 static int TideLanceCount[MAXENTITIES];
+static bool CorruptedKnight_SpecialAttack[MAXENTITIES];
 static int AttackCount[MAXENTITIES];
 
 enum
@@ -227,7 +228,7 @@ public void BarrackCorruptedKnight_ClotThink(int iNPC)
 			if(Waves_GetRoundScale() == 39)
 			{
 				CPrintToChatAll("{green}The Corrupted Knight channels his rage preparing for the decisive battle(the Corrupted Knight got stronger)");
-				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", 5000); // prima del revive, così si rialza con la vita nuova
+				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", 5000);
 			}
 
 			if(Knightded)
@@ -363,36 +364,21 @@ public void BarrackCorruptedKnight_ClotThink(int iNPC)
 					if(flDistanceToTarget < GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 					{
 						if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen)
-						{
-							bool Success;
-							if(GetRandomInt(1, 2000) > 1999) // 1 out of 2k chance of something funny happening, for those that care about the percentage it's 0.05%
+						{	
+							if(!npc.m_flAttackHappenswillhappen)
 							{
-								Success = true;
-							}
-							
-							if(!Success)
-							{
-								if(!npc.m_flAttackHappenswillhappen)
-								{
+								CorruptedKnight_SpecialAttack[npc.index] = (GetRandomInt(1, 2000) > 1999);
+
+								if(!CorruptedKnight_SpecialAttack[npc.index])
 									npc.AddGesture(npc.m_fbRangedSpecialOn ? "ACT_LAST_KNIGHT_ATTACK_2" : "ACT_LAST_KNIGHT_ATTACK_1");
-									npc.PlaySpearSound();
-									npc.m_flAttackHappens = GameTime + 0.3;
-									npc.m_flAttackHappens_bullshit = GameTime + 0.44;
-									npc.m_flNextMeleeAttack = GameTime + (2.0 * npc.BonusFireRate);
-									npc.m_flAttackHappenswillhappen = true;
-								}
-							}
-							else
-							{
-								if(!npc.m_flAttackHappenswillhappen)
-								{
+								else
 									npc.AddGesture("ACT_WHITEFLOWER_KICK_GROUND");
-									npc.PlaySpearSound();
-									npc.m_flAttackHappens = GameTime + 0.3;
-									npc.m_flAttackHappens_bullshit = GameTime + 0.44;
-									npc.m_flNextMeleeAttack = GameTime + (2.0 * npc.BonusFireRate);
-									npc.m_flAttackHappenswillhappen = true;
-								}
+
+								npc.PlaySpearSound();
+								npc.m_flAttackHappens = GameTime + 0.3;
+								npc.m_flAttackHappens_bullshit = GameTime + 0.44;
+								npc.m_flNextMeleeAttack = GameTime + (2.0 * npc.BonusFireRate);
+								npc.m_flAttackHappenswillhappen = true;
 							}
 							if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
 							{
@@ -405,9 +391,9 @@ public void BarrackCorruptedKnight_ClotThink(int iNPC)
 									float vecHit[3];
 									TR_GetEndPosition(vecHit, swingTrace);
 
-									if(target > 0) 
+									if(target > 0)
 									{
-										if(!Success)
+										if(!CorruptedKnight_SpecialAttack[npc.index])
 										{
 											if(npc.m_fbRangedSpecialOn) // If charge is active he hits a second time and has extra effects
 											{
@@ -439,7 +425,6 @@ public void BarrackCorruptedKnight_ClotThink(int iNPC)
 											TE_Particle("asplode_hoodoo", VecSelfNpc, NULL_VECTOR, NULL_VECTOR, npc.index, _, _, _, _, _, _, _, _, _, 0.0);
 											FreezeNpcInTime(target, 5.0);
 											Custom_Knockback(npc.index, target, 3000.0, true);
-											Success = false;
 										}
 									}
 								}
@@ -578,7 +563,7 @@ public void BarrackCorruptedKnight_ClotThink(int iNPC)
 							npc.m_flReloadDelay = GameTime + 1.0;
 							npc.m_flNextMeleeAttack = GameTime + 1.0;
 							NpcSpeechBubble(npc.index, "Will...NEVER...BOW", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
-							ApplyStatusEffect(npc.index, npc.index, "Desperation", 5.0);
+							ApplyStatusEffect(npc.index, npc.index, "Desperation", 5.0);	// The new buff
 							npc.m_iPhase = 1;
 						}
 						// Big attack

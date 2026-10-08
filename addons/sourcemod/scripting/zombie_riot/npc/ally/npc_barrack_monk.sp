@@ -195,7 +195,7 @@ static int Monk_GetOwnerClient(int projectile)	// Something i realized i unfortu
 }
 static float Skull_Effect(int entity, int victim, float &damage, int weapon)
 {
-	int client = Monk_GetOwnerClient(entity);	// il giocatore proprietario del monk
+	int client = Monk_GetOwnerClient(entity);
 
 	switch(GetRandomInt(1, 2))
 	{

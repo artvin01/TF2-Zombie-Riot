@@ -144,6 +144,7 @@ methodmap BarrackThorns < BarrackBody
 		ThornsAbilityActiveTimes[npc.index] = 0;
 		ThornsAbilityActive[npc.index] = 0.0;
 		ThornsAttackedSince[npc.index] = 0.0;
+		b_NpcUnableToDie[npc.index] = true;	// Unable to die
 		npc.m_bDissapearOnDeath = true;
 		
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl");

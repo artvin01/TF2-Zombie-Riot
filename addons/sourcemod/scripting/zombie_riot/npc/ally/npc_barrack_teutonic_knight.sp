@@ -104,8 +104,8 @@ public void BarrackTeuton_ClotThink(int iNPC)
 			npc.AddGesture("ACT_WF_OVERLORD_RAGE_START");
 			NpcSpeechBubble(npc.index, "Now you've done it", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
 			npc.m_flNextMeleeAttack = GameTime + 2.0;
-			npc.m_flReloadDelay = GameTime + 2.0;   // fermo durante la windup
-			npc.m_iChanged_WalkCycle = 0;           // forza il refresh dell'animazione
+			npc.m_flReloadDelay = GameTime + 2.0;
+			npc.m_iChanged_WalkCycle = 0;
 		}
 	}
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
@@ -154,8 +154,8 @@ public void BarrackTeuton_ClotThink(int iNPC)
 								
 								if(target > 0) 
 								{
-									if(b_thisNpcIsARaid[target])	// 25% more damage to raid but won't burn
-										RageDamage *= 1.25;
+									if(b_thisNpcIsARaid[target])	// 33% more damage to raid but won't burn
+										RageDamage *= 1.33;
 										
 									Explode_Logic_Custom(RageDamage, GetClientOfUserId(npc.OwnerUserId), npc.index, -1, vecTarget , 250.0, 1.0, _, true, .FunctionToCallBeforeHit = RaidOrNot);	// Aoe but small range
 									npc.PlaySwordHitSound();
