@@ -64,11 +64,8 @@ methodmap BarrackMonk < BarrackBody
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop_partner/weapons/c_models/c_tw_eagle/c_tw_eagle.mdl");
 		SetVariantString("1.15");
 		npc.m_iWearable2 = npc.EquipItem("head", "models/player/items/pyro/pyro_pyromancers_mask.mdl");
-		SetVariantString("1.25");
+		SetVariantString("1.1");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/player/items/all_class/trn_wiz_hat_spy.mdl");
-		SetVariantString("1.5");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 		
 		return npc;
 	}
@@ -107,7 +104,7 @@ public void BarrackMonk_ClotThink(int iNPC)
 					int projectile = npc.FireRocket(vPredictedPos, Barracks_UnitExtraDamageCalc(npc.index, client, 1000.0, 1), 1300.0, "models/props_mvm/mvm_human_skull_collide.mdl",0.5, _, _,client);
 					
 					WandProjectile_ApplyFunctionToEntity(projectile, Monk_Rocket_Particle_StartTouch);
-					Monk_CurseEffect(npc, 1);
+					Monk_CurseEffect(npc, 1, PrimaryThreatIndex);
 					
 					npc.m_flNextRangedAttack = GameTime + (30.0 * npc.BonusFireRate);
 					npc.m_flNextMeleeAttack = GameTime + (5.0 * npc.BonusFireRate);
@@ -124,7 +121,7 @@ public void BarrackMonk_ClotThink(int iNPC)
 					
 					float vPredictedPos[3]; PredictSubjectPosition(npc, PrimaryThreatIndex,_,_, vPredictedPos);
 					npc.FireRocket(vPredictedPos, Barracks_UnitExtraDamageCalc(npc.index, client, 1000.0, 1), 1300.0, "models/props_mvm/mvm_human_skull_collide.mdl",0.5, _, _,client);
-					Monk_CurseEffect(npc, 2);
+					Monk_CurseEffect(npc, 2, PrimaryThreatIndex);
 					
 					ApplyStatusEffect(client, PrimaryThreatIndex, "Small Hex", 3.0);
 					
@@ -282,16 +279,24 @@ public void BarrackMonk_TryHealAlly(int iNPC)
 
     npc.m_flHealCheckCD = GameTime + 2.0;
 }
-static void Monk_CurseEffect(BarrackMonk npc, int type)	// Just used to give the monk a special effect to let players know when he uses the aoe orb instead of the normal attack
+static void Monk_CurseEffect(BarrackMonk npc, int type, int target = -1)	// Had to be a little more creative with this one, otherwise the merasmus_zap ALWAYS went for the origin spot making it a bit weird and misleading
 {
-	float pos[3], ang[3];
-	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
-	
+	float pos[3], ang[3], endPos[3];
+	WorldSpaceCenter(npc.index, pos);
+	GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+
 	switch(type)
 	{
 		case 1:
 			npc.DispatchParticleEffect(npc.index, "spell_cast_wheel_blue", pos, ang, pos, 0, PATTACH_ABSORIGIN_FOLLOW);
 		case 2:
-			npc.DispatchParticleEffect(npc.index, "merasmus_zap", pos, ang, pos, 0, PATTACH_ABSORIGIN_FOLLOW);
+		{
+			if(target > 0)
+				WorldSpaceCenter(target, endPos);
+			else
+				endPos = pos;
+
+			ShootLaser(npc.index, "merasmus_zap", pos, endPos);
+		}
 	}
 }

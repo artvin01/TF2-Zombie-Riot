@@ -76,11 +76,6 @@ methodmap BarrackTeuton < BarrackBody
 		npc.m_iWearable2 = npc.EquipItem("partyhat", "models/workshop/player/items/soldier/dec17_brass_bucket/dec17_brass_bucket.mdl");
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
-		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop_partner/player/items/demo/tw_kingcape/tw_kingcape.mdl");
-		SetVariantString("1.0");
-		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
-		SetVariantInt(1);
-		AcceptEntityInput(npc.index, "SetBodyGroup");	
 		
 		return npc;
 	}
