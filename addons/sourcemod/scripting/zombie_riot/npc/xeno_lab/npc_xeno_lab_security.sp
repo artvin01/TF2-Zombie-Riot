@@ -138,7 +138,7 @@ methodmap XenoLabSecurity < CClotBody
 	
 	public XenoLabSecurity(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		XenoLabSecurity npc = view_as<XenoLabSecurity>(CClotBody(vecPos, vecAng, SECURITY_MODEL, "1.75", "125000", ally, false, true));
+		XenoLabSecurity npc = view_as<XenoLabSecurity>(CClotBody(vecPos, vecAng, SECURITY_MODEL, "1.70", "125000", ally, false, true));
 		// 125000 HP - Super boss tier
 		
 		i_NpcWeight[npc.index] = 6; 
@@ -156,7 +156,7 @@ methodmap XenoLabSecurity < CClotBody
 		func_NPCOnTakeDamage[npc.index] = XenoLabSecurity_OnTakeDamage;
 		func_NPCThink[npc.index] = XenoLabSecurity_ClotThink;
 		
-		npc.m_flSpeed = 220.0;
+		npc.m_flSpeed = 225.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
@@ -386,7 +386,7 @@ public Action Timer_SecurityInfectionBlast(Handle timer, DataPack pack)
 	
 	XenoLabSecurity npc = view_as<XenoLabSecurity>(entity);
 	
-	npc.m_flSpeed = (npc.m_bIsLabVersion && npc.Anger) ? 280.0 : 220.0;
+	npc.m_flSpeed = (npc.m_bIsLabVersion && npc.Anger) ? 300.0 : 225.0;
 	npc.m_bisWalking = true;
 	int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 	if(iActivity > 0) npc.StartActivity(iActivity);
@@ -396,7 +396,7 @@ public Action Timer_SecurityInfectionBlast(Handle timer, DataPack pack)
 	GetEntPropVector(entity, Prop_Data, "m_vecAbsOrigin", pos);
 	pos[2] += 10.0;
 	
-	float damage = (npc.m_bIsLabVersion && npc.Anger) ? 500.0 : 350.0;
+	float damage = (npc.m_bIsLabVersion && npc.Anger) ? 750.0 : 500.0;
 	Explode_Logic_Custom(damage, entity, entity, -1, pos, range, _, _, true, _, _, 1.0, Security_InfectionHit);
 	
 	int particle = ParticleEffectAt(pos, "green_wof_sparks", 2.0);
@@ -455,7 +455,7 @@ void Security_InfectionHit(int entity, int victim, float damage, int weapon)
 		
 		// stronger infection in enraged mode aka lab version only
 		int tickCount = (npc.m_bIsLabVersion && npc.Anger) ? 15 : 10;
-		float tickDamage = (npc.m_bIsLabVersion && npc.Anger) ? 80.0 : 60.0;
+		float tickDamage = (npc.m_bIsLabVersion && npc.Anger) ? 120.0 : 100.0;
 		
 		StartBleedingTimer(victim, entity, tickDamage, tickCount, -1, DMG_SLASH, 0, 1);
 		

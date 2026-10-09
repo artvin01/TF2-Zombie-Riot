@@ -262,7 +262,7 @@ int Freeplay_GetDangerLevelCurrent(int postWaves)
 	}
 	int DangerLevel = 1;
 
-	float DefaultChance = 0.015 * float(EnemyChance);
+	float DefaultChance = 0.0175 * float(EnemyChance);
 	DefaultChance += 0.005 * float(postWaves - 41);
 	
 	if(DefaultChance > 0.475)
@@ -405,7 +405,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			{
 				enemy.Index = NPC_GetByPlugin("npc_the_messenger");
 				enemy.Health = RoundToFloor((7500000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-				enemy.Data = "wave_30";
+				enemy.Data = "wave_40";
 			}
 			case 9:	
 			{
@@ -2011,7 +2011,7 @@ void Freeplay_SpawnEnemy(int entity)
 			Freeplay_ApplyStatusEffect(entity, "Void Afflicted", 999999.0);
 
 		if(VestaBuff)
-			Freeplay_ApplyStatusEffect(entity, "Call To Vesta", 10.0);	
+			Freeplay_ApplyStatusEffect(entity, "Call To Vesta", 30.0);	
 
 		if(LoveNahTonic)
 		{
@@ -2020,10 +2020,10 @@ void Freeplay_SpawnEnemy(int entity)
 		}
 
 		if(XenoLabBuff)
-			Freeplay_ApplyStatusEffect(entity, "Xeno's Territory", 20.0);	
+			Freeplay_ApplyStatusEffect(entity, "Xeno's Territory", 999.0);	
 
 		if(SeaLabBuff)
-			Freeplay_ApplyStatusEffect(entity, "Corrupted Godly Power", 20.0);	
+			Freeplay_ApplyStatusEffect(entity, "Corrupted Godly Power", 999.0);	
 	
 		//// DEBUFFS ////
 	
@@ -3156,13 +3156,11 @@ void Freeplay_SetupStart(bool extra = false)
 				{
 					strcopy(message, sizeof(message), "{green}All enemies have lost the Xeno's Territory buff.");
 					XenoLabBuff = false;
-					SpeedMult += 0.15;
 				}
 				else
 				{
 					strcopy(message, sizeof(message), "{red}All enemies now gain the Xeno's Territory buff!");
 					XenoLabBuff = true;
-					SpeedMult -= 0.15;
 				}
 			}
 			case 71:

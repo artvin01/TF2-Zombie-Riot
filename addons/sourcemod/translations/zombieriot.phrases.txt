@@ -3357,12 +3357,6 @@
 		"ko"		"지베리아 게릴라의 지원이 도착했습니다."
 		"it"		"I Guerriglieri Ziberiani sono qui per aiutare."
 	}
-	"Vesta_Survival_Bob_Message"
-	{
-		"en"		"Bob the First and his army found us and decided to help us fight the Outpost. Bob needs our help after we're finished here. He hopes that the Vestans started this....."
-		"ko"		"밥 1세와 그의 군대가 우리를 발견했으며, 전초기지와의 전투를 돕기로 결정합니다.\n이곳의 일이 끝나면 밥이 우리의 도움을 필요로 할 것입니다.\n그가 베스타인들이 먼저 이 상황을 시작했길 바라는군요..."
-		"it"		"I Guerriglieri Ziberiani sono qui per aiutare."
-	}
 	"RadioTower_here_Message"
 	{
 		"en"		"Radiotower is here, Prepare."
@@ -3384,11 +3378,6 @@
 	{
 		"en"		"Sensal has finally reached us to defeat this void outbreak."
 		"ko"		"센살이 공허 재앙을 막기 위해 드디어 당신에게 합류합니다."
-	}
-	"Umbral_Outbreak_Help_Message"
-	{
-		"en"		"There is no help in sight. Are we really going to die from this outbreak?"
-		"ko"		"아무런 도움의 손길도 보이지 않습니다. 정말로 이 재앙 속에서 죽게 될 운명일까요?"
 	}
 	"Silvester Shares His Power"
 	{
@@ -4864,7 +4853,7 @@
 	}
 	"Alternative Desc"
 	{
-		"en"	"Blitzkrieg sends his army to attack you. Blitz itself does not see you worthy enough to fight it."
+		"en"	"While the main mercs fight Infected Silvester. Blitzkrieg sends his army to attack all mercenary groups, includin the secondary mercs. Blitz itself is killing another group of mercs."
 		"ru"	"Блицкриг посылает свою армию, чтобы напасть на вас. Сам Блиц не считает вас достойным, чтобы сразиться с ним."
 		"fr"	"Une tournure sur le mode classique aves des nouveaux ennemis mystérieux!"
 		"chi"	"经典模式，但出现了掌握魔法的心敌人…"
@@ -4886,7 +4875,7 @@
 	}
 	"Xeno Desc"
 	{
-		"en"	"After defeating Blitzkrieg, we start seeing an infection we last saw in Rogue 1, the Xeno infection. It seems to be mutating their victims with new abilities! We need to take this out before it gets bad."
+		"en"	"In the first hour of Xeno's release, this group of mercs was unluckily one of the first to encounter it."
 		"fr"	"Les ennemis sont infectés avec l'infection Xéno, et reçoivent de nouvelles abilités!"
 		"chi"	"外界感染到来，僵尸们的变异也更加严重了。"
 		"it"	"L'infezione Xeno è arrivata, mutando i nemici con nuove abilità!"
@@ -4908,7 +4897,7 @@
 	}
 	"Medieval Desc"
 	{
-		"en"	"While Alaxios is away talking with Sensal, he tells his army to come to you. They ask us to train them? We have nothing else to do, so why not Alaxios can just revive them after we're done."
+		"en"	"While Alaxios is away talking with Sensal, he tells Osiris and his army to come to us. They came to the main mercs for training. We agree since Alaxios can just revive them after we're done. Bob the Second also gets the secondary mercs to help too."
 		"fr"	"Entrez en combat contre le Moyen-Âge, et leur armure qui leur protège contre les attaques à portée et corps à corps!"
 		"chi"	"对抗中世纪的剑与盾！"
 		"it"	"Combatti contro la mezza età con le loro armature per contrastare gli attacchi in mischia o a distanza!"
@@ -4934,7 +4923,7 @@
 	}
 	"Expidonsa Desc"
 	{
-		"en"	"While you're wandering around, while Koshi and Zeina make their simulation to prepare us for whatever Lelouch released, you find some other expidonsans. You go up to greet them, but they immediately attack you?"
+		"en"	"A group of mercenaries is heading to their next job when they pass a group of Expidonsans. They don't care about them, so they continue walking, but the Expidonsans immediately attack."
 		"fr"	"Résiste cette ville souterraine avancée, faites garde à leur soins regénératifs et leurs attaques surprises!"
 		"chi"	"抵抗Expidonsa的高科技。别小看他们的盾牌，同时看好自己背后……"
 		"it"	"Resisti alla città sotterranea avanzata, fate attenzione alla loro auto-guarigione e agli attacchi a sorpresa!"
@@ -4948,7 +4937,7 @@
 	}
 	"Dwellers Desc"
 	{
-		"en"	"You head to W.F.'s Outpost, after seeing his elite soldiers infected by Xeno, to see if there are any remaining soldiers there. Turns out there was, but they're infected by the Dwellers. And the sea has an army ready to attack the mainland."
+		"en"	"You head to W.F.'s Outpost, after seeing his elite soldiers infected by Xeno, to see if there are any remaining soldiers there. Turns out there were, but the Dweller has infected them. And the sea has forces ready to invade further inland."
 		"fr"	"L'infection Dweller attaque avec la Corrosion d'Armure. Guérissez-la avec vos tables d'armure!"
 		"chi"	"海嗣感染将会侵蚀你的盾。"
 		"it"	"L'infezione Dweller è arrivata, gli attacchi di Corrosione dell'Armatura infetteranno la tua armatura, curala con le tabelle dell'armatura!"
@@ -4956,7 +4945,7 @@
 	}
 	"Interitus Desc"
 	{
-		"en"	"After Kahml sees that we beat his clone in Rogue 1, Kahml decides to send part of his army to attack us because he’s bored."
+		"en"	"After Kahml sees that we beat his clone in Rogue 1, Kahml decides to send part of his army to attack us because he’s bored. But his army instead fights the secondary mercs, thinking they are the main mercs..."
 		"fr"	"Le chaos a frappé plusieurs villes, son groupe est prêt à vous rendre sa justice. Préparez-vous."
 		"chi"	"混沌已吞噬了无数个城市，现在来找你了……"
 		"it"	"Ordine Lore: (7) Il caos ha afflitto molte città, il suo gruppo è pronto a servire voi giusti. Preparatevi."
@@ -4984,7 +4973,7 @@
 	}
 	"Void Desc"
 	{
-		"en"	"One of many void outbreaks. Luckily, we were nearby to help out."
+		"en"	"One of many void outbreaks. It opens right in front of a group of mercenaries."
 		"fr"	"Aidez Kahmlstein contre le Void!"
 		"chi"	"帮卡姆斯坦因击退深渊！"
 		"it"	"Aiuta Kahmlstein contro il vuoto!"
@@ -5027,7 +5016,7 @@
 	}
 	"Umbral Outbreak Desc"
 	{
-		"en"	"Before regrouping with Bob and Twirl in Rogue 3, a rift opens before us, releasing Void and Umbral creatures. With Al-Hallam and Vuntulum nearby, we are attacked from every direction."
+		"en"	"A group of mercs decides to enter the Curtain through a rift to loot the place. In there, Curtain inhabitants, other looters, and these mercs all fight for their goals."
 		"ko"	"로그3에서 밥, 트윌과 재집결하기 전, 우리 앞에 균열이 열리며 공허와 움브랄 생명체들을 풀어냅니다. 근처에는 알-할람과 번툴룸까지 있으니... 사면초가군요."
 	}
 	"Whiteflowers Revenge Desc"
@@ -5455,7 +5444,7 @@
 	}
 	"Almina Expi Desc"
 	{
-	  "en" "After the main mercs are done with their training, Almina comes to us, the secondary mercs, for some more training. Nemal and Silvester won't be here this time since they're on vacation with Sensal."
+	  "en" "After the main mercs are done with their training, Almina comes to us, the secondary mercs, for some more training. Nemal and Silvester won't be here this time since they're away with Sensal. So some other Expidonsans volunteer to help."
 	  "ko" "주요 용병들이 훈련을 마친 후, 알미나가 더 많은 훈련을 위해 보조 용병들을 방문합니다. 이번엔 네말과 실베스터가 센살과 휴가 중이기에 없을 겁니다."
 	}
 	"Almina & Nemal"
@@ -5757,7 +5746,7 @@
 	}
 	"Vesta Survival Desc"
 	{
-		"en" 	"Before Bob the First comes to us for help in Rogue 2, we come across a Vesta outpost. They decide to attack us. Guess they're pissed off about beating them before."
+		"en" 	"A group of mercs invades a Vestan outpost. This outpost is led by a Chemical Platoon leader."
 		"ko" 	"로그2에서 밥 1세가 도움을 위해 찾아오기 전, 베스타 전초기지를 지나가게 되고... 그들이 당신을 공격해옵니다?! 아무래도 이전에 그들을 패퇴시킨 것에 화가 난 것 같군요."
 	}
 	"Vesta Raid Desc"

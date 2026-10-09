@@ -290,8 +290,8 @@
 	}
 	"Atomizer_Talk_Support-1"
 	{
-		"en"	"Did you really think we would let you sabotage our Radiotower?"
-		"ko"	"우리의 방송탑을 파괴하게 놔둘것 같으냐?"
+		"en"	"Would you kindly remove your existance yourself?"
+		"ko"	"너 존재를 좀 지워줄수 있겠니??"
 	}
 	"Atomizer_Talk_Support-2"
 	{
@@ -303,6 +303,11 @@
 		"en"	"Haha! Im locking onto THIS guy!"
 		"ko"	"하하! 난 이자식에게 포격하겠어!"
 	}
+	"Atomizer_Talk_Support-3-1"
+	{
+		"en"	"Hey Hey! What a nice command kit you got there!"
+		"ko"	"어이 어이! 그 작전지휘용 장비 좋아보이는데?"
+	}
 	"Atomizer_Talk_Support-4"
 	{
 		"en"	"You can count on us!"
@@ -311,10 +316,12 @@
 	"Atomizer_Talk_Support-5"
 	{
 		"en"	"At least we get to use these more."
+		"ko"	"적어도 우리가 한번에 더 많이 쓸수 있잖아."
 	}
 	"Atomizer_Talk_Support-6"
 	{
 		"en"	"Quit drinking the beers, Hurcarls!"
+		"ko"	"맥주좀 그만 마셔 {lightblue}허스칼!{default}"
 	}
 	"Atomizer_Talk_Support-7"
 	{
@@ -453,10 +460,12 @@
 	"Huscarls_Talk_Support-12"
 	{
 		"en"	"*crack* What was that Harrison?"
+		"ko"	"*우드득* 방금 뭐라 했냐 {skyblue}해리슨{default}?"
 	}
 	"Huscarls_Talk_Support-13"
 	{
 		"en"	"Oh you got beer in here? Nice."
+		"ko"	"오 여기 안에 맥주가 있다고? 좋은데."
 	}
 	"Huscarls_Talk_Support-14"
 	{
@@ -587,15 +596,30 @@
 		"en"	"Roger that. Targetting primary threat"
 		"ko"	"확인. 주 목표 제거 시도."
 	}
+	"Harrison_Talk_Support-7-1"
+	{
+		"en"	"Copy that. {gold}Artillerists{default}, into position."
+		"ko"	"수신 양호. {gold}자주포병들{default}, 위치로."
+	}
 	"Harrison_Talk_Support-8"
 	{
 		"en"	"Right away."
 		"ko"	"수신 양호합니다."
 	}
+	"Harrison_Talk_Support-8-1"
+	{
+		"en"	"Commands are clear, and the sky's clear."
+		"ko"	"입감 양호, 시계 양호."
+	}
 	"Harrison_Talk_Support-9"
 	{
 		"en"	"When did you-"
 		"ko"	"아니 언제-"
+	}
+	"Harrison_Talk_Support-9-1"
+	{
+		"en"	"Don't touch th-"
+		"ko"	"그거 만지지ㅁ-"
 	}
 	"Harrison_Talk_Support-10"
 	{
@@ -609,19 +633,23 @@
 	}
 	"Harrison_Talk_Support-12"
 	{
-		"en"	"I need more space in here."
+		"en"	"I seriously need more space in here. I am squished thanks to this Fat Rock"
+		"ko"	"진짜 진지하게 여기 자리가 너무 부족해. 난 이 뚱뚱한 돌덩어리 때문에 짓눌려있단 말야"
 	}
 	"Harrison_Talk_Support-13"
 	{
 		"en"	"*ugh* Can we kill them quicker? I need a beer."
+		"ko"	"윽, 제발 얘네좀 빨리 처리할수 없을까? 나 맥주 마시고 싶은데."
 	}
 	"Harrison_Talk_Support-14"
 	{
 		"en"	"*sigh* alright."
+		"ko"	"*한숨* 알겠어."
 	}
 	"Harrison_Talk_Support-15"
 	{
 		"en"	"Huh? Oh… leave it until we are done here."
+		"ko"	"응? 아... 여기 일 다 끝날때까진 내버려 둬"
 	}
 	"Harrison_Talk_Intro"
 	{
@@ -744,6 +772,11 @@
 		"en"	"Put up your best gear and fight me! I didn’t waste my time here to fight such maggots"
 		"ko"	"너희들의 최고의 수단으로 상대해봐라! 나는 너희같은 졸병 따위를 상대하려고 여기서 시간을 낭비할 이유가 없단 말이다!"
 	}
+	"Castellan_Talk_Lastman-3"
+	{
+		"en"	"You were never ready for this {collectors}WAR"
+		"ko"	"너희들은 이 {collectors}전쟁{default}을 치룰 준비가 전혀 되어있지 않았다"
+	}
 	"Castellan_Talk_TimeUp-1"
 	{
 		"en"	"That’s enough! We see your plan to buy some time."
@@ -831,6 +864,7 @@
 	"Castellan_Talk_Ability2-5"
 	{
 		"en"	"Knock it off you three and FIRE!"
+		"ko"	"너희 셋다 그만하고 빨리 발포하라!"
 	}
 	"Castellan_Talk_Ability3-1"
 	{
@@ -1003,5 +1037,20 @@
 	"CaptinoMenius_Sensal_And_Zeina_Talk-3"
 	{
 		"en"	"Hello, mercs. I'm back to help out, and this time it's with a void outbreak."
+	}
+	"Castellan_Fuck_You_In_Specific_Talk-1"
+	{
+		"en"	"{crimson}You.{default} I recognize you. You are that bloody merc who ruthlessly trampled our Soldiers! I will glisten my hand with your {crimson}BLOOD{default} Bolaven"
+		"ko"	"{crimson}너.{default} 난 너가 누군지 안다. 우리 병사들을 무참하게 짓밟고 유린한 그 빌어처먹을 용병 아니냐! 내 손을 너의 {crimson}피{default} 로 적셔주마 Bolaven"
+	}
+	"Castellan_Fuck_You_In_Specific_Talk-2"
+	{
+		"en"	"Wait... I remember who you are. You are the bravest one amongst all to stop our army alone. I salute your Courage... It's a real shame that I can't have you as my man, Light"
+		"ko"	"잠시만... 난 너가 누군지 알 것 같다. 너는 우리의 군대를 홀로 막아선 용감한 자였지. 난 너의 용기에 경의를 표한다. 내 휘하에 너를 둘 수 없다는 게 정말 안타까울 따름이군 Light"
+	}
+	"Castellan_Fuck_You_In_Specific_Talk-3"
+	{
+		"en"	"If you declare yourself as {gold}Vestan{default}, help me out instead of fighting me Beep_G"
+		"ko"	"너가 너 자신을 {gold}베스타인{default} 이라고 칭한다면 나와 싸우지 말고 날 도와라, Beep_G"
 	}
 }
