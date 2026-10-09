@@ -199,7 +199,7 @@ void Freeplay_ResetAll()
 	SeaLabBuff = false;
 	SpecialistDebuff = 0;
 	squeezerplus = false;
-	FM_Health = 0.35;
+	FM_Health = 0.3;
 	FM_Damage = 0.6;
 }
 
@@ -262,7 +262,7 @@ int Freeplay_GetDangerLevelCurrent(int postWaves)
 	}
 	int DangerLevel = 1;
 
-	float DefaultChance = 0.0175 * float(EnemyChance);
+	float DefaultChance = 0.02 * float(EnemyChance);
 	DefaultChance += 0.005 * float(postWaves - 41);
 	
 	if(DefaultChance > 0.475)
