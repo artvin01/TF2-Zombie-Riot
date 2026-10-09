@@ -345,7 +345,7 @@ static void VestaScorcherSelfDefense(VestaScorcher npc)
 		npc.PlayMinigunSound(true);
 		SpinSound = false;
 		npc.FaceTowards(vecTarget, 20000.0);
-		int projectile = npc.FireParticleRocket(vecTarget, 8.0, 1000.0, 150.0, "m_brazier_flame", true);
+		int projectile = npc.FireParticleRocket(vecTarget, 4.0, 1000.0, 150.0, "m_brazier_flame", true);
 		int particle = EntRefToEntIndex(i_WandParticle[projectile]);
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);

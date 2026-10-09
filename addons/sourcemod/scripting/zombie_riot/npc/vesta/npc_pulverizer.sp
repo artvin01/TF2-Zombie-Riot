@@ -330,7 +330,7 @@ static void VestanPulverizerSelfDefense(VestanPulverizer npc)
 		npc.PlayFlameThrowerSound(true);
 		SpinSound = false;
 		npc.FaceTowards(vecTarget, 20000.0);
-		int projectile = npc.FireParticleRocket(vecTarget, 18.0, 1000.0, 150.0, "superrare_burning2", true);
+		int projectile = npc.FireParticleRocket(vecTarget, 9.0, 1000.0, 150.0, "superrare_burning2", true);
 		int particle = EntRefToEntIndex(i_WandParticle[projectile]);
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
