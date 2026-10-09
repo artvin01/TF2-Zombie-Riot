@@ -258,7 +258,7 @@ public Action BarrackTeuton_OnTakeDamage(int victim, int &attacker, int &inflict
     {
         if(npc.m_flDefBackupCooldown < GameTime)
         {
-            ApplyStatusEffect(npc.index, npc.index, "Savagery Buff", 5.0);
+            ApplyStatusEffect(npc.index, npc.index, "Savagery Buff", 2.0);
 
             npc.m_flDefBackupCooldown = GameTime + 30.0;
 
