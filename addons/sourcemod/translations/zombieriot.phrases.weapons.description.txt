@@ -1772,7 +1772,7 @@
 	"Accurate Marksman Desc"
 	{
 		"en"	"-Gain 10％ more accuracy\n-Gain 20％ faster projectile speed\n-Gain 25％ faster Sniper Rifle charge rate"
-		"ko"	"-집탄율 +10％\n-투사체 비행 속도 +20％\n-저격소총 충전 속도 +25%"
+		"ko"	"-집탄율 +10％\n-투사체 비행 속도 +20％\n-저격소총 충전 속도 +25％"
 	}
 	
 	"Ammo Coat Desc"
@@ -4982,37 +4982,37 @@
 	{
 		"en"	"He never misses.\nIncreases ranged damage by +75％, fire rate and reload speed by +5％.\nIncreases accuracy by +10％ and projectile speed by +10％.\nIncreases max clip size by +5％ and Sniper Rifle charge rate by +5％."
 		"it"	"Non manca mai il bersaglio.\nAumenta il danno a distanza del +75％, la cadenza di fuoco e la velocità di ricarica del +5％.\nAumenta la precisione del +10％ e la velocità dei proiettili del +10％."
-		"ko"	"그는 절대로 놓치지 않습니다.\n-원거리 무기 피해량 +75％\n-재장전 속도, 공격 속도 +5％\n-명중률과 투사체 비행 속도 +10％" 
+		"ko"	"그는 절대로 놓치지 않습니다.\n-원거리 무기 피해량 +75％\n-재장전 속도, 공격 속도 +5％\n-명중률과 투사체 비행 속도 +10％\n-장탄수 +5％\n-저격소총 충전 속도 +5％" 
 	}
 	"Waldch's Railgun Rounds Desc"
 	{
 		"en"	"How kind of him.\nIncreases ranged damage by +75％, fire rate and reload speed by +10％.\nIncreases accuracy by +20％ and projectile speed by +25％.\nIncreases max clip size by +5％ and Sniper Rifle charge rate by +5％."
 		"it"	"Che gentile da parte sua.\nAumenta il danno a distanza del +75％, la cadenza di fuoco del +7.5％ e la velocità di ricarica del +10％.\nAumenta la precisione del +20％ e la velocità dei proiettili del +25％."
-		"ko"	"참 친절하여라.\n-원거리 무기 피해량 +75％\n-공격 속도 +7.5％\n-재장전 속도 +10％\n-명중률 +20％\n-투사체 비행 속도 +25％"
+		"ko"	"참 친절하여라.\n-원거리 무기 피해량 +75％\n-공격 속도 +10％\n-재장전 속도 +10％\n-명중률 +20％\n-투사체 비행 속도 +25％\n-장탄수 +5％\n-저격소총 충전 속도 +5％"
 	}
 	"Cheesy Doomsday Pack Desc"
 	{
 		"en"	"The package says ''Includes Molten Cheddar, literally!''\nIncreases ranged damage by +100％, fire rate and reload speed by +15％.\nIncreases accuracy by +35％ and projectile speed by +50％.\nIncreases max clip size by +10％ and Sniper Rifle charge rate by +5％."
 		"it"	"La confezione riporta la dicitura ''Contiene formaggio cheddar fuso, letteralmente!''. Aumenta il danno a distanza del +100％, la cadenza di fuoco e la velocità di ricarica del +15％.\nAumenta la precisione del +35％ e la velocità dei proiettili del +50％."
-		"ko"	"포장에 ''말 그대로 녹아내린 체다가 포함되어 있습니다!''라고 되어있네요.\n-원거리 무기 피해량 +100％\n-재장전 속도, 공격 속도 +15％\n-명중률 +35％\n-투사체 비행 속도 +50％"
+		"ko"	"포장에 ''말 그대로 녹아내린 체다가 포함되어 있습니다!''라고 되어있네요.\n-원거리 무기 피해량 +100％\n-재장전 속도, 공격 속도 +15％\n-명중률 +35％\n-투사체 비행 속도 +50％\n-장탄수 +10％\n-저격소총 충전 속도 +5％"
 	}
 	"Twirl Magic Desc"
 	{
-		"en"	"This is as far as she can get with teaching magic to you.\n+200 HP, Increases mage damage by +75％ and mage attack speed by +10％.\nIncreases melee resist with wands out by +5％, and max mana by 25％.\nIncreases projectile speed by +5%."
+		"en"	"This is as far as she can get with teaching magic to you.\n+200 HP, Increases mage damage by +75％ and mage attack speed by +10％.\nIncreases melee resist with wands out by +5％, and max mana by 25％.\nIncreases projectile speed by +5％."
 		"it"	"Questo è il massimo che può fare per insegnarti la magia.\n+200 HP, aumenta il danno magico del +75％ e la velocità d'attacco magico del +10％.\nAumenta la resistenza in mischia con bacchette magiche del +5％ e il mana massimo del 25％."
-		"ko"	"그녀가 당신에게 마법을 가르쳐줄 수 있는 한계입니다.\n-최대 체력 +200\n-마법 무기 피해량 +75％\n-공격 속도 +10％.\n-마법 무기 장착 시 근접 피해 저항력 +5％\n-최대 마나 +25％"
+		"ko"	"그녀가 당신에게 마법을 가르쳐줄 수 있는 한계입니다.\n-최대 체력 +200\n-마법 무기 피해량 +75％\n-공격 속도 +10％.\n-마법 무기 장착 시 근접 피해 저항력 +5％\n-최대 마나 +25％\n-마법 투사체 비행 속도 +5％"
 	}
 	"Magical Fontina Aura Desc"
 	{
-		"en"	"What kind of magic is this?\n+300 HP, Increases mage damage by +85％ and mage attack speed by +10％.\nIncreases melee resist with wands out by +6％, and max mana by 25％.\nIncreases projectile speed by +5%."
+		"en"	"What kind of magic is this?\n+300 HP, Increases mage damage by +85％ and mage attack speed by +10％.\nIncreases melee resist with wands out by +6％, and max mana by 25％.\nIncreases projectile speed by +5％."
 		"it"	"Che tipo di magia è questa? +300 HP, aumenta il danno magico di +85％ e la velocità d'attacco magico di +10％.\nAumenta la resistenza in mischia con bacchette estratte di +6％ e il mana massimo del 25％."
-		"ko"	"이건 도대체가 무슨 마법이여?\n-최대 체력 +300\n-마법 무기 피해량 +85％\n-공격 속도 +10％\n-마법 무기 장착 시 근접 피해 저항력 +6％\n-최대 마나 +25％"
+		"ko"	"이건 도대체가 무슨 마법이여?\n-최대 체력 +300\n-마법 무기 피해량 +85％\n-공격 속도 +10％\n-마법 무기 장착 시 근접 피해 저항력 +6％\n-최대 마나 +25％\n-마법 투사체 비행 속도 +5％"
 	}
 	"Domain Expansion: Cheese Desc"
 	{
-		"en"	"Through Necropolis and Irln, you alone are the Cheesed one.\n+600 HP, Increases mage damage by +120％ and mage attack speed by +10％.\nIncreases melee resist with wands out by +10％, and max mana by 25％.\nIncreases projectile speed by +10%."
+		"en"	"Through Necropolis and Irln, you alone are the Cheesed one.\n+600 HP, Increases mage damage by +120％ and mage attack speed by +10％.\nIncreases melee resist with wands out by +10％, and max mana by 25％.\nIncreases projectile speed by +10％."
 		"it"	"Grazie a Necropolis e Irln, solo tu sei il Cheesed.\n+600 HP, aumenta il danno magico del +120％ e la velocità d'attacco magico del +10％.\nAumenta la resistenza in mischia con bacchette del +10％ e il mana massimo del 25％."
-		"ko"	"네크로폴리스상에릴렌하 치즈독존.\n-최대 체력 +600\n-마법 무기 피해량 +120％\n-공격 속도 +10％\n-마법 무기 장착 시 근접 피해 저항력 +10％\n-최대 마나 +25％"
+		"ko"	"네크로폴리스상에릴렌하 치즈독존.\n-최대 체력 +600\n-마법 무기 피해량 +120％\n-공격 속도 +10％\n-마법 무기 장착 시 근접 피해 저항력 +10％\n-최대 마나 +25％\n-마법 투사체 비행 속도 +10％"
 	}
 	"Bob's Willpower Desc"
 	{
