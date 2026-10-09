@@ -368,7 +368,7 @@ static void VestanPulverizer_Particle_StartTouch(int entity, int target)
 		if(NpcStats_VestanCallToArms(owner))
 			BurninHell *= 3.0;
 		BurninHell *= 0.5;
-		NPC_Ignite(target, owner,20.0, -1, BurninHell);
+		NPC_Ignite(target, owner, BurninHell, -1, 20.0);
 
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
