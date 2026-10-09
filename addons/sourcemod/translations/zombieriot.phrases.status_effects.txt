@@ -4021,26 +4021,32 @@
 	"Vulnerability Hex"
 	{
 		"en"	"Vulnerability Hex"
+		"ko"	"취약의 저주"
 	}
 	"Vulnerability Hex Desc"
 	{
 		"en"	"Take 15%% more damage\n15%% slower movement speed"
+		"ko"	"받는 피해량이 15％ 증가합니다.\n이동 속도가 15％ 감소합니다."
 	}
 	"Weakening Hex"
 	{
 		"en"	"Weakening Hex"
+		"ko"	"약화의 저주"
 	}
 	"Weakening Hex Desc"
 	{
 		"en"	"Deal 15%% less damage\nAttack 15%% slower"
+		"ko"	"공격 피해량이 15％ 감소합니다.\n공격 속도가 15％ 감소합니다."
 	}
 	"Small Hex"
 	{
 		"en"	"Small Hex"
+		"ko"	"작은 저주"
 	}
 	"Small Hex Desc"
 	{
 		"en"	"Take 5%% more damage\nDeal 5%% less damage\nMove 5%% slower\nAttack 5%% slower"
+		"ko"	"받는 피해량이 5％ 증가합니다.\n공격 피해량이 5％ 감소합니다.\n이동 속도가 5％ 감소합니다.\n공격 속도가 5％ 감소합니다."
 	}
 	"Poise"
 	{
