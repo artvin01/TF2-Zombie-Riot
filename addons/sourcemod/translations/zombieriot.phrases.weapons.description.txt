@@ -2543,6 +2543,7 @@
 	{
 		"en"	"Provides AOE debuffs against enemies and heals for low health players, he's a support unit"
 		"it"	"Fornisce debuff AOE contro i nemici e cura i giocatori vicini, è un'unità di supporto"
+		"ko"	"적들에게 광역으로 디버프를 부여하는 동시에 체력이 낮은 플레이어를 치유하는 지원 유닛입니다."
 	}
 	"Hussar Desc"
 	{
