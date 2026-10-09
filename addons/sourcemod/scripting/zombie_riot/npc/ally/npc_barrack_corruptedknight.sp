@@ -2,7 +2,10 @@
 #pragma newdecls required
 
 static int CorruptedKnightSpecialCommand[MAXENTITIES];
-int Revive[MAXENTITIES];
+static int Revive[MAXENTITIES];
+static int TideLanceCount[MAXENTITIES];
+static bool CorruptedKnight_SpecialAttack[MAXENTITIES];
+static int AttackCount[MAXENTITIES];
 
 enum
 {
@@ -150,7 +153,6 @@ methodmap BarrackCorruptedKnight < BarrackBody
 		npc.m_iBleedType = BLEEDTYPE_DWELLER;
 		
 		npc.m_flSpeed = 150.0;
-		npc.m_bisWalking = true;
 		
 		npc.i_CorruptedKnightSpecialCommand = CorruptedKnight_Command_Default;
 		npc.b_NpcSpecialCommand = true;
@@ -167,7 +169,7 @@ methodmap BarrackCorruptedKnight < BarrackBody
 		
 		npc.m_flDoingAnimation = 0.0; // Used to handle when to give him the horse during the first transformation in a round
 		
-		// Cooldowns 15 Seconds -> Charge, 60 seconds -> Heal, 25 seconds Tide-Lance, TideHunt -> 60, Slay the ocean -> 120
+		// Cooldowns 15 Seconds -> Charge, 60 seconds -> Heal, 25 seconds Tide-Lance, TideHunt -> 60, Slay the ocean -> 60
 
 		npc.m_flSelfHeal = 0.0; // Heal
 		npc.m_flCharge = 0.0;	// Charge
@@ -176,7 +178,10 @@ methodmap BarrackCorruptedKnight < BarrackBody
 		npc.m_flKillDoor = 10.0;	// For the memes
 		npc.m_flSelfRevive = 0.0;	// Self revival condition 2
 		npc.m_flNextRangedSpecialAttack = 0.0; // SLAY THE OCEAN
-		npc.m_flNextRangedAttack = 0.0; // To decide when he should move
+		npc.m_flReloadDelay = 0.0; // To decide when he should move
+		b_NpcUnableToDie[npc.index] = true;	// Unable to die
+		TideLanceCount[npc.index] = 0;	// Counter for Tidelance hits
+		AttackCount[npc.index] = 0;	// Slay the ocean counter
 		
 		Revive[npc.index] = Waves_GetRoundScale(); // Variable used to allow the Corrupted Knight to instantly revive after a wave is over
 		
@@ -208,112 +213,86 @@ public void BarrackCorruptedKnight_ClotThink(int iNPC)
 	if(BarrackBody_ThinkStart(npc.index, GameTime))
 	{
 		int client = BarrackBody_ThinkTarget(npc.index, true, GameTime);
-		BarrackBody_ThinkTarget(npc.index, true, GameTime);
 		int PrimaryThreatIndex = npc.m_iTarget;
 		
-		if(npc.i_CorruptedKnightSpecialCommand == 5) // KO state AND revive state
-		{	
-			if(Revive[npc.index] < Waves_GetRoundScale()) // If the waves changed revive him
-			{
-				Revive[npc.index] = Waves_GetRoundScale();
-				SetDownedState_CorruptedKnight(iNPC, false);
-				DesertYadeamDoHealEffect(iNPC, 200.0);
-				
-				CPrintToChatAll("{green}The Corrupted Knight returns to battle, his mission isn't done yet");
-				
-				npc.i_CorruptedKnightSpecialCommand = CorruptedKnight_Command_Default;
-			}
-			if(npc.m_flSelfRevive && npc.m_flSelfRevive < GetGameTime())
-			{
-				DesertYadeamDoHealEffect(iNPC, 200.0);
-				
-				SetDownedState_CorruptedKnight(iNPC, false);
-				
-				if(!LastMann)
-				{
-					CPrintToChatAll("{green}Enough time has passed and the Corrupted Knight's dweller blood closed his wounds, he returns to the fight");
-					npc.i_CorruptedKnightSpecialCommand = CorruptedKnight_Command_Default;
-				}
-				else
-				{
-					CPrintToChatAll("{green}His rage won't fade in this moment of desperation...the Corrupted Knight returns yet again");
-					npc.i_CorruptedKnightSpecialCommand = CorruptedKnight_Command_Rampage;
-				}
-			}
-		}
-		// --------------
-		if(Revive[npc.index] < Waves_GetRoundScale() && npc.i_CorruptedKnightSpecialCommand != 5) // If the wave changes update the variable so he doesn't randomly revive, if he's enraged make him chill out and steal the horse
+		if(Revive[npc.index] < Waves_GetRoundScale())
 		{
-			HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) * 1.5, _, 5.0, HEAL_ABSOLUTE);
+			bool Knightded = (npc.i_CorruptedKnightSpecialCommand == CorruptedKnight_Command_KO);
+
 			Revive[npc.index] = Waves_GetRoundScale();
 			npc.Anger = false;
-			
+
+			if(!Knightded)
+				HealEntityGlobal(npc.index, npc.index, ReturnEntityMaxHealth(npc.index) * 1.5, _, 5.0, HEAL_ABSOLUTE);
+
 			if(Waves_GetRoundScale() == 39)
 			{
 				CPrintToChatAll("{green}The Corrupted Knight channels his rage preparing for the decisive battle(the Corrupted Knight got stronger)");
 				SetEntProp(npc.index, Prop_Data, "m_iMaxHealth", 5000);
 			}
-			if(npc.i_CorruptedKnightSpecialCommand == 6)
+
+			if(Knightded)
+			{
+				SetDownedState_CorruptedKnight(iNPC, false);
+				DesertYadeamDoHealEffect(iNPC, 200.0);
+				CPrintToChatAll("{green}The Corrupted Knight returns to battle, his mission isn't done yet");
+				npc.i_CorruptedKnightSpecialCommand = CorruptedKnight_Command_Default;
+			}
+			else if(npc.i_CorruptedKnightSpecialCommand == CorruptedKnight_Command_Rampage)
 			{
 				HorseMode(npc, 0);
-				// if (IsValidEntity(npc.m_iWearable6))
-				// RemoveEntity(npc.m_iWearable6);
-				
-				npc.SetActivity("ACT_IDLE");
+				npc.m_iChanged_WalkCycle = 0;
 				npc.i_CorruptedKnightSpecialCommand = CorruptedKnight_Command_Default;
 			}
 		}
-		// --------------
+
+		// Code for the timer-based auto revive
+		if(npc.i_CorruptedKnightSpecialCommand == CorruptedKnight_Command_KO && npc.m_flSelfRevive && npc.m_flSelfRevive < GameTime)
+		{
+			DesertYadeamDoHealEffect(iNPC, 200.0);
+			SetDownedState_CorruptedKnight(iNPC, false);
+
+			if(!LastMann)
+			{
+				CPrintToChatAll("{green}Enough time has passed and the Corrupted Knight's dweller blood closed his wounds, he returns to the fight");
+				npc.i_CorruptedKnightSpecialCommand = CorruptedKnight_Command_Default;
+			}
+			else
+			{
+				CPrintToChatAll("{green}His rage won't fade in this moment of desperation...the Corrupted Knight returns yet again");
+				npc.i_CorruptedKnightSpecialCommand = CorruptedKnight_Command_Rampage;
+			}
+		}
+		// -------------------------
 		if(LastMann && !npc.Anger)	// Condition for his Rampage to activate, he gets a stronger buff on wave 40 specifically (A bit for lore reason since he hates Ishar'mla so it kinda makes sense he's kinda pissed off when he sees her)
 		{
 			npc.Anger = true;
 			SetDownedState_CorruptedKnight(iNPC, false);
 			npc.CmdOverride = Command_Aggressive; // Force Corrupted Knight to go aggressive because well, he has to help the LMS
 			
-			if(Waves_GetRoundScale() == 39) // Wave 40
-			{
+			if(Waves_GetRoundScale() == 39)
 				CPrintToChatAll("{red}Precisely because he is always fighting, fate continues to favor him, constantly throwing him into misery and calamity, and eagerly awaiting his undoing");
-				b_NpcIsInvulnerable[npc.index] = true;
-				b_ThisEntityIgnored[npc.index] = true;
-				
-				npc.AddGesture("ACT_LAST_KNIGHT_HORSETIME");
-				
-				npc.StopPathing();
-				npc.m_bisWalking = false;
-				
-				npc.m_flNextRangedAttack = GameTime + 8.6;
-				npc.m_flNextRangedSpecialAttack = GameTime + 8.6;
-				npc.m_flNextMeleeAttack = GameTime + 8.6;
-				npc.m_flDoingAnimation = GameTime + 5.75; // Darn you Door and your weird timers
-				
-				npc.i_CorruptedKnightSpecialCommand = CorruptedKnight_Command_Rampage;
-			}
 			else
-			{
 				CPrintToChatAll("{red}The Corrupted Knight mounts his steed and refusing to acknowledge defeat against the sea he charges into the fray");
-				b_NpcIsInvulnerable[npc.index] = true;
-				b_ThisEntityIgnored[npc.index] = true;
-				
-				npc.AddGesture("ACT_LAST_KNIGHT_HORSETIME");
-				
-				npc.StopPathing();
-				npc.m_bisWalking = false;
-				
-				npc.m_flNextRangedAttack = GameTime + 8.6;
-				npc.m_flNextMeleeAttack = GameTime + 8.6;
-				npc.m_flNextRangedSpecialAttack = GameTime + 8.6;
-				npc.m_flDoingAnimation = GameTime + 5.75; // Darn you Door and your weird timers
-				
-				npc.i_CorruptedKnightSpecialCommand = CorruptedKnight_Command_Rampage;
-			}
+
+			b_NpcIsInvulnerable[npc.index] = true;
+			b_ThisEntityIgnored[npc.index] = true;
+			npc.AddGesture("ACT_LAST_KNIGHT_HORSETIME");
+			
+			npc.m_iChanged_WalkCycle = 0;
+			npc.m_flReloadDelay = GameTime + 8.6;
+			npc.m_flNextRangedSpecialAttack = GameTime + 8.6;
+			npc.m_flNextMeleeAttack = GameTime + 8.6;
+			npc.m_flDoingAnimation = GameTime + 5.75;
+			npc.i_CorruptedKnightSpecialCommand = CorruptedKnight_Command_Rampage;
 		}
 		// --------------
-		if(npc.i_CorruptedKnightSpecialCommand == 6 && !IsValidEntity(npc.m_iWearable5)) // Remove invincibility during the transformation and equip le horse if the timer has passed
+		if(npc.i_CorruptedKnightSpecialCommand == CorruptedKnight_Command_Rampage && !IsValidEntity(npc.m_iWearable5)) // Remove invincibility during the transformation and equip le horse if the timer has passed
 		{
 			if(npc.m_flDoingAnimation < GameTime)
 			{
 				HorseMode(npc, 1);
-				npc.SetActivity("ACT_RIDER_IDLE");
+				npc.m_iChanged_WalkCycle = 0;
 			}
 		}
 		// --------------
@@ -332,8 +311,8 @@ public void BarrackCorruptedKnight_ClotThink(int iNPC)
 							ang[1] = GetRandomFloat(-179.0, 179.0);
 
 							TeleportEntity(npc.index, pos);
-							npc.m_bisWalking = false;
-							npc.SetActivity("ACT_PUSH_PLAYER");
+							npc.m_iChanged_WalkCycle = 0;
+							npc.AddGesture("ACT_PUSH_PLAYER");
 							
 							npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
 							npc.PlayRandomEnemyPullSound();
@@ -352,17 +331,16 @@ public void BarrackCorruptedKnight_ClotThink(int iNPC)
 			}
 		}
 		// --------------
-		if(npc.i_CorruptedKnightSpecialCommand == 1)
+		if(npc.i_CorruptedKnightSpecialCommand == CorruptedKnight_Command_Heal)
 		{
 			if(npc.m_flSelfHeal < GameTime)
 			{
-				npc.m_flSelfHeal = GameTime + 60.0;
+				npc.m_flSelfHeal = GameTime + 30.0;
 				npc.m_flTideHunt = GameTime + 5.0;	// To avoid people using BOTH heal and tidehunt at the same time
-				npc.m_flNextRangedAttack = GameTime + 5.5;
+				npc.m_flReloadDelay = GameTime + 5.5;
 				npc.m_flNextMeleeAttack = GameTime + 5.5;
 				
-				npc.StopPathing();
-				npc.m_bisWalking = false;
+				npc.m_iChanged_WalkCycle = 0;
 				
 				npc.AddGesture("ACT_LAST_KNIGHT_HEAL",_,5.5);
 				ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", 5.5);
@@ -386,36 +364,21 @@ public void BarrackCorruptedKnight_ClotThink(int iNPC)
 					if(flDistanceToTarget < GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 					{
 						if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen)
-						{
-							bool Success;
-							if(GetRandomInt(1, 2000) > 1999) // 1 out of 2k chance of something funny happening, for those that care about the percentage it's 0.05%
+						{	
+							if(!npc.m_flAttackHappenswillhappen)
 							{
-								Success = true;
-							}
-							
-							if(!Success)
-							{
-								if(!npc.m_flAttackHappenswillhappen)
-								{
+								CorruptedKnight_SpecialAttack[npc.index] = (GetRandomInt(1, 2000) > 1999);
+
+								if(!CorruptedKnight_SpecialAttack[npc.index])
 									npc.AddGesture(npc.m_fbRangedSpecialOn ? "ACT_LAST_KNIGHT_ATTACK_2" : "ACT_LAST_KNIGHT_ATTACK_1");
-									npc.PlaySpearSound();
-									npc.m_flAttackHappens = GameTime + 0.3;
-									npc.m_flAttackHappens_bullshit = GameTime + 0.44;
-									npc.m_flNextMeleeAttack = GameTime + (2.0 * npc.BonusFireRate);
-									npc.m_flAttackHappenswillhappen = true;
-								}
-							}
-							else
-							{
-								if(!npc.m_flAttackHappenswillhappen)
-								{
+								else
 									npc.AddGesture("ACT_WHITEFLOWER_KICK_GROUND");
-									npc.PlaySpearSound();
-									npc.m_flAttackHappens = GameTime + 0.3;
-									npc.m_flAttackHappens_bullshit = GameTime + 0.44;
-									npc.m_flNextMeleeAttack = GameTime + (2.0 * npc.BonusFireRate);
-									npc.m_flAttackHappenswillhappen = true;
-								}
+
+								npc.PlaySpearSound();
+								npc.m_flAttackHappens = GameTime + 0.3;
+								npc.m_flAttackHappens_bullshit = GameTime + 0.44;
+								npc.m_flNextMeleeAttack = GameTime + (2.0 * npc.BonusFireRate);
+								npc.m_flAttackHappenswillhappen = true;
 							}
 							if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
 							{
@@ -428,15 +391,16 @@ public void BarrackCorruptedKnight_ClotThink(int iNPC)
 									float vecHit[3];
 									TR_GetEndPosition(vecHit, swingTrace);
 
-									if(target > 0) 
+									if(target > 0)
 									{
-										if(!Success)
+										if(!CorruptedKnight_SpecialAttack[npc.index])
 										{
 											if(npc.m_fbRangedSpecialOn) // If charge is active he hits a second time and has extra effects
 											{
 												SDKHooks_TakeDamage(target, npc.index, client, i_BleedType[target] == BLEEDTYPE_DWELLER ? 80000.0 : 50000.0, DMG_CLUB, -1, _, vecHit);
 												npc.m_flCharge = GameTime + 15.0;
 												npc.m_fbRangedSpecialOn = false;
+												npc.m_iChanged_WalkCycle = 0;
 												
 												if(i_BleedType[target] == BLEEDTYPE_DWELLER)
 												{
@@ -461,7 +425,6 @@ public void BarrackCorruptedKnight_ClotThink(int iNPC)
 											TE_Particle("asplode_hoodoo", VecSelfNpc, NULL_VECTOR, NULL_VECTOR, npc.index, _, _, _, _, _, _, _, _, _, 0.0);
 											FreezeNpcInTime(target, 5.0);
 											Custom_Knockback(npc.index, target, 3000.0, true);
-											Success = false;
 										}
 									}
 								}
@@ -480,6 +443,7 @@ public void BarrackCorruptedKnight_ClotThink(int iNPC)
 					if(npc.m_flCharge < GameTime)
 					{
 						npc.m_fbRangedSpecialOn = true;
+						npc.m_iChanged_WalkCycle = 0;
 					}
 					npc.i_CorruptedKnightSpecialCommand = CorruptedKnight_Command_Default;
 				}
@@ -487,23 +451,23 @@ public void BarrackCorruptedKnight_ClotThink(int iNPC)
 				{
 					if(npc.m_flTideLance < GameTime)
 					{
+						TideLanceCount[npc.index] = 0;
 						npc.m_flTideLance = GameTime + 25.0;
 					}
 					if(flDistanceToTarget < GIANT_ENEMY_MELEE_RANGE_FLOAT_SQUARED || npc.m_flAttackHappenswillhappen)
 					{
 						if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen)
 						{
-							static int AttackCount;
 							
 							if(!npc.m_flAttackHappenswillhappen)
 							{
-								AttackCount ++;
+								TideLanceCount[npc.index] ++;
 								
-								npc.AddGesture(AttackCount > 4 ? "ACT_LAST_KNIGHT_ATTACK_2" : "ACT_LAST_KNIGHT_ATTACK_1");
+								npc.AddGesture(TideLanceCount[npc.index] > 4 ? "ACT_LAST_KNIGHT_ATTACK_2" : "ACT_LAST_KNIGHT_ATTACK_1");
 								npc.PlaySpearSound();
-								npc.m_flAttackHappens = GameTime + (AttackCount > 4 ? 0.35 : 0.25);
+								npc.m_flAttackHappens = GameTime + (TideLanceCount[npc.index] > 4 ? 0.35 : 0.25);
 								npc.m_flAttackHappens_bullshit = GameTime + 0.44;
-								npc.m_flNextMeleeAttack = GameTime + (AttackCount > 4 ? 1.5 : 1.0);
+								npc.m_flNextMeleeAttack = GameTime + (TideLanceCount[npc.index] > 4 ? 1.5 : 1.0);
 								npc.m_flAttackHappenswillhappen = true;
 							}
 							if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
@@ -520,11 +484,11 @@ public void BarrackCorruptedKnight_ClotThink(int iNPC)
 									if(target > 0) 
 									{
 										
-										if(AttackCount > 4)
+										if(TideLanceCount[npc.index] > 4)
 										{
 											SDKHooks_TakeDamage(target, npc.index, client, i_BleedType[target] == BLEEDTYPE_DWELLER ? 30000.0 : 20000.0, DMG_CLUB, -1, _, vecHit);
 											npc.PlayFreezeSound();
-											AttackCount = 0;
+											TideLanceCount[npc.index] = 0;
 											
 											Custom_Knockback(npc.index, target, 300.0, true);
 											ApplyStatusEffect(npc.index, target, "Near Zero", 2.0);
@@ -558,13 +522,12 @@ public void BarrackCorruptedKnight_ClotThink(int iNPC)
 						{
 							// All the preparations -> Giving time for 50% dr, locking him in place and making him prepare his big boom
 							npc.AddGesture("ACT_LAST_KNIGHT_TIDEHUNT",_,8.0);
-							npc.m_flNextRangedAttack = GameTime + 8.0;
+							npc.m_flReloadDelay = GameTime + 8.0;
 							npc.m_flNextMeleeAttack = GameTime + 8.0;
 							npc.m_flAttackHappens = GameTime + 5.0;
 							ApplyStatusEffect(npc.index, npc.index, "Very Defensive Backup", 8.0);
 							
-							npc.StopPathing();
-							npc.m_bisWalking = false;
+							npc.m_iChanged_WalkCycle = 0;
 							
 							spawnRing_Vectors(VecSelfNpc, 450.0 * 2.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 255, 0, 255, 1, 1.95, 5.0, 0.0, 1);
 							spawnRing_Vectors(VecSelfNpc, 0.0, 0.0, 0.0, 5.0, "materials/sprites/laserbeam.vmt", 0, 255, 0, 255, 1, 4.0, 5.0, 0.0, 1, 450.0 * 2.0);
@@ -586,36 +549,21 @@ public void BarrackCorruptedKnight_ClotThink(int iNPC)
 				}
 				case CorruptedKnight_Command_Rampage:	// Happens ONLY when it's last man standing, he gets significant buffs but becomes uncontrollable and has a special attack that uses off cooldown, he won't get out of this state unless either he dies or round ends
 				{	
-					if(b_NpcIsInvulnerable[npc.index])	// Make him move + remove invincibility AFTER he transformed fully
+					if(b_NpcIsInvulnerable[npc.index] && npc.m_flReloadDelay < GameTime)
 					{
-						if(npc.m_flNextRangedAttack < GameTime)
-						{
-							npc.m_flSpeed = 250.0;
-							npc.StartPathing();
-							npc.m_bisWalking = true;
-							b_NpcIsInvulnerable[npc.index] = false;
-							b_ThisEntityIgnored[npc.index] = false;
-						}
-					}
-					if(npc.m_flNextRangedAttack < GameTime)
-					{
-						npc.StartPathing();
-						npc.m_bisWalking = true;
 						b_NpcIsInvulnerable[npc.index] = false;
 						b_ThisEntityIgnored[npc.index] = false;
-						BarrackBody_ThinkMove(npc.index, 250.0, "ACT_RIDER_IDLE", "ACT_RIDER_RUN");
 					}
 					if(npc.m_flNextRangedSpecialAttack < GameTime) // He's pissed so he's going to use "SLAY THE OCEAN", big aoe and damage
 					{
 						if(npc.m_iPhase == 0) // Special effect to show he has his "SLAY THE OCEAN"" skill ready, it's a prepare phase
 						{
-							npc.StopPathing();
-							npc.m_bisWalking = false;
-							
+							npc.m_iChanged_WalkCycle = 0;							
 							npc.AddGesture("ACT_LAST_KNIGHT_SLAY_PREPARE");
-							npc.m_flNextRangedAttack = GameTime + 1.0;
+							npc.m_flReloadDelay = GameTime + 1.0;
 							npc.m_flNextMeleeAttack = GameTime + 1.0;
 							NpcSpeechBubble(npc.index, "Will...NEVER...BOW", 7, {255,9,9,255}, {0.0,0.0,120.0}, "");
+							ApplyStatusEffect(npc.index, npc.index, "Desperation", 5.0);	// The new buff
 							npc.m_iPhase = 1;
 						}
 						// Big attack
@@ -623,17 +571,15 @@ public void BarrackCorruptedKnight_ClotThink(int iNPC)
 						{
 							if(npc.m_flNextMeleeAttack < GameTime || npc.m_flAttackHappenswillhappen)
 							{
-								static int AttackCount2;
-								
 								if(!npc.m_flAttackHappenswillhappen)
 								{
-									AttackCount2 ++;
+									AttackCount[npc.index] ++;
 									
-									npc.AddGesture(AttackCount2 > 2 ? "ACT_LAST_KNIGHT_SLAY2" : "ACT_LAST_KNIGHT_SLAY1");
+									npc.AddGesture(AttackCount[npc.index] > 2 ? "ACT_LAST_KNIGHT_SLAY2" : "ACT_LAST_KNIGHT_SLAY1");
 									npc.PlaySpearSound();
-									npc.m_flAttackHappens = GameTime + (AttackCount2 > 2 ? 0.35 : 0.25);
+									npc.m_flAttackHappens = GameTime + (AttackCount[npc.index] > 2 ? 0.35 : 0.25);
 									npc.m_flAttackHappens_bullshit = GameTime + 0.44;
-									npc.m_flNextMeleeAttack = GameTime + (AttackCount2 > 2 ? 3.0 : 2.0);
+									npc.m_flNextMeleeAttack = GameTime + (AttackCount[npc.index] > 2 ? 3.0 : 2.0);
 									npc.m_flAttackHappenswillhappen = true;
 								}
 								if(npc.m_flAttackHappens < GameTime && npc.m_flAttackHappens_bullshit >= GameTime && npc.m_flAttackHappenswillhappen)
@@ -649,15 +595,15 @@ public void BarrackCorruptedKnight_ClotThink(int iNPC)
 
 										if(target > 0) 
 										{	
-											if(AttackCount2 > 2)
+											if(AttackCount[npc.index] > 2)
 											{
 												Explode_Logic_Custom(30000.0, GetClientOfUserId(npc.OwnerUserId), npc.index, -1, VecSelfNpc , 200.0, 1.0, _, true, .FunctionToCallBeforeHit = TideHunt_Effect);
-												AttackCount2 = 0;
+												AttackCount[npc.index] = 0;
 												ApplyStatusEffect(npc.index, target, "Near Zero", 8.0);
 												FreezeNpcInTime(target, 3.0);
 												
 												// We add a cooldown + reset the prepare phase and he doesn't glow up anymore, no more showtime for a while
-												npc.m_flNextRangedSpecialAttack = GameTime + 120.0;
+												npc.m_flNextRangedSpecialAttack = GameTime + 60.0;
 												
 												// if (IsValidEntity(npc.m_iWearable6))
 												// RemoveEntity(npc.m_iWearable6);
@@ -676,11 +622,8 @@ public void BarrackCorruptedKnight_ClotThink(int iNPC)
 												PredictSubjectPosition(npc, target,_,_, vPredictedPos);
 												vPredictedPos = GetBehindTarget(PrimaryThreatIndex, 30.0 ,vPredictedPos);
 												
-												float PreviousPos[3];
-												WorldSpaceCenter(npc.index, PreviousPos);
-												float WorldSpaceVec[3]; WorldSpaceCenter(npc.index, WorldSpaceVec);
-												
 												Npc_Teleport_Safe(npc.index, vPredictedPos, hullcheckmins, hullcheckmaxs, true);
+												WorldSpaceCenter(npc.index, VecSelfNpc);
 											
 												Explode_Logic_Custom(10000.0, GetClientOfUserId(npc.OwnerUserId), npc.index, -1, VecSelfNpc , 200.0, 1.0, _, true, .FunctionToCallBeforeHit = Slay_Effect1);
 											}
@@ -744,20 +687,19 @@ public void BarrackCorruptedKnight_ClotThink(int iNPC)
 				}
 			}
 		}
-		if(npc.i_CorruptedKnightSpecialCommand < 5) // In short, if he's not K.O/Enraged or if he's not using Heal/Tidehunt he's free to move
+		switch(npc.i_CorruptedKnightSpecialCommand)
 		{
-			if(npc.m_flNextRangedAttack < GameTime)
+			case CorruptedKnight_Command_KO:
+			{
+				BarrackBody_ThinkMove(npc.index, 0.0, "ACT_LAST_KNIGHT_DOWNED", "ACT_LAST_KNIGHT_DOWNED", _, false, false);
+			}
+			case CorruptedKnight_Command_Rampage:
+			{
+				BarrackBody_ThinkMove(npc.index, 250.0, IsValidEntity(npc.m_iWearable5) ? "ACT_RIDER_IDLE" : "ACT_IDLE", "ACT_RIDER_RUN");
+			}
+			default:
 			{
 				BarrackBody_ThinkMove(npc.index, npc.m_fbRangedSpecialOn ? 300.0 : 150.0, "ACT_IDLE", "ACT_LAST_KNIGHT_WALK");
-				if(!npc.m_bisWalking)
-				{
-					npc.StartPathing();
-					npc.m_bisWalking = true;
-				}
-				if(npc.m_flSpeed > 150.0)
-				{
-					npc.m_flSpeed = 150.0;
-				}
 			}
 		}
 	}
@@ -801,7 +743,7 @@ public int BarrackCorruptedKnight_MenuH(Menu menu, MenuAction action, int client
 				BarrackCorruptedKnight npc = view_as<BarrackCorruptedKnight>(entity);
 				float GameTime = GetGameTime(entity);
 
-				if(npc.i_CorruptedKnightSpecialCommand <= 4)
+				if(npc.i_CorruptedKnightSpecialCommand < CorruptedKnight_Command_KO)
 				{
 					switch(choice)
 					{
@@ -832,7 +774,7 @@ public int BarrackCorruptedKnight_MenuH(Menu menu, MenuAction action, int client
 						}
 						case 2:
 						{
-							if(npc.CmdOverride < 4)
+							if(npc.CmdOverride != Command_Retreat && npc.CmdOverride != Command_RetreatPlayer && npc.CmdOverride != Command_HoldPos && npc.CmdOverride != Command_HoldPosBarracks)	// Don't make him charge if he's on any kind of retreat or hold position
 							{
 								if(npc.m_flCharge < GameTime)
 								{
@@ -935,7 +877,7 @@ public Action BarrackCorruptedKnight_OnTakeDamage(int victim, int &attacker, int
 	}
 	if(damage >= health)
 	{
-		if(npc.i_CorruptedKnightSpecialCommand == 6) // If he's enraged remove le horse
+		if(npc.i_CorruptedKnightSpecialCommand == CorruptedKnight_Command_Rampage) // If he's enraged remove le horse
 		{
 			HorseMode(npc, 0);
 		}
@@ -985,17 +927,15 @@ void SetDownedState_CorruptedKnight(int iNpc, bool StateDo) // Cleeeearly didn't
 	BarrackCorruptedKnight npc = view_as<BarrackCorruptedKnight>(iNpc);
 	if(StateDo) //downed
 	{
-		npc.m_flSelfRevive = GetGameTime() + 120.0;
+		npc.m_flSelfRevive = GetGameTime(iNpc) + 60.0;
 		b_ThisEntityIgnored[iNpc] = true;
 		b_NpcIsInvulnerable[iNpc] = true;
-		SetEntProp(iNpc, Prop_Data, "m_iHealth", 1);
 		if(!npc.m_flDowned)
 		{
 			npc.m_flDowned = 1.0;
-			npc.StopPathing();
-			npc.m_bisWalking = false;
+			npc.m_iChanged_WalkCycle = 0;
 			npc.AddGesture("ACT_LAST_KNIGHT_KO");
-			npc.SetActivity("ACT_LAST_KNIGHT_DOWNED");
+			CorruptedKnight_SetActivity(npc,"ACT_LAST_KNIGHT_DOWNED");
 		}
 	}
 	else
@@ -1004,13 +944,16 @@ void SetDownedState_CorruptedKnight(int iNpc, bool StateDo) // Cleeeearly didn't
 		{
 			npc.m_flDowned = 0.0;
 			npc.AddGesture("ACT_LAST_KNIGHT_GETUP");
-			npc.SetActivity("ACT_IDLE");
+			npc.m_iChanged_WalkCycle = 0;
 		}
 		npc.m_flSelfRevive = 0.0;
-		npc.StartPathing();
-		npc.m_bisWalking = true;
 		b_ThisEntityIgnored[iNpc] = false;
 		b_NpcIsInvulnerable[iNpc] = false;
 		SetEntProp(iNpc, Prop_Data, "m_iHealth", ReturnEntityMaxHealth(iNpc));
 	}
+}
+static void CorruptedKnight_SetActivity(BarrackCorruptedKnight npc, const char[] anim)	// Easier to update animations without bloating further the code
+{
+    npc.SetActivity(anim);
+    npc.m_iChanged_WalkCycle = 0;
 }

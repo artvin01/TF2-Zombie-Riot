@@ -2184,6 +2184,7 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 	
 	if(!b_NpcHasDied[entity] && !i_IsABuilding[entity])
 	{
+		/*
 		int CurrentPlayerValue = RoundToNearest(Attributes_GetOnPlayer(client, Attrib_BuildingStatus_PreventAbuse));
 		int CurrentBarracksValue = RoundToNearest(Attributes_Get(entity, Attrib_BuildingStatus_PreventAbuse, 1.0));
 		if(CurrentBarracksValue > CurrentPlayerValue)
@@ -2195,6 +2196,7 @@ void Barracks_UpdateEntityUpgrades(int entity, int client, bool firstbuild = fal
 		}
 		//update value for the future
 		Attributes_Set(entity, Attrib_BuildingStatus_PreventAbuse, float(CurrentPlayerValue));
+		*/
 		float Attribute;
 		Attribute = Attributes_GetOnPlayer(client, Attrib_BarracksHealth, true, true);
 		if(f_FreeplayAlteredHealthOld_Barracks[entity] != Attribute)
