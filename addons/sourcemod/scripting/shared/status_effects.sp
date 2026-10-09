@@ -769,7 +769,7 @@ void StatusEffectReset(int victim, bool force)
 	
 	static E_StatusEffect Apply_StatusEffect;
 	int length = E_AL_StatusEffects[victim].Length;
-	for(int i; i<length; i++)
+	for(int i = length - 1; i >= 0; i--)
 	{
 		E_AL_StatusEffects[victim].GetArray(i, Apply_StatusEffect);
 		Apply_StatusEffect.RemoveStatus(true);

@@ -244,30 +244,30 @@ public Action BarrackTeuton_OnTakeDamage(int victim, int &attacker, int &inflict
 	float Maxhealth = ReturnEntityMaxHealth(npc.index) + 0.0;
 	float GameTime = GetGameTime();
 	
-    if(npc.m_flBurstTimer < GameTime)
-    {
-        npc.m_flBurstDamage = 0.0;
-        npc.m_flBurstTimer = GameTime + 3.0;
-    }
+	if(npc.m_flBurstTimer < GameTime)
+	{
+		npc.m_flBurstDamage = 0.0;
+		npc.m_flBurstTimer = GameTime + 3.0;
+	}
 	if (npc.m_flBurstTimer > GameTime)
 	{
 		npc.m_flBurstDamage += damage;
 	}
 	
 	if(npc.m_flBurstDamage >= Maxhealth * 0.5)
-    {
-        if(npc.m_flDefBackupCooldown < GameTime)
-        {
-            ApplyStatusEffect(npc.index, npc.index, "Savagery Buff", 5.0);
+	{
+		if(npc.m_flDefBackupCooldown < GameTime)
+		{
+			ApplyStatusEffect(npc.index, npc.index, "Savagery Buff", 5.0);
 
-            npc.m_flDefBackupCooldown = GameTime + 30.0;
+			npc.m_flDefBackupCooldown = GameTime + 30.0;
 
-            NpcSpeechBubble(npc.index, "In HIS name, I shall not fall", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
+			NpcSpeechBubble(npc.index, "In HIS name, I shall not fall", 5, {255,255,255,255}, {0.0,0.0,60.0}, "");
 
-            npc.m_flBurstDamage = 0.0;
-            npc.m_flBurstTimer = 30.0;
-        }
-    }
+			npc.m_flBurstDamage = 0.0;
+			npc.m_flBurstTimer = 30.0;
+		}
+	}
 	int health = GetEntProp(npc.index, Prop_Data, "m_iHealth");
 	if (damage >= health)
 	{
