@@ -3961,7 +3961,7 @@
 	{
 		"en"		"A while after the Xeno army left victorious, we find the aftermath of their battle. \nCorpses of Xeno infecteds and other mercs lay across a ruined camp. \nBob the Second takes a sample of the infected's flesh."
 		"ko"		"제노 위협을 몰아낸 후 얻은 제노 바이러스의 샘플입니다.\n감염의 근원을 찾아내는데 도움이 될 수 있을 것 같습니다."
-	}    '
+	}   
 	"Son of Osiris's Gift"
 	{
 		"en"		"Son of Osiris’s Gift"
