@@ -4897,7 +4897,7 @@
 	}
 	"Medieval Desc"
 	{
-		"en"	"While Alaxios is away talking with Sensal, he tells Osiris and his army to come to us. They came to the main mercs for training. We agree since Alaxios can just revive them after we're done. Bob the Second also gets the secondary mercs to help too."
+		"en"	"While Alaxios is away talking with Sensal, he tells Osiris and his army to come train with us. Bob the Second also gets the secondary mercs to help in the training."
 		"fr"	"Entrez en combat contre le Moyen-Âge, et leur armure qui leur protège contre les attaques à portée et corps à corps!"
 		"chi"	"对抗中世纪的剑与盾！"
 		"it"	"Combatti contro la mezza età con le loro armature per contrastare gli attacchi in mischia o a distanza!"
@@ -4937,7 +4937,7 @@
 	}
 	"Dwellers Desc"
 	{
-		"en"	"You head to W.F.'s Outpost, after seeing his elite soldiers infected by Xeno, to see if there are any remaining soldiers there. Turns out there were, but the Dweller has infected them. And the sea has forces ready to invade further inland."
+		"en"	"You head to W.F.'s Outpost to make sure no more of his elite soldiers are around. You find some still there, but they're infected by the Dweller."
 		"fr"	"L'infection Dweller attaque avec la Corrosion d'Armure. Guérissez-la avec vos tables d'armure!"
 		"chi"	"海嗣感染将会侵蚀你的盾。"
 		"it"	"L'infezione Dweller è arrivata, gli attacchi di Corrosione dell'Armatura infetteranno la tua armatura, curala con le tabelle dell'armatura!"
@@ -5444,7 +5444,7 @@
 	}
 	"Almina Expi Desc"
 	{
-	  "en" "After the main mercs are done with their training, Almina comes to us, the secondary mercs, for some more training. Nemal and Silvester won't be here this time since they're away with Sensal. So some other Expidonsans volunteer to help."
+	  "en" "After the main mercs finish their training, Almina ask the secondary mercs to do more training. Nemal and Silvester are away with Sensal, so they won't be here. So some other Expidonsans volunteer to help."
 	  "ko" "주요 용병들이 훈련을 마친 후, 알미나가 더 많은 훈련을 위해 보조 용병들을 방문합니다. 이번엔 네말과 실베스터가 센살과 휴가 중이기에 없을 겁니다."
 	}
 	"Almina & Nemal"
