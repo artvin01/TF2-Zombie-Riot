@@ -568,8 +568,19 @@ public void OnPostThink(int client)
 			//standing ontop of raids now entirely debuffs you.
 			TF2_AddCondition(client, TFCond_LostFooting, 1.0);
 			TF2_AddCondition(client, TFCond_AirCurrent, 1.0);
-			float damageStand = 5.0;
-			NpcStuckZoneWarning(client, damageStand);
+			float damageTrigger = 5.0;
+			NpcStuckZoneWarning(client, damageTrigger, 0);	
+			if(damageTrigger > 1.0)
+			{
+				if(damageTrigger < 1000.0 && (i_CurrentEquippedPerk[client] & PERK_LOVER))
+				{
+					TeleportBackToLastSavePosition(client);
+				}
+				else
+				{
+					SDKHooks_TakeDamage(client, 0, 0, damageTrigger, DMG_OUTOFBOUNDS, -1,_,_,_,ZR_STAIR_ANTI_ABUSE_DAMAGE);
+				}
+			}
 		}
 	}
 #if defined ZR
@@ -705,8 +716,19 @@ public void OnPostThink(int client)
 			//standing ontop of raids now entirely debuffs you.
 			TF2_AddCondition(client, TFCond_LostFooting, 1.0);
 			TF2_AddCondition(client, TFCond_AirCurrent, 1.0);
-			float damageStand = 5.0;
-			NpcStuckZoneWarning(client, damageStand);
+			float damageTrigger = 5.0;
+			NpcStuckZoneWarning(client, damageTrigger, 0);	
+			if(damageTrigger > 1.0)
+			{
+				if(damageTrigger < 1000.0 && (i_CurrentEquippedPerk[client] & PERK_LOVER))
+				{
+					TeleportBackToLastSavePosition(client);
+				}
+				else
+				{
+					SDKHooks_TakeDamage(client, 0, 0, damageTrigger, DMG_OUTOFBOUNDS, -1,_,_,_,ZR_STAIR_ANTI_ABUSE_DAMAGE);
+				}
+			}
 		}
 		//re using NPC value.
 		StatusEffect_TimerCallDo(client);
