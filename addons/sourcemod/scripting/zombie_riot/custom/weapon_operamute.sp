@@ -167,7 +167,21 @@ public void OperaMute_DamageInstances(DataPack pack)
 		static float EnemyPos[3];
 		WorldSpaceCenter(victim, EnemyPos);
 		SDKHooks_TakeDamage(victim, attacker, attacker, damage, DMG_CLUB, weapon, _, EnemyPos, _, ZR_DAMAGE_REFLECT_LOGIC);
-		EmitSoundToAll(g_ExtraSlashesSound[GetRandomInt(0, sizeof(g_ExtraSlashesSound) - 1)], victim, SNDCHAN_BODY, 90, _, 1.0, GetRandomInt(100,105));
+
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				if(attacker == client)
+				{
+					EmitSoundToClient(client, g_ExtraSlashesSound[GetRandomInt(0, sizeof(g_ExtraSlashesSound) - 1)], client, SNDCHAN_BODY, 90, _, 1.0, GetRandomInt(100,105));
+				}
+				else
+				{
+					EmitSoundToClient(client, g_ExtraSlashesSound[GetRandomInt(0, sizeof(g_ExtraSlashesSound) - 1)], victim, SNDCHAN_BODY, 90, _, 1.0, GetRandomInt(100,105));
+				}
+			}
+		}
 	}
 	int Repats = pack.ReadCell();
 	if(Repats <= 0)
