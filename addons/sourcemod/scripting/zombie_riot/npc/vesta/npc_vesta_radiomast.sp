@@ -176,7 +176,8 @@ methodmap VestaRadiomast < CClotBody
 		int health = ReturnEntityMaxHealth(npc.index) / 7.5;
 		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
 		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
-
+		int team = GetTeam(npc.index);
+		
 		char Adddeta[512];
 		FormatEx(Adddeta, sizeof(Adddeta), "target%i;", EntIndexToEntRef(npc.index));
 		for(int i=1; i<=2; i++)
