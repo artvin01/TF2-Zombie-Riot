@@ -1973,9 +1973,11 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 								KillFeed_SetKillIcon(npc.index, "fireaxe");
 								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 								bool Knocked = false;
-								float bleeding = damage/90.0;
+								float bleeding = damage/20.0;
 								if(bleeding<4.0)bleeding=4.0;
+								/*
 								else if(bleeding>20.0)bleeding=20.0;
+								*/
 								StartBleedingTimer(targetTrace, npc.index, bleeding, 6, -1, DMG_TRUEDAMAGE, 0);
 								if(IsValidClient(targetTrace))
 								{
