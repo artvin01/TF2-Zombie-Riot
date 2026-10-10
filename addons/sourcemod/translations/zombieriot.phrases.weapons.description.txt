@@ -5971,13 +5971,16 @@
 	"Opera of the Mute"
 	{
 		"en"	"Opera of the Mute"
+		"ko"	"고요한 오페라"
 	}
 	"Opera of the Mute Desc"
 	{
 		"en"	"-Being between 30％ and 70％ mana gives 50％ more damage\n-Consuming or gaining mana gives shield upto 50％ of your max mana\n-attacking enemies gives necrosis\n-every 5th hit deals 12 hits at once with increased necrosis damage\n-Alters mana logic"
+		"ko"	"-마나가 30％와 70％ 사이라면, 피해량이 증가합니다.\n-마나를 소모하거나 획득하면, 최대 마나의 50％까지 보호막을 획득합니다.\n-적중 시, 적에게 쇠약 원소 피해를 부여합니다.\n-5번째 공격마다 증가된 쇠약 원소 피해와 함께 12번의 피해를 한 번에 가합니다.\n-다른 마나 시스템 사용"
 	}
 	"Opera of the Mute Desc 2"
 	{
 		"en"	"-Increased damage, attackspeed and resistance"
+		"ko"	"-피해량 및 공격 속도, 피해 저항 증가"
 	}
 }
