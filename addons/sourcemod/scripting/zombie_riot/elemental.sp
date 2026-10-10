@@ -161,7 +161,7 @@ int Elemental_TriggerDamage(int entity, int type)
 			
 			return b_thisNpcIsABoss[entity] ? 25000 : 12500;
 		*/
-			divide = 1.5;
+			divide = 1.2;
 		}
 		case Element_Nervous:
 		{
@@ -869,7 +869,7 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 	}
 	if(HasSpecificBuff(attacker, "Empty Notes"))
 	{
-		damage = RoundToNearest(float(damage) * 1.5);
+		damage = RoundToNearest(float(damage) * 1.25);
 	}
 	if(victim <= MaxClients || Arena_Mode())
 		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);

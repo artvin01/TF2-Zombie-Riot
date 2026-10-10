@@ -105,7 +105,7 @@ public void OperaMute_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 	if(zr_custom_damage & ZR_DAMAGE_REFLECT_LOGIC)
 	{
 		OperaMute_ManaDo(attacker, -RoundToNearest(float(mana_cost) * 1.0));
-		Elemental_AddNecrosisDamage(victim, attacker, RoundToNearest(damage * 4), weapon);
+		Elemental_AddNecrosisDamage(victim, attacker, RoundToNearest(damage * 3.0), weapon);
 		if(OpeaMute_DamageMulti(attacker))
 		{
 			bool PlaySound = false;
@@ -122,7 +122,7 @@ public void OperaMute_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 	else
 	{
 		OperaMute_ManaDo(attacker, RoundToNearest(float(mana_cost) * 3.0));
-		Elemental_AddNecrosisDamage(victim, attacker, RoundToNearest(damage * 2), weapon);
+		Elemental_AddNecrosisDamage(victim, attacker, RoundToNearest(damage * 1.65), weapon);
 	}
 
 	if(RedMistFinalSwing(weapon))

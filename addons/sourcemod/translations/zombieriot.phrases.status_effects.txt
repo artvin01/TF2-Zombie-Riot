@@ -2436,7 +2436,7 @@
 	}
 	"Empty Notes Desc"
 	{
-		"en"	"+10％ stats up\n{crimson}Notes that mute all...\nOpera gives shield to nearby Ritualists\nOpera gets tango buff for 2x duration\n1.5x necrosis buildup"
+		"en"	"+5％ stats up\n{crimson}Notes that mute all...\nOpera gives shield to nearby Ritualists\nOpera gets tango buff for 2x duration\n1.25x necrosis buildup"
 	}
 	"Charging Raigeki"
 	{
