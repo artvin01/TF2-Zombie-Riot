@@ -3959,7 +3959,7 @@
 	}
 	"Xeno Virus Sample Desc"
 	{
-		"en"		"A while after the Xeno army left victorious, we find the aftermath of their battle. \nCorpses of Xeno infecteds and other mercs lay across a ruined camp. \nBob the Second takes a piece of the infected's flesh. \nHe then tells us we need to get rid of this infection fast!"
+		"en"		"A while after the Xeno army left victorious, we find the aftermath of their battle. \nCorpses of Xeno infecteds and other mercs lay across a ruined camp. \nBob the Second takes a sample of the infected's flesh."
 		"ko"		"제노 위협을 몰아낸 후 얻은 제노 바이러스의 샘플입니다.\n감염의 근원을 찾아내는데 도움이 될 수 있을 것 같습니다."
 	}
 	"Son of Osiris's Gift"
@@ -4022,12 +4022,12 @@
 		"en"		"A golden necklace with a gem at the end of it. \nRuliana gives it to us as a gift from Twirl."
 		"ko"		"끝부분에 보석이 달려있는 황금 목걸이입니다.\n루리아나가 트윌의 선물이라며 건네주었습니다."
 	}
-	"Major Voided’s Hat"
+	"Major Voided's Hat"
 	{
 		"en"		"Major Voided’s Hat"
 		"ko"		"공허화된 소령의 모자"
 	}
-	"Major Voided’s Hat Desc"
+	"Major Voided's Hat Desc"
 	{
 		"en"		"Zeina gives us this after one of our Umbral Incursion runs. \nShe says she got it from encountering Voided Major Steams while saving a group of mercs from a void outbreak."
 		"ko"		"어떻게인지 몰라도 폭발 이후에도 멀쩡하게 남아있습니다.\n좀 크긴 하지만 쓸 수는 있네요."
@@ -4039,7 +4039,7 @@
 	}
 	"Avangard's Processing Core-B Desc"
 	{
-		"en"		"As we head to meet up with Bob the First to deal with chaos problems, we hear a large explosion at a Vestan outpost. From the sky, this drops down in front of us, and we take it with us. Maybe I'll have some use for it"
+		"en"		"As we head to meet up with Bob the First to deal with chaos problems. \nWe hear a large explosion at a Vestan outpost. \nFrom the sky, this drops down in front of us, and we take it with us.\nMaybe we'll have some use for it"
 		"ko"		"베스타 전초기지의 방송탑을 파괴한 후, 땅에 널부러진 병사들 사이에서 발견했습니다.\n쓰러뜨린 아방가르드 중 하나에게서 떨어져 나온 것 같습니다."
 	}
 	"Ancient Demon Horn"
@@ -4054,7 +4054,7 @@
 	} 
 	"Crystallized Hand"
 	{
-		"en"		"Warped Crystal"
+		"en"		"Crystallized Hand"
 		"ko"		"왜곡된 수정"
 	}
 	"Crystallized Hand Desc"
