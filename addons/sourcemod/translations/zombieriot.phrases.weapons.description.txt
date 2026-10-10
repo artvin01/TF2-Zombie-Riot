@@ -5955,7 +5955,7 @@
 	}
 	"Dr DAM Staff Desc"
 	{
-		"en"		"-Increased Damage\n-Hp > 50％:\nM2: Lose 10% hp to heal allies around you\nR:Lose 50% hp to gain resistance and heal allies around you.\n \n-HP < 50%:\nGain res, heal on damage, lower range.\nM2:Lose 20% hp to deal AOE damage.\nR: Stun self but heal to full in 2 seconds."
+		"en"		"-Increased Damage\n-Hp > 50％:\nM2: Lose 10% hp to heal allies around you\nR:Lose 50％ hp to gain resistance and heal allies around you.\n \n-HP < 50%:\nGain res, heal on damage, lower range.\nM2:Lose 20% hp to deal AOE damage.\nR: Stun self but heal to full in 2 seconds."
 		"ko"		"-피해량 증가\n-체력 50％ 이상:\n우클릭: 체력 10％을 깎고 주변 아군 회복\nR키:체력 50％을 깎고 저항을 획득. 주변 아군을 치유\n-체력 50％ 이하:\n저항 획득, 적중 시 체력 회복, 사거리 감소\n우클릭: 체력 20％을 깎고 광역 피해\nR키: 기절 후 최대 체력까지 회복"
 	}
 	"Hel's Hoe Desc"
@@ -5967,5 +5967,17 @@
 	{
 		"en"		"-Increased Damage\n-When R is active:\nPress M2 To drain your hp, but drains enemies around you as well to heal you."
 		"ko"		"-피해량 증가\n-R키 능력 사용 중:\nM2 사용 시 체력을 서서히 깎지만 주변의 적에게서 체력을 흡수함"
+	}
+	"Opera of the Mute"
+	{
+		"en"	"Opera of the Mute"
+	}
+	"Opera of the Mute Desc"
+	{
+		"en"	"-Being between 30％ and 70％ mana gives 50％ more damage\n-Consuming or gaining mana gives shield upto 50％ of your max mana\n-attacking enemies gives necrosis\n-every 5th hit deals 12 hits at once with increased necrosis damage\n-Alters mana logic"
+	}
+	"Opera of the Mute Desc 2"
+	{
+		"en"	"-Increased damage, attackspeed and resistance"
 	}
 }
