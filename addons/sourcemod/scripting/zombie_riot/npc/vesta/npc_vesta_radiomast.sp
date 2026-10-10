@@ -172,6 +172,34 @@ methodmap VestaRadiomast < CClotBody
 			event.SetInt("id", IdRef); //What to enter inside? Need a way to identify annotations by entindex!
 			event.Fire();
 		}
+
+		int health = ReturnEntityMaxHealth(npc.index) / 7.5;
+		float pos[3]; GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
+		float ang[3]; GetEntPropVector(npc.index, Prop_Data, "m_angRotation", ang);
+
+		char Adddeta[512];
+		FormatEx(Adddeta, sizeof(Adddeta), "target%i;", EntIndexToEntRef(npc.index));
+		for(int i=1; i<=2; i++)
+		{
+			int other = NPC_CreateByName("npc_radioguard", -1, pos, ang, team, Adddeta);
+			if(other > MaxClients)
+			{
+				if(team != TFTeam_Red)
+					Zombies_Currently_Still_Ongoing++;
+				
+				SetEntProp(other, Prop_Data, "m_iHealth", health);
+				SetEntProp(other, Prop_Data, "m_iMaxHealth", health);
+				NpcAddedToZombiesLeftCurrently(other, true);
+				fl_Extra_MeleeArmor[other] = fl_Extra_MeleeArmor[npc.index];
+				fl_Extra_RangedArmor[other] = fl_Extra_RangedArmor[npc.index];
+				fl_Extra_Speed[other] = fl_Extra_Speed[npc.index];
+				fl_Extra_Damage[other] = fl_Extra_Damage[npc.index];
+				b_thisNpcIsABoss[other] = b_thisNpcIsABoss[npc.index];
+				b_StaticNPC[other] = b_StaticNPC[npc.index];
+				if(b_StaticNPC[other])
+					AddNpcToAliveList(other, 1);
+			}
+		}
 		return npc;
 	}
 }
