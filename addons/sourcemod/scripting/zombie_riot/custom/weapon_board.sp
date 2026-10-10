@@ -5,7 +5,6 @@ static int weapon_id[MAXPLAYERS+1]={0, ...};
 static int Board_Hits[MAXPLAYERS+1]={0, ...};
 static int Board_Level[MAXPLAYERS+1]={0, ...};
 static float f_ParryDuration[MAXPLAYERS+1]={0.0, ...};
-static float f_AniSoundSpam[MAXPLAYERS+1]={0.0, ...};
 static int Board_OutlineModel[MAXPLAYERS+1]={INVALID_ENT_REFERENCE, ...};
 static bool Board_Ability_1[MAXPLAYERS+1]; //please forgive me for I have sinned
 static float f_BoardReflectCooldown[MAXPLAYERS][MAXENTITIES];
