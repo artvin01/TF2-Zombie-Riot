@@ -395,7 +395,7 @@ public void VestaScorcher_Rocket_Particle_StartTouch(int entity, int target)
 					Burntime *= 2.0;
 				}
 				Burntime *= 0.5;
-				NPC_Ignite(target, owner, Burntime, -1, 8.0);
+				NPC_Ignite(target, owner, Burntime, -1, 10.0);
 			}
 		}
 
