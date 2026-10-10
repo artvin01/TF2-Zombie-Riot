@@ -78,7 +78,6 @@ jobs:
         ./venv/bin/python main.py
 
     - name: Upload static files as artifact
-      id: deployment
       uses: actions/upload-pages-artifact@v4
       with:
         path: gh-pages/
