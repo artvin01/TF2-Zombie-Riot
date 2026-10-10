@@ -396,7 +396,7 @@ methodmap Atomizer < CClotBody
 			npc.m_iOverlordComboAttack = 0;
 			npc.m_flRangedSpecialDelay = GetGameTime(npc.index) + 15.0;
 			npc.m_flNextRangedSpecialAttackHappens = GetGameTime(npc.index) + 5.0;
-			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 30.0;
+			npc.m_flNextRangedAttack = GetGameTime(npc.index) + 20.0;
 			npc.m_flAngerDelay = GetGameTime(npc.index) + 15.0;
 			npc.m_iMaxAmmo = 10+RoundToNearest(float(CountPlayersOnRed(2)) * 3.0);
 			if(npc.m_iMaxAmmo>45)
