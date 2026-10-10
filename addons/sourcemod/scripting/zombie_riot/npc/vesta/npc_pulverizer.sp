@@ -330,7 +330,7 @@ static void VestanPulverizerSelfDefense(VestanPulverizer npc)
 		npc.PlayFlameThrowerSound(true);
 		SpinSound = false;
 		npc.FaceTowards(vecTarget, 20000.0);
-		int projectile = npc.FireParticleRocket(vecTarget, 18.0, 1000.0, 150.0, "superrare_burning2", true);
+		int projectile = npc.FireParticleRocket(vecTarget, 9.0, 1000.0, 150.0, "superrare_burning2", true);
 		int particle = EntRefToEntIndex(i_WandParticle[projectile]);
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(projectile), TIMER_FLAG_NO_MAPCHANGE);
 		CreateTimer(0.5, Timer_RemoveEntity, EntIndexToEntRef(particle), TIMER_FLAG_NO_MAPCHANGE);
@@ -368,7 +368,7 @@ static void VestanPulverizer_Particle_StartTouch(int entity, int target)
 		if(NpcStats_VestanCallToArms(owner))
 			BurninHell *= 3.0;
 		BurninHell *= 0.5;
-		NPC_Ignite(target, owner,20.0, -1, BurninHell);
+		NPC_Ignite(target, owner, BurninHell, -1, 10.0);
 
 		int particle = EntRefToEntIndex(i_WandParticle[entity]);
 		if(IsValidEntity(particle))
