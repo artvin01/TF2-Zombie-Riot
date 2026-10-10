@@ -348,7 +348,7 @@ static int VestanRadioguardSelfDefense(Vestan_Radioguard npc, float gameTime, fl
 		return 3;
 	}
 	float vecTarget[3]; WorldSpaceCenter(npc.m_iTarget, vecTarget);
-	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 15.0))
+	if(distance < (NORMAL_ENEMY_MELEE_RANGE_FLOAT_SQUARED * 20.0))
 	{
 		int Enemy_I_See = Can_I_See_Enemy(npc.index, npc.m_iTarget);
 		if(gameTime > npc.m_flNextRangedAttack && IsValidEnemy(npc.index, Enemy_I_See))
