@@ -209,6 +209,7 @@ methodmap OverlordRogue < CClotBody
 		
 		bool final = StrContains(data, "final_item") != -1;
 		bool final2 = StrContains(data, "music_do") != -1;
+		bool umbral = StrContains(data, "umbral") != -1;
 		npc.m_bBossRushDuo = StrContains(data, "bossrush_duo") != -1;
 		
 		if(Rogue_HasNamedArtifact("Ascension Stack"))
@@ -424,8 +425,6 @@ public void OverlordRogue_ClotThink(int iNPC)
 				npc.FaceTowards(vecTarget, 20000.0);
 				
 				npc.DispatchParticleEffect(npc.index, "mvm_soldier_shockwave", NULL_VECTOR, NULL_VECTOR, NULL_VECTOR, npc.FindAttachment("anim_attachment_LH"), PATTACH_POINT_FOLLOW, true);
-				
-				bool umbral = StrContains(data, "umbral") != -1;
 
 				// Nerf the burn on boss rush
 				if (npc.m_bBossRushDuo || umbral)
