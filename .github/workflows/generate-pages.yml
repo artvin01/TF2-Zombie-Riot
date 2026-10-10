@@ -38,10 +38,17 @@ jobs:
           path: decompiled/
           key: decompiled-${{ github.sha }}
           enableCrossOsArchive: true
-  build:
+  build_deploy:
     needs: decompile
     name: generate-pages
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+
     steps:
     - uses: actions/checkout@v7
     - uses: actions/setup-python@v6
@@ -76,17 +83,6 @@ jobs:
       with:
         path: gh-pages/
 
-  deploy:
-    name: deploy-pages
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    permissions:
-      pages: write
-      id-token: write
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
+    - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
