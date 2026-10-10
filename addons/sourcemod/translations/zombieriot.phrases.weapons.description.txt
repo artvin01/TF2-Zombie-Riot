@@ -5974,7 +5974,7 @@
 	}
 	"Opera of the Mute Desc"
 	{
-		"en"	"-Being between 30％ and 70％ mana gives 50％ more damage\n-Consuming or gaining mana gives shield upto 50％ of your max mana\n-attacking enemies gives necrosis\n-every 5th hit deals 12 hits at once with increased necrosis damage\n-Alters mana logic"
+		"en"	"-Being between 30％ and 70％ mana gives 40％ more damage\n-Consuming or gaining mana gives shield upto 50％ of your max mana\n-attacking enemies gives necrosis\n-every 5th hit deals 12 hits at once with increased necrosis damage\n-Alters mana logic"
 	}
 	"Opera of the Mute Desc 2"
 	{

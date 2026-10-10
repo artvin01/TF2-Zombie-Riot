@@ -115,7 +115,7 @@ public void OperaMute_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 				f_MinicritSoundDelay[attacker] = GetGameTime() + 0.25;
 			}
 			DisplayCritAboveNpc(victim, attacker, PlaySound);
-			damage *= 1.5;
+			damage *= 1.4;
 		}
 		return;
 	}
@@ -127,11 +127,12 @@ public void OperaMute_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 
 	if(RedMistFinalSwing(weapon))
 	{
+		damage *= 0.25;
 		DataPack pack = new DataPack();
 		pack.WriteCell(EntIndexToEntRef(victim));
 		pack.WriteCell(EntIndexToEntRef(attacker));
 		pack.WriteCell(EntIndexToEntRef(weapon));
-		pack.WriteFloat(damage * 0.5);
+		pack.WriteFloat(damage);
 		pack.WriteCell(12);
 		RequestFrames(OperaMute_DamageInstances, 3, pack, true);
 	}
@@ -144,7 +145,7 @@ public void OperaMute_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 			f_MinicritSoundDelay[attacker] = GetGameTime() + 0.25;
 		}
 		DisplayCritAboveNpc(victim, attacker, PlaySound);
-		damage *= 1.5;
+		damage *= 1.4;
 	}
 }
 
