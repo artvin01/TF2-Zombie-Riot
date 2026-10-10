@@ -210,7 +210,7 @@ static Action RitualistTimer(Handle timer, int client)
 	{
 		if(!HasSpecificBuff(client, "Empty Notes"))
 		{
-			if(OperaMute_Thereis())
+			if(WeaponType[client] == Ritualist_Necrosis && OperaMute_Thereis())
 			{
 				ApplyStatusEffect(client, client, "Empty Notes", 999999.9);
 			}
