@@ -205,11 +205,11 @@ static float Skull_Effect(int entity, int victim, float &damage, int weapon)
 }
 public void BarrackMonk_TryHealAlly(int iNPC)
 {
-	if(iNPC <= 0 || iNPC >= MAXENTITIES)
-		return;
+    if(iNPC <= 0 || iNPC >= MAXENTITIES)
+        return;
 
-	BarrackMonk npc = view_as<BarrackMonk>(iNPC);
-	float GameTime = GetGameTime(iNPC);
+    BarrackMonk npc = view_as<BarrackMonk>(iNPC);
+    float GameTime = GetGameTime(iNPC);
 
 	float npcPos[3];
 	WorldSpaceCenter(iNPC, npcPos);
@@ -228,34 +228,34 @@ public void BarrackMonk_TryHealAlly(int iNPC)
 		WorldSpaceCenter(client, clPos);
 		float dist = GetVectorDistance(npcPos, clPos, true);
 
-		if(dist > 60000.0)
-			continue;
+        if(dist > 60000.0)
+            continue;
 
 		float curHealth = float(GetEntProp(client, Prop_Data, "m_iHealth"));
 		float maxHealth = float(ReturnEntityMaxHealth(client));
 
-		if(maxHealth <= 0.0)
-			continue;
+        if(maxHealth <= 0.0)
+            continue;
 
 		float healthPct = (curHealth / maxHealth) * 100.0;
 
-		if(healthPct > 60.0)
-			continue;
+        if(healthPct > 60.0)
+            continue;
 
 		int owner = GetClientOfUserId(npc.OwnerUserId);
 		float healAmount = maxHealth * 0.15;
-		
+
 		if (owner > 0 && (i_CurrentEquippedPerk[owner] & PERK_REGENE))	// 33% more healing if the owner of the monk has Regen perk
 		{
 			healAmount = maxHealth * 0.20;
 		}
 
-		HealEntityGlobal(iNPC, client, healAmount, 1.0, 0.5, 0);
+        HealEntityGlobal(iNPC, client, healAmount, 1.0, 0.5, 0);
 		
 		int BeamIndex = ConnectWithBeam(iNPC, client, 0, 255, 100, 3.0, 3.0, 1.35, "sprites/laserbeam.vmt");
 		SetEntityRenderFx(BeamIndex, RENDERFX_FADE_SLOW);
 		CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
-		
+
 		int roll = GetRandomInt(1, 100);
 
 		if (roll == 1)
