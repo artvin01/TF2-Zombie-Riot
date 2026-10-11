@@ -70,8 +70,124 @@ public void Quantum_Fists_Main_Attack(int client, int weapon, bool crit)
 	float damageMulti = float(CashSpentTotal[client]);
 	damageMulti = Pow(damageMulti, 1.15);
 	damageMulti = damageMulti / 850.0;
-
-	damageMulti *= 1.1;
+	damageMulti *= 2.0;
 		
 	Attributes_Set(weapon, 2, damageMulti);
+}
+
+public void Quantum_Jetpack(int client, int weapon, bool crit, int slot)
+{
+	if (Ability_Check_Cooldown(client, slot) < 0.0)
+	{
+		Handle swingTrace;
+		b_LagCompNPC_No_Layers = true;
+		float vecSwingForward[3];
+		StartLagCompensation_Base_Boss(client);
+		DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 700.0, false, 45.0, true); //infinite range, and ignore walls!
+		FinishLagCompensation_Base_boss(.client = client);
+
+		int target = TR_GetEntityIndex(swingTrace);	
+		delete swingTrace;
+		if(!IsValidEnemy(client, target, true))
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			return;
+		}
+		
+		Rogue_OnAbilityUse(client, weapon);
+		Ability_Apply_Cooldown(client, slot, 4.0);
+		static float EntLoc[3];
+
+		GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", EntLoc);
+
+		SpawnSmallExplosionNotRandom(EntLoc);
+
+		EmitSoundToAll(SOUND_DASH, client, _, 70, _, 1.0);
+
+		static float anglesB[3];
+		GetClientEyeAngles(client, anglesB);
+		static float velocity[3];
+		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
+		float knockback = 1200.0;
+		// knockback is the overall force with which you be pushed, don't touch other stuff
+		ScaleVector(velocity, knockback);
+		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
+			velocity[2] = fmax(velocity[2], 300.0);
+		else
+			velocity[2] += 150.0;    // a little boost to alleviate arcing issues
+
+		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
+	}
+	else
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+
+		if (Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
+	}
+}
+
+
+
+public void Quantum_Retreater(int client, int weapon, bool crit, int slot)
+{
+	if (Ability_Check_Cooldown(client, slot) < 0.0)
+	{
+		Handle swingTrace;
+		b_LagCompNPC_No_Layers = true;
+		float vecSwingForward[3];
+		StartLagCompensation_Base_Boss(client);
+		DoSwingTrace_Custom(swingTrace, client, vecSwingForward, 200.0, false, 25.0, true); //infinite range, and ignore walls!
+		FinishLagCompensation_Base_boss(.client = client);
+
+		int target = TR_GetEntityIndex(swingTrace);	
+		delete swingTrace;
+		if(!IsValidEnemy(client, target, true))
+		{
+			ClientCommand(client, "playgamesound items/medshotno1.wav");
+			return;
+		}
+		
+		Rogue_OnAbilityUse(client, weapon);
+		Ability_Apply_Cooldown(client, slot, 10.0);
+		static float EntLoc[3];
+
+		GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", EntLoc);
+
+		SpawnSmallExplosionNotRandom(EntLoc);
+
+		EmitSoundToAll(SOUND_DASH, client, _, 70, _, 1.0);
+
+		static float anglesB[3];
+		GetClientEyeAngles(client, anglesB);
+		static float velocity[3];
+		GetAngleVectors(anglesB, velocity, NULL_VECTOR, NULL_VECTOR);
+		float knockback = -600.0;
+		// knockback is the overall force with which you be pushed, don't touch other stuff
+		ScaleVector(velocity, knockback);
+		if ((GetEntityFlags(client) & FL_ONGROUND) != 0 || GetEntProp(client, Prop_Send, "m_nWaterLevel") >= 1)
+			velocity[2] = fmax(velocity[2], 300.0);
+		else
+			velocity[2] += 150.0;    // a little boost to alleviate arcing issues
+			
+
+		TeleportEntity(client, NULL_VECTOR, NULL_VECTOR, velocity);
+	}
+	else
+	{
+		float Ability_CD = Ability_Check_Cooldown(client, slot);
+
+		if (Ability_CD <= 0.0)
+			Ability_CD = 0.0;
+
+		ClientCommand(client, "playgamesound items/medshotno1.wav");
+		SetDefaultHudPosition(client);
+		SetGlobalTransTarget(client);
+		ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Ability has cooldown", Ability_CD);
+	}
 }
