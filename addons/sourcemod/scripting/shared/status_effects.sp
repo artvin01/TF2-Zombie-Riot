@@ -769,7 +769,7 @@ void StatusEffectReset(int victim, bool force)
 	
 	static E_StatusEffect Apply_StatusEffect;
 	int length = E_AL_StatusEffects[victim].Length;
-	for(int i; i<length; i++)
+	for(int i = length - 1; i >= 0; i--)
 	{
 		E_AL_StatusEffects[victim].GetArray(i, Apply_StatusEffect);
 		Apply_StatusEffect.RemoveStatus(true);
@@ -11154,9 +11154,21 @@ void StatusEffects_ShieldLogic()
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	data.OnTakeDamage_TakenFunc 	= Shielding_DamageTakenFunc;
 	data.HudDisplay_Func 			= Func_ShieldingHud;
+	data.OnBuffEndOrDeleted			= Shielding_End;
 	ShieldBuffindex = StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Shielding Cooldown");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.Positive 					= false;
+	StatusEffect_AddGlobal(data);
 }
 
+void Shielding_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
+{
+	if(victim <= MaxClients)
+		TF2_RemoveCondition(victim, TFCond_RuneResist);
+}
 stock void Shielding_Add(int victim, int valuetoadd)
 {
 	if(!E_AL_StatusEffects[victim])
@@ -11171,16 +11183,45 @@ stock void Shielding_Add(int victim, int valuetoadd)
 		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
 		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
 		{
+			if(!(HasSpecificBuff(victim, "Shielding Cooldown") && OperaMute_WeaponHas(victim)))
+				if(victim <= MaxClients)
+					TF2_AddCondition(victim, TFCond_RuneResist, 999999.9);
 			Apply_StatusEffect.DataForUse += float(valuetoadd);
 			E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 		}
 	}
+}
 
+
+stock void Shielding_CapAt(int victim, int ValueCap)
+{
+	if(!E_AL_StatusEffects[victim])
+		return;
+
+	static StatusEffect Apply_MasterStatusEffect;
+	static E_StatusEffect Apply_StatusEffect;
+	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(ShieldBuffindex , E_StatusEffect::BuffIndex);
+	if(ArrayPosition != -1)
+	{
+		E_AL_StatusEffects[victim].GetArray(ArrayPosition, Apply_StatusEffect);
+		AL_StatusEffects.GetArray(Apply_StatusEffect.BuffIndex, Apply_MasterStatusEffect);
+		if(Apply_StatusEffect.TimeUntillOver >= GetGameTime())
+		{
+			if(Apply_StatusEffect.DataForUse >= float(ValueCap))
+				Apply_StatusEffect.DataForUse = float(ValueCap);
+
+			E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
+		}
+	}
 }
 float Shielding_DamageTakenFunc(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int damagetype, float &damage)
 {
 	if(CheckInHud())
 		return 1.0;
+	if(HasSpecificBuff(victim, "Shielding Cooldown") && OperaMute_WeaponHas(victim))
+	{
+		return 1.0;
+	}
 	float CurrentShield = Apply_StatusEffect.DataForUse;
 	
 	int ArrayPosition = E_AL_StatusEffects[victim].FindValue(Apply_StatusEffect.BuffIndex, E_StatusEffect::BuffIndex);
@@ -11193,31 +11234,55 @@ float Shielding_DamageTakenFunc(int attacker, int victim, StatusEffect Apply_Mas
 		damage_received_after_calc = RoundToCeil(damage - CurrentShield);
 		CurrentShield = 0.0;
 		damage = float(damage_received_after_calc);
+		if(victim <= MaxClients)
+			TF2_RemoveCondition(victim, TFCond_RuneResist);
 	}
 	else
 	{
-		/*
-		switch(GetRandomInt(1,3))
-		{
-			case 1:
-				EmitSoundToClient(victim, "physics/metal/metal_box_impact_bullet1.wav", victim, SNDCHAN_STATIC, 60, _, 0.25, GetRandomInt(95,105));
-			
-			case 2:
-				EmitSoundToClient(victim, "physics/metal/metal_box_impact_bullet2.wav", victim, SNDCHAN_STATIC, 60, _, 0.25, GetRandomInt(95,105));
-			
-			case 3:
-				EmitSoundToClient(victim, "physics/metal/metal_box_impact_bullet3.wav", victim, SNDCHAN_STATIC, 60, _, 0.25, GetRandomInt(95,105));
-		}		
-		*/
 		CurrentShield -= damage * ArmorDmgRes;
 		damage = 0.0;
 		damage += float(dmg_through_armour);
+	}
+	
+	if(f_AniSoundSpam[victim] < GetGameTime())
+	{
+		f_AniSoundSpam[victim] = GetGameTime() + 0.2;
+		switch(GetRandomInt(1,4))
+		{
+			case 1:
+			{
+				EmitSoundToAll("player/resistance_heavy1.wav", victim,_,70);
+				EmitSoundToAll("player/resistance_heavy1.wav", victim,_,70);
+			}
+			case 2:
+			{
+				EmitSoundToAll("player/resistance_heavy2.wav", victim,_,70);
+				EmitSoundToAll("player/resistance_heavy2.wav", victim,_,70);
+			}
+			case 3:
+			{
+				EmitSoundToAll("player/resistance_heavy3.wav", victim,_,70);
+				EmitSoundToAll("player/resistance_heavy3.wav", victim,_,70);
+			}
+			case 4:
+			{
+				EmitSoundToAll("player/resistance_heavy4.wav", victim,_,70);
+				EmitSoundToAll("player/resistance_heavy4.wav", victim,_,70);
+			}
+		}
+		
+		float WorldSpaceVec[3]; WorldSpaceCenter(victim, WorldSpaceVec);
+		
+		TE_Particle("spell_batball_impact_red", WorldSpaceVec, NULL_VECTOR, NULL_VECTOR, -1, _, _, _, _, _, _, _, _, _, 0.0);
 	}
 	Apply_StatusEffect.DataForUse = CurrentShield;
 	if(CurrentShield <= 0.0)
 	{
 		//EmitSoundToClient(victim, "npc/assassin/ball_zap1.wav", victim, SNDCHAN_STATIC, 60, _, 1.0, GetRandomInt(95,105));
 		Apply_StatusEffect.TimeUntillOver = 0.0;
+
+		//used for opera
+		ApplyStatusEffect(victim, victim, "Shielding Cooldown", 5.0);
 	}
 	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 	return 1.0;
@@ -11225,6 +11290,19 @@ float Shielding_DamageTakenFunc(int attacker, int victim, StatusEffect Apply_Mas
 void Func_ShieldingHud(int attacker, int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect, int SizeOfChar, char[] HudToDisplay)
 {
 	//only display to client
+	if(OperaMute_WeaponHas(victim))
+	{
+		float debuff_duration = 0.0;
+		if(HasSpecificBuff(victim, "Shielding Cooldown", .duration = debuff_duration))
+		{
+			Format(HudToDisplay, SizeOfChar, "SH[%i / %.1f]", RoundToNearest(Apply_StatusEffect.DataForUse), debuff_duration);
+			return;	
+		}
+		else
+		{
+			TF2_AddCondition(victim, TFCond_RuneResist, 999999.9);
+		}
+	}
 	Format(HudToDisplay, SizeOfChar, "SH[%i]", RoundToNearest(Apply_StatusEffect.DataForUse));
 }
 

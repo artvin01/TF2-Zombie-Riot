@@ -2430,6 +2430,14 @@
 		"it"	"+30％ danni inflitti, guarigione effettuata e +20％ riduzione dei danni"
 		"ko"	"공격 피해량, 치유량이 30％ 증가하고, 피해 저항력이 20％ 증가합니다."
 	}
+	"Empty Notes"
+	{
+		"en"	"''Empty Notes''"
+	}
+	"Empty Notes Desc"
+	{
+		"en"	"+5％ stats up\n{crimson}Notes that mute all...\nOpera gives shield to nearby Ritualists\nOpera gets tango buff for 1.5x duration\n1.25x necrosis buildup"
+	}
 	"Charging Raigeki"
 	{
 		"en"	"CHARGING RAIGEKI"

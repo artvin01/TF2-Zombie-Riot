@@ -89,7 +89,7 @@ public Action RandomPickup_DelayBetweenSpawns(Handle timer)
 	return Plugin_Continue;
 }
 
-bool RandomPickup_SpawnPickup(float VectorGoal[3], float lifetime = PICKUPS_TIME_LAST)
+bool RandomPickup_SpawnPickup(float VectorGoal[3], bool singleUse = false, float lifetime = PICKUPS_TIME_LAST)
 {
 	static float hullcheckmaxs_Player[3];
 	static float hullcheckmins_Player[3];
@@ -122,7 +122,7 @@ bool RandomPickup_SpawnPickup(float VectorGoal[3], float lifetime = PICKUPS_TIME
 		SetEntProp(prop, Prop_Send, "m_usSolidFlags", 12); 
 		SetEntityCollisionGroup(prop, 27);
 		SDKHook(prop, SDKHook_Touch, RandomPickup_TouchPickup);
-		i_WandIdNumber[prop] = 999;
+		i_WandIdNumber[prop] = singleUse ? 999 : 1000;
 		if(Arena_Mode())
 			lifetime *= 0.65;
 		CreateTimer(lifetime, Timer_RemoveEntity, EntIndexToEntRef(prop), TIMER_FLAG_NO_MAPCHANGE);
@@ -216,7 +216,9 @@ public void RandomPickup_TouchPickup(int entity, int other)
 	{
 		CurrentAmmo[other][i] = GetAmmo(other, i);
 	}
-	if(Arena_Mode())
+	
+	bool singleUse = i_WandIdNumber[entity] == 999;
+	if(Arena_Mode() || singleUse)
 		RemoveEntity(entity);
 }
 

@@ -20,7 +20,6 @@ static const char g_Siccerino_snapSound[][] = {
 
 
 
-static float f_AniSoundSpam[MAXPLAYERS];
 static float Duration[MAXPLAYERS];
 static int Weapon_Id[MAXPLAYERS];
 

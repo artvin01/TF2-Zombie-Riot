@@ -8184,6 +8184,12 @@ void Store_HandleAutoPurchases()
 			}
 		}
 		
+		if (AutoPapList[client].Length == 0)
+		{
+			delete AutoPapList[client];
+			continue;
+		}
+		
 		if (kitIndex != -1)
 		{
 			// If we upgraded a kit, remove dupe pending upgrades from the same kit
