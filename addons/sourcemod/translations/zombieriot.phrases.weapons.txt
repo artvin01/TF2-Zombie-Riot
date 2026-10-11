@@ -5329,7 +5329,7 @@
 		"it" "Cervello incasinato di formaggio"
 		"ko" "난잡해진 치즈 뇌"
 	}
-	"Birdeye Ammo"
+	"Birdeye's Ammo"
 	{
 		"en" "Birdeye's Ammo"
 		"it" "Munizioni di Birdeye"
