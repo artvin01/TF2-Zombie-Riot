@@ -156,6 +156,35 @@ FACTION_MAPPINGS = {
     "4": "Psychic Warlord",
     "5": "Dweller"
 }
+ARCHETYPE_MAPPINGS = defaultdict(int, {
+    "0": "",
+
+    "1": "Artillery",	# 1 Explosives, Heavy AOE Focus
+    "2": "Deadeye",	# 2 Sniper, Slow/High Damage at a Range
+    "3": "Charger",	# 3 Shotgun, Slow Fire Rate/Short Range
+    "4": "Tactician",	# 4 Pistol/SMG, Fast Fire Rate/Medium Range
+    "5": "Hunter",	# 5 Stickybomb, Trap Focus
+
+    "6": "Drone Magic",	# 6 High lifetime projectiles or summoning, Skulls/Drone/Nerco
+    "7": "Splash Magic",	# 7 Heavy AOE Focus
+    "8": "Rapid Magic",	# 8 High Fire Rate
+    "9": "Power Magic",	# 9 Low Fire Rate
+    "10": "Hexing Magic",	# 10 Elemental/Debuff Focus
+
+    "11": "Ambusher",	# 11 Knifes, Focus on hitting correct timing
+    "12": "Duelist",	# 12 Survival focus
+    "13": "Defender",	# 13 Tank focus
+    "14": "Lord",		# 14 Long range focus
+    "15": "Crusher",	# 15 AOE focus
+    "16": "Combatant",	# 16 DPS focus
+
+    "17": "Medical",	# 17 Healing focus
+    "18": "Mechanic",	# 18 Building focus
+    "19": "Buffer",	# 19 Buffing focus
+    "20": "Debuffer",	# 20 Debuff focus
+
+    "21": "Fallen Warrior"# 21 Special
+})
 
 # MAIN ========================================================================
 g_tags:list[str] = []
@@ -178,6 +207,8 @@ class Weapon:
         self.lvl:str = weapon_data["level"] if "level" in weapon_data else ""
 
         self.faction:str = FACTION_MAPPINGS[weapon_data["weapon_faction"]] if "weapon_faction" in weapon_data else ""
+
+        self.archetype:str = ARCHETYPE_MAPPINGS[weapon_data["weapon_archetype"]] if "weapon_archetype" in weapon_data else ""
 
         self.attributes: WeaponAttributes = shared_parse_weapon_attrs(weapon_data)
 
@@ -230,6 +261,7 @@ class Weapon:
             "is_hidden": self.IS_HIDDEN,
             "icon": self.icon,
             "faction": self.faction,
+            "archetype": self.archetype,
             "attributes": self.attributes,
             "subweapons": getattr(self, "subweapons", {}) # kit weps, enhancements
         }
@@ -254,6 +286,11 @@ class WeaponPap:
             self.attributes: WeaponAttributes = shared_parse_weapon_attrs(weapon_data, pap_key)
 
             self.faction:str = FACTION_MAPPINGS[weapon_data[f"{pap_key}weapon_faction"]] if f"{pap_key}weapon_faction" in weapon_data else ""
+            
+            self.archetype:str = ARCHETYPE_MAPPINGS[weapon_data[f"{pap_key}weapon_archetype"]] if f"{pap_key}weapon_archetype" in weapon_data else ""
+            if self.archetype == 0:
+                util.log(f"{weapon_name} has malformed key {f"{pap_key}weapon_archetype"}: {weapon_data[f"{pap_key}weapon_archetype"]}","FAIL")
+                self.archetype=""
 
             self.icon:str = shared_parse_weapon_icon(weapon_data, weapon_name, pap_key)
 
@@ -277,6 +314,7 @@ class WeaponPap:
             #"is_hidden": defaultdict(str,self._weapon_data)["hidden"]=="1",
             "icon": self.icon,
             "faction": self.faction,
+            "archetype": self.archetype,
             "attributes": self.attributes,
             "subweapons": self.subweapons
         }

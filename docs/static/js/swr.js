@@ -170,8 +170,16 @@ function parse_main(data,px,py,angle,sw_id) {
           data.tags.forEach(el => {if (!el.includes("#")) { data.tags[data.tags.indexOf(el)]=`#${el}`}}); // Prepend # to each tag once
           secondary_text.push(data.tags.join(" "));
         };
-        if (data.author!==undefined) { secondary_text.push(data.author) };
-        if (data.faction!=="") { secondary_text.push(data.faction) };
+        if (data.author!==undefined) { 
+          data.author.split("\n").forEach(line => {
+            line=remove_morecolors(line); // TODO morecolors renderer
+            secondary_text.push(line);
+          });
+        };
+        if (data.faction!=="") { secondary_text.push(`Faction: ${data.faction}`) };
+        if (data.archetype!=="") { secondary_text.push(`Archetype: ${data.archetype}`) };
+
+
         secondary_text.forEach(line => {
           element_queue.push({
             "type": "text",
@@ -188,7 +196,7 @@ function parse_main(data,px,py,angle,sw_id) {
 
         // Draw weapon desc
         data.description.split("\n").forEach(line => {
-          line=remove_morecolors(line);
+          line=remove_morecolors(line); // TODO morecolors renderer
           element_queue.push({
             "type": "text",
             "fillStyle": "#ccc8c1",
