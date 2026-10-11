@@ -1776,10 +1776,12 @@
 	"Skull Piercing Rounds"
 	{
 		"en"		"Skull Piercing Rounds"
+		"ko"		"두개골 관통 탄환"
 	}
 	"Skull Piercing Rounds Desc"
 	{
 		"en"		"-Headshots deal 25％ more damage\n-Snipers no longer flinch when scoping"
+		"ko"		"-헤드샷 피해량 +25％\n-저격소총 계열 무기로 조준할 때 조준선이 흔들리지 않습니다."
 	}
 	"Ammo Coat"
 	{

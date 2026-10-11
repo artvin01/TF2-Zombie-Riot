@@ -2433,10 +2433,12 @@
 	"Empty Notes"
 	{
 		"en"	"''Empty Notes''"
+		"ko"	"''텅 빈 노트''"
 	}
 	"Empty Notes Desc"
 	{
 		"en"	"+5％ stats up\n{crimson}Notes that mute all...\nOpera gives shield to nearby Ritualists\nOpera gets tango buff for 1.5x duration\n1.25x necrosis buildup"
+		"ko"	"능력치 +5％\n{crimson}모든 것을 고요하게 하는 노트들...\n오페라가 주위의 의식주의자에게 보호막을 부여\n오페라 사용자의 자유로운 탱고 지속 시간 1.5배\n쇠약 원소 피해 부여량 1.25배"
 	}
 	"Charging Raigeki"
 	{
@@ -4029,26 +4031,32 @@
 	"Vulnerability Hex"
 	{
 		"en"	"Vulnerability Hex"
+		"ko"	"취약의 저주"
 	}
 	"Vulnerability Hex Desc"
 	{
 		"en"	"Take 15%% more damage\n15%% slower movement speed"
+		"ko"	"받는 피해량이 15％ 증가합니다.\n이동 속도가 15％ 감소합니다."
 	}
 	"Weakening Hex"
 	{
 		"en"	"Weakening Hex"
+		"ko"	"약화의 저주"
 	}
 	"Weakening Hex Desc"
 	{
 		"en"	"Deal 15%% less damage\nAttack 15%% slower"
+		"ko"	"공격 피해량이 15％ 감소합니다.\n공격 속도가 15％ 감소합니다."
 	}
 	"Small Hex"
 	{
 		"en"	"Small Hex"
+		"ko"	"작은 저주"
 	}
 	"Small Hex Desc"
 	{
 		"en"	"Take 5%% more damage\nDeal 5%% less damage\nMove 5%% slower\nAttack 5%% slower"
+		"ko"	"받는 피해량이 5％ 증가합니다.\n공격 피해량이 5％ 감소합니다.\n이동 속도가 5％ 감소합니다.\n공격 속도가 5％ 감소합니다."
 	}
 	"Poise"
 	{
