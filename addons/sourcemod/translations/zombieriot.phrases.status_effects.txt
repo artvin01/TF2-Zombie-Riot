@@ -2433,10 +2433,12 @@
 	"Empty Notes"
 	{
 		"en"	"''Empty Notes''"
+		"ko"	"''텅 빈 노트''"
 	}
 	"Empty Notes Desc"
 	{
 		"en"	"+5％ stats up\n{crimson}Notes that mute all...\nOpera gives shield to nearby Ritualists\nOpera gets tango buff for 1.5x duration\n1.25x necrosis buildup"
+		"ko"	"능력치 +5％\n{crimson}모든 것을 고요하게 하는 노트들...\n오페라가 주위의 의식주의자에게 보호막을 부여\n오페라 사용자의 자유로운 탱고 지속 시간 1.5배\n쇠약 원소 피해 부여량 1.25배"
 	}
 	"Charging Raigeki"
 	{
