@@ -11,6 +11,6 @@
 #define STORE_COLOR   "{snow}"
 #define STORE_COLOR2  "{purple}"
 
-#define CONFIG        "configs/zombie_riot"
+#define CONFIG        "configs/zombie_riot" 
  
 #include "shared/core.sp"

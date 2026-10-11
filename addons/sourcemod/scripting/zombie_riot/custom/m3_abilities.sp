@@ -175,9 +175,10 @@ void M3_AbilitiesWaveEnd()
 	}
 }
 
+#define MAX_MORPHINE_USES 9999
 bool MorphineMaxed(int client)
 {
-	return (i_MaxMorhpinesThisRound[client] >= 2);
+	return (i_MaxMorhpinesThisRound[client] >= MAX_MORPHINE_USES);
 }
 
 float MorphineChargeFunc(int client)
@@ -222,6 +223,7 @@ stock void GiveMorphineOnDamage(int client, int victim, float damage, int damage
 	float DamageForMaxCharge = (Pow(2.0 * MinCashMaxGain, 1.2) + MinCashMaxGain * 3.0);
 	
 	DamageForMaxCharge *= 0.5;
+	DamageForMaxCharge *= 0.9;
 	
 	if(b_thisNpcIsARaid[victim])
 		DamageForMaxCharge *= 0.85;
