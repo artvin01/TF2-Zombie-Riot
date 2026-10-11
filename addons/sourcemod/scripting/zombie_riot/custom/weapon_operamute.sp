@@ -105,7 +105,7 @@ public void OperaMute_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 	if(zr_custom_damage & ZR_DAMAGE_REFLECT_LOGIC)
 	{
 		OperaMute_ManaDo(attacker, -RoundToNearest(float(mana_cost) * 1.0));
-		Elemental_AddNecrosisDamage(victim, attacker, RoundToNearest(damage * 4), weapon);
+		Elemental_AddNecrosisDamage(victim, attacker, RoundToNearest(damage * 3.0), weapon);
 		if(OpeaMute_DamageMulti(attacker))
 		{
 			bool PlaySound = false;
@@ -115,23 +115,24 @@ public void OperaMute_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 				f_MinicritSoundDelay[attacker] = GetGameTime() + 0.25;
 			}
 			DisplayCritAboveNpc(victim, attacker, PlaySound);
-			damage *= 1.5;
+			damage *= 1.4;
 		}
 		return;
 	}
 	else
 	{
 		OperaMute_ManaDo(attacker, RoundToNearest(float(mana_cost) * 3.0));
-		Elemental_AddNecrosisDamage(victim, attacker, RoundToNearest(damage * 2), weapon);
+		Elemental_AddNecrosisDamage(victim, attacker, RoundToNearest(damage * 1.65), weapon);
 	}
 
 	if(RedMistFinalSwing(weapon))
 	{
+		damage *= 0.25;
 		DataPack pack = new DataPack();
 		pack.WriteCell(EntIndexToEntRef(victim));
 		pack.WriteCell(EntIndexToEntRef(attacker));
 		pack.WriteCell(EntIndexToEntRef(weapon));
-		pack.WriteFloat(damage * 0.5);
+		pack.WriteFloat(damage);
 		pack.WriteCell(12);
 		RequestFrames(OperaMute_DamageInstances, 3, pack, true);
 	}
@@ -144,7 +145,7 @@ public void OperaMute_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 			f_MinicritSoundDelay[attacker] = GetGameTime() + 0.25;
 		}
 		DisplayCritAboveNpc(victim, attacker, PlaySound);
-		damage *= 1.5;
+		damage *= 1.4;
 	}
 }
 
@@ -166,7 +167,21 @@ public void OperaMute_DamageInstances(DataPack pack)
 		static float EnemyPos[3];
 		WorldSpaceCenter(victim, EnemyPos);
 		SDKHooks_TakeDamage(victim, attacker, attacker, damage, DMG_CLUB, weapon, _, EnemyPos, _, ZR_DAMAGE_REFLECT_LOGIC);
-		EmitSoundToAll(g_ExtraSlashesSound[GetRandomInt(0, sizeof(g_ExtraSlashesSound) - 1)], victim, SNDCHAN_BODY, 90, _, 1.0, GetRandomInt(100,105));
+
+		for(int client=1; client<=MaxClients; client++)
+		{
+			if(IsClientInGame(client))
+			{
+				if(attacker == client)
+				{
+					EmitSoundToClient(client, g_ExtraSlashesSound[GetRandomInt(0, sizeof(g_ExtraSlashesSound) - 1)], client, SNDCHAN_BODY, 90, _, 1.0, GetRandomInt(100,105));
+				}
+				else
+				{
+					EmitSoundToClient(client, g_ExtraSlashesSound[GetRandomInt(0, sizeof(g_ExtraSlashesSound) - 1)], victim, SNDCHAN_BODY, 90, _, 1.0, GetRandomInt(100,105));
+				}
+			}
+		}
 	}
 	int Repats = pack.ReadCell();
 	if(Repats <= 0)

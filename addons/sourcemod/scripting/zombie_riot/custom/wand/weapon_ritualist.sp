@@ -270,7 +270,7 @@ void RitualistApplyBuff(int attacker, int victim, float &damage, int weapon)
 		}
 		if(HasSpecificBuff(victim, "Empty Notes") && OperaMute_WeaponHas(victim))
 		{
-			DurationGive *= 2.0;
+			DurationGive *= 1.5;
 		}
 		ApplyStatusEffect(attacker, victim, "Liberal Tango", DurationGive);
 	}
@@ -439,12 +439,12 @@ void StatusEffects_Ritualist()
 	strcopy(data.BuffName, sizeof(data.BuffName), "Empty Notes");
 	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "♪");
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
-	data.DamageTakenMulti 			= 0.9;	// +10% res
-	data.DamageDealMulti			= 0.1;	// +10% dmg
+	data.DamageTakenMulti 			= 0.95;	// +5% res
+	data.DamageDealMulti			= 0.5;	// +5% dmg
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
-	data.AttackspeedBuff			= (1.0 / 1.1);
+	data.AttackspeedBuff			= (1.0 / 1.05);
 	data.Slot						= 0;
 	data.SlotPriority				= 0;
 	data.AttackspeedBuff			= -1.0;
