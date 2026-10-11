@@ -13,11 +13,12 @@ type SubweaponList = dict[str,str | list[Weapon | WeaponPap]]
 
 # THUMBNAIL ========================================================================
 # Patch pyassimp to prevent null pointer error
-if os.path.isdir("venv/lib/python3.14/site-packages/pyassimp/"): # source update
+# NOTE workflow uses 'venv' instead of '.venv'
+if os.path.isdir("venv/lib/python3.14/site-packages/pyassimp/"): # source/wiki update
     util.write("venv/lib/python3.14/site-packages/pyassimp/core.py", util.read("venv/lib/python3.14/site-packages/pyassimp/core.py").replace("""else:
                         setattr(target, name, [obj[i] for i in range(length)])""","""elif obj:
                         setattr(target, name, [obj[i] for i in range(length)])"""))
-if os.path.isdir(".venv/lib/python3.14/site-packages/pyassimp/"): # wiki update / local
+if os.path.isdir(".venv/lib/python3.14/site-packages/pyassimp/"): # local
     util.write(".venv/lib/python3.14/site-packages/pyassimp/core.py", util.read(".venv/lib/python3.14/site-packages/pyassimp/core.py").replace("""else:
                         setattr(target, name, [obj[i] for i in range(length)])""","""elif obj:
                         setattr(target, name, [obj[i] for i in range(length)])"""))

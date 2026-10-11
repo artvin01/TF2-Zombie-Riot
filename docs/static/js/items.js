@@ -155,7 +155,9 @@ function iter_item(parent_element, item, sw_opt) {
 
     /* Author */
     if (Boolean(item["author"])) {
-        item_tooltip.appendChild(create_element("div", "secondary", apply_morecolors(item["author"])));
+        item["author"].split("\n").forEach(line => {
+            item_tooltip.appendChild(create_element("div", "secondary", apply_morecolors(line)));
+        });
     };
 
     if (Boolean(item["faction"])) {

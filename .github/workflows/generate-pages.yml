@@ -17,7 +17,7 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.14'
-      - name: Setup venv # NOTE workflow uses 'venv' instead of '.venv'
+      - name: Setup venv
         run: python -m venv venv; venv\Scripts\pip.exe install -r requirements_decompile.txt
 
       - name: Clone ZR repo

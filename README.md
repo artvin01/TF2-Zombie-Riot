@@ -1,7 +1,6 @@
 # tf2_zr_wikigen
 *https://artvin01.github.io/TF2-Zombie-Riot/*  
 Automatic encyclopedia generator for https://github.com/artvin01/TF2-Zombie-Riot.  
-Only bug fixes will be done, as the project is getting rewritten in another language.  
 Icon source: https://github.com/feathericons/feather  
 
 # Running locally

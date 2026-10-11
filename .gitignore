@@ -8,6 +8,7 @@ __pycache__/
 TF2-Zombie-Riot/
 decompiled/
 pyproject.toml
+pending_changes.txt
 
 # Generating thumbnails of TF2 models
 # Exclude everything but the bodygroup mappings
