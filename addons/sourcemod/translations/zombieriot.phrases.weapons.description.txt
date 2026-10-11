@@ -1421,6 +1421,7 @@
 	"Experimental Burst Pack Desc"
 	{
 		"en"	"-A weak dash, twice a round/Raid battle\n-While downed, you can dash again for a much higher seperate cooldown.\nUsing it more then twice a wave will massively increase the cooldown."
+		"ko"	"-짧은 대쉬를 사용할 수 있습니다. 레이드나 라운드에서 2회만 사용 가능.\n-다운된 상태라면, 개별적인 더 긴 쿨타임이 있는 긴급 대쉬를 사용할 수 있음.\n-웨이브 내에서 2번을 초과하여 사용 시 쿨타임이 대폭 증가합니다."
 	}
 	
 	"Throwable Survival Grenade Desc"
@@ -1435,6 +1436,7 @@
 	"Deployable Quantum Suit Desc"
 	{
 		"en"	"-On use, frozen for 2 seconds, gain resitance during freeze\n-Gain a sepearte suit of armor, power scales with money spend\n-When reaching 0 health, or timer is over, return back to normal.\n-During raids, take extra damage\n-Elemental damage is normal damage to you instead"
+		"ko"	"-사용시, 2초간 고정됨. 고정된 상태에선 저항력 증가\n-퀀텀 슈트의 위력은 총합 자금 사용량에 비례하여 증가\n-이 슈트를 입은 상태로 체력이 0이 되거나 타이머가 0이 될 시, 슈트가 파괴됨\n-레이드 모드일 경우 피해를 더 많이 받습니다.\n-원소 피해가 부여될 경우 일반 피해로 적용됩니다."
 	}
 	
 	"Ranged Spike Layer Desc"
