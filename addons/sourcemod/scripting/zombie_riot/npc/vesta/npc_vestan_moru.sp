@@ -256,7 +256,7 @@ static void VestanDroneAnvil_ClotThink(int iNPC)
 	}
 	else
 	{
-		npc.m_flSpeed = NpcStats_VestanCallToArms(npc.index) ? 400.0 : 300.0;
+		npc.m_flSpeed = NpcStats_VestanCallToArms(npc.index) ? 550.0 : 300.0;
 	}
 
 	if(npc.m_flNextThinkTime > gameTime)
