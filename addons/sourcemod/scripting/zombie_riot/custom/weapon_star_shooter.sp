@@ -43,7 +43,7 @@ public void Quantum_Repeater_New(int client, int weapon, bool crit, int slot)
 	float damageMulti = float(CashSpentTotal[client]);
 	damageMulti = Pow(damageMulti, 1.15);
 	damageMulti = damageMulti / 850.0;
-	damageMulti *= 2.0;
+	damageMulti *= 1.25;
 
 	damage *= damageMulti;
 
