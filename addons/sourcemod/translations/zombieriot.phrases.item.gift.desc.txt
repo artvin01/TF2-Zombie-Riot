@@ -3961,7 +3961,7 @@
 	}
 	"Xeno Virus Sample Desc"
 	{
-		"en"		"A while after the Xeno army left victorious, we find the aftermath of their battle. \nCorpses of Xeno infecteds and other mercs lay across a ruined camp. \nBob the Second takes a piece of the infected's flesh. \nHe then tells us we need to get rid of this infection fast!"
+		"en"		"A while after the Xeno army left victorious, we find the aftermath of their battle. \nCorpses of Xeno infecteds and other mercs lay across a ruined camp. \nBob the Second takes a sample of the infected's flesh."
 		"ko"		"제노 군단에게서 승리한 후, 전투의 여파를 눈에 담게 됩니다:\n폐허가 된 캠프 곳곳에 널부러진 제노 감염체들과 다른 용병들이죠.\n밥 2세가 감염체의 살점을 수집하고는, 이 감염원을 서둘러 제거해야 한다고 합니다!"
 	}
 	"Son of Osiris's Gift"
@@ -4024,12 +4024,12 @@
 		"en"		"A golden necklace with a gem at the end of it. \nRuliana gives it to us as a gift from Twirl."
 		"ko"		"끝부분에 보석이 달려있는 황금 목걸이입니다.\n루리아나가 트윌의 선물이라며 건네주었습니다."
 	}
-	"Major Voided’s Hat"
+	"Major Voided's Hat"
 	{
 		"en"		"Major Voided’s Hat"
 		"ko"		"공허화된 소령의 모자"
 	}
-	"Major Voided’s Hat Desc"
+	"Major Voided's Hat Desc"
 	{
 		"en"		"Zeina gives us this after one of our Umbral Incursion runs. \nShe says she got it from encountering Voided Major Steams while saving a group of mercs from a void outbreak."
 		"ko"		"움브랄 인커젼 시뮬레이션을 완료한 후 제이나가 건네주었습니다.\n공허 재앙에서 용병 그룹을 구출하는 중 대치한 공허화된 증기 소령에게서 얻었다는군요."
@@ -4041,7 +4041,7 @@
 	}
 	"Avangard's Processing Core-B Desc"
 	{
-		"en"		"As we head to meet up with Bob the First to deal with chaos problems, we hear a large explosion at a Vestan outpost. From the sky, this drops down in front of us, and we take it with us. Maybe I'll have some use for it"
+		"en"		"As we head to meet up with Bob the First to deal with chaos problems. \nWe hear a large explosion at a Vestan outpost. \nFrom the sky, this drops down in front of us, and we take it with us.\nMaybe we'll have some use for it"
 		"ko"		"혼돈 사태를 해결하기 위해 밥 1세와 합류하러 이동하는 중, 베스타 전초기지에서 커다란 폭발이 일어납니다.\n하늘에서 이 무언가가 떨어졌고, 그것을 가져가기로 합니다. 어쩌면 우리가 활용할 수 있을지도요."
 	}
 	"Ancient Demon Horn"
