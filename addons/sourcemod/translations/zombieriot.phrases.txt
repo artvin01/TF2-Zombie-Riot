@@ -5444,8 +5444,8 @@
 	}
 	"Almina Expi Desc"
 	{
-	  "en" "After the main mercs finish their training, Almina ask the secondary mercs to do more training. Nemal and Silvester are away with Sensal, so they won't be here. So some other Expidonsans volunteer to help."
-	  "ko" "주요 용병들이 훈련을 마친 후, 알미나가 더 많은 훈련을 위해 보조 용병들을 방문합니다. 이번엔 네말과 실베스터가 센살과 휴가 중이기에 없을 겁니다."
+	  "en"	"After the main mercs finish their training, Almina ask the secondary mercs to do more training. Nemal and Silvester are away with Sensal, so they won't be here. So some other Expidonsans volunteer to help."
+	  "ko"	"주요 용병들이 훈련을 마친 후, 알미나가 더 많은 훈련을 위해 보조 용병들을 방문합니다. 네말과 실베스터가 센살과 휴가 중이기에, 다른 몇몇 엑스피돈사인들이 자원하여 참여합니다."
 	}
 	"Almina & Nemal"
 	{
