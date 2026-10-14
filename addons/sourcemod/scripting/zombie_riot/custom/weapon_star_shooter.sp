@@ -8,9 +8,7 @@ public void Weapon_Star_shooter(int client, int weapon, bool crit, int slot)
 
 	Client_Shake(client, 0, 30.0, 15.0, 0.5);
 	
-	float damage = float(CashSpentTotal[client]);
-	damage = Pow(damage, 1.15);
-	damage = damage / 120.0;
+	float damage = 50.0;
 
 	damage *= Attributes_Get(weapon, 1, 1.0);
 	damage *= Attributes_Get(weapon, 2, 1.0);

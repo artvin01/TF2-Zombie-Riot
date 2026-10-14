@@ -165,12 +165,16 @@ void Do_Perk_Machine_Logic(int owner, int client, int entity, int what_perk, int
 	ObjectGeneric objstats = view_as<ObjectGeneric>(entity);
 	if(owner == -1 && !objstats.m_bNoOwnerRequired)
 		return;
-		
+
 	if(!IsVscriptCall && (GetEntityFlags(client) & FL_DUCKING))
 	{
 		CPrintToChat(client, "{green} %T", PerkNames_Received[PrintChatid], client);
 		ObjectPerkMachine npc = view_as<ObjectPerkMachine>(entity);
 		ClotInteract(client, -1, npc);
+		return;
+	}
+	if(!IsEntityAlive(client))
+	{
 		return;
 	}
 
