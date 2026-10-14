@@ -127,12 +127,22 @@ public void Rogue_HandDuelist_Weapon(int entity)
 	}
 }
 
+public void Rogue_HandCaster_Ally(int entity, StringMap map)
+{
+	if(map)	// Player
+	{
+		float value;
+
+		// +X max health
+		map.GetValue("405", value);
+		map.SetValue("405", value * 2.0);
+	}
+}
 public void Rogue_HandCaster_Weapon(int entity)
 {
 	if(i_WeaponArchetype[entity] == Archetype_Rapid || i_WeaponArchetype[entity] == Archetype_Power || i_WeaponArchetype[entity] == Archetype_Hexing)
 	{
 		// +100% max mana
-		Attributes_SetMulti(entity, 405, 2.0);
 		Attributes_SetMulti(entity, 6, 0.5);
 	}
 }

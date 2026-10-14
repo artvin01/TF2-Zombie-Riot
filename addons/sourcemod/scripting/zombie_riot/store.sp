@@ -5657,6 +5657,7 @@ void Store_ApplyAttribs(int client)
 	map.SetValue("527", 1.0);// no tf2 afterburn
 	map.SetValue("4049", 1.0);// Elemental Res
 	map.SetValue("68", ClassForStats == TFClass_Scout ? -1.0 : 0.0);
+	map.SetValue("405", 1.0);// max mana
 	
 	if(PapModeDo == PAP_MODE_BUILDING_ONLY)
 	{
@@ -8182,6 +8183,12 @@ void Store_HandleAutoPurchases()
 				AutoPapList[client].SetArray(i, autoInfo);
 				break; // Only allow 1 enhancement per timer tick
 			}
+		}
+		
+		if (AutoPapList[client].Length == 0)
+		{
+			delete AutoPapList[client];
+			continue;
 		}
 		
 		if (kitIndex != -1)

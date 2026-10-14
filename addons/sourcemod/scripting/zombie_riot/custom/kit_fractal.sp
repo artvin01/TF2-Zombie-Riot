@@ -20,7 +20,6 @@ static int i_cosmetic_effect[MAXPLAYERS];
 
 static int i_WeaponGotLastmanBuff[MAXENTITIES];
 
-static float f_AniSoundSpam[MAXPLAYERS];
 #define FRACTAL_KIT_SHIELDSOUND1 "weapons/rescue_ranger_charge_01.wav"
 #define FRACTAL_KIT_SHIELDSOUND2 "weapons/rescue_ranger_charge_02.wav"
 

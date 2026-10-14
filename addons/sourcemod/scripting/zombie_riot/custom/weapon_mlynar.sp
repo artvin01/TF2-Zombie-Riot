@@ -19,7 +19,6 @@ static bool b_MlynarResetStats[MAXPLAYERS];
 int i_MlynarMaxDamageGetFromSameEnemy[MAXENTITIES];
 static float f_MlynarHurtDuration[MAXPLAYERS];
 static float f_MlynarReflectCooldown[MAXPLAYERS][MAXENTITIES];
-static float f_AniSoundSpam[MAXPLAYERS+1]={0.0, ...};
 static int i_RefWeaponDelete[MAXPLAYERS];
 
 //This will be used to tone down damage over time/on kill

@@ -153,7 +153,17 @@ int Elemental_TriggerDamage(int entity, int type)
 
 	switch(type)
 	{
-		case Element_Necrosis, Element_Nervous:
+		case Element_Necrosis:
+		{
+		/*
+			if(GetTeam(entity) == TFTeam_Red)
+				return 1000;
+			
+			return b_thisNpcIsABoss[entity] ? 25000 : 12500;
+		*/
+			divide = 1.2;
+		}
+		case Element_Nervous:
 		{
 		/*
 			if(GetTeam(entity) == TFTeam_Red)
@@ -203,6 +213,10 @@ int Elemental_TriggerDamage(int entity, int type)
 		{
 			// Don't scale more with bosses
 		}
+		/*case Element_Necrosis:
+		{
+			// Don't scale more with bosses
+		}*/
 		/*case Element_Necrosis, Element_Nervous:
 		{
 			// Don't scale more with bosses
@@ -347,7 +361,7 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 		{
 			if(i_HealthBeforeSuit[victim] > 0)
 			{
-				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 3.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_ELEMENTAL_QUANTUM);
+				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 1.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_ELEMENTAL_QUANTUM);
 			}
 			else
 			{
@@ -497,7 +511,7 @@ void Elemental_AddChaosDamage(int victim, int attacker, int damagebase, bool sou
 		{
 			if(i_HealthBeforeSuit[victim] > 0)
 			{
-				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 3.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_ELEMENTAL_QUANTUM);
+				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 1.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_ELEMENTAL_QUANTUM);
 			}
 			else
 			{
@@ -658,7 +672,7 @@ void Elemental_AddVoidDamage(int victim, int attacker, int damagebase, bool soun
 		{
 			if(i_HealthBeforeSuit[victim] > 0)
 			{
-				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 3.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_ELEMENTAL_QUANTUM);
+				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 1.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_ELEMENTAL_QUANTUM);
 			}
 			else
 			{
@@ -847,11 +861,15 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 	
 	if(b_NpcIsInvulnerable[victim])
 		return;
-
+	
 	int damage = RoundFloat(damagebase * fl_Extra_Damage[attacker]);
 	if(NpcStats_ElementalAmp(victim))
 	{
 		damage = RoundToNearest(float(damage) * 1.3);
+	}
+	if(HasSpecificBuff(attacker, "Empty Notes"))
+	{
+		damage = RoundToNearest(float(damage) * 1.25);
 	}
 	if(victim <= MaxClients || Arena_Mode())
 		damage = RoundFloat(damage * GLOBAL_ELEMENTAL_NERF_PLAYER);
@@ -871,7 +889,7 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 		{
 			if(i_HealthBeforeSuit[victim] > 0)
 			{
-				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 3.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_ELEMENTAL_QUANTUM);
+				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 1.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_ELEMENTAL_QUANTUM);
 			}
 			else
 			{
@@ -1091,7 +1109,7 @@ void Elemental_AddCorruptionDamage(int victim, int attacker, int damagebase, boo
 		{
 			if(i_HealthBeforeSuit[victim] > 0)
 			{
-				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 3.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_ELEMENTAL_QUANTUM);
+				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 1.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_ELEMENTAL_QUANTUM);
 			}
 			else
 			{
@@ -1343,7 +1361,7 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 		{
 			if(i_HealthBeforeSuit[victim] > 0)
 			{
-				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 3.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_ELEMENTAL_QUANTUM);
+				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 1.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_ELEMENTAL_QUANTUM);
 			}
 			else
 			{
@@ -1537,7 +1555,7 @@ void Elemental_AddWarpedDamage(int victim, int attacker, int damagebase, bool so
 		{
 			if(i_HealthBeforeSuit[victim] > 0)
 			{
-				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 3.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_ELEMENTAL_QUANTUM);
+				SDKHooks_TakeDamage(victim, attacker, attacker, damagebase * 1.0, DMG_TRUEDAMAGE|DMG_PREVENT_PHYSICS_FORCE, .Zr_damage_custom = ZR_ELEMENTAL_QUANTUM);
 			}
 			else
 			{

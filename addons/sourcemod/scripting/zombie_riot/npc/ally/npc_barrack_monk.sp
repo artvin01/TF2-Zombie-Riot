@@ -205,62 +205,62 @@ static float Skull_Effect(int entity, int victim, float &damage, int weapon)
 }
 public void BarrackMonk_TryHealAlly(int iNPC)
 {
-    if(iNPC <= 0 || iNPC >= MAXENTITIES)
-        return;
+	if(iNPC <= 0 || iNPC >= MAXENTITIES)
+		return;
 
-    BarrackMonk npc = view_as<BarrackMonk>(iNPC);
-    float GameTime = GetGameTime(iNPC);
+	BarrackMonk npc = view_as<BarrackMonk>(iNPC);
+	float GameTime = GetGameTime(iNPC);
 
-    float npcPos[3];
-    WorldSpaceCenter(iNPC, npcPos);
+	float npcPos[3];
+	WorldSpaceCenter(iNPC, npcPos);
 
-    for(int client = 1; client <= MaxClients; client++)	// Yes, this abomination of a code basically looks for a valid ally in 60.000 range and if they're below 60% hp they get healed (checks also for valid target, not dying etc)
-    {
-        if(!IsValidClient(client) || !IsPlayerAlive(client))
-            continue;
+	for(int client = 1; client <= MaxClients; client++)	// Yes, this abomination of a code basically looks for a valid ally in 60.000 range and if they're below 60% hp they get healed (checks also for valid target, not dying etc)
+	{
+		if(!IsValidClient(client) || !IsPlayerAlive(client))
+			continue;
 
-        if(dieingstate[client] > 0)
-            continue;
-        if(b_NpcIsInvulnerable[client])
-            continue;
+		if(dieingstate[client] > 0)
+			continue;
+		if(b_NpcIsInvulnerable[client])
+			continue;
 
-        float clPos[3];
-        WorldSpaceCenter(client, clPos);
-        float dist = GetVectorDistance(npcPos, clPos, true);
+		float clPos[3];
+		WorldSpaceCenter(client, clPos);
+		float dist = GetVectorDistance(npcPos, clPos, true);
 
-        if(dist > 60000.0)
-            continue;
+		if(dist > 60000.0)
+			continue;
 
-        float curHealth = float(GetEntProp(client, Prop_Data, "m_iHealth"));
-        float maxHealth = float(ReturnEntityMaxHealth(client));
+		float curHealth = float(GetEntProp(client, Prop_Data, "m_iHealth"));
+		float maxHealth = float(ReturnEntityMaxHealth(client));
 
-        if(maxHealth <= 0.0)
-            continue;
+		if(maxHealth <= 0.0)
+			continue;
 
-        float healthPct = (curHealth / maxHealth) * 100.0;
+		float healthPct = (curHealth / maxHealth) * 100.0;
 
-        if(healthPct > 60.0)
-            continue;
+		if(healthPct > 60.0)
+			continue;
 
-        int owner = GetClientOfUserId(npc.OwnerUserId);
+		int owner = GetClientOfUserId(npc.OwnerUserId);
 		float healAmount = maxHealth * 0.15;
-		
+
 		if (owner > 0 && (i_CurrentEquippedPerk[owner] & PERK_REGENE))	// 33% more healing if the owner of the monk has Regen perk
 		{
 			healAmount = maxHealth * 0.20;
 		}
 
-        HealEntityGlobal(iNPC, client, healAmount, 1.0, 0.5, 0);
+		HealEntityGlobal(iNPC, client, healAmount, 1.0, 0.5, 0);
 		
 		int BeamIndex = ConnectWithBeam(iNPC, client, 0, 255, 100, 3.0, 3.0, 1.35, "sprites/laserbeam.vmt");
 		SetEntityRenderFx(BeamIndex, RENDERFX_FADE_SLOW);
 		CreateTimer(2.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
-		
+
 		int roll = GetRandomInt(1, 100);
 
 		if (roll == 1)
 		{
-		ApplyStatusEffect(iNPC, client, "Depressed", 0.1);
+			ApplyStatusEffect(iNPC, client, "Depressed", 0.1);
 
 			SetHudTextParams(-1.0, 0.75, 3.0, 255, 50, 50, 255);
 			ShowHudText(client, -1, "An unfriendly Monk flipped you off!\nYou feel depressed despite the healing.");
@@ -271,13 +271,13 @@ public void BarrackMonk_TryHealAlly(int iNPC)
 			ShowHudText(client, -1, "You have been healed by a friendly Monk");
 		}
 
-        npc.m_flHealCD = GameTime + 30.0;
-        npc.m_flHealCheckCD = GameTime + 30.0;
+		npc.m_flHealCD = GameTime + 30.0;
+		npc.m_flHealCheckCD = GameTime + 30.0;
 
-        return;
-    }
+		return;
+	}
 
-    npc.m_flHealCheckCD = GameTime + 2.0;
+	npc.m_flHealCheckCD = GameTime + 2.0;
 }
 static void Monk_CurseEffect(BarrackMonk npc, int type, int target = -1)	// Had to be a little more creative with this one, otherwise the merasmus_zap ALWAYS went for the origin spot making it a bit weird and misleading
 {

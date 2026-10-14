@@ -9,8 +9,6 @@ static float Ark_ParryTiming[MAXPLAYERS+1];
 
 static int Ark_Level[MAXPLAYERS+1]={0, ...};
 
-static float f_AniSoundSpam[MAXPLAYERS+1]={0.0, ...};
-
 
 #define SOUND_QUIBAI_SHOT 	"weapons/stunstick/alyx_stunner2.wav"
 #define SOUND_LAPPLAND_SHOT 	"weapons/fx/nearmiss/dragons_fury_nearmiss.wav"

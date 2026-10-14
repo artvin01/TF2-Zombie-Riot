@@ -439,7 +439,7 @@ static void Weapon_SupplyDrop_Rocket_StartTouch(int entity, int target)
 	
 	float pos[3];
 	WorldSpaceCenter(entity, pos);
-	RandomPickup_SpawnPickup(pos, 60.0);
+	RandomPickup_SpawnPickup(pos, true, 60.0);
 	
 	ParticleEffectAt(pos, SUPPLYDROP_CRATE_SMALL_PARTICLE);
 	EmitSoundToAll(SUPPLYDROP_CRATE_SMALL_SOUND, entity, SNDCHAN_STATIC);

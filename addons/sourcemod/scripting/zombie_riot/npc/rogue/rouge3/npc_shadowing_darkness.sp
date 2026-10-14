@@ -434,6 +434,7 @@ methodmap Shadowing_Darkness_Boss < CClotBody
 		else
 		{
 			npc.SetActivity("ACT_SHADOW_RUN");
+			f_khamlCutscene = 0.0;
 			RaidModeTime = GetGameTime() + (350.0);
 			MusicEnum music;
 			strcopy(music.Path, sizeof(music.Path), "#zombiesurvival/rogue3/shadowing_darkness.mp3");

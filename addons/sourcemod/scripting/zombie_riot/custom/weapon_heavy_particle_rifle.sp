@@ -1,7 +1,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static float f_AniSoundSpam[MAXPLAYERS];
 static int i_shotsfired[MAXPLAYERS];
 static float f_rest_time[MAXPLAYERS];
 static float f_hud_timer[MAXPLAYERS];

@@ -554,6 +554,7 @@ static int VestaRepair_Work(VestaRepair npc, float gameTime, float distance)
 				
 				HealEntityGlobal(npc.index, npc.m_iTarget, 3000.0, 1.0);
 				ApplyStatusEffect(npc.index, npc.m_iTarget, "Defensive Backup", 1.1);
+				ApplyStatusEffect(npc.index, npc.m_iTarget, "Extreamly Defensive Backup", 1.1);
 				
 				float WorldSpaceVec[3]; WorldSpaceCenter(npc.m_iTarget, WorldSpaceVec);
 				

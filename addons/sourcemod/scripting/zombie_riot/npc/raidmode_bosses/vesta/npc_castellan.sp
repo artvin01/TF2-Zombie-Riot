@@ -378,7 +378,7 @@ methodmap Castellan < CClotBody
 		
 		npc.m_flTimeUntillSupportSpawn = GetGameTime() + 5.0;
 		npc.m_flTimeUntillHomingStrike = GetGameTime() + 10.0;
-		npc.m_flTimeUntillAirStrike = GetGameTime() + 30.0;
+		npc.m_flTimeUntillAirStrike = GetGameTime() + 15.0;
 		npc.m_flVESTA_NUKE_SETUP = GetGameTime() + 45.0;
 		npc.m_flRequestDrone = GetGameTime() + 15.0;
 		npc.m_flTimeSinceHasBeenHurt = 0.0;
@@ -1973,9 +1973,11 @@ static int Man_Work(Castellan npc, float gameTime, float VecSelfNpc[3], float ve
 								KillFeed_SetKillIcon(npc.index, "fireaxe");
 								SDKHooks_TakeDamage(targetTrace, npc.index, npc.index, damage, DMG_CLUB, -1, _, vecHit);
 								bool Knocked = false;
-								float bleeding = damage/90.0;
+								float bleeding = damage/20.0;
 								if(bleeding<4.0)bleeding=4.0;
+								/*
 								else if(bleeding>20.0)bleeding=20.0;
+								*/
 								StartBleedingTimer(targetTrace, npc.index, bleeding, 6, -1, DMG_TRUEDAMAGE, 0);
 								if(IsValidClient(targetTrace))
 								{
@@ -2433,8 +2435,8 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 						else
 							NPCPritToChat_Override("Vesta Harrison", "{skyblue}", "Harrison_Talk_Support-15", false);
 
-						npc.m_bAirStrikeTalk=9;
 						npc.m_flAttackHappens_2=0.8;
+						npc.m_bAirStrikeTalk=9;
 					}
 					case 3:
 					{
@@ -2444,8 +2446,8 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 						else
 							NPCPritToChat_Override("Vesta Atomizer", "{blue}", "Atomizer_Talk_Support-5", false);
 
-						npc.m_bAirStrikeTalk=9;
 						npc.m_flAttackHappens_2=0.8;
+						npc.m_bAirStrikeTalk=9;
 					}
 				}
 			}
@@ -2474,8 +2476,8 @@ static void DefaultAirStrikeTalk(Castellan npc, float gameTime)
 					}
 				}
 				
-				npc.m_bAirStrikeTalk=10;
 				npc.m_flAttackHappens_2=0.8;
+				npc.m_bAirStrikeTalk=10;
 			}
 		}
 		case 10:

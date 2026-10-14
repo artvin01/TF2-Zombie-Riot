@@ -642,6 +642,10 @@ public void Timer_Do_Melee_Attack_Internal(DataPack pack)
 			{
 				LanceDamageCalc(client, weapon, damage_test_validity, true);
 			}
+			case WEAPON_OPERAMUTE: //yes, if we miss, then we do other stuff.
+			{
+				OperaMute_DmgCalc(client, weapon, damage_test_validity, true);
+			}
 		}
 		if(damage_test_validity == 0.0) //here we put weapons that have special rules regarding attacking via a melee, can they even attack? etc etc.
 		{

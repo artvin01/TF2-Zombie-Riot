@@ -32,7 +32,30 @@ void Ritualist_Enable(int client, int weapon)
 
 		if(!WeaponTimer[client])
 			WeaponTimer[client] = CreateTimer(0.5, RitualistTimer, client, TIMER_REPEAT);
+
 	}
+}
+bool Ritualist_ThereisRitualistNecrosis()
+{
+	for (int client = 1; client <= MaxClients; client++)
+	{
+		if(Ritualist_IsNecro(client))
+		{
+			return true;
+		}
+	}
+	return false;
+}
+bool Ritualist_IsNecro(int client)
+{
+	if(WeaponTimer[client] && IsValidClient(client))
+	{
+		if(WeaponType[client] == Ritualist_Necrosis)
+		{
+			return true;
+		}
+	}
+	return false;
 }
 public void RitualistCancelTauntDo(int client)
 {
@@ -185,6 +208,13 @@ static Action RitualistTimer(Handle timer, int client)
 {
 	if(IsClientInGame(client) && IsPlayerAlive(client))
 	{
+		if(!HasSpecificBuff(client, "Empty Notes"))
+		{
+			if(WeaponType[client] == Ritualist_Necrosis && OperaMute_Thereis())
+			{
+				ApplyStatusEffect(client, client, "Empty Notes", 999999.9);
+			}
+		}
 		int weapon = EntRefToEntIndex(WeaponRef[client]);
 		if(weapon != -1)
 		{
@@ -204,7 +234,11 @@ static Action RitualistTimer(Handle timer, int client)
 		}
 		
 	}
-
+	if(IsValidClient(client))
+	{
+		RemoveSpecificBuff(client, "Shielding");
+		RemoveSpecificBuff(client, "Empty Notes");
+	}
 	WeaponTimer[client] = null;
 	return Plugin_Stop;
 }
@@ -233,6 +267,10 @@ void RitualistApplyBuff(int attacker, int victim, float &damage, int weapon)
 			int BeamIndex = ConnectWithBeam(attacker, victim, 255, 125, 125, 3.0, 3.0, 1.35, "sprites/laserbeam.vmt");
 			SetEntityRenderFx(BeamIndex, RENDERFX_FADE_FAST);
 			CreateTimer(1.0, Timer_RemoveEntity, EntIndexToEntRef(BeamIndex), TIMER_FLAG_NO_MAPCHANGE);
+		}
+		if(HasSpecificBuff(victim, "Empty Notes") && OperaMute_WeaponHas(victim))
+		{
+			DurationGive *= 1.5;
 		}
 		ApplyStatusEffect(attacker, victim, "Liberal Tango", DurationGive);
 	}
@@ -393,6 +431,20 @@ void StatusEffects_Ritualist()
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = true;
+	data.Slot						= 0;
+	data.SlotPriority				= 0;
+	data.AttackspeedBuff			= -1.0;
+	StatusEffect_AddGlobal(data);
+	
+	strcopy(data.BuffName, sizeof(data.BuffName), "Empty Notes");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "♪");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
+	data.DamageTakenMulti 			= 0.95;	// +5% res
+	data.DamageDealMulti			= 0.5;	// +5% dmg
+	data.MovementspeedModif			= -1.0;
+	data.Positive 					= true;
+	data.ShouldScaleWithPlayerCount = false;
+	data.AttackspeedBuff			= (1.0 / 1.05);
 	data.Slot						= 0;
 	data.SlotPriority				= 0;
 	data.AttackspeedBuff			= -1.0;
