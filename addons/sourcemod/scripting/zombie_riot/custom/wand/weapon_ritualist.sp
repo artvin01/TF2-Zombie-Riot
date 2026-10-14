@@ -270,7 +270,7 @@ void RitualistApplyBuff(int attacker, int victim, float &damage, int weapon)
 		}
 		if(HasSpecificBuff(victim, "Empty Notes") && OperaMute_WeaponHas(victim))
 		{
-			DurationGive *= 2.0;
+			DurationGive *= 1.5;
 		}
 		ApplyStatusEffect(attacker, victim, "Liberal Tango", DurationGive);
 	}

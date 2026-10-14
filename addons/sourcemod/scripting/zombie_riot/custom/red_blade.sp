@@ -61,7 +61,7 @@ public void Red_charge_ability(int client, int weapon, bool crit, int slot) // t
 		
 	//	ApplyTempAttrib(weapon, 852, 0.5, 5.0);
 		TF2_AddCondition(client, TFCond_Charging, 2.0, client);
-		f_RedBladeChargeDuration[client] = GetGameTime() + 2.0;
+		f_RedBladeChargeDuration[client] = GetGameTime() + 1.0;
 
 	}
 	else
@@ -137,24 +137,18 @@ void RedBladeHudShow(int client)
 	if(f_RedBladeChargeDuration[client] > GetGameTime())
 	{
 		/*
-		int ChargeEnemy = EntRefToEntIndex(i_RedBladeNpcToCharge[client]);
-		if(IsValidEnemy(client, ChargeEnemy, true))
-		{
-			if(TF2_IsPlayerInCondition(client, TFCond_Charging))
-			{
-				LookAtTarget(client, ChargeEnemy);
-			}
-		}
-		*/
 		if(!TF2_IsPlayerInCondition(client, TFCond_Charging))
 		{
 			f_RedBladeChargeDuration[client] = 0.0;
 		}
+		*/
 	}
 	else
 	{
-		TF2_RemoveCondition(client, TFCond_Charging);
-		f_RedBladeChargeDuration[client] = 0.0;
+		if(TF2_IsPlayerInCondition(client, TFCond_Charging))
+		{
+			f_RedBladeChargeDuration[client] = GetGameTime() + 0.2;
+		}
 	}
 	if(f_RedBladehuddelay[client] < GetGameTime())
 	{
