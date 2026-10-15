@@ -11282,7 +11282,7 @@ float Shielding_DamageTakenFunc(int attacker, int victim, StatusEffect Apply_Mas
 		Apply_StatusEffect.TimeUntillOver = 0.0;
 
 		//used for opera
-		ApplyStatusEffect(victim, victim, "Shielding Cooldown", 5.0);
+		ApplyStatusEffect(victim, victim, "Shielding Cooldown", 3.0);
 	}
 	E_AL_StatusEffects[victim].SetArray(ArrayPosition, Apply_StatusEffect);
 	return 1.0;

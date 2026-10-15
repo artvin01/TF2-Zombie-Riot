@@ -104,7 +104,7 @@ public void OperaMute_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 	int mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
 	if(zr_custom_damage & ZR_DAMAGE_REFLECT_LOGIC)
 	{
-		OperaMute_ManaDo(attacker, -RoundToNearest(float(mana_cost) * 1.0));
+		OperaMute_ManaDo(attacker, -RoundToNearest(float(mana_cost) * 0.5));
 		Elemental_AddNecrosisDamage(victim, attacker, RoundToNearest(damage * 3.0), weapon);
 		if(OpeaMute_DamageMulti(attacker))
 		{
@@ -121,7 +121,7 @@ public void OperaMute_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 	}
 	else
 	{
-		OperaMute_ManaDo(attacker, RoundToNearest(float(mana_cost) * 3.0));
+		OperaMute_ManaDo(attacker, RoundToNearest(float(mana_cost) * 1.5));
 		Elemental_AddNecrosisDamage(victim, attacker, RoundToNearest(damage * 1.65), weapon);
 	}
 
@@ -284,7 +284,7 @@ void OperaMute_ManaDo(int client, int mana_cost)
 		Current_Mana[client] = 0;
 
 	delay_hud[client] = 0.0;
-	OperaMute_GiveShield(client, mana_cost / 2);
+	OperaMute_GiveShield(client, mana_cost);
 }
 bool OperaMute_WeaponHas(int client)
 {

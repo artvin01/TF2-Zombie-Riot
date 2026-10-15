@@ -455,6 +455,10 @@ void Elemental_AddNervousDamage(int victim, int attacker, int damagebase, bool s
 						multi = Attributes_Get(weapon, 410, 1.0);
 						if(multi > 0.0)
 							bleedDamage *= multi;
+
+						multi = Attributes_Get(weapon, Attrib_Elemental_DmgBoost, 1.0);
+						if(multi > 0.0)
+							bleedDamage *= multi;
 					}
 					else
 					{
@@ -850,7 +854,7 @@ void Elemental_AddCyroDamage(int victim, int attacker, int damagebase, int type)
 	}
 }
 
-void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int weapon = -1)
+void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int weapon = -1, bool DoSound = false)
 {
 	if(i_IsVehicle[victim])
 	{
@@ -966,6 +970,10 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 					multi = Attributes_Get(weapon, 410, 1.0);
 					if(multi > 0.0)
 						bleedDamage *= multi;
+
+					multi = Attributes_Get(weapon, Attrib_Elemental_DmgBoost, 1.0);
+					if(multi > 0.0)
+						bleedDamage *= multi;
 				}
 				else
 				{
@@ -979,6 +987,9 @@ void Elemental_AddNecrosisDamage(int victim, int attacker, int damagebase, int w
 					time = 3.0;
 				
 				ApplyStatusEffect(attacker, victim, "Enfeeble", time);
+				//tell them they did this
+				if(attacker && attacker <= MaxClients && DoSound)
+					EmitSoundToClient(attacker, "beams/beamstart5.wav", attacker, SNDCHAN_STATIC, _, _, 0.6, 60);
 			}
 
 			if(attacker && attacker <= MaxClients)
