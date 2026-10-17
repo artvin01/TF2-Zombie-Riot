@@ -8192,43 +8192,43 @@
 	}
 	"Randomizer Lvl 1"
 	{
-		"en"	"Randomizer"
+		"en"	"Randomizer Lvl 1"
 		"it"	"Randomizzatore"
 		"ko"	"랜더마이저 레벨 1"
 	}
 	"Randomizer Lvl 2"
 	{
-		"en"	"Randomizer"
+		"en"	"Randomizer Lvl 2"
 		"it"	"Randomizzatore"
 		"ko"	"랜더마이저 레벨 2"
 	}
 	"Randomizer Lvl 3"
 	{
-		"en"	"Randomizer"
+		"en"	"Randomizer Lvl 3"
 		"it"	"Randomizzatore"
 		"ko"	"랜더마이저 레벨 3"
 	}
 	"Randomizer Lvl 4"
 	{
-		"en"	"Randomizer"
+		"en"	"Randomizer Lvl 4"
 		"it"	"Randomizzatore"
 		"ko"	"랜더마이저 레벨 4"
 	}
 	"Randomizer Lvl 5"
 	{
-		"en"	"Randomizer"
+		"en"	"Randomizer Lvl 5"
 		"it"	"Randomizzatore"
 		"ko"	"랜더마이저 레벨 5"
 	}
 	"Randomizer Lvl 6"
 	{
-		"en"	"Randomizer"
+		"en"	"Randomizer Lvl 6"
 		"it"	"Randomizzatore"
 		"ko"	"랜더마이저 레벨 6"
 	}
 	"Cruel Grigori Reanimation"
 	{
-		"en" 		"Father Grigori"
+		"en" 		"Cruel Grigori Reanimation"
 		"ru" 		"Отец Григорий"
 		"pt"		"Senhor Grigori"
 		"nl"		"Vader Grigori"
