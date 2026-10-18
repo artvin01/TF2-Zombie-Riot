@@ -11162,6 +11162,12 @@ void StatusEffects_ShieldLogic()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	data.Positive 					= false;
 	StatusEffect_AddGlobal(data);
+
+	strcopy(data.BuffName, sizeof(data.BuffName), "Shielding Reduce");
+	strcopy(data.HudDisplay, sizeof(data.HudDisplay), "sr");
+	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
+	data.Positive 					= false;
+	StatusEffect_AddGlobal(data);
 }
 
 void Shielding_End(int victim, StatusEffect Apply_MasterStatusEffect, E_StatusEffect Apply_StatusEffect)
