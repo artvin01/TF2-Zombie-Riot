@@ -1,4 +1,4 @@
-#pragma semicolon 1
+#pragma semicolon 1  // block both teslars and the 3 cryos. that, remove them, or make it that enemies get speed when getting them.
 #pragma newdecls required
 
 static float HealthMulti;
