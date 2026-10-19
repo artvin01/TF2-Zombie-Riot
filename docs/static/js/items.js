@@ -19,23 +19,33 @@ let allowSliderUpdates = false;
 let priceRange = [0, Infinity];
 let activeTags = [];
 let showHiddenItems = false;
+let weaponArchetypes = [];
+let weaponArchetypeFilter = "";
 const ATTRIBUTE_TYPES = ["positive", "negative", "neutral"] // order important
 
 async function parse_items(goto = true) {
     async function item_block(parent_element,parent_data) {
+        let hide_parent_block = true;
         for (const [category, data] of Object.entries(parent_data)) {
             if (isUppercase(category)) { // nest
                 block = document.createElement("div");
                 block.classList.add("block");
                 block.innerHTML = `<h1>${category}</h1>`
                 let new_block = parent_element.appendChild(block)
-                await item_block(new_block, data);
+                hide = await item_block(new_block, data);
+                if (hide) {
+                    new_block.classList.add("hidden");
+                } else {
+                    hide_parent_block = false;
+                }
             }
 
             if (category==="$items") {
                 hide = await parse_item_list(parent_element, data);
                 if (hide) {
                     parent_element.classList.add("hidden");
+                } else {
+                    hide_parent_block = false;
                 }
             }
 
@@ -48,6 +58,7 @@ async function parse_items(goto = true) {
                 });
             }
         };
+        return hide_parent_block;
     }
 
     isParsing = true;
@@ -62,8 +73,8 @@ async function update_items() {
     while (blocks.length) {
         blocks[0].remove();
     }
-    let item_by_id = {};
-    let item_by_contents = {};
+    item_by_id = {};
+    item_by_contents = {};
     await parse_items(false);
 }
 
@@ -71,20 +82,21 @@ async function parse_item_list(parent_element, item_data) {
     item_grid = document.createElement("div")
     item_grid.classList.add("item_grid")
     item_grid = parent_element.appendChild(item_grid);
-    hide_parent_block = true;
+    itm_hide_parent_block = true;
     for (const item of item_data) {
         rawcost = Number(item.rawcost || 0);
-        let isInPriceRange = (rawcost>=priceRange[0] && rawcost<=priceRange[1]);
-        let hasActiveTag = (activeTags.every(tag => item.tags.includes(tag))) || (activeTags.length===0);
+        const isInPriceRange = (rawcost>=priceRange[0] && rawcost<=priceRange[1]);
+        const hasActiveTag = (activeTags.every(tag => item.tags.includes(tag))) || (activeTags.length===0);
+        const hasWeaponArchetype = (weaponArchetypeFilter==="" || item.archetype === weaponArchetypeFilter);
         if (item.is_hidden) {
-            hidden_item_list.push(item.wid)
+            hidden_item_list.push(item.wid);
         }
-        if (isInPriceRange && hasActiveTag && (!item.is_hidden || showHiddenItems)) {
-            hide_parent_block = false;
+        if (isInPriceRange && hasActiveTag && (!item.is_hidden || showHiddenItems) && hasWeaponArchetype) {
+            itm_hide_parent_block = false;
             iter_item(item_grid, item, true);
         }
     };
-    return hide_parent_block;
+    return itm_hide_parent_block;
 }
 
 function iter_item(parent_element, item, sw_opt) {
@@ -208,6 +220,9 @@ function iter_item(parent_element, item, sw_opt) {
         if (item.tags!==undefined) {
             contents.push(item.tags.join(" "));
         }
+        if (!weaponArchetypes.includes(item.archetype) && Boolean(item.archetype)) {
+            weaponArchetypes.push(item.archetype);
+        } 
         item_by_contents[contents.join(" ")] = item
         if ("subweapons" in item) {
             if ("items" in item["subweapons"]) {
@@ -306,7 +321,7 @@ async function setup_filters() {
         fa = setTimeout(setup_filters, 100); // Wait until parse_items is done
     } else {
         clearTimeout(fa);
-        // Setup cost slider filter
+        // # Setup cost slider filter
         var slider = document.getElementById('cost_slider');
         noUiSlider.create(slider, {
             start: [0, highestPrice],
@@ -323,7 +338,7 @@ async function setup_filters() {
             }
         });
 
-        // Restrict slider updates since this is called 2 times on initiation for whatever reasonnnnnnnnnn
+        // - Restrict slider updates since this is called 2 times on initiation for whatever reasonnnnnnnnnn
         slider.noUiSlider.on('update', function (values) {
             if (allowSliderUpdates) {
                 priceRange = values;
@@ -337,7 +352,7 @@ async function setup_filters() {
         document.querySelectorAll("[data-sliderid='1']")[0].value = Number(priceRange[1]);
         allowSliderUpdates = true;
 
-        // Setup weapon tags
+        // # Setup weapon tags
         const tagbody = document.getElementById('gtags');
         item_data["$gtags"].forEach(tag => {
             let tag_el = create_element("div", "gtag", `#${tag}`);
@@ -355,7 +370,7 @@ async function setup_filters() {
             tagbody.appendChild(tag_el);
         })
 
-        // Add hidden item toggle
+        // - Add hidden item toggle
         let tag_el = create_element("div", "gtag", "Hidden items");
         tag_el.addEventListener("click", event => {
             if (showHiddenItems) {
@@ -369,6 +384,18 @@ async function setup_filters() {
         });
         if (showHiddenItems) {tag_el.classList.add("active")} // if link params have hidden weapon already show as active
         tagbody.appendChild(tag_el);
+
+        // # Archetype filter
+        let archetype_selector = document.getElementById("archetype_filter");
+        weaponArchetypes.forEach(archetype => {
+            let el = create_element("option", "", archetype); // TODO title case in css
+            el.value = archetype;
+            archetype_selector.appendChild(el);
+        });
+        archetype_selector.addEventListener("input", event => {
+            weaponArchetypeFilter = event.target.value;
+            update_items();
+        })
     }
 }
 
