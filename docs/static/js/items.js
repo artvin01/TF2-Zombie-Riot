@@ -21,6 +21,8 @@ let activeTags = [];
 let showHiddenItems = false;
 let weaponArchetypes = [];
 let weaponArchetypeFilter = "";
+let weaponFactions = [];
+let weaponFactionFilter = "";
 const ATTRIBUTE_TYPES = ["positive", "negative", "neutral"] // order important
 
 async function parse_items(goto = true) {
@@ -88,10 +90,11 @@ async function parse_item_list(parent_element, item_data) {
         const isInPriceRange = (rawcost>=priceRange[0] && rawcost<=priceRange[1]);
         const hasActiveTag = (activeTags.every(tag => item.tags.includes(tag))) || (activeTags.length===0);
         const hasWeaponArchetype = (weaponArchetypeFilter==="" || item.archetype === weaponArchetypeFilter);
+        const hasWeaponFaction = (weaponFactionFilter==="" || item.faction === weaponFactionFilter);
         if (item.is_hidden) {
             hidden_item_list.push(item.wid);
         }
-        if (isInPriceRange && hasActiveTag && (!item.is_hidden || showHiddenItems) && hasWeaponArchetype) {
+        if (isInPriceRange && hasActiveTag && (!item.is_hidden || showHiddenItems) && hasWeaponArchetype && hasWeaponFaction) {
             itm_hide_parent_block = false;
             iter_item(item_grid, item, true);
         }
@@ -222,6 +225,9 @@ function iter_item(parent_element, item, sw_opt) {
         }
         if (!weaponArchetypes.includes(item.archetype) && Boolean(item.archetype)) {
             weaponArchetypes.push(item.archetype);
+        } 
+        if (!weaponFactions.includes(item.faction) && Boolean(item.faction)) {
+            weaponFactions.push(item.faction);
         } 
         item_by_contents[contents.join(" ")] = item
         if ("subweapons" in item) {
@@ -394,6 +400,18 @@ async function setup_filters() {
         });
         archetype_selector.addEventListener("input", event => {
             weaponArchetypeFilter = event.target.value;
+            update_items();
+        })
+
+        // # Faction filter
+        let faction_selector = document.getElementById("faction_filter");
+        weaponFactions.forEach(archetype => {
+            let el = create_element("option", "", archetype); // TODO title case in css
+            el.value = archetype;
+            faction_selector.appendChild(el);
+        });
+        faction_selector.addEventListener("input", event => {
+            weaponFactionFilter = event.target.value;
             update_items();
         })
     }
