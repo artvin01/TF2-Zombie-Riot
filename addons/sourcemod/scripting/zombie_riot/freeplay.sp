@@ -602,7 +602,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			{
 				enemy.Index = NPC_GetByPlugin("npc_shadowing_darkness_boss");
 				enemy.Health = RoundToFloor((10000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
-				enemy.Data = "sc20;force_final_battle";
+				enemy.Data = "sc40;force_final_battle";
 				enemy.ExtraThinkSpeed = 1.25;
 				enemy.ExtraSpeed = 0.90;
 				enemy.ExtraDamage = 0.70;
@@ -620,25 +620,25 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 				enemy.Index = NPC_GetByPlugin("npc_squad_master");
 				enemy.Health = RoundToFloor((2000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "sc20";
-				enemy.ExtraThinkSpeed = 1.15;
-				enemy.ExtraSpeed = 0.85;
+				enemy.ExtraThinkSpeed = 1.0;
+				enemy.ExtraSpeed = 0.9;
 			}
 			case 38:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_no_random_kranz");
 				enemy.Health = RoundToFloor((1250000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "sc40";
-				enemy.ExtraThinkSpeed = 1.15;
-				enemy.ExtraDamage = 0.6;
-				enemy.ExtraSpeed = 0.9;
+				enemy.ExtraThinkSpeed = 1.0;
+				enemy.ExtraDamage = 1.0;
+				enemy.ExtraSpeed = 1.0;
 			}
 			case 39:
 			{
 				enemy.Index = NPC_GetByPlugin("npc_black_heavy_soul");
 				enemy.Health = RoundToFloor((5000000.0 + HealthBonus) / 70.0 * float(Waves_GetRound() * 2) * MultiGlobalHighHealthBoss);
 				enemy.Data = "sc40";
-				enemy.ExtraThinkSpeed = 1.15;
-				enemy.ExtraDamage = 0.7;
+				enemy.ExtraThinkSpeed = 1.0;
+				enemy.ExtraDamage = 1.0;
 			}
 			case 40:
 			{
