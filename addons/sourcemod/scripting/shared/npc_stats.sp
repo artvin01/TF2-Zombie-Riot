@@ -28,11 +28,11 @@ bool b_NpcHasBeenAddedToZombiesLeft[MAXENTITIES];
 int Zombies_Currently_Still_Ongoing;
 int RaidBossActive = INVALID_ENT_REFERENCE;					//Is the raidboss alive, if yes, what entref is the raid?
 float Medival_Difficulty_Level = 0.0;
-bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
 int i_NpcOverrideAttacker[MAXENTITIES];
-bool b_thisNpcHasAnOutline[MAXENTITIES];
 
 #endif
+bool b_ThisNpcIsImmuneToNuke[MAXENTITIES];
+bool b_thisNpcHasAnOutline[MAXENTITIES];
 int i_KillsMade[MAXPLAYERS];
 int i_Backstabs[MAXPLAYERS];
 int i_Headshots[MAXPLAYERS];	
@@ -7439,15 +7439,13 @@ bool Can_I_See_Enemy_Only(int attacker, int enemy, float pos_npc[3] = {0.0,0.0,0
 		WorldSpaceCenter(attacker, pos_npc);
 	if(enemy <= MaxClients)
 	{
+#if defined ZR
 		int vehicle = Vehicle_Driver(enemy);
 		if(vehicle != -1)
 		{
-#if defined ZR
 			enemy = Vehicle_Driver(enemy);
-#else
-			enemy = GetEntPropEnt(enemy, Prop_Data, "m_hPlayer");
-#endif
 		}
+#endif
 	}
 	WorldSpaceCenter(enemy, pos_enemy);
 
@@ -8978,13 +8976,13 @@ public void NPCStats_SetFuncsToZero(int entity)
 public void SetDefaultValuesToZeroNPC(int entity)
 {
 	StatusEffectReset(entity, true);
+	b_ThisNpcIsImmuneToNuke[entity] = false;
 #if defined ZR
 	b_NpcHasBeenAddedToZombiesLeft[entity] = false;
 	i_SpawnProtectionEntity[entity] = -1; 
 	i_TeamGlow[entity] = -1;
 	i_NpcOverrideAttacker[entity] = 0;
 	b_thisNpcHasAnOutline[entity] = false;
-	b_ThisNpcIsImmuneToNuke[entity] = false;
 	f_AvoidObstacleNavTime[entity] = 0.0;
 	b_NameNoTranslation[entity] = false;
 #endif

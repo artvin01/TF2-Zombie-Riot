@@ -1183,3 +1183,36 @@ public Action Command_Give_Mastery(int client, int args)
 	return Plugin_Handled;
 }
 
+#define AVERAGE_LEVEL_GAP 0.9
+
+bool Stats_SameLevelGap(int client, int enemy)
+{
+	//always give insane xp
+	if(Level[enemy] >= Level[client])
+		return true;
+
+	float LevelDifference = float(Level[enemy]) / float(Level[client]);
+	if(LevelDifference >= AVERAGE_LEVEL_GAP)
+		return true;
+
+	return false;
+}
+
+void Stats_DisplayXpGainOnKill(int client, int victim, int xp, bool extra)
+{
+	float flPos[3];
+	char buffer1[256];
+	char buffer2[64];
+	IntToString(xp,buffer2, sizeof(buffer2));
+	ThousandString(buffer2, sizeof(buffer2));
+	Format(buffer1, sizeof(buffer1), "[%s] XP gained", buffer2);
+	if(extra)
+		Format(buffer1, sizeof(buffer1), "%s - [BONUS!]", buffer1);
+	GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", flPos);
+	flPos[2] += 70.0;
+	int Text_Entity = SpawnFormattedWorldText(buffer1, flPos, 8,{255,255,255,125});
+	SetEntityRenderMode(Text_Entity, RENDER_TRANSCOLOR);
+	i_OwnerEntityEnvLaser[Text_Entity] = EntIndexToEntRef(client);
+	SDKHook(Text_Entity, SDKHook_SetTransmit, TransmitToOwnerOnly);
+	CreateTimer(3.0, Timer_RemoveEntity, EntIndexToEntRef(Text_Entity), TIMER_FLAG_NO_MAPCHANGE);
+}

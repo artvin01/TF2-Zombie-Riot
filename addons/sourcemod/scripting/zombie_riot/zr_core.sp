@@ -500,8 +500,6 @@ enum
 	PERK_MODE_ALL_ALLOW
 }
 
-int PapModeDo = PAP_MODE_DEFAULT;
-int PerkModeDo = PERK_MODE_DEFAULT;
 	
 bool DisableSpawnProtection;
 bool DisableRandomSpawns;
@@ -586,7 +584,6 @@ char s_MissionClient[64]; // Who hired us for the current job
 
 #include "npc.sp"	// Global NPC List
 
-#include "vscript.sp"
 #include "aprilfools_settings.sp"
 #include "building.sp"
 #include "database.sp"
@@ -868,7 +865,6 @@ void ZR_PluginStart()
 	Kritzkrieg_PluginStart();
 	BetWar_PluginStart();
 	Dungeon_PluginStart();
-	VScript_PluginStart();
 	IndexFather_PluginStart();
 	Format(WhatDifficultySetting_Internal, sizeof(WhatDifficultySetting_Internal), "%s", "No Difficulty Selected Yet");
 	Format(WhatDifficultySetting, sizeof(WhatDifficultySetting), "%s", "No Difficulty Selected Yet");

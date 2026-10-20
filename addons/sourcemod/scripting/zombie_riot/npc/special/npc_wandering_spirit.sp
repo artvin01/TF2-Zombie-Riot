@@ -2,12 +2,6 @@
 #pragma newdecls required
 
 
-#define FFADE_IN            0x0001        // Just here so we don't pass 0 into the function
-#define FFADE_OUT           0x0002        // Fade out (not in)
-#define FFADE_MODULATE      0x0004        // Modulate (don't blend)
-#define FFADE_STAYOUT       0x0008        // ignores the duration, stays faded out until new ScreenFade message received
-#define FFADE_PURGE         0x0010        // Purges all other fades, replacing them with this one
-
 static const char g_DeathSounds[][] = {
 	"npc/zombie/zombie_die1.wav",
 	"npc/zombie/zombie_die2.wav",
@@ -338,22 +332,4 @@ void WanderingSpiritIsEnemyClose(int iNPC)
 	{
 		npc.m_flSpeed = 100.0;
 	}
-}
-
-
-void UTIL_ScreenFade(int client,int duration,int time,int flags,int r,int g,int b,int a)
-{
-	int clients[1];
-	Handle bf;
-	clients[0] = client;
-
-	bf = StartMessage("Fade", clients, 1);
-	BfWriteShort(bf, duration);
-	BfWriteShort(bf, time);
-	BfWriteShort(bf, flags);
-	BfWriteByte(bf, r);
-	BfWriteByte(bf, g);
-	BfWriteByte(bf, b);
-	BfWriteByte(bf, a);
-	EndMessage();
 }

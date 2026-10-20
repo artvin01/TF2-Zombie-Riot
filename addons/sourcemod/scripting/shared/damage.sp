@@ -232,6 +232,7 @@ stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float &da
 		if(b_ThisWasAnNpc[attacker])
 			f_InBattleDelay[attacker] = GetGameTime() + 6.0;
 #endif
+#if defined ZR
 	if(!b_IsATriggerHurt[attacker] && (Arena_Mode() || (attacker <= MaxClients && attacker > 0 && victim > 0 && victim <= MaxClients)))
 	{
 		//in PVP scenarios, we nerf damage by 10x
@@ -282,6 +283,7 @@ stock bool Damage_AnyVictim(int victim, int &attacker, int &inflictor, float &da
 			}
 		}
 	}
+#endif
 	return false;
 }
 
@@ -301,13 +303,13 @@ stock bool Damage_PlayerVictim(int victim, int &attacker, int &inflictor, float 
 
 	if(!CheckInHud())
 		HudDamageIndicator(victim,damagetype, false);
+	float GameTime = GetGameTime();
 #if defined ZR
 
 	
 	if(VIPBuilding_Active())
 		return true;
 	
-	float GameTime = GetGameTime();
 
 	//FOR ANY WEAPON THAT NEEDS CUSTOM LOGIC WHEN YOURE HURT!!
 	//It will just return the same damage if nothing is done.

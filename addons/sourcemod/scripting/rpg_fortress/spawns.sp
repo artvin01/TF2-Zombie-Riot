@@ -60,7 +60,7 @@ enum struct SpawnEnum
 		
 		this.Angle = kv.GetFloat("angle", -1.0);
 		this.Count = kv.GetNum("count", 1);
-		this.Time = kv.GetFloat("time");
+		this.Time = (kv.GetFloat("time") * 0.5);
 		this.Boss = view_as<bool>(kv.GetNum("boss"));
 		this.DropMulti = kv.GetFloat("high_drops", 1.0);
 
@@ -631,7 +631,7 @@ void Spawns_NPCDeath(int entity, int client, int weapon)
 
 		if(XP[entity] > 0)
 		{
-			TextStore_AddItemCount(client, ITEM_XP, XP[entity]);
+			TextStore_AddItemCount(client, ITEM_XP, XP[entity], .EnemyEntity = entity);
 			
 			bool lowXPShare = Party_XPLowShare(client);
 			
@@ -645,17 +645,17 @@ void Spawns_NPCDeath(int entity, int client, int weapon)
 				for(int i; i < targetCount; i++)
 				{
 					int give = xp * 3 / 4;
-					TextStore_AddItemCount(targets[i], ITEM_XP, give);
+					TextStore_AddItemCount(targets[i], ITEM_XP, give, .EnemyEntity = entity);
 					xp -= give;
 				}
 
-				TextStore_AddItemCount(targets[targetCount], ITEM_XP, xp);
+				TextStore_AddItemCount(targets[targetCount], ITEM_XP, xp, .EnemyEntity = entity);
 			}
 			else
 			{
 				for(int i; i < targetCount; i++)
 				{
-					TextStore_AddItemCount(targets[i], ITEM_XP, XP[entity] / targetCount);
+					TextStore_AddItemCount(targets[i], ITEM_XP, XP[entity] / targetCount, .EnemyEntity = entity);
 				}
 			}
 		}
@@ -1253,3 +1253,4 @@ static void AdjustSpawnCopy(int client, const char[] key)
 	Zones_Rebuild();
 	Spawns_EditorMenu(client);
 }
+
