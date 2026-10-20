@@ -912,10 +912,12 @@
 	"Shielding Reduce"
 	{
 		"en"	"Shielding Reduce"
+		"ko"	"방비 약화"
 	}
 	"Shielding Reduce Desc"
 	{
 		"en"	"Your Shield gain is halved, youre in battle for too long."
+		"ko"	"전투 상태가 오래 지속되어 방비 보호막 획득량이 감소합니다."
 	}
 	"Hussar's Warscream"
 	{
