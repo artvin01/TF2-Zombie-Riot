@@ -14,7 +14,7 @@
 			{
 				"library"		"server"
 				"linux"			"336"
-				"windows"		"334"
+				"windows"		"335"
 			}
 		}
 		"Signatures"
