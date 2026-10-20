@@ -562,19 +562,6 @@ static void Blitzkrieg_Kit_Rocket_Fire(int client, float speed, float damage, in
 	ApplyCustomModelToWandProjectile(projectile, BLITZKRIEG_KIT_ROCKET_MODEL, 1.0, "", _ , true);
 }
 
-public Action TransmitToOwnerOnly(int entity, int client)
-{
-	if(client > 0 && client <= MaxClients)
-	{
-		int owner = EntRefToEntIndex(i_OwnerEntityEnvLaser[entity]);
-		if(owner == client)
-		{
-			return Plugin_Continue;
-		}
-	}
-	return Plugin_Stop;
-}
-
 public void Blitzkrieg_Kit_Rocket_StartTouch(int entity, int target)
 {
 	if (target > 0)	

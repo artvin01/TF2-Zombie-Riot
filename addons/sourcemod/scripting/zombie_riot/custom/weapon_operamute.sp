@@ -7,6 +7,7 @@ static char g_ExtraSlashesSound[][] = {
 	"weapons/samurai/tf_katana_slice_03.wav",
 };
 static Handle h_WeaponTimer[MAXPLAYERS] = {null, ...};
+static float f_TimeUntillShieldNerf[MAXPLAYERS] = {0.0, ...};
 
 public void OperaMute_OnMapStart()
 {
@@ -47,6 +48,18 @@ static Action OpeaMute_ManaHud(Handle timer, DataPack pack)
 			RemoveSpecificBuff(client, "Empty Notes");
 		}
 		return Plugin_Stop;
+	}
+	if(f_TimeUntillNormalHeal[client] > GetGameTime())
+	{
+		f_TimeUntillShieldNerf[client] += 0.25;
+		if(f_TimeUntillShieldNerf[client] >= 10.0)
+		{
+			ApplyStatusEffect(client, client, "Shielding Reduce", 0.35);
+		}
+	}
+	else
+	{
+		f_TimeUntillShieldNerf[client] = 0.0;
 	}
 	if(!HasSpecificBuff(client, "Empty Notes"))
 	{
@@ -104,7 +117,7 @@ public void OperaMute_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 	int mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
 	if(zr_custom_damage & ZR_DAMAGE_REFLECT_LOGIC)
 	{
-		OperaMute_ManaDo(attacker, -RoundToNearest(float(mana_cost) * 1.0));
+		OperaMute_ManaDo(attacker, -RoundToNearest(float(mana_cost) * 0.5));
 		Elemental_AddNecrosisDamage(victim, attacker, RoundToNearest(damage * 3.0), weapon);
 		if(OpeaMute_DamageMulti(attacker))
 		{
@@ -121,7 +134,7 @@ public void OperaMute_OnTakeDamage(int victim, int &attacker, int &inflictor, fl
 	}
 	else
 	{
-		OperaMute_ManaDo(attacker, RoundToNearest(float(mana_cost) * 3.0));
+		OperaMute_ManaDo(attacker, RoundToNearest(float(mana_cost) * 1.5));
 		Elemental_AddNecrosisDamage(victim, attacker, RoundToNearest(damage * 1.65), weapon);
 	}
 
@@ -232,7 +245,7 @@ void OperaMute_GiveShield(int client, int mana_cost)
 	ApplyStatusEffect(client, client, "Shielding", 999999.9);
 	if(mana_cost <= 0)
 		mana_cost *= -1;
-
+		
 	Shielding_Add(client, mana_cost);
 	Shielding_CapAt(client, RoundToNearest(max_mana[client] * 0.5));
 	
@@ -252,8 +265,11 @@ void OperaMute_GiveShield(int client, int mana_cost)
 					ApplyStatusEffect(client, targ, "Shielding", 999999.9);
 					if(mana_cost <= 0)
 						mana_cost *= -1;
+					int Temp = mana_cost;
+					if(HasSpecificBuff(client, "Shielding Reduce"))
+						Temp /= 2;
 
-					Shielding_Add(targ, mana_cost);
+					Shielding_Add(targ, Temp);
 					Shielding_CapAt(targ, RoundToNearest(max_mana[client] * 0.25));
 
 					if(IsIn_HitDetectionCooldown(client,targ, ShieldGiveEffectCD))
@@ -284,7 +300,10 @@ void OperaMute_ManaDo(int client, int mana_cost)
 		Current_Mana[client] = 0;
 
 	delay_hud[client] = 0.0;
-	OperaMute_GiveShield(client, mana_cost / 2);
+		
+	if(HasSpecificBuff(client, "Shielding Reduce"))
+		mana_cost /= 2;
+	OperaMute_GiveShield(client, mana_cost);
 }
 bool OperaMute_WeaponHas(int client)
 {

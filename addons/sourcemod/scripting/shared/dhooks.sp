@@ -1450,7 +1450,9 @@ void DHook_HookClient(int client)
 
 	if(ForceRespawn)
 	{
+#if defined ZR
 		DHookEntity(g_DhookWantsLagCompensationOnEntity, false, client, _, Dhook_WantsLagCompensationOnEntity);
+#endif
 		ForceRespawnHook[client] = ForceRespawn.HookEntity(Hook_Pre, client, DHook_ForceRespawn);
 		
 #if defined ZR

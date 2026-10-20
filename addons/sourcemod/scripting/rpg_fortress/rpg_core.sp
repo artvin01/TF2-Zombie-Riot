@@ -960,7 +960,7 @@ bool RpgCore_CountClientsWorthyForKillCredit(int entity, int &client)
 	return false;
 }
 
-void RpgCore_OnKillGiveMastery(int client, int MaxHealth)
+void RpgCore_OnKillGiveMastery(int client, int MaxHealth, int entity)
 {
 	if(Stats_GetCurrentFormMasteryMax(client))
 		return;
@@ -1036,6 +1036,11 @@ void RpgCore_OnKillGiveMastery(int client, int MaxHealth)
 		MasteryAdd += GetRandomFloat(0.11, 0.13);
 		MasteryAdd *= 2.0;
 		int totalInt = Stats_Intelligence(client);
+		if(Stats_SameLevelGap(client, entity))
+		{
+			MasteryAdd *= 3.0;
+			SPrintToChat(client, "(Due to being on your level, you gain a massive boost 3x)");
+		}
 		if(totalInt >= 6000)
 		{
 			MasteryAdd *= 1.6875;
@@ -1141,6 +1146,20 @@ int Dungeon_GetEntityZone(int entity, bool forceReset = false)
 	return 0;
 }
 public bool Const2_IgnoreBuilding_FindTraget(int entity)
+{
+	return false;
+}
+
+bool Arena_Mode()
+{
+	return false;
+}
+
+int ZR_Get_Modifier()
+{
+	return 0;
+}
+public bool VIPBuilding_Active()
 {
 	return false;
 }

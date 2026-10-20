@@ -816,7 +816,7 @@ int TextStore_GetItemCount(int client, const char[] name)
 	return amount;
 }
 
-void TextStore_AddItemCount(int client, const char[] name, int amount, bool silent = false, int quest = 0)
+void TextStore_AddItemCount(int client, const char[] name, int amount, bool silent = false, int quest = 0, int EnemyEntity = -1)
 {
 	if(StrEqual(name, ITEM_CASH, false))
 	{
@@ -832,14 +832,24 @@ void TextStore_AddItemCount(int client, const char[] name, int amount, bool sile
 			amount = RoundToNearest(float(amount) * (1.05));
 		}
 		int xp = amount;
-
+		bool WasExtra = false;
+		if(EnemyEntity > 0 && Stats_SameLevelGap(client, EnemyEntity))
+		{
+			xp *= 3;
+			WasExtra = true;
+		}
 		Stats_GiveXP(client, xp, quest);
+		if(EnemyEntity > 0)
+		{
+			//Display xp
+			Stats_DisplayXpGainOnKill(client, EnemyEntity, xp, WasExtra);
+		}
 		if(xp > 0 && !silent)
 		{
 			if(quest)
 				SPrintToChat(client, "You gained %d XP (%d)", xp, XP[client]);
 			else
-				RPGTextstore_XpToChat(client, xp);
+				RPGTextstore_XpToChat(client, xp, WasExtra);
 		}
 	}
 	else if(StrEqual(name, ITEM_MASTERY, false))
@@ -2856,10 +2866,13 @@ void De_TransformClient(int client)
 
 static Handle XpTimerHandle[MAXPLAYERS+1] = {INVALID_HANDLE, ...};
 static int XPGainedOverTime[MAXPLAYERS+1] = {0, ...};
+static bool XPExtraBonus[MAXPLAYERS+1] = {false, ...};
 
-void RPGTextstore_XpToChat(int client, int XPAdd)
+void RPGTextstore_XpToChat(int client, int XPAdd, bool WasSpecial)
 {
 	XPGainedOverTime[client] += XPAdd;
+	if(WasSpecial)
+		XPExtraBonus[client] = true;
 
 	//Raw id works fine.
 	if(XpTimerHandle[client] == INVALID_HANDLE)
@@ -2874,9 +2887,15 @@ static Action XpHandleTimerDisplay(Handle DummyHandle, int client)
 	{
 		XpTimerHandle[client] = INVALID_HANDLE;
 		XPGainedOverTime[client] = 0;
+		XPExtraBonus[client] = false;
 		return Plugin_Stop;
 	}
 
+	if(XPExtraBonus[client])
+	{
+		SPrintToChat(client, "You got xp from enemies at/higher/or around your level and this gives you much more!");
+	}
+	XPExtraBonus[client] = false;
 	SPrintToChat(client, "You gained %d XP over the last minute!", XPGainedOverTime[client]);
 	XpTimerHandle[client] = INVALID_HANDLE;
 	XPGainedOverTime[client] = 0;

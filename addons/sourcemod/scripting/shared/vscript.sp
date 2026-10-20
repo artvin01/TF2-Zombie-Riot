@@ -56,8 +56,10 @@ void VScript_PluginStart()
 void VScript_MapEnd()
 {
 	MapLockedWeapons = false;
+#if defined ZR
 	PapModeDo = PAP_MODE_DEFAULT;
 	PerkModeDo = PERK_MODE_DEFAULT;
+#endif
 }
 
 void VScript_LibraryAdded(const char[] name)
@@ -177,6 +179,7 @@ void VScript_AddStoreTable(KeyValues kv, const char[] name)
 
 void VScript_CacheNPCs()
 {
+#if defined ZR
 	if(ScriptFireScriptHook)
 	{
 		ScriptHandle table = VScript_CreateTable();
@@ -194,10 +197,12 @@ void VScript_CacheNPCs()
 		delete iter;
 		delete table;
 	}
+#endif
 }
 
 static void VGetCurrentCash(ScriptContext context)
 {
+#if defined ZR
 	ScriptHandle hclient = context.GetArgHScript(0);
 	if(hclient)
 	{
@@ -210,10 +215,12 @@ static void VGetCurrentCash(ScriptContext context)
 	}
 
 	context.RaiseException("Invalid player entity");
+#endif
 }
 
 static void VSpentClientCash(ScriptContext context)
 {
+#if defined ZR
 	ScriptHandle hclient = context.GetArgHScript(0);
 	if(hclient)
 	{
@@ -226,10 +233,12 @@ static void VSpentClientCash(ScriptContext context)
 	}
 
 	context.RaiseException("Invalid player entity");
+#endif
 }
 
 static void VGetClientWeapon(ScriptContext context)
 {
+#if defined ZR
 	ScriptHandle hclient = context.GetArgHScript(0);
 	if(hclient)
 	{
@@ -242,10 +251,12 @@ static void VGetClientWeapon(ScriptContext context)
 	}
 
 	context.RaiseException("Invalid player entity");
+#endif
 }
 
 static void VGiveClientWeapon(ScriptContext context)
 {
+#if defined ZR
 	ScriptHandle hclient = context.GetArgHScript(0);
 	if(hclient)
 	{
@@ -276,6 +287,7 @@ static void VGiveClientWeapon(ScriptContext context)
 	}
 
 	context.RaiseException("Invalid player entity");
+#endif
 }
 
 static void VLockWeapons(ScriptContext context)
@@ -290,16 +302,21 @@ bool VScript_LockedWeapons()
 
 static void VRandomizeNPCStore(ScriptContext context)
 {
+#if defined ZR
 	Store_RandomizeNPCStore(context.GetArgInt(0), context.GetArgInt(1), context.GetArgFloat(2));
+#endif
 }
 
 static void VGetGlobalCash(ScriptContext context)
 {
+#if defined ZR
 	context.SetReturnInt(CurrentCash);
+#endif
 }
 
 static void VGiveClientAmmo(ScriptContext context)
 {
+#if defined ZR
 	ScriptHandle hclient = context.GetArgHScript(0);
 	if(hclient)
 	{
@@ -315,6 +332,7 @@ static void VGiveClientAmmo(ScriptContext context)
 	}
 
 	context.RaiseException("Invalid player entity");
+#endif
 }
 
 //must be set everytime the map reloads
@@ -337,6 +355,7 @@ static void VPerkModeOnly(ScriptContext context)
 
 static void VGiveClientPerk(ScriptContext context)
 {
+#if defined ZR
 	ScriptHandle hclient = context.GetArgHScript(0);
 	if(hclient)
 	{
@@ -356,6 +375,7 @@ static void VGiveClientPerk(ScriptContext context)
 	}
 
 	context.RaiseException("Invalid player entity");
+#endif
 }
 
 static void VHasClientPerk(ScriptContext context)
@@ -377,6 +397,7 @@ static void VHasClientPerk(ScriptContext context)
 
 static void VShowPackMenu(ScriptContext context)
 {
+#if defined ZR
 	ScriptHandle hclient = context.GetArgHScript(0);
 	if(hclient)
 	{
@@ -392,20 +413,24 @@ static void VShowPackMenu(ScriptContext context)
 	}
 
 	context.RaiseException("Invalid player entity");
+#endif
 }
 
 static void VAddGlobalCash(ScriptContext context)
 {
+#if defined ZR
 	int amount = context.GetArgInt(0);
 
 	if(context.GetArgBool(1))
 		GlobalExtraCash += amount;
 	else
 		CurrentCash += amount;
+#endif
 }
 
 static void VCreateNPC(ScriptContext context)
 {
+#if defined ZR
 	char name[64], buffer[512];
 	float pos[3], ang[3];
 	int client;
@@ -465,7 +490,6 @@ static void VCreateNPC(ScriptContext context)
 
 			if(boss >= 1 || healthscaling >= 1)
 				health = RoundToNearest(health * MultiGlobalHighHealthBoss);
-
 			SetEntProp(entity, Prop_Data, "m_iMaxHealth", health);
 			SetEntProp(entity, Prop_Data, "m_iHealth", health);
 		}
@@ -519,16 +543,16 @@ static void VCreateNPC(ScriptContext context)
 		{
 			GiveNpcOutLineLastOrBoss(entity, false);
 		}
-		
+
 		if(!nosetup)
 			NPC_PostSetup(entity);
-
 		context.SetReturnHScript(VScript_EntityToHScript(entity, true));
 	}
 	else
 	{
 		context.SetReturnNull();
 	}
+#endif
 }
 float VS_GetPlayerCondDuration(int player, TFCond cond)
 {

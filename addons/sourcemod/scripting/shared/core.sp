@@ -83,6 +83,12 @@ enum
 	EDICT_RAID,
 	EDICT_EFFECT
 }
+#define FFADE_IN            0x0001        // Just here so we don't pass 0 into the function
+#define FFADE_OUT           0x0002        // Fade out (not in)
+#define FFADE_MODULATE      0x0004        // Modulate (don't blend)
+#define FFADE_STAYOUT       0x0008        // ignores the duration, stays faded out until new ScreenFade message received
+#define FFADE_PURGE         0x0010        // Purges all other fades, replacing them with this one´
+
 //maybe doing this will help lag, as there are no aim layers in zombies, they always look forwards no matter what.
 
 //edit: No, makes you miss more often.
@@ -731,6 +737,7 @@ int OriginalWeapon_AmmoType[MAXENTITIES];
 #include "../standalone/nog_core.sp"
 #endif
 
+#include "vscript.sp"
 /*
 	Below Are Non-Shared Variables/Defines
 */
@@ -823,6 +830,7 @@ public void OnPluginStart()
 #endif
 	checkOS();
 	FileNetwork_PluginStart();
+	VScript_PluginStart();
 
 	RegServerCmd("zr_update_blocked_nav", OnReloadBlockNav, "Reload Nav Blocks");
 	RegAdminCmd("sm_play_viewmodel_anim", Command_PlayViewmodelAnim, ADMFLAG_ROOT, "Testing viewmodel animation manually");
@@ -923,8 +931,8 @@ public void OnLibraryAdded(const char[] name)
 #if defined ZR
 	FileNetwork_LibraryAdded(name);
 	SteamWorks_LibraryAdded(name);
-	VScript_LibraryAdded(name);
 #endif
+	VScript_LibraryAdded(name);
 }
 
 public void OnLibraryRemoved(const char[] name)
@@ -932,8 +940,8 @@ public void OnLibraryRemoved(const char[] name)
 #if defined ZR
 	FileNetwork_LibraryRemoved(name);
 	SteamWorks_LibraryRemoved(name);
-	VScript_LibraryRemoved(name);
 #endif
+	VScript_LibraryRemoved(name);
 }
 
 /*
@@ -1314,6 +1322,7 @@ public void OnMapEnd()
 #if defined ZR
 	RemoveMVMLogicSafety();
 #endif
+	VScript_MapEnd();
 }
 
 public void OnConfigsExecuted()
@@ -1795,6 +1804,7 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	}
 
 
+#if defined ZR
 	if(Arena_Mode() && dieingstate[client] != 0)
 	{
 		//not being able to use any abilities or attack in arena mode as its quite unfair
@@ -1808,7 +1818,6 @@ public Action OnPlayerRunCmd(int client, int &buttons, int &impulse, float vel[3
 	Instant community feedback that T is very bad.
 	using idk what other button to use.
 	*/
-#if defined ZR
 	if(impulse == 201)
 	{
 		bool BlockImpulse = false;

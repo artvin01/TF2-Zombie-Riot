@@ -607,8 +607,10 @@ void ViewChange_Switch(int client, int active, const char[] classname)
 			return;
 		}
 	}
+#if defined ZR
 	if(GetTeam(client) != 2)
 		Modifier_RecolourAlly_SecondaryMercsInternal(client);
+#endif
 	ViewChange_DeleteHands(client);
 	WeaponClass[client] = TFClass_Unknown;
 }

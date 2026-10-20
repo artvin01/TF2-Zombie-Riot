@@ -27,6 +27,7 @@ enum SolidFlags_t
 	FSOLID_MAX_BITS	= 10
 };
 
+
 stock int abs(int x)
 {
 	return x < 0 ? -x : x;
@@ -774,8 +775,10 @@ stock void SetAmmo(int client, int type, int ammo)
 void AutobuyMetalDelay(int ref)
 {
 	int client = EntRefToEntIndex(ref);
+#if defined ZR
 	if(IsValidClient(client))
 		AutobuyMetal(client);
+#endif
 }
 #if defined _tf2items_included
 stock int SpawnWeapon(int client, char[] name, int index, int level, int qual, const int[] attrib, const float[] value, int count, int custom_classSetting = 0)
@@ -806,15 +809,12 @@ static int SpawnWeaponBase(int client, char[] name, int index, int level, int qu
 	TF2Items_SetQuality(weapon, qual);
 	TF2Items_SetNumAttributes(weapon, 0);
 
-#if defined ZR || defined RPG
-
 	TFClassType class = TF2_GetWeaponClass(index, CurrentClass[client], TF2_GetClassnameSlot(name, true));
 	if(custom_classSetting != 0)
 	{
 		class = view_as<TFClassType>(custom_classSetting);
 	}
 	TF2_SetPlayerClass_ZR(client, class, _, false);
-#endif
 	
 	int entity = TF2Items_GiveNamedItem(client, weapon);
 	delete weapon;
@@ -854,9 +854,7 @@ static int SpawnWeaponBase(int client, char[] name, int index, int level, int qu
 		EquipPlayerWeapon(client, entity);
 	}
 
-#if defined ZR || defined RPG
 	TF2_SetPlayerClass_ZR(client, CurrentClass[client], _, false);
-#endif
 	return entity;
 }
 
@@ -1258,8 +1256,9 @@ stock void StartBleedingTimer(int victim, int attacker, float damage, int amount
 		else if(victim > 0 && victim <= MaxClients)
 			Force_ExplainBuffToClient(victim, "Bleed");
 
+#if defined ZR
 		Gunsaw_Monologue_OnBleed(victim);
-
+#endif
 		BleedAmountCountStack[victim] += 1;
 		DataPack pack;
 		CreateDataTimer(0.5, Timer_Bleeding, pack, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
@@ -1463,7 +1462,6 @@ stock int HealEntityGlobal(int healer,
 		}
 #endif
 
-#if !defined RTS
 		float fNum = 1.0;
 		//Extra healing bonuses or penalty for all healing except absolute
 		if(receiver <= MaxClients)
@@ -1485,7 +1483,6 @@ stock int HealEntityGlobal(int healer,
 					HealPenalty *= fNum;
 			}
 		}
-#endif
 	}
 #if defined ZR
 	if(healer != receiver && HealOverThisDuration != 0.0)
@@ -3272,7 +3269,6 @@ int inflictor = 0)
 
 	float damage_reduction = 1.0;
 
-#if defined ZR || defined RPG
 	if(IsValidEntity(weapon))
 	{
 		float value = Attributes_Get(weapon, 99, 1.0);//increased blast radius attribute (Check weapon only)
@@ -3286,7 +3282,6 @@ int inflictor = 0)
 		if(explosion_range_dmg_falloff == EXPLOSION_RANGE_FALLOFF)
 			explosion_range_dmg_falloff = Attributes_Get(weapon, Attrib_OverrideExplodeDmgRadiusFalloff, EXPLOSION_RANGE_FALLOFF);
 	}
-#endif	
 /*
 	if(explosionRadius >= 2100.0)
 	{
@@ -4532,7 +4527,6 @@ stock void SetDefaultHudPosition(int client, int red = 34, int green = 139, int 
 	SetHudTextParams(HudX, HudY, duration, red, green, blue, 255);
 }
 
-#if !defined RTS
 stock void ApplyTempAttrib(int entity, int index, float multi, float duration = 0.3)
 {
 #if defined RPG
@@ -4621,7 +4615,6 @@ public Action ApplyTempAttrib_Revert(Handle timer, DataPack pack)
 	}
 	return Plugin_Stop;
 }
-#endif
 
 /*
 void PlayFakeDeathSound(int client)
@@ -4723,6 +4716,18 @@ void AddEntityToThirdPersonTransitMode(int client, int entity)
 	SDKHook(entity, SDKHook_SetTransmit, ThirdersonTransmitEnvLaser);
 }
 
+public Action TransmitToOwnerOnly(int entity, int client)
+{
+	if(client > 0 && client <= MaxClients)
+	{
+		int owner = EntRefToEntIndex(i_OwnerEntityEnvLaser[entity]);
+		if(owner == client)
+		{
+			return Plugin_Continue;
+		}
+	}
+	return Plugin_Stop;
+}
 public Action ThirdersonTransmitEnvLaser(int entity, int client)
 {
 	if(client > 0 && client <= MaxClients)
@@ -5720,11 +5725,6 @@ stock int GetTeam(int entity)
 				return -1;
 		}
 
-//#if !defined RTS
-//		if(entity && entity <= MaxClients)
-//			return GetClientTeam(entity);
-//#endif
-
 		if(TeamNumber[entity] == -1)
 			TeamNumber[entity] = GetEntProp(entity, Prop_Data, "m_iTeamNum");
 		
@@ -6259,4 +6259,23 @@ int GetPlayerFromShared(Address pShared)
 			return client;
 	}
 	return -1;
+}
+
+
+
+void UTIL_ScreenFade(int client,int duration,int time,int flags,int r,int g,int b,int a)
+{
+	int clients[1];
+	Handle bf;
+	clients[0] = client;
+
+	bf = StartMessage("Fade", clients, 1);
+	BfWriteShort(bf, duration);
+	BfWriteShort(bf, time);
+	BfWriteShort(bf, flags);
+	BfWriteByte(bf, r);
+	BfWriteByte(bf, g);
+	BfWriteByte(bf, b);
+	BfWriteByte(bf, a);
+	EndMessage();
 }

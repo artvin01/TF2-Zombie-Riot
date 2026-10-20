@@ -248,23 +248,6 @@ static void ClotDeath(int entity)
 
 
 
-public Action Timer_ReduceLighting(Handle timer, any entid)
-{
-	int entity = EntRefToEntIndex(entid);
-	if(IsValidEntity(entity))
-	{
-		float brightness = GetEntPropFloat(entity, Prop_Send, "m_Radius");
-		brightness -= 50.0;
-		if(brightness <= 0.0)
-			brightness = 0.0;
-		SetEntPropFloat(entity, Prop_Send, "m_Radius", brightness);
-		SetEntPropFloat(entity, Prop_Send, "m_SpotRadius", brightness);
-		return Plugin_Continue;
-	}
-	else
-		return Plugin_Stop;
-}
-
 
 bool VintulumBombSelf(int entity, int victim, float &healingammount)
 {

@@ -227,7 +227,7 @@ void NPCDeath(int entity)
 	int client;
 	while(RpgCore_CountClientsWorthyForKillCredit(entity, client))
 	{
-		RpgCore_OnKillGiveMastery(client, MaxHealth);
+		RpgCore_OnKillGiveMastery(client, MaxHealth, entity);
 	}
 }
 

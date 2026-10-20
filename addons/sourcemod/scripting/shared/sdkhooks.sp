@@ -1329,11 +1329,12 @@ public void OnPostThink(int client)
 
 				}
 	#endif
-				OperaMute_ManaHud(client,red, green, blue);
 				bool InfMana = false;
+#if defined ZR
+				OperaMute_ManaHud(client,red, green, blue);
 				if(HasSpecificBuff(client, "Dimensional Turbulence") && !OperaMute_WeaponHas(client))
 					InfMana = true;
-
+#endif
 				if(!InfMana)
 				{
 					for(int i=1; i<21; i++)
@@ -1821,7 +1822,6 @@ public void OnPostThinkPost(int client)
 
 public void Player_OnTakeDamageAlivePost(int victim, int attacker, int inflictor, float damage, int damagetype, int weapon, const float damageForce[3], const float damagePosition[3], int damagecustom)
 {
-#if defined ZR
 	TakeDamage_EnableMVM();
 	//PrintToConsole(victim, "[ZR] THIS IS DEBUG! IGNORE! Player_OnTakeDamageAlivePost");
 	if(!(damagetype & (DMG_OUTOFBOUNDS|DMG_FALL)))
@@ -1837,6 +1837,7 @@ public void Player_OnTakeDamageAlivePost(int victim, int attacker, int inflictor
 		}
 	}
 	
+#if defined ZR
 	if((damagetype & DMG_OUTOFBOUNDS))
 	{
 		//the player has died to a stuckzone.
@@ -1845,10 +1846,11 @@ public void Player_OnTakeDamageAlivePost(int victim, int attacker, int inflictor
 			TeleportBackToLastSavePosition(victim);
 		}
 	}
+	ArmorDisplayClient(victim);
+#endif
 	RegainTf2Buffs(victim);
 
 	Player_OnTakeDamage_Equipped_Weapon_Logic_Post(victim);
-	ArmorDisplayClient(victim);
 	StatusEffect_OnTakeDamagePostVictim(victim, attacker, damage, damagetype);
 	StatusEffect_OnTakeDamagePostAttacker(victim, attacker, damage, damagetype);
 	if(inflictor > 0 && inflictor <= MaxClients)
@@ -1871,7 +1873,6 @@ public void Player_OnTakeDamageAlivePost(int victim, int attacker, int inflictor
 	i_HexCustomDamageTypes[victim] = 0;
 }
 
-#if defined ZR
 void RegainTf2Buffs(int victim)
 {
 //	if(i_WasInUber[victim])
@@ -1904,7 +1905,6 @@ void RegainTf2Buffs(int victim)
 	i_WasInJarate[victim] = 0.0;
 	i_WasInResPowerup[victim] = 0.0;
 }
-#endif
 
 static stock void Player_OnTakeDamage_Equipped_Weapon_Logic_Post(int victim)
 {
@@ -4023,8 +4023,10 @@ bool PlayersLeftAlive(int victim)
 
 bool RechargeManaPassively(int client)
 {
+#if defined ZR
 	if(b_AggreviatedSilence[client])
 		return true;
+#endif
 	
 	if(HasSpecificBuff(client, "Mana Recharge"))
 	{

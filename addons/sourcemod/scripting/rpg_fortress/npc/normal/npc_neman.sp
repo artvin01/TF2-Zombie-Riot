@@ -58,7 +58,7 @@ public void NemanBoss_OnMapStart_NPC()
 	PrecacheSoundArray(g_RangedAttackSoundsSecondary);
 	PrecacheSoundArray(g_RangedAttackAbilitySounds);
 	NPCData data;
-	strcopy(data.Name, sizeof(data.Name), "Neman The Expidonsan");
+	strcopy(data.Name, sizeof(data.Name), "Nemal The Expidonsan");
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_neman_expi");
 	data.Func = ClotSummon;
 	NPC_Add(data);
