@@ -170,7 +170,7 @@ methodmap XenoLabSecurity < CClotBody
 		npc.m_iOverlordComboAttack = 0;
 		
 		// Infection ability timer
-		npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 12.0;
+		npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 10.0;
 		
 		if(!IsValidEntity(RaidBossActive))
 		{
@@ -370,7 +370,7 @@ void Security_InfectionProtocol(XenoLabSecurity npc, float gameTime)
 	pack.WriteFloat(range);
 	
 	// next infection time based on lab version enrage state
-	float cooldown = (npc.m_bIsLabVersion && npc.Anger) ? 8.0 : 12.0;
+	float cooldown = (npc.m_bIsLabVersion && npc.Anger) ? 7.5 : 10.0;
 	npc.m_flNextRangedSpecialAttack = gameTime + activationDelay + cooldown;
 }
 
