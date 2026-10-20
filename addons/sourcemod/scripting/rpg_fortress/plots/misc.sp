@@ -16,8 +16,15 @@ public bool Plots_Resupply(int entity, BuildEnum build, int client)
 		return false;
 
 	RegenPlayerCooldown[client] = GetGameTime() + 2.0;
-	TF2_RegeneratePlayer(client);
+	RequestFrame(TF2_RegeneratePlayerDelay, EntIndexToEntRef(client));
 	return true;
+}
+void TF2_RegeneratePlayerDelay(int ref)
+{
+	int client = EntRefToEntIndex(ref);
+	if(!IsValidClient(client))
+		return;
+	TF2_RegeneratePlayer(client);
 }
 
 public bool Plots_PlayerMarket(int entity, BuildEnum build, int client)
