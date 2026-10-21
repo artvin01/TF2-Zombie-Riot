@@ -1547,7 +1547,7 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 			}
 		}
 	}
-	else if(type == 1)
+	else if(type == 3)
 	{
 		int i, weapon;
 		while(TF2_GetItem(entity, weapon, i))
