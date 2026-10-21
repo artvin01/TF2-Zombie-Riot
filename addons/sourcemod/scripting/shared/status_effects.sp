@@ -1388,31 +1388,24 @@ bool Status_Effects_GrantAttackspeedBonus(int entity, bool HasBuff, float BuffAm
 
 static float BuffToASPD(float buff)
 {
+	if(buff >= 1.0)	// Slower
+		return 1.0 - buff;
+	
 	return 1.0 - (1.0 / buff);
 }
 
 static float ASPDToBuff(float aspd)
 {
-	if(aspd <= -1.0)
-		ThrowError("We weren't ready for this")
-	
+	if(aspd <= 0.0)	// Slower
+		return 1.0 - aspd;
+
 	return 1.0 / (1.0 + aspd);
 }
 
 static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBuff, float BuffOriginal, int BuffCheckerID, int BuffCheckerIDNPC, int FlagAttackspeedLogicInternal)
-{	
-	bool IsCheatMode = true;
-
-	
-#if defined ZR
-	IsCheatMode = CvarInfiniteCash.BoolValue
-#endif
-	if(IsCheatMode && ((type == 3) || (type == 1 && BuffOriginal < 1.0)))
+{
+	if(type == 1)
 	{
-		// Note this will break if two buffs share the same slot but have
-		// a buffed attackspeed and the other a nerfed attackspeed
-		// (The if statement above for "type == 1 && BuffOriginal < 1.0")
-
 		float ASPDOriginal = BuffToASPD(BuffOriginal);
 
 		int i, weapon;
