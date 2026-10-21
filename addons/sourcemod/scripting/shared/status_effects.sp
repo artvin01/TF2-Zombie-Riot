@@ -1391,7 +1391,7 @@ static float BuffToASPD(float buff)
 	if(buff >= 1.0)	// Slower
 		return 1.0 - buff;
 	
-	return 1.0 - (1.0 / buff);
+	return (1.0 / buff) - 1.0;
 }
 
 static float ASPDToBuff(float aspd)
