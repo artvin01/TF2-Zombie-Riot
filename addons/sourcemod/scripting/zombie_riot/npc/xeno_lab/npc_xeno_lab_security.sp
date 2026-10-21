@@ -414,7 +414,11 @@ public Action Timer_SecurityInfectionBlast(Handle timer, DataPack pack)
 			{
 				case 1:
 				{
-					CPrintToChatAll("{green}Xeno Lab Security{default}: Enhanced protocols active. Maximum containment.");
+					CPrintToChatAll("{green}Xeno Lab Security{default}: Enhanced protocols actived. Maximum containment.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{green}Xeno Lab Security{default}: Enhanced protocols actived. Maximum containment.");
 				}
 			}
 		}
