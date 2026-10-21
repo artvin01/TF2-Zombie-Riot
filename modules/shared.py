@@ -1,7 +1,6 @@
 import util
 import json
 import os
-from copy import deepcopy
 
 FLAG_MAPPINGS = {
     "MVM_CLASS_FLAG_NONE": "", #// Show Nothing
@@ -42,10 +41,9 @@ def get_npc_icon(icon:str) -> str:
     else:
         return util.vtftoimg(MISSING_ICON_VTF,MISSING_ICON_PNG)
 
-global_vars: dict[str,str] = {} # RAIDBOSS_TWIRL_THEME is used for stella but is defined in twirl code...............
+global_vars: dict[str,str] = {} # RAIDBOSS_TWIRL_THEME is used for stella but is defined in twirl code
 type TypeNPCData = None | bool | str | list[dict[str,str | bool]] | list[str] | list[list[str]] | dict[str,str] # what a mess
-type TypeNPC = NPC | NPC_Dummy
-class NPC:
+class BaseNPC:
     def __init__(self, path: str):
         self.PATH: str=path
         self.RELATIVE_PATH: str = path.replace(os.getcwd(),"").replace("/TF2-Zombie-Riot/","")
@@ -156,25 +154,6 @@ class NPC:
                     self.obtain_item = p1[1].split('");')[0]
                 else:
                     self.obtain_item = self.FILE_DATA.split('Items_GiveNamedItem(client_repat, "')[1].split('");')[0] # Corrupted Barney's Chainsaw
-
-            """
-            npc_obj = {
-                "name": name,
-                "category": category,
-                "description": description,
-                "plugin": plugin,
-                "icon": icon,
-                "health": health,
-                "flags": flags,
-                "filetype": filetype,
-                "has_prefix_logic": has_prefix_logic,
-                "music_entries": {
-                    "name", "filepath", "file_exists"FILE_DATA
-                }
-                "obtain_item": obtain_item
-                "source": [see util.py:get_refs() usage]
-            }
-            """
 
 
     def _get_name(self):
@@ -355,6 +334,7 @@ class NPC:
 
     def __json__(self):
         return {
+            "type": "BaseNPCParser",
             "name": self.name,
             "category": self.category,
             "description": self.description,
@@ -365,38 +345,5 @@ class NPC:
             "has_prefix_logic": self.has_prefix_logic,
             "music_entries": self.music_entries,
             "obtain_item": self.obtain_item,
-            "source": self.source
-        }
-
-class NPC_Dummy(): # Used for multi and shared NPCs
-    def __init__(self, npc_obj: NPC):
-        # yes this is stupid. I won't change it.
-        self.name: str | None = npc_obj.name
-        self.icon: str = npc_obj.icon
-        self.description: str = npc_obj.description
-        self.filetype: str | None = npc_obj.filetype
-        self.has_prefix_logic: bool = npc_obj.has_prefix_logic
-        self.music_entries:list[dict[str,str | bool]] = npc_obj.music_entries
-        self.obtain_item: str | None = npc_obj.obtain_item
-        self.source: dict[str, dict[str,tuple[int,int]] | tuple[str,int]] = deepcopy(npc_obj.source) # Needs to be copied for multi and shared npcs!
-
-        self.plugin: str | list[str] = []
-        self.category: str | list[str] = []
-        self.flags: str | list[str] | list[list[str]] = []
-        self.health: str | list[str] | dict[str,str] = []
-
-    def __json__(self) -> dict[str, TypeNPCData]:
-        return {
-            "DUMMY":"",
-            "name": self.name,
-            "category": self.category,
-            "description": self.description,
-            "plugin": self.plugin,
-            "icon": self.icon,
-            "health": self.health,
-            "flags": self.flags,
-            "filetype": self.filetype,
-            "has_prefix_logic": self.has_prefix_logic,
-            "music_entries": self.music_entries,
             "source": self.source
         }

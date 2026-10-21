@@ -394,7 +394,7 @@ async function setup_filters() {
         // # Archetype filter
         let archetype_selector = document.getElementById("archetype_filter");
         weaponArchetypes.forEach(archetype => {
-            let el = create_element("option", "", archetype); // TODO title case in css
+            let el = create_element("option", "", archetype);
             el.value = archetype;
             archetype_selector.appendChild(el);
         });
@@ -406,7 +406,7 @@ async function setup_filters() {
         // # Faction filter
         let faction_selector = document.getElementById("faction_filter");
         weaponFactions.forEach(archetype => {
-            let el = create_element("option", "", archetype); // TODO title case in css
+            let el = create_element("option", "", archetype);
             el.value = archetype;
             faction_selector.appendChild(el);
         });

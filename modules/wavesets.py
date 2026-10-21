@@ -10,6 +10,7 @@ import vdf
 from collections import defaultdict
 from datetime import datetime
 from typing import Any
+from copy import deepcopy
 
 """
 TODO
@@ -41,35 +42,47 @@ MULTIPLIER_MAPPINGS = {
 }
 
 waveset_cache: dict[str,dict[str,Any]] = {}
-def parse_all_npcs() -> tuple[dict[str, modules.shared.TypeNPC], dict[str, list[modules.shared.TypeNPC]]]:
-    npc_by_file: dict[str,modules.shared.TypeNPC] = {}
-    npc_by_category: dict[str,list[modules.shared.TypeNPC]] = {}
+def parse_all_npcs() -> tuple[dict[str, modules.shared.BaseNPC], dict[str, list[modules.shared.BaseNPC]]]:
+    npc_by_file: dict[str,modules.shared.BaseNPC] = {}
+    npc_by_category: dict[str,list[modules.shared.BaseNPC]] = {}
+
+    def map_to_dummy(key, dummy, npc_obj):
+        ref = getattr(npc_obj, key)
+        setattr(dummy,key,ref[min(len(ref)-1,i)])
+        if key in dummy.source:
+            dummy.source[key][1] = npc_obj.source[key][1][min(len(npc_obj.source[key][1])-1,i)]
+
     for file in pathlib.Path(PATH_NPC).glob('**/*'):
         if os.path.isfile(file.absolute()):
-            npc_obj = modules.shared.NPC(str(file.absolute()))
+            npc_obj = modules.shared.BaseNPC(str(file.absolute()))
             if not npc_obj.HIDDEN:
                 plugin_name = npc_obj.plugin
                 if type(plugin_name) is list:
                     # Unpack filetype: multi / shared
                     for i,pn in enumerate(plugin_name):
-                        dummy = modules.shared.NPC_Dummy(npc_obj)
+                        dummy = deepcopy(npc_obj)
+
+                        #dummy.source: dict[str, dict[str,tuple[int,int]] | tuple[str,int]] = deepcopy(npc_obj.source) # Needs to be copied for multi and shared npcs!
+                        dummy.plugin: str | list[str] = []
+                        dummy.category: str | list[str] = []
+                        dummy.flags: str | list[str] | list[list[str]] = []
+                        dummy.health: str | list[str] | dict[str,str] = []
+
                         if npc_obj.filetype == "shared":
                             dummy.health = npc_obj.health[min(len(npc_obj.health)-1,i)]
                         else:
                             dummy.health = npc_obj.health
-                        # TODO unified func
-                        dummy.plugin = npc_obj.plugin[min(len(npc_obj.plugin)-1,i)]
-                        if "plugin" in dummy.source:
-                            dummy.source["plugin"][1] = npc_obj.source["plugin"][1][min(len(npc_obj.source["plugin"][1])-1,i)]
-                        dummy.category = npc_obj.category[min(len(npc_obj.category)-1,i)]
-                        if "category" in dummy.source:
-                            dummy.source["category"][1] = npc_obj.source["category"][1][min(len(npc_obj.source["category"][1])-1,i)]
-                        dummy.flags = npc_obj.flags[min(len(npc_obj.flags)-1,i)]
-                        if "flags" in dummy.source:
-                            dummy.source["flags"][1] = npc_obj.source["flags"][1][min(len(npc_obj.source["flags"][1])-1,i)]
+
+                        [map_to_dummy(k, dummy, npc_obj) for k in [
+                            "plugin",
+                            "category",
+                            "flags"
+                        ]]
+
                         npc_by_file[pn] = dummy
                         if dummy.category not in npc_by_category:
                             npc_by_category[dummy.category] = []
+
                         npc_by_category[dummy.category].append(dummy)
                 else:
                     # filetype: single
