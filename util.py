@@ -76,14 +76,6 @@ def musicmodal_to_html(modal: dict[str,str]) -> str:
     file_exists = context.pop("file_exists")
     context["musictitle"] = apply_morecolors(context["musictitle"]).replace("|","") # remove pipes (only the case for red sun songs)
     context["musicartist"] = apply_morecolors(context["musicartist"])
-    if "source" in context:
-        context["SRC"] = html_src(modal["source"])
-        del context["source"]
-    else:
-        # Waveset data will not have sources set anyway
-        #log("Modal does not have 'source' set!","WARNING")
-        #log(json.dumps(modal,indent=2),"FAIL")
-        context["SRC"] = "?"
     return fill_template(read(f"templates/music/music_modal{"_missing"*int(not file_exists)}.html"),context)
 
 def cfgtoint(val: str, default: int=0) -> int:
@@ -126,9 +118,9 @@ def id_from_str(string: str, hexdigest: int=2) -> str:
 
 def html_img(url: str, src: TypeSourceObject = ("?",-1)) -> str:
     """
-    -> <img src="{url}" data-src="{html_src(src)}"/>
+    -> <img src="{url}"/>
     """
-    return f'<img src="{url}" data-src="{html_src(src)}"/>'
+    return f'<img src="{url}"/>'
 
 
 def vtftoimg(vtf_path: str, png_path: str) -> str:
@@ -379,44 +371,3 @@ def divfornewline(string:str):
     NOTE: Doesn't take \\\\n
     """
     return f"<div>{"</div><div>".join(string.splitlines())}</div>\n"
-
-# --------------------------- SOURCE INSPECTOR ---------------------------
-
-def get_refs(content: list[str], value: str | int, negative_on_fail:bool=False) -> list[int]:
-    """
-    Find where a substring is located in a multiline string.
-    content: string split by newline
-    value: substring to search for (one line only)
-    negative_on_fail: return [-1] on fail, else raise exception
-    -> List of lines where substring was found starting from line 1
-    """
-    result: list[int] = [i for i,line in enumerate(content, 1) if value in line]
-    if result:
-        return result
-    elif negative_on_fail:
-        return [-1]
-    else:
-        raise ValueError(f"Could not find '{value}' in content!")
-
-def get_key_src(key:str) -> tuple[str,int]: # part of phrases
-    """
-    Find where a translation key is located in loaded phrase files.
-    -> (filepath, refs)
-        on fail: ("?", -1) 
-    """
-    for idx, phrase in enumerate(PHRASES):
-        if key in phrase:
-            filename = f"./TF2-Zombie-Riot/addons/sourcemod/translations/{PHRASES_FILES[idx]}"
-            return (filename.replace("./TF2-Zombie-Riot/",""), get_refs(RAW_PHRASE[PHRASES_FILES[idx]],key,negative_on_fail=True)[0])
-    return ("?", -1)
-
-def html_src(src_obj: TypeSourceObject):
-    """
-    Return a TypeSourceObject as an HTML data-src attribute
-    e.g. ("foo",1) -> "foo#L1"
-         ("foo",[1,2]) -> "foo#L1-L2"
-    """
-    if type(src_obj[1]) is list:
-        return f"{src_obj[0]}#L{src_obj[1][0]}-L{src_obj[1][1]}"
-    else:
-        return f"{src_obj[0]}#L{src_obj[1]}"

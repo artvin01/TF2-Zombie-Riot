@@ -57,22 +57,6 @@ class BaseNPC:
         self.FILE_DATA_SPLIT: list[str] = self.FILE_DATA_RAW.splitlines()
         self.HIDDEN: bool = not ("npc_donoteveruse" not in self.FILE_DATA and "NPC_Add" in self.FILE_DATA)
         if not self.HIDDEN:
-            self.source: dict[str, dict[str,tuple[int,int]] | tuple[str,int]] = {}
-            """
-            Source support:
-            return {
-                "name": self.name, ✓
-                "category": self.category, 2/3(multi)
-                "description": self.description, ✓
-                "plugin": self.plugin, 2/3(multi)
-                "icon": self.icon, ✓
-                "flags": self.flags, 2/3(multi)
-                "filetype": self.filetype, X
-                "has_prefix_logic": self.has_prefix_logic, X
-                "music_entries": self.music_entries, ✓
-                "source": self.source X
-            }
-            """
             # Get NPC name
             # TODO multi-npc files can have different prefixes (part of NPC code rewrite todo)
             prefixes = [
@@ -107,7 +91,6 @@ class BaseNPC:
             try:
                 ICON_STR = f'strcopy({self.main_prefix}.Icon, sizeof({self.main_prefix}.Icon), \"'
                 self.icon:str = self.FILE_DATA.split(ICON_STR)[1].split("\");")[0]
-                self.source["icon"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_SPLIT,ICON_STR)[0])
             except IndexError:
                 self.icon = ""
 
@@ -117,8 +100,6 @@ class BaseNPC:
             self.music_entries: list[dict[str,str | bool]] = []
             if music_cutouts:
                 music_hashes: list[str] = []
-                music_cutout_source_start = util.get_refs(self.FILE_DATA_SPLIT, "MusicEnum music;")
-                music_cutout_source_end = [util.get_refs(item.splitlines(), "Music_SetRaidMusic(", negative_on_fail=True)[0] for i,item in enumerate(self.FILE_DATA_RAW.split("MusicEnum music;")) if i > 0]
                 util.debug(f"NPC:__init__:music_cutouts\n{json.dumps(music_cutouts,indent=2)}","npcs", "OKBLUE")
                 for i, code in enumerate(music_cutouts):
                     mfilename = self._get_music_val(code,"Path").replace("#","")
@@ -135,15 +116,11 @@ class BaseNPC:
                     music_hash = util.id_from_str(json.dumps(music_entry)) # same music data will output same hash
                     if music_hash not in music_hashes:
                         self.music_entries.append(music_entry)
-                        # music_cutout_source_end lines are relative to the starting lines!
-                        #self.source["music"][filepath] = (self.RELATIVE_PATH, (music_cutout_source_start[i], music_cutout_source_start[i]+music_cutout_source_end[i])) # type:ignore[basedpyright doesnt get it]
-                        music_entry["source"] = (self.RELATIVE_PATH, (music_cutout_source_start[i], (music_cutout_source_start[i]+music_cutout_source_end[i])-1)) # type:ignore[basedpyright doesnt get it]
                         music_hashes.append(music_hash)
 
             desc_key = f"{self.name} Desc"
             # Lots of NPCs with intentionally missing descriptions, hence silent=True
             self.description: str = util.get_key(desc_key, empty_on_fail=True, silent=True)#.replace("\\n", "<div class=\"flex_break\"></div>\n")
-            self.source["description"] = util.get_key_src(desc_key)
 
             # may be a problem if for example a file has multiple npcs with one that doesn't have the logic
             self.has_prefix_logic: bool = PREFIX_STR in self.FILE_DATA
@@ -160,7 +137,6 @@ class BaseNPC:
         try:
             NAME_STR = f'strcopy({self.main_prefix}.Name, sizeof({self.main_prefix}.Name), \"'
             self.name = self.FILE_DATA.split(NAME_STR)[1].split("\");")[0]
-            self.source["name"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_SPLIT, NAME_STR)[0])
         except IndexError:
             self.name = None
 
@@ -222,12 +198,10 @@ class BaseNPC:
     def _set_npc_entry_data_single(self):
         PLUGIN_STR = f'strcopy({self.main_prefix}.Plugin, sizeof({self.main_prefix}.Plugin), \"'
         self.plugin = self.FILE_DATA.split(PLUGIN_STR)[1].split("\");")[0]
-        self.source["plugin"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_SPLIT,PLUGIN_STR)[0])
 
         try:
             CAT_STR = f"{self.main_prefix}.Category = "
             self.category = self.FILE_DATA.split(CAT_STR)[1].split(";")[0]
-            self.source["category"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_SPLIT,CAT_STR,negative_on_fail=True)[0])
         except IndexError:
             self.category = f"404 prefix: {self.main_prefix}" if "npcs" in util.DEBUG else "-1"
 
@@ -235,7 +209,6 @@ class BaseNPC:
             FLAGS_STR = f"{self.main_prefix}.Flags = "
             self.flags = self.FILE_DATA.split(FLAGS_STR)[1]
             self.flags = self.flags.split(";")[0].split("|")
-            self.source["flags"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_SPLIT,FLAGS_STR,negative_on_fail=True)[0])
         except IndexError:
             self.flags = []
 
@@ -243,23 +216,19 @@ class BaseNPC:
         PLUGIN_STR = f"strcopy({self.main_prefix}.Plugin, sizeof({self.main_prefix}.Plugin), \""
         self.plugin = self.FILE_DATA.split(PLUGIN_STR)
         self.plugin = [item.split("\");")[0] for i,item in enumerate(self.plugin) if i > 0]
-        self.source["plugin"] = [self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_SPLIT,PLUGIN_STR)]
 
         CAT_STR = f"{self.main_prefix}.Category = "
         self.category = self.FILE_DATA.split(CAT_STR)
         self.category = [item.split(";")[0] for i,item in enumerate(self.category) if i > 0]
-        self.source["category"] = [self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_SPLIT,CAT_STR)]
 
         FLAGS_STR = f"{self.main_prefix}.Flags = "
         self.flags = self.FILE_DATA.split(FLAGS_STR)
         self.flags = [item.split(";")[0].split("|") for i,item in enumerate(self.flags) if i > 0]
-        self.source["flags"] = [self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_SPLIT,FLAGS_STR)]
     
     def _set_npc_cclot_data_single(self):
         try:
             HEALTH_STR = "CClotBody(vecPos, vecAng, "
             self.health = self.FILE_DATA.split(HEALTH_STR)[1].split("));")[0].split(',')[2].replace('"',"").replace(" ","")
-            self.source["health"] = (self.RELATIVE_PATH, util.get_refs(self.FILE_DATA_SPLIT,HEALTH_STR,negative_on_fail=True)[0])
             if ":" in self.health:
                 """
                 extra "data" fields for enemies (lists, numbers or types like "Elite")
@@ -334,7 +303,6 @@ class BaseNPC:
 
     def __json__(self):
         return {
-            "type": "BaseNPCParser",
             "name": self.name,
             "category": self.category,
             "description": self.description,
@@ -345,5 +313,4 @@ class BaseNPC:
             "has_prefix_logic": self.has_prefix_logic,
             "music_entries": self.music_entries,
             "obtain_item": self.obtain_item,
-            "source": self.source
         }

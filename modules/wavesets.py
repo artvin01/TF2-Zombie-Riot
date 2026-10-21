@@ -49,8 +49,6 @@ def parse_all_npcs() -> tuple[dict[str, modules.shared.BaseNPC], dict[str, list[
     def map_to_dummy(key, dummy, npc_obj):
         ref = getattr(npc_obj, key)
         setattr(dummy,key,ref[min(len(ref)-1,i)])
-        if key in dummy.source:
-            dummy.source[key][1] = npc_obj.source[key][1][min(len(npc_obj.source[key][1])-1,i)]
 
     for file in pathlib.Path(PATH_NPC).glob('**/*'):
         if os.path.isfile(file.absolute()):
@@ -62,7 +60,6 @@ def parse_all_npcs() -> tuple[dict[str, modules.shared.BaseNPC], dict[str, list[
                     for i,pn in enumerate(plugin_name):
                         dummy = deepcopy(npc_obj)
 
-                        #dummy.source: dict[str, dict[str,tuple[int,int]] | tuple[str,int]] = deepcopy(npc_obj.source) # Needs to be copied for multi and shared npcs!
                         dummy.plugin: str | list[str] = []
                         dummy.category: str | list[str] = []
                         dummy.flags: str | list[str] | list[list[str]] = []
@@ -765,11 +762,7 @@ def artifact_json(name: str, obj: dict[str,str], a_from: str):
     return obj | {
         "name": util.get_key(name), 
         "description": util.get_key(f"{name} Desc"), 
-        "from": a_from, 
-        "source": {
-            "name": util.get_key_src(name),
-            "description": util.get_key_src(f"{name} Desc")
-        },
+        "from": a_from,
         "id": util.id_from_str(name+a_from)
     }
 

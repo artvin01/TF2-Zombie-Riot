@@ -36,7 +36,7 @@ async function parse_items(goto = true) {
 function atfxobject(parent_element, artifact, root) {
     let atfxitem = parent_element.appendChild(create_element("li", "item_instance atfx_instance"));
     atfxitem.tabIndex = "0";
-    atfxitem.appendChild(create_element_adv("span", {"innerHTML": artifact.name, "class": "atfx_name"})).dataset.src = html_src(artifact.source.name);
+    atfxitem.appendChild(create_element_adv("span", {"innerHTML": artifact.name, "class": "atfx_name"}));
     let atfxtooltip = atfxitem.appendChild(create_element("div", "item_tooltip"));
     atfxtooltip.appendChild(create_element("div", "secondary", `From ${artifact.from}`));
     if ("shopcost" in artifact) {
@@ -46,7 +46,7 @@ function atfxobject(parent_element, artifact, root) {
         atfxtooltip.appendChild(create_element("div", "secondary", `Dropchance ${artifact.dropchance}`));
     }
     artifact.description.split("\n").forEach(line => {
-        atfxtooltip.appendChild(create_element_adv("div", {"innerHTML": apply_morecolors_src(line, artifact.source.description)}))
+        atfxtooltip.appendChild(create_element_adv("div", {"innerHTML": apply_morecolors(line)}))
     });
 
     atfxitem.dataset.id = artifact.id;
@@ -282,18 +282,6 @@ function create_element_adv(tag, attributes) {
     return element;
 }
 
-/**
-Return a TypeSourceObject as an HTML data-src attribute  
-e.g. ("foo",1) -> "foo#L1"  
-........("foo",[1,2]) -> "foo#L1-L2"  
- */
-function html_src(src_obj) {
-    if (typeof src_obj === Array) {
-        return `${src_obj[0]}#L${src_obj[1][0]}-L${src_obj[1][1]}`;
-    } else {
-        return `${src_obj[0]}#L${src_obj[1]}`;
-    }
-}
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
