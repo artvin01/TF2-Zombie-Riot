@@ -1399,7 +1399,7 @@ static float ASPDToBuff(float aspd)
 	if(aspd <= 0.0)	// Slower
 		return 1.0 - aspd;
 
-	return 1.0 / (1.0 + aspd);
+	return (1.0 / (aspd + 1.0));
 }
 
 static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBuff, float BuffOriginal, int BuffCheckerID, int BuffCheckerIDNPC, int FlagAttackspeedLogicInternal)
