@@ -405,27 +405,53 @@ public Action Timer_SecurityInfectionBlast(Handle timer, DataPack pack)
 	TeleportEntity(particle, NULL_VECTOR, ang, NULL_VECTOR);
 	
 	EmitSoundToAll("weapons/cow_mangler_explode.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, pos);
-	
+
+	rand = GetURandomInt() % 11;
+
 	if(npc.m_bIsLabVersion)
 	{
 		if(npc.Anger)
 		{
-			CPrintToChatAll("{crimson}Xeno Lab Security{default}: ENHANCED PROTOCOLS ACTIVE. MAXIMUM CONTAINMENT.");
+			switch(rand)
+			{
+				case 0:
+				{
+					CPrintToChatAll("{green}Xeno Lab Security{default}: Enhanced protocols active. Maximum containment.");
+				}
+			}
 		}
 		else
 		{
-			CPrintToChatAll("{crimson}Xeno Lab Security{default}: INFECTION PROTOCOL DEPLOYED.");
+			switch(rand)
+			{
+				case 0:
+				{
+					CPrintToChatAll("{green}Xeno Lab Security{default}: Infection protocol deployed.");
+				}
+			}
 		}
 	}
 	else
 	{
 		if(npc.Anger)
 		{
-			CPrintToChatAll("{green}Xeno Security{default}: Enhanced combat mode engaged.");
+			switch(rand)
+			{
+				case 0:
+				{
+					CPrintToChatAll("{green}Xeno Security{default}: Enhanced combat mode engaged.");
+				}
+			}
 		}
 		else
 		{
-			CPrintToChatAll("{green}Xeno Security{default}: Area denial protocol active.");
+			switch(rand)
+			{
+				case 0:
+				{
+					CPrintToChatAll("{green}Xeno Security{default}: Area denial protocol active.");
+				}
+			}
 		}
 	}
 	
@@ -585,7 +611,7 @@ void Security_EnterEnrageMode(XenoLabSecurity npc)
 	npc.PlayAngerSound();
 	
 	CPrintToChatAll("{red}[CRITICAL WARNING]");
-	CPrintToChatAll("{crimson}Xeno Lab Security{default}: DAMAGE THRESHOLD EXCEEDED. ACTIVATING EMERGENCY PROTOCOLS.");
+	CPrintToChatAll("{crimson}Xeno Lab Security{default}: Damage threshold exceeded. Activating emergency protocols.");
 	CPrintToChatAll("{crimson}Xeno Lab Security{default}: ALL SAFETY LIMITERS REMOVED.");
 	
 	EmitSoundToAll("weapons/physcannon/energy_bounce2.wav", npc.index, _, 90, _, 0.8);
@@ -614,7 +640,7 @@ public void XenoLabSecurity_NPCDeath(int entity)
 	
 	if(npc.m_bIsLabVersion)
 	{
-		NPCTalkMessage(npc.index, "CRITICAL SYSTEM FAILURE... CONTAINMENT... BREACH...");
+		NPCTalkMessage(npc.index, "CRITIcal systEM FAILUre... CONTAINment... breach...");
 		CPrintToChatAll("{green}[CONTAINMENT BREACH - SECURITY SYSTEMS OFFLINE]");
 	}
 	else
