@@ -406,15 +406,13 @@ public Action Timer_SecurityInfectionBlast(Handle timer, DataPack pack)
 	
 	EmitSoundToAll("weapons/cow_mangler_explode.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, pos);
 
-	rand = GetURandomInt() % 11;
-
 	if(npc.m_bIsLabVersion)
 	{
 		if(npc.Anger)
 		{
-			switch(rand)
+			switch(GetRandomInt(1, 1))
 			{
-				case 0:
+				case 1:
 				{
 					CPrintToChatAll("{green}Xeno Lab Security{default}: Enhanced protocols active. Maximum containment.");
 				}
@@ -422,9 +420,9 @@ public Action Timer_SecurityInfectionBlast(Handle timer, DataPack pack)
 		}
 		else
 		{
-			switch(rand)
+			switch(GetRandomInt(1, 1))
 			{
-				case 0:
+				case 1:
 				{
 					CPrintToChatAll("{green}Xeno Lab Security{default}: Infection protocol deployed.");
 				}
@@ -435,9 +433,9 @@ public Action Timer_SecurityInfectionBlast(Handle timer, DataPack pack)
 	{
 		if(npc.Anger)
 		{
-			switch(rand)
+			switch(GetRandomInt(1, 1))
 			{
-				case 0:
+				case 1:
 				{
 					CPrintToChatAll("{green}Xeno Security{default}: Enhanced combat mode engaged.");
 				}
@@ -445,9 +443,9 @@ public Action Timer_SecurityInfectionBlast(Handle timer, DataPack pack)
 		}
 		else
 		{
-			switch(rand)
+			switch(GetRandomInt(1, 1))
 			{
-				case 0:
+				case 1:
 				{
 					CPrintToChatAll("{green}Xeno Security{default}: Area denial protocol active.");
 				}
