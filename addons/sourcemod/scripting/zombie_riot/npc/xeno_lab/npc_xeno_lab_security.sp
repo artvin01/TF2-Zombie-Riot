@@ -232,7 +232,7 @@ static void Frame_AnnounceSpawn(int ref)
 	}
 	else
 	{
-		CPrintToChatAll("{red}[XENO SECURITY UNIT DEPLOYED]");
+		CPrintToChatAll("{red}[XENO SECURITY DEPLOYED]");
 		NPCTalkMessage(npc.index, "Target acquired. Commencing infection protocol.");
 	}
 }
@@ -424,9 +424,13 @@ public Action Timer_SecurityInfectionBlast(Handle timer, DataPack pack)
 		}
 		else
 		{
-			switch(GetRandomInt(1, 1))
+			switch(GetRandomInt(1, 2))
 			{
 				case 1:
+				{
+					CPrintToChatAll("{green}Xeno Lab Security{default}: Infection protocol deployed.");
+				}
+				case 2:
 				{
 					CPrintToChatAll("{green}Xeno Lab Security{default}: Infection protocol deployed.");
 				}
@@ -437,9 +441,13 @@ public Action Timer_SecurityInfectionBlast(Handle timer, DataPack pack)
 	{
 		if(npc.Anger)
 		{
-			switch(GetRandomInt(1, 1))
+			switch(GetRandomInt(1, 2))
 			{
 				case 1:
+				{
+					CPrintToChatAll("{green}Xeno Security{default}: Enhanced combat mode engaged.");
+				}
+				case 2:
 				{
 					CPrintToChatAll("{green}Xeno Security{default}: Enhanced combat mode engaged.");
 				}
@@ -447,9 +455,13 @@ public Action Timer_SecurityInfectionBlast(Handle timer, DataPack pack)
 		}
 		else
 		{
-			switch(GetRandomInt(1, 1))
+			switch(GetRandomInt(1, 2))
 			{
 				case 1:
+				{
+					CPrintToChatAll("{green}Xeno Security{default}: Area denial protocol active.");
+				}
+				case 2:
 				{
 					CPrintToChatAll("{green}Xeno Security{default}: Area denial protocol active.");
 				}
@@ -477,7 +489,7 @@ void Security_InfectionHit(int entity, int victim, float damage, int weapon)
 		}
 		else
 		{
-			ShowHudText(victim, -1, "XENO SECURITY UNIT HAS INFECTED YOU!");
+			ShowHudText(victim, -1, "XENO SECURITY HAS INFECTED YOU!");
 		}
 		ClientCommand(victim, "playgamesound items/powerup_pickup_plague_infected.wav");
 		
@@ -643,11 +655,11 @@ public void XenoLabSecurity_NPCDeath(int entity)
 	if(npc.m_bIsLabVersion)
 	{
 		NPCTalkMessage(npc.index, "CRITIcal systEM FAILUre... CONTAINment... breach...");
-		CPrintToChatAll("{green}[CONTAINMENT BREACH - SECURITY SYSTEMS OFFLINE]");
+		CPrintToChatAll("{green}[CONTAINMENT BREACH - SECURITY SYSTEMS DESTROYED]");
 	}
 	else
 	{
 		NPCTalkMessage(npc.index, "Termination failed.... report.. status.. {green}relay complete.");
-		CPrintToChatAll("{green}[SECURITY UNIT DESTROYED]");
+		CPrintToChatAll("{green}[SECURITY SYSTEMS OFFLINE]");
 	}
 }
