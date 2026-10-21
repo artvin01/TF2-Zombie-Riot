@@ -228,12 +228,12 @@ static void Frame_AnnounceSpawn(int ref)
 	if (npc.m_bIsLabVersion)
 	{
 		CPrintToChatAll("{red}[XENO LAB SECURITY PROTOCOL ACTIVATED]");
-		NPCTalkMessage(npc.index, "INTRUDERS DETECTED. INITIATING CONTAINMENT PROCEDURES.");
+		NPCTalkMessage(npc.index, "INTRUDERS DETECTED. Initiating containment procedures.");
 	}
 	else
 	{
 		CPrintToChatAll("{red}[XENO SECURITY UNIT DEPLOYED]");
-		NPCTalkMessage(npc.index, "Target acquired. Commencing elimination protocol.");
+		NPCTalkMessage(npc.index, "Target acquired. Commencing infection protocol.");
 	}
 }
 
@@ -244,7 +244,7 @@ static void NPCTalkMessage(int iNPC, const char[] message)
 	XenoLabSecurity npc = view_as<XenoLabSecurity>(iNPC);
 	if (npc.m_bIsLabVersion)
 	{
-		color = "crimson";
+		color = "green";
 	}
 	else
 	{
