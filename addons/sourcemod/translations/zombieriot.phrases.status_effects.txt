@@ -1460,9 +1460,9 @@
 	}
 	"Tonic Affliction Desc"
 	{
-		"en"	"Increases attack/reload speed & healrate by 100％\n{crimson}Decreases damage dealt by 40％"
+		"en"	"Increases attack/reload speed & healrate by 60％\n{crimson}Decreases damage dealt by 15％"
 		"it"	"Aumenta la velocità di attacco/ricarica e la velocità di guarigione del 100％\n{crimson}Diminuisce i danni inflitti del 40％"
-		"ko"	"공격 속도, 재장전 속도 및 치유 속도를 100％ 증가시킵니다.\n{crimson}공격 피해량은 40％ 감소합니다."
+		"ko"	"공격 속도, 재장전 속도 및 치유 속도를 60％ 증가시킵니다.\n{crimson}공격 피해량은 15％ 감소합니다."
 	}
 	"Tonic Affliction Hide"
 	{
@@ -2226,7 +2226,7 @@
 		"en"	"Increases damage by 10％\nBoosts attack/reload speed & healrate by 33％ and mana is continuously restored."
 		"es"	"Aumenta el daño hecho en un 10％.\nAumenta la velocidad de ataque/recarga y curacion medica en un 33％.\nOtorga regeneracion continua de mana."
 		"it"	"Aumenta i danni del 10％ e aumenta la velocità di attacco/ricarica e la velocità di guarigione del 33％ \nil mana viene ripristinato continuamente."
-		"ko"	"피해량이 10％ 증가합니다.\n공격 속도, 재장전 속도 및 치유 속도가 33％ 증가하며 마나가 지속적으로 회복됩니다\n레이드 모드일 경우 우버 효과의 지속 시간이 35％ 감소합니다."
+		"ko"	"피해량이 10％ 증가합니다.\n공격 속도, 재장전 속도 및 치유 속도가 33％ 증가하며 마나가 지속적으로 회복됩니다."
 	}
 	"Weapon Clocking"
 	{
