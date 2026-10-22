@@ -5016,7 +5016,7 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	
-	data.AttackspeedBuff			= (1.0 / 1.75);
+	data.AttackspeedBuff			= (1.0 / 1.60);
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);
