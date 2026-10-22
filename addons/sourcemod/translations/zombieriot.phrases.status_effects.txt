@@ -2221,10 +2221,10 @@
 	}
 	"Weapon Overclock Desc"
 	{
-		"en"	"Increases damage by 40％\nBoosts attack/reload speed & healrate by 33％ and mana is continuously restored.\n-During raids, uber duration is cut by 35％"
-		"es"	"Aumenta el daño hecho en un 40％.\nAumenta la velocidad de ataque/recarga y curacion medica en un 33％.\nOtorga regeneracion continua de mana."
-		"it"	"Aumenta i danni del 40％ e aumenta la velocità di attacco/ricarica e la velocità di guarigione del 33％ \nil mana viene ripristinato continuamente."
-		"ko"	"피해량이 40％ 증가합니다.\n공격 속도, 재장전 속도 및 치유 속도가 33％ 증가하며 마나가 지속적으로 회복됩니다\n레이드 모드일 경우 우버 효과의 지속 시간이 35％ 감소합니다."
+		"en"	"Increases damage by 10％\nBoosts attack/reload speed & healrate by 33％ and mana is continuously restored."
+		"es"	"Aumenta el daño hecho en un 10％.\nAumenta la velocidad de ataque/recarga y curacion medica en un 33％.\nOtorga regeneracion continua de mana."
+		"it"	"Aumenta i danni del 10％ e aumenta la velocità di attacco/ricarica e la velocità di guarigione del 33％ \nil mana viene ripristinato continuamente."
+		"ko"	"피해량이 10％ 증가합니다.\n공격 속도, 재장전 속도 및 치유 속도가 33％ 증가하며 마나가 지속적으로 회복됩니다\n레이드 모드일 경우 우버 효과의 지속 시간이 35％ 감소합니다."
 	}
 	"Weapon Clocking"
 	{
