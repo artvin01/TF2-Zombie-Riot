@@ -1388,31 +1388,24 @@ bool Status_Effects_GrantAttackspeedBonus(int entity, bool HasBuff, float BuffAm
 
 static float BuffToASPD(float buff)
 {
-	return 1.0 - (1.0 / buff);
+	if(buff >= 1.0)	// Slower
+		return 1.0 - buff;
+	
+	return (1.0 / buff) - 1.0;
 }
 
 static float ASPDToBuff(float aspd)
 {
-	if(aspd <= -1.0)
-		ThrowError("We weren't ready for this")
-	
-	return 1.0 / (1.0 + aspd);
+	if(aspd <= 0.0)	// Slower
+		return 1.0 - aspd;
+
+	return (1.0 / (aspd + 1.0));
 }
 
 static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBuff, float BuffOriginal, int BuffCheckerID, int BuffCheckerIDNPC, int FlagAttackspeedLogicInternal)
-{	
-	bool IsCheatMode = true;
-
-	
-#if defined ZR
-	IsCheatMode = CvarInfiniteCash.BoolValue
-#endif
-	if(IsCheatMode && ((type == 3) || (type == 1 && BuffOriginal < 1.0)))
+{
+	if(type == 1)
 	{
-		// Note this will break if two buffs share the same slot but have
-		// a buffed attackspeed and the other a nerfed attackspeed
-		// (The if statement above for "type == 1 && BuffOriginal < 1.0")
-
 		float ASPDOriginal = BuffToASPD(BuffOriginal);
 
 		int i, weapon;
@@ -1554,7 +1547,7 @@ static void Status_effects_DoAttackspeedLogic(int entity, int type, bool GrantBu
 			}
 		}
 	}
-	else if(type == 1)
+	else if(type == 3)
 	{
 		int i, weapon;
 		while(TF2_GetItem(entity, weapon, i))
@@ -4299,7 +4292,7 @@ void StatusEffects_SupportWeapons()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
-	data.DamageDealMulti			= 0.4;
+	data.DamageDealMulti			= 0.1;
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
@@ -5003,7 +4996,7 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
-	data.DamageDealMulti			= 0.7;
+	data.DamageDealMulti			= 0.85;
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = false;
@@ -5023,7 +5016,7 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	
-	data.AttackspeedBuff			= (1.0 / 2.0);
+	data.AttackspeedBuff			= (1.0 / 1.60);
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);

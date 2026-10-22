@@ -1892,14 +1892,16 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 		}
 	}
 	else
+#endif
 	{
 		if(f_HudCooldownAntiSpam[attacker] >= GetGameTime())
 			return false;
 		
+#if defined ZR
 		f_CooldownForHurtHud_Ally[attacker] = GetGameTime() + 0.4;	
+#endif
 		f_HudCooldownAntiSpam[attacker] = GetGameTime() + 0.2;		
 	}
-#endif
 	SetGlobalTransTarget(attacker);
 
 	int Health = GetEntProp(victim, Prop_Data, "m_iHealth");
