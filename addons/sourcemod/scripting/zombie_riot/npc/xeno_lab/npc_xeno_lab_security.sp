@@ -410,7 +410,7 @@ public Action Timer_SecurityInfectionBlast(Handle timer, DataPack pack)
 	{
 		if(npc.Anger)
 		{
-			switch(GetRandomInt(1, 1))
+			switch(GetRandomInt(1, 2))
 			{
 				case 1:
 				{
@@ -418,7 +418,7 @@ public Action Timer_SecurityInfectionBlast(Handle timer, DataPack pack)
 				}
 				case 2:
 				{
-					CPrintToChatAll("{green}Xeno Lab Security{default}: Enhanced protocols actived. Maximum containment.");
+					CPrintToChatAll("{green}Xeno Lab Security{default}: Infection potency maximized. Blasting non Xenos.");
 				}
 			}
 		}
@@ -432,7 +432,7 @@ public Action Timer_SecurityInfectionBlast(Handle timer, DataPack pack)
 				}
 				case 2:
 				{
-					CPrintToChatAll("{green}Xeno Lab Security{default}: Infection protocol deployed.");
+					CPrintToChatAll("{green}Xeno Lab Security{default}: Area denial protocol deployed.");
 				}
 			}
 		}
@@ -449,7 +449,7 @@ public Action Timer_SecurityInfectionBlast(Handle timer, DataPack pack)
 				}
 				case 2:
 				{
-					CPrintToChatAll("{green}Xeno Security{default}: Enhanced combat mode engaged.");
+					CPrintToChatAll("{green}Xeno Security{default}: Enhanced infection mode engaged.");
 				}
 			}
 		}
@@ -463,7 +463,7 @@ public Action Timer_SecurityInfectionBlast(Handle timer, DataPack pack)
 				}
 				case 2:
 				{
-					CPrintToChatAll("{green}Xeno Security{default}: Area denial protocol active.");
+					CPrintToChatAll("{green}Xeno Security{default}: Infection protocol active.");
 				}
 			}
 		}
