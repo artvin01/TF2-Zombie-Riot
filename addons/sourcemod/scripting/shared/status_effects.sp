@@ -4292,7 +4292,7 @@ void StatusEffects_SupportWeapons()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), "");
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
-	data.DamageDealMulti			= 0.4;
+	data.DamageDealMulti			= 0.1;
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
@@ -4996,7 +4996,7 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	strcopy(data.AboveEnemyDisplay, sizeof(data.AboveEnemyDisplay), ""); //dont display above head, so empty
 	//-1.0 means unused
 	data.DamageTakenMulti 			= -1.0;
-	data.DamageDealMulti			= 0.7;
+	data.DamageDealMulti			= 0.85;
 	data.MovementspeedModif			= -1.0;
 	data.Positive 					= false;
 	data.ShouldScaleWithPlayerCount = false;
@@ -5016,7 +5016,7 @@ void StatusEffects_WeaponSpecific_VisualiseOnly()
 	data.Positive 					= true;
 	data.ShouldScaleWithPlayerCount = false;
 	
-	data.AttackspeedBuff			= (1.0 / 2.0);
+	data.AttackspeedBuff			= (1.0 / 1.75);
 	data.Slot						= 0; //0 means ignored
 	data.SlotPriority				= 0; //if its higher, then the lower version is entirely ignored.
 	StatusEffect_AddGlobal(data);

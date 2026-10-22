@@ -461,18 +461,18 @@ static void DoMultiScalingTest(int InPutPlayer, int InPutRebel, float OutPut[9])
 	if(TmpePlayerCountBuffScaling > 1.0)
 		TmpePlayerCountBuffScaling = 1.0;
 	
-	//Shouldnt be lower then 0.25
-	if(TmpePlayerCountBuffScaling < 0.25)
-		TmpePlayerCountBuffScaling = 0.25;
+	//Shouldnt be lower then 0.35
+	if(TmpePlayerCountBuffScaling < 0.35)
+		TmpePlayerCountBuffScaling = 0.35;
 	OutPut[6]=TmpePlayerCountBuffScaling;
 
 	float TmpePlayerCountBuffAttackspeedScaling = 6.0 / playercount;
 	if(TmpePlayerCountBuffAttackspeedScaling > 1.0)
 		TmpePlayerCountBuffAttackspeedScaling = 1.0;
 	
-	//Shouldnt be lower then 0.5
-	if(TmpePlayerCountBuffAttackspeedScaling < 0.5)
-		TmpePlayerCountBuffAttackspeedScaling = 0.5;
+	//Shouldnt be lower then 0.65
+	if(TmpePlayerCountBuffAttackspeedScaling < 0.65)
+		TmpePlayerCountBuffAttackspeedScaling = 0.65;
 	OutPut[7]=TmpePlayerCountBuffAttackspeedScaling;
 
 	float TmpePlayerCountResBuffScaling = (1.0 - (playercount / 48.0)) + 0.1;
