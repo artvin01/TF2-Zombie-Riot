@@ -1939,13 +1939,12 @@
 		"en"	"While fighting nothing there you gain 2x ego duration and take 12 flat less damage\nYou also obtain this while having ''E.G.O. Mimicry Shell''"
 		"ko"	"'아무 것도 없는'과 전투 중 E.G.O. 발현 지속 시간이 2배로 증가, 피해를 고정적으로 12만큼 덜 받습니다.\n''E.G.O. 미미크리 껍데기''를 장착하는 동안에도 이 효과를 받습니다."
 	}
-	"Grigoris Special Antidote Desc"
+	"Grigori's Special Antidote Desc"
 	{
-		"en"	"You get an extra 350+ HP, and get 4％ dmg resistance to all sources."
+		"en"	"-Gain +350HP\n-Gain 4％ resistance to all sources"
 		"ko"	"-최대 체력 +350\n-모든 피해 저항력 +4％"
 		"it"	"Aumento della quantità di armatura per uso e tetto massimo. +150 HP\nFornisce una resistenza passiva in caso di rottura dell'armatura e aumenta con i potenziamenti dell'armatura."
 	}
-	
 	"Healthy Apple from Bob Desc"
 	{
 		"en"	"-Gain +1500 HP"
@@ -5973,7 +5972,7 @@
 	"Opera of the Mute Desc"
 	{
 
-		"ko"	"-마나가 30％와 70％ 사이라면, 피해량이 40％ 증가합니다.\n-마나를 소모하거나 획득하면, 최대 마나의 50％까지 보호막을 획득합니다.\n-적중 시, 적에게 쇠약 원소 피해를 부여합니다.\n-5번째 공격마다 증가된 쇠약 원소 피해와 함께 12번의 피해를 한 번에 가합니다.\n-다른 마나 시스템 사용"
+		"ko"	"-마나가 30％와 70％ 사이라면, 피해량이 40％ 증가합니다.\n-마나를 소모하거나 회복하면, 최대 마나의 50％까지 보호막을 획득합니다.\n-적중 시, 적에게 쇠약 원소 피해를 부여합니다.\n-5번째 공격마다 증가된 쇠약 원소 피해와 함께 12번의 피해를 한 번에 가합니다.\n-마나 시스템 변화\n-전투 상태가 오래 지속될 시 보호막 획득량 감소"
 		"en"	"-Being between 30％ and 70％ mana gives 40％ more damage\n-Consuming or gaining mana gives shield upto 50％ of your max mana\n-attacking enemies gives necrosis\n-every 5th hit deals 12 hits at once with increased necrosis damage\n-Alters mana logic\n-halved shield gain in battle too long"
 	}
 	"Opera of the Mute Desc 2"
