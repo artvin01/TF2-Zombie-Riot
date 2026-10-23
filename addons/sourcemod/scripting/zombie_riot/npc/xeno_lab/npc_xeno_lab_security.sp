@@ -6,7 +6,7 @@
 
 #define SECURITY_MODEL "models/player/heavy.mdl"
 #define SECURITY_FAKE_MODEL "models/bots/heavy/bot_heavy.mdl"
-#define SECURITY_INFECTION_RANGE 300.0
+#define SECURITY_INFECTION_RANGE 350.0
 #define SECURITY_ENRAGE_THRESHOLD 0.5 
 
 static const char g_DeathSounds[][] =
