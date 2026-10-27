@@ -5746,7 +5746,7 @@
 	}
 	"Vesta Survival Desc"
 	{
-		"en" 	"A group of mercs invades a Vestan outpost. This outpost is led by a Chemical Platoon leader."
+		"en" 	"During Vesta's war against Ziberia. Ziberia sends out a group of their top guerrilla to hold off this Vestan Outpost, which is led by their Chemical Platoon leader."
 		"ko" 	"한 용병 조직이 베스타 전초기지를 습격합니다: 이 전초기지는 화학 부대 리더에 의해 이끌어지고 있습니다."
 	}
 	"Vesta Raid Desc"
