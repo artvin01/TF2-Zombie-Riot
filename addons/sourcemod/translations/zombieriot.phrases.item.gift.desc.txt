@@ -4041,7 +4041,7 @@
 	}
 	"Avangard's Processing Core-B Desc"
 	{
-		"en"		"As we head to meet up with Bob the First to deal with chaos problems. \nWe hear a large explosion at a Vestan outpost. \nFrom the sky, this drops down in front of us, and we take it with us.\nMaybe we'll have some use for it"
+		"en"		"As we head to meet up with Bob the First to deal with chaos problems. \nWe hear a large explosion at a Vestan outpost. \nFrom the sky, this drops down in front of us, and we take it with us.\nMaybe we'll have some use for it \nWill be changes soon to fit the current lore."
 		"ko"		"혼돈 사태를 해결하기 위해 밥 1세와 합류하러 이동하는 중, 베스타 전초기지에서 커다란 폭발이 일어납니다.\n하늘에서 이 무언가가 떨어졌고, 그것을 가져가기로 합니다. 어쩌면 우리가 활용할 수 있을지도요."
 	}
 	"Ancient Demon Horn"
