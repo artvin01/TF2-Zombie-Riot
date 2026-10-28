@@ -3,7 +3,7 @@ import vdf
 import os
 import subprocess
 import json
-from gamedata import modelmapping # type: ignore[w]
+from gamedata import modelmapping
 from typing import Any
 type WeaponData = dict[str,str]
 
@@ -22,7 +22,7 @@ def write(filename:str, val:str):
         f.write(str(val))
     return True
 
-CFG_WEAPONS: dict[str,Any] = vdf.loads(read("./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/weapons.cfg"))["Weapons"] # type: ignore[w]
+CFG_WEAPONS: dict[str,Any] = vdf.loads(read("./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/weapons.cfg"))["Weapons"]
 
 DECOMPILED_MDLS:list[str]=[]
 def decompile_model(path:str):
@@ -101,6 +101,6 @@ def item_block(data:dict[str,Any]):
             elif item[0].isupper() and itm.is_category: # unneeded data is always lowercase...
                 item_block(item_data)
 
-for item_category in CFG_WEAPONS: # type: ignore[w]
-    if GenericItem(CFG_WEAPONS[item_category]).is_item_category: # type: ignore[w]
-        item_block(CFG_WEAPONS[item_category]) # type: ignore[w]
+for item_category in CFG_WEAPONS:
+    if GenericItem(CFG_WEAPONS[item_category]).is_item_category:
+        item_block(CFG_WEAPONS[item_category])

@@ -5,8 +5,8 @@ import vdf
 from collections import defaultdict
 from typing import Any
 
-SKILLTREE_CFG: dict[str,Any] = vdf.loads(util.read("./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/skilltree.cfg")) # type: ignore[w]
-PARSECFG = util.load_yaml("./config/skilltree.yml") # type: ignore[w]
+SKILLTREE_CFG: dict[str,Any] = vdf.loads(util.read("./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/skilltree.cfg"))
+PARSECFG = util.load_yaml("./config/skilltree.yml")
 
 """
    	"name"		"Luck Up 1"	            // Name

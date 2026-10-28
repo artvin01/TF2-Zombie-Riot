@@ -597,7 +597,7 @@ def parse_common(cfg: dict[str, Any], filename: str, html_mapsets: str):
             # Waveset-specific typo fixes (or just removing lines that break the parser)
             wave_cfg = unique_enemy_delays(wave_cfg)
 
-            WAVESET_DATA: dict[str,Any] = vdf.loads(wave_cfg)["Waves"] # type: ignore[w]
+            WAVESET_DATA: dict[str,Any] = vdf.loads(wave_cfg)["Waves"]
 
             if "desc" in wavesets[waveset_name]:
                 waveset_desc_key = wavesets[waveset_name]["desc"]
@@ -607,7 +607,7 @@ def parse_common(cfg: dict[str, Any], filename: str, html_mapsets: str):
             else:
                 desc = ""
             util.debug(f"Adding waveset {waveset_name} to {filename}","wavesets","OKCYAN")
-            mn = parse_waveset(waveset_file, WAVESET_DATA, util.absolute_link(filename,waveset_name), waveset_name, desc) # type: ignore[w] (dict[str,Any] is passed -> argument type partially unknown warning)
+            mn = parse_waveset(waveset_file, WAVESET_DATA, util.absolute_link(filename,waveset_name), waveset_name, desc)
             mn["name"] = waveset_name
             wavesets_json[waveset_name] = mn
     else:
@@ -627,7 +627,7 @@ def parse_common(cfg: dict[str, Any], filename: str, html_mapsets: str):
 
 #### ZR: Special Maps ####
 def parse_betting(name: str, data_raw: str, html_mapsets:str) -> tuple[str, str]: # zr_bettingwars
-    data: dict[str,Any] = vdf.loads(unique_enemy_delays(data_raw)) # type: ignore[w]
+    data: dict[str,Any] = vdf.loads(unique_enemy_delays(data_raw))
 
     # Generate a table out of data
     bettingdata = "<table>\n<tr>\n<th>Budget</th>\n<th>Count</th>\n<th>NPC</th>\n</tr>\n"
@@ -778,10 +778,10 @@ def parse_rogue_stage(info_html: str, snameraw: str, sdata: dict[str, Any], name
         # waveset viewer link
         wave_cfg = util.read(f"./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/{sdata["wave"]}.cfg")
         wave_cfg = unique_enemy_delays(wave_cfg)
-        WAVESET_DATA: dict[str,Any] = vdf.loads(wave_cfg)["Waves"] # type: ignore[w]
+        WAVESET_DATA: dict[str,Any] = vdf.loads(wave_cfg)["Waves"]
         absl = util.absolute_link(name,floor_name+snameraw)
         fullname = f"Rogue {rogue_num} - {floor_name} - {sname}"
-        output = parse_waveset(sdata["wave"], WAVESET_DATA, absl, fullname, "") # type: ignore[w]
+        output = parse_waveset(sdata["wave"], WAVESET_DATA, absl, fullname, "")
         output["name"]=fullname
         util.write(f"gh-pages/wavesets/{absl}.json",json.dumps(output,indent=2))
         context = {
@@ -819,10 +819,10 @@ def parse_const_stage(info_html: str, cfgfile: str, keyonwin: str, attacknum: st
     # waveset viewer link
     wave_cfg = util.read(f"./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/{cfgfile}.cfg")
     wave_cfg = unique_enemy_delays(wave_cfg)
-    WAVESET_DATA: dict[str,Any] = vdf.loads(wave_cfg)["Waves"] # type: ignore[w]
+    WAVESET_DATA: dict[str,Any] = vdf.loads(wave_cfg)["Waves"]
     absl = util.absolute_link(f"const{constnum}",attacknum+cfgfile)
     fullname = f"Construction {constnum} - Attack {cfgfile.replace("construction/","").replace("construction_rift/","")}" # first part of cfgfile name is attack num itself
-    output = parse_waveset(cfgfile, WAVESET_DATA, absl, fullname, "") # type: ignore[w]
+    output = parse_waveset(cfgfile, WAVESET_DATA, absl, fullname, "")
     output["name"]=fullname
     util.write(f"gh-pages/wavesets/{absl}.json",json.dumps(output,indent=2))
     context = {

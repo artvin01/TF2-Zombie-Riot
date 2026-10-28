@@ -72,13 +72,13 @@ def generate_weapon_icon(weapon_data: WeaponData, weapon_name:str, pure_filename
 
     # Convert SMD => OBJ
     #  # <class 'contextlib._GeneratorContextManager'> must have storage info
-    with pyassimp.load(smd_path) as assimp_scene: # type: ignore[w]
-        pyassimp.export(assimp_scene, f"{prefix}decompiled/{pure_filename}_{mdl_bodygroup}.obj", "obj") # type: ignore[w]
+    with pyassimp.load(smd_path) as assimp_scene:
+        pyassimp.export(assimp_scene, f"{prefix}decompiled/{pure_filename}_{mdl_bodygroup}.obj", "obj")
 
     # Generate thumbnail using F3D
     util.log(f"Generating thumbnail of {prefix}decompiled/{pure_filename}_{mdl_bodygroup}.obj")
     eng.scene.clear()
-    eng.scene.add(f"{prefix}decompiled/{pure_filename}_{mdl_bodygroup}.obj") # type: ignore[w]
+    eng.scene.add(f"{prefix}decompiled/{pure_filename}_{mdl_bodygroup}.obj")
     eng.interactor.trigger_command("set_camera isometric")
     eng.window.render_to_image(no_background=True).save(f"./gh-pages/{prefix}icons/{pure_filename}_{mdl_bodygroup}.png")
     return f"{prefix}icons/{pure_filename}_{mdl_bodygroup}.png"
@@ -145,10 +145,10 @@ def shared_parse_weapon_icon(weapon_data: WeaponData, weapon_name:str, pap_key:s
     return icon
 
 # CONFIG ========================================================================
-CFG_WEAPONS: dict[str,Any] = vdf.loads(util.read("./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/weapons.cfg"))["Weapons"] # type: ignore[w]
+CFG_WEAPONS: dict[str,Any] = vdf.loads(util.read("./TF2-Zombie-Riot/addons/sourcemod/configs/zombie_riot/weapons.cfg"))["Weapons"]
 COMPLETE_ITEM_MAP: dict[str,dict[str,str]] = json.loads(util.read("gh-pages/data/complete_item_map.json"))
 # Item blacklist for hidden items that aren't indicated as hidden
-ITEM_BLACKLIST = util.load_yaml("./config/item_blacklist.yml") # type: ignore[w]
+ITEM_BLACKLIST = util.load_yaml("./config/item_blacklist.yml")
 FACTION_MAPPINGS = {
     "1": "Expidonsa",
     "2": "Grunwald",
@@ -159,31 +159,31 @@ FACTION_MAPPINGS = {
 ARCHETYPE_MAPPINGS = defaultdict(int, {
     "0": "",
 
-    "1": "Artillery",	# 1 Explosives, Heavy AOE Focus
-    "2": "Deadeye",	# 2 Sniper, Slow/High Damage at a Range
-    "3": "Charger",	# 3 Shotgun, Slow Fire Rate/Short Range
-    "4": "Tactician",	# 4 Pistol/SMG, Fast Fire Rate/Medium Range
-    "5": "Hunter",	# 5 Stickybomb, Trap Focus
+    "1": "Artillery",       # 1 Explosives, Heavy AOE Focus
+    "2": "Deadeye",         # 2 Sniper, Slow/High Damage at a Range
+    "3": "Charger",         # 3 Shotgun, Slow Fire Rate/Short Range
+    "4": "Tactician",       # 4 Pistol/SMG, Fast Fire Rate/Medium Range
+    "5": "Hunter",          # 5 Stickybomb, Trap Focus
 
-    "6": "Drone Magic",	# 6 High lifetime projectiles or summoning, Skulls/Drone/Nerco
-    "7": "Splash Magic",	# 7 Heavy AOE Focus
-    "8": "Rapid Magic",	# 8 High Fire Rate
-    "9": "Power Magic",	# 9 Low Fire Rate
-    "10": "Hexing Magic",	# 10 Elemental/Debuff Focus
+    "6": "Drone Magic",     # 6 High lifetime projectiles or summoning, Skulls/Drone/Nerco
+    "7": "Splash Magic",    # 7 Heavy AOE Focus
+    "8": "Rapid Magic",     # 8 High Fire Rate
+    "9": "Power Magic",     # 9 Low Fire Rate
+    "10": "Hexing Magic",   # 10 Elemental/Debuff Focus
 
-    "11": "Ambusher",	# 11 Knifes, Focus on hitting correct timing
-    "12": "Duelist",	# 12 Survival focus
-    "13": "Defender",	# 13 Tank focus
-    "14": "Lord",		# 14 Long range focus
-    "15": "Crusher",	# 15 AOE focus
-    "16": "Combatant",	# 16 DPS focus
+    "11": "Ambusher",       # 11 Knifes, Focus on hitting correct timing
+    "12": "Duelist",        # 12 Survival focus
+    "13": "Defender",       # 13 Tank focus
+    "14": "Lord",   		# 14 Long range focus
+    "15": "Crusher",    	# 15 AOE focus
+    "16": "Combatant",  	# 16 DPS focus
 
-    "17": "Medical",	# 17 Healing focus
-    "18": "Mechanic",	# 18 Building focus
-    "19": "Buffer",	# 19 Buffing focus
-    "20": "Debuffer",	# 20 Debuff focus
+    "17": "Medical",    	# 17 Healing focus
+    "18": "Mechanic",   	# 18 Building focus
+    "19": "Buffer", 	    # 19 Buffing focus
+    "20": "Debuffer",	    # 20 Debuff focus
 
-    "21": "Fallen Warrior"# 21 Special
+    "21": "Fallen Warrior"  # 21 Special
 })
 
 # MAIN ========================================================================
@@ -234,7 +234,7 @@ class Weapon:
                 if pd.valid:
                     if pd.pappaths!="0":
                         pd.subweapons = item_block(pd, idx+int(pd.papskip), defaultdict(list))
-                    output["items"].append(pd) # type: ignore[w]
+                    output["items"].append(pd)
             return output
 
         init_pap_paths = defaultdict(int,self._WEAPON_DATA)["pappaths"] or 1
@@ -384,7 +384,7 @@ def item_block(key:str, data:dict[str,Any], output:dict[str,Any], type_override:
             elif itm.is_weapon_kit:
                 kit = Weapon(item,item_data)
                 if (override_keys := type_override.split(",")):
-                    kit.type = override_keys[0] # type: ignore[w]
+                    kit.type = override_keys[0]
                 kit.add_global_tags()
                 kit.subweapons["name"] = "Kit Items"
                 kit.subweapons["items"] = []
@@ -415,11 +415,11 @@ def item_block(key:str, data:dict[str,Any], output:dict[str,Any], type_override:
 
 WEAPONSDATA = {}
 type_override = ""
-for item_category in CFG_WEAPONS.keys(): # type: ignore[w]
-    if GenericItem(CFG_WEAPONS[item_category]).is_item_category: # type: ignore[w]
+for item_category in CFG_WEAPONS.keys():
+    if GenericItem(CFG_WEAPONS[item_category]).is_item_category:
         if item_category == "Upgrades":
             type_override = "upgrade"
-        output = item_block(item_category, CFG_WEAPONS[item_category], defaultdict(list), type_override) # type: ignore[w]
+        output = item_block(item_category, CFG_WEAPONS[item_category], defaultdict(list), type_override)
         type_override = ""
         if output: # no empty categories
             WEAPONSDATA[item_category] = output

@@ -45,7 +45,7 @@ def music_modal(wave_entry_data: str | dict[str,str]) -> dict[str,str|bool] | No
         except ValueError:
             pass
     else:
-        wave_entry_data = defaultdict(str,wave_entry_data) # type: ignore[w]
+        wave_entry_data = defaultdict(str,wave_entry_data)
 
         title = wave_entry_data["file"].replace("#","")
         if wave_entry_data["name"] != "":
@@ -129,7 +129,7 @@ def vtftoimg(vtf_path: str, png_path: str) -> str:
     -> <img src="{url}" alt="{alt}"/>
     """
     if not os.path.isfile("gh-pages/"+png_path): # if file already made
-        vtf2img.Parser(vtf_path).get_image().save("gh-pages/"+png_path)  # type: ignore[w]
+        vtf2img.Parser(vtf_path).get_image().save("gh-pages/"+png_path) 
     return f"./{png_path}"
 
 
@@ -319,7 +319,7 @@ def write(filename:str, val:str):
 yaml=YAML(typ='safe')
 def load_yaml(filename: str) -> dict[Any] | list[Any]:
     with open(filename, 'r') as file:
-        return yaml.load(file) # type: ignore[w]
+        return yaml.load(file)
 
 # --------------------------- PHRASES ---------------------------
 

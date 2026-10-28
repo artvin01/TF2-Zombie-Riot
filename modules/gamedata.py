@@ -7,7 +7,7 @@ from typing import Any
 def fetch_game_file(file: str) -> dict[Any,Any]:
     response = requests.get(f'https://raw.githubusercontent.com/SteamDatabase/GameTracking-TF2/master/{file}', timeout=10)
     if response.status_code == 200:
-        return vdf.loads(response.text.replace('\x00', '')) # type: ignore[w]
+        return vdf.loads(response.text.replace('\x00', ''))
     else:
         raise Exception(f"Failed to get {file}.")
 items_game=fetch_game_file("tf/scripts/items/items_game.txt")["items_game"]
@@ -18,7 +18,7 @@ for key, data in items_game["items"].items():
     data=defaultdict(str,data)
     if len(data["model_player"])>0:
         modelmapping[data["item_class"]] = data["model_player"]
-        modelmapping[data["item_type_name"].strip("#").lower()] = data["model_player"] # Three-Rune Sword fix because someone named it tf_weapon_bat instead of tf_weapon_sword in items_game.txt:items asdbgykuasdugvbiy
+        modelmapping[data["item_type_name"].strip("#").lower()] = data["model_player"] # Three-Rune Sword fix because someone named it tf_weapon_bat instead of tf_weapon_sword in items_game.txt:items
     if len(data["prefab"])>0 and data["prefab"]!="valve":
         prefab_data = items_game["prefabs"][data["prefab"].split(" ")[-1]]
         if "model_player" in prefab_data:

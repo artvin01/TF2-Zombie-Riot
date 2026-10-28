@@ -25,6 +25,7 @@ paths = {
 }
 exclude = [
     "venv",
+    ".venv",
     "LICENSE",
     "Developer Commentary - Laboratories.txt",
     "vehicles", # temp
@@ -37,7 +38,7 @@ for path,filter_ in paths.items():
         if not any(x in str(CFG) for x in exclude) and "/" in str(CFG):
             try:
                 pre,c = "✓","OKGREEN"
-                vdf.loads(read(CFG)) # type: ignore[w]
+                vdf.loads(read(CFG))
                 ex = ""
             except SyntaxError:
                 pre,c = "✗","FAIL"
