@@ -6,7 +6,7 @@
 
 #define SECURITY_MODEL "models/player/heavy.mdl"
 #define SECURITY_FAKE_MODEL "models/bots/heavy/bot_heavy.mdl"
-#define SECURITY_INFECTION_RANGE 300.0
+#define SECURITY_INFECTION_RANGE 350.0
 #define SECURITY_ENRAGE_THRESHOLD 0.5 
 
 static const char g_DeathSounds[][] =
@@ -58,7 +58,7 @@ void XenoLabSecurity_OnMapStart_NPC()
 	strcopy(data.Plugin, sizeof(data.Plugin), "npc_xeno_lab_security");
 	strcopy(data.Icon, sizeof(data.Icon), "heavy_champ_vac_blast");
 	data.IconCustom = true;
-	data.Flags = MVM_CLASS_FLAG_NORMAL|MVM_CLASS_FLAG_MINIBOSS;
+	data.Flags = MVM_CLASS_FLAG_MINIBOSS;
 	data.Category = Type_Xeno;  // Xeno category for super boss
 	data.Func = ClotSummon;
 	data.Precache = ClotPrecache;
@@ -155,6 +155,7 @@ methodmap XenoLabSecurity < CClotBody
 		func_NPCDeath[npc.index] = XenoLabSecurity_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = XenoLabSecurity_OnTakeDamage;
 		func_NPCThink[npc.index] = XenoLabSecurity_ClotThink;
+		fl_TotalArmor[npc.index] = 0.9;
 		
 		npc.m_flSpeed = 225.0;
 		npc.m_flGetClosestTargetTime = 0.0;
@@ -170,7 +171,7 @@ methodmap XenoLabSecurity < CClotBody
 		npc.m_iOverlordComboAttack = 0;
 		
 		// Infection ability timer
-		npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 12.0;
+		npc.m_flNextRangedSpecialAttack = GetGameTime(npc.index) + 10.0;
 		
 		if(!IsValidEntity(RaidBossActive))
 		{
@@ -228,12 +229,12 @@ static void Frame_AnnounceSpawn(int ref)
 	if (npc.m_bIsLabVersion)
 	{
 		CPrintToChatAll("{red}[XENO LAB SECURITY PROTOCOL ACTIVATED]");
-		NPCTalkMessage(npc.index, "INTRUDERS DETECTED. INITIATING CONTAINMENT PROCEDURES.");
+		NPCTalkMessage(npc.index, "INTRUDERS DETECTED. Initiating containment procedures.");
 	}
 	else
 	{
-		CPrintToChatAll("{red}[XENO SECURITY UNIT DEPLOYED]");
-		NPCTalkMessage(npc.index, "Target acquired. Commencing elimination protocol.");
+		CPrintToChatAll("{red}[XENO SECURITY DEPLOYED]");
+		NPCTalkMessage(npc.index, "Target acquired. Commencing infection protocol.");
 	}
 }
 
@@ -244,7 +245,7 @@ static void NPCTalkMessage(int iNPC, const char[] message)
 	XenoLabSecurity npc = view_as<XenoLabSecurity>(iNPC);
 	if (npc.m_bIsLabVersion)
 	{
-		color = "crimson";
+		color = "green";
 	}
 	else
 	{
@@ -370,7 +371,7 @@ void Security_InfectionProtocol(XenoLabSecurity npc, float gameTime)
 	pack.WriteFloat(range);
 	
 	// next infection time based on lab version enrage state
-	float cooldown = (npc.m_bIsLabVersion && npc.Anger) ? 8.0 : 12.0;
+	float cooldown = (npc.m_bIsLabVersion && npc.Anger) ? 7.5 : 10.0;
 	npc.m_flNextRangedSpecialAttack = gameTime + activationDelay + cooldown;
 }
 
@@ -405,27 +406,67 @@ public Action Timer_SecurityInfectionBlast(Handle timer, DataPack pack)
 	TeleportEntity(particle, NULL_VECTOR, ang, NULL_VECTOR);
 	
 	EmitSoundToAll("weapons/cow_mangler_explode.wav", 0, SNDCHAN_AUTO, SNDLEVEL_NORMAL, SND_NOFLAGS, SNDVOL_NORMAL, SNDPITCH_NORMAL, -1, pos);
-	
+
 	if(npc.m_bIsLabVersion)
 	{
 		if(npc.Anger)
 		{
-			CPrintToChatAll("{crimson}Xeno Lab Security{default}: ENHANCED PROTOCOLS ACTIVE. MAXIMUM CONTAINMENT.");
+			switch(GetRandomInt(1, 2))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{green}Xeno Lab Security{default}: Enhanced protocols actived. Maximum containment.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{green}Xeno Lab Security{default}: Infection potency maximized. Blasting non Xenos.");
+				}
+			}
 		}
 		else
 		{
-			CPrintToChatAll("{crimson}Xeno Lab Security{default}: INFECTION PROTOCOL DEPLOYED.");
+			switch(GetRandomInt(1, 2))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{green}Xeno Lab Security{default}: Infection protocol deployed.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{green}Xeno Lab Security{default}: Area denial protocol deployed.");
+				}
+			}
 		}
 	}
 	else
 	{
 		if(npc.Anger)
 		{
-			CPrintToChatAll("{green}Xeno Security{default}: Enhanced combat mode engaged.");
+			switch(GetRandomInt(1, 2))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{green}Xeno Security{default}: Enhanced combat mode engaged.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{green}Xeno Security{default}: Enhanced infection mode engaged.");
+				}
+			}
 		}
 		else
 		{
-			CPrintToChatAll("{green}Xeno Security{default}: Area denial protocol active.");
+			switch(GetRandomInt(1, 2))
+			{
+				case 1:
+				{
+					CPrintToChatAll("{green}Xeno Security{default}: Area denial protocol active.");
+				}
+				case 2:
+				{
+					CPrintToChatAll("{green}Xeno Security{default}: Infection protocol active.");
+				}
+			}
 		}
 	}
 	
@@ -449,7 +490,7 @@ void Security_InfectionHit(int entity, int victim, float damage, int weapon)
 		}
 		else
 		{
-			ShowHudText(victim, -1, "XENO SECURITY UNIT HAS INFECTED YOU!");
+			ShowHudText(victim, -1, "XENO SECURITY HAS INFECTED YOU!");
 		}
 		ClientCommand(victim, "playgamesound items/powerup_pickup_plague_infected.wav");
 		
@@ -585,7 +626,7 @@ void Security_EnterEnrageMode(XenoLabSecurity npc)
 	npc.PlayAngerSound();
 	
 	CPrintToChatAll("{red}[CRITICAL WARNING]");
-	CPrintToChatAll("{crimson}Xeno Lab Security{default}: DAMAGE THRESHOLD EXCEEDED. ACTIVATING EMERGENCY PROTOCOLS.");
+	CPrintToChatAll("{crimson}Xeno Lab Security{default}: Damage threshold exceeded. Activating emergency protocols.");
 	CPrintToChatAll("{crimson}Xeno Lab Security{default}: ALL SAFETY LIMITERS REMOVED.");
 	
 	EmitSoundToAll("weapons/physcannon/energy_bounce2.wav", npc.index, _, 90, _, 0.8);
@@ -614,12 +655,12 @@ public void XenoLabSecurity_NPCDeath(int entity)
 	
 	if(npc.m_bIsLabVersion)
 	{
-		NPCTalkMessage(npc.index, "CRITICAL SYSTEM FAILURE... CONTAINMENT... BREACH...");
-		CPrintToChatAll("{green}[CONTAINMENT BREACH - SECURITY SYSTEMS OFFLINE]");
+		NPCTalkMessage(npc.index, "CRITIcal systEM FAILUre... CONTAINment... breach...");
+		CPrintToChatAll("{green}[CONTAINMENT BREACH - SECURITY SYSTEMS DESTROYED]");
 	}
 	else
 	{
 		NPCTalkMessage(npc.index, "Termination failed.... report.. status.. {green}relay complete.");
-		CPrintToChatAll("{green}[SECURITY UNIT DESTROYED]");
+		CPrintToChatAll("{green}[SECURITY SYSTEMS OFFLINE]");
 	}
 }
