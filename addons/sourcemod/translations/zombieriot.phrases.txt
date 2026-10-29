@@ -4901,7 +4901,7 @@
 		"fr"	"Entrez en combat contre le Moyen-Âge, et leur armure qui leur protège contre les attaques à portée et corps à corps!"
 		"chi"	"对抗中世纪的剑与盾！"
 		"it"	"Combatti contro la mezza età con le loro armature per contrastare gli attacchi in mischia o a distanza!"
-		"ko" 	"알락시오스가 센살과 논의하는 동안, 오시리스와 그의 군단이 훈련을 위해 주력 용병들에게 옵니다. 끝나고 알락시오스가 부활시켜주면 될테니 괜찮겠죠. 밥 2세가 도움을 위해 두 번째 용병 부대도 호출합니다."
+		"ko" 	"알락시오스가 센살과 논의하는 동안, 오시리스와 그의 군단이 훈련을 위해 주력 용병들에게 다가옵니다. 밥 2세가 도움을 위해 두 번째 용병 부대도 호출합니다."
 	}
 	"God Alaxios Wave Desc"
 	{
@@ -4941,7 +4941,7 @@
 		"fr"	"L'infection Dweller attaque avec la Corrosion d'Armure. Guérissez-la avec vos tables d'armure!"
 		"chi"	"海嗣感染将会侵蚀你的盾。"
 		"it"	"L'infezione Dweller è arrivata, gli attacchi di Corrosione dell'Armatura infetteranno la tua armatura, curala con le tabelle dell'armatura!"
-		"ko"	"제노에 감염된 배풍등의 정예병들을 본 후, 그의 전초기지에 남은 병사가 있는지 확인을 하러 갑니다. 그곳엔 드웰러가 된 병사들이 있었고, 내륙을 공격할 준비를 마친 상태였습니다."
+		"ko"	"배풍등의 정예병 잔당을 처리하기 위해 그의 전초기지로 향하게 됩니다. 그곳에서 몇몇을 발견하게 되지만... 드웰러에 감염된 상태였습니다."
 	}
 	"Interitus Desc"
 	{
@@ -5444,8 +5444,8 @@
 	}
 	"Almina Expi Desc"
 	{
-	  "en"	"After the main mercs finish their training, Almina ask the secondary mercs to do more training. Nemal and Silvester are away with Sensal, so they won't be here. So some other Expidonsans volunteer to help."
-	  "ko"	"주요 용병들이 훈련을 마친 후, 알미나가 더 많은 훈련을 위해 보조 용병들을 방문합니다. 네말과 실베스터가 센살과 휴가 중이기에, 다른 몇몇 엑스피돈사인들이 자원하여 참여합니다."
+		"en"	"After the main mercs finish their training, Almina ask the secondary mercs to do more training. Nemal and Silvester are away with Sensal, so they won't be here. So some other Expidonsans volunteer to help."
+		"ko"	"주요 용병들이 훈련을 마친 후, 알미나가 더 많은 훈련을 위해 보조 용병들을 방문합니다. 네말과 실베스터가 센살과 휴가 중이기에, 다른 몇몇 엑스피돈사인들이 자원하여 참여합니다."
 	}
 	"Almina & Nemal"
 	{

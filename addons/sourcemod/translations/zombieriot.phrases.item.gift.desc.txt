@@ -3962,7 +3962,7 @@
 	"Xeno Virus Sample Desc"
 	{
 		"en"		"A while after the Xeno army left victorious, we find the aftermath of their battle. \nCorpses of Xeno infecteds and other mercs lay across a ruined camp. \nBob the Second takes a sample of the infected's flesh."
-		"ko"		"제노 군단에게서 승리한 후, 전투의 여파를 눈에 담게 됩니다:\n폐허가 된 캠프 곳곳에 널부러진 제노 감염체들과 다른 용병들이죠.\n밥 2세가 감염체의 살점을 수집하고는, 이 감염원을 서둘러 제거해야 한다고 합니다!"
+		"ko"		"제노 군단에게서 승리한 후, 전투의 여파를 눈에 담게 됩니다:\n폐허가 된 캠프 곳곳에 널부러진 제노 감염체들과 다른 용병들이죠.\n이후, 밥 2세가 감염체에게서 살점을 채취합니다."
 	}
 	"Son of Osiris's Gift"
 	{

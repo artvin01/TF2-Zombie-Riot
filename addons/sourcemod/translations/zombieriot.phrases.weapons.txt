@@ -2048,6 +2048,11 @@
 		"it"		"Set di equipaggiamento antisommossa"
 		"ko"		"진압 장비 세트"
 	}
+	"Grigori's Special Antidote"
+	{
+		"en"		"[SPECIAL] Grigori's Special Antidote"
+		"ko"		"[특별 상품] 그리고리의 특별한 항독제"
+	}
 	"Healthy Apple from Bob"
 	{
 		"en"		"Healthy Apple from Bob"
