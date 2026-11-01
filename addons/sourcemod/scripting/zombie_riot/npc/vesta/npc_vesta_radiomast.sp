@@ -117,6 +117,7 @@ methodmap VestaRadiomast < CClotBody
 		npc.m_bLostHalfHealth = false;
 		npc.Anger = false;
 		npc.m_bFUCKYOU = (StrContains(data, "death_func") != -1);
+		b_NpcUnableToDie[npc.index] = (StrContains(data, "surv") != -1);
 		npc.m_flSpawnDelay = 0.0;
 		
 		npc.m_flMeleeArmor = 1.25;
