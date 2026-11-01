@@ -5747,7 +5747,7 @@
 	"Vesta Survival Desc"
 	{
 		"en" 	"During Vesta's war against Ziberia. Ziberia sends out a group of their top guerrilla to hold off this Vestan Outpost, which is led by their Chemical Platoon leader."
-		"ko" 	"한 용병 조직이 베스타 전초기지를 습격합니다: 이 전초기지는 화학 부대 리더에 의해 이끌어지고 있습니다."
+		"ko" 	"베스타의 지베리아 침공 전쟁 중, 지베리아가 화학 부대 리더가 지휘하는 베스타 전초기지를 저지하기 위해 정예 게릴라 그룹을 보냅니다."
 	}
 	"Vesta Raid Desc"
 	{
