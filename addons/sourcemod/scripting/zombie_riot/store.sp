@@ -847,7 +847,7 @@ stock float CooldownReductionAmount(int client)
 		Cooldown *= 0.75;
 	}
 	if(i_CurrentEquippedPerk[client] & PERK_ENERGY_DRINK)
-		Cooldown *= 0.85;
+		Cooldown *= 0.8;
 	if(i_CurrentEquippedPerk[client] & PERK_ENERGY_DRINK_X)
 		Cooldown *= 0.6;
 		
