@@ -820,7 +820,7 @@ public void OnPostThink(int client)
 			{
 				if(TeutonType[client] == TEUTON_NONE)
 				{
-					Saga_ChargeReduction(client, weapon, 0.35);
+					Saga_ChargeReduction(client, weapon, 0.35, 5.0);
 				}
 			}
 		}
