@@ -117,11 +117,17 @@ methodmap VestaRadiomast < CClotBody
 		npc.m_bLostHalfHealth = false;
 		npc.Anger = false;
 		npc.m_bFUCKYOU = (StrContains(data, "death_func") != -1);
-		b_NpcUnableToDie[npc.index] = (StrContains(data, "surv") != -1);
 		npc.m_flSpawnDelay = 0.0;
 		
 		npc.m_flMeleeArmor = 1.25;
 		npc.m_flRangedArmor = 0.9;
+
+		if(StrContains(data, "surv") != -1)
+		{
+			b_NpcUnableToDie[npc.index] = true;
+			b_NpcIsInvulnerable[npc.index] = true;
+			b_NoHealthbar[npc.index] = 1;
+		}
 		
 		int Decicion = TeleportDiversioToRandLocation(npc.index, true, 1500.0, 1000.0, .NeedLOSPlayer = true);
 		switch(Decicion)
