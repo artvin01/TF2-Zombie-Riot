@@ -1580,7 +1580,7 @@
 	}
 	"Energy Drink Received"
 	{
-		"en" 		"Energy Drink! Gain a 20％ cooldown reduction for Weapons & Extra Gear!\nCooldown reduces every second by 0.35s additionally if its below 5.0 seconds"
+		"en" 		"Energy Drink! Gain a 20％ cooldown reduction for Weapons & Extra Gear!\nCooldown reduces every second by 0.25s additionally if its below 5.0 seconds"
 		"ru"		"Энергетик! 20％ быстрее перезарядка способности Оружия & Расходников"
 		"it"		"Bevanda energetica! Riduzione del cooldown di 20％ per le armi e gli equipaggiamenti extra!"
 		"ko" 		"에너지 드링크! 무기와 추가 장비들의 능력 쿨타임 20％ 감소!"
@@ -1597,7 +1597,7 @@
 	}
 	"Energy Drink X Received"
 	{
-		"en" 		"Energy Drink X! Gain a 40％ cooldown reduction for Weapons & Extra Gear!\nCooldown reduces every second by 0.35s additionally if its below 5.0 seconds"
+		"en" 		"Energy Drink X! Gain a 40％ cooldown reduction for Weapons & Extra Gear!\nCooldown reduces every second by 0.25s additionally if its below 5.0 seconds"
 		"ru"		"Энергетик X! 40％ быстрее перезарядка способности Оружия & Расходников"
 		"it"		"Bevanda energetica X! Riduzione del cooldown di 40％ per le armi e gli equipaggiamenti extra!"
 		"ko" 		"에너지 드링크 X! 무기와 추가 장비들의 능력 쿨타임 40％ 감소!"
