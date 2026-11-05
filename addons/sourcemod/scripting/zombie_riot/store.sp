@@ -1956,6 +1956,10 @@ void Store_BuyNamedItem(int client, const char name[64], bool free)
 				int base = info.Cost;
 				ItemCost(client, item, info.Cost);
 
+				// Don't try to buy an item we already own
+				if (item.Owned[client] > 0)
+					return;
+				
 				if(info.Cost > 0 && free)
 					return;
 				
