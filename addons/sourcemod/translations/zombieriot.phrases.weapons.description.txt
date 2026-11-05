@@ -2561,7 +2561,7 @@
 		"fr" 	"Soigne les alliés proches et améliore leur dégats par 10％.\nAttaquez pour soigner directement vos alliés.\nAppuyez sur M2 pour améliorer les dégats de tous vos alliés par 25％, pour 15 secondes.\nCet arme s'améliore avec les améliorations Medigun."
 		"chi"	"缓慢治疗你附近的队友，提供+10％伤害buff。\n随着医疗枪升级。\nM1提供更多治疗，M2提供15秒的+25％伤害buff。"
 		"it"	"Cura lentamente gli alleati intorno a te e dà loro un buff di 10％ dmg.\nScala con i potenziamenti della medigun.\nM1 Lancia una guarigione extra sugli alleati.\nM2 Applica un buff più forte di 25％ dmg a tutti gli alleati per 15 sec."
-		"ko"	"-주변 아군을 서서히 치유하며 10％ 피해 증가를 부여\n-메디건 업그레이드로 효과가 향상\n-M1은 추가 치유 발동\n-우클릭 능력은 15초 동안 주위의 모든 아군에게 25％ 피해 증가 버프를 적용"
+		"ko"	"-주변 아군을 서서히 치유하며 10％ 피해량 증가를 부여 및 들고 있는 무기의 능력 쿨타임 감소\n-메디건 업그레이드로 효과가 향상\n-M1은 추가 치유를 발동하며 능력 쿨타임을 더 많이 감소\n-우클릭 능력은 15초 동안 주위의 모든 아군에게 25％ 피해량 증가 버프를 적용"
 	}
 	"Song Of The Ocean Desc 2"
 	{
