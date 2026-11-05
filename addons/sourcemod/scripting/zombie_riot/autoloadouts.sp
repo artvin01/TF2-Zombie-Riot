@@ -135,7 +135,7 @@ bool AutoLoadouts_SpecificNameToPlayer(int client, char Name[64])
 void AutoLoadouts_SetPlayerLoadout(int client, int id)
 {
 	AutoLoadouts_RemovePlayerLoadout(client);
-	if(CvarDisableAutoLoadouts.BoolValue)
+	if(!AutoLoadouts_IsEnabled())
 		return;
 
 	
@@ -243,6 +243,10 @@ void AutoLoadouts_Handle()
 	}
 }
 
+bool AutoLoadouts_IsEnabled()
+{
+	return !CvarDisableAutoLoadouts.BoolValue && !Store_HasBlacklistOrWhitelist();
+}
 
 void Autoloadout_DisplayCurrentAuto(int client, char[] buffer, int sizeofbuffer)
 {

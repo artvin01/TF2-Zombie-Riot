@@ -176,7 +176,7 @@ void DoTutorialStep(int client, bool obeycooldown)
 				}
 				case 2:
 				{
-					if(CvarDisableAutoLoadouts.BoolValue)
+					if(!AutoLoadouts_IsEnabled())
 					{
 						SetHudTextParams(-1.0, 0.4, 10.0, 255, 255, 255, 255);
 						ShowSyncHudText(client, SyncHud, "%t", "tutorial_fail_map");
