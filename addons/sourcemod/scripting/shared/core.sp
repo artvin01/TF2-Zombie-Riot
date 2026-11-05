@@ -1202,6 +1202,7 @@ public void OnMapStart()
 	Zero(f_StunExtraGametimeDuration);
 	CurrentGibCount = 0;
 	Zero(b_NetworkedCrouch);
+	Zero(f_AniSoundSpam);
 	
 #if defined VIEW_CHANGES
 	ViewChange_MapStart();

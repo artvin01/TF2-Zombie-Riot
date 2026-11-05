@@ -140,7 +140,7 @@ public void Rogue_HandCaster_Ally(int entity, StringMap map)
 }
 public void Rogue_HandCaster_Weapon(int entity)
 {
-	if(i_WeaponArchetype[entity] == Archetype_Rapid || i_WeaponArchetype[entity] == Archetype_Power || i_WeaponArchetype[entity] == Archetype_Hexing)
+	if(i_WeaponArchetype[entity] == Archetype_Rapid || i_WeaponArchetype[entity] == Archetype_Power)
 	{
 		// +100% max mana
 		Attributes_SetMulti(entity, 6, 0.5);
