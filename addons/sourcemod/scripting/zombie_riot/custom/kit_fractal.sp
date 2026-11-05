@@ -1740,7 +1740,6 @@ void Fractal_Kit_MapStart()
 	Zero(fl_hud_timer);
 	Zero(b_cannon_animation_active);
 	Zero(fl_animation_cooldown);
-	Zero(f_AniSoundSpam);
 	Zero(fl_current_crystal_amt);
 	PrecacheSound(FRACTAL_KIT_SHIELDSOUND1, true);
 	PrecacheSound(FRACTAL_KIT_SHIELDSOUND2, true);
@@ -1752,7 +1751,6 @@ void Fractal_Kit_MapStart()
 void Kit_Fractal_ResetRound()
 {	
 	Zero(fl_max_crystal_amt);
-	Zero(f_AniSoundSpam);
 	Zero(fl_fractal_laser_trace_throttle);
 	Zero(fl_hud_timer);
 	Zero(fl_animation_cooldown);

@@ -50,7 +50,6 @@ void Ark_autoaim_Map_Precache()
 	PrecacheSound(SOUND_LAPPLAND_ABILITY);
 	PrecacheSound("weapons/bombinomicon_explode1.wav");
 	PrecacheSound("weapons/tf2_back_scatter.wav");
-	Zero(f_AniSoundSpam);
 	Zero(h_TimerLappLandManagement);
 	Zero(i_LappLandHitsDone);
 	Zero(f_LappLandAbilityActive);

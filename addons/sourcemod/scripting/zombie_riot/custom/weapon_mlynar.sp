@@ -37,7 +37,6 @@ void Mlynar_Map_Precache() //Anything that needs to be precaced like sounds or s
 	Zero2(f_MlynarReflectCooldown);
 	Zero(f_MlynarAbilityActiveTime);
 	Zero(b_MlynarResetStats);
-	Zero(f_AniSoundSpam);
 	PrecacheSound("items/powerup_pickup_knockout.wav");
 	PrecacheSound("misc/ks_tier_04.wav");
 }
