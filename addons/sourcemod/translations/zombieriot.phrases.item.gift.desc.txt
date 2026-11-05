@@ -2426,10 +2426,12 @@
 	"Bad Balance"
 	{
 		"en"	"Bad Balance"
+		"ko"	"끔찍한 밸런싱"
 	}
 	"Bad Balance Desc"
 	{
 		"en"	"Enemies have been ''Rebalanced'' to be more ''fun'.\nThis is consistent per enemy except raids\nRaids are random on each spawn."
+		"ko"	"적들이 더 ''재미있도록'' 밸런스가 ''재조정'' 되었습니다.\n이 모디파이어는 레이드 외 각각의 적에게 지속적으로 적용됩니다.\n레이드 보스는 매 스폰마다 무작위로 적용됩니다."
 	}
 	"One Stand"
 	{
