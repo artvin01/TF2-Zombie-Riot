@@ -37,7 +37,7 @@ MULTIPLIER_MAPPINGS = {
     "extra_melee_res": "☛",
     "extra_ranged_res": "➶",
     "extra_speed": "↗",
-    "extra_damage": "☖",
+    "extra_damage": "⚔",
     "extra_size": "⤡",
 }
 
@@ -203,10 +203,13 @@ def parse_wave(wave_idx: int, wave_data: dict[str, Any], auto_wave_cash: bool, r
         ％
         Float extra_melee_res => ☛ Mult //dmg is multiplied by this. 1.0 = 0% dmg resistance, 2.0 = npc takes 2x damage. 0.5 = npc takes half dmg.
         Float extra_ranged_res => ➶ Mult
-        Float extra_speed => ↗ Mult (unsure about this icon) //multiplies the base speed of the npc by this much.
-        Float extra_damage => ☖ Mult
-        Float extra_size => ⤡ Mult //size multi.
-        Float extra_thinkspeed ? (whatever this does is probably not important)
+        Float extra_speed => ↗ Mult [Value not shown in-game] (unsure about this icon) //multiplies the base speed of the npc by this much.
+        Float extra_damage => ⚔ Mult
+        Float extra_size => ⤡ Mult [Value not shown in-game] //size multi.
+        Float extra_thinkspeed => ≫ Mult affects f_AttackSpeedNpcIncrease
+            attackspeed = attackspeed * extra_thinkspeed
+            default of attackspeed is 1.0 but npc code can change that so shown value is only speculative
+            displayed with (1.0 / Attackspeed) * 100.0
 
         Int danger_level ? (Only used in challenges/freeplay/advanced.cfg)
         String custom_name => Builtin (replaces NPC name)
@@ -364,11 +367,20 @@ def parse_wave(wave_idx: int, wave_data: dict[str, Any], auto_wave_cash: bool, r
             if multiplier in wave_entry_data:
                 percent = float(wave_entry_data[multiplier])*100
 
+                # NOTE in npcs.sp, <10% has .2f and >10% has .0f
                 percent_text = f"{percent:.2f}"
                 if float(percent_text).is_integer():
                     percent_text = int(percent)
 
                 extra_info += f" {char} {percent_text}％"
+        
+        if "extra_thinkspeed" in wave_entry_data:
+            percent = (1.0 / float(wave_entry_data["extra_thinkspeed"])) * 100.0 # use extra_thinkspeed since attackspeed=1.0 is assumed
+            percent_text = f"{percent:.2f}"
+            if float(percent_text).is_integer():
+                percent_text = int(percent)
+            extra_info += f" ≫≈{percent_text}％" # rough estimate!!
+            
 
         # Turn NPC music entries into simple text.
         music = ""
