@@ -44,7 +44,6 @@ public void Fusion_Melee_OnMapStart()
 	for (int i = 0; i < (sizeof(g_Siccerino_snapSound));	i++) { PrecacheSound(g_Siccerino_snapSound[i]);	}
 	Zero(Duration);
 	Zero(Weapon_Id);
-	Zero(f_AniSoundSpam);
 	PrecacheSound(EMPOWER_SOUND);
 	PrecacheSound(SICCERINO_FAST_ATTACK_SOUND);
 	PrecacheSound(SICCERINO_PREPARE_SICCORS_SOUND);

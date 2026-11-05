@@ -307,6 +307,9 @@ void OperaMute_ManaDo(int client, int mana_cost)
 }
 bool OperaMute_WeaponHas(int client)
 {
+	if (client > MaxClients)
+		return false;
+
 	if(h_WeaponTimer[client] == null)
 		return false;
 

@@ -19,7 +19,6 @@ static float f_AbiltiyCooldownHidden[MAXPLAYERS+1]={0.0, ...};
 
 void Weapon_RiotShield_Map_Precache()
 {
-	Zero(f_AniSoundSpam);
 	Zero(f_AbiltiyCooldownHidden);
 	PrecacheSound(SOUND_RIOTSHIELD_ACTIVATION);
 	ShieldModel = PrecacheModel("models/player/items/sniper/knife_shield.mdl");
