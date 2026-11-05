@@ -31,6 +31,7 @@ float PreventRespawnsAll;
 #define PREFIX_ONESTAND 7
 #define NOSTALGICA 8
 #define KITERS_DREAM 9
+#define BAD_BALANCE 10
 
 
 #define PERK_NONE						0
