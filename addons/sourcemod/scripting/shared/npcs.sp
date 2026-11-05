@@ -2005,24 +2005,6 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 #endif
 		}
 
-		if(percentage_melee != 100.0 && !IsInvuln(victim, true))
-		{
-			char NumberAdd[32];
-			ResAdded = true;
-			armor_added = true;
-			if(percentage_melee < 10.0)
-			{
-				Format(NumberAdd, sizeof(NumberAdd), "[☛%.2f％", percentage_melee);
-			}
-			else
-			{
-				Format(NumberAdd, sizeof(NumberAdd), "[☛%.0f％", percentage_melee);
-			}
-			if(f_ClientDoDamageHud[attacker][0] > GetGameTime())
-				Npcs_AddUnderscoreToText(NumberAdd, sizeof(NumberAdd));
-
-			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s%s", Debuff_Adder, NumberAdd);
-		}
 		float DamagePercDo = 100.0;
 		if(!IsInvuln(victim, true))
 		{
@@ -2030,6 +2012,7 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 			StatusEffect_OnTakeDamage_DealNegative(attacker, victim, DamagePercDo, testvalue);
 			Damage_NPCAttacker(victim, DamagePercDo, testvalue);
 			Damage_AnyAttacker(attacker, victim, victim, DamagePercDo, testvalue);
+			DamagePercDo *= fl_Extra_Damage[victim];
 			CheckInHudEnable(0);
 #if defined ZR
 			if(GetTeam(victim) != TFTeam_Red)
@@ -2049,28 +2032,90 @@ stock bool Calculate_And_Display_HP_Hud(int attacker, bool ToAlternative = false
 				FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s|", Debuff_Adder);
 				if(DamagePercDo < 10.0)
 				{
-					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s☖%.2f％", Debuff_Adder, DamagePercDo);
+					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s⚔ %.2f％", Debuff_Adder, DamagePercDo);
 				}
 				else
 				{
-					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s☖%.0f％", Debuff_Adder, DamagePercDo);
+					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s⚔ %.0f％", Debuff_Adder, DamagePercDo);
 				}
 			}
 			else
 			{	
 				if(DamagePercDo < 10.0)
 				{
-					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [☖%.2f％", Debuff_Adder, DamagePercDo);
+					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [⚔ %.2f％", Debuff_Adder, DamagePercDo);
 				}
 				else
 				{
-					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [☖%.0f％", Debuff_Adder, DamagePercDo);
+					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [⚔ %.0f％", Debuff_Adder, DamagePercDo);
 				}
 			}
 			ResAdded = true;
 			armor_added = true;
 		}
+		if((f_AttackSpeedNpcIncrease[victim] != 1.0) && !IsInvuln(victim, true))	
+		{
+			float Attackspeed = f_AttackSpeedNpcIncrease[victim];
+			Attackspeed = 1.0 / Attackspeed;
+			Attackspeed *= 100.0;
+			if(ResAdded)
+			{
+				FormatEx(Debuff_Adder, sizeof(Debuff_Adder), "%s|", Debuff_Adder);
+				if(Attackspeed < 10.0)
+				{
+					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s≫ %.2f％", Debuff_Adder, Attackspeed);
+				}
+				else
+				{
+					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s≫ %.0f％", Debuff_Adder, Attackspeed);
+				}
+			}
+			else
+			{	
+				if(Attackspeed < 10.0)
+				{
+					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [≫ %.2f％", Debuff_Adder, Attackspeed);
+				}
+				else
+				{
+					Format(Debuff_Adder, sizeof(Debuff_Adder), "%s [≫ %.0f％", Debuff_Adder, Attackspeed);
+				}
+			}
+			ResAdded = true;
+			armor_added = true;
+		}
+		if(percentage_melee != 100.0 && !IsInvuln(victim, true))
+		{
+			char NumberAdd[32];
+			if(ResAdded)
+			{
+				if(percentage_melee < 10.0)
+				{
+					Format(NumberAdd, sizeof(NumberAdd), "|☛%.2f％", percentage_melee);
+				}
+				else
+				{
+					Format(NumberAdd, sizeof(NumberAdd), "|☛%.0f％", percentage_melee);
+				}
+			}
+			else
+			{
+				if(percentage_melee < 10.0)
+				{
+					Format(NumberAdd, sizeof(NumberAdd), "[☛%.2f％", percentage_melee);
+				}
+				else
+				{
+					Format(NumberAdd, sizeof(NumberAdd), "[☛%.0f％", percentage_melee);
+				}
+			}
+			if(f_ClientDoDamageHud[attacker][0] > GetGameTime())
+				Npcs_AddUnderscoreToText(NumberAdd, sizeof(NumberAdd));
 
+			ResAdded = true;
+			armor_added = true;
+			Format(Debuff_Adder, sizeof(Debuff_Adder), "%s%s", Debuff_Adder, NumberAdd);
+		}
 		if(percentage_ranged != 100.0 && !IsInvuln(victim, true))	
 		{
 			static char NumberAdd[32];

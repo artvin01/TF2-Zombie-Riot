@@ -162,6 +162,12 @@ methodmap VestanOfflineAvangard < CClotBody
 		if(StrContains(data, "awaiting_mechanist") != -1)
 			b_AdvansedConstruction[npc.index] = true;
 
+		if(StrContains(data, "surv") != -1)
+		{
+			b_NpcIsInvulnerable[npc.index] = true;
+			b_NoHealthbar[npc.index] = 1;
+		}
+
 		SetEntityRenderColor(npc.index, 80, 50, 50, 255);
 
 		if(npc.m_bFUCKYOU_move_anim)
