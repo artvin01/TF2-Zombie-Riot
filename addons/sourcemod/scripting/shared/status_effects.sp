@@ -1299,7 +1299,9 @@ void StatusEffects_HudHurt(int victim, int attacker, char[] Debuff_Adder_left, c
 
 			if(!Apply_MasterStatusEffect.Positive)
 			{
-				Format(Debuff_Adder_left, SizeOfChar, "%s%s", HudDisplayCustom, Debuff_Adder_left);
+				//is owner to see debuff
+				if(Apply_StatusEffect.TotalOwners[attacker] || victim == attacker)
+					Format(Debuff_Adder_left, SizeOfChar, "%s%s", HudDisplayCustom, Debuff_Adder_left);
 			}
 			else
 			{
@@ -1310,7 +1312,8 @@ void StatusEffects_HudHurt(int victim, int attacker, char[] Debuff_Adder_left, c
 		{
 			if(!Apply_MasterStatusEffect.Positive)
 			{
-				Format(Debuff_Adder_left, SizeOfChar, "%s%s", Apply_MasterStatusEffect.HudDisplay, Debuff_Adder_left);
+				if(Apply_StatusEffect.TotalOwners[attacker] || victim == attacker)
+					Format(Debuff_Adder_left, SizeOfChar, "%s%s", Apply_MasterStatusEffect.HudDisplay, Debuff_Adder_left);
 			}
 			else
 			{
