@@ -141,7 +141,7 @@ methodmap XenoLabSecurity < CClotBody
 		XenoLabSecurity npc = view_as<XenoLabSecurity>(CClotBody(vecPos, vecAng, SECURITY_MODEL, "1.70", "125000", ally, false, true));
 		// 125000 HP - Super boss tier
 		
-		i_NpcWeight[npc.index] = 6; 
+		i_NpcWeight[npc.index] = 5; 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
