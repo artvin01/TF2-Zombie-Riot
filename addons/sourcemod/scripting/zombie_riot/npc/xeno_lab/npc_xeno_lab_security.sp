@@ -243,12 +243,12 @@ static void Frame_AnnounceSpawn(int ref)
 	XenoLabSecurity npc = view_as<XenoLabSecurity>(entity);
 	if (npc.m_bIsLabVersion)
 	{
-		CPrintToChatAll("{red}[XENO LAB SECURITY PROTOCOL ACTIVATED]");
+		CPrintToChatAll("{green}[XENO LAB SECURITY PROTOCOL ACTIVATED]");
 		NPCTalkMessage(npc.index, "INTRUDERS DETECTED. Initiating containment procedures.");
 	}
 	else
 	{
-		CPrintToChatAll("{red}[XENO SECURITY DEPLOYED]");
+		CPrintToChatAll("{green}[XENO SECURITY DEPLOYED]");
 		NPCTalkMessage(npc.index, "Target acquired. Commencing infection protocol.");
 	}
 }
@@ -641,7 +641,7 @@ void Security_EnterEnrageMode(XenoLabSecurity npc)
 	npc.PlayAngerSound();
 	
 	CPrintToChatAll("{red}[CRITICAL WARNING]");
-	CPrintToChatAll("{crimson}Xeno Lab Security{default}: Damage threshold exceeded. Activating emergency protocols.");
+	CPrintToChatAll("{green}Xeno Lab Security{default}: Damage threshold exceeded. Activating emergency protocols.");
 	CPrintToChatAll("{crimson}Xeno Lab Security{default}: ALL SAFETY LIMITERS REMOVED.");
 	
 	EmitSoundToAll("weapons/physcannon/energy_bounce2.wav", npc.index, _, 90, _, 0.8);
