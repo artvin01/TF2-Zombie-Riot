@@ -405,24 +405,26 @@ public Action Timer_SecurityInfectionBlast(Handle timer, DataPack pack)
 	
 	XenoLabSecurity npc = view_as<XenoLabSecurity>(entity);
 	
-	npc.m_flSpeed = (npc.m_bIsLabVersion && npc.Anger) ? 300.0 : 225.0;
-
 	if (npc.m_bIsLabVersion && npc.Anger) 
-		{
-			fl_TotalArmor[npc.index] = 0.7
-		}
-		else if (npc.m_bIsLabVersion)
-		{
-			fl_TotalArmor[npc.index] = 0.8
-		}
-		else if (npc.Anger)
-		{
-			fl_TotalArmor[npc.index] = 0.8
-		}
-		else
-		{
-			fl_TotalArmor[npc.index] = 0.9
-		}
+	{
+		fl_TotalArmor[npc.index] = 0.75
+		npc.m_flSpeed = 290.0;
+	}
+	else if (npc.m_bIsLabVersion)
+	{
+		fl_TotalArmor[npc.index] = 0.9
+		npc.m_flSpeed = 250.0;
+	}
+	else if (npc.Anger)
+	{
+		fl_TotalArmor[npc.index] = 0.8
+		npc.m_flSpeed = 270.0;
+	}
+	else
+	{
+		fl_TotalArmor[npc.index] = 0.9
+		npc.m_flSpeed = 230.0;
+	}
 
 	npc.m_bisWalking = true;
 	int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
