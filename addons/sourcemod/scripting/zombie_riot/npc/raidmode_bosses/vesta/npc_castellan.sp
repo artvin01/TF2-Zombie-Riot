@@ -1292,7 +1292,8 @@ static Action Castellan_OnTakeDamage(int victim, int &attacker, int &inflictor, 
 		{
 			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true;
 
-			ReviveAll(true);
+			// never do ReviveAll within a damage hook
+			ReviveAll_Delayed(true);
 
 			npc.m_flTimeSinceHasBeenHurt = GetGameTime() + 36.0;
 			RaidModeTime += 900.0;

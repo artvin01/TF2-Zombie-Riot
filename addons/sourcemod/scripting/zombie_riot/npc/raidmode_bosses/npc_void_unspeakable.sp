@@ -725,7 +725,9 @@ public Action VoidUnspeakable_OnTakeDamage(int victim, int &attacker, int &infli
 			npc.m_flDeathAnimation = GetGameTime(npc.index) + 45.0;
 			//emergency slay if it bricks somehow.
 			RequestFrames(KillNpc,3000, EntIndexToEntRef(npc.index));
-			ReviveAll(true);
+			
+			// never do ReviveAll within a damage hook
+			ReviveAll_Delayed(true);
 		}
 	}
 	

@@ -3194,6 +3194,28 @@ void ReviveAll(bool raidspawned = false,
 	}
 }
 
+void ReviveAll_Delayed(bool raidspawned = false,
+ bool setmusicfalse = false,
+  bool ForceFullHealth = false,
+   bool Const2_DontRespawnBuildings = false,
+  bool IsSetupRevive = false)
+{
+	DataPack pack = new DataPack();
+	pack.WriteCell(raidspawned);
+	pack.WriteCell(setmusicfalse);
+	pack.WriteCell(ForceFullHealth);
+	pack.WriteCell(Const2_DontRespawnBuildings);
+	pack.WriteCell(IsSetupRevive);
+	RequestFrame(Frame_ReviveAll, pack);
+}
+
+void Frame_ReviveAll(DataPack pack)
+{
+	pack.Reset();
+	ReviveAll(pack.ReadCell(), pack.ReadCell(), pack.ReadCell(), pack.ReadCell(), pack.ReadCell());
+	delete pack;
+}
+
 float XpFloatGive[MAXPLAYERS];
 
 void GiveXP(int client, int xp, bool freeplay = false, bool SetXpAndLevelSilently = false)

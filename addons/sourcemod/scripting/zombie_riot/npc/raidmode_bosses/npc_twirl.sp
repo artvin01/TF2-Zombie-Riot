@@ -4143,7 +4143,8 @@ static Action OnTakeDamage(int victim, int &attacker, int &inflictor, float &dam
 			ApplyStatusEffect(npc.index, npc.index, "Solid Stance", 999999.0);	
 			ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", 999999.0);	
 
-			ReviveAll(true);
+			// never do ReviveAll within a damage hook
+			ReviveAll_Delayed(true);
 
 			npc.m_flSpeed = 0.0;
 			f_NpcTurnPenalty[npc.index] = 0.0;

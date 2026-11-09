@@ -1356,7 +1356,10 @@ public Action ChaosKahmlstein_OnTakeDamage(int victim, int &attacker, int &infli
 			damage = 0.0;
 			RaidModeTime += 60.0;
 			f_TalkDelayCheck = GetGameTime() + 0.0;
-			ReviveAll(true);
+			
+			// never do ReviveAll within a damage hook
+			ReviveAll_Delayed(true);
+			
 			NPCTalkMessage(npc.index, "Ughhh... My head");
 			Music_SetRaidMusicSimple("vo/null.mp3", 60, false, 0.5);
 			return Plugin_Handled;
