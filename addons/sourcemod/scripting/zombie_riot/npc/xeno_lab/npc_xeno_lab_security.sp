@@ -157,22 +157,25 @@ methodmap XenoLabSecurity < CClotBody
 		func_NPCThink[npc.index] = XenoLabSecurity_ClotThink;
 		if (npc.m_bIsLabVersion && npc.Anger) 
 		{
-			fl_TotalArmor[npc.index] = 0.7
+			fl_TotalArmor[npc.index] = 0.75
+			npc.m_flSpeed = 290.0;
 		}
 		else if (npc.m_bIsLabVersion)
 		{
-			fl_TotalArmor[npc.index] = 0.8
+			fl_TotalArmor[npc.index] = 0.9
+			npc.m_flSpeed = 250.0;
 		}
 		else if (npc.Anger)
 		{
 			fl_TotalArmor[npc.index] = 0.8
+			npc.m_flSpeed = 270.0;
 		}
 		else
 		{
 			fl_TotalArmor[npc.index] = 0.9
+			npc.m_flSpeed = 230.0;
 		}
 		
-		npc.m_flSpeed = 225.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
@@ -403,6 +406,24 @@ public Action Timer_SecurityInfectionBlast(Handle timer, DataPack pack)
 	XenoLabSecurity npc = view_as<XenoLabSecurity>(entity);
 	
 	npc.m_flSpeed = (npc.m_bIsLabVersion && npc.Anger) ? 300.0 : 225.0;
+
+	if (npc.m_bIsLabVersion && npc.Anger) 
+		{
+			fl_TotalArmor[npc.index] = 0.7
+		}
+		else if (npc.m_bIsLabVersion)
+		{
+			fl_TotalArmor[npc.index] = 0.8
+		}
+		else if (npc.Anger)
+		{
+			fl_TotalArmor[npc.index] = 0.8
+		}
+		else
+		{
+			fl_TotalArmor[npc.index] = 0.9
+		}
+
 	npc.m_bisWalking = true;
 	int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 	if(iActivity > 0) npc.StartActivity(iActivity);
@@ -511,7 +532,7 @@ void Security_InfectionHit(int entity, int victim, float damage, int weapon)
 		
 		// stronger infection in enraged mode aka lab version only
 		int tickCount = (npc.m_bIsLabVersion && npc.Anger) ? 15 : 10;
-		float tickDamage = (npc.m_bIsLabVersion && npc.Anger) ? 120.0 : 100.0;
+		float tickDamage = (npc.m_bIsLabVersion && npc.Anger) ? 115.0 : 100.0;
 		
 		StartBleedingTimer(victim, entity, tickDamage, tickCount, -1, DMG_SLASH, 0, 1);
 		
@@ -629,7 +650,14 @@ void Security_EnterEnrageMode(XenoLabSecurity npc)
 	SetEntityRenderColor(npc.m_iWearable3, 255, 0, 0, 255);
 	SetEntityRenderColor(npc.m_iWearable4, 255, 0, 0, 255);
 	
-	npc.m_flSpeed = 280.0;
+	if (npc.m_bIsLabVersion && npc.Anger)
+	{
+	    npc.m_flSpeed = 290.0;
+	}
+	else
+	{
+	    npc.m_flSpeed = 270.0;
+	}
 	
 	float pos[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
