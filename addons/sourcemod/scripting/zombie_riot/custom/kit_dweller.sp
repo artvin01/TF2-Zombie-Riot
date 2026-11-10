@@ -79,9 +79,16 @@ void SeaMelee_Enable(int client, int weapon)
 	{
 		MeleeLevel[client] = RoundFloat(Attributes_Get(weapon, 868, 0.0));
 
-		delete EffectTimer[client];
-		EffectTimer[client] = CreateTimer(0.2, SeaMelee_TimerEffect, client, TIMER_REPEAT);
-		DwellerMusicDo();
+		if (i_CustomWeaponEquipLogic[weapon] == WEAPON_DWELLERMELEE)
+		{
+			delete EffectTimer[client];
+			
+			DataPack pack;
+			EffectTimer[client] = CreateDataTimer(0.2, SeaMelee_TimerEffect, pack, TIMER_REPEAT);
+			pack.WriteCell(client); // has to be client index and not userid
+			pack.WriteCell(EntIndexToEntRef(weapon));
+			DwellerMusicDo();
+		}
 	}
 }
 
@@ -93,62 +100,58 @@ bool SeaMelee_IsDweller(int client)
 	return true;
 }
 
-public Action SeaMelee_TimerEffect(Handle timer, int client)
+public Action SeaMelee_TimerEffect(Handle timer, DataPack pack)
 {
-	if(IsClientInGame(client))
+	pack.Reset();
+	int client = pack.ReadCell();
+	int weapon = EntRefToEntIndex(pack.ReadCell());
+	if(IsClientInGame(client) && IsPlayerAlive(client) && IsValidEntity(weapon))
 	{
-		if(IsPlayerAlive(client))
+		switch(i_CustomWeaponEquipLogic[weapon])
 		{
-			int weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon");
-			if(weapon != INVALID_ENT_REFERENCE)
+			case WEAPON_DWELLERMELEE, WEAPON_DWELLER_MISC, WEAPON_ULPIANUS:
 			{
-				switch(i_CustomWeaponEquipLogic[weapon])
+				if(LastMann)
 				{
-					case WEAPON_DWELLERMELEE, WEAPON_DWELLER_MISC, WEAPON_ULPIANUS:
+					float enemypos[3]; 
+					GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", enemypos);
+					SeaFounder_SpawnAbyss(enemypos);
+				}
+				b_IsCannibal[client] = true;
+
+				bool special = SpecialEffectFor[client] > GetGameTime();
+
+				if(special ^ SpecialEffect[client])
+				{
+					if(ParticleRef[client] != -1)
 					{
-						if(LastMann)
+						int entity = EntRefToEntIndex(ParticleRef[client]);
+						if(entity > MaxClients)
 						{
-							float enemypos[3]; 
-							GetEntPropVector(client, Prop_Data, "m_vecAbsOrigin", enemypos);
-							SeaFounder_SpawnAbyss(enemypos);
-						}
-						b_IsCannibal[client] = true;
-
-						bool special = SpecialEffectFor[client] > GetGameTime();
-
-						if(special ^ SpecialEffect[client])
-						{
-							if(ParticleRef[client] != -1)
-							{
-								int entity = EntRefToEntIndex(ParticleRef[client]);
-								if(entity > MaxClients)
-								{
-									TeleportEntity(entity, OFF_THE_MAP);
-									RemoveEntity(entity);
-								}
-
-								ParticleRef[client] = -1;
-							}
+							TeleportEntity(entity, OFF_THE_MAP);
+							RemoveEntity(entity);
 						}
 
-						if(MeleeLevel[client] >= 0 && ParticleRef[client] == -1)
-						{
-							float pos[3]; GetClientAbsOrigin(client, pos);
-							pos[2] += 1.0;
-
-							int entity = ParticleEffectAt(pos, special ? "utaunt_hands_floor2_blue" : "utaunt_hands_floor2_blue", -1.0);
-							if(entity > MaxClients)
-							{
-								SetParent(client, entity);
-								ParticleRef[client] = EntIndexToEntRef(entity);
-								SpecialEffect[client] = special;
-							}
-						}
+						ParticleRef[client] = -1;
 					}
 				}
-				return Plugin_Continue;
+
+				if(MeleeLevel[client] >= 0 && ParticleRef[client] == -1)
+				{
+					float pos[3]; GetClientAbsOrigin(client, pos);
+					pos[2] += 1.0;
+
+					int entity = ParticleEffectAt(pos, special ? "utaunt_hands_floor2_blue" : "utaunt_hands_floor2_blue", -1.0);
+					if(entity > MaxClients)
+					{
+						SetParent(client, entity);
+						ParticleRef[client] = EntIndexToEntRef(entity);
+						SpecialEffect[client] = special;
+					}
+				}
 			}
 		}
+		return Plugin_Continue;
 	}
 		
 	if(ParticleRef[client] != -1)

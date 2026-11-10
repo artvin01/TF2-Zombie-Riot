@@ -980,7 +980,8 @@ public Action TrueFusionWarrior_OnTakeDamage(int victim, int &attacker, int &inf
 		{
 			b_ThisEntityIgnoredByOtherNpcsAggro[npc.index] = true; //Make allied npcs ignore him.
 
-			ReviveAll(true);
+			// never do ReviveAll within a damage hook
+			ReviveAll_Delayed(true);
 
 			b_angered_twice[npc.index] = true; //	>:(
 			RaidModeTime += 60.0;
