@@ -693,11 +693,27 @@ public void PlasmicBubble_HealElementalAllies(int healer, float percent, float m
 
 				if(Cheese_PapLevel[healer] > 2 && Cheese_PapLevel[healer] <= 4)
 				{
-					ApplyStatusEffect(healer, client, "Plasmic Layering I", 1.0);
+					if(!HasSpecificBuff(client, "Plasmic Layering I"))
+					{
+						float HudY = -1.0;
+						float HudX = -1.0;
+						SetHudTextParams(HudX, HudY, 2.5, 235, 75, 215, 255);
+						SetGlobalTransTarget(client);
+						ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Plasmatized Bubble Info");
+					}
+					ApplyStatusEffect(healer, client, "Plasmic Layering I", 1.5);
 				}
 				else if(Cheese_PapLevel[healer] >= 5)
 				{
-					ApplyStatusEffect(healer, client, "Plasmic Layering II", 1.0);
+					if(!HasSpecificBuff(client, "Plasmic Layering II"))
+					{
+						float HudY = -1.0;
+						float HudX = -1.0;
+						SetHudTextParams(HudX, HudY, 2.5, 235, 75, 215, 255);
+						SetGlobalTransTarget(client);
+						ShowSyncHudText(client, SyncHud_Notifaction, "%t", "Plasmatized Bubble Info");
+					}
+					ApplyStatusEffect(healer, client, "Plasmic Layering II", 1.5);
 				}
 			}
 		}
