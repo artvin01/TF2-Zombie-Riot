@@ -60,9 +60,9 @@ public void XenoPatientFew_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return XenoPatientFew(vecPos, vecAng, team);
+	return XenoPatientFew(vecPos, vecAng, team, data);
 }
 
 methodmap XenoPatientFew < CClotBody
@@ -113,11 +113,19 @@ methodmap XenoPatientFew < CClotBody
 	
 	
 	
-	public XenoPatientFew(float vecPos[3], float vecAng[3], int ally)
+	public XenoPatientFew(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
 		XenoPatientFew npc = view_as<XenoPatientFew>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "2.2", "1500000", ally, false, true));
 		
-		i_NpcWeight[npc.index] = 3;
+		bool isVeryVersion = StrContains(data, "very") != -1;
+		npc.m_bIsVeryVersion = isVeryVersion;
+
+		if (npc.m_bIsVeryVersion) 
+		{
+			fl_TotalArmor[npc.index] = 0.75;
+			npc.m_flSpeed = 290.0;
+		}
+		i_NpcWeight[npc.index] = (npc.m_bIsVeryVersion) ? 4 : 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
