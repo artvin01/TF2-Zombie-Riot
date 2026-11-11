@@ -5937,6 +5937,10 @@
 		"it"		"Il corpo inizia lentamente a scomporre...."
 		"ko"		"당신의 몸이 서서히 망가져가기 시작합니다..."
 	}
+	"Plasmatized Bubble Info"
+	{
+		"en"		"You are powered by Plasma!"
+	}
 	"Too many Perks"
 	{
 		"en"		"You have too many perks, get rid of one."
