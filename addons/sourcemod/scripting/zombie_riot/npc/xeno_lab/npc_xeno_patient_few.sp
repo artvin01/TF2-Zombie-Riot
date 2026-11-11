@@ -118,9 +118,8 @@ methodmap XenoPatientFew < CClotBody
 		XenoPatientFew npc = view_as<XenoPatientFew>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "2.2", "1500000", ally, false, true));
 		
 		bool isVeryVersion = StrContains(data, "very") != -1;
-		npc.m_bIsVeryVersion = isVeryVersion;
 
-		i_NpcWeight[npc.index] = (npc.m_bIsVeryVersion) ? 4 : 3;
+		i_NpcWeight[npc.index] = (isVeryVersion) ? 4 : 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -144,7 +143,7 @@ methodmap XenoPatientFew < CClotBody
 		
 		
 		//IDLE
-		npc.m_flSpeed = (npc.m_bIsVeryVersion) ? 100 : 150;
+		npc.m_flSpeed = (npc.isVeryVersion) ? 100 : 150;
 		
 		SetEntityRenderColor(npc.index, 50, 185, 50, 255);
 		
@@ -177,7 +176,7 @@ public void XenoPatientFew_ClotThink(int iNPC)
 		{
 			SetEntityRenderMode(npc.index, RENDER_NORMAL);
 			SetEntityRenderColor(npc.index, 50, 255, 50, 255);
-			npc.m_flSpeed = 150.0;
+			npc.m_flSpeed = (npc.isVeryVersion) ? 100 : 150;
 		}
 	}
 
@@ -219,7 +218,7 @@ public void XenoPatientFew_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 5000.0;
+					float damage = (npc.isVeryVersion) ? 10000 : 5000;
 					if(ShouldNpcDealBonusDamage(target))
 						damage = 2500.0;
 
