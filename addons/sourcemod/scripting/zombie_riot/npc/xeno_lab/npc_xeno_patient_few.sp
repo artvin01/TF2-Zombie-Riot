@@ -120,11 +120,6 @@ methodmap XenoPatientFew < CClotBody
 		bool isVeryVersion = StrContains(data, "very") != -1;
 		npc.m_bIsVeryVersion = isVeryVersion;
 
-		if (npc.m_bIsVeryVersion) 
-		{
-			fl_TotalArmor[npc.index] = 0.75;
-			npc.m_flSpeed = 290.0;
-		}
 		i_NpcWeight[npc.index] = (npc.m_bIsVeryVersion) ? 4 : 3;
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -149,7 +144,7 @@ methodmap XenoPatientFew < CClotBody
 		
 		
 		//IDLE
-		npc.m_flSpeed = 150.0;
+		npc.m_flSpeed = (npc.m_bIsVeryVersion) ? 100 : 150;
 		
 		SetEntityRenderColor(npc.index, 50, 185, 50, 255);
 		
