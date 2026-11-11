@@ -342,9 +342,9 @@ public float Cheese_OnTakeDamage_Melee(int attacker, int victim, float &damage, 
 	if((damagetype & DMG_CLUB))
 	{   
 		if(Cheese_PapLevel[attacker] > 0)
-			Cheese_Bubble_Hits[attacker] += 4;
+			Cheese_Bubble_Hits[attacker] += 5;
 		if(Arena_Mode())
-			Cheese_Bubble_Hits[attacker] += 4;
+			Cheese_Bubble_Hits[attacker] += 5;
 
 		float cheesedmg = damage;
 
