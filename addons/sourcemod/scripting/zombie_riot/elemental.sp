@@ -1489,12 +1489,11 @@ void Elemental_AddPlasmicDamage(int victim, int attacker, int damagebase, int we
 				ElementDamage[victim][Element_Plasma] = 0;
 				float position[3];
 				GetEntPropVector(victim, Prop_Data, "m_vecAbsOrigin", position);
-				float meleepenalty = (HasSpecificBuff(attacker, "Plasmatic Rampage") ? 0.9 : (b_thisNpcIsARaid[victim] ? 0.85 : 0.75));
-				float rangedpenalty = (HasSpecificBuff(attacker, "Plasmatic Rampage") ? 0.9 : (b_thisNpcIsARaid[victim] ? 0.65 : 0.5));
+				float meleepenalty = (HasSpecificBuff(attacker, "Plasmatic Rampage") ? 0.95 : (b_thisNpcIsARaid[victim] ? 0.9 : 0.75));
+				float rangedpenalty = (HasSpecificBuff(attacker, "Plasmatic Rampage") ? 0.95 : (b_thisNpcIsARaid[victim] ? 0.85 : 0.5));
 				float duration = (HasSpecificBuff(attacker, "Plasmatic Rampage") ? 0.1 : (melee ? 2.0 : (b_thisNpcIsARaid[victim] ? 4.0 : 8.0)));
 				float healing = 20.0; // bleh
 				float Range = 200.0;
-				healing *= 0.75;
 				Range *= 1.25;
 
 				if(!b_NpcHasDied[attacker])
