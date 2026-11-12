@@ -133,10 +133,15 @@ methodmap XenoFortifiedEarlyZombie < CClotBody
 	{
 		XenoFortifiedEarlyZombie npc = view_as<XenoFortifiedEarlyZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", "200000", ally));
 		
-		bool isVeryVersion = StrContains(data, "very") != -1;
-		npc.m_bIsVeryVersion = isVeryVersion;
 
 		i_NpcWeight[npc.index] = 1;
+
+		float ModelSize = GetEntPropFloat(victim, Prop_Send, "m_flModelScale");
+		if(!StrContains(data, "very"))
+		{
+			ModelSize = 1.5;
+			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Xeno Very Early Infected");
+		}
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -159,9 +164,17 @@ methodmap XenoFortifiedEarlyZombie < CClotBody
 		
 		
 		//IDLE
-		npc.m_flSpeed = 550.0;
+		if(!StrContains(data, "very"))
+		{
+			npc.m_flSpeed = 600.0;
+			SetEntityRenderColor(npc.index, 200, 40, 40, 255);
+		}
+		else
+		{
+			npc.m_flSpeed = 550.0;
+			SetEntityRenderColor(npc.index, 185, 50, 50, 255);
+		}
 		
-		SetEntityRenderColor(npc.index, 185, 50, 50, 255);
 		
 //		SetEntPropFloat(npc.index, Prop_Data, "m_speed",npc.m_flSpeed);
 		npc.m_flAttackHappenswillhappen = false;
@@ -188,7 +201,14 @@ public void XenoFortifiedEarlyZombie_ClotThink(int iNPC)
 
 	if(npc.bXenoInfectedSpecialHurt)
 	{
-		npc.m_flSpeed = 260.0;
+		if(!StrContains(data, "very"))
+		{
+			npc.m_flSpeed = 300.0;
+		}
+		else
+		{
+			npc.m_flSpeed = 260.0;
+		}
 	}
 	if(npc.m_blPlayHurtAnimation)
 	{
@@ -229,7 +249,15 @@ public void XenoFortifiedEarlyZombie_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = 90.0;
+					if(!StrContains(data, "very"))
+					{
+						float damage = 100.0;
+					}
+					else
+					{
+						float damage = 90.0;
+					}
+
 					if(ShouldNpcDealBonusDamage(target))
 						damage *= 1.2;
 
@@ -335,8 +363,16 @@ public Action XenoFortifiedEarlyZombie_OnTakeDamage(int victim, int &attacker, i
 	{
 		if(!npc.bXenoInfectedSpecialHurt)
 		{
-			SetEntityRenderColor(npc.index, 50, 185, 50, 255);
-			npc.bXenoInfectedSpecialHurt = true;
+			if(!StrContains(data, "very"))
+			{
+				SetEntityRenderColor(npc.index, 60, 200, 60, 255);
+				npc.bXenoInfectedSpecialHurt = true;
+			}
+			else
+			{
+				SetEntityRenderColor(npc.index, 50, 185, 50, 255);
+				npc.bXenoInfectedSpecialHurt = true;
+			}
 		}
 	}
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
