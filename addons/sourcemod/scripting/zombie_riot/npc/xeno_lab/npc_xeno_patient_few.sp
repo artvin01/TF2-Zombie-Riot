@@ -117,7 +117,7 @@ methodmap XenoPatientFew < CClotBody
 	{
 		XenoPatientFew npc = view_as<XenoPatientFew>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "2.2", "1500000", ally, false, true));
 		
-		bool isVeryPatient = StrContains(data, "very") != -1;
+		bool m_bIsVeryPatient = StrContains(data, "very") != -1;
 
 		float ModelSize = GetEntPropFloat(Prop_Send, "m_flModelScale");
 		if(npc.m_bIsVeryPatient)
@@ -155,12 +155,12 @@ methodmap XenoPatientFew < CClotBody
 		//IDLE
 		if(npc.m_bIsVeryPatient)
 		{
-			npc.m_flSpeed = 100;
+			npc.m_flSpeed = 100.0;
 			SetEntityRenderColor(npc.index, 40, 100, 40, 255);
 		}
 		else
 		{
-			npc.m_flSpeed = 150;
+			npc.m_flSpeed = 150.0;
 			SetEntityRenderColor(npc.index, 50, 185, 50, 255);
 		}
 		
@@ -201,7 +201,7 @@ public void XenoPatientFew_ClotThink(int iNPC)
 			{
 				SetEntityRenderMode(npc.index, RENDER_NORMAL);
 				SetEntityRenderColor(npc.index, 60, 255, 60, 255);
-				npc.m_flSpeed = 100;
+				npc.m_flSpeed = 100.0;
 			}
 		}
 		else
@@ -211,7 +211,7 @@ public void XenoPatientFew_ClotThink(int iNPC)
 			{
 				SetEntityRenderMode(npc.index, RENDER_NORMAL);
 				SetEntityRenderColor(npc.index, 50, 255, 50, 255);
-				npc.m_flSpeed = 150;
+				npc.m_flSpeed = 150.0;
 			}
 		}
 	}
@@ -255,10 +255,10 @@ public void XenoPatientFew_ClotThink(int iNPC)
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
 
-					float damage = 5000;
+					float damage = 5000.0;
 
 					if(npc.m_bIsVeryPatient)
-						damage = 10000;
+						damage = 10000.0;
 
 					if(ShouldNpcDealBonusDamage(target))
 						damage = 2500.0;
