@@ -117,9 +117,10 @@ methodmap XenoPatientFew < CClotBody
 	{
 		XenoPatientFew npc = view_as<XenoPatientFew>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "2.2", "1500000", ally, false, true));
 		
+		bool isVeryPatient = StrContains(data, "very") != -1;
 
 		float ModelSize = GetEntPropFloat(victim, Prop_Send, "m_flModelScale");
-		if(!StrContains(data, "very"))
+		if(npc.m_bIsVeryPatient)
 		{
 			i_NpcWeight[npc.index] = 4;
 			ModelSize = 3.5;
@@ -152,7 +153,7 @@ methodmap XenoPatientFew < CClotBody
 		
 		
 		//IDLE
-		if(!StrContains(data, "very"))
+		if(npc.m_bIsVeryPatient)
 		{
 			npc.m_flSpeed = 100;
 			SetEntityRenderColor(npc.index, 40, 100, 40, 255);
@@ -170,6 +171,11 @@ methodmap XenoPatientFew < CClotBody
 		return npc;
 	}
 	
+	property bool m_bIsVeryPatient
+	{
+		public get() { return view_as<bool>(this.m_iMedkitAnnoyance); }
+		public set(bool value) { this.m_iMedkitAnnoyance = value ? 1 : 0; }
+	}
 }
 
 
@@ -188,7 +194,7 @@ public void XenoPatientFew_ClotThink(int iNPC)
 
 	if(npc.flXenoInfectedSpecialHurtTime)
 	{
-		if(!StrContains(data, "very"))
+		if(npc.m_bIsVeryPatient)
 		{
 			npc.m_flSpeed = 200.0;
 			if(npc.flXenoInfectedSpecialHurtTime < gameTime)
@@ -248,7 +254,7 @@ public void XenoPatientFew_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					if(!StrContains(data, "very"))
+					if(npc.m_bIsVeryPatient)
 					{
 						float damage = 10000;
 					}
@@ -362,7 +368,7 @@ public Action XenoPatientFew_OnTakeDamage(int victim, int &attacker, int &inflic
 	{
 		if(!npc.bXenoInfectedSpecialHurt)
 		{
-			if(!StrContains(data, "very"))
+			if(npc.m_bIsVeryPatient)
 			{
 				npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 2.0;
 				npc.bXenoInfectedSpecialHurt = true;
