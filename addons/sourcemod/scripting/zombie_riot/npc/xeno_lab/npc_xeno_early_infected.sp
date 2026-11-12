@@ -133,11 +133,12 @@ methodmap XenoFortifiedEarlyZombie < CClotBody
 	{
 		XenoFortifiedEarlyZombie npc = view_as<XenoFortifiedEarlyZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", "200000", ally));
 		
+		bool isVeryEarly = StrContains(data, "very") != -1;
 
 		i_NpcWeight[npc.index] = 1;
 
 		float ModelSize = GetEntPropFloat(victim, Prop_Send, "m_flModelScale");
-		if(!StrContains(data, "very"))
+		if(npc.m_bIsVeryEarly)
 		{
 			ModelSize = 1.5;
 			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Xeno Very Early Infected");
@@ -164,7 +165,7 @@ methodmap XenoFortifiedEarlyZombie < CClotBody
 		
 		
 		//IDLE
-		if(!StrContains(data, "very"))
+		if(npc.m_bIsVeryEarly)
 		{
 			npc.m_flSpeed = 600.0;
 			SetEntityRenderColor(npc.index, 200, 40, 40, 255);
@@ -181,6 +182,12 @@ methodmap XenoFortifiedEarlyZombie < CClotBody
 		npc.StartPathing();
 		
 		return npc;
+	}
+	
+	property bool m_bIsVeryEarly
+	{
+		public get() { return view_as<bool>(this.m_iMedkitAnnoyance); }
+		public set(bool value) { this.m_iMedkitAnnoyance = value ? 1 : 0; }
 	}
 	
 }
@@ -201,7 +208,7 @@ public void XenoFortifiedEarlyZombie_ClotThink(int iNPC)
 
 	if(npc.bXenoInfectedSpecialHurt)
 	{
-		if(!StrContains(data, "very"))
+		if(npc.m_bIsVeryEarly)
 		{
 			npc.m_flSpeed = 300.0;
 		}
@@ -249,7 +256,7 @@ public void XenoFortifiedEarlyZombie_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					if(!StrContains(data, "very"))
+					if(npc.m_bIsVeryEarly)
 					{
 						float damage = 100.0;
 					}
@@ -363,7 +370,7 @@ public Action XenoFortifiedEarlyZombie_OnTakeDamage(int victim, int &attacker, i
 	{
 		if(!npc.bXenoInfectedSpecialHurt)
 		{
-			if(!StrContains(data, "very"))
+			if(npc.m_bIsVeryEarly)
 			{
 				SetEntityRenderColor(npc.index, 60, 200, 60, 255);
 				npc.bXenoInfectedSpecialHurt = true;
