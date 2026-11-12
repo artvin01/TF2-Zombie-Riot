@@ -119,7 +119,7 @@ methodmap XenoPatientFew < CClotBody
 		
 		bool isVeryPatient = StrContains(data, "very") != -1;
 
-		float ModelSize = GetEntPropFloat(victim, Prop_Send, "m_flModelScale");
+		float ModelSize = GetEntPropFloat(Prop_Send, "m_flModelScale");
 		if(npc.m_bIsVeryPatient)
 		{
 			i_NpcWeight[npc.index] = 4;
@@ -258,10 +258,10 @@ public void XenoPatientFew_ClotThink(int iNPC)
 					float damage = 5000;
 
 					if(npc.m_bIsVeryPatient)
-						damageDealt *= 2;
+						damage = 10000;
 
 					if(ShouldNpcDealBonusDamage(target))
-							damage = 2500.0;
+						damage = 2500.0;
 
 					
 					if(target > 0) 
