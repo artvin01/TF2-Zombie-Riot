@@ -256,18 +256,14 @@ public void XenoFortifiedEarlyZombie_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
+
+					float damage = 90.0;
+
 					if(npc.m_bIsVeryEarly)
-					{
-						float damage = 100.0;
-						if(ShouldNpcDealBonusDamage(target))
-							damage *= 1.2;
-					}
-					else
-					{
-						float damage = 90.0;
-						if(ShouldNpcDealBonusDamage(target))
-							damage *= 1.2;
-					}
+						damage = 100;
+
+					if(ShouldNpcDealBonusDamage(target))
+						damage *= 1.2;
 
 					
 					if(target > 0) 
