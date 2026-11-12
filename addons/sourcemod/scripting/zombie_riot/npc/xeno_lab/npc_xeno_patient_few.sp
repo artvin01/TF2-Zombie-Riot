@@ -117,10 +117,19 @@ methodmap XenoPatientFew < CClotBody
 	{
 		XenoPatientFew npc = view_as<XenoPatientFew>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "2.2", "1500000", ally, false, true));
 		
-		bool isVeryVersion = StrContains(data, "very") != -1;
 
-		i_NpcWeight[npc.index] = (isVeryVersion) ? 4 : 3;
-		
+		float ModelSize = GetEntPropFloat(victim, Prop_Send, "m_flModelScale");
+		if(!StrContains(data, "very"))
+		{
+			i_NpcWeight[npc.index] = 4;
+			ModelSize = 3.5;
+			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Xeno Very Patient Few");
+		}
+		else
+		{
+			i_NpcWeight[npc.index] = 3;
+		}
+
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_WALK");
@@ -143,9 +152,17 @@ methodmap XenoPatientFew < CClotBody
 		
 		
 		//IDLE
-		npc.m_flSpeed = (npc.isVeryVersion) ? 100 : 150;
+		if(!StrContains(data, "very"))
+		{
+			npc.m_flSpeed = 100
+			SetEntityRenderColor(npc.index, 40, 100, 40, 255);
+		}
+		else
+		{
+			npc.m_flSpeed = 150
+			SetEntityRenderColor(npc.index, 50, 185, 50, 255);
+		}
 		
-		SetEntityRenderColor(npc.index, 50, 185, 50, 255);
 		
 		npc.m_flAttackHappenswillhappen = false;
 		npc.StartPathing();
@@ -171,12 +188,25 @@ public void XenoPatientFew_ClotThink(int iNPC)
 
 	if(npc.flXenoInfectedSpecialHurtTime)
 	{
-		npc.m_flSpeed = 300.0;
-		if(npc.flXenoInfectedSpecialHurtTime < gameTime)
+		if(!StrContains(data, "very"))
 		{
-			SetEntityRenderMode(npc.index, RENDER_NORMAL);
-			SetEntityRenderColor(npc.index, 50, 255, 50, 255);
-			npc.m_flSpeed = (npc.isVeryVersion) ? 100 : 150;
+			npc.m_flSpeed = 200.0;
+			if(npc.flXenoInfectedSpecialHurtTime < gameTime)
+			{
+				SetEntityRenderMode(npc.index, RENDER_NORMAL);
+				SetEntityRenderColor(npc.index, 60, 255, 60, 255);
+				npc.m_flSpeed = 100;
+			}
+		}
+		else
+		{
+			npc.m_flSpeed = 300.0;
+			if(npc.flXenoInfectedSpecialHurtTime < gameTime)
+			{
+				SetEntityRenderMode(npc.index, RENDER_NORMAL);
+				SetEntityRenderColor(npc.index, 50, 255, 50, 255);
+				npc.m_flSpeed = 150;
+			}
 		}
 	}
 
@@ -218,7 +248,14 @@ public void XenoPatientFew_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-					float damage = (npc.isVeryVersion) ? 10000 : 5000;
+					if(!StrContains(data, "very"))
+					{
+						float damage = 10000;
+					}
+					else
+					{
+						float damage = 5000;
+					}
 					if(ShouldNpcDealBonusDamage(target))
 						damage = 2500.0;
 
@@ -325,10 +362,20 @@ public Action XenoPatientFew_OnTakeDamage(int victim, int &attacker, int &inflic
 	{
 		if(!npc.bXenoInfectedSpecialHurt)
 		{
-			npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 1.0;
-			npc.bXenoInfectedSpecialHurt = true;
-			SetEntityRenderMode(victim, RENDER_NORMAL);
-			SetEntityRenderColor(victim, 255, 50, 50, 255);
+			if(!StrContains(data, "very"))
+			{
+				npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 2.0;
+				npc.bXenoInfectedSpecialHurt = true;
+				SetEntityRenderMode(victim, RENDER_NORMAL);
+				SetEntityRenderColor(victim, 255, 50, 50, 255);
+			}
+			else
+			{
+				npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 1.0;
+				npc.bXenoInfectedSpecialHurt = true;
+				SetEntityRenderMode(victim, RENDER_NORMAL);
+				SetEntityRenderColor(victim, 255, 50, 50, 255);
+			}
 		}
 	}
 
