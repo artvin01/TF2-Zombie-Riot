@@ -154,12 +154,12 @@ methodmap XenoPatientFew < CClotBody
 		//IDLE
 		if(!StrContains(data, "very"))
 		{
-			npc.m_flSpeed = 100
+			npc.m_flSpeed = 100;
 			SetEntityRenderColor(npc.index, 40, 100, 40, 255);
 		}
 		else
 		{
-			npc.m_flSpeed = 150
+			npc.m_flSpeed = 150;
 			SetEntityRenderColor(npc.index, 50, 185, 50, 255);
 		}
 		
