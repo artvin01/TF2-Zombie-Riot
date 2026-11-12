@@ -133,7 +133,7 @@ methodmap XenoFortifiedEarlyZombie < CClotBody
 	{
 		XenoFortifiedEarlyZombie npc = view_as<XenoFortifiedEarlyZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", "200000", ally));
 		
-		bool isVeryEarly = StrContains(data, "very") != -1;
+		bool m_bisVeryEarly = StrContains(data, "very") != -1;
 
 		i_NpcWeight[npc.index] = 1;
 
@@ -260,7 +260,7 @@ public void XenoFortifiedEarlyZombie_ClotThink(int iNPC)
 					float damage = 90.0;
 
 					if(npc.m_bIsVeryEarly)
-						damage = 100;
+						damage = 100.0;
 
 					if(ShouldNpcDealBonusDamage(target))
 						damage *= 1.2;
