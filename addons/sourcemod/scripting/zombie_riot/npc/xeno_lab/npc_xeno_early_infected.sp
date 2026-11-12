@@ -137,7 +137,7 @@ methodmap XenoFortifiedEarlyZombie < CClotBody
 
 		i_NpcWeight[npc.index] = 1;
 
-		float ModelSize = GetEntPropFloat(victim, Prop_Send, "m_flModelScale");
+		float ModelSize = GetEntPropFloat(Prop_Send, "m_flModelScale");
 		if(npc.m_bIsVeryEarly)
 		{
 			ModelSize = 1.5;
