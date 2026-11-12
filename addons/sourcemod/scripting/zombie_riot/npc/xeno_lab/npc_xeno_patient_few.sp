@@ -254,18 +254,14 @@ public void XenoPatientFew_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
+
+					float damage = 5000;
+
 					if(npc.m_bIsVeryPatient)
-					{
-						float damage = 10000;
-						if(ShouldNpcDealBonusDamage(target))
-							damage = 3000.0;
-					}
-					else
-					{
-						float damage = 5000;
-						if(ShouldNpcDealBonusDamage(target))
+						damageDealt *= 2;
+
+					if(ShouldNpcDealBonusDamage(target))
 							damage = 2500.0;
-					}
 
 					
 					if(target > 0) 
