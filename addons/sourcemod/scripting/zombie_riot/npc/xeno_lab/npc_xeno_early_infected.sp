@@ -137,10 +137,10 @@ methodmap XenoFortifiedEarlyZombie < CClotBody
 
 		i_NpcWeight[npc.index] = 1;
 
-		float ModelSize = 1.15;
+		//float ModelSize = 1.15;
 		if(npc.m_bIsVeryEarly)
 		{
-			ModelSize = 1.5;
+			//ModelSize = 1.5;
 			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Xeno Very Early Infected");
 		}
 		
