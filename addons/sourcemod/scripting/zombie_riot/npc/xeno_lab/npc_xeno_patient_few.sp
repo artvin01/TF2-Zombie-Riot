@@ -119,11 +119,11 @@ methodmap XenoPatientFew < CClotBody
 		
 		bool m_bIsVeryPatient = StrContains(data, "very") != -1;
 
-		float ModelSize = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
+		float ModelSize = 2.2;
 		if(npc.m_bIsVeryPatient)
 		{
 			i_NpcWeight[npc.index] = 4;
-			ModelSize *= 0.75;
+			ModelSize = 3.5;
 			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Xeno Very Patient Few");
 		}
 		else
