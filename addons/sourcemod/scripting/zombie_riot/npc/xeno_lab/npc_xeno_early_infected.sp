@@ -137,9 +137,10 @@ methodmap XenoFortifiedEarlyZombie < CClotBody
 
 		i_NpcWeight[npc.index] = 1;
 
+		float ModelSize = GetEntPropFloat(entity, Prop_Send, "m_flModelScale");
 		if(npc.m_bIsVeryEarly)
 		{
-			enemy.ExtraSize = 1.5;
+			ModelSize *= 0.75;
 			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Xeno Very Early Infected");
 		}
 		
