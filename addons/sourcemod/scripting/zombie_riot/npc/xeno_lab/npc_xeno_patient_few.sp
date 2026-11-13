@@ -60,9 +60,9 @@ public void XenoPatientFew_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return XenoPatientFew(vecPos, vecAng, team, data);
+	return XenoPatientFew(vecPos, vecAng, team);
 }
 
 methodmap XenoPatientFew < CClotBody
@@ -113,25 +113,12 @@ methodmap XenoPatientFew < CClotBody
 	
 	
 	
-	public XenoPatientFew(float vecPos[3], float vecAng[3], int ally, const char[] data)
+	public XenoPatientFew(float vecPos[3], float vecAng[3], int ally)
 	{
 		XenoPatientFew npc = view_as<XenoPatientFew>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "2.2", "1500000", ally, false, true));
 		
-		bool isVeryPatient = StrContains(data, "very") != -1;
-		m_bIsVeryPatient = isVeryPatient;
-
-		//float ModelSize = 2.2;
-		if(npc.m_bIsVeryPatient)
-		{
-			i_NpcWeight[npc.index] = 4;
-			//ModelSize = 3.5;
-			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Xeno Very Patient Few");
-		}
-		else
-		{
-			i_NpcWeight[npc.index] = 3;
-		}
-
+		i_NpcWeight[npc.index] = 3;
+		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_WALK");
@@ -154,17 +141,9 @@ methodmap XenoPatientFew < CClotBody
 		
 		
 		//IDLE
-		if(npc.m_bIsVeryPatient)
-		{
-			npc.m_flSpeed = 100.0;
-			SetEntityRenderColor(npc.index, 40, 100, 40, 255);
-		}
-		else
-		{
-			npc.m_flSpeed = 150.0;
-			SetEntityRenderColor(npc.index, 50, 185, 50, 255);
-		}
+		npc.m_flSpeed = 150.0;
 		
+		SetEntityRenderColor(npc.index, 50, 185, 50, 255);
 		
 		npc.m_flAttackHappenswillhappen = false;
 		npc.StartPathing();
@@ -172,11 +151,6 @@ methodmap XenoPatientFew < CClotBody
 		return npc;
 	}
 	
-	property bool m_bIsVeryPatient
-	{
-		public get() { return view_as<bool>(this.m_iMedkitAnnoyance); }
-		public set(bool value) { this.m_iMedkitAnnoyance = value ? 1 : 0; }
-	}
 }
 
 
@@ -195,25 +169,12 @@ public void XenoPatientFew_ClotThink(int iNPC)
 
 	if(npc.flXenoInfectedSpecialHurtTime)
 	{
-		if(npc.m_bIsVeryPatient)
+		npc.m_flSpeed = 300.0;
+		if(npc.flXenoInfectedSpecialHurtTime < gameTime)
 		{
-			npc.m_flSpeed = 200.0;
-			if(npc.flXenoInfectedSpecialHurtTime < gameTime)
-			{
-				SetEntityRenderMode(npc.index, RENDER_NORMAL);
-				SetEntityRenderColor(npc.index, 60, 255, 60, 255);
-				npc.m_flSpeed = 100.0;
-			}
-		}
-		else
-		{
-			npc.m_flSpeed = 300.0;
-			if(npc.flXenoInfectedSpecialHurtTime < gameTime)
-			{
-				SetEntityRenderMode(npc.index, RENDER_NORMAL);
-				SetEntityRenderColor(npc.index, 50, 255, 50, 255);
-				npc.m_flSpeed = 150.0;
-			}
+			SetEntityRenderMode(npc.index, RENDER_NORMAL);
+			SetEntityRenderColor(npc.index, 50, 255, 50, 255);
+			npc.m_flSpeed = 150.0;
 		}
 	}
 
@@ -255,12 +216,7 @@ public void XenoPatientFew_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
-
 					float damage = 5000.0;
-
-					if(npc.m_bIsVeryPatient)
-						damage = 10000.0;
-
 					if(ShouldNpcDealBonusDamage(target))
 						damage = 2500.0;
 
@@ -367,20 +323,10 @@ public Action XenoPatientFew_OnTakeDamage(int victim, int &attacker, int &inflic
 	{
 		if(!npc.bXenoInfectedSpecialHurt)
 		{
-			if(npc.m_bIsVeryPatient)
-			{
-				npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 2.0;
-				npc.bXenoInfectedSpecialHurt = true;
-				SetEntityRenderMode(victim, RENDER_NORMAL);
-				SetEntityRenderColor(victim, 255, 50, 50, 255);
-			}
-			else
-			{
-				npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 1.0;
-				npc.bXenoInfectedSpecialHurt = true;
-				SetEntityRenderMode(victim, RENDER_NORMAL);
-				SetEntityRenderColor(victim, 255, 50, 50, 255);
-			}
+			npc.flXenoInfectedSpecialHurtTime = GetGameTime(npc.index) + 1.0;
+			npc.bXenoInfectedSpecialHurt = true;
+			SetEntityRenderMode(victim, RENDER_NORMAL);
+			SetEntityRenderColor(victim, 255, 50, 50, 255);
 		}
 	}
 
@@ -404,5 +350,3 @@ public void XenoPatientFew_NPCDeath(int entity)
 		
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }
-
-
