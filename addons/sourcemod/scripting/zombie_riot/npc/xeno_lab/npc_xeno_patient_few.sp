@@ -117,7 +117,8 @@ methodmap XenoPatientFew < CClotBody
 	{
 		XenoPatientFew npc = view_as<XenoPatientFew>(CClotBody(vecPos, vecAng, "models/zombie/poison.mdl", "2.2", "1500000", ally, false, true));
 		
-		bool m_bIsVeryPatient = StrContains(data, "very") != -1;
+		bool isVeryPatient = StrContains(data, "very") != -1;
+		m_bIsVeryPatient = isVeryPatient;
 
 		//float ModelSize = 2.2;
 		if(npc.m_bIsVeryPatient)
