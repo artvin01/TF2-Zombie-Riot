@@ -119,11 +119,11 @@ methodmap XenoPatientFew < CClotBody
 		
 		bool m_bIsVeryPatient = StrContains(data, "very") != -1;
 
-		float ModelSize = 2.2;
+		//float ModelSize = 2.2;
 		if(npc.m_bIsVeryPatient)
 		{
 			i_NpcWeight[npc.index] = 4;
-			ModelSize = 3.5;
+			//ModelSize = 3.5;
 			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Xeno Very Patient Few");
 		}
 		else
