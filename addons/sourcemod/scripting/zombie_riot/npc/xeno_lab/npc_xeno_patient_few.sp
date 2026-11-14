@@ -350,5 +350,3 @@ public void XenoPatientFew_NPCDeath(int entity)
 		
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }
-
-

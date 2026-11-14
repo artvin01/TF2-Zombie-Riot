@@ -141,7 +141,7 @@ methodmap XenoLabSecurity < CClotBody
 		XenoLabSecurity npc = view_as<XenoLabSecurity>(CClotBody(vecPos, vecAng, SECURITY_MODEL, "1.70", "125000", ally, false, true));
 		// 125000 HP - Super boss tier
 		
-		i_NpcWeight[npc.index] = 6; 
+		i_NpcWeight[npc.index] = 5; 
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
 		int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
@@ -155,9 +155,27 @@ methodmap XenoLabSecurity < CClotBody
 		func_NPCDeath[npc.index] = XenoLabSecurity_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = XenoLabSecurity_OnTakeDamage;
 		func_NPCThink[npc.index] = XenoLabSecurity_ClotThink;
-		fl_TotalArmor[npc.index] = 0.9;
+		if (npc.m_bIsLabVersion && npc.Anger) 
+		{
+			fl_TotalArmor[npc.index] = 0.75;
+			npc.m_flSpeed = 290.0;
+		}
+		else if (npc.m_bIsLabVersion)
+		{
+			fl_TotalArmor[npc.index] = 0.9;
+			npc.m_flSpeed = 250.0;
+		}
+		else if (npc.Anger)
+		{
+			fl_TotalArmor[npc.index] = 0.8;
+			npc.m_flSpeed = 270.0;
+		}
+		else
+		{
+			fl_TotalArmor[npc.index] = 0.9;
+			npc.m_flSpeed = 230.0;
+		}
 		
-		npc.m_flSpeed = 225.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
@@ -228,12 +246,12 @@ static void Frame_AnnounceSpawn(int ref)
 	XenoLabSecurity npc = view_as<XenoLabSecurity>(entity);
 	if (npc.m_bIsLabVersion)
 	{
-		CPrintToChatAll("{red}[XENO LAB SECURITY PROTOCOL ACTIVATED]");
+		CPrintToChatAll("{green}[XENO LAB SECURITY PROTOCOL ACTIVATED]");
 		NPCTalkMessage(npc.index, "INTRUDERS DETECTED. Initiating containment procedures.");
 	}
 	else
 	{
-		CPrintToChatAll("{red}[XENO SECURITY DEPLOYED]");
+		CPrintToChatAll("{green}[XENO SECURITY DEPLOYED]");
 		NPCTalkMessage(npc.index, "Target acquired. Commencing infection protocol.");
 	}
 }
@@ -387,7 +405,27 @@ public Action Timer_SecurityInfectionBlast(Handle timer, DataPack pack)
 	
 	XenoLabSecurity npc = view_as<XenoLabSecurity>(entity);
 	
-	npc.m_flSpeed = (npc.m_bIsLabVersion && npc.Anger) ? 300.0 : 225.0;
+	if (npc.m_bIsLabVersion && npc.Anger) 
+	{
+		fl_TotalArmor[npc.index] = 0.75;
+		npc.m_flSpeed = 290.0;
+	}
+	else if (npc.m_bIsLabVersion)
+	{
+		fl_TotalArmor[npc.index] = 0.9;
+		npc.m_flSpeed = 250.0;
+	}
+	else if (npc.Anger)
+	{
+		fl_TotalArmor[npc.index] = 0.8;
+		npc.m_flSpeed = 270.0;
+	}
+	else
+	{
+		fl_TotalArmor[npc.index] = 0.9;
+		npc.m_flSpeed = 230.0;
+	}
+
 	npc.m_bisWalking = true;
 	int iActivity = npc.LookupActivity("ACT_MP_RUN_MELEE");
 	if(iActivity > 0) npc.StartActivity(iActivity);
@@ -496,7 +534,7 @@ void Security_InfectionHit(int entity, int victim, float damage, int weapon)
 		
 		// stronger infection in enraged mode aka lab version only
 		int tickCount = (npc.m_bIsLabVersion && npc.Anger) ? 15 : 10;
-		float tickDamage = (npc.m_bIsLabVersion && npc.Anger) ? 120.0 : 100.0;
+		float tickDamage = (npc.m_bIsLabVersion && npc.Anger) ? 115.0 : 100.0;
 		
 		StartBleedingTimer(victim, entity, tickDamage, tickCount, -1, DMG_SLASH, 0, 1);
 		
@@ -614,7 +652,14 @@ void Security_EnterEnrageMode(XenoLabSecurity npc)
 	SetEntityRenderColor(npc.m_iWearable3, 255, 0, 0, 255);
 	SetEntityRenderColor(npc.m_iWearable4, 255, 0, 0, 255);
 	
-	npc.m_flSpeed = 280.0;
+	if (npc.m_bIsLabVersion && npc.Anger)
+	{
+	    npc.m_flSpeed = 290.0;
+	}
+	else
+	{
+	    npc.m_flSpeed = 270.0;
+	}
 	
 	float pos[3];
 	GetEntPropVector(npc.index, Prop_Data, "m_vecAbsOrigin", pos);
@@ -626,7 +671,7 @@ void Security_EnterEnrageMode(XenoLabSecurity npc)
 	npc.PlayAngerSound();
 	
 	CPrintToChatAll("{red}[CRITICAL WARNING]");
-	CPrintToChatAll("{crimson}Xeno Lab Security{default}: Damage threshold exceeded. Activating emergency protocols.");
+	CPrintToChatAll("{green}Xeno Lab Security{default}: Damage threshold exceeded. Activating emergency protocols.");
 	CPrintToChatAll("{crimson}Xeno Lab Security{default}: ALL SAFETY LIMITERS REMOVED.");
 	
 	EmitSoundToAll("weapons/physcannon/energy_bounce2.wav", npc.index, _, 90, _, 0.8);

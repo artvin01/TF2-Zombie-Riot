@@ -356,5 +356,3 @@ public void XenoFortifiedEarlyZombie_NPCDeath(int entity)
 		
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }
-
-

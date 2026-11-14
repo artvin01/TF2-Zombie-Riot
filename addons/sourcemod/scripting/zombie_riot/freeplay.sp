@@ -934,7 +934,7 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 			count = RoundToFloor((count * (((postWaves * 1.5) + 80) * 0.009)) * 0.5);
 			enemy.Credits += 100.0;
 
-			if(postWaves+1 < 89)
+			if(postWaves+1 < 49)
 			{
 				switch(GetRandomInt(1, 6))
 				{
@@ -2290,7 +2290,7 @@ void Freeplay_OnEndWave(int &cash)
 		cash += extracash;
 	}
 
-	Freeplay_SetRemainingCash(583.0);
+	Freeplay_SetRemainingCash(550.0);
 	Freeplay_SetCashTime(GetGameTime() + 20.0);
 }
 
