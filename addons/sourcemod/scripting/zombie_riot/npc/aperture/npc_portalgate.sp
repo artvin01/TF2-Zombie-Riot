@@ -356,8 +356,8 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 				}
 			}
 		}
-		//Wave 30-40 (THE LAST OF THE RAID RUSH)
-		if(wave >= 41)
+		//for umbral incursion
+		if(wave >= 41 && wave <= 55)
 		{
 			switch(GetRandomInt(0,12))
 			{
@@ -391,11 +391,11 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 				}
 				case 7:
 				{
-					PortalGateSpawn(npc.index, "npc_refragmented_medic", pos, ang, team, 7500);
+					PortalGateSpawn(npc.index, "npc_refragmented_medic", pos, ang, team, 6000);
 				}
 				case 8:
 				{
-						PortalGateSpawn(npc.index, "npc_refragmented_spy", pos, ang, team, 25000);
+					PortalGateSpawn(npc.index, "npc_refragmented_spy", pos, ang, team, 25000);
 				}
 				case 9:
 				{
@@ -408,6 +408,222 @@ public void PortalGate_ClotThink(PortalGate npc, int iNPC)
 				case 11:
 				{
 					PortalGateSpawn(npc.index, "npc_refragmented_defectio", pos, ang, team, 25000);
+				}
+			}
+		}
+		if(wave >= 55 && wave <= 70)
+		{
+			switch(GetRandomInt(0,12))
+			{
+				case 0:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_headcrabzombie", pos, ang, team, 35000);
+				}
+				case 1:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_fastzombie", pos, ang, team, 35000);
+				}
+				case 2:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_poisonzombie", pos, ang, team, 35000);
+				}
+				case 3:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_combine_police_pistol", pos, ang, team, 35000);
+				}
+				case 4:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_combine_soldier_ar2", pos, ang, team, 35000);
+				}
+				case 5:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_combine_soldier_elite", pos, ang, team, 35000);
+				}
+				case 6:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_heavy", pos, ang, team, 35000);
+				}
+				case 7:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_medic", pos, ang, team, 7000);
+				}
+				case 8:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_spy", pos, ang, team, 35000);
+				}
+				case 9:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_parasihtta", pos, ang, team, 35000);
+				}
+				case 10:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_hostis", pos, ang, team, 35000);
+				}
+				case 11:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_defectio", pos, ang, team, 35000);
+				}
+			}
+		}
+		if(wave >= 70 && wave <= 85)
+		{
+			switch(GetRandomInt(0,12))
+			{
+				case 0:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_headcrabzombie", pos, ang, team, 55000);
+				}
+				case 1:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_fastzombie", pos, ang, team, 55000);
+				}
+				case 2:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_poisonzombie", pos, ang, team, 55000);
+				}
+				case 3:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_combine_police_pistol", pos, ang, team, 55000);
+				}
+				case 4:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_combine_soldier_ar2", pos, ang, team, 55000);
+				}
+				case 5:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_combine_soldier_elite", pos, ang, team, 55000);
+				}
+				case 6:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_heavy", pos, ang, team, 55000);
+				}
+				case 7:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_medic", pos, ang, team, 8000);
+				}
+				case 8:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_spy", pos, ang, team, 55000);
+				}
+				case 9:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_parasihtta", pos, ang, team, 55000);
+				}
+				case 10:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_hostis", pos, ang, team, 55000);
+				}
+				case 11:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_defectio", pos, ang, team, 55000);
+				}
+			}
+		}
+		if(wave >= 85 && wave <= 100)
+		{
+			switch(GetRandomInt(0,12))
+			{
+				case 0:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_headcrabzombie", pos, ang, team, 85000);
+				}
+				case 1:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_fastzombie", pos, ang, team, 85000);
+				}
+				case 2:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_poisonzombie", pos, ang, team, 85000);
+				}
+				case 3:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_combine_police_pistol", pos, ang, team, 85000);
+				}
+				case 4:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_combine_soldier_ar2", pos, ang, team, 85000);
+				}
+				case 5:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_combine_soldier_elite", pos, ang, team, 85000);
+				}
+				case 6:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_heavy", pos, ang, team, 85000);
+				}
+				case 7:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_medic", pos, ang, team, 9000);
+				}
+				case 8:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_spy", pos, ang, team, 85000);
+				}
+				case 9:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_parasihtta", pos, ang, team, 85000);
+				}
+				case 10:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_hostis", pos, ang, team, 85000);
+				}
+				case 11:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_defectio", pos, ang, team, 85000);
+				}
+			}
+		}
+		if(wave >= 100)
+		{
+			switch(GetRandomInt(0,12))
+			{
+				case 0:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_headcrabzombie", pos, ang, team, 100000);
+				}
+				case 1:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_fastzombie", pos, ang, team, 100000);
+				}
+				case 2:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_poisonzombie", pos, ang, team, 100000);
+				}
+				case 3:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_combine_police_pistol", pos, ang, team, 100000);
+				}
+				case 4:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_combine_soldier_ar2", pos, ang, team, 100000);
+				}
+				case 5:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_combine_soldier_elite", pos, ang, team, 100000);
+				}
+				case 6:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_heavy", pos, ang, team, 100000);
+				}
+				case 7:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_medic", pos, ang, team, 10000);
+				}
+				case 8:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_spy", pos, ang, team, 100000);
+				}
+				case 9:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_parasihtta", pos, ang, team, 100000);
+				}
+				case 10:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_hostis", pos, ang, team, 100000);
+				}
+				case 11:
+				{
+					PortalGateSpawn(npc.index, "npc_refragmented_defectio", pos, ang, team, 100000);
 				}
 			}
 		}
