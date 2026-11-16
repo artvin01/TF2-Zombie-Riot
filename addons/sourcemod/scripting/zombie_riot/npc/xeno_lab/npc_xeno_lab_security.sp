@@ -157,7 +157,7 @@ methodmap XenoLabSecurity < CClotBody
 		func_NPCThink[npc.index] = XenoLabSecurity_ClotThink;
 		if (npc.m_bIsLabVersion && npc.Anger) 
 		{
-			fl_TotalArmor[npc.index] = 0.75;
+			fl_TotalArmor[npc.index] = 0.8;
 			npc.m_flSpeed = 290.0;
 		}
 		else if (npc.m_bIsLabVersion)
@@ -167,7 +167,7 @@ methodmap XenoLabSecurity < CClotBody
 		}
 		else if (npc.Anger)
 		{
-			fl_TotalArmor[npc.index] = 0.8;
+			fl_TotalArmor[npc.index] = 0.85;
 			npc.m_flSpeed = 270.0;
 		}
 		else
