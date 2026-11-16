@@ -4502,6 +4502,11 @@
 		"it"	"''Piede sul pedale, SONO TRASH METAL!''\nSblocca altri due proiettili e migliora ulteriormente le statistiche di base.\nUn oggetto di indicibile pericolo si nasconde in questo bidone della spazzatura..."
 		"ko"	"-새로운 투사체 종류 2개 추가\n-피해량, 재장전 속도 증가\n-이 통에는 말로 표현할 수 없을만큼 위험한 것이 숨겨져있습니다..."
 	}
+	"Dim Desc"
+	{
+		"en"	"''A forbidden weapon that somehow made it back to this relm.''\nCharge up meter by hitting enemies with M1.\n-M2: Summon your trustworthy minions.\nWARNING. THIS WEAPON IS NOT RELATED TO LORE.\n''Don't let Bladedance figure out this weapon'' -???-"
+		"ko"	"''이 세상에 다시 돌아온 추방된 무기.'' \nM1으로 투사체를 날려 미터를 충전 \n이후 M2로 충직한 하수인들을 소환. \n''절대 칼춤이 이걸 찾게 두지 마'' -???-"
+	}
 	"Telekinesis Desc"
 	{
 		"en"	"''A single dosage of an experimental drug, designed to grant psychic powers.''\nFires a shotgun blast of projectiles, which home in on the target you were aiming at.\n-M2: Grab and hold a zombie, rapidly draining your mana.\-nPress M2 again to throw the zombie."
