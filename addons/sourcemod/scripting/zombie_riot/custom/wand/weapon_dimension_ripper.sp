@@ -807,13 +807,13 @@ public void Weapon_Dimension_Summon_Aperture(int client, int weapon, bool &resul
 		case 1:
 			Dimension_Summon_Npc(client, "npc_aperture_combatant_v2" ,weapon, 1.2, 0.6, "eyeboss_tp_vortex");
 		case 2:
-			Dimension_Summon_Npc(client, "npc_aperture_halter" ,weapon, 1.5, 1.0, "eyeboss_tp_vortex");
+			Dimension_Summon_Npc(client, "npc_aperture_collector" ,weapon, 1.5, 0.75, "eyeboss_tp_vortex");
 		case 3:
-			Dimension_Summon_Npc(client, "npc_aperture_minigunner_v2" ,weapon, 1.3, 0.8, "eyeboss_tp_vortex");
+			Dimension_Summon_Npc(client, "npc_aperture_minigunner_v2" ,weapon, 1.2, 0.8, "eyeboss_tp_vortex");
 		case 4:
 			Dimension_Summon_Npc(client, "npc_aperture_huntsman_v2" ,weapon, 1.2, 1.4, "eyeboss_tp_vortex");
 		case 5:
-			Dimension_Summon_Npc(client, "npc_last_survivor_science" ,weapon, 1.5, 1.5, "eyeboss_tp_vortex");
+			Dimension_Summon_Npc(client, "npc_last_survivor_science" ,weapon, 1.7, 1.5, "eyeboss_tp_vortex");
 		case 6:
 			Dimension_Summon_Npc(client, "npc_aperture_specialist_v2" ,weapon, 1.2, 1.3, "eyeboss_tp_vortex");
 		default: //This should not happen
