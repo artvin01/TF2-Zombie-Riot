@@ -222,6 +222,8 @@ def parse_wave(wave_idx: int, wave_data: dict[str, Any], auto_wave_cash: bool, r
         # NOTE count is no longer bold when not scaled!!
         count = "1" if wave_entry_data["count"] == "0" else wave_entry_data["count"]
 
+        if wave_entry_data["plugin"] == "npc_victoria_factory": wave_entry_data["plugin"] = "npc_vesta_factory"
+
         if wave_entry_data["plugin"] in NPCS_BY_FILENAME:
             npc_data = NPCS_BY_FILENAME[wave_entry_data["plugin"]]
             if (npc_data.category=="Type_Hidden") and (wave_entry_data["plugin"] not in modules.shared.NPC_WHITELIST):
