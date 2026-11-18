@@ -1,6 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+static bool b_IsVeryEarly[MAXENTITIES];
+
 static char g_DeathSounds[][] = {
 	"npc/zombie/zombie_die1.wav",
 	"npc/zombie/zombie_die2.wav",
@@ -76,13 +78,19 @@ public void XenoFortifiedEarlyZombie_OnMapStart_NPC()
 	NPC_Add(data);
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return XenoFortifiedEarlyZombie(vecPos, vecAng, team);
+	return XenoFortifiedEarlyZombie(vecPos, vecAng, team, data);
 }
 
 methodmap XenoFortifiedEarlyZombie < CClotBody
 {
+	property bool m_bIsVeryEarly
+		{
+			public get() { return b_IsVeryEarly[this.index]; }
+			public set(bool value) { b_IsVeryEarly[this.index] = value; }
+		}
+
 	public void PlayIdleSound() {
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
 			return;
@@ -129,11 +137,21 @@ methodmap XenoFortifiedEarlyZombie < CClotBody
 	
 	
 	
-	public XenoFortifiedEarlyZombie(float vecPos[3], float vecAng[3], int ally)
+	public XenoFortifiedEarlyZombie(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		XenoFortifiedEarlyZombie npc = view_as<XenoFortifiedEarlyZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", "1.15", "200000", ally));
+		bool isVeryEarly = StrContains(data, "very") != -1;
+
+		XenoFortifiedEarlyZombie npc = view_as<XenoFortifiedEarlyZombie>(CClotBody(vecPos, vecAng, "models/zombie/classic.mdl", isVeryEarly ? "1.5" : "1.15", "200000", ally));
 		
+		npc.m_bIsVeryEarly = isVeryEarly;
+
 		i_NpcWeight[npc.index] = 1;
+
+		if(npc.m_bIsVeryEarly)
+		{
+			i_NpcWeight[npc.index] = 2;
+			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Xeno Very Early Infected");
+		}
 		
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
 		
@@ -156,9 +174,17 @@ methodmap XenoFortifiedEarlyZombie < CClotBody
 		
 		
 		//IDLE
-		npc.m_flSpeed = 550.0;
+		if(npc.m_bIsVeryEarly)
+		{
+			npc.m_flSpeed = 600.0;
+			SetEntityRenderColor(npc.index, 200, 40, 40, 255);
+		}
+		else
+		{
+			npc.m_flSpeed = 550.0;
+			SetEntityRenderColor(npc.index, 185, 50, 50, 255);
+		}
 		
-		SetEntityRenderColor(npc.index, 185, 50, 50, 255);
 		
 //		SetEntPropFloat(npc.index, Prop_Data, "m_speed",npc.m_flSpeed);
 		npc.m_flAttackHappenswillhappen = false;
@@ -185,7 +211,14 @@ public void XenoFortifiedEarlyZombie_ClotThink(int iNPC)
 
 	if(npc.bXenoInfectedSpecialHurt)
 	{
-		npc.m_flSpeed = 260.0;
+		if(npc.m_bIsVeryEarly)
+		{
+			npc.m_flSpeed = 300.0;
+		}
+		else
+		{
+			npc.m_flSpeed = 260.0;
+		}
 	}
 	if(npc.m_blPlayHurtAnimation)
 	{
@@ -226,7 +259,12 @@ public void XenoFortifiedEarlyZombie_ClotThink(int iNPC)
 					
 					float vecHit[3];
 					TR_GetEndPosition(vecHit, swingTrace);
+
 					float damage = 90.0;
+
+					if(npc.m_bIsVeryEarly)
+						damage = 100.0;
+
 					if(ShouldNpcDealBonusDamage(target))
 						damage *= 1.2;
 
@@ -332,8 +370,16 @@ public Action XenoFortifiedEarlyZombie_OnTakeDamage(int victim, int &attacker, i
 	{
 		if(!npc.bXenoInfectedSpecialHurt)
 		{
-			SetEntityRenderColor(npc.index, 50, 185, 50, 255);
-			npc.bXenoInfectedSpecialHurt = true;
+			if(npc.m_bIsVeryEarly)
+			{
+				SetEntityRenderColor(npc.index, 60, 200, 60, 255);
+				npc.bXenoInfectedSpecialHurt = true;
+			}
+			else
+			{
+				SetEntityRenderColor(npc.index, 50, 185, 50, 255);
+				npc.bXenoInfectedSpecialHurt = true;
+			}
 		}
 	}
 	if (npc.m_flHeadshotCooldown < GetGameTime(npc.index))
@@ -356,5 +402,3 @@ public void XenoFortifiedEarlyZombie_NPCDeath(int entity)
 		
 //	AcceptEntityInput(npc.index, "KillHierarchy");
 }
-
-
