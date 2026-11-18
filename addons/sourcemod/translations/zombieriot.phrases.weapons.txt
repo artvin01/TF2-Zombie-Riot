@@ -3664,6 +3664,11 @@
 		"ru"		"Жезл Призмы"
 		"ko"		"프리즘 완드"
 	}
+	"Dimension Ripper"
+	{
+		"en"		"Dimension Ripper"
+		"ko"		"차원 찢개"
+	}
 	"Wand of Osmosis"
 	{
 		"en"		"Wand of Osmosis"
