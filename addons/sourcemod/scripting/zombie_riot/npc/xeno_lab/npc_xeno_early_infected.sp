@@ -192,12 +192,6 @@ methodmap XenoFortifiedEarlyZombie < CClotBody
 		return npc;
 	}
 	
-	property bool npc.m_bIsVeryEarly
-	{
-		public get() { return view_as<bool>(this.m_iMedkitAnnoyance); }
-		public set(bool value) { this.m_iMedkitAnnoyance = value ? 1 : 0; }
-	}
-	
 }
 
 
