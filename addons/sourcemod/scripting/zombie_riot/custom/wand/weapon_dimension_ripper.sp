@@ -667,17 +667,17 @@ public void Weapon_Dimension_Summon_Void(int client, int weapon, bool &result, i
 	switch(GetRandomInt(1, 6))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, "npc_blood_pollutor" ,weapon, 1.3, 1.75, "utaunt_headless_glow");
+			Dimension_Summon_Npc(client, "npc_blood_pollutor" ,weapon, 1.2, 1.75, "utaunt_headless_glow");
 		case 2:
-			Dimension_Summon_Npc(client, "npc_growing_exat" ,weapon, 1.5, 1.5, "utaunt_headless_glow");
+			Dimension_Summon_Npc(client, "npc_growing_exat" ,weapon, 1.4, 1.5, "utaunt_headless_glow");
 		case 3:
-			Dimension_Summon_Npc(client, "npc_blobbing_monster" ,weapon, 1.5, 1.5, "utaunt_headless_glow");
+			Dimension_Summon_Npc(client, "npc_blobbing_monster" ,weapon, 1.4, 1.5, "utaunt_headless_glow");
 		case 4:
-			Dimension_Summon_Npc(client, "npc_void_sprayer" ,weapon, 1.2, 1.4, "utaunt_headless_glow");
+			Dimension_Summon_Npc(client, "npc_void_sprayer" ,weapon, 1.1, 1.4, "utaunt_headless_glow");
 		case 5:
-			Dimension_Summon_Npc(client, "npc_void_ixufan" ,weapon, 1.75, 1.75, "utaunt_headless_glow");
+			Dimension_Summon_Npc(client, "npc_void_ixufan" ,weapon, 1.6, 1.75, "utaunt_headless_glow");
 		case 6:
-			Dimension_Summon_Npc(client, "npc_enframed_voider" ,weapon, 1.0, 1.2, "utaunt_headless_glow");
+			Dimension_Summon_Npc(client, "npc_enframed_voider" ,weapon, 0.9, 1.2, "utaunt_headless_glow");
 		default: //This should not happen
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
@@ -690,17 +690,17 @@ public void Weapon_Dimension_Summon_Void_PAP(int client, int weapon, bool &resul
 	switch(GetRandomInt(1, 6))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, "npc_void_expidonsan_cleaner" ,weapon, 1.1, 2.0, "utaunt_headless_glow");
+			Dimension_Summon_Npc(client, "npc_void_expidonsan_cleaner" ,weapon, 1.0, 2.0, "utaunt_headless_glow");
 		case 2:
-			Dimension_Summon_Npc(client, "npc_void_erasus" ,weapon, 1.1, 1.4, "utaunt_headless_glow");
+			Dimension_Summon_Npc(client, "npc_void_erasus" ,weapon, 1.0, 1.4, "utaunt_headless_glow");
 		case 3:
-			Dimension_Summon_Npc(client, "npc_void_total_growth" ,weapon, 1.6, 1.4, "utaunt_headless_glow");
+			Dimension_Summon_Npc(client, "npc_void_total_growth" ,weapon, 1.5, 1.4, "utaunt_headless_glow");
 		case 4:
-			Dimension_Summon_Npc(client, "npc_void_speechless" ,weapon, 0.7, 0.2, "utaunt_headless_glow");
+			Dimension_Summon_Npc(client, "npc_void_speechless" ,weapon, 0.65, 0.2, "utaunt_headless_glow");
 		case 5:
-			Dimension_Summon_Npc(client, "npc_void_kunul" ,weapon, 1.4, 2.0, "utaunt_headless_glow");
+			Dimension_Summon_Npc(client, "npc_void_kunul" ,weapon, 1.3, 2.0, "utaunt_headless_glow");
 		case 6:
-			Dimension_Summon_Npc(client, "npc_void_encasulator" ,weapon, 1.6, 2.5, "utaunt_headless_glow");
+			Dimension_Summon_Npc(client, "npc_void_encasulator" ,weapon, 1.5, 2.5, "utaunt_headless_glow");
 		default: //This should not happen
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
