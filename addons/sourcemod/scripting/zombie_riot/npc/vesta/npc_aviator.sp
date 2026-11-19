@@ -1,6 +1,8 @@
 #pragma semicolon 1
 #pragma newdecls required
 
+static bool b_IsNoMech[MAXENTITIES];
+
 static const char g_DeathSounds[][] = {
 	")vo/engineer_negativevocalization01.mp3",
 	")vo/engineer_negativevocalization02.mp3",
@@ -72,7 +74,7 @@ static void ClotPrecache()
 	PrecacheModel("models/player/engineer.mdl");
 }
 
-static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
+static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
 	return Aviator(vecPos, vecAng, team);
 }
