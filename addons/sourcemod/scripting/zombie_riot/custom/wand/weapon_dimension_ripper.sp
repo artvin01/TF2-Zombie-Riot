@@ -102,7 +102,7 @@ public void Dimension_Cooldown_Logic(int client, int weapon)
 	}
 }
 
-public void Weapon_Dimension_Wand(int client, int weapon, bool crit)
+public void Weapon_Dimension_Wand(int client, int weapon)
 {
 	int mana_cost;
 	mana_cost = RoundToCeil(Attributes_Get(weapon, 733, 1.0));
@@ -140,7 +140,7 @@ public void Weapon_Dimension_Wand(int client, int weapon, bool crit)
 		
 		if(IsValidEnemy(client, target))
 		{
-			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, 3, weapon, "raygun_projectile_blue_crit");
+			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_DIMENSION_RIPPER , weapon, "raygun_projectile_blue_crit");
 
 			//We have found a victim.
 			if(!IsEntityAlive(target))
@@ -162,19 +162,19 @@ public void Weapon_Dimension_Wand(int client, int weapon, bool crit)
 			{
 				case 1:
 				{
-					Wand_Projectile_Spawn(client, speed, time, damage, 3/*Default wand*/, weapon, "raygun_projectile_blue_trail");
+					Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_DIMENSION_RIPPER, weapon, "raygun_projectile_blue_trail");
 				}
 				case 2:
 				{
-					Wand_Projectile_Spawn(client, speed, time, damage, 3/*Default wand*/, weapon, "raygun_projectile_blue_crit_trail");
+					Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_DIMENSION_RIPPER, weapon, "raygun_projectile_blue_crit_trail");
 				}
 				case 3:
 				{
-					Wand_Projectile_Spawn(client, speed, time, damage, 3/*Default wand*/, weapon, "raygun_projectile_red_trail");
+					Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_DIMENSION_RIPPER, weapon, "raygun_projectile_red_trail");
 				}
 				case 4:
 				{
-					Wand_Projectile_Spawn(client, speed, time, damage, 3/*Default wand*/, weapon, "raygun_projectile_red_crit_trail");
+					Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_DIMENSION_RIPPER, weapon, "raygun_projectile_red_crit_trail");
 				}
 				default: //This should not happen
 				{
@@ -489,7 +489,7 @@ public void Weapon_Dimension_Summon_Dweller(int client, int weapon, bool &result
 		case 2:
 			Dimension_Summon_Npc(client, "npc_abyssreefbreaker" ,weapon, 1.3, 1.4, "utaunt_spirit_winter_rings");
 		case 3:
-			Dimension_Summon_Npc(client, "npc_abyssspewer" ,weapon, 1.1, 2.5, "utaunt_spirit_winter_rings");
+			Dimension_Summon_Npc(client, "npc_abyssspewer" ,weapon, 1.1, 2.25, "utaunt_spirit_winter_rings");
 		case 4:
 			Dimension_Summon_Npc(client, "npc_dweller_grunwald_beserker" ,weapon, 1.6, 1.5, "utaunt_spirit_winter_rings");
 		case 5:
@@ -539,7 +539,7 @@ public void Weapon_Dimension_Summon_Expidonsa(int client, int weapon, bool &resu
 		case 5:
 			Dimension_Summon_Npc(client, "npc_vaus_magica" ,weapon, 1.3, 1.75, "eyeboss_death_vortex");
 		case 6:
-			Dimension_Summon_Npc(client, "npc_heavy_punuel" ,weapon, 1.4, 1.6, "eyeboss_death_vortex");
+			Dimension_Summon_Npc(client, "npc_heavy_punuel" ,weapon, 1.2, 1.6, "eyeboss_death_vortex");
 		default: //This should not happen
 		{
 			ShowSyncHudText(client,  SyncHud_Notifaction, "Summon Failed. Scream at devs");//none
@@ -560,7 +560,7 @@ public void Weapon_Dimension_Summon_Expidonsa_PAP(int client, int weapon, bool &
 		case 4:
 			Dimension_Summon_Npc(client, "npc_soldine" ,weapon, 1.5, 1.5, "eyeboss_death_vortex");
 		case 5:
-			Dimension_Summon_Npc(client, "npc_haltera" ,weapon, 1.4, 1.3, "eyeboss_death_vortex");
+			Dimension_Summon_Npc(client, "npc_haltera" ,weapon, 1.2, 1.3, "eyeboss_death_vortex");
 		case 6:
 			Dimension_Summon_Npc(client, "npc_vaus_shaldus" ,weapon, 1.2, 1.6, "eyeboss_death_vortex");
 		default: //This should not happen
@@ -696,7 +696,7 @@ public void Weapon_Dimension_Summon_Void_PAP(int client, int weapon, bool &resul
 		case 3:
 			Dimension_Summon_Npc(client, "npc_void_total_growth" ,weapon, 1.6, 1.4, "utaunt_headless_glow");
 		case 4:
-			Dimension_Summon_Npc(client, "npc_void_speechless" ,weapon, 0.7, 0.3, "utaunt_headless_glow");
+			Dimension_Summon_Npc(client, "npc_void_speechless" ,weapon, 0.7, 0.2, "utaunt_headless_glow");
 		case 5:
 			Dimension_Summon_Npc(client, "npc_void_kunul" ,weapon, 1.4, 2.0, "utaunt_headless_glow");
 		case 6:
@@ -744,7 +744,7 @@ public void Weapon_Dimension_Summon_Almina_PAP(int client, int weapon, bool &res
 		case 4:
 			Dimension_Summon_Npc(client, "npc_elite_kinat" ,weapon, 1.3, 2.8, "teleported_blue");
 		case 5:
-			Dimension_Summon_Npc(client, "npc_anti_sea_robot" ,weapon, 1.75, 0.75, "teleported_blue");
+			Dimension_Summon_Npc(client, "npc_anti_sea_robot" ,weapon, 1.75, 0.6, "teleported_blue");
 		case 6:
 			Dimension_Summon_Npc(client, "npc_combastia" ,weapon, 1.5, 2.0, "teleported_blue");
 		default: //This should not happen
@@ -836,7 +836,7 @@ public void Weapon_Dimension_Summon_Aperture_PAP(int client, int weapon, bool &r
 		case 4:
 			Dimension_Summon_Npc(client, "npc_aperture_sniper_perfected" ,weapon, 1.0, 2.0, "eyeboss_tp_vortex");
 		case 5:
-			Dimension_Summon_Npc(client, "npc_aperture_fueler" ,weapon, 1.6, 1.2, "eyeboss_tp_vortex");
+			Dimension_Summon_Npc(client, "npc_aperture_fueler" ,weapon, 1.6, 1.0, "eyeboss_tp_vortex");
 		case 6:
 			Dimension_Summon_Npc(client, "npc_aperture_suppressor" ,weapon, 1.6, 1.75, "eyeboss_tp_vortex");
 		default: //This should not happen
