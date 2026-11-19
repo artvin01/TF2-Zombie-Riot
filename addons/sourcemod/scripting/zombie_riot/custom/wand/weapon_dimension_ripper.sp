@@ -736,7 +736,7 @@ public void Weapon_Dimension_Summon_Almina_PAP(int client, int weapon, bool &res
 	switch(GetRandomInt(1, 6))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, "npc_runaka" ,weapon, 1.5, 1.25, "teleported_blue");
+			Dimension_Summon_Npc(client, "npc_runaka" ,weapon, 1.2, 1.25, "teleported_blue");
 		case 2:
 			Dimension_Summon_Npc(client, "npc_speedus_elitus" ,weapon, 1.3, 2.0, "teleported_blue");
 		case 3:
