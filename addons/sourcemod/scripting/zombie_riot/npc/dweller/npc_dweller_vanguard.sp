@@ -108,11 +108,8 @@ methodmap DwellerVanguard < CClotBody
 		func_NPCDeath[npc.index] = DwellerVanguard_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
 		func_NPCThink[npc.index] = DwellerVanguard_ClotThink;
-
-		bool isVoided = StrContains(data, "voided") != -1;
-		npc.m_bVoided = isVoided;
 		
-		if (npc.m_bVoided)
+		if(!StrContains(data, "voided"))
 		{
 			npc.m_flSpeed = 99.75;
 		}
@@ -143,7 +140,7 @@ methodmap DwellerVanguard < CClotBody
 			npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Vanguard");
 		}
-		else if (npc.m_bVoided)
+		else if(!StrContains(data, "voided"))
 		{
 			SetEntityRenderColor(npc.index, 125, 0, 125, 255);
 			SetEntityRenderColor(npc.m_iWearable2, 125, 0, 125, 255);
@@ -253,7 +250,7 @@ public void DwellerVanguard_ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						npc.PlayMeleeHitSound();
-						if (npc.m_bVoided)
+						if(!StrContains(data, "voided"))
 						{
 							SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 1500.0 : 1275.0, DMG_CLUB);
 							Elemental_AddVoidDamage(target, npc.index, 150, true, false);
