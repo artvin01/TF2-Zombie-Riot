@@ -1,7 +1,5 @@
 #pragma semicolon 1
 #pragma newdecls required
-
-static bool b_IsVoided[MAXENTITIES];
  
 static const char g_DeathSounds[][] =
 {
@@ -67,12 +65,6 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 
 methodmap DwellerVanguard < CClotBody
 {
-	property bool m_bIsVoided
-	{
-		public get() { return b_IsVoided[this.index]; }
-		public set(bool value) { b_IsVoided[this.index] = value; }
-	}
-
 	public void PlayIdleSound()
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -100,11 +92,7 @@ methodmap DwellerVanguard < CClotBody
 	
 	public DwellerVanguard(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		bool isVoided = StrContains(data, "voided") != -1;
-
-		DwellerVanguard npc = view_as<DwellerVanguard>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", isVoided ? "50000" : "35000", ally, false));
-
-		npc.m_bIsVoided = isVoided;
+		DwellerVanguard npc = view_as<DwellerVanguard>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "35000", ally, false));
 
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -121,17 +109,11 @@ methodmap DwellerVanguard < CClotBody
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
 		func_NPCThink[npc.index] = DwellerVanguard_ClotThink;
 		
-		if(npc.m_bIsVoided)
-		{
-			npc.m_flSpeed = 99.75;
-		}
-		else
-		{
-			npc.m_flSpeed = 285.0;
-		}
+		npc.m_flSpeed = 285.0;
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
+		
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_shogun_katana/c_shogun_katana.mdl");
 		SetVariantString("1.15");
@@ -151,13 +133,6 @@ methodmap DwellerVanguard < CClotBody
 			npc.m_iBleedType = BLEEDTYPE_NORMAL;
 			npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Vanguard");
-		}
-		else if(npc.m_bIsVoided)
-		{
-			SetEntityRenderColor(npc.index, 125, 0, 125, 255);
-			SetEntityRenderColor(npc.m_iWearable2, 125, 0, 125, 255);
-			SetEntityRenderColor(npc.m_iWearable3, 125, 0, 125, 255);
-			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Voided Vanguard");
 		}
 		else
 		{
@@ -262,15 +237,7 @@ public void DwellerVanguard_ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						npc.PlayMeleeHitSound();
-						if(npc.m_bIsVoided)
-						{
-							SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 1500.0 : 1275.0, DMG_CLUB);
-							Elemental_AddVoidDamage(target, npc.index, 150, true, false);
-						}
-						else
-						{
-							SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 500.0 : 150.0, DMG_CLUB);
-						}
+						SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 500.0 : 150.0, DMG_CLUB);
 					}
 				}
 
