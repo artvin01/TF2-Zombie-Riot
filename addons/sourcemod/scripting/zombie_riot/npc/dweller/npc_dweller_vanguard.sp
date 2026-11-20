@@ -53,7 +53,7 @@ void DwellerVanguard_Precache()
 	strcopy(data.Icon, sizeof(data.Icon), "ds_vanguard");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MISSION;
-	data.Category = Type_Dweller;
+	data.Category = Type_Void;
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
 }
@@ -108,12 +108,21 @@ methodmap DwellerVanguard < CClotBody
 		func_NPCDeath[npc.index] = DwellerVanguard_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
 		func_NPCThink[npc.index] = DwellerVanguard_ClotThink;
+
+		bool isVoided = StrContains(data, "voided") != -1;
+		npc.m_bVoided = isVoided;
 		
-		npc.m_flSpeed = 285.0;
+		if (npc.m_bVoided)
+		{
+			npc.m_flSpeed = 99.75;
+		}
+		else
+		{
+			npc.m_flSpeed = 285.0;
+		}
 		npc.m_flGetClosestTargetTime = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
 		npc.m_flAttackHappens = 0.0;
-		
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/workshop_partner/weapons/c_models/c_shogun_katana/c_shogun_katana.mdl");
 		SetVariantString("1.15");
@@ -133,6 +142,13 @@ methodmap DwellerVanguard < CClotBody
 			npc.m_iBleedType = BLEEDTYPE_NORMAL;
 			npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Vanguard");
+		}
+		else if (npc.m_bVoided)
+		{
+			SetEntityRenderColor(npc.index, 125, 0, 125, 255);
+			SetEntityRenderColor(npc.m_iWearable2, 125, 0, 125, 255);
+			SetEntityRenderColor(npc.m_iWearable3, 125, 0, 125, 255);
+			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Voided Vanguard");
 		}
 		else
 		{
@@ -237,7 +253,15 @@ public void DwellerVanguard_ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						npc.PlayMeleeHitSound();
-						SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 500.0 : 150.0, DMG_CLUB);
+						if (npc.m_bVoided)
+						{
+							SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 1500.0 : 1275.0, DMG_CLUB);
+							Elemental_AddVoidDamage(target, npc.index, 150, true, false);
+						}
+						else
+						{
+							SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 500.0 : 150.0, DMG_CLUB);
+						}
 					}
 				}
 
