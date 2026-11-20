@@ -176,7 +176,7 @@ methodmap Aviator < CClotBody
 		npc.m_flChargeAttack = GetGameTime() + 7.5;
 		if(npc.m_bIsNoMech)
 		{
-			npc.m_flAngerDelay = GetGameTime() + 999.0;
+			npc.m_flAngerDelay = GetGameTime() + 9999.0;
 		}
 		else
 		{
