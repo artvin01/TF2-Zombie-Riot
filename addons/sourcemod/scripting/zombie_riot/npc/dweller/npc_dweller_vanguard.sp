@@ -1,5 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
+
+static bool b_IsVeryPatient[MAXENTITIES];
  
 static const char g_DeathSounds[][] =
 {
@@ -53,7 +55,7 @@ void DwellerVanguard_Precache()
 	strcopy(data.Icon, sizeof(data.Icon), "ds_vanguard");
 	data.IconCustom = true;
 	data.Flags = MVM_CLASS_FLAG_MISSION;
-	data.Category = Type_Void;
+	data.Category = Type_Dweller;
 	data.Func = ClotSummon;
 	NPCId = NPC_Add(data);
 }
@@ -65,6 +67,12 @@ static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, co
 
 methodmap DwellerVanguard < CClotBody
 {
+	property bool m_bIsVoided
+	{
+		public get() { return b_IsVoided[this.index]; }
+		public set(bool value) { b_IsVoided[this.index] = value; }
+	}
+
 	public void PlayIdleSound()
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -92,7 +100,11 @@ methodmap DwellerVanguard < CClotBody
 	
 	public DwellerVanguard(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
-		DwellerVanguard npc = view_as<DwellerVanguard>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", "35000", ally, false));
+		bool isVoided = StrContains(data, "voided") != -1;
+
+		DwellerVanguard npc = view_as<DwellerVanguard>(CClotBody(vecPos, vecAng, COMBINE_CUSTOM_MODEL, "1.15", isVoided ? "50000" : "35000", ally, false));
+
+		npc.m_bIsVoided = isVoided;
 
 		SetVariantInt(4);
 		AcceptEntityInput(npc.index, "SetBodyGroup");
@@ -109,7 +121,7 @@ methodmap DwellerVanguard < CClotBody
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
 		func_NPCThink[npc.index] = DwellerVanguard_ClotThink;
 		
-		if(!StrContains(data, "voided"))
+		if(npc.m_bIsVoided)
 		{
 			npc.m_flSpeed = 99.75;
 		}
@@ -140,7 +152,7 @@ methodmap DwellerVanguard < CClotBody
 			npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 			FormatEx(c_NpcName[npc.index], sizeof(c_NpcName[]), "Vanguard");
 		}
-		else if(!StrContains(data, "voided"))
+		else if(npc.m_bIsVoided)
 		{
 			SetEntityRenderColor(npc.index, 125, 0, 125, 255);
 			SetEntityRenderColor(npc.m_iWearable2, 125, 0, 125, 255);
@@ -250,7 +262,7 @@ public void DwellerVanguard_ClotThink(int iNPC)
 					if(target > 0) 
 					{
 						npc.PlayMeleeHitSound();
-						if(!StrContains(data, "voided"))
+						if(npc.m_bIsVoided)
 						{
 							SDKHooks_TakeDamage(target, npc.index, npc.index, ShouldNpcDealBonusDamage(target) ? 1500.0 : 1275.0, DMG_CLUB);
 							Elemental_AddVoidDamage(target, npc.index, 150, true, false);
