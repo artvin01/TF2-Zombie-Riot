@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-static bool b_IsVeryPatient[MAXENTITIES];
+static bool b_IsVoided[MAXENTITIES];
  
 static const char g_DeathSounds[][] =
 {
