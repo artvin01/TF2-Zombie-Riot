@@ -76,10 +76,16 @@ static void ClotPrecache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team, const char[] data)
 {
-	return Aviator(vecPos, vecAng, team);
+	return Aviator(vecPos, vecAng, team, data);
 }
 methodmap Aviator < CClotBody
 {
+	property bool m_bIsNoMech
+	{
+		public get() { return b_IsNoMech[this.index]; }
+		public set(bool value) { b_IsNoMech[this.index] = value; }
+	}
+
 	public void PlayIdleAlertSound() 
 	{
 		if(this.m_flNextIdleSound > GetGameTime(this.index))
@@ -139,9 +145,13 @@ methodmap Aviator < CClotBody
 		public set(float TempValueForProperty) 	{ fl_AbilityOrAttack[this.index][1] = TempValueForProperty; }
 	}
 	
-	public Aviator(float vecPos[3], float vecAng[3], int ally)
+	public Aviator(float vecPos[3], float vecAng[3], int ally, const char[] data)
 	{
+		bool isNoMech = StrContains(data, "nomech") != -1;
+
 		Aviator npc = view_as<Aviator>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.0", "50000", ally));
+
+		npc.m_bIsNoMech = isNoMech;
 		
 		i_NpcWeight[npc.index] = 2;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
@@ -164,15 +174,14 @@ methodmap Aviator < CClotBody
 		func_NPCThink[npc.index] = view_as<Function>(Aviator_ClotThink);
 		
 		npc.m_flChargeAttack = GetGameTime() + 7.5;
-		npc.m_flAngerDelay = GetGameTime() + 15.0;
-		//if(!StrContains(data, "nomech"))
-		//{
-			//npc.m_flAngerDelay = GetGameTime() + 999.0;
-		//}
-		//else
-		//{
-			//npc.m_flAngerDelay = GetGameTime() + 15.0;
-		//}
+		if(npc.m_bIsNoMech)
+		{
+			npc.m_flAngerDelay = GetGameTime() + 999.0;
+		}
+		else
+		{
+			npc.m_flAngerDelay = GetGameTime() + 15.0;
+		}
 		npc.i_GunMode = 0;
 		npc.m_iSuitupCycle = 0;
 		npc.m_flDelaySuitup = 0.0;
