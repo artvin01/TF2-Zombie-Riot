@@ -83,7 +83,7 @@ methodmap VoidedDestructor < CSeaBody
 		i_NpcWeight[npc.index] = 3;
 		npc.SetActivity("ACT_SEABORN_WALK_TOOL_3");
 		
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
+		npc.m_iBleedType = BLEEDTYPE_VOID;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
@@ -97,23 +97,27 @@ methodmap VoidedDestructor < CSeaBody
 		npc.m_flNextMeleeAttack = 0.0;
 		ApplyStatusEffect(npc.index, npc.index, "Fluid Movement", FAR_FUTURE);	
 		
-		SetEntityRenderColor(npc.index, 255, 255, 255, 255);
+		SetEntityRenderColor(npc.index, 200, 0, 200, 255);
 
 		npc.m_iWearable1 = npc.EquipItem("weapon_bone", "models/workshop/weapons/c_models/C_Crossing_Guard/C_Crossing_Guard.mdl");
 		SetVariantString("0.8");
 		AcceptEntityInput(npc.m_iWearable1, "SetModelScale");
+	    SetEntityRenderColor(npc.m_iWearable1, 200, 0, 200, 200);
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/medic/robo_medic_physician_mask/robo_medic_physician_mask.mdl");
 		SetVariantString("1.5");
 		AcceptEntityInput(npc.m_iWearable2, "SetModelScale");
+	    SetEntityRenderColor(npc.m_iWearable2, 200, 0, 200, 200);
 
 		npc.m_iWearable3 = npc.EquipItem("partyhat", "models/workshop/player/items/soldier/thief_soldier_helmet/thief_soldier_helmet.mdl");
 		SetVariantString("1.25");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
+	    SetEntityRenderColor(npc.m_iWearable3, 200, 0, 200, 200);
 
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/demo/sbox2014_juggernaut_jacket/sbox2014_juggernaut_jacket.mdl");
 		SetVariantString("1.0");
 		AcceptEntityInput(npc.m_iWearable4, "SetModelScale");
+	    SetEntityRenderColor(npc.m_iWearable4, 200, 0, 200, 200);
 
 		npc.m_flMeleeArmor = 1.0;
 		npc.m_flRangedArmor = 0.5;
@@ -177,7 +181,7 @@ static void VoidedDestructor_ClotThink(int iNPC)
 				radius = 500;
 
 			npc.PlayExplosionSound();
-			spawnRing_Vectors(vecMe, radius, 0.0, 0.0, 50.0, "materials/sprites/laserbeam.vmt", 100, 150, 255, 175, 1, 0.5, 6.0, 0.1, 1, 640.0);
+			spawnRing_Vectors(vecMe, radius, 0.0, 0.0, 50.0, "materials/sprites/laserbeam.vmt", 200, 50, 200, 175, 1, 0.5, 6.0, 0.1, 1, 640.0);
 			Explode_Logic_Custom(25.0, -1, npc.index, -1, vecMe, radius, _, 0.75, true, _, false, _, VoidedDestructor_ExplodePost);
 		}
 	}
