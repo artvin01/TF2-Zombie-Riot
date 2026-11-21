@@ -464,6 +464,10 @@ public void Wand_Base_StartTouch(int entity, int other)
 		{
 			Weapon_Ritualist_ProjectileTouch(entity, target);
 		}
+		case WEAPON_DIMENSION_RIPPER:
+		{
+			Weapon_Dimension_Wand(entity, target);
+		}
 	}
 #endif
 }
