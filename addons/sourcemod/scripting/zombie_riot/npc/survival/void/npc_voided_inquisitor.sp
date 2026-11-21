@@ -1,4 +1,4 @@
-#pragma semicolon 1 // it's 1 gun shot does big big void affliction. they are slower normally but when in melee that launches, they are faster.
+#pragma semicolon 1 
 #pragma newdecls required
 
 static const char g_DeathSounds[][] = {
