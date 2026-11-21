@@ -101,9 +101,9 @@ methodmap VoidedVanguard < CClotBody
 		npc.SetActivity("ACT_CUSTOM_WALK_SAMURAI");
 		KillFeed_SetKillIcon(npc.index, "demokatana");
 		
-		npc.m_iBleedType = BLEEDTYPE_DWELLER;
+		npc.m_iBleedType = BLEEDTYPE_VOID;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
-		npc.m_iNpcStepVariation = STEPTYPE_DWELLER;
+		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
 		func_NPCDeath[npc.index] = DwellerVanguard_NPCDeath;
 		func_NPCOnTakeDamage[npc.index] = Generic_OnTakeDamage;
@@ -128,10 +128,10 @@ methodmap VoidedVanguard < CClotBody
 		SetVariantString("1.15");
 		AcceptEntityInput(npc.m_iWearable3, "SetModelScale");
 
-		SetEntityRenderColor(npc.index, 125, 0, 125, 255);
-    SetEntityRenderColor(npc.m_iWearable1, 125, 0, 125, 200);
-    SetEntityRenderColor(npc.m_iWearable2, 125, 0, 125, 255);
-		SetEntityRenderColor(npc.m_iWearable3, 125, 0, 125, 255);
+		SetEntityRenderColor(npc.index, 200, 0, 200, 255);
+	    SetEntityRenderColor(npc.m_iWearable1, 200, 0, 200, 200);
+  		SetEntityRenderColor(npc.m_iWearable2, 200, 0, 200, 255);
+		SetEntityRenderColor(npc.m_iWearable3, 200, 0, 200, 255);
 
 		SpeedCache = 0.0;
 
