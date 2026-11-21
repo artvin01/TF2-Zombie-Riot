@@ -111,7 +111,7 @@ methodmap VoidedHitman < CClotBody
 		
 		npc.m_flNextMeleeAttack = 0.0;
 		
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
+		npc.m_iBleedType = BLEEDTYPE_VOID;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;	
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		f_HeadshotDamageMultiNpc[npc.index] = 10.0;
@@ -146,6 +146,14 @@ methodmap VoidedHitman < CClotBody
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", skin);
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", skin);
+
+
+		SetEntityRenderColor(npc.index, 100, 0, 100, 255);
+		SetEntityRenderColor(npc.m_iWearable1, 200, 0, 200, 255);
+		SetEntityRenderColor(npc.m_iWearable2, 200, 0, 200, 255);
+		SetEntityRenderColor(npc.m_iWearable3, 200, 0, 200, 255);
+		SetEntityRenderColor(npc.m_iWearable4, 200, 0, 200, 255);
+		SetEntityRenderColor(npc.m_iWearable5, 200, 0, 200, 255);
 		
 		return npc;
 	}
