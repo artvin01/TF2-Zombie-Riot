@@ -219,9 +219,6 @@ public void ChaosBrawler_ClotThink(int iNPC)
 	npc.m_flNextDelayTime = gameTime + DEFAULT_UPDATE_DELAY_FLOAT;
 	
 	npc.Update();	
-
-	float TrueArmor = 1.0;
-	TrueArmor *= 0.25;
 	
 	if(npc.m_blPlayHurtAnimation)
 	{
