@@ -4,11 +4,12 @@
 #define SOUND_WAND_SHOT_DIM	"misc/doomsday_lift_stop.wav"
 #define SOUND_DIM_IMPACT "weapons/cow_mangler_explosion_normal_01.wav"
 #define SOUND_ABILITY "misc/rd_points_return01.wav"
-#define MAX_DIMENSION_CHARGE 25
-#define MAX_DIMENSION_CHARGE_SUPER 50
+//#define MAX_DIMENSION_CHARGE 25
+//#define MAX_DIMENSION_CHARGE_SUPER 50
 static bool Change[MAXPLAYERS];
 static Handle h_TimerDimensionWeaponManagement[MAXPLAYERS+1]={null, ...};
 static int how_many_times_swinged[MAXPLAYERS];
+static int Max_Dimension_Charge[MAXPLAYERS];
 static float f_DIMAbilityActive[MAXPLAYERS+1]={0.0, ...};
 static float f_DIMhuddelay[MAXPLAYERS+1]={0.0, ...};
 
@@ -17,6 +18,7 @@ void ResetMapStartDimWeapon()
 {
 	Zero(f_DIMhuddelay);
 	Zero(how_many_times_swinged);
+	Zero(Max_Dimension_Charge);
 	Wand_Dimension_Map_Precache();
 }
 void Wand_Dimension_Map_Precache()
@@ -82,9 +84,9 @@ public void Dimension_Cooldown_Logic(int client, int weapon)
 		{
 			if(f_DIMAbilityActive[client] < GetGameTime())
 			{
-				if(how_many_times_swinged[client] < MAX_DIMENSION_CHARGE)
+				if(how_many_times_swinged[client] < Max_Dimension_Charge[client])
 				{
-					PrintHintText(client,"Dimension power [%i%/%i]", how_many_times_swinged[client], MAX_DIMENSION_CHARGE);
+					PrintHintText(client,"Dimension power [%i%/%i]", how_many_times_swinged[client], Max_Dimension_Charge[client]);
 				}
 				else
 				{
@@ -241,18 +243,35 @@ public Action Dimension_KillNPC(Handle timer, int ref)
 	return Plugin_Stop;
 }
 
+public Action Dimension_POWEROVERLOAD(Handle timer, int ref)
+{
+	int client = EntRefToEntIndex(ref);
+	if(Max_Dimension_Charge[client] > 25)
+	{
+		Max_Dimension_Charge[client] -= 5;
+	}
+	else
+	{
+		Max_Dimension_Charge[client] = 25;
+	}
+
+	
+	return Plugin_Stop;
+}
+
+
 void Npc_OnTakeDamage_DimensionalRipper(int attacker)
 {
 	/*
 		++ add charge code xd
 	*/
-	if(how_many_times_swinged[attacker] <= MAX_DIMENSION_CHARGE)
+	if(how_many_times_swinged[attacker] <= Max_Dimension_Charge[attacker])
 	{
 		how_many_times_swinged[attacker] += 1;
 	}
-	if(how_many_times_swinged[attacker] >= MAX_DIMENSION_CHARGE)
+	if(how_many_times_swinged[attacker] >= Max_Dimension_Charge[attacker])
 	{
-		how_many_times_swinged[attacker] = MAX_DIMENSION_CHARGE;
+		how_many_times_swinged[attacker] = Max_Dimension_Charge[attacker];
 	}
 
 	//if(b_thisNpcIsARaid[victim])
@@ -828,7 +847,7 @@ public void Weapon_Dimension_Summon_Aperture_PAP(int client, int weapon, bool &r
 	switch(GetRandomInt(1, 6))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, "npc_aperture_combatant_perfected" ,weapon, 1.2, 0.4, "eyeboss_tp_vortex");
+			Dimension_Summon_Npc(client, "npc_aperture_combatant_perfected" ,weapon, 1.0, 0.4, "eyeboss_tp_vortex");
 		case 2:
 			Dimension_Summon_Npc(client, "npc_aperture_specialist_perfected" ,weapon, 1.2, 1.2, "eyeboss_tp_vortex");
 		case 3:
@@ -851,7 +870,7 @@ void Dimension_Summon_Npc(int client, char[] NpcName, int weapon, float HealthMu
 	
 	if(weapon >= MaxClients)
 	{
-		if(how_many_times_swinged[client] >= MAX_DIMENSION_CHARGE)
+		if(how_many_times_swinged[client] >= Max_Dimension_Charge[client])
 		{
 			int mana_cost = 150;
 			if(mana_cost <= Current_Mana[client])
@@ -867,6 +886,8 @@ void Dimension_Summon_Npc(int client, char[] NpcName, int weapon, float HealthMu
 				if(ParticleEffect[0])
 					ParticleEffectAt(Dimension_Loc, ParticleEffect, 1.5);
 				EmitSoundToAll(SOUND_ABILITY, client, SNDCHAN_STATIC, 70, _, 1.2);
+
+				Max_Dimension_Charge[client] += 5;
 				
 				int entity = NPC_CreateByName(NpcName, client, pos1, ang, TFTeam_Red);
 				if(entity > MaxClients)
@@ -879,8 +900,14 @@ void Dimension_Summon_Npc(int client, char[] NpcName, int weapon, float HealthMu
 					float f_MaxHealth = 30.0;
 					f_MaxHealth *= Attributes_Get(weapon, 410, 1.0);
 					f_MaxHealth *= HealthMulti;
+					f_MaxHealth *= 0.67; //make them have 33% less health during non-raid situation - HAHA 6 7 6 7 6 7 6 7 AAAAAAAAAAAAAAAAAAA
+					if(RaidbossIgnoreBuildingsLogic(1))
+					{
+						f_MaxHealth *= 1.5;
+					}
 					SetEntProp(entity, Prop_Data, "m_iHealth", RoundToNearest(f_MaxHealth));
 					SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToNearest(f_MaxHealth));
+					SetEntPropFloat(entity, Prop_Data, "m_flModelScale", 0.5);
 					
 					float ExtraDamage = Attributes_Get(weapon, 410, 1.0);
 					ExtraDamage *= DamageMulti;
@@ -890,7 +917,8 @@ void Dimension_Summon_Npc(int client, char[] NpcName, int weapon, float HealthMu
 					fl_RangedArmor[entity] = 1.0;
 					b_IsCamoNPC[entity] = false;
 
-					CreateTimer(60.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(45.0, Dimension_KillNPC, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
+					CreateTimer(30.0, Dimension_POWEROVERLOAD, EntIndexToEntRef(client), TIMER_FLAG_NO_MAPCHANGE);
 					//CreateTimer(3.0, Dimension_GiveStrength, EntIndexToEntRef(entity), TIMER_FLAG_NO_MAPCHANGE);
 					i_NpcOverrideAttacker[entity] = EntIndexToEntRef(client);
 					b_thisNpcIsABoss[entity] = false;
