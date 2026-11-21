@@ -94,7 +94,7 @@ methodmap VoidedPerro < CClotBody
 		npc.SetActivity("ACT_MP_RUN_MELEE");
 		KillFeed_SetKillIcon(npc.index, "pickaxe");
 		
-		npc.m_iBleedType = BLEEDTYPE_NORMAL;
+		npc.m_iBleedType = BLEEDTYPE_VOID;
 		npc.m_iStepNoiseType = STEPSOUND_NORMAL;
 		npc.m_iNpcStepVariation = STEPTYPE_NORMAL;
 		
@@ -110,26 +110,26 @@ methodmap VoidedPerro < CClotBody
 		npc.m_flAttackHappens = 0.0;
 		npc.m_flRangedArmor = 0.6;
 		
-		SetEntityRenderColor(npc.index, 125, 0, 125, 255);
+		SetEntityRenderColor(npc.index, 200, 0, 200, 255);
 
 		npc.m_iWearable1 = npc.EquipItem("head", "models/weapons/c_models/c_pickaxe/c_pickaxe.mdl");
-		SetEntityRenderColor(npc.m_iWearable1, 125, 0, 125, 255);
+		SetEntityRenderColor(npc.m_iWearable1, 200, 0, 200, 255);
 
 		npc.m_iWearable2 = npc.EquipItem("head", "models/workshop/player/items/soldier/fall17_attack_packs/fall17_attack_packs.mdl");
 		SetEntProp(npc.m_iWearable2, Prop_Send, "m_nSkin", 1);
-		SetEntityRenderColor(npc.m_iWearable2, 125, 0, 125, 255);
+		SetEntityRenderColor(npc.m_iWearable2, 200, 0, 200, 255);
 
 		npc.m_iWearable3 = npc.EquipItem("head", "models/workshop/player/items/soldier/coldfront_curbstompers/coldfront_curbstompers.mdl");
 		SetEntProp(npc.m_iWearable3, Prop_Send, "m_nSkin", 1);
-		SetEntityRenderColor(npc.m_iWearable3, 125, 0, 125, 255);
+		SetEntityRenderColor(npc.m_iWearable3, 200, 0, 200, 255);
 
 		npc.m_iWearable4 = npc.EquipItem("head", "models/workshop/player/items/soldier/sum23_stealth_bomber_style1/sum23_stealth_bomber_style1.mdl");
 		SetEntProp(npc.m_iWearable4, Prop_Send, "m_nSkin", 1);
-		SetEntityRenderColor(npc.m_iWearable4, 125, 0, 125, 255);
+		SetEntityRenderColor(npc.m_iWearable4, 200, 0, 200, 255);
 
 		npc.m_iWearable5 = npc.EquipItem("head", "models/workshop/player/items/soldier/hwn2021_war_dog/hwn2021_war_dog.mdl");
 		SetEntProp(npc.m_iWearable5, Prop_Send, "m_nSkin", 1);
-		SetEntityRenderColor(npc.m_iWearable5, 125, 0, 125, 255);
+		SetEntityRenderColor(npc.m_iWearable5, 200, 0, 200, 255);
 
 		return npc;
 	}
