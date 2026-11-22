@@ -71,6 +71,10 @@ public Action Timer_Management_Dimension(Handle timer, DataPack pack)
 	if(weapon_holding == weapon) //Only show if the weapon is actually in your hand right now.
 	{	
 		Dimension_Cooldown_Logic(client, weapon);
+		if(Max_Dimension_Charge[client] < 25)
+		{
+			Max_Dimension_Charge[client] = 25;
+		}
 	}	
 	return Plugin_Continue;
 }
@@ -143,6 +147,7 @@ public void Weapon_Dimension_Wand(int client, int weapon)
 		if(IsValidEnemy(client, target))
 		{
 			int projectile = Wand_Projectile_Spawn(client, speed, time, damage, WEAPON_DIMENSION_RIPPER , weapon, "raygun_projectile_blue_crit");
+			WandProjectile_ApplyFunctionToEntity(projectile, Wand_DimensionTouch);
 
 			//We have found a victim.
 			if(!IsEntityAlive(target))
