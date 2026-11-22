@@ -180,7 +180,7 @@ static void ClotThink(int iNPC)
 
 	npc.m_flSpeed = 50.0 + (hpRatiobad * 150.0);
 
-	fl_TotalArmor[npc.index] = 0.5 + (hpRatiobad * 0.5)
+	fl_TotalArmor[npc.index] = 0.5 + (hpRatiobad * 0.5);
 	
 	if(target > 0)
 	{
