@@ -677,8 +677,10 @@ void Freeplay_AddEnemy(int postWaves, Enemy enemy, int &count, bool alaxios = fa
 		enemy.Team = TFTeam_Red;
 		count = 1;
 
+		enemy.Health *= 0.4
+
 		if(enemy.ExtraDamage)
-			enemy.ExtraDamage = 25.0;
+			enemy.ExtraDamage = 40.0;
 
 		enemy.ExtraSpeed = 1.25;
 		enemy.ExtraSize = 1.25;
