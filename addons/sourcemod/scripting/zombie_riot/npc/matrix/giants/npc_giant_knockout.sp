@@ -124,7 +124,7 @@ methodmap GiantKnockout < CClotBody
 	
 	public GiantKnockout(float vecPos[3], float vecAng[3], int ally)
 	{
-		GiantKnockout npc = view_as<GiantKnockout>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.3", "5000", ally));
+		GiantKnockout npc = view_as<GiantKnockout>(CClotBody(vecPos, vecAng, "models/player/heavy.mdl", "1.3", "5000", ally, .isGiant = true));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
