@@ -513,7 +513,7 @@ public void Weapon_Dimension_Summon_Dweller(int client, int weapon, bool &result
 	switch(GetRandomInt(1, 6))
 	{
 		case 1:
-			Dimension_Summon_Npc(client, "npc_abysspredator" ,weapon, 1.0, 1.3, "utaunt_spirit_winter_rings"), 1.15;
+			Dimension_Summon_Npc(client, "npc_abysspredator" ,weapon, 1.0, 1.3, "utaunt_spirit_winter_rings", 1.15);
 		case 2:
 			Dimension_Summon_Npc(client, "npc_abyssreefbreaker" ,weapon, 1.3, 1.4, "utaunt_spirit_winter_rings", 1.15);
 		case 3:
