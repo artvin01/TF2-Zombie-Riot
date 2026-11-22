@@ -122,8 +122,6 @@ methodmap Alminainqusitor_trainee < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Alminainqusitor_trainee_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Alminainqusitor_trainee_ClotThink);
 		
-		b_NpcAppliesMarkDebuff[npc.index] = true;
-		
 		npc.StartPathing();
 		npc.m_flSpeed = 310.0;
 		npc.m_iAttacksTillReload = 0;
@@ -310,7 +308,7 @@ int Alminainqusitor_traineeSelfDefense(Alminainqusitor_trainee npc, float gameTi
 						npc.m_iAttacksTillReload --;
 						if(NpcStats_AlminaIsEnemyMarked(target))
 						{
-							npc.m_flNextMeleeAttack = gameTime + 0.2;
+							npc.m_flNextMeleeAttack = gameTime + 0.1;
 						}
 
 						if(IsValidEnemy(npc.index, target))
@@ -445,7 +443,6 @@ int Alminainqusitor_traineeSelfDefense(Alminainqusitor_trainee npc, float gameTi
 							spawnRing_Vectors(NewPos, 50.0 * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.5, 8.0, 8.0, 2);
 							spawnRing_Vectors(NewPos, 50.0 * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.5, 8.0, 8.0, 2);
 							spawnRing_Vectors(NewPos, 50.0 * 2.0, 0.0, 0.0, 20.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.5, 8.0, 8.0, 2);
-							ApplyStatusEffect(npc.index, target, "Marked", 12.0);
 						}
 						
 					}
