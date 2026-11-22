@@ -152,6 +152,7 @@ static void Internal_ClotThink(int iNPC)
 	}
 	npc.m_flNextDelayTime = GetGameTime(npc.index) + DEFAULT_UPDATE_DELAY_FLOAT;
 	npc.Update();
+	GrantEntityArmor(iNPC, true, 0.25, 0.25, 0);
 
 	if(npc.m_blPlayHurtAnimation)
 	{
@@ -223,6 +224,8 @@ static void Internal_NPCDeath(int entity)
 	}
 		
 	
+	if(IsValidEntity(npc.m_iWearable4))
+		RemoveEntity(npc.m_iWearable4);
 	if(IsValidEntity(npc.m_iWearable3))
 		RemoveEntity(npc.m_iWearable3);
 	if(IsValidEntity(npc.m_iWearable2))
@@ -260,10 +263,11 @@ void BenarusSelfDefense(Benarus npc, float gameTime, int target, float distance)
 
 					if(IsValidEnemy(npc.index, target))
 					{
-						float damageDealt = 75;
+						float damageDealt = 50;
 						if(ShouldNpcDealBonusDamage(target))
 							damageDealt *= 3.0;
 
+						StartBleedingTimer(target, npc.index,10, 5, -1, DMG_TRUEDAMAGE, 0);
 
 						SDKHooks_TakeDamage(target, npc.index, npc.index, damageDealt, DMG_BULLET, -1, _, vecHit);
 					}
