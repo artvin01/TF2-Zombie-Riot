@@ -123,7 +123,7 @@ methodmap GiantHaste < CClotBody
 	
 	public GiantHaste(float vecPos[3], float vecAng[3], int ally)
 	{
-		GiantHaste npc = view_as<GiantHaste>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.3", "5000", ally));
+		GiantHaste npc = view_as<GiantHaste>(CClotBody(vecPos, vecAng, "models/player/soldier.mdl", "1.3", "5000", ally, .isGiant = true));
 		
 		i_NpcWeight[npc.index] = 1;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
