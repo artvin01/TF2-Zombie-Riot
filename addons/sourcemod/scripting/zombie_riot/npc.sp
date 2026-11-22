@@ -906,7 +906,7 @@ void NPC_ConfigSetup()
 	BaseBuilding_MapStart();
 	ZeinaFreeFollower_Setup();
 
-	// Survival
+	// True Survival
 	Nightmare_OnMapStart_NPC();
 	PetrisBaron_OnMapStart_NPC();
 	Sphynx_OnMapStart_NPC();
@@ -916,6 +916,19 @@ void NPC_ConfigSetup()
 	PoisonHeadcrab_MapStart();
 	ZMainPoisonZombie_OnMapStart_NPC();
 	ZMainHeadcrab_OnMapStart_NPC();
+
+	// Survival
+	VoidedVanguard_Precache();
+	VoidedTanker_OnMapStart_NPC();
+	VoidedRana_OnMapStart_NPC();
+	VoidedPerroOnMapStart();
+	Voided_inqusitor_trainee_OnMapStart_NPC();
+	VoidedHitman_OnMapStart_NPC();
+	VoidedDestructor_Precache();
+	VoidedAirbornExplorer_OnMapStart_NPC();
+	Almina_inqusitor_trainee_OnMapStart_NPC();
+	AlminaRana_OnMapStart_NPC();
+	ChaosBrawler_OnMapStart_NPC());
 
 	// Matrix
 	AgentAlan_OnMapStart_NPC();
@@ -2355,6 +2368,20 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/mutations/truesurvival/npc_headcrab.sp"
 #include "npc/mutations/truesurvival/npc_poisonheadcrab.sp"
 #include "npc/mutations/randomboss/npc_boss_battle_only.sp"
+
+
+#include "npc/survival/void/npc_voided_vanguard.sp
+#include "npc/survival/void/npc_voided_tanker.sp"
+#include "npc/survival/void/npc_voided_rana.sp"
+#include "npc/survival/void/npc_voided_perro.sp"
+#include "npc/survival/void/npc_voided_inquisitor.sp"
+#include "npc/survival/void/npc_voided_hitman.sp"
+#include "npc/survival/void/npc_voided_destructor.sp"
+#include "npc/survival/void/npc_voided_airborn_explorer.sp"
+#include "npc/survival/con2/almina/npc_inquisitor_trainee.sp"
+#include "npc/survival/con2/almina/npc_rana.sp"
+#include "npc/survival/con2/chaos/npc_chaos_brawler.sp"
+
 
 
 
