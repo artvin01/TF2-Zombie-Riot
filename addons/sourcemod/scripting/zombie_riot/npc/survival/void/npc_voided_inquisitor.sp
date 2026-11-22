@@ -122,8 +122,6 @@ methodmap Voidedinqusitor_trainee < CClotBody
 		func_NPCOnTakeDamage[npc.index] = view_as<Function>(Voidedinqusitor_trainee_OnTakeDamage);
 		func_NPCThink[npc.index] = view_as<Function>(Voidedinqusitor_trainee_ClotThink);
 		
-		b_NpcAppliesMarkDebuff[npc.index] = true;
-		
 		npc.StartPathing();
 		npc.m_flSpeed = 300.0;
 		npc.m_iAttacksTillReload = 0;
@@ -308,10 +306,6 @@ int Voidedinqusitor_traineeSelfDefense(Voidedinqusitor_trainee npc, float gameTi
 						ShootLaser(npc.m_iWearable3, "bullet_tracer02_blue", origin, vecHit, false );
 						npc.m_flNextMeleeAttack = gameTime + 0.75;
 						npc.m_iAttacksTillReload --;
-						if(NpcStats_AlminaIsEnemyMarked(target))
-						{
-							npc.m_flNextMeleeAttack = gameTime + 0.2;
-						}
 
 						if(IsValidEnemy(npc.index, target))
 						{
@@ -446,7 +440,6 @@ int Voidedinqusitor_traineeSelfDefense(Voidedinqusitor_trainee npc, float gameTi
 							spawnRing_Vectors(NewPos, 50.0 * 2.0, 0.0, 0.0, 10.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.5, 8.0, 8.0, 2);
 							spawnRing_Vectors(NewPos, 50.0 * 2.0, 0.0, 0.0, 15.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.5, 8.0, 8.0, 2);
 							spawnRing_Vectors(NewPos, 50.0 * 2.0, 0.0, 0.0, 20.0, "materials/sprites/laserbeam.vmt", 200, 200, 200, 200, 1, 0.5, 8.0, 8.0, 2);
-							ApplyStatusEffect(npc.index, target, "Marked", 12.0);
 						}
 						
 					}
