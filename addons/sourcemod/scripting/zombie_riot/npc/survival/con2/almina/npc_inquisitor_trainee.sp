@@ -308,7 +308,7 @@ int Alminainqusitor_traineeSelfDefense(Alminainqusitor_trainee npc, float gameTi
 						npc.m_iAttacksTillReload --;
 						if(NpcStats_AlminaIsEnemyMarked(target))
 						{
-							npc.m_flNextMeleeAttack = gameTime + 0.1;
+							npc.m_flNextMeleeAttack = gameTime + 0.25;
 						}
 
 						if(IsValidEnemy(npc.index, target))
