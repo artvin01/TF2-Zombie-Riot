@@ -928,7 +928,7 @@ void NPC_ConfigSetup()
 	VoidedAirbornExplorer_OnMapStart_NPC();
 	Almina_inqusitor_trainee_OnMapStart_NPC();
 	AlminaRana_OnMapStart_NPC();
-	ChaosBrawler_OnMapStart_NPC());
+	ChaosBrawler_OnMapStart_NPC();
 
 	// Matrix
 	AgentAlan_OnMapStart_NPC();
@@ -2370,7 +2370,7 @@ Action NpcSpecificOnTakeDamage(int victim, int &attacker, int &inflictor, float 
 #include "npc/mutations/randomboss/npc_boss_battle_only.sp"
 
 
-#include "npc/survival/void/npc_voided_vanguard.sp
+#include "npc/survival/void/npc_voided_vanguard.sp"
 #include "npc/survival/void/npc_voided_tanker.sp"
 #include "npc/survival/void/npc_voided_rana.sp"
 #include "npc/survival/void/npc_voided_perro.sp"
