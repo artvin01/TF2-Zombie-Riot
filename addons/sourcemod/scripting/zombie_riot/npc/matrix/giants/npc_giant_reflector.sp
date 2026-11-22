@@ -117,7 +117,7 @@ methodmap GiantReflector < CClotBody
 	
 	public GiantReflector(float vecPos[3], float vecAng[3], int ally)
 	{
-		GiantReflector npc = view_as<GiantReflector>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.3", "5000", ally));
+		GiantReflector npc = view_as<GiantReflector>(CClotBody(vecPos, vecAng, "models/player/engineer.mdl", "1.3", "5000", ally, .isGiant = true));
 
 		i_NpcWeight[npc.index] = 3;
 		FormatEx(c_HeadPlaceAttachmentGibName[npc.index], sizeof(c_HeadPlaceAttachmentGibName[]), "head");
