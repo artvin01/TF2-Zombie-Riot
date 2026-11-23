@@ -139,7 +139,7 @@ methodmap VoidedVanguard < CClotBody
 	}
 }
 
-void DwellerVanguard_SpeedBuff(CClotBody npc, float &speed)
+void VoidedVanguard_SpeedBuff(CClotBody npc, float &speed)
 {
 	if(GetTeam(npc.index) != TFTeam_Red)
 	{
