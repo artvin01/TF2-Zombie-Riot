@@ -174,7 +174,7 @@ static void VoidedDestructor_ClotThink(int iNPC)
 
 		if(npc.m_flNextMeleeAttack < gameTime)
 		{
-			npc.m_flNextMeleeAttack = gameTime + 3.0;
+			npc.m_flNextMeleeAttack = gameTime + 5.0;
 
 			float radius = 400.0;
 			if(NpcStats_VestanCallToArms(npc.index))
