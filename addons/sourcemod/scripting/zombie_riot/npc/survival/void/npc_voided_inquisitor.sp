@@ -309,7 +309,7 @@ int Voidedinqusitor_traineeSelfDefense(Voidedinqusitor_trainee npc, float gameTi
 
 						if(IsValidEnemy(npc.index, target))
 						{
-							float damageDealt = 300.0;
+							float damageDealt = 200.0;
 							if(ShouldNpcDealBonusDamage(target))
 								damageDealt *= 1.5;
 
