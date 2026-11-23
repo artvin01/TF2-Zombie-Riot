@@ -178,7 +178,7 @@ static void VoidedDestructor_ClotThink(int iNPC)
 
 			float radius = 400.0;
 			if(NpcStats_VestanCallToArms(npc.index))
-				radius = 500;
+				radius = 500.0;
 
 			npc.PlayExplosionSound();
 			spawnRing_Vectors(vecMe, radius, 0.0, 0.0, 50.0, "materials/sprites/laserbeam.vmt", 200, 50, 200, 175, 1, 0.5, 6.0, 0.1, 1, 640.0);
