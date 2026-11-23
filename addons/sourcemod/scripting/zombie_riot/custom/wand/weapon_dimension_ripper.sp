@@ -907,13 +907,70 @@ void Dimension_Summon_Npc(int client, char[] NpcName, int weapon, float HealthMu
 					//Reset resistances.
 					
 					float f_MaxHealth = 30.0;
-					f_MaxHealth *= Attributes_Get(weapon, 410, 1.0);
+					//f_MaxHealth *= Attributes_Get(weapon, 410, 1.0);
 					f_MaxHealth *= HealthMulti;
 					f_MaxHealth *= 0.67; //make them have 33% less health during non-raid situation - HAHA 6 7 6 7 6 7 6 7 AAAAAAAAAAAAAAAAAAA
+
+					float healthviaupgrade = 1.0;	// 1 - 16
+
+					if(Store_HasNamedItem(client, "Magical Haste"))
+						healthviaupgrade *= 1.07;
+					
+					if(Store_HasNamedItem(client, "Magical Book"))
+						healthviaupgrade *= 1.50;
+					
+					if(Store_HasNamedItem(client, "Hastening Potion"))
+						healthviaupgrade *= 1.07;
+					
+					if(Store_HasNamedItem(client, "Precision Potion"))
+						healthviaupgrade *= 1.0;
+					
+					if(Store_HasNamedItem(client, "The Lost Pages of Mazeat"))
+						healthviaupgrade *= 1.6;
+					
+					if(Store_HasNamedItem(client, "Betweenlands Potion"))
+						healthviaupgrade *= 1.07;
+
+					if(Store_HasNamedItem(client, "Master Sorcerer"))
+						healthviaupgrade *= 1.65;
+					
+					if(Store_HasNamedItem(client, "Bob's Magic"))
+						healthviaupgrade *= 1.70;
+					
+					if(Store_HasNamedItem(client, "Ruina's Sacret Magic Ways"))	
+						healthviaupgrade *= 1.70;
+
+					if(Store_HasNamedItem(client, "Twirl Magic"))
+						healthviaupgrade *= 1.75;
+
+					if(Store_HasNamedItem(client, "Magical Fontina Aura"))	
+						healthviaupgrade *= 1.07;
+
+					if(Store_HasNamedItem(client, "Domain Expansion: Cheese"))	
+						healthviaupgrade *= 2.25;
 					if(RaidbossIgnoreBuildingsLogic(1))
 					{
 						f_MaxHealth *= 1.5;
 					}
+
+					int pap = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0)); //122
+					switch(pap)
+					{
+						case 0:
+						{
+							f_MaxHealth *= 10.0;
+						}
+						case 1:
+						{
+							f_MaxHealth *= 12.5;
+						}
+						case 2:
+						{
+							f_MaxHealth *= 15.0;
+						}
+					}
+
+					f_MaxHealth *= healthviaupgrade;
 					SetEntProp(entity, Prop_Data, "m_iHealth", RoundToNearest(f_MaxHealth));
 					SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToNearest(f_MaxHealth));
 					float ModelSize = 0.75; // They should be smaller for resolve visual clutter
