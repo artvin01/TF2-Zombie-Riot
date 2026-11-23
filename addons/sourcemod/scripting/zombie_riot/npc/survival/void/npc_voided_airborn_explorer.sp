@@ -185,10 +185,12 @@ public void VoidedAirbornExplorer_ClotThink(int iNPC)
 	if (!npc.IsOnGround())
 	{
 		npc.m_flRangedArmor = 0.50;
+		npc.m_flMeleeArmor = 0.75;
 	}
 	else
 	{
 		npc.m_flRangedArmor = 1.00;
+		npc.m_flMeleeArmor = 1.00;
 	}
 	
 	if(npc.m_flNextDelayTime > GetGameTime(npc.index))
