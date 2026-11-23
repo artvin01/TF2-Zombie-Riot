@@ -6557,6 +6557,14 @@
 		"en"	"An upgraded version of the Soldine. \n-Can rocketjump. \n-Fires rockets. \n-Can melee attack with a cooldown. \n- Melee deals heavy damage and slides you."
 		"ko"	"솔딘의 개선된 버전입니다.-로켓 점프를 사용할 수 있습니다.\n-로켓을 발사합니다.\n-매우 높은 피해를 주는, 긴 쿨타임을 가진 근접 공격을 합니다."
 	}
+	"Benarus"
+	{
+		"en"	"Benarus"
+	}	
+	"Benarus Desc"
+	{
+		"en"	"Similar to Benera.\nSpawns with armor.\nEach shot gives applies a weak bleed."
+	}
 	"Instinct's Summon"
 	{
 		"en"	"Instinct's Summon"
@@ -8175,11 +8183,6 @@
 		"en"	"Major Avangard"
 		"ko"	"아방가르드 소령"
 	}
-	"SIGMALLER"
-	{
-		"en"	"SIGMALLER"
-		"ko"	"시그마 전령병"
-	}
 	"Nothing There"
 	{
 		"en"	"Nothing There"
@@ -8243,5 +8246,93 @@
 		"nl"		"Rebel"
 		"it"		"Ribelle"
 		"ko" 		"두 번째 용병"
+	}
+	"Voided Vanguard"
+	{
+		"en"	"Voided Vanguard"
+	}
+	"Voided Vanguard Desc"
+	{
+		"en"	"A Vanguard taken by the void.\nThey work similarly to their sea-infected and uninfected counterparts.\n-Very slow.\n-Big damage\n-(When signalled) max cap for damage is enhanced"
+	}
+	"Voided Tanker"
+	{
+		"en"	"Voided Tanker"
+	}
+	"Voided Tanker Desc"
+	{
+		"en"	"Vestan Tanker now infected by the void.\n-Takes max 10% of its maxhp as single burst damage.\n-Passively gains Expidonsan shield.\nWhen on Void Creep gains more shield."
+	}
+	"Voided Rana"
+	{
+		"en"	"Voided Rana"
+	}
+	"Voided Rana Desc"
+	{
+		"en"	"Alminan now taken by the void.\n-Gives armor and shield to all allies near it if it hits something\nArmor is reduced if it's an ubered enemy or a building."
+	}
+	"Voided Perro"
+	{
+		"en"	"Voided Perro"
+	}
+	"Voided Perro Desc"
+	{
+		"en"	"A "dog" that got infected by the void.\n-Increases damage and resistances, and loses speed, as health decreases, up to x4.\n-In Red Moon, cap is increased to x8."
+	}
+	"Voided Inquisitor Trainee"
+	{
+		"en"	"Voided Inquisitor Trainee"
+	}
+	"Voided Inquisitor Trainee Desc"
+	{
+		"en"	"An Inquisitor who got infected before they became a proper one.\n-If its knife is burning, the next melee hit launches you up.\n-Revolver shots deal a lot of damage and void affliction."
+	}
+	"Voided Hitman"
+	{
+		"en"	"Voided Hitman"
+	}
+	"Voided Hitman Desc"
+	{
+		"en"	"Their speed couldn't save them from the void's grasp.\n-very fast\n-Dodges every second attack\n-Deals little void affliction.\n-Takes extra headshot damage.\n-Slightly smaller than normal"
+	}
+	"Voided Destructor"
+	{
+		"en"	"Voided Destructor"
+	}
+	"Voided Destructor Desc"
+	{
+		"en"	"Vestan Tanker now infected by the void. Their equipment now enhanced by the void.\n-Creates explosion that void afflicts all targets.\n-Performs stronger explosion when he receives a direct operation order \-(When signalled) slightly wider explosion range"
+	}
+	"Voided Airborn Explorer"
+	{
+		"en"	"Voided Airborn Explorer"
+	}
+	"Voided Airborn Explorer Desc"
+	{
+		"en"	"Even after Kahmlstein's sacrifice, something is still commanding the void to invade us.\n-Can jump at you.\nWhile midair:\n-they gain 3x damage, 3x range, give void affliction, and take less damage."
+	}
+	"Inquisitor Trainee"
+	{
+		"en"	"Inquisitor Trainee"
+	}
+	"Inquisitor Trainee Desc"
+	{
+		"en"	"An Inquisitor in training. They haven't master the skills needed to become a full-fledged Inquisitor.\n-If its knife is burning, next melee hit launches you up.\n-Only shoots once while you are in the air."
+	}
+	"Rana"
+	{
+		"en"	"Rana"
+	}
+	"Rana Desc"
+	{
+		"en"	"-Gives armor to all allies near it if it hits something.\nReduced if its an ubered enemy or a building."
+	}
+	"Chaos Brawler"
+	{
+		"en"	"Chaos Brawler"
+	}
+	"Chaos Brawler Desc"
+	{
+		"en"	"A medieval brawler, now afflicted by chaos.\n-Attacks inflict chaos elemental damage."
 	}
 }
