@@ -60,7 +60,7 @@ void VoidedVanguard_Precache()
 
 static any ClotSummon(int client, float vecPos[3], float vecAng[3], int team)
 {
-	return VoidedVanguard(vecPos, vecAng, team, data);
+	return VoidedVanguard(vecPos, vecAng, team);
 }
 
 methodmap VoidedVanguard < CClotBody
