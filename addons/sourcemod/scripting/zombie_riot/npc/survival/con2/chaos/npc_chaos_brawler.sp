@@ -183,7 +183,7 @@ methodmap ChaosBrawler < CClotBody
 		func_NPCThink[npc.index] = ChaosBrawler_ClotThink;
 
 		npc.m_iState = 0;
-		npc.m_flSpeed = 310.0;
+		npc.m_flSpeed = 300.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flNextMeleeAttack = 0.0;
