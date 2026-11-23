@@ -2035,6 +2035,10 @@ methodmap CClotBody < CBaseCombatCharacter
 		DwellerVanguard_SpeedBuff(this, speed_for_return);	
 #endif
 
+#if defined ZR
+		VoidedVanguard_SpeedBuff(this, speed_for_return);	
+#endif
+
 #if defined RPG
 		if(!b_thisNpcIsABoss[this.index] && !HasSpecificBuff(this.index, "Fluid Movement")) //Make sure that any slow debuffs dont affect these.
 		{
