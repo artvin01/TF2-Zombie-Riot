@@ -195,7 +195,7 @@ static void VoidedDestructor_ClotThink(int iNPC)
 
 static void VoidedDestructor_ExplodePost(int attacker, int victim, float damage, int weapon)
 {
-	Elemental_AddVoidDamage(target, npc.index, 100, true, false);
+	Elemental_AddVoidDamage(victim, attacker, 2);
 }
 
 static Action VoidedDestructor_OnTakeDamage(int victim, int &attacker, int &inflictor, float &damage, int &damagetype, int &weapon, float damageForce[3], float damagePosition[3], int damagecustom)
