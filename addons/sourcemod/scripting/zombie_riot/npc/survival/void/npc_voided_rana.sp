@@ -289,8 +289,6 @@ void VoidedRanaSelfDefense(VoidedRana npc, float gameTime, int target, float dis
 					{
 						npc.m_flArmorToGive = 300.0;
 					}
-					if(NpcStats_AlminaIsEnemyMarked(target))
-						npc.m_flArmorToGive *= 1.5;
 						
 					ExpidonsaGroupHeal(npc.index, 150.0, 4, 0.0, 1.0, true,VoidedRanaArmorAndShield);
 					AlminaArmorEffect(npc.index, 150.0);
