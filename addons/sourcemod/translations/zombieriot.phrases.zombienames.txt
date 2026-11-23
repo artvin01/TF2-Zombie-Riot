@@ -6563,7 +6563,7 @@
 	}	
 	"Benarus Desc"
 	{
-		"en"	"Similar to Benera.\nSpawns with armor.\nEach shot gives applies a weak bleed."
+		"en"	"Similar to Benera.\n-Spawns with armor.\n-Each shot gives applies bleed."
 	}
 	"Instinct's Summon"
 	{
