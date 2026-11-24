@@ -171,7 +171,7 @@ methodmap DwellerDDT < CClotBody
 		npc.m_iNpcStepVariation = STEPTYPE_COMBINE;
 		
 		npc.m_iState = 0;
-		npc.m_flSpeed = 300.0;
+		npc.m_flSpeed = 200.0;
 		npc.m_flNextRangedAttack = 0.0;
 		npc.m_flNextRangedSpecialAttack = 0.0;
 		npc.m_flAttackHappenswillhappen = false;
@@ -243,6 +243,13 @@ public void DwellerDDT_ClotThink(int iNPC)
 	
 	int PrimaryThreatIndex = npc.m_iTarget;
 	
+
+	npc.m_flSpeed[npc.index] = npc.m_flSpeed[npc.index] + 25.0;
+	if(npc.m_flSpeed[npc.index] > 500.0)
+	{
+		npc.m_flSpeed[npc.index] = 500.0;
+	}
+
 	if(IsValidEnemy(npc.index, PrimaryThreatIndex, true))
 	{
 			float vecTarget[3]; WorldSpaceCenter(PrimaryThreatIndex, vecTarget);
@@ -309,8 +316,15 @@ public void DwellerDDT_ClotThink(int iNPC)
 											SDKHooks_TakeDamage(target, npc.index, npc.index, 50.0, DMG_CLUB, -1, _, vecHit);
 										else
 											SDKHooks_TakeDamage(target, npc.index, npc.index, 100.0, DMG_CLUB, -1, _, vecHit);
-                    
-								    	Elemental_AddNervousDamage(target, npc.index, 50);
+
+											if(GetTeam(npc.index) != TFTeam_Red)
+											{
+												npc.m_flSpeed[npc.index] = npc.m_flSpeed[npc.index] * 1.0;
+												if(npc.m_flSpeed[npc.index] < 200.0)
+												{
+													npc.m_flSpeed[npc.index] = 200.0;
+												}
+									  Elemental_AddNervousDamage(target, npc.index, 50);
 									}
 									
 									// Hit particle
