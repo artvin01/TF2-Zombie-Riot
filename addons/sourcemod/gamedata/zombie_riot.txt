@@ -91,7 +91,7 @@
 				
 				"linux"		"@_ZN17CBaseCombatWeapon12FinishReloadEv"
 				"linux64"		"@_ZN17CBaseCombatWeapon12FinishReloadEv"
-				"windows"	"\x56\x8B\xF1\x8B\x06\x8B\x80\xF8\x06\x00\x00\xFF\xD0\x84\xC0\x74\x2A\xC6\x86\xD8\x05\x00\x00\x00"
+				"windows"	"\x55\x8B\xEC\x51\x57\x8B\xF9\x8B\x8F\xB8\x05\x00\x00"
 			}
 			"CBaseAnimating::GetBoneCache"
 			{
@@ -223,7 +223,7 @@
 			{
 				// unique string xref "disguiseclass:%s"
 				"library"		"server"
-				"linux64"		"@_ZN9CTFPlayer21SpeakConceptIfAllowedEiPKcPcjP16IRecipientFilter"
+				"linux64"		"@_ZN9CTFPlayer21SpeakConceptIfAllowedEiPKcPcmP16IRecipientFilter"
 				"windows64"		"\x48\x89\x5C\x24\x10\x4C\x89\x4C\x24\x20\x4C\x89\x44\x24\x18\x55"
 				
 				"linux"			"@_ZN9CTFPlayer21SpeakConceptIfAllowedEiPKcPcjP16IRecipientFilter"
@@ -272,7 +272,7 @@
 				// last call in assembly block containing unique string "mod_soldier_buff_range"
 				"library"	"server"
 				"linux64"		"@_ZN15CTFPlayerShared13PulseRageBuffENS_13ERageBuffSlotE"
-				"windows64"	"\x48\x8B\xC4\x56\x41\x54"
+				"windows64"		"\x48\x8B\xC4\x56\x41\x54\x48\x83\xEC\x68"
 				
 				"linux"		"@_ZN15CTFPlayerShared13PulseRageBuffENS_13ERageBuffSlotE"
 				"windows"		"\x55\x8B\xEC\x83\xEC\x14\x33\xC0"
@@ -300,7 +300,9 @@
 				"library"	"server"
 				"linux"		"@_ZN18CTraceFilterSimple15ShouldHitEntityEP13IHandleEntityi"
 				"linux64"		"@_ZN18CTraceFilterSimple15ShouldHitEntityEP13IHandleEntityi"
-				"windows"	"\x55\x8B\xEC\x57\xFF\x75\x0C\x8B\xF9\xFF\x75\x08\xE8\x2A\x2A\x2A\x2A\x83\xC4\x08"
+				"windows"	"\x55\x8B\xEC\x51\x53\x56\x8B\x75\x08\x57\x8B\xF9\x8B\x0D"
+				"windows64"	"\x48\x89\x5C\x24\x08\x48\x89\x6C\x24\x10\x48\x89\x74\x24\x18\x48\x89\x7C\x24\x20\x41\x56\x48\x83\xEC\x20\x48\x8B\xE9\x41\x8B\xF8"
+			
 			}
 			"CGameEventManager::CreateEvent" // Look for string "CreateEvent: event '%s' not registered."
             {
@@ -927,9 +929,9 @@
 			}
 			"CTeamplayRules::FPlayerCanTakeDamage"
 			{
-				"windows"	"63"
-				"linux" 	"64"
-				"linux64" 	"64"
+				"windows"	"64"
+				"linux" 	"65"
+				"linux64" 	"65"
 			}
 			"CTFWeaponBase::FinishReload()"
 			{
