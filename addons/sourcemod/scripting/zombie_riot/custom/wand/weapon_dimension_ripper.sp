@@ -981,15 +981,27 @@ void Dimension_Summon_Npc(int client, char[] NpcName, int weapon, float HealthMu
 					
 					CClotBody npc = view_as<CClotBody>(entity);
 
-					SetEntProp(npc.index, Prop_Data, "m_nSkin", 0);
-					SetEntProp(npc.m_iWearable1, Prop_Data, "m_nSkin", 0);
-					SetEntProp(npc.m_iWearable2, Prop_Data, "m_nSkin", 0);
-					SetEntProp(npc.m_iWearable3, Prop_Data, "m_nSkin", 0);
-					SetEntProp(npc.m_iWearable4, Prop_Data, "m_nSkin", 0);
-					SetEntProp(npc.m_iWearable5, Prop_Data, "m_nSkin", 0);
-					SetEntProp(npc.m_iWearable6, Prop_Data, "m_nSkin", 0);
-					SetEntProp(npc.m_iWearable7, Prop_Data, "m_nSkin", 0);
-					SetEntProp(npc.m_iWearable8, Prop_Data, "m_nSkin", 0);
+					for(int Repeat; Repeat<7; Repeat++)
+					{
+						int WearableIndex = EntRefToEntIndex(i_Wearable[npc.index][Repeat]);
+						//b_EntityCantBeColoured is ag ood general check if it can have a skin or not
+						if(IsValidEntity(WearableIndex) && !b_EntityCantBeColoured[WearableIndex] && GetEntProp(WearableIndex, Prop_Data, "m_nSkin") == 1)
+						{	
+							SetEntProp(WearableIndex, Prop_Send, "m_nSkin", 0);
+						}
+						//only set skin if the skin is 1 (this means blue), if its smtzh else then theres probably a reason for it.
+					}
+					//if blue, turn red
+					if(GetEntProp(npc.index, Prop_Data, "m_nSkin") == 1)
+					{	
+						SetEntProp(npc.index, Prop_Send, "m_nSkin", 0);
+					}
+
+					// if its a zombie skin, turn to red zombie skin.
+					if(GetEntProp(npc.index, Prop_Data, "m_nSkin") == 5)
+					{	
+						SetEntProp(npc.index, Prop_Send, "m_nSkin", 4);
+					}
 					
 					float ExtraDamage = Attributes_Get(weapon, 410, 1.0);
 					ExtraDamage *= DamageMulti;
