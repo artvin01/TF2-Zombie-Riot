@@ -12,6 +12,7 @@ static int how_many_times_swinged[MAXPLAYERS];
 static int Max_Dimension_Charge[MAXPLAYERS];
 static float f_DIMAbilityActive[MAXPLAYERS+1]={0.0, ...};
 static float f_DIMhuddelay[MAXPLAYERS+1]={0.0, ...};
+static float healthviaupgrade[MAXENTITIES];
 
 
 void ResetMapStartDimWeapon()
@@ -51,6 +52,44 @@ public void Enable_Dimension_Wand(int client, int weapon) // Enable management, 
 	{
 		DataPack pack;
 		h_TimerDimensionWeaponManagement[client] = CreateDataTimer(0.1, Timer_Management_Dimension, pack, TIMER_REPEAT);
+		healthviaupgrade[client] = 1.0;	//
+
+		if(Store_HasNamedItem(client, "Magical Haste"))
+			healthviaupgrade[client] *= 1.07;
+		
+		if(Store_HasNamedItem(client, "Magical Book"))
+			healthviaupgrade[client] *= 1.50;
+		
+		if(Store_HasNamedItem(client, "Hastening Potion"))
+			healthviaupgrade[client] *= 1.07;
+		
+		if(Store_HasNamedItem(client, "Precision Potion"))
+			healthviaupgrade[client] *= 1.0;
+		
+		if(Store_HasNamedItem(client, "The Lost Pages of Mazeat"))
+			healthviaupgrade[client] *= 1.6;
+		
+		if(Store_HasNamedItem(client, "Betweenlands Potion"))
+			healthviaupgrade[client] *= 1.07;
+
+		if(Store_HasNamedItem(client, "Master Sorcerer"))
+			healthviaupgrade[client] *= 1.65;
+		
+		if(Store_HasNamedItem(client, "Bob's Magic"))
+			healthviaupgrade[client] *= 1.70;
+		
+		if(Store_HasNamedItem(client, "Ruina's Sacret Magic Ways"))	
+			healthviaupgrade[client] *= 1.70;
+
+		if(Store_HasNamedItem(client, "Twirl Magic"))
+			healthviaupgrade[client] *= 1.75;
+
+		if(Store_HasNamedItem(client, "Magical Fontina Aura"))	
+			healthviaupgrade[client] *= 1.07;
+
+		if(Store_HasNamedItem(client, "Domain Expansion: Cheese"))	
+			healthviaupgrade[client] *= 2.25;
+
 		pack.WriteCell(client);
 		pack.WriteCell(EntIndexToEntRef(weapon));
 	}
@@ -911,43 +950,6 @@ void Dimension_Summon_Npc(int client, char[] NpcName, int weapon, float HealthMu
 					f_MaxHealth *= HealthMulti;
 					f_MaxHealth *= 0.67; //make them have 33% less health during non-raid situation - HAHA 6 7 6 7 6 7 6 7 AAAAAAAAAAAAAAAAAAA
 
-					float healthviaupgrade = 1.0;	// 1 - 16
-
-					if(Store_HasNamedItem(client, "Magical Haste"))
-						healthviaupgrade *= 1.07;
-					
-					if(Store_HasNamedItem(client, "Magical Book"))
-						healthviaupgrade *= 1.50;
-					
-					if(Store_HasNamedItem(client, "Hastening Potion"))
-						healthviaupgrade *= 1.07;
-					
-					if(Store_HasNamedItem(client, "Precision Potion"))
-						healthviaupgrade *= 1.0;
-					
-					if(Store_HasNamedItem(client, "The Lost Pages of Mazeat"))
-						healthviaupgrade *= 1.6;
-					
-					if(Store_HasNamedItem(client, "Betweenlands Potion"))
-						healthviaupgrade *= 1.07;
-
-					if(Store_HasNamedItem(client, "Master Sorcerer"))
-						healthviaupgrade *= 1.65;
-					
-					if(Store_HasNamedItem(client, "Bob's Magic"))
-						healthviaupgrade *= 1.70;
-					
-					if(Store_HasNamedItem(client, "Ruina's Sacret Magic Ways"))	
-						healthviaupgrade *= 1.70;
-
-					if(Store_HasNamedItem(client, "Twirl Magic"))
-						healthviaupgrade *= 1.75;
-
-					if(Store_HasNamedItem(client, "Magical Fontina Aura"))	
-						healthviaupgrade *= 1.07;
-
-					if(Store_HasNamedItem(client, "Domain Expansion: Cheese"))	
-						healthviaupgrade *= 2.25;
 					if(RaidbossIgnoreBuildingsLogic(1))
 					{
 						f_MaxHealth *= 1.5;
@@ -970,12 +972,24 @@ void Dimension_Summon_Npc(int client, char[] NpcName, int weapon, float HealthMu
 						}
 					}
 
-					f_MaxHealth *= healthviaupgrade;
+					f_MaxHealth *= healthviaupgrade[client];
 					SetEntProp(entity, Prop_Data, "m_iHealth", RoundToNearest(f_MaxHealth));
 					SetEntProp(entity, Prop_Data, "m_iMaxHealth", RoundToNearest(f_MaxHealth));
-					float ModelSize = 0.75; // They should be smaller for resolve visual clutter
+					float ModelSize = 0.5; // They should be smaller for resolve visual clutter
 					ModelSize *= Size; // but make them distinguishable if this is giant or dwarf
 					SetEntPropFloat(entity, Prop_Data, "m_flModelScale", ModelSize);
+					
+					CClotBody npc = view_as<CClotBody>(entity);
+
+					SetEntProp(npc.index, Prop_Data, "m_nSkin", 0);
+					SetEntProp(npc.m_iWearable1, Prop_Data, "m_nSkin", 0);
+					SetEntProp(npc.m_iWearable2, Prop_Data, "m_nSkin", 0);
+					SetEntProp(npc.m_iWearable3, Prop_Data, "m_nSkin", 0);
+					SetEntProp(npc.m_iWearable4, Prop_Data, "m_nSkin", 0);
+					SetEntProp(npc.m_iWearable5, Prop_Data, "m_nSkin", 0);
+					SetEntProp(npc.m_iWearable6, Prop_Data, "m_nSkin", 0);
+					SetEntProp(npc.m_iWearable7, Prop_Data, "m_nSkin", 0);
+					SetEntProp(npc.m_iWearable8, Prop_Data, "m_nSkin", 0);
 					
 					float ExtraDamage = Attributes_Get(weapon, 410, 1.0);
 					ExtraDamage *= DamageMulti;
