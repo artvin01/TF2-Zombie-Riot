@@ -31,7 +31,23 @@ void Commands_PluginStart()
 	AddCommandListener(OnTeamName, "tournament_teamname");
 #endif
 
-} 
+#if defined ZR
+	RegConsoleCmd("sm_zr_inspect", Command_ZRInspect);
+	RegConsoleCmd("sm_zr_i", Command_ZRInspect);
+#endif
+
+}
+
+#if defined ZR
+public Action Command_ZRInspect(int client, int args)
+{
+	if(client > 0)
+	{
+		BuilderMenu(client);
+	}
+	return Plugin_Handled;
+}
+#endif
 
 public Action OnClientCommandKeyValues(int client, KeyValues kv)
 {
