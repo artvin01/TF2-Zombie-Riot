@@ -997,7 +997,8 @@ void Waves_SetupVote(KeyValues map, bool modifierOnly = false)
 
 			if(!autoSelect && !FileNetwork_Enabled())
 			{
-				for(int i; i < limit; i++)
+				// The configured cap can exceed the number of available wavesets.
+				for(int i; i < Voting.Length; i++)
 				{
 					Voting.GetArray(i, vote);
 					
