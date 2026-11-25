@@ -2154,7 +2154,8 @@ void Store_ResetClient(int client)
 		StarterCashMode[client] = false;
 	}
 	static Item item;
-	int length = StoreItems.Length;
+	// Clients can connect before the store configuration has been loaded.
+	int length = StoreItems ? StoreItems.Length : 0;
 	for(int i; i<length; i++)
 	{
 		StoreItems.GetArray(i, item);
