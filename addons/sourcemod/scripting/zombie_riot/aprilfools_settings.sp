@@ -16,7 +16,6 @@ void CheckAprilFools()
 		PrecacheModel("materials/hud/leaderboard_class_steamhappy.vmt");
 		AddToDownloadsTable("materials/hud/leaderboard_class_steamhappy.vtf");	
 		AddToDownloadsTable("materials/hud/leaderboard_class_steamhappy.vmt");		
-		AddToDownloadsTable("models/steamhappy.dx80.vtx");			
 		AddToDownloadsTable("models/steamhappy.dx90.vtx");			
 		AddToDownloadsTable("models/steamhappy.mdl");			
 		AddToDownloadsTable("models/steamhappy.vvd");			
@@ -25,8 +24,7 @@ void CheckAprilFools()
 		AddToDownloadsTable("materials/steamhappy/eye.vmt");		
 		AddToDownloadsTable("materials/steamhappy/happycolors.vtf");
 		AddToDownloadsTable("materials/steamhappy/happycolorable.vtf");
-		AddToDownloadsTable("materials/steamhappy/eye.vtf");
-		AddToDownloadsTable("models/zombie_riot/steamhappy_hat_8.dx80.vtx");			
+		AddToDownloadsTable("materials/steamhappy/eye.vtf");		
 		AddToDownloadsTable("models/zombie_riot/steamhappy_hat_8.dx90.vtx");			
 		AddToDownloadsTable("models/zombie_riot/steamhappy_hat_8.mdl");			
 		AddToDownloadsTable("models/zombie_riot/steamhappy_hat_8.vvd");			
