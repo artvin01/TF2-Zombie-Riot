@@ -948,11 +948,11 @@ void Dimension_Summon_Npc(int client, char[] NpcName, int weapon, float HealthMu
 					float f_MaxHealth = 30.0;
 					//f_MaxHealth *= Attributes_Get(weapon, 410, 1.0);
 					f_MaxHealth *= HealthMulti;
-					f_MaxHealth *= 0.67; //make them have 33% less health during non-raid situation - HAHA 6 7 6 7 6 7 6 7 AAAAAAAAAAAAAAAAAAA
+					f_MaxHealth *= 0.75; //33% decrease was a bit too much 
 
 					if(RaidbossIgnoreBuildingsLogic(1))
 					{
-						f_MaxHealth *= 1.5;
+						f_MaxHealth *= 1.34;
 					}
 
 					int pap = RoundFloat(Attributes_Get(weapon, Attrib_PapNumber, 0.0)); //122
@@ -1006,6 +1006,10 @@ void Dimension_Summon_Npc(int client, char[] NpcName, int weapon, float HealthMu
 					float ExtraDamage = Attributes_Get(weapon, 410, 1.0);
 					ExtraDamage *= DamageMulti;
 					ExtraDamage *= 1.25;
+					if(RaidbossIgnoreBuildingsLogic(1))
+					{
+						ExtraDamage *= 1.25;
+					}
 					fl_Extra_Damage[entity] *= ExtraDamage;
 					fl_MeleeArmor[entity] = 1.0;
 					fl_RangedArmor[entity] = 1.0;
