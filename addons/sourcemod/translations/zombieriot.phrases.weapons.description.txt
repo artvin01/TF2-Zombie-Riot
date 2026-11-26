@@ -5094,9 +5094,7 @@
 	}
 	"Reconstructive Teleporter Desc"
 	{
-		"en"	"Teleports barrack units to you\n-Teleport Heals barracks units\n-Gives resistance on use to units for 1 second"
-		"ko"	"배럭 유닛을 자신에게 텔레포트 시킵니다.\n-배럭 유닛들을 과치료하고 1초동안 높은 저항력을 제공합니다."
-		"it"	"Teletrasporta le unità della caserma verso di te, garantendo sovracura e alta resistenza per 1 secondo."
+		"en"	"Teleports Most Allied units to you that belong to you\n-Teleport Heals units\n-Gives resistance on use to units for 1 second"
 	}
 	"Bubble Wand Desc"
 	{
