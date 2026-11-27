@@ -947,8 +947,8 @@
 			}
 			"CBasePlayer::EquipWearable"
 			{
-				"linux"		"439"
-				"linux64"		"439"
+				"linux"		"440"
+				"linux64"		"440"
 				"windows"	"438"
 			}
 			"CBasePlayer::ForceRespawn"
